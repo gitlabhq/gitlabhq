@@ -1,31 +1,31 @@
 <script>
-  import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
-  import iconCommit from '../svg/icon_commit.svg';
-  import limitWarning from './limit_warning_component.vue';
-  import totalTime from './total_time_component.vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import iconCommit from '../svg/icon_commit.svg';
+import limitWarning from './limit_warning_component.vue';
+import totalTime from './total_time_component.vue';
 
-  export default {
-    components: {
-      userAvatarImage,
-      totalTime,
-      limitWarning,
+export default {
+  components: {
+    userAvatarImage,
+    totalTime,
+    limitWarning,
+  },
+  props: {
+    items: {
+      type: Array,
+      default: () => [],
     },
-    props: {
-      items: {
-        type: Array,
-        default: () => [],
-      },
-      stage: {
-        type: Object,
-        default: () => ({}),
-      },
+    stage: {
+      type: Object,
+      default: () => ({}),
     },
-    computed: {
-      iconCommit() {
-        return iconCommit;
-      },
+  },
+  computed: {
+    iconCommit() {
+      return iconCommit;
     },
-  };
+  },
+};
 </script>
 <template>
   <div>
@@ -74,4 +74,3 @@
     </ul>
   </div>
 </template>
-

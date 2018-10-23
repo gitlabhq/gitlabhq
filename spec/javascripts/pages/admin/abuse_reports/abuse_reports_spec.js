@@ -8,14 +8,15 @@ describe('Abuse Reports', () => {
 
   let $messages;
 
-  const assertMaxLength = $message => expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
-  const findMessage = searchText => $messages.filter(
-    (index, element) => element.innerText.indexOf(searchText) > -1,
-  ).first();
+  const assertMaxLength = $message => {
+    expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
+  };
+  const findMessage = searchText =>
+    $messages.filter((index, element) => element.innerText.indexOf(searchText) > -1).first();
 
   preloadFixtures(FIXTURE);
 
-  beforeEach(function () {
+  beforeEach(function() {
     loadFixtures(FIXTURE);
     this.abuseReports = new AbuseReports();
     $messages = $('.abuse-reports .message');
@@ -23,18 +24,21 @@ describe('Abuse Reports', () => {
 
   it('should truncate long messages', () => {
     const $longMessage = findMessage('LONG MESSAGE');
+
     expect($longMessage.data('originalMessage')).toEqual(jasmine.anything());
     assertMaxLength($longMessage);
   });
 
   it('should not truncate short messages', () => {
     const $shortMessage = findMessage('SHORT MESSAGE');
+
     expect($shortMessage.data('originalMessage')).not.toEqual(jasmine.anything());
   });
 
   it('should allow clicking a truncated message to expand and collapse the full message', () => {
     const $longMessage = findMessage('LONG MESSAGE');
     $longMessage.click();
+
     expect($longMessage.data('originalMessage').length).toEqual($longMessage.text().length);
     $longMessage.click();
     assertMaxLength($longMessage);

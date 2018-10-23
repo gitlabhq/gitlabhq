@@ -140,6 +140,7 @@ describe('gl_emoji', () => {
         },
       );
     });
+
     it('bomb emoji with sprite fallback', () => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiFixtureMap[emojiKey].name, {
@@ -195,24 +196,31 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isFlagEmoji('')).toBeFalsy();
     });
+
     it('should detect flag_ac', () => {
       expect(isFlagEmoji('🇦🇨')).toBeTruthy();
     });
+
     it('should detect flag_us', () => {
       expect(isFlagEmoji('🇺🇸')).toBeTruthy();
     });
+
     it('should detect flag_zw', () => {
       expect(isFlagEmoji('🇿🇼')).toBeTruthy();
     });
+
     it('should not detect flags', () => {
       expect(isFlagEmoji('🎏')).toBeFalsy();
     });
+
     it('should not detect triangular_flag_on_post', () => {
       expect(isFlagEmoji('🚩')).toBeFalsy();
     });
+
     it('should not detect single letter', () => {
       expect(isFlagEmoji('🇦')).toBeFalsy();
     });
+
     it('should not detect >2 letters', () => {
       expect(isFlagEmoji('🇦🇧🇨')).toBeFalsy();
     });
@@ -222,15 +230,19 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isRainbowFlagEmoji('')).toBeFalsy();
     });
+
     it('should detect rainbow_flag', () => {
       expect(isRainbowFlagEmoji('🏳🌈')).toBeTruthy();
     });
-    it('should not detect flag_white on its\' own', () => {
+
+    it("should not detect flag_white on its' own", () => {
       expect(isRainbowFlagEmoji('🏳')).toBeFalsy();
     });
-    it('should not detect rainbow on its\' own', () => {
+
+    it("should not detect rainbow on its' own", () => {
       expect(isRainbowFlagEmoji('🌈')).toBeFalsy();
     });
+
     it('should not detect flag_white with something else', () => {
       expect(isRainbowFlagEmoji('🏳🔵')).toBeFalsy();
     });
@@ -240,15 +252,19 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isKeycapEmoji('')).toBeFalsy();
     });
+
     it('should detect one(keycap)', () => {
       expect(isKeycapEmoji('1️⃣')).toBeTruthy();
     });
+
     it('should detect nine(keycap)', () => {
       expect(isKeycapEmoji('9️⃣')).toBeTruthy();
     });
+
     it('should not detect ten(keycap)', () => {
       expect(isKeycapEmoji('🔟')).toBeFalsy();
     });
+
     it('should not detect hash(keycap)', () => {
       expect(isKeycapEmoji('#⃣')).toBeFalsy();
     });
@@ -258,24 +274,31 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isSkinToneComboEmoji('')).toBeFalsy();
     });
+
     it('should detect hand_splayed_tone5', () => {
       expect(isSkinToneComboEmoji('🖐🏿')).toBeTruthy();
     });
+
     it('should not detect hand_splayed', () => {
       expect(isSkinToneComboEmoji('🖐')).toBeFalsy();
     });
+
     it('should detect lifter_tone1', () => {
       expect(isSkinToneComboEmoji('🏋🏻')).toBeTruthy();
     });
+
     it('should not detect lifter', () => {
       expect(isSkinToneComboEmoji('🏋')).toBeFalsy();
     });
+
     it('should detect rowboat_tone4', () => {
       expect(isSkinToneComboEmoji('🚣🏾')).toBeTruthy();
     });
+
     it('should not detect rowboat', () => {
       expect(isSkinToneComboEmoji('🚣')).toBeFalsy();
     });
+
     it('should not detect individual tone emoji', () => {
       expect(isSkinToneComboEmoji('🏻')).toBeFalsy();
     });
@@ -285,9 +308,11 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isHorceRacingSkinToneComboEmoji('')).toBeFalsy();
     });
+
     it('should detect horse_racing_tone2', () => {
       expect(isHorceRacingSkinToneComboEmoji('🏇🏼')).toBeTruthy();
     });
+
     it('should not detect horse_racing', () => {
       expect(isHorceRacingSkinToneComboEmoji('🏇')).toBeFalsy();
     });
@@ -297,36 +322,47 @@ describe('gl_emoji', () => {
     it('should gracefully handle empty string', () => {
       expect(isPersonZwjEmoji('')).toBeFalsy();
     });
+
     it('should detect couple_mm', () => {
       expect(isPersonZwjEmoji('👨‍❤️‍👨')).toBeTruthy();
     });
+
     it('should not detect couple_with_heart', () => {
       expect(isPersonZwjEmoji('💑')).toBeFalsy();
     });
+
     it('should not detect couplekiss', () => {
       expect(isPersonZwjEmoji('💏')).toBeFalsy();
     });
+
     it('should detect family_mmb', () => {
       expect(isPersonZwjEmoji('👨‍👨‍👦')).toBeTruthy();
     });
+
     it('should detect family_mwgb', () => {
       expect(isPersonZwjEmoji('👨‍👩‍👧‍👦')).toBeTruthy();
     });
+
     it('should not detect family', () => {
       expect(isPersonZwjEmoji('👪')).toBeFalsy();
     });
+
     it('should detect kiss_ww', () => {
       expect(isPersonZwjEmoji('👩‍❤️‍💋‍👩')).toBeTruthy();
     });
+
     it('should not detect girl', () => {
       expect(isPersonZwjEmoji('👧')).toBeFalsy();
     });
+
     it('should not detect girl_tone5', () => {
       expect(isPersonZwjEmoji('👧🏿')).toBeFalsy();
     });
+
     it('should not detect man', () => {
       expect(isPersonZwjEmoji('👨')).toBeFalsy();
     });
+
     it('should not detect woman', () => {
       expect(isPersonZwjEmoji('👩')).toBeFalsy();
     });
@@ -334,21 +370,17 @@ describe('gl_emoji', () => {
 
   describe('isEmojiUnicodeSupported', () => {
     it('should gracefully handle empty string with unicode support', () => {
-      const isSupported = isEmojiUnicodeSupported(
-        { '1.0': true },
-        '',
-        '1.0',
-      );
+      const isSupported = isEmojiUnicodeSupported({ '1.0': true }, '', '1.0');
+
       expect(isSupported).toBeTruthy();
     });
+
     it('should gracefully handle empty string without unicode support', () => {
-      const isSupported = isEmojiUnicodeSupported(
-        {},
-        '',
-        '1.0',
-      );
+      const isSupported = isEmojiUnicodeSupported({}, '', '1.0');
+
       expect(isSupported).toBeFalsy();
     });
+
     it('bomb(6.0) with 6.0 support', () => {
       const emojiKey = 'bomb';
       const unicodeSupportMap = Object.assign({}, emptySupportMap, {
@@ -359,6 +391,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeTruthy();
     });
 
@@ -370,6 +403,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -383,6 +417,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -408,6 +443,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
 
@@ -425,6 +461,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeTruthy();
     });
 
@@ -442,6 +479,7 @@ describe('gl_emoji', () => {
         emojiFixtureMap[emojiKey].moji,
         emojiFixtureMap[emojiKey].unicodeVersion,
       );
+
       expect(isSupported).toBeFalsy();
     });
   });

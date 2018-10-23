@@ -107,15 +107,19 @@ module Projects
       mv_repository(old_path, new_path)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def repo_exists?(path)
       gitlab_shell.exists?(project.repository_storage, path + '.git')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def mv_repository(from_path, to_path)
       return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_rollback(project, message)
       return unless project
@@ -129,11 +133,11 @@ module Projects
     end
 
     def attempt_destroy_transaction(project)
-      Project.transaction do
-        unless remove_legacy_registry_tags
-          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-        end
+      unless remove_registry_tags
+        raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+      end
 
+      Project.transaction do
         log_destroy_event
         trash_repositories!
 
@@ -152,6 +156,17 @@ module Projects
       log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
 
+    def remove_registry_tags
+      return false unless remove_legacy_registry_tags
+
+      project.container_repositories.find_each do |container_repository|
+        service = Projects::ContainerRepository::DestroyService.new(project, current_user)
+        service.execute(container_repository)
+      end
+
+      true
+    end
+
     ##
     # This method makes sure that we correctly remove registry tags
     # for legacy image repository (when repository path equals project path).
@@ -159,7 +174,7 @@ module Projects
     def remove_legacy_registry_tags
       return true unless Gitlab.config.registry.enabled
 
-      ContainerRepository.build_root_repository(project).tap do |repository|
+      ::ContainerRepository.build_root_repository(project).tap do |repository|
         break repository.has_tags? ? repository.delete_tags! : true
       end
     end

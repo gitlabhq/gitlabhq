@@ -1,14 +1,14 @@
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import setupToggleButtons from '~/toggle_buttons';
-import gcpSignupOffer from '~/clusters/components/gcp_signup_offer';
+import initDismissableCallout from '~/dismissable_callout';
 
 import ClustersService from './services/clusters_service';
 
 export default () => {
   const clusterList = document.querySelector('.js-clusters-list');
 
-  gcpSignupOffer();
+  initDismissableCallout('.gcp-signup-offer');
 
   // The empty state won't have a clusterList
   if (clusterList) {

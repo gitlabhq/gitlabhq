@@ -28,18 +28,17 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 = _('Account')
-      - if Gitlab::CurrentSettings.user_oauth_applications?
-        = nav_link(controller: 'oauth/applications') do
-          = link_to applications_profile_path do
-            .nav-icon-container
-              = sprite_icon('applications')
-            %span.nav-item-name
-              = _('Applications')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(controller: 'oauth/applications', html_options: { class: "fly-out-top-item" } ) do
-              = link_to applications_profile_path do
-                %strong.fly-out-top-item-name
-                  = _('Applications')
+      = nav_link(controller: 'oauth/applications') do
+        = link_to applications_profile_path do
+          .nav-icon-container
+            = sprite_icon('applications')
+          %span.nav-item-name
+            = _('Applications')
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: 'oauth/applications', html_options: { class: "fly-out-top-item" } ) do
+            = link_to applications_profile_path do
+              %strong.fly-out-top-item-name
+                = _('Applications')
       = nav_link(controller: :chat_names) do
         = link_to profile_chat_names_path do
           .nav-icon-container

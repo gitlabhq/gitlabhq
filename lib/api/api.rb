@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class API < Grape::API
     include APIGuard
@@ -15,8 +17,10 @@ module API
                   include: [
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,
+                    Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
-                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new
+                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
+                    Gitlab::GrapeLogging::Loggers::PerfLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -116,6 +120,7 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::Discussions
+    mount ::API::ResourceLabelEvents
     mount ::API::NotificationSettings
     mount ::API::PagesDomains
     mount ::API::Pipelines
@@ -127,6 +132,7 @@ module API
     mount ::API::Projects
     mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
+    mount ::API::ProjectTemplates
     mount ::API::ProtectedBranches
     mount ::API::ProtectedTags
     mount ::API::Repositories

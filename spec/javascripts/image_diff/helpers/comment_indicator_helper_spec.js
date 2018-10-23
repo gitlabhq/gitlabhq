@@ -29,10 +29,12 @@ describe('commentIndicatorHelper', () => {
 
       it('should contain image-comment-dark svg', () => {
         const svgEl = buttonEl.querySelector('svg');
+
         expect(svgEl).toBeDefined();
 
         const svgLink = svgEl.querySelector('use').getAttribute('xlink:href');
-        expect(svgLink.indexOf('image-comment-dark') !== -1).toEqual(true);
+
+        expect(svgLink.indexOf('image-comment-dark')).not.toBe(-1);
       });
     });
   });
@@ -40,6 +42,7 @@ describe('commentIndicatorHelper', () => {
   describe('removeCommentIndicator', () => {
     it('should return removed false if there is no comment-indicator', () => {
       const result = commentIndicatorHelper.removeCommentIndicator(containerEl);
+
       expect(result.removed).toEqual(false);
     });
 
@@ -84,6 +87,7 @@ describe('commentIndicatorHelper', () => {
 
       it('should set commentIndicator coordinates', () => {
         const commentIndicatorEl = containerEl.querySelector('.comment-indicator');
+
         expect(commentIndicatorEl.style.left).toEqual(`${coordinate.x}px`);
         expect(commentIndicatorEl.style.top).toEqual(`${coordinate.y}px`);
       });
@@ -96,6 +100,7 @@ describe('commentIndicatorHelper', () => {
 
       it('should addCommentIndicator', () => {
         const buttonEl = containerEl.querySelector('.comment-indicator');
+
         expect(buttonEl).toBeDefined();
         expect(buttonEl.style.left).toEqual(`${coordinate.x}px`);
         expect(buttonEl.style.top).toEqual(`${coordinate.y}px`);

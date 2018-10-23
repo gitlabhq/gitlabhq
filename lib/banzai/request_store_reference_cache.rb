@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Banzai
   module RequestStoreReferenceCache
     def cached_call(request_store_key, cache_key, path: [])
-      if RequestStore.active?
-        cache = RequestStore[request_store_key] ||= Hash.new do |hash, key|
+      if Gitlab::SafeRequestStore.active?
+        cache = Gitlab::SafeRequestStore[request_store_key] ||= Hash.new do |hash, key|
           hash[key] = Hash.new { |h, k| h[k] = {} }
         end
 

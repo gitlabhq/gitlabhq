@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module TemporarilyAllow
     TEMPORARILY_ALLOW_MUTEX = Mutex.new
@@ -10,7 +12,7 @@ module Gitlab
     end
 
     def temporarily_allowed?(key)
-      if RequestStore.active?
+      if Gitlab::SafeRequestStore.active?
         temporarily_allow_request_store[key] > 0
       else
         TEMPORARILY_ALLOW_MUTEX.synchronize do
@@ -26,11 +28,11 @@ module Gitlab
     end
 
     def temporarily_allow_request_store
-      RequestStore[:temporarily_allow] ||= Hash.new(0)
+      Gitlab::SafeRequestStore[:temporarily_allow] ||= Hash.new(0)
     end
 
     def temporarily_allow_add(key, value)
-      if RequestStore.active?
+      if Gitlab::SafeRequestStore.active?
         temporarily_allow_request_store[key] += value
       else
         TEMPORARILY_ALLOW_MUTEX.synchronize do

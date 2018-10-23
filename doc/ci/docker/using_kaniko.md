@@ -39,7 +39,7 @@ few important details:
 In the following example, kaniko is used to build a Docker image and then push
 it to [GitLab Container Registry](../../user/project/container_registry.md).
 The job will run only when a tag is pushed. A `config.json` file is created under
-`/root/.docker` with the needed GitLab Container Registry credentials taken from the
+`/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
 [environment variables](../variables/README.md#predefined-variables-environment-variables)
 GitLab CI/CD provides. In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
@@ -52,8 +52,7 @@ build:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    - mkdir -p /root/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /root/.docker/config.json
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   only:
     - tags

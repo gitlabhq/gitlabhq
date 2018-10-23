@@ -40,23 +40,28 @@ describe('Actions Component', () => {
 
   it('should render a dropdown button with icon and title attribute', () => {
     expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
-    expect(component.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual('Deploy to...');
-    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual('Deploy to...');
+    expect(
+      component.$el.querySelector('.dropdown-new').getAttribute('data-original-title'),
+    ).toEqual('Deploy to...');
+
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual(
+      'Deploy to...',
+    );
   });
 
   it('should render a dropdown with the provided list of actions', () => {
-    expect(
-      component.$el.querySelectorAll('.dropdown-menu li').length,
-    ).toEqual(actionsMock.length);
+    expect(component.$el.querySelectorAll('.dropdown-menu li').length).toEqual(actionsMock.length);
   });
 
-  it('should render a disabled action when it\'s not playable', () => {
+  it("should render a disabled action when it's not playable", () => {
     expect(
       component.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
     ).toEqual('disabled');
 
     expect(
-      component.$el.querySelector('.dropdown-menu li:last-child button').classList.contains('disabled'),
+      component.$el
+        .querySelector('.dropdown-menu li:last-child button')
+        .classList.contains('disabled'),
     ).toEqual(true);
   });
 });

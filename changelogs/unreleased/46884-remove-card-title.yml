@@ -1,0 +1,5 @@
+---
+title: Remove .card-title from .card-header for BS4 migration
+merge_request: 19335
+author: Takuya Noguchi
+type: other

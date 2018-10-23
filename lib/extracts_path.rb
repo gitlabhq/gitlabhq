@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
 module ExtractsPath
@@ -50,11 +52,13 @@ module ExtractsPath
       # branches and tags
 
       # Append a trailing slash if we only get a ref and no file path
-      id += '/' unless id.ends_with?('/')
+      unless id.ends_with?('/')
+        id = [id, '/'].join
+      end
 
       valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
-      if valid_refs.length == 0
+      if valid_refs.empty?
         # No exact ref match, so just try our best
         pair = id.match(%r{([^/]+)(.*)}).captures
       else
@@ -151,9 +155,9 @@ module ExtractsPath
 
   # overriden in subclasses, do not remove
   def get_id
-    id = params[:id] || params[:ref]
-    id += "/" + params[:path] unless params[:path].blank?
-    id
+    id = [params[:id] || params[:ref]]
+    id << "/" + params[:path] unless params[:path].blank?
+    id.join
   end
 
   def ref_names

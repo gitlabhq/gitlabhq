@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe VisibilityLevelHelper do
+  include ProjectForksHelper
+
   let(:project)          { build(:project) }
   let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
@@ -83,13 +85,13 @@ describe VisibilityLevelHelper do
 
   describe "disallowed_visibility_level?" do
     describe "forks" do
-      let(:project)       { create(:project, :internal) }
-      let(:fork_project)  { create(:project, forked_from_project: project) }
+      let(:project) { create(:project, :internal) }
+      let(:forked_project) { fork_project(project) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
-        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(disallowed_visibility_level?(fork_project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
       end
     end
 

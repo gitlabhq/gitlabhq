@@ -2,7 +2,6 @@
 
 class DiffFileEntity < Grape::Entity
   include RequestAwareEntity
-  include BlobHelper
   include CommitsHelper
   include DiffHelper
   include SubmoduleHelper
@@ -85,7 +84,7 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :old_path_html do |diff_file|
-    old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
+    old_path, _ = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
     old_path
   end
 
@@ -117,6 +116,10 @@ class DiffFileEntity < Grape::Entity
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
 
+  expose :viewer, using: DiffViewerEntity do |diff_file|
+    diff_file.rich_viewer || diff_file.simple_viewer
+  end
+
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
     image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
@@ -136,12 +139,12 @@ class DiffFileEntity < Grape::Entity
   end
 
   # Used for inline diffs
-  expose :highlighted_diff_lines, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
+  expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
     diff_file.diff_lines_for_serializer
   end
 
   # Used for parallel diffs
-  expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
+  expose :parallel_diff_lines, using: DiffLineParallelEntity, if: -> (diff_file, _) { diff_file.text? }
 
   def current_user
     request.current_user

@@ -23,9 +23,9 @@ in the form of a resolvable or threaded discussion.
 
 ## Resolvable discussions
 
->**Notes:**
-- The main feature was [introduced][ce-5022] in GitLab 8.11.
-- Resolvable discussions can be added only to merge request diffs.
+> **Notes:**
+> - The main feature was [introduced][ce-5022] in GitLab 8.11.
+> - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
 Resolving comments prevents you from forgetting to address feedback and lets you
@@ -271,6 +271,8 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
+Additionally locked issues can not be reopened.
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
@@ -279,7 +281,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
 [ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
 [ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
-[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31847
+[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

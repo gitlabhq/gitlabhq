@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
 require 'google/apis/cloudbilling_v1'
@@ -50,7 +52,7 @@ module GoogleApi
         service.get_zone_cluster(project_id, zone, cluster_id, options: user_agent_header)
       end
 
-      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
+      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:, legacy_abac:)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
@@ -63,7 +65,7 @@ module GoogleApi
                 "machine_type": machine_type
               },
               "legacy_abac": {
-                "enabled": true
+                "enabled": legacy_abac
               }
             }
           }

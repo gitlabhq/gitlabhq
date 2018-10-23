@@ -111,7 +111,7 @@ main:
   uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
 
   ##
-  ## Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
+  ## Examples: 'america\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   ##
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
@@ -132,7 +132,7 @@ main:
   ## Enables SSL certificate verification if encryption method is
   ## "start_tls" or "simple_tls". Defaults to true since GitLab 10.0 for
   ## security. This may break installations upon upgrade to 10.0, that did
-  ## not know their LDAP SSL certificates were not setup properly.
+  ## not know their LDAP SSL certificates were not set up properly.
   ##
   verify_certificates: true
 
@@ -382,29 +382,30 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
-  ```ruby
-  gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-  main:
-    # snip...
-    lowercase_usernames: true
-  EOS
-  ```
+    ```ruby
+    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+    main:
+      # snip...
+      lowercase_usernames: true
+    EOS
+    ```
 
-2. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
+1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
 **Source configuration**
 
 1. Edit `config/gitlab.yaml`:
 
-  ```yaml
-  production:
-    ldap:
-      servers:
-        main:
-          # snip...
-          lowercase_usernames: true
-  ```
-2. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+    ```yaml
+    production:
+      ldap:
+        servers:
+          main:
+            # snip...
+            lowercase_usernames: true
+    ```
+
+1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
 ## Encryption
 

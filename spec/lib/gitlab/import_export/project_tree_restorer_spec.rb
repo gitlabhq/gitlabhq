@@ -59,7 +59,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'creates a valid pipeline note' do
-        expect(Ci::Pipeline.first.notes).not_to be_empty
+        expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
+      end
+
+      it 'pipeline has the correct user ID' do
+        expect(Ci::Pipeline.find_by_sha('sha-notes').user_id).to eq(@user.id)
       end
 
       it 'restores pipelines with missing ref' do
@@ -87,6 +91,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'contains the create access levels on a protected tag' do
         expect(ProtectedTag.first.create_access_levels).not_to be_empty
+      end
+
+      it 'restores issue resource label events' do
+        expect(Issue.find_by(title: 'Voluptatem').resource_label_events).not_to be_empty
+      end
+
+      it 'restores merge requests resource label events' do
+        expect(MergeRequest.find_by(title: 'MR1').resource_label_events).not_to be_empty
       end
 
       context 'event at forth level of the tree' do

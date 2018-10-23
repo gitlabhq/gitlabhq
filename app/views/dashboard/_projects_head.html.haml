@@ -1,6 +1,13 @@
 = content_for :flash_message do
   = render 'shared/project_limit'
 
+.page-title-holder
+  %h1.page-title= _('Projects')
+
+  - if current_user.can_create_project?
+    .page-title-controls
+      = link_to "New project", new_project_path, class: "btn btn-success"
+
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
@@ -18,5 +25,3 @@
   .nav-controls
     = render 'shared/projects/search_form'
     = render 'shared/projects/dropdown'
-    - if current_user.can_create_project?
-      = link_to "New project", new_project_path, class: "btn btn-new"

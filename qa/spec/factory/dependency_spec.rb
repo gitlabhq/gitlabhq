@@ -4,11 +4,11 @@ describe QA::Factory::Dependency do
   let(:block) { spy('block') }
 
   let(:signature) do
-    double('signature', factory: dependency, block: block)
+    double('signature', name: :mydep, factory: dependency, block: block)
   end
 
   subject do
-    described_class.new(:mydep, factory, signature)
+    described_class.new(factory, signature)
   end
 
   describe '#overridden?' do
@@ -55,16 +55,23 @@ describe QA::Factory::Dependency do
         expect(factory).to have_received(:mydep=).with(dependency)
       end
 
-      context 'when receives a caller factory as block argument' do
-        let(:dependency) { QA::Factory::Base }
+      it 'calls given block with dependency factory and caller factory' do
+        expect(dependency).to receive(:fabricate!).and_yield(dependency)
 
-        it 'calls given block with dependency factory and caller factory' do
-          allow_any_instance_of(QA::Factory::Base).to receive(:fabricate!).and_return(factory)
-          allow(QA::Factory::Product).to receive(:populate!).and_return(spy('any'))
+        subject.build!
 
+        expect(block).to have_received(:call).with(dependency, factory)
+      end
+
+      context 'with no block given' do
+        let(:signature) do
+          double('signature', name: :mydep, factory: dependency, block: nil)
+        end
+
+        it 'does not error' do
           subject.build!
 
-          expect(block).to have_received(:call).with(an_instance_of(QA::Factory::Base), factory)
+          expect(dependency).to have_received(:fabricate!)
         end
       end
     end

@@ -2,6 +2,7 @@
 
 class Todo < ActiveRecord::Base
   include Sortable
+  include FromUnion
 
   ASSIGNED           = 1
   MENTIONED          = 2
@@ -39,6 +40,13 @@ class Todo < ActiveRecord::Base
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
+  scope :for_action, -> (action) { where(action: action) }
+  scope :for_author, -> (author) { where(author: author) }
+  scope :for_project, -> (project) { where(project: project) }
+  scope :for_group, -> (group) { where(group: group) }
+  scope :for_type, -> (type) { where(target_type: type) }
+  scope :for_target, -> (id) { where(target_id: id) }
+  scope :for_commit, -> (id) { where(commit_id: id) }
 
   state_machine :state, initial: :pending do
     event :done do
@@ -52,6 +60,42 @@ class Todo < ActiveRecord::Base
   after_save :keep_around_commit, if: :commit_id
 
   class << self
+    # Returns all todos for the given group and its descendants.
+    #
+    # group - A `Group` to retrieve todos for.
+    #
+    # Returns an `ActiveRecord::Relation`.
+    def for_group_and_descendants(group)
+      groups = group.self_and_descendants
+
+      from_union([
+        for_project(Project.for_group(groups)),
+        for_group(groups)
+      ])
+    end
+
+    # Returns `true` if the current user has any todos for the given target.
+    #
+    # target - The value of the `target_type` column, such as `Issue`.
+    def any_for_target?(target)
+      exists?(target: target)
+    end
+
+    # Updates the state of a relation of todos to the new state.
+    #
+    # new_state - The new state of the todos.
+    #
+    # Returns an `Array` containing the IDs of the updated todos.
+    def update_state(new_state)
+      # Only update those that are not really on that state
+      base = where.not(state: new_state).except(:order)
+      ids = base.pluck(:id)
+
+      base.update_all(state: new_state)
+
+      ids
+    end
+
     # Priority sorting isn't displayed in the dropdown, because we don't show
     # milestones, but still show something if the user has a URL with that
     # selected.

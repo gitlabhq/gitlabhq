@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
   include MembersPresentation

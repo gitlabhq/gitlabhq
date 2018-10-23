@@ -1,59 +1,26 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Contribute to GitLab](#contribute-to-gitlab)
-- [Security vulnerability disclosure](#security-vulnerability-disclosure)
-- [Code of conduct](#code-of-conduct)
-- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-- [Helping others](#helping-others)
-- [I want to contribute!](#i-want-to-contribute)
-- [Contribution Flow](#contribution-flow)
-- [Workflow labels](#workflow-labels)
-  - [Type labels](#type-labels)
-  - [Subject labels](#subject-labels)
-  - [Team labels](#team-labels)
-  - [Milestone labels](#milestone-labels)
-  - [Bug Priority labels](#bug-priority-labels)
-  - [Bug Severity labels](#bug-severity-labels)
-    - [Severity impact guidance](#severity-impact-guidance)
-  - [Label for community contributors](#label-for-community-contributors)
-- [Implement design & UI elements](#implement-design--ui-elements)
-- [Issue tracker](#issue-tracker)
-  - [Issue triaging](#issue-triaging)
-  - [Feature proposals](#feature-proposals)
-  - [Issue tracker guidelines](#issue-tracker-guidelines)
-  - [Issue weight](#issue-weight)
-  - [Regression issues](#regression-issues)
-  - [Technical and UX debt](#technical-and-ux-debt)
-  - [Stewardship](#stewardship)
-- [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Definition of done](#definition-of-done)
-- [Style guides](#style-guides)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Contribute to GitLab
-
-For a first-time step-by-step guide to the contribution process, see
-["Contributing to GitLab"](https://about.gitlab.com/contributing/).
+# Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is efficient for everyone.
+to contribute to GitLab in a way that is easy for everyone.
 
-Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
+We want to create a welcoming environment for everyone who is interested in contributing. Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
 
-GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
+For a first-time step-by-step guide to the contribution process, please see
+["Contributing to GitLab"](https://about.gitlab.com/contributing/).
+
+Looking for something to work on? Look for issues with the label [`Accepting merge requests`](#i-want-to-contribute).
+
+GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team]
+To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](community_roles.md).
+
+If you want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md).
 
-- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+[GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Security vulnerability disclosure
 
@@ -65,33 +32,8 @@ vulnerabilities.
 
 ## Code of conduct
 
-As contributors and maintainers of this project, we pledge to respect all
-people who contribute through reporting issues, posting feature requests,
-updating documentation, submitting pull requests or patches, and other
-activities.
-
-We are committed to making participation in this project a harassment-free
-experience for everyone, regardless of level of experience, gender, gender
-identity and expression, sexual orientation, disability, personal appearance,
-body size, race, ethnicity, age, or religion.
-
-Examples of unacceptable behavior by participants include the use of sexual
-language or imagery, derogatory comments or personal attacks, trolling, public
-or private harassment, insults, or other unprofessional conduct.
-
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct. Project maintainers who do not
-follow the Code of Conduct may be removed from the project team.
-
-This code of conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community.
-
-Instances of abusive, harassing, or otherwise unacceptable behavior can be
-reported by emailing `contact@gitlab.com`.
-
-This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
-available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
+Our code of conduct can be found on the
+["Contributing to GitLab"](https://about.gitlab.com/contributing/) page.
 
 ## Closing policy for issues and merge requests
 
@@ -124,10 +66,10 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight]
-is a great place to start. Issues with a lower weight (1 or 2) are deemed
-suitable for beginners. These issues will be of reasonable size and challenge,
-for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+If you want to contribute to GitLab,
+[issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+are a great place to start.
+If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
 please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
@@ -154,93 +96,38 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 This [documentation](issue_workflow.md) outlines the current workflow labels.
 
-### Type labels
-
-This [documentation](issue_workflow.md) outlines the current type labels.
-
-### Subject labels
-
-This [documentation](issue_workflow.md) outlines the current subject labels.
-
-### Team labels
-
-This [documentation](issue_workflow.md) outlines the current team labels.
-
-### Milestone labels
-
-This [documentation](issue_workflow.md) outlines the current milestone labels.
-
-### Bug Priority labels
-
-This [documentation](issue_workflow.md) outlines the current bug priority  labels.
-
-### Bug Severity labels
-
-This [documentation](issue_workflow.md) outlines the current severity labels.
-
-#### Severity impact guidance
-
-This [documentation](issue_workflow.md) outlines the current severity impact guidance.
-
-### Label for community contributors
-
-This [documentation](issue_workflow.md) outlines the current policy regarding community contributor issues.
-
-## Implement design & UI elements
-
-This [documentation](design.md) outlines the current design and UI guidelines.
-
-## Issue tracker
-
-This [documentation](issue_workflow.md) outlines the issue tracker process.
-
-### Issue triaging
-
-This [documentation](issue_workflow.md) outlines the current issue triaging process.
-
-### Feature proposals
-
-This [documentation](issue_workflow.md) outlines the feature proposal process.
-
-### Issue tracker guidelines
-
-This [documentation](issue_workflow.md) outlines the issue tracker guidelines.
-
-### Issue weight
-
-This [documentation](issue_workflow.md) outlines the issue weight guidelines.
-
-### Regression issues
-
-This [documentation](issue_workflow.md) outlines the regression issue process.
-
-### Technical and UX debt
-
-This [documentation](issue_workflow.md) about technical and UX debt has been moved.
-
-### Stewardship
-
-This [documentation](issue_workflow.md) outlines the stewardship process.
+* [Type labels](issue_workflow.md#type-labels)
+* [Subject labels](issue_workflow.md#subject-labels)
+* [Team labels](issue_workflow.md#team-labels)
+* [Release Scoping labels](issue_workflow.md#release-scoping-labels)
+* [Priority labels](issue_workflow.md#priority-labels)
+* [Severity labels](issue_workflow.md#severity-labels)
+* [Label for community contributors](issue_workflow.md#label-for-community-contributors)
+* [Issue triaging](issue_workflow.md#issue-triaging)
+* [Feature proposals](issue_workflow.md#feature-proposals)
+* [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
+* [Issue weight](issue_workflow.md#issue-weight)
+* [Regression issues](issue_workflow.md#regression-issues)
+* [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
+* [Stewardship](issue_workflow.md#stewardship)
 
 ## Merge requests
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
-### Merge request guidelines
-
-This [documentation](merge_request_workflow.md) outlines the current merge request guidelines.
-
-### Contribution acceptance criteria
-
-This [documentation](merge_request_workflow.md) outlines the current acceptance criteria for contributions.
-
-## Definition of done
-
-This [documentation](merge_request_workflow.md) outlines the definition of done.
+* [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
+* [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
+* [Definition of done](merge_request_workflow.md#definition-of-done)
 
 ## Style guides
-This [documentation](design.md) outlines the current style guidelines.
+
+This [documentation](style_guides.md) outlines the current style guidelines.
 
 ---
 
 [Return to Development documentation](../README.md)
+
+[core team]: https://about.gitlab.com/core-team/
+[team]: https://about.gitlab.com/team/
+[getting-help]: https://about.gitlab.com/getting-help/
+[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq

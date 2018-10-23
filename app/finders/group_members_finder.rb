@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class GroupMembersFinder
   def initialize(group)
     @group = group
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute(include_descendants: false)
     group_members = @group.members
     wheres = []
@@ -29,4 +32,5 @@ class GroupMembersFinder
 
     GroupMember.where(wheres.join(' OR '))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

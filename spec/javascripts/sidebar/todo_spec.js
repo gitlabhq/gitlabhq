@@ -42,7 +42,9 @@ describe('SidebarTodo', () => {
         vm.collapsed = true;
         Vue.nextTick()
           .then(() => {
-            expect(vm.buttonClasses).toBe('btn-blank btn-todo sidebar-collapsed-icon dont-change-state');
+            expect(vm.buttonClasses).toBe(
+              'btn-blank btn-todo sidebar-collapsed-icon dont-change-state',
+            );
           })
           .then(done)
           .catch(done.fail);
@@ -103,6 +105,7 @@ describe('SidebarTodo', () => {
       it('emits `toggleTodo` event on component', () => {
         spyOn(vm, '$emit');
         vm.handleButtonClick();
+
         expect(vm.$emit).toHaveBeenCalledWith('toggleTodo');
       });
     });
@@ -118,16 +121,18 @@ describe('SidebarTodo', () => {
         container: 'body',
         boundary: 'viewport',
       };
+
       expect(vm.$el.nodeName).toBe('BUTTON');
 
       const elDataAttrs = vm.$el.dataset;
-      Object.keys(elDataAttrs).forEach((attr) => {
+      Object.keys(elDataAttrs).forEach(attr => {
         expect(elDataAttrs[attr]).toBe(dataAttributes[attr]);
       });
     });
 
     it('renders button label element when `collapsed` prop is `false`', () => {
       const buttonLabelEl = vm.$el.querySelector('span.issuable-todo-inner');
+
       expect(buttonLabelEl).not.toBeNull();
       expect(buttonLabelEl.innerText.trim()).toBe('Mark todo as done');
     });
@@ -137,8 +142,11 @@ describe('SidebarTodo', () => {
       Vue.nextTick()
         .then(() => {
           const buttonIconEl = vm.$el.querySelector('svg');
+
           expect(buttonIconEl).not.toBeNull();
-          expect(buttonIconEl.querySelector('use').getAttribute('xlink:href')).toContain('todo-done');
+          expect(buttonIconEl.querySelector('use').getAttribute('xlink:href')).toContain(
+            'todo-done',
+          );
         })
         .then(done)
         .catch(done.fail);
@@ -149,6 +157,7 @@ describe('SidebarTodo', () => {
       Vue.nextTick()
         .then(() => {
           const loadingEl = vm.$el.querySelector('span.loading-container');
+
           expect(loadingEl).not.toBeNull();
         })
         .then(done)

@@ -6,6 +6,8 @@ import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
+Vue.use(Vuex);
+
 const discussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('diff_file_header', () => {
@@ -16,8 +18,8 @@ describe('diff_file_header', () => {
 
   const store = new Vuex.Store({
     modules: {
-      diffs: diffsModule,
-      notes: notesModule,
+      diffs: diffsModule(),
+      notes: notesModule(),
     },
   });
 
@@ -58,19 +60,19 @@ describe('diff_file_header', () => {
 
     describe('titleLink', () => {
       beforeEach(() => {
+        props.discussionPath = 'link://to/discussion';
         Object.assign(props.diffFile, {
-          fileHash: 'badc0ffee',
           submoduleLink: 'link://to/submodule',
           submoduleTreeUrl: 'some://tree/url',
         });
       });
 
-      it('returns the fileHash for files', () => {
+      it('returns the discussionPath for files', () => {
         props.diffFile.submodule = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.titleLink).toBe(`#${props.diffFile.fileHash}`);
+        expect(vm.titleLink).toBe(props.discussionPath);
       });
 
       it('returns the submoduleTreeUrl for submodules', () => {
@@ -90,6 +92,14 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(vm.titleLink).toBe(props.diffFile.submoduleLink);
+      });
+
+      it('sets the correct path to the discussion', () => {
+        props.discussionPath = 'link://to/discussion';
+        vm = mountComponentWithStore(Component, { props, store });
+        const href = vm.$el.querySelector('.js-title-wrapper').getAttribute('href');
+
+        expect(href).toBe(vm.discussionPath);
       });
     });
 
@@ -261,6 +271,7 @@ describe('diff_file_header', () => {
 
     it('displays an file icon in the title', () => {
       vm = mountComponentWithStore(Component, { props, store });
+
       expect(vm.$el.querySelector('svg.js-file-icon use').getAttribute('xlink:href')).toContain(
         'ruby',
       );
@@ -303,8 +314,11 @@ describe('diff_file_header', () => {
       vm = mountComponentWithStore(Component, { props, store });
 
       const button = vm.$el.querySelector('.btn-clipboard');
+
       expect(button).not.toBe(null);
-      expect(button.dataset.clipboardText).toBe('{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}');
+      expect(button.dataset.clipboardText).toBe(
+        '{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}',
+      );
     });
 
     describe('file mode', () => {
@@ -314,6 +328,7 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         const { fileMode } = vm.$refs;
+
         expect(fileMode).not.toBe(undefined);
         expect(fileMode).toContainText(props.diffFile.aMode);
         expect(fileMode).toContainText(props.diffFile.bMode);
@@ -325,6 +340,7 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         const { fileMode } = vm.$refs;
+
         expect(fileMode).toBe(undefined);
       });
     });
@@ -450,13 +466,14 @@ describe('diff_file_header', () => {
           propsCopy.diffFile.deletedFile = true;
 
           const discussionGetter = () => [diffDiscussionMock];
-          notesModule.getters.discussions = discussionGetter;
+          const notesModuleMock = notesModule();
+          notesModuleMock.getters.discussions = discussionGetter;
           vm = mountComponentWithStore(Component, {
             props: propsCopy,
             store: new Vuex.Store({
               modules: {
-                diffs: diffsModule,
-                notes: notesModule,
+                diffs: diffsModule(),
+                notes: notesModuleMock,
               },
             }),
           });

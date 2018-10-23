@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
   include BatchDestroyDependentAssociations
   include FeatureGate
   include OptionallySearch
+  include FromUnion
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -48,14 +49,17 @@ class Project < ActiveRecord::Base
     attachments: 2
   }.freeze
 
-  # Valids ports to import from
-  VALID_IMPORT_PORTS = [22, 80, 443].freeze
+  VALID_IMPORT_PORTS = [80, 443].freeze
+  VALID_IMPORT_PROTOCOLS = %w(http https git).freeze
+
+  VALID_MIRROR_PORTS = [22, 80, 443].freeze
+  VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
-                                                       allow_nil: true
+           :merge_requests_enabled?, :issues_enabled?, :pages_enabled?, :public_pages?,
+           to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
@@ -85,7 +89,7 @@ class Project < ActiveRecord::Base
   after_create :create_project_feature, unless: :project_feature
 
   after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy :untrack_site_statistics
+  before_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -110,7 +114,7 @@ class Project < ActiveRecord::Base
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
-  acts_as_taggable
+  acts_as_ordered_taggable
 
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
@@ -163,20 +167,15 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
   has_one :hangouts_chat_service
 
-  # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
-
-  has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
-  # TODO: replace these relations with the fork network versions
-
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
+  has_one :forked_from_project, through: :fork_network_member
+  has_many :forked_to_members, class_name: 'ForkNetworkMember', foreign_key: 'forked_from_project_id'
+  has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -231,6 +230,8 @@ class Project < ActiveRecord::Base
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
+
+  has_many :prometheus_metrics
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -302,10 +303,10 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: %w(http https ssh git),
+  validates :import_url, url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
                                 allow_localhost: false,
-                                enforce_user: true,
-                                ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
+                                enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
@@ -328,7 +329,7 @@ class Project < ActiveRecord::Base
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
+  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
@@ -353,7 +354,7 @@ class Project < ActiveRecord::Base
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
     access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED, ProjectFeature::PUBLIC] })
   }
 
   # Picks a feature where the level is exactly that given.
@@ -382,6 +383,13 @@ class Project < ActiveRecord::Base
                                             less_than: 1.month,
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
+
+  # Returns a project, if it is not about to be removed.
+  #
+  # id - The ID of the project to retrieve.
+  def self.find_without_deleted(id)
+    without_deleted.find_by_id(id)
+  end
 
   # Paginates a collection using a `WHERE id < ?` condition.
   #
@@ -415,15 +423,15 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # project features may be "disabled", "internal" or "enabled". If "internal",
+  # project features may be "disabled", "internal", "enabled" or "public". If "internal",
   # they are only available to team members. This scope returns projects where
-  # the feature is either enabled, or internal with permission for the user.
+  # the feature is either public, enabled, or internal with permission for the user.
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED]
+    visible = [nil, ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
 
     if user&.admin?
       with_feature_enabled(feature)
@@ -447,6 +455,7 @@ class Project < ActiveRecord::Base
 
   scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
+  scope :for_group, -> (group) { where(group: group) }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -478,6 +487,8 @@ class Project < ActiveRecord::Base
         reorder(last_activity_at: :desc)
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
+      when 'stars_desc'
+        sorted_by_stars
       else
         order_by(method)
       end
@@ -567,7 +578,6 @@ class Project < ActiveRecord::Base
   end
 
   def cleanup
-    @repository&.cleanup
     @repository = nil
   end
 
@@ -678,6 +688,8 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  rescue
+    super
   end
 
   def valid_import_url?
@@ -1078,31 +1090,13 @@ class Project < ActiveRecord::Base
   end
 
   def find_or_initialize_services(exceptions: [])
-    services_templates = Service.where(template: true)
-
     available_services_names = Service.available_services_names - exceptions
 
     available_services = available_services_names.map do |service_name|
-      service = find_service(services, service_name)
-
-      if service
-        service
-      else
-        # We should check if template for the service exists
-        template = find_service(services_templates, service_name)
-
-        if template.nil?
-          # If no template, we should create an instance. Ex `build_gitlab_ci_service`
-          public_send("build_#{service_name}_service") # rubocop:disable GitlabSecurity/PublicSend
-        else
-          Service.build_from_template(id, template)
-        end
-      end
+      find_or_initialize_service(service_name)
     end
 
-    available_services.reject do |service|
-      disabled_services.include?(service.to_param)
-    end
+    available_services.compact
   end
 
   def disabled_services
@@ -1110,15 +1104,30 @@ class Project < ActiveRecord::Base
   end
 
   def find_or_initialize_service(name)
-    find_or_initialize_services.find { |service| service.to_param == name }
+    return if disabled_services.include?(name)
+
+    service = find_service(services, name)
+    return service if service
+
+    # We should check if template for the service exists
+    template = find_service(services_templates, name)
+
+    if template
+      Service.build_from_template(id, template)
+    else
+      # If no template, we should create an instance. Ex `build_gitlab_ci_service`
+      public_send("build_#{name}_service") # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
@@ -1166,6 +1175,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def send_move_instructions(old_path_with_namespace)
     # New project path needs to be committed to the DB or notification will
     # retrieve stale information
@@ -1173,6 +1183,7 @@ class Project < ActiveRecord::Base
       NotificationService.new.project_was_moved(self, old_path_with_namespace)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def owner
     if group
@@ -1182,15 +1193,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
-      hooks.hooks_for(hooks_scope).each do |hook|
+      hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
         hook.async_execute(data, hooks_scope.to_s)
       end
-
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
@@ -1235,12 +1247,7 @@ class Project < ActiveRecord::Base
   end
 
   def forked?
-    return true if fork_network && fork_network.root_project != self
-
-    # TODO: Use only the above conditional using the `fork_network`
-    # This is the old conditional that looks at the `forked_project_link`, we
-    # fall back to this while we're migrating the new models
-    !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+    fork_network && fork_network.root_project != self
   end
 
   def fork_source
@@ -1353,6 +1360,18 @@ class Project < ActiveRecord::Base
       project_members.find { |member| member.user_id == user.id }
     else
       project_members.find_by(user_id: user)
+    end
+  end
+
+  # Filters `users` to return only authorized users of the project
+  def members_among(users)
+    if users.is_a?(ActiveRecord::Relation) && !users.loaded?
+      authorized_users.merge(users)
+    else
+      return [] if users.empty?
+
+      user_ids = authorized_users.where(users: { id: users.map(&:id) }).pluck(:id)
+      users.select { |user| user_ids.include?(user.id) }
     end
   end
 
@@ -1487,8 +1506,7 @@ class Project < ActiveRecord::Base
   end
 
   def all_runners
-    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
-    Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    Ci::Runner.from_union([runners, group_runners, shared_runners])
   end
 
   def active_runners
@@ -1505,20 +1523,22 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
     Projects::OpenIssuesCountService.new(self, current_user).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count
     Projects::OpenMergeRequestsCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    # self.forked_from_project will be nil before the project is saved, so
-    # we need to go through the relation
-    original_project = forked_project_link&.forked_from_project
+    original_project = fork_source
     return true unless original_project
 
     level <= original_project.visibility_level
@@ -1592,6 +1612,7 @@ class Project < ActiveRecord::Base
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
+  # rubocop: disable CodeReuse/ServiceClass
   def remove_pages
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
@@ -1607,34 +1628,7 @@ class Project < ActiveRecord::Base
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
   end
-
-  def rename_repo
-    path_before      = previous_changes['path'].first
-    full_path_before = full_path_was
-    full_path_after  = build_full_path
-
-    Gitlab::AppLogger.info("Attempting to rename #{full_path_was} -> #{full_path_after}")
-
-    if has_container_registry_tags?
-      Gitlab::AppLogger.info("Project #{full_path_was} cannot be renamed because container registry tags are present!")
-
-      # we currently don't support renaming repository if it contains images in container registry
-      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
-    end
-
-    expire_caches_before_rename(full_path_before)
-
-    if rename_or_migrate_repository!
-      Gitlab::AppLogger.info("Project was renamed: #{full_path_before} -> #{full_path_after}")
-      after_rename_repository(full_path_before, path_before)
-    else
-      Gitlab::AppLogger.info("Repository could not be renamed: #{full_path_before} -> #{full_path_after}")
-
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('Repository cannot be renamed')
-    end
-  end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
@@ -1667,6 +1661,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
     return unless default_branch
 
@@ -1687,6 +1682,7 @@ class Project < ActiveRecord::Base
       ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def remove_import_jid
     return unless import_jid
@@ -1734,16 +1730,12 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path || export_project_object_exists?
+    elsif export_file_exists?
       :finished
     else
       :none
@@ -1758,21 +1750,19 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports(path = export_path)
-    if path.present?
-      FileUtils.rm_rf(path)
-    elsif export_project_object_exists?
-      import_export_upload.remove_export_file!
-      import_export_upload.save
-    end
+  def remove_exports
+    return unless export_file_exists?
+
+    import_export_upload.remove_export_file!
+    import_export_upload.save unless import_export_upload.destroyed?
   end
 
-  def remove_exported_project_file
-    remove_exports(export_project_path)
+  def export_file_exists?
+    export_file&.file
   end
 
-  def export_project_object_exists?
-    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
+  def export_file
+    import_export_upload&.export_file
   end
 
   def full_path_slug
@@ -1923,9 +1913,11 @@ class Project < ActiveRecord::Base
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
+  # rubocop: disable CodeReuse/ServiceClass
   def forks_count
     Projects::ForksCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def legacy_storage?
     [nil, 0].include?(self.storage_version)
@@ -2012,12 +2004,10 @@ class Project < ActiveRecord::Base
   def badges
     return project_badges unless group
 
-    group_badges_rel = GroupBadge.where(group: group.self_and_ancestors)
-
-    union = Gitlab::SQL::Union.new([project_badges.select(:id),
-                                    group_badges_rel.select(:id)])
-
-    Badge.where("id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    Badge.from_union([
+      project_badges,
+      GroupBadge.where(group: group.self_and_ancestors)
+    ])
   end
 
   def merge_requests_allowing_push_to_user(user)
@@ -2068,52 +2058,6 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
-  private
-
-  def rename_or_migrate_repository!
-    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        storage_upgradable? &&
-        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
-      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
-    else
-      storage.rename_repo
-    end
-  end
-
-  def storage_upgradable?
-    storage_version != LATEST_STORAGE_VERSION
-  end
-
-  def after_rename_repository(full_path_before, path_before)
-    execute_rename_repository_hooks!(full_path_before)
-
-    write_repository_config
-
-    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-    # if we need execute any take action or no-op.
-    unless hashed_storage?(:attachments)
-      Gitlab::UploadsTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-    end
-
-    Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-  end
-
-  def untrack_site_statistics
-    SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
-    self.project_feature.untrack_statistics_for_deletion!
-  end
-
-  def execute_rename_repository_hooks!(full_path_before)
-    # When we import a project overwriting the original project, there
-    # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_before) unless import_started?
-
-    self.old_path_with_namespace = full_path_before
-    SystemHooksService.new.execute_hooks_for(self, :rename)
-
-    reload_repository!
-  end
-
   def storage
     @storage ||=
       if hashed_storage?(:repository)
@@ -2122,6 +2066,12 @@ class Project < ActiveRecord::Base
         Storage::LegacyProject.new(self)
       end
   end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
+  end
+
+  private
 
   def use_hashed_storage
     if self.new_record? && Gitlab::CurrentSettings.hashed_storage_enabled
@@ -2252,12 +2202,12 @@ class Project < ActiveRecord::Base
       end
     end
 
-    if RequestStore.active?
-      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-        check_access.call
-      end
-    else
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       check_access.call
     end
+  end
+
+  def services_templates
+    @services_templates ||= Service.where(template: true)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'addressable/uri'
 
 class Projects::CompareController < Projects::ApplicationController
@@ -14,6 +16,8 @@ class Projects::CompareController < Projects::ApplicationController
   before_action :define_diff_notes_disabled, only: [:show, :diff_for_path]
   before_action :define_commits, only: [:show, :diff_for_path, :signatures]
   before_action :merge_request, only: [:index, :show]
+  # Validation
+  before_action :validate_refs!
 
   def index
   end
@@ -61,6 +65,21 @@ class Projects::CompareController < Projects::ApplicationController
 
   private
 
+  def valid_ref?(ref_name)
+    return true unless ref_name.present?
+
+    Gitlab::GitRefValidator.validate(ref_name)
+  end
+
+  def validate_refs!
+    valid = [head_ref, start_ref].map { |ref| valid_ref?(ref) }
+
+    return if valid.all?
+
+    flash[:alert] = "Invalid branch name"
+    redirect_to project_compare_index_path(@project)
+  end
+
   def compare
     return @compare if defined?(@compare)
 
@@ -96,8 +115,10 @@ class Projects::CompareController < Projects::ApplicationController
     @diff_notes_disabled = compare.present?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request
     @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: head_ref, target_branch: start_ref)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

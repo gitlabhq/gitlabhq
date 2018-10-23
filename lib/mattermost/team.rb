@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mattermost
   class Team < Client
     # Returns all teams that the current user is a member of

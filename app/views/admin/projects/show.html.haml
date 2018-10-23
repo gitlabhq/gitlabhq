@@ -1,6 +1,8 @@
 - add_to_breadcrumbs "Projects", admin_projects_path
 - breadcrumb_title @project.full_name
 - page_title @project.full_name, "Projects"
+- @content_class = "admin-projects"
+
 %h3.page-title
   Project: #{@project.full_name}
   = link_to edit_project_path(@project), class: "btn btn-nr float-right" do
@@ -110,6 +112,8 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
+    = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
+
     .card
       .card-header
         Transfer project
@@ -179,7 +183,7 @@
         project members
         %span.badge.badge-pill= @project.users.size
         .float-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: 'Manage access'), project_project_members_path(@project), class: "btn btn-sm"
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .card-footer

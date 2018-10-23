@@ -14,7 +14,7 @@
 
     = render 'shared/form_elements/description', model: @snippet, project: @project, form: f
 
-    = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet
+    = render 'shared/old_visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet, with_label: false
 
     .file-editor
       .form-group.row
@@ -32,9 +32,9 @@
 
     .form-actions
       - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-create btn"
+        = f.submit 'Create snippet', class: "btn-success btn"
       - else
-        = f.submit 'Save changes', class: "btn-save btn"
+        = f.submit 'Save changes', class: "btn-success btn"
 
       - if @snippet.project_id
         = link_to "Cancel", project_snippets_path(@project), class: "btn btn-cancel"

@@ -262,7 +262,7 @@ describe('IDE store merge request actions', () => {
         bar: {},
       };
 
-      spyOn(store, 'dispatch').and.callFake((type) => {
+      spyOn(store, 'dispatch').and.callFake(type => {
         switch (type) {
           case 'getMergeRequestData':
             return Promise.resolve(testMergeRequest);
@@ -280,14 +280,20 @@ describe('IDE store merge request actions', () => {
           expect(store.dispatch.calls.allArgs()).toEqual([
             ['getMergeRequestData', mr],
             ['setCurrentBranchId', testMergeRequest.source_branch],
-            ['getBranchData', {
-              projectId: mr.projectId,
-              branchId: testMergeRequest.source_branch,
-            }],
-            ['getFiles', {
-              projectId: mr.projectId,
-              branchId: testMergeRequest.source_branch,
-            }],
+            [
+              'getBranchData',
+              {
+                projectId: mr.projectId,
+                branchId: testMergeRequest.source_branch,
+              },
+            ],
+            [
+              'getFiles',
+              {
+                projectId: mr.projectId,
+                branchId: testMergeRequest.source_branch,
+              },
+            ],
             ['getMergeRequestVersions', mr],
             ['getMergeRequestChanges', mr],
           ]);
@@ -297,20 +303,21 @@ describe('IDE store merge request actions', () => {
     });
 
     it('updates activity bar view and gets file data, if changes are found', done => {
-      testMergeRequestChanges.changes = [
-        { new_path: 'foo' },
-        { new_path: 'bar' },
-      ];
+      testMergeRequestChanges.changes = [{ new_path: 'foo' }, { new_path: 'bar' }];
 
       openMergeRequest(store, mr)
         .then(() => {
-          expect(store.dispatch).toHaveBeenCalledWith('updateActivityBarView', activityBarViews.review);
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'updateActivityBarView',
+            activityBarViews.review,
+          );
 
           testMergeRequestChanges.changes.forEach((change, i) => {
             expect(store.dispatch).toHaveBeenCalledWith('setFileMrChange', {
               file: store.state.entries[change.new_path],
               mrChange: change,
             });
+
             expect(store.dispatch).toHaveBeenCalledWith('getFileData', {
               path: change.new_path,
               makeFileActive: i === 0,
@@ -334,7 +341,6 @@ describe('IDE store merge request actions', () => {
         })
         .then(done)
         .catch(done.fail);
-
     });
   });
 });

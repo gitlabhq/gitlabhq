@@ -35,6 +35,7 @@ module Ci
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
@@ -80,7 +81,7 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :skipped] => :pending
+        transition [:created, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
       end
 
@@ -106,6 +107,10 @@ module Ci
 
       event :block do
         transition any - [:manual] => :manual
+      end
+
+      event :delay do
+        transition any - [:scheduled] => :scheduled
       end
 
       # IMPORTANT
@@ -160,6 +165,12 @@ module Ci
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
+      end
+
+      after_transition any => [:failed] do |pipeline|
+        next unless pipeline.auto_devops_source?
+
+        pipeline.run_after_commit { AutoDevops::DisableWorker.perform_async(pipeline.id) }
       end
     end
 
@@ -255,6 +266,12 @@ module Ci
     def legacy_stage(name)
       stage = Ci::LegacyStage.new(self, name: name)
       stage unless stage.statuses_count.zero?
+    end
+
+    def ref_exists?
+      project.repository.ref_exists?(git_ref)
+    rescue Gitlab::Git::Repository::NoRepository
+      false
     end
 
     ##
@@ -381,10 +398,12 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def retry_failed(current_user)
       Ci::RetryPipelineService.new(project, current_user)
         .execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def mark_as_processable_after_stage(stage_idx)
       builds.skipped.after_stage(stage_idx).find_each(&:process)
@@ -458,7 +477,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -519,9 +538,11 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def update_status
       retry_optimistic_lock(self) do
@@ -534,6 +555,7 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
                 "Unknown status `#{latest_builds_status}`"
@@ -617,6 +639,22 @@ module Ci
       end
     end
 
+    def branch_updated?
+      strong_memoize(:branch_updated) do
+        push_details.branch_updated?
+      end
+    end
+
+    def modified_paths
+      strong_memoize(:modified_paths) do
+        push_details.modified_paths
+      end
+    end
+
+    def default_branch?
+      ref == project.default_branch
+    end
+
     private
 
     def ci_yaml_from_repo
@@ -638,6 +676,22 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def push_details
+      strong_memoize(:push_details) do
+        Gitlab::Git::Push.new(project, before_sha, sha, git_ref)
+      end
+    end
+
+    def git_ref
+      if branch?
+        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+      elsif tag?
+        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
+      else
+        raise ArgumentError, 'Invalid pipeline type!'
+      end
     end
 
     def latest_builds_status

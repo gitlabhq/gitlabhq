@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class HealthController < ActionController::Base
-  protect_from_forgery with: :exception, except: :storage_check, prepend: true
+  protect_from_forgery with: :exception, prepend: true
   include RequiresWhitelistedMonitoringClient
 
   CHECKS = [
@@ -21,15 +23,6 @@ class HealthController < ActionController::Base
     results = CHECKS.map { |check| [check.name, check.liveness] }
 
     render_check_results(results)
-  end
-
-  def storage_check
-    results = Gitlab::Git::Storage::Checker.check_all
-
-    render json: {
-             check_interval: Gitlab::CurrentSettings.current_application_settings.circuitbreaker_check_interval,
-             results: results
-           }
   end
 
   private

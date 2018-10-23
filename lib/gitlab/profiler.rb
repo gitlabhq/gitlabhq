@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 module Gitlab
   module Profiler
     FILTERED_STRING = '[FILTERED]'.freeze
@@ -34,6 +36,7 @@ module Gitlab
     #
     # - private_token: instead of providing a user instance, the token can be
     #   given as a string. Takes precedence over the user option.
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil)
       app = ActionDispatch::Integration::Session.new(Rails.application)
       verb = :get
@@ -76,6 +79,7 @@ module Gitlab
 
       result
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.create_custom_logger(logger, private_token: nil)
       return unless logger
@@ -135,6 +139,7 @@ module Gitlab
       result
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def self.log_load_times_by_model(logger)
       return unless logger.respond_to?(:load_times_by_model)
 
@@ -146,6 +151,7 @@ module Gitlab
         logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.print_by_total_time(result, options = {})
       default_options = { sort_method: :total_time }

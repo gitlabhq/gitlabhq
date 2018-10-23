@@ -5,7 +5,6 @@
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]
-      - last_line = right.new_pos if right
       - discussions_left, discussions_right = parallel_diff_discussions(left, right, diff_file)
       %tr.line_holder.parallel
         - if left

@@ -14,6 +14,20 @@ const deploymentMockData = {
   external_url_formatted: 'diplo.',
   deployed_at: '2017-03-22T22:44:42.258Z',
   deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+  changes: [
+    {
+      path: 'index.html',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+    },
+    {
+      path: 'imgs/gallery.html',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+    },
+    {
+      path: 'about/',
+      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+    },
+  ],
 };
 const createComponent = () => {
   const Component = Vue.extend(deploymentComponent);
@@ -39,6 +53,7 @@ describe('Deployment component', () => {
     describe('deployTimeago', () => {
       it('return formatted date', () => {
         const readable = getTimeago().format(deploymentMockData.deployed_at);
+
         expect(vm.deployTimeago).toEqual(readable);
       });
     });
@@ -101,19 +116,20 @@ describe('Deployment component', () => {
   describe('methods', () => {
     describe('stopEnvironment', () => {
       const url = '/foo/bar';
-      const returnPromise = () => new Promise((resolve) => {
-        resolve({
-          data: {
-            redirect_url: url,
-          },
+      const returnPromise = () =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              redirect_url: url,
+            },
+          });
         });
-      });
       const mockStopEnvironment = () => {
         vm.stopEnvironment(deploymentMockData);
         return vm;
       };
 
-      it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
+      it('should show a confirm dialog and call service.stopEnvironment when confirmed', done => {
         spyOn(window, 'confirm').and.returnValue(true);
         spyOn(MRWidgetService, 'stopEnvironment').and.returnValue(returnPromise(true));
         const visitUrl = spyOnDependency(deploymentComponent, 'visitUrl').and.returnValue(true);
@@ -147,12 +163,18 @@ describe('Deployment component', () => {
     });
 
     it('renders deployment name', () => {
-      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(deploymentMockData.url);
+      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(
+        deploymentMockData.url,
+      );
+
       expect(el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
     });
 
     it('renders external URL', () => {
-      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deploymentMockData.external_url);
+      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(
+        deploymentMockData.external_url,
+      );
+
       expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 
@@ -166,6 +188,44 @@ describe('Deployment component', () => {
 
     it('renders metrics component', () => {
       expect(el.querySelector('.js-mr-memory-usage')).not.toBeNull();
+    });
+  });
+
+  describe('with `features.ciEnvironmentsStatusChanges` enabled', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = true;
+
+      vm = createComponent(deploymentMockData);
+    });
+
+    afterEach(() => {
+      window.gon.features = {};
+    });
+
+    it('renders dropdown with changes', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).toBeNull();
+    });
+  });
+
+  describe('with `features.ciEnvironmentsStatusChanges` disabled', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = false;
+
+      vm = createComponent(deploymentMockData);
+    });
+
+    afterEach(() => {
+      delete window.gon.features.ciEnvironmentsStatusChanges;
+    });
+
+    it('renders the old link to the review app', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
     });
   });
 });

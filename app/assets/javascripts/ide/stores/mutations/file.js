@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
 import { sortTree } from '../utils';
 import { diffModes } from '../../constants';
@@ -56,7 +55,7 @@ export default {
       f => f.path === file.path && f.pending && !(f.tempFile && !f.prevPath),
     );
 
-    if (file.tempFile) {
+    if (file.tempFile && file.content === '') {
       Object.assign(state.entries[file.path], {
         content: raw,
       });

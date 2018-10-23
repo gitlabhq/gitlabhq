@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::TransferService do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
@@ -169,6 +171,35 @@ describe Projects::TransferService do
     it { expect(project.errors[:new_namespace]).to include('Cannot move project') }
   end
 
+  context 'target namespace containing the same project name' do
+    before do
+      group.add_owner(user)
+      project.update(name: 'new_name')
+
+      create(:project, name: 'new_name', group: group, path: 'other')
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
+  context 'target namespace containing the same project path' do
+    before do
+      group.add_owner(user)
+
+      create(:project, name: 'other-name', path: project.path, group: group)
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
   def transfer_project(project, user, new_namespace)
     service = Projects::TransferService.new(project, user)
 
@@ -262,8 +293,6 @@ describe Projects::TransferService do
   end
 
   def rugged_config
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged.config
-    end
+    rugged_repo(project.repository).config
   end
 end

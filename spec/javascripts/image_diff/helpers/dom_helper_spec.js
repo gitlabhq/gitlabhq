@@ -92,6 +92,7 @@ describe('domHelper', () => {
 
       it('should force formEl to display none', () => {
         const formEl = element.querySelector('.discussion-form');
+
         expect(formEl.style.display).toEqual('none');
       });
     });
@@ -111,6 +112,7 @@ describe('domHelper', () => {
 
       it('should force formEl to display block', () => {
         const formEl = element.querySelector('.discussion-form');
+
         expect(formEl.style.display).toEqual('block');
       });
     });

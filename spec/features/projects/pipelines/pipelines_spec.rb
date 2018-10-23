@@ -9,6 +9,7 @@ describe 'Pipelines', :js do
     before do
       sign_in(user)
       project.add_developer(user)
+      project.update!(auto_devops_attributes: { enabled: false })
     end
 
     describe 'GET /:project/pipelines' do
@@ -227,6 +228,60 @@ describe 'Pipelines', :js do
 
           it 'enqueues manual action job' do
             expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
+          end
+        end
+      end
+
+      context 'when there is a delayed job' do
+        let!(:delayed_job) do
+          create(:ci_build, :scheduled,
+            pipeline: pipeline,
+            name: 'delayed job',
+            stage: 'test',
+            commands: 'test')
+        end
+
+        before do
+          visit_project_pipelines
+        end
+
+        it 'has a dropdown for actionable jobs' do
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .icon-play')
+        end
+
+        it "has link to the delayed job's action" do
+          find('.js-pipeline-dropdown-manual-actions').click
+
+          time_diff = [0, delayed_job.scheduled_at - Time.now].max
+          expect(page).to have_button('delayed job')
+          expect(page).to have_content(Time.at(time_diff).utc.strftime("%H:%M:%S"))
+        end
+
+        context 'when delayed job is expired already' do
+          let!(:delayed_job) do
+            create(:ci_build, :expired_scheduled,
+              pipeline: pipeline,
+              name: 'delayed job',
+              stage: 'test',
+              commands: 'test')
+          end
+
+          it "shows 00:00:00 as the remaining time" do
+            find('.js-pipeline-dropdown-manual-actions').click
+
+            expect(page).to have_content("00:00:00")
+          end
+        end
+
+        context 'when user played a delayed job immediately' do
+          before do
+            find('.js-pipeline-dropdown-manual-actions').click
+            page.accept_confirm { click_button('delayed job') }
+            wait_for_requests
+          end
+
+          it 'enqueues the delayed job', :js do
+            expect(delayed_job.reload).to be_pending
           end
         end
       end
@@ -641,6 +696,7 @@ describe 'Pipelines', :js do
 
   context 'when user is not logged in' do
     before do
+      project.update!(auto_devops_attributes: { enabled: false })
       visit project_pipelines_path(project)
     end
 

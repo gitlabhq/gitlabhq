@@ -52,11 +52,13 @@ describe('Diffs Module Getters', () => {
   describe('areAllFilesCollapsed', () => {
     it('returns true when all files are collapsed', () => {
       localState.diffFiles = [{ collapsed: true }, { collapsed: true }];
+
       expect(getters.areAllFilesCollapsed(localState)).toEqual(true);
     });
 
     it('returns false when at least one file is not collapsed', () => {
       localState.diffFiles = [{ collapsed: false }, { collapsed: true }];
+
       expect(getters.areAllFilesCollapsed(localState)).toEqual(false);
     });
   });
@@ -184,101 +186,74 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  describe('singleDiscussionByLineCode', () => {
-    it('returns found discussion per line Code', () => {
-      const discussionsMock = {};
-      discussionsMock.ABC = discussionMock;
-
-      expect(
-        getters.singleDiscussionByLineCode(localState, {}, null, {
-          discussionsByLineCode: () => discussionsMock,
-        })('DEF'),
-      ).toEqual([]);
-    });
-
-    it('returns empty array when no discussions match', () => {
-      expect(
-        getters.singleDiscussionByLineCode(localState, {}, null, {
-          discussionsByLineCode: () => {},
-        })('DEF'),
-      ).toEqual([]);
-    });
-  });
-
   describe('shouldRenderParallelCommentRow', () => {
     let line;
 
     beforeEach(() => {
       line = {};
 
+      discussionMock.expanded = true;
+
       line.left = {
         lineCode: 'ABC',
+        discussions: [discussionMock],
       };
 
       line.right = {
         lineCode: 'DEF',
+        discussions: [discussionMock1],
       };
     });
 
     it('returns true when discussion is expanded', () => {
-      discussionMock.expanded = true;
-
-      expect(
-        getters.shouldRenderParallelCommentRow(localState, {
-          singleDiscussionByLineCode: () => [discussionMock],
-        })(line),
-      ).toEqual(true);
+      expect(getters.shouldRenderParallelCommentRow(localState)(line)).toEqual(true);
     });
 
     it('returns false when no discussion was found', () => {
+      line.left.discussions = [];
+      line.right.discussions = [];
+
       localState.diffLineCommentForms.ABC = false;
       localState.diffLineCommentForms.DEF = false;
 
-      expect(
-        getters.shouldRenderParallelCommentRow(localState, {
-          singleDiscussionByLineCode: () => [],
-        })(line),
-      ).toEqual(false);
+      expect(getters.shouldRenderParallelCommentRow(localState)(line)).toEqual(false);
     });
 
     it('returns true when discussionForm was found', () => {
       localState.diffLineCommentForms.ABC = {};
 
-      expect(
-        getters.shouldRenderParallelCommentRow(localState, {
-          singleDiscussionByLineCode: () => [discussionMock],
-        })(line),
-      ).toEqual(true);
+      expect(getters.shouldRenderParallelCommentRow(localState)(line)).toEqual(true);
     });
   });
 
   describe('shouldRenderInlineCommentRow', () => {
+    let line;
+
+    beforeEach(() => {
+      discussionMock.expanded = true;
+
+      line = {
+        lineCode: 'ABC',
+        discussions: [discussionMock],
+      };
+    });
+
     it('returns true when diffLineCommentForms has form', () => {
       localState.diffLineCommentForms.ABC = {};
 
-      expect(
-        getters.shouldRenderInlineCommentRow(localState)({
-          lineCode: 'ABC',
-        }),
-      ).toEqual(true);
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(true);
     });
 
     it('returns false when no line discussions were found', () => {
-      expect(
-        getters.shouldRenderInlineCommentRow(localState, {
-          singleDiscussionByLineCode: () => [],
-        })('DEF'),
-      ).toEqual(false);
+      line.discussions = [];
+
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(false);
     });
 
     it('returns true if all found discussions are expanded', () => {
       discussionMock.expanded = true;
 
-      expect(
-        getters.shouldRenderInlineCommentRow(localState, {
-          singleDiscussionByLineCode: () => [discussionMock],
-        })('ABC'),
-      ).toEqual(true);
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(true);
     });
   });
 
@@ -316,7 +291,35 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no matching file is found', () => {
       localState.diffFiles = [];
+
       expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
+    });
+  });
+
+  describe('allBlobs', () => {
+    it('returns an array of blobs', () => {
+      localState.treeEntries = {
+        file: {
+          type: 'blob',
+        },
+        tree: {
+          type: 'tree',
+        },
+      };
+
+      expect(getters.allBlobs(localState)).toEqual([
+        {
+          type: 'blob',
+        },
+      ]);
+    });
+  });
+
+  describe('diffFilesLength', () => {
+    it('returns length of diff files', () => {
+      localState.diffFiles.push('test', 'test 2');
+
+      expect(getters.diffFilesLength(localState)).toBe(2);
     });
   });
 });

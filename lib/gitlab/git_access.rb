@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Check a user's access to perform a git action. All public methods in this
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
@@ -24,8 +26,8 @@ module Gitlab
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
-    PUSH_COMMANDS = %w{ git-receive-pack }.freeze
+    DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
+    PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
@@ -50,6 +52,10 @@ module Gitlab
       check_authentication_abilities!(cmd)
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
+
+      custom_action = check_custom_action(cmd)
+      return custom_action if custom_action
+
       check_db_accessibility!(cmd)
 
       ensure_project_on_push!(cmd, changes)
@@ -65,7 +71,7 @@ module Gitlab
         check_push_access!
       end
 
-      true
+      ::Gitlab::GitAccessResult::Success.new
     end
 
     def guest_can_download_code?
@@ -91,6 +97,10 @@ module Gitlab
     end
 
     private
+
+    def check_custom_action(cmd)
+      nil
+    end
 
     def check_valid_actor!
       return unless actor.is_a?(Key)

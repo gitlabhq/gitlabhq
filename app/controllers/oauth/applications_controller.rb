@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
   include Gitlab::Allowable
   include PageLayoutHelper
   include OauthApplications
 
-  before_action :verify_user_oauth_applications_enabled
+  before_action :verify_user_oauth_applications_enabled, except: :index
   before_action :authenticate_user!
   before_action :add_gon_variables
   before_action :load_scopes, only: [:index, :create, :edit]

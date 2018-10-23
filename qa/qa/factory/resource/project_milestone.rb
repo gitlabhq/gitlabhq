@@ -7,7 +7,7 @@ module QA
 
         dependency Factory::Resource::Project, as: :project
 
-        product(:title) { |factory| factory.title }
+        product :title
 
         def title=(title)
           @title = "#{title}-#{SecureRandom.hex(4)}"
@@ -17,7 +17,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Menu::Side.act do
+          Page::Project::Menu.act do
             click_issues
             click_milestones
           end

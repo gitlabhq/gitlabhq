@@ -25,7 +25,11 @@ describe('Promote label modal', () => {
     });
 
     it('contains the proper description', () => {
-      expect(vm.text).toContain(`Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${labelMockData.groupName}`);
+      expect(vm.text).toContain(
+        `Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${
+          labelMockData.groupName
+        }`,
+      );
     });
 
     it('contains a label span with the color', () => {
@@ -48,11 +52,14 @@ describe('Promote label modal', () => {
       vm.$destroy();
     });
 
-    it('redirects when a label is promoted', (done) => {
+    it('redirects when a label is promoted', done => {
       const responseURL = `${gl.TEST_HOST}/dummy/endpoint`;
-      spyOn(axios, 'post').and.callFake((url) => {
+      spyOn(axios, 'post').and.callFake(url => {
         expect(url).toBe(labelMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestStarted', labelMockData.url);
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          'promoteLabelModal.requestStarted',
+          labelMockData.url,
+        );
         return Promise.resolve({
           request: {
             responseURL,
@@ -62,25 +69,34 @@ describe('Promote label modal', () => {
 
       vm.onSubmit()
         .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', { labelUrl: labelMockData.url, successful: true });
+          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+            labelUrl: labelMockData.url,
+            successful: true,
+          });
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('displays an error if promoting a label failed', (done) => {
+    it('displays an error if promoting a label failed', done => {
       const dummyError = new Error('promoting label failed');
       dummyError.response = { status: 500 };
-      spyOn(axios, 'post').and.callFake((url) => {
+      spyOn(axios, 'post').and.callFake(url => {
         expect(url).toBe(labelMockData.url);
-        expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestStarted', labelMockData.url);
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          'promoteLabelModal.requestStarted',
+          labelMockData.url,
+        );
         return Promise.reject(dummyError);
       });
 
       vm.onSubmit()
-        .catch((error) => {
+        .catch(error => {
           expect(error).toBe(dummyError);
-          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', { labelUrl: labelMockData.url, successful: false });
+          expect(eventHub.$emit).toHaveBeenCalledWith('promoteLabelModal.requestFinished', {
+            labelUrl: labelMockData.url,
+            successful: false,
+          });
         })
         .then(done)
         .catch(done.fail);

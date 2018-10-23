@@ -58,7 +58,11 @@ describe('Tooltip directive', () => {
     });
 
     it('should have tooltip plugin applied to all instances', () => {
-      expect($(vm.$el).find('.js-look-for-tooltip').data('bs.tooltip')).toBeDefined();
+      expect(
+        $(vm.$el)
+          .find('.js-look-for-tooltip')
+          .data('bs.tooltip'),
+      ).toBeDefined();
     });
   });
 });

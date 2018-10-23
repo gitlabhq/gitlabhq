@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import noteableDiscussion from '../../notes/components/noteable_discussion.vue';
 
 export default {
@@ -9,6 +10,14 @@ export default {
     discussions: {
       type: Array,
       required: true,
+    },
+  },
+  methods: {
+    ...mapActions('diffs', ['removeDiscussionsFromDiff']),
+    deleteNoteHandler(discussion) {
+      if (discussion.notes.length <= 1) {
+        this.removeDiscussionsFromDiff(discussion);
+      }
     },
   },
 };
@@ -31,6 +40,7 @@ export default {
           :render-diff-file="false"
           :always-expanded="true"
           :discussions-by-diff-order="true"
+          @noteDeleted="deleteNoteHandler"
         />
       </ul>
     </div>

@@ -8,6 +8,8 @@ import commitModule from './modules/commit';
 import pipelines from './modules/pipelines';
 import mergeRequests from './modules/merge_requests';
 import branches from './modules/branches';
+import fileTemplates from './modules/file_templates';
+import paneModule from './modules/pane';
 
 Vue.use(Vuex);
 
@@ -22,6 +24,8 @@ export const createStore = () =>
       pipelines,
       mergeRequests,
       branches,
+      fileTemplates: fileTemplates(),
+      rightPane: paneModule(),
     },
   });
 

@@ -79,16 +79,18 @@ POST /projects/:id/repository/commits
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
+| `stats` | boolean | no | Include commit stats. Default is true |
 
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |
-| `action` | string | yes | The action to perform, `create`, `delete`, `move`, `update` |
+| `action` | string | yes | The action to perform, `create`, `delete`, `move`, `update`, `chmod`|
 | `file_path` | string | yes | Full path to the file. Ex. `lib/class.rb` |
-| `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb` |
-| `content` | string | no | File content, required for all except `delete`. Optional for `move` |
+| `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb`. Only considered for `move` action. |
+| `content` | string | no | File content, required for all except `delete` and `chmod`. Optional for `move` |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
 | `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
+| `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
 
 ```bash
 PAYLOAD=$(cat << 'JSON'
@@ -115,6 +117,11 @@ PAYLOAD=$(cat << 'JSON'
       "action": "update",
       "file_path": "foo/bar5",
       "content": "new content"
+    },
+    {
+      "action": "chmod",
+      "file_path": "foo/bar5",
+      "execute_filemode": true
     }
   ]
 }
@@ -464,7 +471,7 @@ Example response:
    },
    {
       "started_at" : null,
-      "name" : "flay",
+      "name" : "test",
       "allow_failure" : false,
       "status" : "pending",
       "created_at" : "2016-01-19T08:40:25.832Z",

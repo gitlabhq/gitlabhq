@@ -1,13 +1,6 @@
 import $ from 'jquery';
-import {
-  getSelector,
-  inserted,
-} from './feature_highlight_helper';
-import {
-  togglePopover,
-  mouseenter,
-  debouncedMouseleave,
-} from '../shared/popover';
+import { getSelector, inserted } from './feature_highlight_helper';
+import { togglePopover, mouseenter, debouncedMouseleave } from '../shared/popover';
 
 export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
   const $selector = $(getSelector(id));
@@ -16,7 +9,7 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
   const hideOnScroll = togglePopover.bind($selector, false);
 
   $selector
-    // Setup popover
+    // Set up popover
     .data('content', $popoverContent.prop('outerHTML'))
     .popover({
       html: true,
@@ -41,8 +34,9 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
 export function findHighestPriorityFeature() {
   let priorityFeature;
 
-  const sortedFeatureEls = [].slice.call(document.querySelectorAll('.js-feature-highlight')).sort((a, b) =>
-    (a.dataset.highlightPriority || 0) < (b.dataset.highlightPriority || 0));
+  const sortedFeatureEls = [].slice
+    .call(document.querySelectorAll('.js-feature-highlight'))
+    .sort((a, b) => (a.dataset.highlightPriority || 0) < (b.dataset.highlightPriority || 0));
 
   const [priorityFeatureEl] = sortedFeatureEls;
   if (priorityFeatureEl) {

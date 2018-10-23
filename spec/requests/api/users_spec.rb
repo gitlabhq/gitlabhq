@@ -51,6 +51,15 @@ describe API::Users do
         expect(json_response[0]['username']).to eq(user.username)
       end
 
+      it "returns the user when a valid `username` parameter is passed (case insensitive)" do
+        get api("/users"), username: user.username.upcase
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(user.id)
+        expect(json_response[0]['username']).to eq(user.username)
+      end
+
       it "returns an empty response when an invalid `username` parameter is passed" do
         get api("/users"), username: 'invalid'
 
@@ -126,6 +135,14 @@ describe API::Users do
 
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns one user (case insensitive)" do
+        get api("/users?username=#{omniauth_user.username.upcase}", user)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
@@ -343,6 +360,12 @@ describe API::Users do
         let(:path) { "/users/#{user.username}/status" }
       end
     end
+
+    context 'when finding the user by username (case insensitive)' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.username.upcase}/status" }
+      end
+    end
   end
 
   describe "POST /users" do
@@ -523,6 +546,18 @@ describe API::Users do
                email: 'foo@example.com',
                password: 'password',
                username: 'test'
+        end.to change { User.count }.by(0)
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']).to eq('Username has already been taken')
+      end
+
+      it 'returns 409 conflict error if same username exists (case insensitive)' do
+        expect do
+          post api('/users', admin),
+               name: 'foo',
+               email: 'foo@example.com',
+               password: 'password',
+               username: 'TEST'
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -749,6 +784,14 @@ describe API::Users do
         expect(response).to have_gitlab_http_status(409)
         expect(@user.reload.username).to eq(@user.username)
       end
+
+      it 'returns 409 conflict error if username taken (case insensitive)' do
+        @user_id = User.all.last.id
+        put api("/users/#{@user.id}", admin), username: 'TEST'
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(@user.reload.username).to eq(@user.username)
+      end
     end
   end
 
@@ -785,35 +828,25 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before do
-      admin
+    it 'returns 404 for non-existing user' do
+      user_id = not_existing_user_id
+
+      get api("/users/#{user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/keys")
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/999999/keys', admin)
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/keys")
 
-      it 'returns array of ssh keys' do
-        user.keys << key
-        user.save
-
-        get api("/users/#{user.id}/keys", admin)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['title']).to eq(key.title)
-      end
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
     end
   end
 
@@ -1031,17 +1064,32 @@ describe API::Users do
       expect(json_response['error']).to eq('email is missing')
     end
 
-    it "creates email" do
+    it "creates unverified email" do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
       end.to change { user.emails.count }.by(1)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).not_to be_confirmed
     end
 
     it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "creates verified email" do
+      email_attrs = attributes_for :email
+      email_attrs[:skip_confirmation] = true
+
+      post api("/users/#{user.id}/emails", admin), email_attrs
+
+      expect(response).to have_gitlab_http_status(201)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).to be_confirmed
     end
   end
 

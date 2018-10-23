@@ -7,13 +7,13 @@
 > this document currently work on our documentation website.
 >
 > For the best result, we encourage you to check this document out as rendered
-by GitLab: [markdown.md]
+> by GitLab: [markdown.md]
 
-_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content, wiki pages and Markdown files (`.md`) in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
+_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  As of 11.3, wiki pages and Markdown files (`.md`) in the repositories are also processed with CommonMark.  Older content in issues/comments are still processed using the [Redcarpet Ruby library][redcarpet]._
 
 _Where there are significant differences, we will try to call them out in this document._
 
-GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in the following areas:
 
@@ -22,31 +22,59 @@ You can use GFM in the following areas:
 - merge requests
 - milestones
 - snippets (the snippet must be named with a `.md` extension)
-- wiki pages (currently only rendered by Redcarpet)
-- markdown documents inside the repository (currently only rendered by Redcarpet)
+- wiki pages
+- markdown documents inside the repository
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
+### Transitioning to CommonMark
+
+You may have Markdown documents in your repository that were written using some of the nuances of RedCarpet's version of Markdown.  Since CommonMark uses a slightly stricter syntax, these documents may now display a little strangely since we've transitioned to CommonMark.  Numbered lists with nested lists in particular can be displayed incorrectly.
+
+It is usually quite easy to fix.  In the case of a nested list such as this:
+
+```markdown
+1. Chocolate
+  - dark
+  - milk
+```
+
+simply add a space to each nested item:
+
+```markdown
+1. Chocolate
+   - dark
+   - milk
+```
+
+In the documentation below, we try to highlight some of the differences.
+
+If you have a need to view a document using RedCarpet, you can add the token `legacy_render=1` to the end of the url, like this:
+
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md?legacy_render=1
+
+If you have a large volume of Markdown files, it can be tedious to determine if they will be displayed correctly or not.  You can use the [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark) tool (not an officially supported product) to generate a list of files and differences between how RedCarpet and CommonMark render the files.  It can give you a great idea if anything needs to be changed - many times nothing will need to changed.
 
 ### Newlines
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newlines
 
-GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
+GFM honors the markdown specification in how [paragraphs and line breaks are handled][commonmark-spec].
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
 Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
     Roses are red [followed by two or more spaces]  
     Violets are blue
 
     Sugar is sweet
 
-[//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
-[//]: # (They are needed for the Markdown text to render correctly.)
+<!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
+<!-- (They are needed for the Markdown text to render correctly.) -->
 Roses are red  
 Violets are blue
 
@@ -84,8 +112,8 @@ GFM will autolink almost any URL you copy and paste into your text:
 * https://www.google.com
 * https://google.com/
 * ftp://ftp.us.debian.org/debian/
-* smb://foo/bar/baz
-* irc://irc.freenode.net/gitlab
+* <a href="smb://foo/bar/baz">smb://foo/bar/baz</a>
+* <a href="irc://irc.freenode.net/gitlab">irc://irc.freenode.net/gitlab</a>
 * http://localhost:3000
 
 ### Multiline Blockquote
@@ -110,17 +138,13 @@ you can quote that without having to manually prepend `>` to every line!
 >>>
 ```
 
->>>
-If you paste a message from somewhere else
-
-that
-
-spans
-
-multiple lines,
-
-you can quote that without having to manually prepend `>` to every line!
->>>
+<blockquote dir="auto">
+<p>If you paste a message from somewhere else</p>
+<p>that</p>
+<p>spans</p>
+<p>multiple lines,</p>
+<p>you can quote that without having to manually prepend <code>&gt;</code> to every line!</p>
+</blockquote>
 
 ### Code and Syntax Highlighting
 
@@ -241,22 +265,21 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 	Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 
 
-Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px">. Well we have a gift for you:
 
-:zap: You can use emoji anywhere GFM is supported. :v:
+<img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px">
 
-You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/bug.png" width="20px" height="20px"> or warn about <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speak_no_evil.png" width="20px" height="20px"> patches. And if someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/snail.png" width="20px" height="20px"> code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/birthday.png" width="20px" height="20px">. People will <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/heart.png" width="20px" height="20px"> you for that.
 
-If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
+If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px">. All you need to do is to look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
 On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
 
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
-
 
 
 ### Special GitLab References
@@ -328,11 +351,7 @@ You can add task lists to issues, merge requests and comments. To create a task 
     - [ ] Sub-task 3
 ```
 
-- [x] Completed task
-- [ ] Incomplete task
-    - [ ] Sub-task 1
-    - [x] Sub-task 2
-    - [ ] Sub-task 3
+![alt unordered-check-list-render-gfm](img/unordered_check_list_render_gfm.png)
 
 Tasks formatted as ordered lists are supported as well:
 
@@ -343,10 +362,7 @@ Tasks formatted as ordered lists are supported as well:
     1. [x] Sub-task 2
 ```
 
-1. [x] Completed task
-1. [ ] Incomplete task
-    1. [ ] Sub-task 1
-    1. [x] Sub-task 2
+![alt task-list-ordered-render-gfm](img/task_list_ordered_render_gfm.png)
 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
@@ -365,7 +381,10 @@ The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`.
 
 Here's a sample video:
 
-![Sample Video](img/markdown_video.mp4)
+<div class="video-container">
+   <video src="img/markdown_video.mp4" width="400" controls="true" data-setup="{}" data-title="Sample Video"></video>
+   <p><a href="img/markdown_video.mp4" target="_blank" rel="noopener noreferrer" title="Download 'Sample Video'">Sample Video</a></p>
+</div>
 
 ### Math
 
@@ -389,12 +408,11 @@ Example:
 
 Becomes:
 
-This math is inline $`a^2+b^2=c^2`$.
+This math is inline ![alt text](img/math_inline_sup_render_gfm.png).
 
 This is on a separate line
-```math
-a^2+b^2=c^2
-```
+
+<div align="center"><img src="./img/math_inline_sup_render_gfm.png" ></div>
 
 _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
@@ -424,15 +442,7 @@ Examples:
 
 Become:
 
-`#F00`  
-`#F00A`  
-`#FF0000`  
-`#FF0000AA`  
-`RGB(0,255,0)`  
-`RGB(0%,100%,0%)`  
-`RGBA(0,255,0,0.7)`  
-`HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.7)`
+![alt color-inline-colorchip-render-gfm](img/color_inline_colorchip_render_gfm.png)
 
 #### Supported formats:
 
@@ -444,7 +454,7 @@ Become:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
 GitLab 10.3.
-
+>
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
@@ -464,13 +474,7 @@ Example:
 
 Becomes:
 
-```mermaid
-graph TD;
-  A-->B;
-  A-->C;
-  B-->D;
-  C-->D;
-```
+<img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
 
 For details see the [Mermaid official page][mermaid].
 
@@ -979,8 +983,9 @@ A link starting with a `/` is relative to the wiki root.
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-- The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
-- [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
+- The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
+- The detailed specification for CommonMark can be found in the [CommonMark Spec][commonmark-spec]
+- The [CommonMark Dingus](http://try.commonmark.org) is a handy tool for testing CommonMark syntax.
 
 [^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com
 [^2]: This is my awesome footnote.
@@ -993,3 +998,4 @@ A link starting with a `/` is relative to the wiki root.
 [katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
 [asciidoctor-manual]: http://asciidoctor.org/docs/user-manual/#activating-stem-support "Asciidoctor user manual"
 [commonmarker]: https://github.com/gjtorikian/commonmarker
+[commonmark-spec]: https://spec.commonmark.org/current/

@@ -35,7 +35,16 @@ describe RenameReservedProjectNames, :migration, schema: :latest do
 
       context 'when exception is raised during rename' do
         before do
-          allow(project).to receive(:rename_repo).and_raise(StandardError)
+          service = instance_double('service')
+
+          allow(service)
+            .to receive(:execute)
+            .and_raise(Projects::AfterRenameService::RenameFailedError)
+
+          allow(Projects::AfterRenameService)
+            .to receive(:new)
+            .with(project)
+            .and_return(service)
         end
 
         it 'captures exception from project rename' do

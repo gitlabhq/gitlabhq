@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Detect user based on identifier like
 # key-13 or user-36 or last commit
 module Gitlab
@@ -28,6 +30,7 @@ module Gitlab
     end
 
     # Tries to identify a user based on a user identifier (e.g. "user-123").
+    # rubocop: disable CodeReuse/ActiveRecord
     def identify_using_user(identifier)
       user_id = identifier.gsub("user-", "")
 
@@ -35,6 +38,7 @@ module Gitlab
         User.find_by(id: user_id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Tries to identify a user based on an SSH key identifier (e.g. "key-123").
     def identify_using_ssh_key(identifier)

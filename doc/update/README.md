@@ -41,7 +41,8 @@ However, for this to work there are the following requirements:
 1. You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
    9.3.
 2. You have to use [post-deployment
-   migrations](../development/post_deployment_migrations.md).
+   migrations](../development/post_deployment_migrations.md) (included in
+   zero downtime update steps below)
 3. You are using PostgreSQL. If you are using MySQL please look at the release
    post to see if downtime is required.
 
@@ -142,4 +143,4 @@ possible.
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
-[omni-ce-ee]: http://docs.gitlab.com/omnibus/update/README.html#from-community-edition-to-enterprise-edition
+[omni-ce-ee]: https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition

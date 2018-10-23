@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!
@@ -38,7 +40,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def update
     Clusters::UpdateService
-      .new(project, current_user, update_params)
+      .new(current_user, update_params)
       .execute(cluster)
 
     if cluster.valid?
@@ -71,8 +73,8 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def create_gcp
     @gcp_cluster = ::Clusters::CreateService
-      .new(project, current_user,  create_gcp_cluster_params)
-      .execute(token_in_session)
+      .new(current_user, create_gcp_cluster_params)
+      .execute(project: project, access_token: token_in_session)
 
     if @gcp_cluster.persisted?
       redirect_to project_cluster_path(project, @gcp_cluster)
@@ -87,8 +89,8 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def create_user
     @user_cluster = ::Clusters::CreateService
-      .new(project, current_user,  create_user_cluster_params)
-      .execute(token_in_session)
+      .new(current_user, create_user_cluster_params)
+      .execute(project: project, access_token: token_in_session)
 
     if @user_cluster.persisted?
       redirect_to project_cluster_path(project, @user_cluster)
@@ -141,7 +143,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :gcp_project_id,
         :zone,
         :num_nodes,
-        :machine_type
+        :machine_type,
+        :legacy_abac
       ]).merge(
         provider_type: :gcp,
         platform_type: :kubernetes
@@ -157,7 +160,8 @@ class Projects::ClustersController < Projects::ApplicationController
         :namespace,
         :api_url,
         :token,
-        :ca_cert
+        :ca_cert,
+        :authorization_type
       ]).merge(
         provider_type: :user,
         platform_type: :kubernetes

@@ -123,9 +123,10 @@ in your SAML IdP:
 To ease configuration, most IdP accept a metadata URL for the application to provide
 configuration information to the IdP. To build the metadata URL for GitLab, append
 `users/auth/saml/metadata` to the HTTPS URL of your GitLab installation, for instance:
-   ```
-   https://gitlab.example.com/users/auth/saml/metadata
-   ```
+
+```
+https://gitlab.example.com/users/auth/saml/metadata
+```
 
 At a minimum the IdP *must* provide a claim containing the user's email address, using
 claim name `email` or `mail`. The email will be used to automatically generate the GitLab
@@ -335,6 +336,23 @@ args: {
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] },
         allowed_clock_drift: 1 # for one second clock drift
+}
+```
+
+### `uid_attribute`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/43806) in GitLab 10.7.
+
+By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
+
+```yaml
+args: {
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+        idp_sso_target_url: 'https://login.example.com/idp',
+        issuer: 'https://gitlab.example.com',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        uid_attribute: 'uid'
 }
 ```
 

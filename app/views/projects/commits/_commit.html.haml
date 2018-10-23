@@ -1,3 +1,7 @@
+-#-----------------------------------------------------------------
+  WARNING: Please keep changes up-to-date with the following files:
+  - `assets/javascripts/diffs/components/commit_item.vue`
+-#-----------------------------------------------------------------
 - view_details  = local_assigns.fetch(:view_details, false)
 - merge_request = local_assigns.fetch(:merge_request, nil)
 - project       = local_assigns.fetch(:project) { merge_request&.project }
@@ -37,7 +41,7 @@
           %button.text-expander.js-toggle-button
             = sprite_icon('ellipsis_h', size: 12)
 
-        .commiter
+        .committer
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
           - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
           - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }

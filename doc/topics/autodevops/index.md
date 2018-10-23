@@ -7,6 +7,14 @@ applications.
 
 ## Overview
 
+NOTE: **Enabled by default:**
+Starting with GitLab 11.3, the Auto DevOps pipeline will be enabled by default for all
+projects. If it's not explicitly enabled for the project, Auto DevOps will be automatically
+disabled on the first pipeline failure. Your project will continue to use an alternative
+[CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
+administrator can [change this setting](../../user/admin_area/settings/continuous_integration.html#auto-devops)
+in the admin area.
+
 With Auto DevOps, the software development process becomes easier to set up
 as every project can have a complete workflow from verification to monitoring
 without needing to configure anything. Just push your code and GitLab takes
@@ -71,11 +79,6 @@ For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of 
 
 ## Requirements
 
-TIP: **Tip:**
-For self-hosted installations, the easiest way to make use of Auto DevOps is to
-install GitLab inside a Kubernetes cluster using the [GitLab Omnibus Helm Chart]
-which automatically installs and configures everything you need!
-
 To make full use of Auto DevOps, you will need:
 
 1. **GitLab Runner** (needed for all stages) - Your Runner needs to be
@@ -101,10 +104,6 @@ To make full use of Auto DevOps, you will need:
        Kubernetes cluster using the
        [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
        Helm chart.
-    1. **Wildcard TLS termination** - You can deploy the
-       [`kube-lego`](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-       Helm chart to your Kubernetes cluster to automatically issue certificates
-       for your domains using Let's Encrypt.
 1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
    will need Prometheus installed somewhere (inside or outside your cluster) and
    configured to scrape your Kubernetes cluster. To get response metrics
@@ -148,18 +147,13 @@ Auto DevOps base domain to `1.2.3.4.nip.io`.
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
-NOTE: **Note:**
-If GitLab is installed using the [GitLab Omnibus Helm Chart], there are two
-options: provide a static IP, or have one assigned. For more information see the
-relevant docs on the [network prerequisites](../../install/kubernetes/gitlab_omnibus.md#networking-prerequisites).
-
 ## Using multiple Kubernetes clusters **[PREMIUM]**
 
 When using Auto DevOps, you may want to deploy different environments to
 different Kubernetes clusters. This is possible due to the 1:1 connection that
 [exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
 
-In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml)
+In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml)
 (used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
 
 - `review/` (every environment starting with `review/`)
@@ -228,10 +222,10 @@ manually triggered either by pushing a new commit to the repository or by visiti
 a new pipeline for your default branch, generally `master`.
 
 NOTE: **Note:**
-If you are a GitLab Administrator, you can enable Auto DevOps instance wide
-in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
-all the projects that haven't explicitly set an option will have Auto DevOps
-enabled by default.
+If you are a GitLab Administrator, you can
+[enable/disable Auto DevOps instance-wide](../../user/admin_area/settings/continuous_integration.md#auto-devops),
+and all projects that haven't explicitly set an option will have Auto DevOps
+enabled/disabled by default.
 
 NOTE: **Note:**
 There is also a feature flag to enable Auto DevOps to a percentage of projects
@@ -247,14 +241,19 @@ project's **Settings > CI/CD > Auto DevOps**.
 
 The available options are:
 
-- **Continuous deployment to production** - enables [Auto Deploy](#auto-deploy)
-  by setting the [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
-  to false.
-- **Automatic deployment to staging, manual deployment to production** - sets the
+- **Continuous deployment to production**: Enables [Auto Deploy](#auto-deploy)
+  with `master` branch directly deployed to production.
+- **Continuous deployment to production using timed incremental rollout**: Sets the
+  [`INCREMENTAL_ROLLOUT_MODE`](#timed-incremental-rollout-to-production) variable
+  to `timed`, and production deployment will be executed with a 5 minute delay between
+  each increment in rollout.
+- **Automatic deployment to staging, manual deployment to production**: Sets the
   [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
-  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
-  to true, and the user is responsible for manually deploying to staging and production.
+  [`INCREMENTAL_ROLLOUT_MODE`](#incremental-rollout-to-production) variables
+  to `1` and `manual`. This means:
+
+  - `master` branch is directly deployed to staging.
+  - Manual actions are provided for incremental rollout to production.
 
 ## Stages of Auto DevOps
 
@@ -448,9 +447,33 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+> [Introduced][ce-21955] in GitLab 11.4
+
+Database initialization and migrations for PostgreSQL can be configured to run
+within the application pod by setting the project variables `DB_INITIALIZE` and
+`DB_MIGRATE` respectively.
+
+If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
+post-install hook. Note that this means that if any deploy succeeds,
+`DB_INITIALIZE` will not be processed thereafter.
+
+If present, `DB_MIGRATE` will be run as a shell command within an application pod as
+a helm pre-upgrade hook.
+
+For example, in a Rails application:
+
+* `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
+  bin/setup`
+* `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+
+NOTE: **Note:**
+The `/app` path is the directory of your project inside the docker image
+as [configured by
+Herokuish](https://github.com/gliderlabs/herokuish#paths)
+
 > [Introduced][ce-19507] in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token) 
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry.
 
@@ -476,10 +499,7 @@ The metrics include:
 - **Response Metrics:** latency, throughput, error rate
 - **System Metrics:** CPU utilization, memory utilization
 
-If GitLab has been deployed using the [GitLab Omnibus Helm Chart], no
-configuration is required.
-
-If you have installed GitLab using a different method, you need to:
+In order to make use of monitoring you need to:
 
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
@@ -574,13 +594,13 @@ postgres://user:password@postgres-host:postgres-port/postgres-database
 ### Environment variables
 
 The following variables can be used for setting up the Auto DevOps domain,
-providing a custom Helm chart, or scaling your application. PostgreSQL can be
+providing a custom Helm chart, or scaling your application. PostgreSQL can
 also be customized, and you can easily use a [custom buildpack](#custom-buildpacks).
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
 | `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
-| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).                                                             |
+| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
 | `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
@@ -592,9 +612,11 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
+| `DB_INITIALIZE`              | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's PostgreSQL database. It runs inside the application pod. |
+| `DB_MIGRATE`                 | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's PostgreSQL database. It runs inside the application pod. |
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
-| `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
+| `INCREMENTAL_ROLLOUT_MODE`| From GitLab 11.4, this variable, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment.<br/>Set to: <ul><li>`manual`, for manual deployment jobs.</li><li>`timed`, for automatic rollout deployments with a 5 minute delay each one.</li></ul> |
 | `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
 | `CODE_QUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
 | `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
@@ -715,9 +737,8 @@ to use an incremental rollout to replace just a few pods with the latest code.
 This will allow you to first check how the app is behaving, and later manually
 increasing the rollout up to 100%.
 
-If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
-`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
-standard `production` job, 4 different
+If `INCREMENTAL_ROLLOUT_MODE` is set to `manual` in your project, then instead
+of the standard `production` job, 4 different
 [manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
 will be created:
 
@@ -741,21 +762,45 @@ environment page.
 Below, you can see how the pipeline will look if the rollout or staging
 variables are defined.
 
-- **Without `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+Without `INCREMENTAL_ROLLOUT_MODE` and without `STAGING_ENABLED`:
 
-    ![Staging and rollout disabled](img/rollout_staging_disabled.png)
+![Staging and rollout disabled](img/rollout_staging_disabled.png)
 
-- **Without `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+Without `INCREMENTAL_ROLLOUT_MODE` and with `STAGING_ENABLED`:
 
-    ![Staging enabled](img/staging_enabled.png)
+![Staging enabled](img/staging_enabled.png)
 
-- **With `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
 
-    ![Rollout enabled](img/rollout_enabled.png)
+![Rollout enabled](img/rollout_enabled.png)
 
-- **With `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`
 
-    ![Rollout and staging enabled](img/rollout_staging_enabled.png)
+![Rollout and staging enabled](img/rollout_staging_enabled.png)
+
+CAUTION: **Caution:**
+Before GitLab 11.4 this feature was enabled by the presence of the
+`INCREMENTAL_ROLLOUT_ENABLED` environment variable.
+This configuration is deprecated and will be removed in the future.
+
+#### Timed incremental rollout to production **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7545) in GitLab 11.4.
+
+TIP: **Tip:**
+You can also set this inside your [project's settings](#deployment-strategy).
+
+This configuration based on
+[incremental rollout to production](#incremental-rollout-to-production).
+
+Everything behaves the same way, except:
+
+- It's enabled by setting the `INCREMENTAL_ROLLOUT_MODE` variable to `timed`.
+- Instead of the standard `production` job, the following jobs with a 5 minute delay between each are created:
+    1. `timed rollout 10%`
+    1. `timed rollout 25%`
+    1. `timed rollout 50%`
+    1. `timed rollout 100%`
 
 ## Currently supported languages
 
@@ -843,7 +888,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/project/container_registry.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
-[GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

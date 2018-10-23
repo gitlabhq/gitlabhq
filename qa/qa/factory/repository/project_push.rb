@@ -7,11 +7,8 @@ module QA
           project.description = 'Project with repository'
         end
 
-        product :output do |factory|
-          factory.output
-        end
-
-        product(:project) { |factory| factory.project }
+        product :output
+        product :project
 
         def initialize
           @file_name = 'file.txt'
@@ -21,11 +18,21 @@ module QA
           @new_branch = true
         end
 
-        def repository_uri
-          @repository_uri ||= begin
+        def repository_http_uri
+          @repository_http_uri ||= begin
             project.visit!
             Page::Project::Show.act do
               choose_repository_clone_http
+              repository_location.uri
+            end
+          end
+        end
+
+        def repository_ssh_uri
+          @repository_ssh_uri ||= begin
+            project.visit!
+            Page::Project::Show.act do
+              choose_repository_clone_ssh
               repository_location.uri
             end
           end

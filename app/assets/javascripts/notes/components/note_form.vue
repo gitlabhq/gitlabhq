@@ -20,9 +20,9 @@ export default {
       default: '',
     },
     noteId: {
-      type: Number,
+      type: [String, Number],
       required: false,
-      default: 0,
+      default: '',
     },
     markdownVersion: {
       type: Number,
@@ -67,7 +67,10 @@ export default {
       'getUserDataByProp',
     ]),
     noteHash() {
-      return `#note_${this.noteId}`;
+      if (this.noteId) {
+        return `#note_${this.noteId}`;
+      }
+      return '#';
     },
     markdownPreviewPath() {
       return this.getNoteableDataByProp('preview_note_path');
@@ -99,6 +102,18 @@ export default {
   },
   methods: {
     ...mapActions(['toggleResolveNote']),
+    shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState) {
+      // shouldBeResolved() checks the actual resolution state,
+      // considering batchComments (EEP), if applicable/enabled.
+      const newResolvedStateAfterUpdate =
+        this.shouldBeResolved && this.shouldBeResolved(shouldResolve);
+
+      const shouldToggleState =
+        newResolvedStateAfterUpdate !== undefined &&
+        beforeSubmitDiscussionState !== newResolvedStateAfterUpdate;
+
+      return shouldResolve || shouldToggleState;
+    },
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
@@ -106,7 +121,7 @@ export default {
       this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
         this.isSubmitting = false;
 
-        if (shouldResolve) {
+        if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
           this.resolveHandler(beforeSubmitDiscussionState);
         }
       });
@@ -168,8 +183,8 @@ export default {
           id="note_note"
           ref="textarea"
           slot="textarea"
-          :data-supports-quick-actions="!isEditing"
           v-model="updatedNoteBody"
+          :data-supports-quick-actions="!isEditing"
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
@@ -185,7 +200,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
         <button
           :disabled="isDisabled"
           type="button"
-          class="js-vue-issue-save btn btn-save js-comment-button "
+          class="js-vue-issue-save btn btn-success js-comment-button "
           @click="handleUpdate()">
           {{ saveButtonTitle }}
         </button>

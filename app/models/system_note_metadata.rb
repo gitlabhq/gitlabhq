@@ -9,13 +9,14 @@ class SystemNoteMetadata < ActiveRecord::Base
   TYPES_WITH_CROSS_REFERENCES = %w[
     commit cross_reference
     close duplicate
+    moved
   ].freeze
 
   ICON_TYPES = %w[
     commit description merge confidential visible label assignee cross_reference
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked
-    outdated tag
+    outdated tag due_date
   ].freeze
 
   validates :note, presence: true
@@ -25,5 +26,9 @@ class SystemNoteMetadata < ActiveRecord::Base
 
   def icon_types
     ICON_TYPES
+  end
+
+  def cross_reference_types
+    TYPES_WITH_CROSS_REFERENCES
   end
 end

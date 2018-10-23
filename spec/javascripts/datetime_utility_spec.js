@@ -6,9 +6,7 @@ describe('Date time utils', () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 1);
 
-      expect(
-        datetimeUtility.timeFor(date),
-      ).toBe('Past due');
+      expect(datetimeUtility.timeFor(date)).toBe('Past due');
     });
 
     it('returns remaining time when in the future', () => {
@@ -19,45 +17,50 @@ describe('Date time utils', () => {
       // short of a full year, timeFor will return '11 months remaining'
       date.setDate(date.getDate() + 1);
 
-      expect(
-        datetimeUtility.timeFor(date),
-      ).toBe('1 year remaining');
+      expect(datetimeUtility.timeFor(date)).toBe('1 year remaining');
     });
   });
 
   describe('get day name', () => {
     it('should return Sunday', () => {
       const day = datetimeUtility.getDayName(new Date('07/17/2016'));
+
       expect(day).toBe('Sunday');
     });
 
     it('should return Monday', () => {
       const day = datetimeUtility.getDayName(new Date('07/18/2016'));
+
       expect(day).toBe('Monday');
     });
 
     it('should return Tuesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/19/2016'));
+
       expect(day).toBe('Tuesday');
     });
 
     it('should return Wednesday', () => {
       const day = datetimeUtility.getDayName(new Date('07/20/2016'));
+
       expect(day).toBe('Wednesday');
     });
 
     it('should return Thursday', () => {
       const day = datetimeUtility.getDayName(new Date('07/21/2016'));
+
       expect(day).toBe('Thursday');
     });
 
     it('should return Friday', () => {
       const day = datetimeUtility.getDayName(new Date('07/22/2016'));
+
       expect(day).toBe('Friday');
     });
 
     it('should return Saturday', () => {
       const day = datetimeUtility.getDayName(new Date('07/23/2016'));
+
       expect(day).toBe('Saturday');
     });
   });
@@ -67,6 +70,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/01/2016');
       const secondDay = new Date('07/08/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(7);
     });
 
@@ -74,6 +78,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/01/2016');
       const secondDay = new Date('08/01/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(31);
     });
 
@@ -81,6 +86,7 @@ describe('Date time utils', () => {
       const firstDay = new Date('07/02/2015');
       const secondDay = new Date('07/01/2016');
       const difference = datetimeUtility.getDayDifference(firstDay, secondDay);
+
       expect(difference).toBe(365);
     });
   });
@@ -160,11 +166,29 @@ describe('getTimeframeWindowFrom', () => {
       new Date(2018, 4, 31),
     ];
     const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, 5);
+
     expect(timeframe.length).toBe(5);
     timeframe.forEach((timeframeItem, index) => {
-      expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBe(true);
-      expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBe(true);
-      expect(timeframeItem.getDate() === mockTimeframe[index].getDate()).toBeTruthy();
+      expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());
+      expect(timeframeItem.getMonth()).toBe(mockTimeframe[index].getMonth());
+      expect(timeframeItem.getDate()).toBe(mockTimeframe[index].getDate());
+    });
+  });
+});
+
+describe('formatTime', () => {
+  const expectedTimestamps = [
+    [0, '00:00:00'],
+    [1000, '00:00:01'],
+    [42000, '00:00:42'],
+    [121000, '00:02:01'],
+    [10921000, '03:02:01'],
+    [108000000, '30:00:00'],
+  ];
+
+  expectedTimestamps.forEach(([milliseconds, expectedTimestamp]) => {
+    it(`formats ${milliseconds}ms as ${expectedTimestamp}`, () => {
+      expect(datetimeUtility.formatTime(milliseconds)).toBe(expectedTimestamp);
     });
   });
 });

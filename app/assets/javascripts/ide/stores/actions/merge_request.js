@@ -116,57 +116,57 @@ export const openMergeRequest = (
     targetProjectId,
     mergeRequestId,
   })
-  .then(mr => {
-    dispatch('setCurrentBranchId', mr.source_branch);
+    .then(mr => {
+      dispatch('setCurrentBranchId', mr.source_branch);
 
-    dispatch('getBranchData', {
-      projectId,
-      branchId: mr.source_branch,
-    });
+      dispatch('getBranchData', {
+        projectId,
+        branchId: mr.source_branch,
+      });
 
-    return dispatch('getFiles', {
-      projectId,
-      branchId: mr.source_branch,
-    });
-  })
-  .then(() =>
-    dispatch('getMergeRequestVersions', {
-      projectId,
-      targetProjectId,
-      mergeRequestId,
-    }),
-  )
-  .then(() =>
-    dispatch('getMergeRequestChanges', {
-      projectId,
-      targetProjectId,
-      mergeRequestId,
-    }),
-  )
-  .then(mrChanges => {
-    if (mrChanges.changes.length) {
-      dispatch('updateActivityBarView', activityBarViews.review);
-    }
-
-    mrChanges.changes.forEach((change, ind) => {
-      const changeTreeEntry = state.entries[change.new_path];
-
-      if (changeTreeEntry) {
-        dispatch('setFileMrChange', {
-          file: changeTreeEntry,
-          mrChange: change,
-        });
-
-        if (ind < 10) {
-          dispatch('getFileData', {
-            path: change.new_path,
-            makeFileActive: ind === 0,
-          });
-        }
+      return dispatch('getFiles', {
+        projectId,
+        branchId: mr.source_branch,
+      });
+    })
+    .then(() =>
+      dispatch('getMergeRequestVersions', {
+        projectId,
+        targetProjectId,
+        mergeRequestId,
+      }),
+    )
+    .then(() =>
+      dispatch('getMergeRequestChanges', {
+        projectId,
+        targetProjectId,
+        mergeRequestId,
+      }),
+    )
+    .then(mrChanges => {
+      if (mrChanges.changes.length) {
+        dispatch('updateActivityBarView', activityBarViews.review);
       }
+
+      mrChanges.changes.forEach((change, ind) => {
+        const changeTreeEntry = state.entries[change.new_path];
+
+        if (changeTreeEntry) {
+          dispatch('setFileMrChange', {
+            file: changeTreeEntry,
+            mrChange: change,
+          });
+
+          if (ind < 10) {
+            dispatch('getFileData', {
+              path: change.new_path,
+              makeFileActive: ind === 0,
+            });
+          }
+        }
+      });
+    })
+    .catch(e => {
+      flash(__('Error while loading the merge request. Please try again.'));
+      throw e;
     });
-  })
-  .catch(e => {
-    flash(__('Error while loading the merge request. Please try again.'));
-    throw e;
-  });

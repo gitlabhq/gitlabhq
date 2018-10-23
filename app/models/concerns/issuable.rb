@@ -49,7 +49,7 @@ module Issuable
       end
     end
 
-    has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :label_links, as: :target, dependent: :destroy, inverse_of: :target # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -76,6 +76,7 @@ module Issuable
     scope :recent, -> { reorder(id: :desc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
+    scope :any_milestone, -> { where('milestone_id IS NOT NULL') }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
     scope :opened, -> { with_state(:opened) }
     scope :only_opened, -> { with_state(:opened) }
@@ -109,16 +110,12 @@ module Issuable
       false
     end
 
-    def etag_caching_enabled?
-      false
-    end
-
     def has_multiple_assignees?
       assignees.count > 1
     end
   end
 
-  module ClassMethods
+  class_methods do
     # Searches for records with a matching title.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.

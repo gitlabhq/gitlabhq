@@ -69,7 +69,7 @@ Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.
 #### 6. Due date
 
 When you work on a tight schedule, and it's important to
-have a way to setup a deadline for implementations and for solving
+have a way to set up a deadline for implementations and for solving
 problems. This can be facilitated by the [due date](due_dates.md)). Due dates
 can be changed as many times as needed.
 
@@ -118,9 +118,12 @@ is the `project-name`, and `xxx` is the issue number.
 
 #### 13. @mentions
 
-- Mentions: you can either `@mention` a user or a group present in your
-GitLab instance and they will be notified via todos and email, unless that
-person has disabled all notifications in their profile settings.
+- You can either `@mention` a user or a group present in your
+  GitLab instance and they will be notified via todos and email, unless that
+  person has disabled all notifications in their profile settings.
+- Mentions for yourself (the current logged in user),will be distinctly highlighted
+  in a different color, allowing you to easily see which comments involve you,
+  helping you focus on them quickly.
 
 To change your [notification settings](../../../workflow/notifications.md) navigate to
 **Profile Settings** > **Notifications** > **Global notification level**

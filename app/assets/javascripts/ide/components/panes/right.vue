@@ -1,5 +1,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
+import _ from 'underscore';
+import { __ } from '~/locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
@@ -21,28 +23,68 @@ export default {
     MergeRequestInfo,
     Clientside,
   },
-  computed: {
-    ...mapState(['rightPane', 'currentMergeRequestId', 'clientsidePreviewEnabled']),
-    ...mapGetters(['packageJson']),
-    pipelinesActive() {
-      return (
-        this.rightPane === rightSidebarViews.pipelines ||
-        this.rightPane === rightSidebarViews.jobsDetail
-      );
+  props: {
+    extensionTabs: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
+  },
+  computed: {
+    ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled']),
+    ...mapState('rightPane', ['isOpen', 'currentView']),
+    ...mapGetters(['packageJson']),
+    ...mapGetters('rightPane', ['isActiveView', 'isAliveView']),
     showLivePreview() {
       return this.packageJson && this.clientsidePreviewEnabled;
     },
-  },
-  methods: {
-    ...mapActions(['setRightPane']),
-    clickTab(e, view) {
-      e.target.blur();
-
-      this.setRightPane(view);
+    defaultTabs() {
+      return [
+        {
+          show: this.currentMergeRequestId,
+          title: __('Merge Request'),
+          views: [rightSidebarViews.mergeRequestInfo],
+          icon: 'text-description',
+        },
+        {
+          show: true,
+          title: __('Pipelines'),
+          views: [rightSidebarViews.pipelines, rightSidebarViews.jobsDetail],
+          icon: 'rocket',
+        },
+        {
+          show: this.showLivePreview,
+          title: __('Live preview'),
+          views: [rightSidebarViews.clientSidePreview],
+          icon: 'live-preview',
+        },
+      ];
+    },
+    tabs() {
+      return this.defaultTabs.concat(this.extensionTabs).filter(tab => tab.show);
+    },
+    tabViews() {
+      return _.flatten(this.tabs.map(tab => tab.views));
+    },
+    aliveTabViews() {
+      return this.tabViews.filter(view => this.isAliveView(view.name));
     },
   },
-  rightSidebarViews,
+  methods: {
+    ...mapActions('rightPane', ['toggleOpen', 'open']),
+    clickTab(e, tab) {
+      e.target.blur();
+
+      if (this.isActiveTab(tab)) {
+        this.toggleOpen();
+      } else {
+        this.open(tab.views[0]);
+      }
+    },
+    isActiveTab(tab) {
+      return tab.views.some(view => this.isActiveView(view.name));
+    },
+  },
 };
 </script>
 
@@ -51,77 +93,45 @@ export default {
     class="multi-file-commit-panel ide-right-sidebar"
   >
     <resizable-panel
-      v-if="rightPane"
+      v-show="isOpen"
       :collapsible="false"
       :initial-width="350"
       :min-size="350"
-      :class="`ide-right-sidebar-${rightPane}`"
+      :class="`ide-right-sidebar-${currentView}`"
       side="right"
       class="multi-file-commit-panel-inner"
     >
-      <component :is="rightPane" />
+      <div
+        v-for="tabView in aliveTabViews"
+        v-show="isActiveView(tabView.name)"
+        :key="tabView.name"
+        class="h-100"
+      >
+        <component :is="tabView.name" />
+      </div>
     </resizable-panel>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
         <li
-          v-if="currentMergeRequestId"
+          v-for="tab of tabs"
+          :key="tab.title"
         >
           <button
             v-tooltip
-            :title="__('Merge Request')"
-            :aria-label="__('Merge Request')"
+            :title="tab.title"
+            :aria-label="tab.title"
             :class="{
-              active: rightPane === $options.rightSidebarViews.mergeRequestInfo
+              active: isActiveTab(tab) && isOpen
             }"
             data-container="body"
             data-placement="left"
             class="ide-sidebar-link is-right"
             type="button"
-            @click="clickTab($event, $options.rightSidebarViews.mergeRequestInfo)"
+            @click="clickTab($event, tab)"
           >
             <icon
               :size="16"
-              name="text-description"
-            />
-          </button>
-        </li>
-        <li>
-          <button
-            v-tooltip
-            :title="__('Pipelines')"
-            :aria-label="__('Pipelines')"
-            :class="{
-              active: pipelinesActive
-            }"
-            data-container="body"
-            data-placement="left"
-            class="ide-sidebar-link is-right"
-            type="button"
-            @click="clickTab($event, $options.rightSidebarViews.pipelines)"
-          >
-            <icon
-              :size="16"
-              name="rocket"
-            />
-          </button>
-        </li>
-        <li v-if="showLivePreview">
-          <button
-            v-tooltip
-            :title="__('Live preview')"
-            :aria-label="__('Live preview')"
-            :class="{
-              active: rightPane === $options.rightSidebarViews.clientSidePreview
-            }"
-            data-container="body"
-            data-placement="left"
-            class="ide-sidebar-link is-right"
-            type="button"
-            @click="clickTab($event, $options.rightSidebarViews.clientSidePreview)"
-          >
-            <icon
-              :size="16"
-              name="live-preview"
+              :name="tab.icon"
             />
           </button>
         </li>

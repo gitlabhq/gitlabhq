@@ -1,4 +1,5 @@
-/* global BoardService */
+import BoardService from '~/boards/services/board_service';
+
 export const listObj = {
   id: 300,
   position: 0,
@@ -27,7 +28,7 @@ export const listObjDuplicate = {
 
 export const BoardsMockData = {
   GET: {
-    '/test/-/boards/1/lists/300/issues?id=300&page=1&=': {
+    '/test/-/boards/1/lists/300/issues?id=300&page=1': {
       issues: [
         {
           title: 'Testing',

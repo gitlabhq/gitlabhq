@@ -86,12 +86,14 @@ describe('Title component', () => {
     it('should not show if canUpdate is false', () => {
       vm.showInlineEditButton = true;
       vm.canUpdate = false;
+
       expect(vm.$el.querySelector('.btn-edit')).toBeNull();
     });
 
     it('should show if showInlineEditButton and canUpdate', () => {
       vm.showInlineEditButton = true;
       vm.canUpdate = true;
+
       expect(vm.$el.querySelector('.btn-edit')).toBeDefined();
     });
 
@@ -101,6 +103,7 @@ describe('Title component', () => {
 
       Vue.nextTick(() => {
         vm.$el.querySelector('.btn-edit').click();
+
         expect(eventHub.$emit).toHaveBeenCalledWith('open.form');
       });
     });

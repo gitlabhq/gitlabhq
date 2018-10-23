@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
 
@@ -5,7 +7,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
   def index
-    @applications = Doorkeeper::Application.where("owner_id IS NULL")
+    @applications = ApplicationsFinder.new.execute
   end
 
   def show
@@ -46,7 +48,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   private
 
   def set_application
-    @application = Doorkeeper::Application.where("owner_id IS NULL").find(params[:id])
+    @application = ApplicationsFinder.new(id: params[:id]).execute
   end
 
   # Only allow a trusted parameter "white list" through.

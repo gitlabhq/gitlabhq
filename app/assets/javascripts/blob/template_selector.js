@@ -66,9 +66,6 @@ export default class TemplateSelector {
     // be added by all subclasses.
   }
 
-  // To be implemented on the extending class
-  // e.g. Api.gitlabCiYml(query.name, file => this.setEditorContent(file));
-
   setEditorContent(file, { skipFocus } = {}) {
     if (!file) return;
 
@@ -84,14 +81,10 @@ export default class TemplateSelector {
   }
 
   startLoadingSpinner() {
-    this.$dropdownIcon
-      .addClass('fa-spinner fa-spin')
-      .removeClass('fa-chevron-down');
+    this.$dropdownIcon.addClass('fa-spinner fa-spin').removeClass('fa-chevron-down');
   }
 
   stopLoadingSpinner() {
-    this.$dropdownIcon
-      .addClass('fa-chevron-down')
-      .removeClass('fa-spinner fa-spin');
+    this.$dropdownIcon.addClass('fa-chevron-down').removeClass('fa-spinner fa-spin');
   }
 }

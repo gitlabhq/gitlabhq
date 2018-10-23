@@ -36,15 +36,16 @@ to be met:
 
 ## Generating a GPG key
 
->**Notes:**
-- If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
-  the following commands.
-- If Git is using `gpg` and you get errors like `secret key not available` or
-  `gpg: signing failed: secret key not available`, run the following command to
-  change to `gpg2`:
-    ```
-    git config --global gpg.program gpg2
-    ```
+> **Notes:**
+> - If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
+>   the following commands.
+> - If Git is using `gpg` and you get errors like `secret key not available` or
+>   `gpg: signing failed: secret key not available`, run the following command to
+>   change to `gpg2`:
+>
+>     ```
+>     git config --global gpg.program gpg2
+>    ```
 
 If you don't already have a GPG key, the following steps will help you get
 started:
@@ -55,6 +56,8 @@ started:
     ```sh
     gpg --full-gen-key
     ```
+    
+    _NOTE: In some cases like Gpg4win on Windows and other Mac OS versions the command here may be ` gpg --gen-key`_
 
     This will spawn a series of questions.
 

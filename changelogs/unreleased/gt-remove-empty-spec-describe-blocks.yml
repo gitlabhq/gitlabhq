@@ -1,0 +1,5 @@
+---
+title: Remove empty spec describe blocks
+merge_request: 22451
+author: George Tsiolis
+type: other

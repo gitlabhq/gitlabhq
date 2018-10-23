@@ -5,6 +5,7 @@ module Gitlab
         class Factory < Status::Factory
           def self.extended_statuses
             [[Status::SuccessWarning,
+              Status::Pipeline::Delayed,
               Status::Pipeline::Blocked]]
           end
 

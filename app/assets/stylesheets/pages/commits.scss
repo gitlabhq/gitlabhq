@@ -59,7 +59,7 @@
     vertical-align: middle;
 
     .stage-cell .stage-container {
-      margin: 3px 3px 3px 0;
+      margin: 0 3px 3px 0;
     }
 
     .stage-container:last-child {
@@ -223,6 +223,7 @@
   }
 }
 
+.clipboard-group,
 .commit-sha-group {
   display: inline-flex;
 

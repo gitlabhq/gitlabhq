@@ -19,4 +19,8 @@ class IssuePolicy < IssuablePolicy
     prevent :update_issue
     prevent :admin_issue
   end
+
+  rule { locked }.policy do
+    prevent :reopen_issue
+  end
 end

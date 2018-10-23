@@ -81,6 +81,7 @@ describe('EmojiMenu', () => {
         'mouseenter focus',
         jasmine.anything(),
       );
+
       expect(emojiMenu.registerEventListener).toHaveBeenCalledWith(
         'on',
         jasmine.anything(),
@@ -107,6 +108,7 @@ describe('EmojiMenu', () => {
     it('renders the menu with custom menu class', () => {
       const menuElement = () =>
         document.body.querySelector(`.emoji-menu.${dummyMenuClass} .emoji-menu-content`);
+
       expect(menuElement()).toBe(null);
 
       emojiMenu.createEmojiMenu();

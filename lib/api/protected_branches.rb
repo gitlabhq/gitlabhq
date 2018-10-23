@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class ProtectedBranches < Grape::API
     include PaginationParams
@@ -16,11 +18,13 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_branches' do
         protected_branches = user_project.protected_branches.preload(:push_access_levels, :merge_access_levels)
 
         present paginate(protected_branches), with: Entities::ProtectedBranch, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single protected branch' do
         success Entities::ProtectedBranch
@@ -28,11 +32,13 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the branch or wildcard'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
         present protected_branch, with: Entities::ProtectedBranch, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Protect a single branch or wildcard' do
         success Entities::ProtectedBranch
@@ -40,12 +46,13 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer,
-                                     values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                     values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
                                      desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
-                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                      values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do
         protected_branch = user_project.protected_branches.find_by(name: params[:name])
         if protected_branch
@@ -62,11 +69,13 @@ module API
           render_api_error!(protected_branch.errors.full_messages, 422)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Unprotect a single branch'
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
@@ -75,6 +84,7 @@ module API
           destroy_service.execute(protected_branch)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

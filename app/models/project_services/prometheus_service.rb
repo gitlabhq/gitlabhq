@@ -26,7 +26,7 @@ class PrometheusService < MonitoringService
   end
 
   def editable?
-    manual_configuration? || !prometheus_installed?
+    manual_configuration? || !prometheus_available?
   end
 
   def title
@@ -56,7 +56,6 @@ class PrometheusService < MonitoringService
         name: 'api_url',
         title: 'API URL',
         placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
-        help: s_('PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'),
         required: true
       }
     ]
@@ -75,17 +74,17 @@ class PrometheusService < MonitoringService
     RestClient::Resource.new(api_url) if api_url && manual_configuration? && active?
   end
 
-  def prometheus_installed?
+  def prometheus_available?
     return false if template?
     return false unless project
 
-    project.clusters.enabled.any? { |cluster| cluster.application_prometheus&.installed? }
+    project.clusters.enabled.any? { |cluster| cluster.application_prometheus_available? }
   end
 
   private
 
   def synchronize_service_state
-    self.active = prometheus_installed? || manual_configuration?
+    self.active = prometheus_available? || manual_configuration?
 
     true
   end

@@ -1,8 +1,6 @@
 // Limit MR description for side-by-side diff view
 .fixed-width-container {
-  max-width: $limited-layout-width - ($gl-padding * 2);
-  margin-left: auto;
-  margin-right: auto;
+  @include fixed-width-container;
 }
 
 .issuable-warning-icon {
@@ -701,6 +699,11 @@
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  .user-status-emoji {
+    margin-left: $gl-padding-4;
+    margin-right: 0;
+  }
 }
 
 .js-issuable-selector-wrap {
@@ -721,13 +724,13 @@
       display: flex;
     }
 
-    .issue-info-container {
+    .issuable-info-container {
       -webkit-flex: 1;
       flex: 1;
       display: flex;
       padding-right: $gl-padding;
 
-      .issue-main-info {
+      .issuable-main-info {
         flex: 1 auto;
         margin-right: 10px;
       }
@@ -763,7 +766,7 @@
       margin-bottom: 10px;
       min-width: 15px;
 
-      .selected_issue {
+      .selected-issuable {
         vertical-align: text-top;
       }
     }
@@ -795,7 +798,7 @@
 }
 
 .issuable-list li,
-.issue-info-container .controls {
+.issuable-info-container .controls {
   .avatar-counter {
     display: inline-block;
     vertical-align: middle;

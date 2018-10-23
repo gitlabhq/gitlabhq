@@ -1,12 +1,12 @@
 <script>
-  import StatusIcon from '../mr_widget_status_icon.vue';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
-  export default {
-    name: 'MRWidgetNotAllowed',
-    components: {
-      StatusIcon,
-    },
-  };
+export default {
+  name: 'MRWidgetNotAllowed',
+  components: {
+    StatusIcon,
+  },
+};
 </script>
 
 <template>

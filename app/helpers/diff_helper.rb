@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffHelper
   def mark_inline_diffs(old_line, new_line)
     old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_line, new_line).inline_diffs
@@ -39,7 +41,8 @@ module DiffHelper
     line_num_class = %w[diff-line-num unfold js-unfold]
     line_num_class << 'js-unfold-bottom' if bottom
 
-    html = ''
+    html = []
+
     if old_pos
       html << content_tag(:td, '...', class: [*line_num_class, 'old_line'], data: { linenumber: old_pos })
       html << content_tag(:td, text, class: [*content_line_class, 'left-side']) if view == :parallel
@@ -50,7 +53,7 @@ module DiffHelper
       html << content_tag(:td, text, class: [*content_line_class, ('right-side' if view == :parallel)])
     end
 
-    html.html_safe
+    html.join.html_safe
   end
 
   def diff_line_content(line)
@@ -210,14 +213,14 @@ module DiffHelper
     params[:w] == '1'
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def params_with_whitespace
     hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def toggle_whitespace_link(url, options)
-    options[:class] ||= ''
-    options[:class] << ' btn btn-default'
-
+    options[:class] = [*options[:class], 'btn btn-default'].join(' ')
     link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
   end
 

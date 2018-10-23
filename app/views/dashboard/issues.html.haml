@@ -4,11 +4,17 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
+.page-title-holder
+  %h1.page-title= _('Issues')
+
+  - if current_user
+    .page-title-controls
+      = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
+
 .top-area
   = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls
     = render 'shared/issuable/feed_buttons'
-    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 
 = render 'shared/issuable/filter', type: :issues
 

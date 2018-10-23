@@ -21,23 +21,29 @@ describe('new dropdown upload', () => {
     vm.$destroy();
   });
 
+  describe('openFile', () => {
+    it('calls for each file', () => {
+      const files = ['test', 'test2', 'test3'];
+
+      spyOn(vm, 'readFile');
+      spyOnProperty(vm.$refs.fileUpload, 'files').and.returnValue(files);
+
+      vm.openFile();
+
+      expect(vm.readFile.calls.count()).toBe(3);
+
+      files.forEach((file, i) => {
+        expect(vm.readFile.calls.argsFor(i)).toEqual([file]);
+      });
+    });
+  });
+
   describe('readFile', () => {
     beforeEach(() => {
-      spyOn(FileReader.prototype, 'readAsText');
       spyOn(FileReader.prototype, 'readAsDataURL');
     });
 
-    it('calls readAsText for text files', () => {
-      const file = {
-        type: 'text/html',
-      };
-
-      vm.readFile(file);
-
-      expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(file);
-    });
-
-    it('calls readAsDataURL for non-text files', () => {
+    it('calls readAsDataURL for all files', () => {
       const file = {
         type: 'images/png',
       };
@@ -49,32 +55,37 @@ describe('new dropdown upload', () => {
   });
 
   describe('createFile', () => {
-    const target = {
-      result: 'content',
+    const textTarget = {
+      result: 'base64,cGxhaW4gdGV4dA==',
     };
     const binaryTarget = {
-      result: 'base64,base64content',
+      result: 'base64,w4I=',
     };
-    const file = {
-      name: 'file',
+    const textFile = {
+      name: 'textFile',
+      type: 'text/plain',
+    };
+    const binaryFile = {
+      name: 'binaryFile',
+      type: 'image/png',
     };
 
-    it('creates new file', () => {
-      vm.createFile(target, file, true);
+    it('creates file in plain text (without encoding) if the file content is plain text', () => {
+      vm.createFile(textTarget, textFile);
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: file.name,
+        name: textFile.name,
         type: 'blob',
-        content: target.result,
+        content: 'plain text',
         base64: false,
       });
     });
 
     it('splits content on base64 if binary', () => {
-      vm.createFile(binaryTarget, file, false);
+      vm.createFile(binaryTarget, binaryFile);
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
-        name: file.name,
+        name: binaryFile.name,
         type: 'blob',
         content: binaryTarget.result.split('base64,')[1],
         base64: true,

@@ -2,10 +2,10 @@
 
 - if can?(current_user, :create_wiki, @project)
   - create_path = project_wiki_path(@project, params[:id], { view: 'create' })
-  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-new', title: s_('WikiEmpty|Create your first page')
+  - create_link = link_to s_('WikiEmpty|Create your first page'), create_path, class: 'btn btn-success', title: s_('WikiEmpty|Create your first page')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
-    %h4
+    %h4.text-left
       = s_('WikiEmpty|The wiki lets you write documentation for your project')
     %p.text-left
       = s_("WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
@@ -13,7 +13,7 @@
 
 - elsif can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
-  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn btn-new', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
+  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn btn-success', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
 
   = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
     %h4

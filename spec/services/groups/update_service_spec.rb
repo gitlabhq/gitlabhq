@@ -24,6 +24,12 @@ describe Groups::UpdateService do
 
           expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
         end
+
+        it "returns false if save failed" do
+          allow(public_group).to receive(:save).and_return(false)
+
+          expect(service.execute).to be_falsey
+        end
       end
 
       context "internal group with internal project" do

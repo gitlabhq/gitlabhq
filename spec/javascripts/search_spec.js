@@ -5,7 +5,7 @@ import Search from '~/pages/search/show/search';
 describe('Search', () => {
   const fixturePath = 'search/show.html.raw';
   const searchTerm = 'some search';
-  const fillDropdownInput = (dropdownSelector) => {
+  const fillDropdownInput = dropdownSelector => {
     const dropdownElement = document.querySelector(dropdownSelector).parentNode;
     const inputElement = dropdownElement.querySelector('.dropdown-input-field');
     inputElement.value = searchTerm;
@@ -19,8 +19,8 @@ describe('Search', () => {
     new Search(); // eslint-disable-line no-new
   });
 
-  it('requests groups from backend when filtering', (done) => {
-    spyOn(Api, 'groups').and.callFake((term) => {
+  it('requests groups from backend when filtering', done => {
+    spyOn(Api, 'groups').and.callFake(term => {
       expect(term).toBe(searchTerm);
       done();
     });
@@ -29,8 +29,8 @@ describe('Search', () => {
     $(inputElement).trigger('input');
   });
 
-  it('requests projects from backend when filtering', (done) => {
-    spyOn(Api, 'projects').and.callFake((term) => {
+  it('requests projects from backend when filtering', done => {
+    spyOn(Api, 'projects').and.callFake(term => {
       expect(term).toBe(searchTerm);
       done();
     });

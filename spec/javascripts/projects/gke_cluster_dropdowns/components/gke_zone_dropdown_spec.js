@@ -75,14 +75,20 @@ describe('GkeZoneDropdown', () => {
       expect(vm.$el.querySelector('input').value).toBe('');
       vm.$store.commit(SET_ZONES, gapiZonesResponseMock.items);
 
-      return vm.$nextTick().then(() => {
-        vm.$el.querySelector('.dropdown-content button').click();
+      return vm
+        .$nextTick()
+        .then(() => {
+          vm.$el.querySelector('.dropdown-content button').click();
 
-        return vm.$nextTick().then(() => {
-          expect(vm.$el.querySelector('input').value).toBe(selectedZoneMock);
-          done();
-        });
-      });
+          return vm
+            .$nextTick()
+            .then(() => {
+              expect(vm.$el.querySelector('input').value).toBe(selectedZoneMock);
+              done();
+            })
+            .catch(done.fail);
+        })
+        .catch(done.fail);
     });
   });
 });

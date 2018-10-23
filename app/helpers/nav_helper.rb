@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NavHelper
   def header_links
     @header_links ||= get_header_links

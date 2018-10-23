@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobHelper
   def highlight(blob_name, blob_content, repository: nil, plain: false)
     plain ||= blob_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE
@@ -148,7 +150,9 @@ module BlobHelper
   # example of Javascript) we tell the browser of the victim not to
   # execute untrusted data.
   def safe_content_type(blob)
-    if blob.text?
+    if blob.extension == 'svg'
+      blob.mime_type
+    elsif blob.text?
       'text/plain; charset=utf-8'
     elsif blob.image?
       blob.content_type
@@ -157,62 +161,50 @@ module BlobHelper
     end
   end
 
-  def cached_blob?
-    stale = stale?(etag: @blob.id) # The #stale? method sets cache headers.
+  def content_disposition(blob, inline)
+    return 'attachment' if blob.extension == 'svg'
 
-    # Because we are opionated we set the cache headers ourselves.
-    response.cache_control[:public] = @project.public?
-
-    response.cache_control[:max_age] =
-      if @ref && @commit && @ref == @commit.id
-        # This is a link to a commit by its commit SHA. That means that the blob
-        # is immutable. The only reason to invalidate the cache is if the commit
-        # was deleted or if the user lost access to the repository.
-        Blob::CACHE_TIME_IMMUTABLE
-      else
-        # A branch or tag points at this blob. That means that the expected blob
-        # value may change over time.
-        Blob::CACHE_TIME
-      end
-
-    response.etag = @blob.id
-    !stale
-  end
-
-  def licenses_for_select
-    return @licenses_for_select if defined?(@licenses_for_select)
-
-    grouped_licenses = LicenseTemplateFinder.new.execute.group_by(&:category)
-    categories = grouped_licenses.keys
-
-    @licenses_for_select = categories.each_with_object({}) do |category, hash|
-      hash[category] = grouped_licenses[category].map do |license|
-        { name: license.name, id: license.id }
-      end
-    end
+    inline ? 'inline' : 'attachment'
   end
 
   def ref_project
     @ref_project ||= @target_project || @project
   end
 
-  def gitignore_names
-    @gitignore_names ||= Gitlab::Template::GitignoreTemplate.dropdown_names
+  def template_dropdown_names(items)
+    grouped = items.group_by(&:category)
+    categories = grouped.keys
+
+    categories.each_with_object({}) do |category, hash|
+      hash[category] = grouped[category].map do |item|
+        { name: item.name, id: item.key }
+      end
+    end
+  end
+  private :template_dropdown_names
+
+  def licenses_for_select(project)
+    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
   end
 
-  def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names(params[:context])
+  def gitignore_names(project)
+    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
   end
 
-  def dockerfile_names
-    @dockerfile_names ||= Gitlab::Template::DockerfileTemplate.dropdown_names
+  def gitlab_ci_ymls(project)
+    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
-  def blob_editor_paths
+  def dockerfile_names(project)
+    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
+  end
+
+  def blob_editor_paths(project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
-      'blob-language' => @blob && @blob.language.try(:ace_mode)
+      'blob-filename' => @blob && @blob.path,
+      'project-id' => project.id
     }
   end
 

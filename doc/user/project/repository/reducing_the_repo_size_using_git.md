@@ -33,11 +33,10 @@ following method.
 
 ## Using `git filter-branch` to purge files
 
->
-**Warning:**
-Make sure to first make a copy of your repository since rewriting history will
-purge the files and information you are about to delete. Also make sure to
-inform any collaborators to not use `pull` after your changes, but use `rebase`.
+> **Warning:**
+> Make sure to first make a copy of your repository since rewriting history will
+> purge the files and information you are about to delete. Also make sure to
+> inform any collaborators to not use `pull` after your changes, but use `rebase`.
 
 1. Navigate to your repository:
 
@@ -71,10 +70,10 @@ inform any collaborators to not use `pull` after your changes, but use `rebase`.
 
 Your repository should now be below the size limit.
 
->**Note:**
-As an alternative to `filter-branch`, you can use the `bfg` tool with a
-command like: `bfg --delete-files path/to/big_file.mpg`. Read the
-[BFG Repo-Cleaner][bfg] documentation for more information.
+> **Note:**
+> As an alternative to `filter-branch`, you can use the `bfg` tool with a
+> command like: `bfg --delete-files path/to/big_file.mpg`. Read the
+> [BFG Repo-Cleaner][bfg] documentation for more information.
 
 [admin-repo-size]: https://docs.gitlab.com/ee/user/admin_area/settings/account_and_limit_settings.html#repository-size-limit
 [bfg]: https://rtyley.github.io/bfg-repo-cleaner/

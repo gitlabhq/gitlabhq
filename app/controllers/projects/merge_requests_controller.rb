@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
@@ -12,6 +14,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
+  before_action do
+    push_frontend_feature_flag(:ci_environments_status_changes)
+  end
 
   def index
     @merge_requests = @issuables
@@ -41,12 +46,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
-
-        # TODO cleanup- Fatih Simon Create an issue to remove these after the refactoring
-        # we no longer render notes here. I see it will require a small frontend refactoring,
-        # since we gather some data from this collection.
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
         labels
 
@@ -202,43 +201,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
-    environments =
-      begin
-        @merge_request.environments_for(current_user).map do |environment|
-          project = environment.project
-          deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
+    environments = @merge_request.environments_for(current_user).map do |environment|
+      EnvironmentStatus.new(environment, @merge_request)
+    end
 
-          stop_url =
-            if can?(current_user, :stop_environment, environment)
-              stop_project_environment_path(project, environment)
-            end
-
-          metrics_url =
-            if can?(current_user, :read_environment, environment) && environment.has_metrics?
-              metrics_project_environment_deployment_path(environment.project, environment, deployment)
-            end
-
-          metrics_monitoring_url =
-            if can?(current_user, :read_environment, environment)
-              environment_metrics_path(environment)
-            end
-
-          {
-            id: environment.id,
-            name: environment.name,
-            url: project_environment_path(project, environment),
-            metrics_url: metrics_url,
-            metrics_monitoring_url: metrics_monitoring_url,
-            stop_url: stop_url,
-            external_url: environment.external_url,
-            external_url_formatted: environment.formatted_external_url,
-            deployed_at: deployment.try(:created_at),
-            deployed_at_formatted: deployment.try(:formatted_deployment_time)
-          }
-        end.compact
-      end
-
-    render json: environments
+    render json: EnvironmentStatusSerializer.new(current_user: current_user).represent(environments)
   end
 
   def rebase
@@ -330,6 +297,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+    @noteable = @merge_request
+
+    # FIXME: We have to assign a presenter to another instance variable
+    # due to class_name checks being made with issuable classes
+    @mr_presenter = @merge_request.present(current_user: current_user)
   end
 
   def finder_type

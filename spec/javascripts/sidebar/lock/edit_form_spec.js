@@ -7,8 +7,8 @@ describe('EditForm', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(editForm);
-    const toggleForm = () => { };
-    const updateLockedAttribute = () => { };
+    const toggleForm = () => {};
+    const updateLockedAttribute = () => {};
 
     vm1 = new Component({
       propsData: {
@@ -30,12 +30,8 @@ describe('EditForm', () => {
   });
 
   it('renders on the appropriate warning text', () => {
-    expect(
-      vm1.$el.innerHTML.includes('Unlock this issue?'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
 
-    expect(
-      vm2.$el.innerHTML.includes('Lock this merge request?'),
-    ).toBe(true);
+    expect(vm2.$el.innerHTML.includes('Lock this merge request?')).toBe(true);
   });
 });

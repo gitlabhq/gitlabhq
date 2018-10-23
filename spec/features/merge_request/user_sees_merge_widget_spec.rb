@@ -160,7 +160,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'view merge request where project has CI setup but no CI status' do
+  context 'view merge request where project has CI set up but no CI status' do
     before do
       pipeline = create(:ci_pipeline, project: project,
                                       sha: merge_request.diff_head_sha,
@@ -178,7 +178,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
-  context 'view merge request in project with only-mwps setting enabled but no CI is setup' do
+  context 'view merge request in project with only-mwps setting enabled but no CI is set up' do
     before do
       visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
     end
@@ -423,7 +423,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the new failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -438,7 +438,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the new failure' do
           it 'shows the test report detail' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -468,7 +468,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the existing failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -483,7 +483,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the existing failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -519,7 +519,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the resolved failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
@@ -533,7 +533,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the resolved failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do

@@ -10,11 +10,11 @@
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
-  = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+  = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
   .form-group.row
     .offset-sm-2.col-sm-10
-      = render 'shared/allow_request_access', form: f
+      = render 'shared/allow_request_access', form: f, bold_label: true
 
   = render 'groups/group_admin_settings', f: f
 
@@ -26,12 +26,12 @@
         .alert.alert-info
           = render 'shared/group_tips'
     .form-actions
-      = f.submit _('Create group'), class: "btn btn-create"
+      = f.submit _('Create group'), class: "btn btn-success"
       = link_to  _('Cancel'), admin_groups_path, class: "btn btn-cancel"
 
   - else
     .form-actions
-      = f.submit _('Save changes'), class: "btn btn-save"
+      = f.submit _('Save changes'), class: "btn btn-success"
       = link_to  _('Cancel'), admin_group_path(@group), class: "btn btn-cancel"
 
 = render_if_exists 'ldap_group_links/ldap_syncrhonizations', group: @group

@@ -18,16 +18,14 @@ import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
-import JobComponent from './graph/job_component.vue';
+import JobItem from './graph/job_item.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
 
 export default {
   components: {
-    LoadingIcon,
     Icon,
-    JobComponent,
+    JobItem,
   },
 
   directives: {
@@ -157,9 +155,9 @@ export default {
 <template>
   <div class="dropdown">
     <button
-      v-tooltip
       id="stageDropdown"
       ref="dropdown"
+      v-tooltip
       :class="triggerButtonClass"
       :title="stage.title"
       class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
@@ -191,7 +189,7 @@ export default {
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
       aria-labelledby="stageDropdown"
     >
-      <loading-icon v-if="isLoading"/>
+      <gl-loading-icon v-if="isLoading"/>
       <ul
         v-else
         class="js-builds-dropdown-list scrollable-menu"
@@ -200,7 +198,7 @@ export default {
           v-for="job in dropdownContent"
           :key="job.id"
         >
-          <job-component
+          <job-item
             :dropdown-length="dropdownContent.length"
             :job="job"
             css-class-job-name="mini-pipeline-graph-dropdown-item"

@@ -13,19 +13,14 @@ module Projects
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
-      forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
+      relations_block = params.delete(:relations_block)
 
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
-        return @project
-      end
-
-      unless allowed_fork?(forked_from_project_id)
-        @project.errors.add(:forked_from_project_id, 'is forbidden')
         return @project
       end
 
@@ -47,16 +42,13 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
+      relations_block&.call(@project)
       yield(@project) if block_given?
 
       # If the block added errors, don't try to save the project
       return @project if @project.errors.any?
 
       @project.creator = current_user
-
-      if forked_from_project_id
-        @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
-      end
 
       save_project_and_import_data(import_data)
 
@@ -79,17 +71,12 @@ module Projects
       @project.errors.add(:namespace, "is not valid")
     end
 
-    def allowed_fork?(source_project_id)
-      return true if source_project_id.nil?
-
-      source_project = Project.find_by(id: source_project_id)
-      current_user.can?(:fork_project, source_project)
-    end
-
+    # rubocop: disable CodeReuse/ActiveRecord
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:create_projects, namespace)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
@@ -167,12 +154,14 @@ module Projects
       @project
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def create_services_from_active_templates(project)
       Service.where(template: true, active: true).each do |template|
         service = Service.build_from_template(project.id, template)
         service.save!
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def set_project_name_from_path
       # Set project name from path

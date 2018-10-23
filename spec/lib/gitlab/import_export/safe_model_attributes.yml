@@ -300,6 +300,7 @@ CommitStatus:
 - retried
 - protected
 - failure_reason
+- scheduled_at
 Ci::Variable:
 - id
 - project_id
@@ -416,6 +417,7 @@ ProjectHook:
 - type
 - service_id
 - push_events
+- push_events_branch_filter
 - issues_events
 - merge_requests_events
 - tag_push_events
@@ -491,6 +493,7 @@ ProjectFeature:
 - snippets_access_level
 - builds_access_level
 - repository_access_level
+- pages_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:
@@ -554,6 +557,19 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
+PrometheusMetric:
+- id
+- created_at
+- updated_at
+- project_id
+- y_label
+- unit
+- legend
+- title
+- query
+- group
+- common
+- identifier
 Badge:
 - id
 - link_url
@@ -565,3 +581,11 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+ResourceLabelEvent:
+- id
+- action
+- issue_id
+- merge_request_id
+- label_id
+- user_id
+- created_at

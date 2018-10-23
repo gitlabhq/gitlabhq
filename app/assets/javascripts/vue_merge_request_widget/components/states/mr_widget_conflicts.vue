@@ -1,21 +1,21 @@
 <script>
-  import statusIcon from '../mr_widget_status_icon.vue';
+import statusIcon from '../mr_widget_status_icon.vue';
 
-  export default {
-    name: 'MRWidgetConflicts',
-    components: {
-      statusIcon,
-    },
-    props: {
-      /* TODO: This is providing all store and service down when it
+export default {
+  name: 'MRWidgetConflicts',
+  components: {
+    statusIcon,
+  },
+  props: {
+    /* TODO: This is providing all store and service down when it
       only needs a few props */
-      mr: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
+    mr: {
+      type: Object,
+      required: true,
+      default: () => ({}),
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">

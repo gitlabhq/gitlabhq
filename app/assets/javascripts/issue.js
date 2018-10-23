@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-unused-vars, consistent-return, quotes, max-len */
+/* eslint-disable no-var, one-var, no-unused-vars, consistent-return */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
@@ -28,7 +28,7 @@ export default class Issue {
     }
 
     // Listen to state changes in the Vue app
-    document.addEventListener('issuable_vue_app:change', (event) => {
+    document.addEventListener('issuable_vue_app:change', event => {
       this.updateTopState(event.detail.isClosed, event.detail.data);
     });
   }
@@ -55,7 +55,13 @@ export default class Issue {
       $(document).trigger('issuable:change', isClosed);
       this.toggleCloseReopenButton(isClosed);
 
-      let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
+      let numProjectIssues = Number(
+        projectIssuesCounter
+          .first()
+          .text()
+          .trim()
+          .replace(/[^\d]/, ''),
+      );
       numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
       projectIssuesCounter.text(addDelimiter(numProjectIssues));
 
@@ -76,29 +82,34 @@ export default class Issue {
   initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
 
-    return $(document).on('click', '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen', (e) => {
-      var $button, shouldSubmit, url;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      $button = $(e.currentTarget);
-      shouldSubmit = $button.hasClass('btn-comment');
-      if (shouldSubmit) {
-        Issue.submitNoteForm($button.closest('form'));
-      }
+    return $(document).on(
+      'click',
+      '.js-issuable-actions a.btn-close, .js-issuable-actions a.btn-reopen',
+      e => {
+        var $button, shouldSubmit, url;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $button = $(e.currentTarget);
+        shouldSubmit = $button.hasClass('btn-comment');
+        if (shouldSubmit) {
+          Issue.submitNoteForm($button.closest('form'));
+        }
 
-      this.disableCloseReopenButton($button);
+        this.disableCloseReopenButton($button);
 
-      url = $button.attr('href');
-      return axios.put(url)
-      .then(({ data }) => {
-        const isClosed = $button.hasClass('btn-close');
-        this.updateTopState(isClosed, data);
-      })
-      .catch(() => flash(issueFailMessage))
-      .then(() => {
-        this.disableCloseReopenButton($button, false);
-      });
-    });
+        url = $button.attr('href');
+        return axios
+          .put(url)
+          .then(({ data }) => {
+            const isClosed = $button.hasClass('btn-close');
+            this.updateTopState(isClosed, data);
+          })
+          .catch(() => flash(issueFailMessage))
+          .then(() => {
+            this.disableCloseReopenButton($button, false);
+          });
+      },
+    );
   }
 
   initCloseReopenReport() {
@@ -124,7 +135,7 @@ export default class Issue {
 
   static submitNoteForm(form) {
     var noteText;
-    noteText = form.find("textarea.js-note-text").val();
+    noteText = form.find('textarea.js-note-text').val();
     if (noteText && noteText.trim().length > 0) {
       return form.submit();
     }
@@ -133,22 +144,26 @@ export default class Issue {
   static initMergeRequests() {
     var $container;
     $container = $('#merge-requests');
-    return axios.get($container.data('url'))
+    return axios
+      .get($container.data('url'))
       .then(({ data }) => {
         if ('html' in data) {
           $container.html(data.html);
         }
-      }).catch(() => flash('Failed to load referenced merge requests'));
+      })
+      .catch(() => flash('Failed to load referenced merge requests'));
   }
 
   static initRelatedBranches() {
     var $container;
     $container = $('#related-branches');
-    return axios.get($container.data('url'))
+    return axios
+      .get($container.data('url'))
       .then(({ data }) => {
         if ('html' in data) {
           $container.html(data.html);
         }
-      }).catch(() => flash('Failed to load related branches'));
+      })
+      .catch(() => flash('Failed to load related branches'));
   }
 }

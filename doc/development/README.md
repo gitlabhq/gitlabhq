@@ -7,8 +7,8 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Get started!
 
-- Setup GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
-- [GitLab contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
+- [GitLab contributing guide](contributing/index.md)
 - [Architecture](architecture.md) of GitLab
 - [Rake tasks](rake_tasks.md) for development
 
@@ -47,14 +47,21 @@ description: 'Learn how to contribute to GitLab.'
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Working with Merge Request diffs](diffs.md)
+- [Permissions](permissions.md)
+- [Prometheus metrics](prometheus_metrics.md)
+- [Guidelines for reusing abstractions](reusing_abstractions.md)
+- [DeclarativePolicy framework](policies.md)
 
 ## Performance guides
 
-- [Instrumentation](instrumentation.md)
-- [Performance guidelines](performance.md)
+- [Instrumentation](instrumentation.md) for Ruby code running in production
+  environments
+- [Performance guidelines](performance.md) for writing code, benchmarks, and
+  certain patterns to avoid
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
-- [Profiling](profiling.md) for profiling a URL
+- [Profiling](profiling.md) a URL, measuring performance using Sherlock, or
+  tracking down N+1 queries using Bullet
 
 ## Database guides
 
@@ -88,6 +95,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Database Debugging and Troubleshooting](database_debugging.md)
 - [Query Count Limits](query_count_limits.md)
+- [Database helper modules](database_helpers.md)
 
 ## Testing guides
 

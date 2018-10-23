@@ -20,6 +20,11 @@ export default {
     Tooltip,
   },
   props: {
+    discussionPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     diffFile: {
       type: Object,
       required: true,
@@ -65,8 +70,7 @@ export default {
       if (this.diffFile.submodule) {
         return this.diffFile.submoduleTreeUrl || this.diffFile.submoduleLink;
       }
-
-      return `#${this.diffFile.fileHash}`;
+      return this.discussionPath;
     },
     filePath() {
       if (this.diffFile.submodule) {
@@ -152,7 +156,7 @@ export default {
         v-once
         ref="titleWrapper"
         :href="titleLink"
-        class="append-right-4"
+        class="append-right-4 js-title-wrapper"
       >
         <file-icon
           :file-name="filePath"
@@ -166,23 +170,21 @@ export default {
             :title="diffFile.oldPath"
             class="file-title-name"
             data-container="body"
-          >
-            {{ diffFile.oldPath }}
-          </strong>
+            v-html="diffFile.oldPathHtml"
+          ></strong>
           →
           <strong
             v-tooltip
             :title="diffFile.newPath"
             class="file-title-name"
             data-container="body"
-          >
-            {{ diffFile.newPath }}
-          </strong>
+            v-html="diffFile.newPathHtml"
+          ></strong>
         </span>
 
         <strong
-          v-tooltip
           v-else
+          v-tooltip
           :title="filePath"
           class="file-title-name"
           data-container="body"
@@ -255,8 +257,8 @@ export default {
       </a>
 
       <a
-        v-tooltip
         v-if="diffFile.externalUrl"
+        v-tooltip
         :href="diffFile.externalUrl"
         :title="`View on ${diffFile.formattedExternalUrl}`"
         target="_blank"

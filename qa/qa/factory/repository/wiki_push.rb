@@ -16,8 +16,8 @@ module QA
           @new_branch = false
         end
 
-        def repository_uri
-          @repository_uri ||= begin
+        def repository_http_uri
+          @repository_http_uri ||= begin
             wiki.visit!
             Page::Project::Wiki::Show.act do
               go_to_clone_repository

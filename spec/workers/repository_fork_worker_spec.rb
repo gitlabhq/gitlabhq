@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe RepositoryForkWorker do
+  include ProjectForksHelper
+
   describe 'modules' do
     it 'includes ProjectImportOptions' do
       expect(described_class).to include_module(ProjectImportOptions)
@@ -8,9 +10,13 @@ describe RepositoryForkWorker do
   end
 
   describe "#perform" do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :public, :repository) }
     let(:shell) { Gitlab::Shell.new }
-    let(:fork_project) { create(:project, :repository, :import_scheduled, forked_from_project: project) }
+    let(:forked_project) { create(:project, :repository, :import_scheduled) }
+
+    before do
+      fork_project(project, forked_project.creator, target_project: forked_project, repository: true)
+    end
 
     shared_examples 'RepositoryForkWorker performing' do
       before do
@@ -21,8 +27,8 @@ describe RepositoryForkWorker do
         expect(shell).to receive(:fork_repository).with(
           'default',
           project.disk_path,
-          fork_project.repository_storage,
-          fork_project.disk_path
+          forked_project.repository_storage,
+          forked_project.disk_path
         )
       end
 
@@ -49,28 +55,28 @@ describe RepositoryForkWorker do
 
         perform!
 
-        expect(fork_project.protected_branches.first.name).to eq(fork_project.default_branch)
+        expect(forked_project.protected_branches.first.name).to eq(forked_project.default_branch)
       end
 
       it 'flushes various caches' do
         expect_fork_repository.and_return(true)
 
         # Works around https://github.com/rspec/rspec-mocks/issues/910
-        expect(Project).to receive(:find).with(fork_project.id).and_return(fork_project)
-        expect(fork_project.repository).to receive(:expire_emptiness_caches)
+        expect(Project).to receive(:find).with(forked_project.id).and_return(forked_project)
+        expect(forked_project.repository).to receive(:expire_emptiness_caches)
           .and_call_original
-        expect(fork_project.repository).to receive(:expire_exists_cache)
+        expect(forked_project.repository).to receive(:expire_exists_cache)
           .and_call_original
-        expect(fork_project.wiki.repository).to receive(:expire_emptiness_caches)
+        expect(forked_project.wiki.repository).to receive(:expire_emptiness_caches)
           .and_call_original
-        expect(fork_project.wiki.repository).to receive(:expire_exists_cache)
+        expect(forked_project.wiki.repository).to receive(:expire_exists_cache)
           .and_call_original
 
         perform!
       end
 
       it "handles bad fork" do
-        error_message = "Unable to fork project #{fork_project.id} for repository #{project.disk_path} -> #{fork_project.disk_path}"
+        error_message = "Unable to fork project #{forked_project.id} for repository #{project.disk_path} -> #{forked_project.disk_path}"
 
         expect_fork_repository.and_return(false)
 
@@ -80,7 +86,7 @@ describe RepositoryForkWorker do
 
     context 'only project ID passed' do
       def perform!
-        subject.perform(fork_project.id)
+        subject.perform(forked_project.id)
       end
 
       it_behaves_like 'RepositoryForkWorker performing'
@@ -88,7 +94,7 @@ describe RepositoryForkWorker do
 
     context 'project ID, storage and repo paths passed' do
       def perform!
-        subject.perform(fork_project.id, TestEnv.repos_path, project.disk_path)
+        subject.perform(forked_project.id, TestEnv.repos_path, project.disk_path)
       end
 
       it_behaves_like 'RepositoryForkWorker performing'

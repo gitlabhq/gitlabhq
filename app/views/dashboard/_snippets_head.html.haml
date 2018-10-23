@@ -1,3 +1,10 @@
+.page-title-holder
+  %h1.page-title= _('Snippets')
+
+  - if current_user
+    .page-title-controls
+      = link_to "New snippet", new_snippet_path, class: "btn btn-success", title: "New snippet"
+
 .top-area
   %ul.nav-links.nav.nav-tabs
     = nav_link(page: dashboard_snippets_path, html_options: {class: 'home'}) do
@@ -6,7 +13,3 @@
     = nav_link(page: explore_snippets_path) do
       = link_to explore_snippets_path, title: 'Explore snippets', data: {placement: 'right'} do
         Explore snippets
-
-  - if current_user
-    .nav-controls.d-none.d-sm-block
-      = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"

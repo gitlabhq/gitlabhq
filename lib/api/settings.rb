@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Settings < Grape::API
     before { authenticated_as_admin! }
@@ -64,10 +66,6 @@ module API
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project manifest],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
-      optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
-      given koding_enabled: ->(val) { val } do
-        requires :koding_url, type: String, desc: 'The Koding team URL'
-      end
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
@@ -102,7 +100,7 @@ module API
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
-      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
+      optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
       end
@@ -116,11 +114,6 @@ module API
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
-      end
-      optional :sidekiq_throttling_enabled, type: Boolean, desc: 'Enable Sidekiq Job Throttling'
-      given sidekiq_throttling_enabled: ->(val) { val } do
-        requires :sidekiq_throttling_factor, type: Float, desc: 'The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.'
-        requires :sidekiq_throttling_queues, type: Array[String], desc: 'Choose which queues you wish to throttle'
       end
       optional :sign_in_text, type: String, desc: 'The sign in text of the GitLab application'
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5

@@ -21,10 +21,12 @@ class DeleteMergedBranchesService < BaseService
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request_branch_names
     # reorder(nil) is necessary for SELECT DISTINCT because default scope adds an ORDER BY
     source_names = project.origin_merge_requests.opened.reorder(nil).uniq.pluck(:source_branch)
     target_names = project.merge_requests.opened.reorder(nil).uniq.pluck(:target_branch)
     (source_names + target_names).uniq
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len, class-methods-use-this */
+/* eslint-disable func-names, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, class-methods-use-this */
 
 // Zen Mode (full screen) textarea
 //
@@ -47,16 +47,26 @@ export default class ZenMode {
       e.preventDefault();
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
-    $(document).on('zen_mode:enter', (function(_this) {
-      return function(e) {
-        return _this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
-      };
-    })(this));
-    $(document).on('zen_mode:leave', (function(_this) {
-      return function(e) {
-        return _this.exit();
-      };
-    })(this));
+    $(document).on(
+      'zen_mode:enter',
+      (function(_this) {
+        return function(e) {
+          return _this.enter(
+            $(e.target)
+              .closest('.md-area')
+              .find('.zen-backdrop'),
+          );
+        };
+      })(this),
+    );
+    $(document).on(
+      'zen_mode:leave',
+      (function(_this) {
+        return function(e) {
+          return _this.exit();
+        };
+      })(this),
+    );
     $(document).on('keydown', function(e) {
       // Esc
       if (e.keyCode === 27) {
@@ -93,7 +103,7 @@ export default class ZenMode {
 
   scrollTo(zen_area) {
     return $.scrollTo(zen_area, 0, {
-      offset: -150
+      offset: -150,
     });
   }
 }

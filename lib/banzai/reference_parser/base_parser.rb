@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module ReferenceParser
     # Base class for reference parsing classes.
@@ -166,7 +168,7 @@ module Banzai
       # objects that have not yet been queried. For objects that have already
       # been queried the object is returned from the cache.
       def collection_objects_for_ids(collection, ids)
-        if RequestStore.active?
+        if Gitlab::SafeRequestStore.active?
           ids = ids.map(&:to_i)
           cache = collection_cache[collection_cache_key(collection)]
           to_query = ids - cache.keys
@@ -215,7 +217,7 @@ module Banzai
       #
       def projects_for_nodes(nodes)
         @projects_for_nodes ||=
-          grouped_objects_for_nodes(nodes, Project, 'data-project')
+          grouped_objects_for_nodes(nodes, Project.includes(:project_feature), 'data-project')
       end
 
       def can?(user, permission, subject = :global)
@@ -248,7 +250,7 @@ module Banzai
       end
 
       def collection_cache
-        RequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
+        Gitlab::SafeRequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
           hash[key] = {}
         end
       end

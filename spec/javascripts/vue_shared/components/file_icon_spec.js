@@ -28,7 +28,9 @@ describe('File Icon component', () => {
       fileName: 'test.js',
     });
 
-    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(`${gon.sprite_file_icons}#javascript`);
+    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(
+      `${gon.sprite_file_icons}#javascript`,
+    );
   });
 
   it('should render a image icon based on file ending', () => {
@@ -36,7 +38,9 @@ describe('File Icon component', () => {
       fileName: 'test.png',
     });
 
-    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(`${gon.sprite_file_icons}#image`);
+    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(
+      `${gon.sprite_file_icons}#image`,
+    );
   });
 
   it('should render a webpack icon based on file namer', () => {
@@ -44,7 +48,9 @@ describe('File Icon component', () => {
       fileName: 'webpack.js',
     });
 
-    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(`${gon.sprite_file_icons}#webpack`);
+    expect(vm.$el.firstChild.firstChild.getAttribute('xlink:href')).toBe(
+      `${gon.sprite_file_icons}#webpack`,
+    );
   });
 
   it('should render a standard folder icon', () => {
@@ -53,7 +59,9 @@ describe('File Icon component', () => {
       folder: true,
     });
 
-    expect(vm.$el.querySelector('span > svg > use').getAttribute('xlink:href')).toBe(`${gon.sprite_file_icons}#folder`);
+    expect(vm.$el.querySelector('span > svg > use').getAttribute('xlink:href')).toBe(
+      `${gon.sprite_file_icons}#folder`,
+    );
   });
 
   it('should render a loading icon', () => {
@@ -62,9 +70,12 @@ describe('File Icon component', () => {
       loading: true,
     });
 
-    expect(
-      vm.$el.querySelector('i').getAttribute('class'),
-    ).toEqual('fa fa-spin fa-spinner fa-1x');
+    const { classList } = vm.$el.querySelector('i');
+
+    expect(classList.contains('fa')).toEqual(true);
+    expect(classList.contains('fa-spin')).toEqual(true);
+    expect(classList.contains('fa-spinner')).toEqual(true);
+    expect(classList.contains('fa-1x')).toEqual(true);
   });
 
   it('should add a special class and a size class', () => {
@@ -77,6 +88,7 @@ describe('File Icon component', () => {
     const { classList } = vm.$el.firstChild;
     const containsSizeClass = classList.contains('s120');
     const containsCustomClass = classList.contains('extraclasses');
+
     expect(containsSizeClass).toBe(true);
     expect(containsCustomClass).toBe(true);
   });

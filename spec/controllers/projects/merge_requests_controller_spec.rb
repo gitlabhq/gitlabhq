@@ -76,28 +76,6 @@ describe Projects::MergeRequestsController do
         expect(response).to be_success
       end
 
-      context "loads notes" do
-        let(:first_contributor) { create(:user) }
-        let(:contributor) { create(:user) }
-        let(:merge_request) { create(:merge_request, author: first_contributor, target_project: project, source_project: project) }
-        let(:contributor_merge_request) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-        # the order here is important
-        # as the controller reloads these from DB, references doesn't correspond after
-        let!(:first_contributor_note) { create(:note, author: first_contributor, noteable: merge_request, project: project) }
-        let!(:contributor_note) { create(:note, author: contributor, noteable: merge_request, project: project) }
-        let!(:owner_note) { create(:note, author: user, noteable: merge_request, project: project) }
-
-        it "with special_role FIRST_TIME_CONTRIBUTOR" do
-          go(format: :html)
-
-          notes = assigns(:notes)
-          expect(notes).to match(a_collection_containing_exactly(an_object_having_attributes(special_role: Note::SpecialRole::FIRST_TIME_CONTRIBUTOR),
-                                                                 an_object_having_attributes(special_role: nil),
-                                                                 an_object_having_attributes(special_role: nil)
-                                                                ))
-        end
-      end
-
       context "that is invalid" do
         let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
 
@@ -763,24 +741,34 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { fork_project(project, user, repository: true) }
-      let!(:environment)  { create(:environment, project: forked) }
-      let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
-      let(:admin)         { create(:admin) }
+      let!(:forked)      { fork_project(project, user, repository: true) }
+      let!(:environment) { create(:environment, project: forked) }
+      let!(:deployment)  { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
+      let(:admin)        { create(:admin) }
 
       let(:merge_request) do
         create(:merge_request, source_project: forked, target_project: project)
       end
 
-      before do
+      it 'links to the environment on that project' do
+        get_ci_environments_status
+
+        expect(json_response.first['url']).to match /#{forked.full_path}/
+      end
+
+      # we're trying to reduce the overall number of queries for this method.
+      # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-ce/issues/52287
+      it 'keeps queries in check' do
+        control_count = ActiveRecord::QueryRecorder.new { get_ci_environments_status }.count
+
+        expect(control_count).to be <= 137
+      end
+
+      def get_ci_environments_status
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
           id: merge_request.iid, format: 'json'
-      end
-
-      it 'links to the environment on that project' do
-        expect(json_response.first['url']).to match /#{forked.full_path}/
       end
     end
   end
@@ -850,12 +838,14 @@ describe Projects::MergeRequestsController do
     end
 
     context 'with a forked project' do
-      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-      let(:fork_owner) { fork_project.owner }
+      let(:forked_project) { fork_project(project, fork_owner, repository: true) }
+      let(:fork_owner) { create(:user) }
 
       before do
-        merge_request.update!(source_project: fork_project)
-        fork_project.add_reporter(user)
+        project.add_developer(fork_owner)
+
+        merge_request.update!(source_project: forked_project)
+        forked_project.add_reporter(user)
       end
 
       context 'user cannot push to source branch' do
@@ -883,6 +873,20 @@ describe Projects::MergeRequestsController do
           expect(response.status).to eq(200)
         end
       end
+    end
+  end
+
+  describe 'GET edit' do
+    it 'responds successfully' do
+      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+
+      expect(response).to have_gitlab_http_status(:success)
+    end
+
+    it 'assigns the noteable to make sure autocompletes work' do
+      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+
+      expect(assigns(:noteable)).not_to be_nil
     end
   end
 end

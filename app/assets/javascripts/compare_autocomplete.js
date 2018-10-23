@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, one-var-declaration-per-line, object-shorthand, no-else-return, max-len */
+/* eslint-disable func-names, one-var, no-var, object-shorthand, no-else-return */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -40,7 +40,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       },
       selectable: true,
       filterable: true,
-      filterRemote: true,
+      filterRemote: !!$dropdown.data('refsUrl'),
       fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
       renderRow: function(ref) {

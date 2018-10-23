@@ -1,9 +1,7 @@
-- @breadcrumb_link = dashboard_projects_path
-- breadcrumb_title "Projects"
+- @hide_breadcrumbs = true
 - @hide_top_links = true
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
-- visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
 
 .project-edit-container
@@ -30,15 +28,15 @@
     .col-lg-9.js-toggle-container
       %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
+          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab', track_label: 'blank_project', track_event: "click_tab" }, role: 'tab' }
             %span.d-none.d-sm-block Blank project
             %span.d-block.d-sm-none Blank
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
+          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab', track_label: 'create_from_template', track_event: "click_tab" }, role: 'tab' }
             %span.d-none.d-sm-block Create from template
             %span.d-block.d-sm-none Template
         %li.nav-item{ role: 'presentation' }
-          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
+          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab', track_label: 'import_project', track_event: "click_tab" }, role: 'tab' }
             %span.d-none.d-sm-block Import project
             %span.d-block.d-sm-none Import
 

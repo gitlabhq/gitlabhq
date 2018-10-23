@@ -6,14 +6,14 @@ module QA
           include Common
 
           view 'app/views/ci/variables/_variable_row.html.haml' do
-            element :variable_row, '.ci-variable-row-body'
-            element :variable_key, '.qa-ci-variable-input-key'
-            element :variable_value, '.qa-ci-variable-input-value'
+            element :variable_row, '.ci-variable-row-body' # rubocop:disable QA/ElementWithPattern
+            element :variable_key, '.qa-ci-variable-input-key' # rubocop:disable QA/ElementWithPattern
+            element :variable_value, '.qa-ci-variable-input-value' # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/views/ci/variables/_index.html.haml' do
-            element :save_variables, '.js-secret-variables-save-button'
-            element :reveal_values, '.js-secret-value-reveal-button'
+            element :save_variables, '.js-secret-variables-save-button' # rubocop:disable QA/ElementWithPattern
+            element :reveal_values, '.js-secret-value-reveal-button' # rubocop:disable QA/ElementWithPattern
           end
 
           def fill_variable(key, value)

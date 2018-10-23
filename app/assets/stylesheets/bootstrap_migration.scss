@@ -93,7 +93,6 @@ hr {
 }
 
 .form-group.row .col-form-label {
-  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
@@ -239,10 +238,6 @@ h3.popover-header {
 }
 
 .card {
-  .card-title {
-    margin-bottom: 0;
-  }
-
   &.card-without-border {
     @extend .border-0;
   }
@@ -253,13 +248,6 @@ h3.popover-header {
 
   &.bg-light {
     @extend .border-0;
-  }
-}
-
-.card-header {
-  h3.card-title,
-  h4.card-title {
-    margin-top: 0;
   }
 }
 

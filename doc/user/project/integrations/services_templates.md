@@ -1,8 +1,10 @@
 # Services templates
 
 A GitLab administrator can add a service template that sets a default for each
-project. After a service template is enabled, it will be applied to new
-projects only and its details will be pre-filled on the project's Service page.
+project. After a service template is enabled, it will be applied to **all**
+projects that don't have it already enabled and its details will be pre-filled
+on the project's Service page. By disabling the template, it will be disabled
+for new projects only.
 
 ## Enable a service template
 

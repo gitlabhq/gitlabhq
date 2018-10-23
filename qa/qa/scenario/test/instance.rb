@@ -20,14 +20,14 @@ module QA
         def self.do_perform(address, *rspec_options)
           Runtime::Scenario.define(:gitlab_address, address)
 
+          ##
+          # Perform before hooks, which are different for CE and EE
+          #
+          Runtime::Release.perform_before_hooks
+
           Specs::Runner.perform do |specs|
             specs.tty = true
-            specs.options =
-              if rspec_options.any?
-                rspec_options
-              else
-                ::File.expand_path('../../specs/features', __dir__)
-              end
+            specs.options = rspec_options if rspec_options.any?
           end
         end
       end

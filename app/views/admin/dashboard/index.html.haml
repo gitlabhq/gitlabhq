@@ -14,7 +14,7 @@
                 Projects:
                 = approximate_count_with_delimiters(@counts, Project)
             %hr
-            = link_to('New project', new_project_path, class: "btn btn-new")
+            = link_to('New project', new_project_path, class: "btn btn-success")
       .col-sm-4
         .info-well.dark-well
           .well-segment.well-centered
@@ -24,7 +24,7 @@
                 = approximate_count_with_delimiters(@counts, User)
             = render_if_exists 'admin/dashboard/users_statistics'
             %hr
-            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
+            = link_to 'New user', new_admin_user_path, class: "btn btn-success"
       .col-sm-4
         .info-well.dark-well
           .well-segment.well-centered
@@ -33,7 +33,7 @@
                 Groups:
                 = approximate_count_with_delimiters(@counts, Group)
             %hr
-            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
+            = link_to 'New group', new_admin_group_path, class: "btn btn-success"
     .row
       .col-md-4
         .info-well
@@ -42,7 +42,7 @@
             %p
               Forks
               %span.light.float-right
-                = approximate_count_with_delimiters(@counts, ForkedProjectLink)
+                = approximate_fork_count_with_delimiters(@counts)
             %p
               Issues
               %span.light.float-right

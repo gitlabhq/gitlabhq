@@ -87,7 +87,7 @@
         border: 0;
         background: $gray-light;
         border-radius: 0;
-        color: $events-pre-color;
+        color: $gl-gray-500;
         overflow: hidden;
       }
 
@@ -104,7 +104,7 @@
     }
 
     .event-note-icon {
-      color: $events-pre-color;
+      color: $gl-gray-500;
       float: left;
       font-size: $gl-font-size;
       line-height: 16px;

@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-67.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -67,10 +67,7 @@ stages:
 
 .use-pg: &use-pg
   services:
-    # As of Jan 2018, we don't have a strong reason to upgrade to 9.6 for CI yet,
-    # so using the least common denominator ensures backwards compatibility
-    # (as many users are still using 9.2).
-    - postgres:9.2
+    - postgres:9.6
     - redis:alpine
 
 .use-mysql: &use-mysql
@@ -95,7 +92,7 @@ stages:
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
-# https://docs.gitlab.com/ce/development/writing_documentation.html#testing
+# https://docs.gitlab.com/ce/development/documentation/#testing
 .except-docs: &except-docs
   except:
     - /(^docs[\/-].*|.*-docs$)/
@@ -130,8 +127,7 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  before_script: []
-  stage: build
+  stage: test
   cache: {}
   dependencies: []
   variables: &single-script-job-variables
@@ -171,7 +167,7 @@ stages:
     - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml"
   artifacts:
     expire_in: 31d
     when: always
@@ -180,6 +176,8 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -257,6 +255,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build
   retry: 0
   script:
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME omnibus
   when: manual
   only:
@@ -283,7 +282,7 @@ review-docs-deploy-manual:
   <<: *review-docs
   stage: build
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   when: manual
   only:
@@ -297,7 +296,7 @@ review-docs-deploy:
   <<: *review-docs
   stage: post-test
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   only:
     - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
@@ -311,10 +310,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
-    - gem install gitlab --no-ri --no-rdoc
+    - gem install gitlab --no-document
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
@@ -322,14 +324,14 @@ review-docs-cleanup:
 cloud-native-image:
   image: ruby:2.4-alpine
   before_script: []
-  stage: build
+  stage: test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   cache: {}
   script:
-    - gem install gitlab --no-ri --no-rdoc
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
+    - gem install gitlab --no-document
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -361,7 +363,7 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
+    - retry gem install fog-aws mime-types activesupport --no-document
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
@@ -439,10 +441,10 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
+  <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  cache: {}
   dependencies: []
   before_script: []
   only:
@@ -456,6 +458,8 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
 rspec-pg 0 30: *rspec-metadata-pg
@@ -602,7 +606,7 @@ static-analysis:
 docs lint:
   <<: *dedicated-runner
   <<: *except-qa
-  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-docs-lint"
   stage: test
   cache: {}
   dependencies: []
@@ -610,8 +614,8 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     - scripts/lint-changelog-yaml
-    - mv doc/ /nanoc/content/
-    - cd /nanoc
+    - mv doc/ /tmp/gitlab-docs/content/
+    - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
@@ -703,7 +707,6 @@ gitlab:assets:compile:
     SETUP_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
-    NO_COMPRESSION: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   script:
@@ -717,13 +720,17 @@ gitlab:assets:compile:
     expire_in: 31d
     paths:
       - webpack-report/
+      - public/assets/
 
 karma:
-  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg
   dependencies:
     - compile-assets
     - setup-test-env
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   script:
     - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
     - date
@@ -738,6 +745,8 @@ karma:
     paths:
       - chrome_debug.log
       - coverage-javascript/
+    reports:
+      junit: junit_karma.xml
 
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job

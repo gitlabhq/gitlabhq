@@ -19,6 +19,7 @@ describe('GL Style Field Errors', function() {
     expect(this.$form.length).toBe(1);
     expect(this.fieldErrors).toBeDefined();
     const { inputs } = this.fieldErrors.state;
+
     expect(inputs.length).toBe(4);
   });
 
@@ -28,29 +29,50 @@ describe('GL Style Field Errors', function() {
 
     expect(customErrorElem.length).toBe(1);
 
-    const customErrors = this.fieldErrors.state.inputs.filter((input) => {
+    const customErrors = this.fieldErrors.state.inputs.filter(input => {
       return input.inputElement.hasClass(customErrorFlag);
     });
+
     expect(customErrors.length).toBe(0);
   });
 
   it('should not show any errors before submit attempt', function() {
-    this.$form.find('.email').val('not-a-valid-email').keyup();
-    this.$form.find('.text-required').val('').keyup();
-    this.$form.find('.alphanumberic').val('?---*').keyup();
+    this.$form
+      .find('.email')
+      .val('not-a-valid-email')
+      .keyup();
+    this.$form
+      .find('.text-required')
+      .val('')
+      .keyup();
+    this.$form
+      .find('.alphanumberic')
+      .val('?---*')
+      .keyup();
 
     const errorsShown = this.$form.find('.gl-field-error-outline');
+
     expect(errorsShown.length).toBe(0);
   });
 
   it('should show errors when input valid is submitted', function() {
-    this.$form.find('.email').val('not-a-valid-email').keyup();
-    this.$form.find('.text-required').val('').keyup();
-    this.$form.find('.alphanumberic').val('?---*').keyup();
+    this.$form
+      .find('.email')
+      .val('not-a-valid-email')
+      .keyup();
+    this.$form
+      .find('.text-required')
+      .val('')
+      .keyup();
+    this.$form
+      .find('.alphanumberic')
+      .val('?---*')
+      .keyup();
 
     this.$form.submit();
 
     const errorsShown = this.$form.find('.gl-field-error-outline');
+
     expect(errorsShown.length).toBe(4);
   });
 
@@ -68,30 +90,35 @@ describe('GL Style Field Errors', function() {
 
     // Then invalid input
     emailInputElement.val('not-a-valid-email').keyup();
+
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(false);
 
     // Then valid input
     emailInputElement.val('email@gitlab.com').keyup();
+
     expect(emailInputElement).not.toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(true);
 
     // Then invalid input
     emailInputElement.val('not-a-valid-email').keyup();
+
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(false);
 
     // Then empty input
     emailInputElement.val('').keyup();
+
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(true);
     expect(fieldState.valid).toBe(false);
 
     // Then valid input
     emailInputElement.val('email@gitlab.com').keyup();
+
     expect(emailInputElement).not.toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(true);

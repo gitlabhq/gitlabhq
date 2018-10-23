@@ -9,48 +9,53 @@ import '~/vue_shared/models/assignee';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
-import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
+import sidebarEventHub from '~/sidebar/event_hub';
 import './models/issue';
 import './models/list';
 import './models/milestone';
 import './models/project';
-import './stores/boards_store';
+import boardsStore from './stores/boards_store';
 import ModalStore from './stores/modal_store';
 import BoardService from './services/board_service';
 import modalMixin from './mixins/modal_mixins';
-import './mixins/sortable_default_options';
 import './filters/due_date_filters';
-import './components/board';
-import './components/board_sidebar';
-import './components/new_list_dropdown';
+import Board from './components/board';
+import BoardSidebar from './components/board_sidebar';
+import initNewListDropdown from './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
-import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
+import '~/vue_shared/vue_resource_interceptor';
+import { NavigationType } from '~/lib/utils/common_utils';
+
+let issueBoardsApp;
 
 export default () => {
   const $boardApp = document.getElementById('board-app');
-  const Store = gl.issueBoards.BoardsStore;
 
-  window.gl = window.gl || {};
+  // check for browser back and trigger a hard reload to circumvent browser caching.
+  window.addEventListener('pageshow', (event) => {
+    const isNavTypeBackForward = window.performance &&
+        window.performance.navigation.type === NavigationType.TYPE_BACK_FORWARD;
 
-  if (gl.IssueBoardsApp) {
-    gl.IssueBoardsApp.$destroy(true);
+    if (event.persisted || isNavTypeBackForward) {
+      window.location.reload();
+    }
+  });
+
+  if (issueBoardsApp) {
+    issueBoardsApp.$destroy(true);
   }
 
-  Store.create();
+  boardsStore.create();
 
-  // hack to allow sidebar scripts like milestone_select manipulate the BoardsStore
-  gl.issueBoards.boardStoreIssueSet = (...args) => Vue.set(Store.detail.issue, ...args);
-  gl.issueBoards.boardStoreIssueDelete = (...args) => Vue.delete(Store.detail.issue, ...args);
-
-  gl.IssueBoardsApp = new Vue({
+  issueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      board: gl.issueBoards.Board,
-      'board-sidebar': gl.issueBoards.BoardSidebar,
+      Board,
+      BoardSidebar,
       BoardAddIssuesModal,
     },
     data: {
-      state: Store.state,
+      state: boardsStore.state,
       loading: true,
       boardsEndpoint: $boardApp.dataset.boardsEndpoint,
       listsEndpoint: $boardApp.dataset.listsEndpoint,
@@ -59,7 +64,7 @@ export default () => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail,
+      detailIssue: boardsStore.detail,
       defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
@@ -74,7 +79,7 @@ export default () => {
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,
       });
-      Store.rootPath = this.boardsEndpoint;
+      boardsStore.rootPath = this.boardsEndpoint;
 
       eventHub.$on('updateTokens', this.updateTokens);
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
@@ -88,16 +93,16 @@ export default () => {
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
     },
     mounted() {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
+      this.filterManager = new FilteredSearchBoards(boardsStore.filter, true, boardsStore.cantEdit);
       this.filterManager.setup();
 
-      Store.disabled = this.disabled;
+      boardsStore.disabled = this.disabled;
       gl.boardService
         .all()
         .then(res => res.data)
         .then(data => {
           data.forEach(board => {
-            const list = Store.addList(board, this.defaultAvatar);
+            const list = boardsStore.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
               list.position = Infinity;
@@ -108,7 +113,7 @@ export default () => {
 
           this.state.lists = _.sortBy(this.state.lists, 'position');
 
-          Store.addBlankState();
+          boardsStore.addBlankState();
           this.loading = false;
         })
         .catch(() => {
@@ -137,13 +142,13 @@ export default () => {
             });
         }
 
-        Store.detail.issue = newIssue;
+        boardsStore.detail.issue = newIssue;
       },
       clearDetailIssue() {
-        Store.detail.issue = {};
+        boardsStore.detail.issue = {};
       },
       toggleSubscription(id) {
-        const { issue } = Store.detail;
+        const { issue } = boardsStore.detail;
         if (issue.id === id && issue.toggleSubscriptionEndpoint) {
           issue.setFetchingState('subscriptions', true);
           BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
@@ -162,26 +167,28 @@ export default () => {
     },
   });
 
-  gl.IssueBoardsSearch = new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el: document.getElementById('js-add-list'),
     data: {
-      filters: Store.state.filters,
+      filters: boardsStore.state.filters,
     },
     mounted() {
-      gl.issueBoards.newListDropdownInit();
+      initNewListDropdown();
     },
   });
 
   const issueBoardsModal = document.getElementById('js-add-issues-btn');
 
   if (issueBoardsModal) {
-    gl.IssueBoardsModalAddBtn = new Vue({
+    // eslint-disable-next-line no-new
+    new Vue({
       el: issueBoardsModal,
       mixins: [modalMixin],
       data() {
         return {
           modal: ModalStore.store,
-          store: Store.state,
+          store: boardsStore.state,
           canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
         };
       },
@@ -229,7 +236,7 @@ export default () => {
       template: `
         <div class="board-extra-actions">
           <button
-            class="btn btn-create prepend-left-10"
+            class="btn btn-success prepend-left-10"
             type="button"
             data-placement="bottom"
             ref="addIssuesButton"

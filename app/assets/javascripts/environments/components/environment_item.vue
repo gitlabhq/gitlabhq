@@ -4,6 +4,7 @@ import _ from 'underscore';
 import tooltip from '~/vue_shared/directives/tooltip';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { humanize } from '~/lib/utils/text_utility';
+import Icon from '~/vue_shared/components/icon.vue';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -24,6 +25,7 @@ export default {
   components: {
     UserAvatarLink,
     CommitComponent,
+    Icon,
     ActionsComponent,
     ExternalUrlComponent,
     StopComponent,
@@ -448,6 +450,10 @@ export default {
         this.canRetry
       );
     },
+
+    folderIconName() {
+      return this.model.isOpen ? 'chevron-down' : 'chevron-right';
+    },
   },
 
   methods: {
@@ -466,7 +472,9 @@ export default {
     class="gl-responsive-table-row"
     role="row">
     <div
-      class="table-section section-wrap section-15"
+      v-tooltip
+      :title="model.name"
+      class="table-section section-wrap section-15 text-truncate"
       role="gridcell"
     >
       <div
@@ -480,9 +488,8 @@ export default {
         v-if="!model.isFolder"
         class="environment-name table-mobile-content">
         <a
-          v-tooltip
+          class="qa-environment-link"
           :href="environmentPath"
-          :title="model.name"
         >
           {{ model.name }}
         </a>
@@ -493,27 +500,15 @@ export default {
         role="button"
         @click="onClickFolder">
 
-        <span class="folder-icon">
-          <i
-            v-show="model.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-show="!model.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
+        <icon
+          :name="folderIconName"
+          class="folder-icon"
+        />
 
-        <span class="folder-icon">
-          <i
-            class="fa fa-folder"
-            aria-hidden="true">
-          </i>
-        </span>
+        <icon
+          name="folder"
+          class="folder-icon"
+        />
 
         <span>
           {{ model.folderName }}

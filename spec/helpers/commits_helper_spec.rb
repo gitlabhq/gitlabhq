@@ -37,7 +37,7 @@ describe CommitsHelper do
         .not_to include('onmouseover="alert(1)"')
     end
 
-    it 'escapes the commiter name' do
+    it 'escapes the committer name' do
       user = build_stubbed(:user, name: 'Foo <script>alert("XSS")</script>')
 
       commit = double(committer: user, committer_name: '', committer_email: '')

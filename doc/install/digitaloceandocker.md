@@ -87,7 +87,7 @@ You can add this to your `~/.bash_profile` file to ensure the `docker` client us
 + Container name: `gitlab-test-8.10`
 + GitLab version: **EE** `8.10.8-ee.0`
 
-#####  Setup container settings
+#####  Set up container settings
 
 ```
 export SSH_PORT=2222

@@ -1,3 +1,5 @@
+/* eslint-disable jasmine/no-unsafe-spy */
+
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import DropLab from '~/droplab/drop_lab';
 
@@ -8,7 +10,7 @@ describe('CloseReopenReportToggle', () => {
     const button = {};
     let commentTypeToggle;
 
-    beforeEach(function () {
+    beforeEach(function() {
       commentTypeToggle = new CloseReopenReportToggle({
         dropdownTrigger,
         dropdownList,
@@ -16,15 +18,15 @@ describe('CloseReopenReportToggle', () => {
       });
     });
 
-    it('sets .dropdownTrigger', function () {
+    it('sets .dropdownTrigger', function() {
       expect(commentTypeToggle.dropdownTrigger).toBe(dropdownTrigger);
     });
 
-    it('sets .dropdownList', function () {
+    it('sets .dropdownList', function() {
       expect(commentTypeToggle.dropdownList).toBe(dropdownList);
     });
 
-    it('sets .button', function () {
+    it('sets .button', function() {
       expect(commentTypeToggle.button).toBe(button);
     });
   });

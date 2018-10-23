@@ -15,5 +15,6 @@ export default (initGFM = true) => {
     epics: initGFM,
     milestones: initGFM,
     labels: initGFM,
+    snippets: initGFM,
   });
 };

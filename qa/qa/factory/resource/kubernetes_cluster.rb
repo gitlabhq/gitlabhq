@@ -16,7 +16,7 @@ module QA
         def fabricate!
           @project.visit!
 
-          Page::Menu::Side.act { click_operations_kubernetes }
+          Page::Project::Menu.act { click_operations_kubernetes }
 
           Page::Project::Operations::Kubernetes::Index.perform do |page|
             page.add_kubernetes_cluster
@@ -31,12 +31,13 @@ module QA
             page.set_api_url(@cluster.api_url)
             page.set_ca_certificate(@cluster.ca_certificate)
             page.set_token(@cluster.token)
+            page.check_rbac! if @cluster.rbac
             page.add_cluster!
           end
 
           if @install_helm_tiller
             Page::Project::Operations::Kubernetes::Show.perform do |page|
-              # We must wait a few seconds for permissions to be setup correctly for new cluster
+              # We must wait a few seconds for permissions to be set up correctly for new cluster
               sleep 10
 
               # Helm must be installed before everything else

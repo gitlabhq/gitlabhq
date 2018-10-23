@@ -1,57 +1,62 @@
 <script>
-  export default {
-    props: {
-      markdownDocsPath: {
-        type: String,
-        required: true,
-      },
-      quickActionsDocsPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+import { Link } from '@gitlab-org/gitlab-ui';
+
+export default {
+  components: {
+    'gl-link': Link,
+  },
+  props: {
+    markdownDocsPath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      hasQuickActionsDocsPath() {
-        return this.quickActionsDocsPath !== '';
-      },
+    quickActionsDocsPath: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  computed: {
+    hasQuickActionsDocsPath() {
+      return this.quickActionsDocsPath !== '';
+    },
+  },
+};
 </script>
 
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
       <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <a
+        <gl-link
           :href="markdownDocsPath"
           target="_blank"
           tabindex="-1"
         >
           Markdown is supported
-        </a>
+        </gl-link>
       </template>
       <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
-        <a
+        <gl-link
           :href="markdownDocsPath"
           target="_blank"
           tabindex="-1"
         >
           Markdown
-        </a>
+        </gl-link>
         and
-        <a
+        <gl-link
           :href="quickActionsDocsPath"
           target="_blank"
           tabindex="-1"
         >
           quick actions
-        </a>
+        </gl-link>
         are supported
       </template>
     </div>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GitlabProjectsController < Import::BaseController
   before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_gitlab_project_import_enabled
@@ -11,7 +13,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def create
     unless file_is_valid?
-      return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
+      return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive (ending in .gz)." })
     end
 
     @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
@@ -29,7 +31,11 @@ class Import::GitlabProjectsController < Import::BaseController
   private
 
   def file_is_valid?
-    project_params[:file] && project_params[:file].respond_to?(:read)
+    return false unless project_params[:file] && project_params[:file].respond_to?(:read)
+
+    filename = project_params[:file].original_filename
+
+    ImportExportUploader::EXTENSION_WHITELIST.include?(File.extname(filename).delete('.'))
   end
 
   def verify_gitlab_project_import_enabled

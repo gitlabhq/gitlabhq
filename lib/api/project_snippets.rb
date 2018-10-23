@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class ProjectSnippets < Grape::API
     include PaginationParams
@@ -85,6 +87,7 @@ module API
                               desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :code, :visibility_level
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find_by(id: params.delete(:snippet_id))
         not_found!('Snippet') unless snippet
@@ -107,11 +110,13 @@ module API
           render_validation_error!(snippet)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete a project snippet'
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ":id/snippets/:snippet_id" do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
@@ -120,11 +125,13 @@ module API
 
         destroy_conditionally!(snippet)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a raw project snippet'
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/snippets/:snippet_id/raw" do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet
@@ -133,6 +140,7 @@ module API
         content_type 'text/plain'
         present snippet.content
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get the user agent details for a project snippet' do
         success Entities::UserAgentDetail
@@ -140,6 +148,7 @@ module API
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/snippets/:snippet_id/user_agent_detail" do
         authenticated_as_admin!
 
@@ -149,6 +158,7 @@ module API
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

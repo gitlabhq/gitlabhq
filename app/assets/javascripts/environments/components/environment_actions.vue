@@ -1,7 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
@@ -9,7 +8,6 @@ export default {
     tooltip,
   },
   components: {
-    loadingIcon,
     Icon,
   },
   props: {
@@ -62,12 +60,10 @@ export default {
     >
       <span>
         <icon name="play" />
-        <i
-          class="fa fa-caret-down"
-          aria-hidden="true"
-        >
-        </i>
-        <loading-icon v-if="isLoading" />
+        <icon
+          name="chevron-down"
+        />
+        <gl-loading-icon v-if="isLoading" />
       </span>
     </button>
 

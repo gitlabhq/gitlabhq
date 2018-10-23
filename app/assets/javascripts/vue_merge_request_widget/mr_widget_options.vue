@@ -1,5 +1,4 @@
 <script>
-
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
@@ -100,16 +99,26 @@ export default {
       return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
     shouldRenderSourceBranchRemovalStatus() {
-      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
-        (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
+      return (
+        !this.mr.canRemoveSourceBranch &&
+        this.mr.shouldRemoveSourceBranch &&
+        (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
+      );
     },
   },
   created() {
     this.initPolling();
     this.bindEventHubListeners();
+    eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
-    this.handleMounted();
+    this.setFaviconHelper();
+    this.initDeploymentsPolling();
+  },
+  beforeDestroy() {
+    eventHub.$off('mr.discussion.updated', this.checkStatus);
+    this.pollingInterval.destroy();
+    this.deploymentsInterval.destroy();
   },
   methods: {
     createService(store) {
@@ -127,9 +136,10 @@ export default {
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
-      return this.service.checkStatus()
+      return this.service
+        .checkStatus()
         .then(res => res.data)
-        .then((data) => {
+        .then(data => {
           this.handleNotification(data);
           this.mr.setData(data);
           this.setFaviconHelper();
@@ -166,20 +176,24 @@ export default {
       return Promise.resolve();
     },
     fetchDeployments() {
-      return this.service.fetchDeployments()
+      return this.service
+        .fetchDeployments()
         .then(res => res.data)
-        .then((data) => {
+        .then(data => {
           if (data.length) {
             this.mr.deployments = data;
           }
         })
         .catch(() => {
-          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.');
+          createFlash(
+            'Something went wrong while fetching the environments for this merge request. Please try again.',
+          );
         });
     },
     fetchActionsContent() {
-      this.service.fetchMergeActionsContent()
-        .then((res) => {
+      this.service
+        .fetchMergeActionsContent()
+        .then(res => {
           if (res.data) {
             const el = document.createElement('div');
             el.innerHTML = res.data;
@@ -206,22 +220,22 @@ export default {
       this.pollingInterval.stopTimer();
     },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', (cb) => {
+      eventHub.$on('MRWidgetUpdateRequested', cb => {
         this.checkStatus(cb);
       });
 
       // `params` should be an Array contains a Boolean, like `[true]`
       // Passing parameter as Boolean didn't work.
-      eventHub.$on('SetBranchRemoveFlag', (params) => {
+      eventHub.$on('SetBranchRemoveFlag', params => {
         [this.mr.isRemovingSourceBranch] = params;
       });
 
-      eventHub.$on('FailedToMerge', (mergeError) => {
+      eventHub.$on('FailedToMerge', mergeError => {
         this.mr.state = 'failedToMerge';
         this.mr.mergeError = mergeError;
       });
 
-      eventHub.$on('UpdateWidgetData', (data) => {
+      eventHub.$on('UpdateWidgetData', data => {
         this.mr.setData(data);
       });
 
@@ -236,10 +250,6 @@ export default {
       eventHub.$on('DisablePolling', () => {
         this.stopPolling();
       });
-    },
-    handleMounted() {
-      this.setFaviconHelper();
-      this.initDeploymentsPolling();
     },
   },
 };
@@ -265,8 +275,10 @@ export default {
     <div class="mr-section-container">
       <grouped-test-reports-app
         v-if="mr.testResultsPath"
+        class="js-reports-container"
         :endpoint="mr.testResultsPath"
       />
+
       <div class="mr-widget-section">
         <component
           :is="componentName"

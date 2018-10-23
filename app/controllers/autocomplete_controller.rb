@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
 
@@ -18,7 +20,7 @@ class AutocompleteController < ApplicationController
   end
 
   def user
-    user = UserFinder.new(params).execute!
+    user = UserFinder.new(params[:id]).find_by_id!
 
     render json: UserSerializer.new.represent(user)
   end

@@ -5,9 +5,9 @@ module Projects
     attr_reader :errors
 
     def execute(remote_mirror)
-      @errors = []
-
       return success unless remote_mirror.enabled?
+
+      errors = []
 
       begin
         remote_mirror.ensure_remote!

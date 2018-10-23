@@ -1,5 +1,4 @@
-- @breadcrumb_link = dashboard_groups_path
-- breadcrumb_title "Groups"
+- @hide_breadcrumbs = true
 - @hide_top_links = true
 - page_title    'New Group'
 - header_title  "Groups", dashboard_groups_path
@@ -27,7 +26,7 @@
         .col-sm-10
           = render 'shared/choose_group_avatar_button', f: f
 
-      = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
+      = render 'shared/old_visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
       = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
@@ -36,5 +35,5 @@
           = render 'shared/group_tips'
 
       .form-actions
-        = f.submit 'Create group', class: "btn btn-create"
+        = f.submit 'Create group', class: "btn btn-success"
         = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'

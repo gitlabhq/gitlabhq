@@ -27,24 +27,18 @@ describe('Title field component', () => {
   });
 
   it('renders form control with formState title', () => {
-    expect(
-      vm.$el.querySelector('.form-control').value,
-    ).toBe('test');
+    expect(vm.$el.querySelector('.form-control').value).toBe('test');
   });
 
   it('triggers update with meta+enter', () => {
     vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, true));
 
-    expect(
-      eventHub.$emit,
-    ).toHaveBeenCalled();
+    expect(eventHub.$emit).toHaveBeenCalled();
   });
 
   it('triggers update with ctrl+enter', () => {
     vm.$el.querySelector('.form-control').dispatchEvent(keyboardDownEvent(13, false, true));
 
-    expect(
-      eventHub.$emit,
-    ).toHaveBeenCalled();
+    expect(eventHub.$emit).toHaveBeenCalled();
   });
 });

@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Ci::BuildRunnerPresenter do
   let(:presenter) { described_class.new(build) }
   let(:archive) { { paths: ['sample.txt'] } }
-  let(:junit) { { junit: ['junit.xml'] } }
 
   let(:archive_expectation) do
     {
@@ -11,16 +10,6 @@ describe Ci::BuildRunnerPresenter do
       artifact_format: :zip,
       paths: archive[:paths],
       untracked: archive[:untracked]
-    }
-  end
-
-  let(:junit_expectation) do
-    {
-      name: 'junit.xml',
-      artifact_type: :junit,
-      artifact_format: :gzip,
-      paths: ['junit.xml'],
-      when: 'always'
     }
   end
 
@@ -49,20 +38,46 @@ describe Ci::BuildRunnerPresenter do
       end
     end
 
-    context "when option has 'junit' keyword" do
-      let(:build) { create(:ci_build, options: { artifacts: { reports: junit } } ) }
+    context "with reports" do
+      Ci::JobArtifact::DEFAULT_FILE_NAMES.each do |file_type, filename|
+        context file_type.to_s do
+          let(:report) { { "#{file_type}": [filename] } }
+          let(:build) { create(:ci_build, options: { artifacts: { reports: report } } ) }
 
-      it 'presents correct hash' do
-        expect(presenter.artifacts.first).to include(junit_expectation)
+          let(:report_expectation) do
+            {
+              name: filename,
+              artifact_type: :"#{file_type}",
+              artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(file_type),
+              paths: [filename],
+              when: 'always'
+            }
+          end
+
+          it 'presents correct hash' do
+            expect(presenter.artifacts.first).to include(report_expectation)
+          end
+        end
       end
     end
 
     context "when option has both archive and reports specification" do
-      let(:build) { create(:ci_build, options: { script: 'echo', artifacts: { **archive, reports: junit } } ) }
+      let(:report) { { junit: ['junit.xml'] } }
+      let(:build) { create(:ci_build, options: { script: 'echo', artifacts: { **archive, reports: report } } ) }
+
+      let(:report_expectation) do
+        {
+          name: 'junit.xml',
+          artifact_type: :junit,
+          artifact_format: :gzip,
+          paths: ['junit.xml'],
+          when: 'always'
+        }
+      end
 
       it 'presents correct hash' do
         expect(presenter.artifacts.first).to include(archive_expectation)
-        expect(presenter.artifacts.second).to include(junit_expectation)
+        expect(presenter.artifacts.second).to include(report_expectation)
       end
 
       context "when archive specifies 'expire_in' keyword" do
@@ -70,7 +85,7 @@ describe Ci::BuildRunnerPresenter do
 
         it 'inherits expire_in from archive' do
           expect(presenter.artifacts.first).to include({ **archive_expectation, expire_in: '3 mins 4 sec' })
-          expect(presenter.artifacts.second).to include({ **junit_expectation, expire_in: '3 mins 4 sec' })
+          expect(presenter.artifacts.second).to include({ **report_expectation, expire_in: '3 mins 4 sec' })
         end
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Badge
     module Coverage
@@ -36,6 +38,7 @@ module Gitlab
 
         private
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def raw_coverage
           return unless @pipeline
 
@@ -47,6 +50,7 @@ module Gitlab
               .try(:coverage)
           end
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

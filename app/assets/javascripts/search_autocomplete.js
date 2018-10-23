@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -68,7 +68,7 @@ function setSearchOptions() {
   }
 }
 
-export default class SearchAutocomplete {
+export class SearchAutocomplete {
   constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
     setSearchOptions();
     this.bindEventContext();
@@ -498,4 +498,8 @@ export default class SearchAutocomplete {
 
     this.dropdownMenu.toggleClass('fade-out', !this.isScrolledUp());
   }
+}
+
+export default function initSearchAutocomplete(opts) {
+  return new SearchAutocomplete(opts);
 }

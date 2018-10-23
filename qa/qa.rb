@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $: << File.expand_path(File.dirname(__FILE__))
 
 Encoding.default_external = 'UTF-8'
@@ -14,6 +16,9 @@ module QA
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
+    autoload :Path, 'qa/runtime/path'
+    autoload :Fixtures, 'qa/runtime/fixtures'
+    autoload :Logger, 'qa/runtime/logger'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -32,6 +37,7 @@ module QA
   # GitLab QA fabrication mechanisms
   #
   module Factory
+    autoload :ApiFabricator, 'qa/factory/api_fabricator'
     autoload :Base, 'qa/factory/base'
     autoload :Dependency, 'qa/factory/dependency'
     autoload :Product, 'qa/factory/product'
@@ -41,10 +47,12 @@ module QA
       autoload :Group, 'qa/factory/resource/group'
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :Label, 'qa/factory/resource/label'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
       autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :DeployToken, 'qa/factory/resource/deploy_token'
       autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
@@ -55,6 +63,7 @@ module QA
       autoload :Wiki, 'qa/factory/resource/wiki'
       autoload :File, 'qa/factory/resource/file'
       autoload :Fork, 'qa/factory/resource/fork'
+      autoload :SSHKey, 'qa/factory/resource/ssh_key'
     end
 
     module Repository
@@ -92,11 +101,14 @@ module QA
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+        autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
       end
 
       module Sanity
+        autoload :Framework, 'qa/scenario/test/sanity/framework'
         autoload :Selectors, 'qa/scenario/test/sanity/selectors'
       end
     end
@@ -115,19 +127,13 @@ module QA
 
     module Main
       autoload :Login, 'qa/page/main/login'
+      autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
       autoload :SignUp, 'qa/page/main/sign_up'
     end
 
     module Settings
       autoload :Common, 'qa/page/settings/common'
-    end
-
-    module Menu
-      autoload :Main, 'qa/page/menu/main'
-      autoload :Side, 'qa/page/menu/side'
-      autoload :Admin, 'qa/page/menu/admin'
-      autoload :Profile, 'qa/page/menu/profile'
     end
 
     module Dashboard
@@ -153,6 +159,7 @@ module QA
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
+      autoload :Menu, 'qa/page/project/menu'
 
       module Import
         autoload :Github, 'qa/page/project/import/github'
@@ -174,10 +181,12 @@ module QA
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'
         autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
+        autoload :Members, 'qa/page/project/settings/members'
       end
 
       module Issue
@@ -196,6 +205,11 @@ module QA
       end
 
       module Operations
+        module Environments
+          autoload :Index, 'qa/page/project/operations/environments/index'
+          autoload :Show, 'qa/page/project/operations/environments/show'
+        end
+
         module Kubernetes
           autoload :Index, 'qa/page/project/operations/kubernetes/index'
           autoload :Add, 'qa/page/project/operations/kubernetes/add'
@@ -209,14 +223,16 @@ module QA
         autoload :New, 'qa/page/project/wiki/new'
         autoload :Show, 'qa/page/project/wiki/show'
       end
-    end
 
-    module Shared
-      autoload :ClonePanel, 'qa/page/shared/clone_panel'
+      module WebIDE
+        autoload :Edit, 'qa/page/project/web_ide/edit'
+      end
     end
 
     module Profile
+      autoload :Menu, 'qa/page/profile/menu'
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+      autoload :SSHKeys, 'qa/page/profile/ssh_keys'
     end
 
     module Issuable
@@ -227,15 +243,25 @@ module QA
       autoload :Banner, 'qa/page/layout/banner'
     end
 
+    module Label
+      autoload :New, 'qa/page/label/new'
+      autoload :Index, 'qa/page/label/index'
+    end
+
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
     end
 
     module Admin
+      autoload :Menu, 'qa/page/admin/menu'
+
       module Settings
-        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
-        autoload :Main, 'qa/page/admin/settings/main'
+        autoload :Repository, 'qa/page/admin/settings/repository'
+
+        module Component
+          autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
+        end
       end
     end
 
@@ -248,8 +274,16 @@ module QA
     # Classes describing components that are used by several pages.
     #
     module Component
+      autoload :ClonePanel, 'qa/page/component/clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
+      autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
+      autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
+      autoload :UsersSelect, 'qa/page/component/users_select'
+
+      module Issuable
+        autoload :Common, 'qa/page/component/issuable/common'
+      end
     end
   end
 
@@ -278,6 +312,26 @@ module QA
   module Specs
     autoload :Config, 'qa/specs/config'
     autoload :Runner, 'qa/specs/runner'
+  end
+
+  ##
+  # Classes that describe the structure of vendor/third party application pages
+  #
+  module Vendor
+    module SAMLIdp
+      module Page
+        autoload :Base, 'qa/vendor/saml_idp/page/base'
+        autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+  end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
+    end
   end
 end
 

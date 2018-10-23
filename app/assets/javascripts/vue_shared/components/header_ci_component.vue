@@ -1,6 +1,5 @@
 <script>
 import CiIconBadge from './ci_badge_link.vue';
-import LoadingIcon from './loading_icon.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import tooltip from '../directives/tooltip';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
@@ -15,7 +14,6 @@ import UserAvatarImage from './user_avatar/user_avatar_image.vue';
 export default {
   components: {
     CiIconBadge,
-    LoadingIcon,
     TimeagoTooltip,
     UserAvatarImage,
   },
@@ -70,6 +68,9 @@ export default {
   methods: {
     onClickAction(action) {
       this.$emit('actionClicked', action);
+    },
+    onClickSidebarButton() {
+      this.$emit('clickedSidebarButton');
     },
   },
 };
@@ -128,18 +129,18 @@ export default {
       >
         <a
           v-if="action.type === 'link'"
+          :key="i"
           :href="action.path"
           :class="action.cssClass"
-          :key="i"
         >
           {{ action.label }}
         </a>
 
         <a
           v-else-if="action.type === 'ujs-link'"
+          :key="i"
           :href="action.path"
           :class="action.cssClass"
-          :key="i"
           data-method="post"
           rel="nofollow"
         >
@@ -148,9 +149,9 @@ export default {
 
         <button
           v-else-if="action.type === 'button'"
+          :key="i"
           :disabled="action.isLoading"
           :class="action.cssClass"
-          :key="i"
           type="button"
           @click="onClickAction(action)"
         >
@@ -163,21 +164,21 @@ export default {
           </i>
         </button>
       </template>
-      <button
-        v-if="hasSidebarButton"
-        id="toggleSidebar"
-        type="button"
-        class="btn btn-default d-block d-sm-none d-md-none
-sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
-        aria-label="Toggle Sidebar"
-      >
-        <i
-          class="fa fa-angle-double-left"
-          aria-hidden="true"
-          aria-labelledby="toggleSidebar"
-        >
-        </i>
-      </button>
     </section>
+    <button
+      v-if="hasSidebarButton"
+      id="toggleSidebar"
+      type="button"
+      class="btn btn-default d-block d-sm-none
+sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
+      @click="onClickSidebarButton"
+    >
+      <i
+        class="fa fa-angle-double-left"
+        aria-hidden="true"
+        aria-labelledby="toggleSidebar"
+      >
+      </i>
+    </button>
   </header>
 </template>

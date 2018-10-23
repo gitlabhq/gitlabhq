@@ -24,7 +24,7 @@ module ProjectForksHelper
       allow(service).to receive(:gitlab_shell).and_return(shell)
     end
 
-    forked_project = service.execute
+    forked_project = service.execute(params[:target_project])
 
     # Reload the both projects so they know about their newly created fork_network
     if forked_project.persisted?

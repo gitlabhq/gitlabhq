@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MilestonesHelper
   include EntityDateHelper
 
@@ -51,6 +53,7 @@ module MilestonesHelper
   # Returns count of milestones for different states
   # Uses explicit hash keys as the 'opened' state URL params differs from the db value
   # and we need to add the total
+  # rubocop: disable CodeReuse/ActiveRecord
   def milestone_counts(milestones)
     counts = milestones.reorder(nil).group(:state).count
 
@@ -60,6 +63,7 @@ module MilestonesHelper
       all: counts.values.sum || 0
     }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # Show 'active' class if provided GET param matches check
   # `or_blank` allows the function to return 'active' when given an empty param
@@ -119,20 +123,18 @@ module MilestonesHelper
     title = date_type == :start ? "Start date" : "End date"
 
     if date
-      time_ago = time_ago_in_words(date)
-      time_ago.slice!("about ")
-
-      time_ago << if date.past?
-                    " ago"
-                  else
-                    " remaining"
-                  end
+      time_ago = time_ago_in_words(date).sub("about ", "")
+      state = if date.past?
+                "ago"
+              else
+                "remaining"
+              end
 
       content = [
         title,
         "<br />",
         date.to_s(:medium),
-        "(#{time_ago})"
+        "(#{time_ago} #{state})"
       ].join(" ")
 
       content.html_safe

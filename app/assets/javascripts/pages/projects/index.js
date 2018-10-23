@@ -1,7 +1,7 @@
-import gcpSignupOffer from '~/clusters/components/gcp_signup_offer';
+import initDismissableCallout from '~/dismissable_callout';
 import initGkeDropdowns from '~/projects/gke_cluster_dropdowns';
 import Project from './project';
-import ShortcutsNavigation from '../../shortcuts_navigation';
+import ShortcutsNavigation from '../../behaviors/shortcuts/shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   const { page } = document.body.dataset;
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   if (newClusterViews.indexOf(page) > -1) {
-    gcpSignupOffer();
+    initDismissableCallout('.gcp-signup-offer');
     initGkeDropdowns();
   }
 

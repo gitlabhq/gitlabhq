@@ -4,18 +4,18 @@
   .form-group.row
     = f.label :title, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = f.text_field :title, class: "form-control", required: true, autofocus: true
+      = f.text_field :title, class: "form-control qa-label-title", required: true, autofocus: true
   .form-group.row
     = f.label :description, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = f.text_field :description, class: "form-control js-quick-submit"
+      = f.text_field :description, class: "form-control js-quick-submit qa-label-description"
   .form-group.row
     = f.label :color, "Background color", class: 'col-form-label col-sm-2'
     .col-sm-10
       .input-group
         .input-group-prepend
           .input-group-text.label-color-preview &nbsp;
-        = f.text_field :color, class: "form-control"
+        = f.text_field :color, class: "form-control qa-label-color"
       .form-text.text-muted
         Choose any color.
         %br
@@ -28,7 +28,7 @@
 
   .form-actions
     - if @label.persisted?
-      = f.submit 'Save changes', class: 'btn btn-save js-save-button'
+      = f.submit 'Save changes', class: 'btn btn-success js-save-button'
     - else
-      = f.submit 'Create label', class: 'btn btn-create js-save-button'
+      = f.submit 'Create label', class: 'btn btn-success js-save-button qa-label-create-button'
     = link_to 'Cancel', back_path, class: 'btn btn-cancel'

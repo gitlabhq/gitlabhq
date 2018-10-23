@@ -1,21 +1,21 @@
 <script>
-  /**
-   * Common component to render a placeholder system note.
-   *
-   * @example
-   * <placeholder-system-note
-   *  :note="{ body: 'Commands are being applied'}"
-   *  />
-   */
-  export default {
-    name: 'PlaceholderSystemNote',
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
+/**
+ * Common component to render a placeholder system note.
+ *
+ * @example
+ * <placeholder-system-note
+ *  :note="{ body: 'Commands are being applied'}"
+ *  />
+ */
+export default {
+  name: 'PlaceholderSystemNote',
+  props: {
+    note: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+};
 </script>
 
 <template>

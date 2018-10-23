@@ -2,8 +2,7 @@
   /* eslint-disable vue/require-default-prop */
   import IssueCardInner from './issue_card_inner.vue';
   import eventHub from '../eventhub';
-
-  const Store = gl.issueBoards.BoardsStore;
+  import boardsStore from '../stores/boards_store';
 
   export default {
     name: 'BoardsIssueCard',
@@ -42,7 +41,7 @@
     data() {
       return {
         showDetail: false,
-        detailIssue: Store.detail,
+        detailIssue: boardsStore.detail,
       };
     },
     computed: {
@@ -63,11 +62,11 @@
         if (this.showDetail) {
           this.showDetail = false;
 
-          if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
+          if (boardsStore.detail.issue && boardsStore.detail.issue.id === this.issue.id) {
             eventHub.$emit('clearDetailIssue');
           } else {
             eventHub.$emit('newDetailIssue', this.issue);
-            Store.detail.list = this.list;
+            boardsStore.detail.list = this.list;
           }
         }
       },

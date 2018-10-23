@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Triggers < Grape::API
     include PaginationParams
@@ -10,7 +12,7 @@ module API
         success Entities::Pipeline
       end
       params do
-        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
+        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
@@ -42,6 +44,7 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
@@ -50,6 +53,7 @@ module API
 
         present paginate(triggers), with: Entities::Trigger
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get specific trigger of a project' do
         success Entities::Trigger

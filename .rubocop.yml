@@ -3,7 +3,9 @@ inherit_gem:
     - rubocop-default.yml
 
 inherit_from: .rubocop_todo.yml
-require: ./rubocop/rubocop
+require:
+  - ./rubocop/rubocop
+  - rubocop-rspec
 
 AllCops:
   TargetRailsVersion: 4.2
@@ -35,6 +37,33 @@ Style/MutableConstant:
 Style/SafeNavigation:
   Enabled: false
 
+# Frozen String Literal
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'config.ru'
+    - 'Dangerfile'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'app/views/**/*'
+    - 'config/**/*'
+    - 'danger/**/*'
+    - 'db/**/*'
+    - 'ee/**/*'
+    - 'lib/gitlab/**/*'
+    - 'lib/tasks/**/*'
+    - 'qa/**/*'
+    - 'rubocop/**/*'
+    - 'scripts/**/*'
+    - 'spec/**/*'
+
+RSpec/FilePath:
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/javascripts/fixtures/*'
+    - 'ee/spec/javascripts/fixtures/*'
+    - 'spec/requests/api/v3/*'
+
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:
@@ -56,6 +85,7 @@ Naming/FileName:
     - EE
     - JSON
     - LDAP
+    - SAML
     - IO
     - HMAC
     - QA
@@ -111,7 +141,7 @@ Naming/FileName:
     - XSRF
     - XSS
 
-# Gitlab ###################################################################
+# GitLab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
   Enable: true

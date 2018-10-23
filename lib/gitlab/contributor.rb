@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Contributor
     attr_accessor :email, :name, :commits, :additions, :deletions

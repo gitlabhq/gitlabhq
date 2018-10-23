@@ -452,83 +452,90 @@ that runner.
 ## Define an image from a private Container Registry
 
 > **Notes:**
-- This feature requires GitLab Runner **1.8** or higher
-- For GitLab Runner versions **>= 0.6, <1.8** there was a partial
-  support for using private registries, which required manual configuration
-  of credentials on runner's host. We recommend to upgrade your Runner to
-  at least version **1.8** if you want to use private registries.
-- If the repository is private you need to authenticate your GitLab Runner in the
-  registry. Learn more about how [GitLab Runner works in this case][runner-priv-reg].
+>
+> - This feature requires GitLab Runner **1.8** or higher
+> - For GitLab Runner versions **>= 0.6, <1.8** there was a partial
+>   support for using private registries, which required manual configuration
+>   of credentials on runner's host. We recommend to upgrade your Runner to
+>   at least version **1.8** if you want to use private registries.
+> - If the repository is private you need to authenticate your GitLab Runner in the
+>   registry. Learn more about how [GitLab Runner works in this case][runner-priv-reg].
 
-As an example, let's assume that you want to use the `registry.example.com/private/image:latest`
+As an example, let's assume that you want to use the `registry.example.com:5000/private/image:latest`
 image which is private and requires you to login into a private container registry.
 
 Let's also assume that these are the login credentials:
 
-| Key      | Value                |
-|----------|----------------------|
-| registry | registry.example.com |
-| username | my_username          |
-| password | my_password          |
+| Key      | Value                     |
+|----------|---------------------------|
+| registry | registry.example.com:5000 |
+| username | my_username               |
+| password | my_password               |
 
-To configure access for `registry.example.com`, follow these steps:
+To configure access for `registry.example.com:5000`, follow these steps:
 
 1. Find what the value of `DOCKER_AUTH_CONFIG` should be. There are two ways to
    accomplish this:
-     - **First way -** Do a `docker login` on your local machine:
+   - **First way -** Do a `docker login` on your local machine:
 
-         ```bash
-         docker login registry.example.com --username my_username --password my_password
-         ```
+        ```bash
+        docker login registry.example.com:5000 --username my_username --password my_password
+        ```
 
-          Then copy the content of `~/.docker/config.json`.
-     - **Second way -** In some setups, it's possible that Docker client will use
+        Then copy the content of `~/.docker/config.json`.
+   - **Second way -** In some setups, it's possible that Docker client will use
        the available system keystore to store the result of `docker login`. In
        that case, it's impossible to read `~/.docker/config.json`, so you will
        need to prepare the required base64-encoded version of
        `${username}:${password}` manually. Open a terminal and execute the
        following command:
 
-           ```bash
-           echo -n "my_username:my_password" | base64
+        ```bash
+        echo -n "my_username:my_password" | base64
 
-           # Example output to copy
-           bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
-           ```
+        # Example output to copy
+        bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+        ```
 
 1. Create a [variable] `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
-     ```json
-     {
-         "auths": {
-             "registry.example.com": {
-                 "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
-             }
-         }
-     }
-     ```
+    ```json
+    {
+        "auths": {
+            "registry.example.com:5000": {
+                "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
+            }
+        }
+    }
+    ```
 
 1. Optionally,if you followed the first way of finding the `DOCKER_AUTH_CONFIG`
    value, do a `docker logout` on your computer if you don't need access to the
    registry from it:
 
-     ```bash
-     docker logout registry.example.com
-     ```
+    ```bash
+    docker logout registry.example.com:5000
+    ```
 
-1. You can now use any private image from `registry.example.com` defined in
+1. You can now use any private image from `registry.example.com:5000` defined in
    `image` and/or `services` in your `.gitlab-ci.yml` file:
 
-      ```yaml
-      image: my.registry.tld:5000/namespace/image:tag
-      ```
+    ```yaml
+    image: registry.example.com:5000/namespace/image:tag
+    ```
 
-      In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
-      image `namespace/image:tag`.
+    In the example above, GitLab Runner will look at `registry.example.com:5000` for the
+    image `namespace/image:tag`.
 
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
+
+NOTE: **Note:** The full `hostname:port` combination is required everywhere
+for the Runner to match the `DOCKER_AUTH_CONFIG`. For example, if
+`registry.example.com:5000/namespace/image:tag` is specified in `.gitlab-ci.yml`,
+then the `DOCKER_AUTH_CONFIG` must also specify `registry.example.com:5000`.
+Specifying only `registry.example.com` will not work.
 
 ## Configuring services
 

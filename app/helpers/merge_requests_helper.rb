@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
     target_project = event.project.default_merge_request_target
@@ -19,10 +21,10 @@ module MergeRequestsHelper
   end
 
   def mr_css_classes(mr)
-    classes = "merge-request"
-    classes << " closed" if mr.closed?
-    classes << " merged" if mr.merged?
-    classes
+    classes = ["merge-request"]
+    classes << "closed" if mr.closed?
+    classes << "merged" if mr.merged?
+    classes.join(' ')
   end
 
   def ci_build_details_path(merge_request)
@@ -78,7 +80,11 @@ module MergeRequestsHelper
   end
 
   def merge_request_button_visibility(merge_request, closed)
-    return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
+    return 'hidden' if merge_request_button_hidden?(merge_request, closed)
+  end
+
+  def merge_request_button_hidden?(merge_request, closed)
+    merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)

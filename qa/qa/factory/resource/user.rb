@@ -31,13 +31,16 @@ module QA
           defined?(@username) && defined?(@password)
         end
 
-        product(:name) { |factory| factory.name }
-        product(:username) { |factory| factory.username }
-        product(:email) { |factory| factory.email }
-        product(:password) { |factory| factory.password }
+        product :name
+        product :username
+        product :email
+        product :password
 
         def fabricate!
-          Page::Menu::Main.perform { |main| main.sign_out }
+          # Don't try to log-out if we're not logged-in
+          if Page::Main::Menu.act { has_personal_area?(wait: 0) }
+            Page::Main::Menu.perform { |main| main.sign_out }
+          end
 
           if credentials_given?
             Page::Main::Login.perform do |login|

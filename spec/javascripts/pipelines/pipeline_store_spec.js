@@ -20,6 +20,7 @@ describe('Pipeline Store', () => {
 
     it('should store received object', () => {
       store.storePipeline({ foo: 'bar' });
+
       expect(store.state.pipeline).toEqual({ foo: 'bar' });
     });
   });

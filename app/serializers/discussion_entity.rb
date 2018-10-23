@@ -6,6 +6,7 @@ class DiscussionEntity < Grape::Entity
 
   expose :id, :reply_id
   expose :position, if: -> (d, _) { d.diff_discussion? && !d.legacy_diff_discussion? }
+  expose :original_position, if: -> (d, _) { d.diff_discussion? && !d.legacy_diff_discussion? }
   expose :line_code, if: -> (d, _) { d.diff_discussion? }
   expose :expanded?, as: :expanded
   expose :active?, as: :active, if: -> (d, _) { d.diff_discussion? }
@@ -26,7 +27,7 @@ class DiscussionEntity < Grape::Entity
 
   expose :resolved?, as: :resolved
   expose :resolved_by_push?, as: :resolved_by_push
-  expose :resolved_by
+  expose :resolved_by, using: NoteUserEntity
   expose :resolved_at
   expose :resolve_path, if: -> (d, _) { d.resolvable? } do |discussion|
     resolve_project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion.id)
@@ -43,7 +44,7 @@ class DiscussionEntity < Grape::Entity
     project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion)
   end
 
-  expose :truncated_diff_lines, if: -> (d, _) { d.diff_discussion? && d.on_text? && (d.expanded? || render_truncated_diff_lines?) }
+  expose :truncated_diff_lines, using: DiffLineEntity, if: -> (d, _) { d.diff_discussion? && d.on_text? && (d.expanded? || render_truncated_diff_lines?) }
 
   expose :image_diff_html, if: -> (d, _) { d.diff_discussion? && d.on_image? } do |discussion|
     diff_file = discussion.diff_file

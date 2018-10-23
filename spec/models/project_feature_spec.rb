@@ -17,7 +17,7 @@ describe ProjectFeature do
   end
 
   describe '#feature_available?' do
-    let(:features) { %w(issues wiki builds merge_requests snippets repository) }
+    let(:features) { %w(issues wiki builds merge_requests snippets repository pages) }
 
     context 'when features are disabled' do
       it "returns false" do
@@ -73,6 +73,22 @@ describe ProjectFeature do
         end
       end
     end
+
+    context 'when feature is disabled by a feature flag' do
+      it 'returns false' do
+        stub_feature_flags(issues: false)
+
+        expect(project.feature_available?(:issues, user)).to eq(false)
+      end
+    end
+
+    context 'when feature is enabled by a feature flag' do
+      it 'returns true' do
+        stub_feature_flags(issues: true)
+
+        expect(project.feature_available?(:issues, user)).to eq(true)
+      end
+    end
   end
 
   context 'repository related features' do
@@ -91,6 +107,19 @@ describe ProjectFeature do
       features.each do |feature|
         field = "#{feature}_access_level".to_sym
         project_feature.update_attribute(field, ProjectFeature::ENABLED)
+        expect(project_feature.valid?).to be_falsy
+      end
+    end
+  end
+
+  context 'public features' do
+    it "does not allow public for other than pages" do
+      features = %w(issues wiki builds merge_requests snippets repository)
+      project_feature = project.project_feature
+
+      features.each do |feature|
+        field = "#{feature}_access_level".to_sym
+        project_feature.update_attribute(field, ProjectFeature::PUBLIC)
         expect(project_feature.valid?).to be_falsy
       end
     end
@@ -116,48 +145,6 @@ describe ProjectFeature do
     it "returns true when feature is enabled for everyone" do
       features.each do |feature|
         expect(project.public_send("#{feature}_enabled?")).to eq(true)
-      end
-    end
-  end
-
-  context 'Site Statistics' do
-    set(:project_with_wiki) { create(:project, :wiki_enabled) }
-    set(:project_without_wiki) { create(:project, :wiki_disabled) }
-
-    context 'when creating a project' do
-      it 'tracks wiki availability when wikis are enabled by default' do
-        expect { create(:project) }.to change { SiteStatistic.fetch.wikis_count }.by(1)
-      end
-
-      it 'does not track wiki availability when wikis are disabled by default' do
-        expect { create(:project, :wiki_disabled) }.not_to change { SiteStatistic.fetch.wikis_count }
-      end
-    end
-
-    context 'when updating a project_feature' do
-      it 'untracks wiki availability when disabling wiki access' do
-        expect { project_with_wiki.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED) }
-          .to change { SiteStatistic.fetch.wikis_count }.by(-1)
-      end
-
-      it 'tracks again wiki availability when re-enabling wiki access as public' do
-        expect { project_without_wiki.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED) }
-          .to change { SiteStatistic.fetch.wikis_count }.by(1)
-      end
-
-      it 'tracks again wiki availability when re-enabling wiki access as private' do
-        expect { project_without_wiki.project_feature.update_attribute(:wiki_access_level, ProjectFeature::PRIVATE) }
-          .to change { SiteStatistic.fetch.wikis_count }.by(1)
-      end
-    end
-
-    context 'when removing a project' do
-      it 'untracks wiki availability when removing a project with previous wiki access' do
-        expect { project_with_wiki.destroy }.to change { SiteStatistic.fetch.wikis_count }.by(-1)
-      end
-
-      it 'does not untrack wiki availability when removing a project without wiki access' do
-        expect { project_without_wiki.destroy }.not_to change { SiteStatistic.fetch.wikis_count }
       end
     end
   end

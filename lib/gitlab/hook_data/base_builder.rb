@@ -25,6 +25,7 @@ module Gitlab
         markdown_text.gsub(MARKDOWN_SIMPLE_IMAGE) do
           if $~[:image]
             url = $~[:url]
+            url = "#{uploads_prefix}#{url}" if url.start_with?('/uploads')
             url = "/#{url}" unless url.start_with?('/')
 
             "![#{$~[:title]}](#{Gitlab.config.gitlab.url}#{url})"
@@ -32,6 +33,16 @@ module Gitlab
             $~[0]
           end
         end
+      end
+
+      def uploads_prefix
+        project&.full_path || ''
+      end
+
+      def project
+        return unless object.respond_to?(:project)
+
+        object.project
       end
     end
   end

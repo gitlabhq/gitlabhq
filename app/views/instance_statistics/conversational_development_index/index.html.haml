@@ -1,12 +1,13 @@
 - @no_container = true
-- page_title 'ConvDev Index'
+- page_title _('ConvDev Index')
+- usage_ping_enabled = Gitlab::CurrentSettings.usage_ping_enabled
 
 .container
-  - if show_callout?('convdev_intro_callout_dismissed')
+  - if usage_ping_enabled && show_callout?('convdev_intro_callout_dismissed')
     = render 'callout'
 
   .prepend-top-default
-  - if !Gitlab::CurrentSettings.usage_ping_enabled
+  - if !usage_ping_enabled
     = render 'disabled'
   - elsif @metric.blank?
     = render 'no_data'

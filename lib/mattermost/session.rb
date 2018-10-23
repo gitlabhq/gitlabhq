@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mattermost
   class NoSessionError < Mattermost::Error
     def message

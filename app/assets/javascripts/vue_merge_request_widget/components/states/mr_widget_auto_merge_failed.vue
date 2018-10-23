@@ -1,34 +1,32 @@
 <script>
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import eventHub from '../../event_hub';
-  import statusIcon from '../mr_widget_status_icon.vue';
+import eventHub from '../../event_hub';
+import statusIcon from '../mr_widget_status_icon.vue';
 
-  export default {
-    name: 'MRWidgetAutoMergeFailed',
-    components: {
-      statusIcon,
-      loadingIcon,
+export default {
+  name: 'MRWidgetAutoMergeFailed',
+  components: {
+    statusIcon,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
     },
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-      },
+  },
+  data() {
+    return {
+      isRefreshing: false,
+    };
+  },
+  methods: {
+    refreshWidget() {
+      this.isRefreshing = true;
+      eventHub.$emit('MRWidgetUpdateRequested', () => {
+        this.isRefreshing = false;
+      });
     },
-    data() {
-      return {
-        isRefreshing: false,
-      };
-    },
-    methods: {
-      refreshWidget() {
-        this.isRefreshing = true;
-        eventHub.$emit('MRWidgetUpdateRequested', () => {
-          this.isRefreshing = false;
-        });
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="mr-widget-body media">
@@ -44,7 +42,7 @@
         class="btn btn-sm btn-default"
         @click="refreshWidget"
       >
-        <loading-icon
+        <gl-loading-icon
           v-if="isRefreshing"
           :inline="true"
         />

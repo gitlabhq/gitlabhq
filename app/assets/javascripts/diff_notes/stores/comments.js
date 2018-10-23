@@ -1,14 +1,14 @@
-/* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in, comma-dangle, max-len */
+/* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in */
 /* global DiscussionModel */
 
 import Vue from 'vue';
 
 window.CommentsStore = {
   state: {},
-  get: function (discussionId, noteId) {
+  get: function(discussionId, noteId) {
     return this.state[discussionId].getNote(noteId);
   },
-  createDiscussion: function (discussionId, canResolve) {
+  createDiscussion: function(discussionId, canResolve) {
     let discussion = this.state[discussionId];
     if (!this.state[discussionId]) {
       discussion = new DiscussionModel(discussionId);
@@ -21,18 +21,18 @@ window.CommentsStore = {
 
     return discussion;
   },
-  create: function (noteObj) {
+  create: function(noteObj) {
     const discussion = this.createDiscussion(noteObj.discussionId);
 
     discussion.createNote(noteObj);
   },
-  update: function (discussionId, noteId, resolved, resolved_by) {
+  update: function(discussionId, noteId, resolved, resolved_by) {
     const discussion = this.state[discussionId];
     const note = discussion.getNote(noteId);
     note.resolved = resolved;
     note.resolved_by = resolved_by;
   },
-  delete: function (discussionId, noteId) {
+  delete: function(discussionId, noteId) {
     const discussion = this.state[discussionId];
     discussion.deleteNote(noteId);
 
@@ -40,7 +40,7 @@ window.CommentsStore = {
       Vue.delete(this.state, discussionId);
     }
   },
-  unresolvedDiscussionIds: function () {
+  unresolvedDiscussionIds: function() {
     const ids = [];
 
     for (const discussionId in this.state) {
@@ -52,5 +52,5 @@ window.CommentsStore = {
     }
 
     return ids;
-  }
+  },
 };

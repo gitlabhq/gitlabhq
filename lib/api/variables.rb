@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Variables < Grape::API
     include PaginationParams
@@ -27,6 +29,7 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/variables/:key' do
         key = params[:key]
         variable = user_project.variables.find_by(key: key)
@@ -35,6 +38,7 @@ module API
 
         present variable, with: Entities::Variable
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Create a new variable in a project' do
         success Entities::Variable
@@ -64,6 +68,7 @@ module API
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
 
@@ -77,6 +82,7 @@ module API
           render_validation_error!(variable)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing variable from a project' do
         success Entities::Variable
@@ -84,6 +90,7 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
         not_found!('Variable') unless variable
@@ -92,6 +99,7 @@ module API
         status 204
         variable.destroy
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

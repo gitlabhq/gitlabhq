@@ -53,7 +53,7 @@ module Gitlab
         end
 
         def self.lock_file_path(project)
-          return unless project.export_path || object_storage?
+          return unless project.export_path || export_file_exists?
 
           lock_path = project.import_export_shared.archive_path
 
@@ -83,8 +83,8 @@ module Gitlab
           errors.full_messages.each { |msg| project.import_export_shared.add_error_message(msg) }
         end
 
-        def object_storage?
-          project.export_project_object_exists?
+        def export_file_exists?
+          project.export_file_exists?
         end
       end
     end

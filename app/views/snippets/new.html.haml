@@ -1,7 +1,9 @@
 - @hide_top_links = true
-- breadcrumb_title "Snippets"
+- @hide_breadcrumbs = true
 - page_title "New Snippet"
-%h3.page-title
-  New Snippet
-%hr
-= render "shared/snippets/form", url: snippets_path(@snippet)
+
+.page-title-holder
+  %h1.page-title= _('New Snippet')
+
+.prepend-top-default
+  = render "shared/snippets/form", url: snippets_path(@snippet)

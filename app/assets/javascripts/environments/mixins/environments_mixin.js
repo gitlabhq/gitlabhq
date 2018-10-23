@@ -4,27 +4,22 @@
 import _ from 'underscore';
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
-import {
-  getParameterByName,
-} from '../../lib/utils/common_utils';
+import { getParameterByName } from '../../lib/utils/common_utils';
 import { s__ } from '../../locale';
 import Flash from '../../flash';
 import eventHub from '../event_hub';
 
 import EnvironmentsStore from '../stores/environments_store';
 import EnvironmentsService from '../services/environments_service';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import environmentTable from '../components/environments_table.vue';
 import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import container from '../components/container.vue';
 
 export default {
-
   components: {
     environmentTable,
     container,
-    loadingIcon,
     tabs,
     tablePagination,
   },
@@ -67,7 +62,8 @@ export default {
     updateContent(parameters) {
       this.updateInternalState(parameters);
       // fetch new data
-      return this.service.fetchEnvironments(this.requestData)
+      return this.service
+        .fetchEnvironments(this.requestData)
         .then(response => this.successCallback(response))
         .then(() => {
           // restart polling
@@ -90,7 +86,8 @@ export default {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
-        this.service.postAction(endpoint)
+        this.service
+          .postAction(endpoint)
           .then(() => this.fetchEnvironments())
           .catch(() => {
             this.isLoading = false;
@@ -102,7 +99,8 @@ export default {
     fetchEnvironments() {
       this.isLoading = true;
 
-      return this.service.fetchEnvironments(this.requestData)
+      return this.service
+        .fetchEnvironments(this.requestData)
         .then(this.successCallback)
         .catch(this.errorCallback);
     },
@@ -113,7 +111,9 @@ export default {
 
     stopEnvironment(environment) {
       const endpoint = environment.stop_path;
-      const errorMessage = s__('Environments|An error occurred while stopping the environment, please try again');
+      const errorMessage = s__(
+        'Environments|An error occurred while stopping the environment, please try again',
+      );
       this.postAction({ endpoint, errorMessage });
     },
   },
@@ -151,7 +151,7 @@ export default {
       data: this.requestData,
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,
-      notificationCallback: (isMakingRequest) => {
+      notificationCallback: isMakingRequest => {
         this.isMakingRequest = isMakingRequest;
       },
     });

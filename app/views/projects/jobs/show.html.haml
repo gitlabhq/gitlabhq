@@ -1,97 +1,13 @@
 - @no_container = true
-- add_to_breadcrumbs "Jobs", project_jobs_path(@project)
+- add_to_breadcrumbs _("Jobs"), project_jobs_path(@project)
 - breadcrumb_title "##{@build.id}"
-- page_title "#{@build.name} (##{@build.id})", "Jobs"
+- page_title "#{@build.name} (##{@build.id})", _("Jobs")
+
+- content_for :page_specific_javascripts do
+  = stylesheet_link_tag 'page_bundles/xterm'
 
 %div{ class: container_class }
-  .build-page.js-build-page
-    #js-build-header-vue
-    - if @build.stuck?
-      - unless @build.any_runners_online?
-        .bs-callout.bs-callout-warning.js-build-stuck
-          %p
-            - if no_runners_for_project?(@build.project)
-              This job is stuck, because the project doesn't have any runners online assigned to it.
-            - elsif @build.tags.any?
-              This job is stuck, because you don't have any active runners online with any of these tags assigned to them:
-              - @build.tags.each do |tag|
-                %span.badge.badge-primary
-                  = tag
-            - else
-              This job is stuck, because you don't have any active runners that can run this job.
-
-            %br
-            Go to
-            = link_to project_runners_path(@build.project, anchor: 'js-runners-settings') do
-              Runners page
-
-    - if @build.starts_environment?
-      .prepend-top-default.js-environment-container
-        .environment-information
-          - if @build.outdated_deployment?
-            = ci_icon_for_status('success_with_warnings')
-          - else
-            = ci_icon_for_status(@build.status)
-
-          - environment = environment_for_build(@build.project, @build)
-          - if @build.success? && @build.last_deployment.present?
-            - if @build.last_deployment.last?
-              This job is the most recent deployment to #{environment_link_for_build(@build.project, @build)}.
-            - else
-              This job is an out-of-date deployment to #{environment_link_for_build(@build.project, @build)}.
-              View the most recent deployment #{deployment_link(environment.last_deployment)}.
-          - elsif @build.complete? && !@build.success?
-            The deployment of this job to #{environment_link_for_build(@build.project, @build)} did not succeed.
-          - else
-            This job is creating a deployment to #{environment_link_for_build(@build.project, @build)}
-            - if environment.try(:last_deployment)
-              and will overwrite the #{deployment_link(environment.last_deployment, text: 'latest deployment')}
-
-    - if @build.erased?
-      .prepend-top-default.js-build-erased
-        .erased.alert.alert-warning
-          - if @build.erased_by_user?
-            Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
-          - else
-            Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
-
-    - if @build.running? || @build.has_trace?
-      .build-trace-container.prepend-top-default
-        .top-bar.js-top-bar
-          .js-truncated-info.truncated-info.d-none.d-sm-block.float-left.hidden<
-            Showing last
-            %span.js-truncated-info-size.truncated-info-size><
-            of log -
-            %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
-
-          .controllers.float-right
-            - if @build.has_trace?
-              = link_to raw_project_job_path(@project, @build),
-                      title: 'Show complete raw',
-                      data: { placement: 'top', container: 'body' },
-                      class: 'js-raw-link-controller has-tooltip controllers-buttons' do
-                = icon('file-text-o')
-
-            - if @build.erasable? && can?(current_user, :erase_build, @build)
-              = link_to erase_project_job_path(@project, @build),
-                        method: :post,
-                        data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
-                        title: 'Erase job log',
-                        class: 'has-tooltip js-erase-link controllers-buttons' do
-                = icon('trash')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_up')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_down')
-
-        = render 'shared/builds/build_output'
-    - else
-      = render "empty_states"
-
-  = render "sidebar", builds: @builds
-
-.js-build-options{ data: javascript_build_options }
-
-#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json), runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner') } }
+  #js-job-vue-app{ data: { endpoint: project_job_path(@project, @build, format: :json),
+    runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner'),
+    runner_settings_url: project_runners_path(@build.project, anchor: 'js-runners-settings'),
+    build_options: javascript_build_options } }

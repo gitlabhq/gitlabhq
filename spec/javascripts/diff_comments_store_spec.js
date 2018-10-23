@@ -1,4 +1,4 @@
-/* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown, max-len */
+/* eslint-disable jasmine/no-global-setup, dot-notation, jasmine/no-expect-in-setup-teardown */
 /* global CommentsStore */
 
 import '~/diff_notes/models/discussion';
@@ -26,6 +26,7 @@ describe('New discussion', () => {
   it('creates new discussion', () => {
     expect(Object.keys(CommentsStore.state).length).toBe(0);
     createDiscussion();
+
     expect(Object.keys(CommentsStore.state).length).toBe(1);
   });
 
@@ -34,6 +35,7 @@ describe('New discussion', () => {
     createDiscussion(2);
 
     const discussion = CommentsStore.state['a'];
+
     expect(Object.keys(discussion.notes).length).toBe(2);
   });
 });
@@ -46,6 +48,7 @@ describe('Get note', () => {
 
   it('gets note by ID', () => {
     const note = CommentsStore.get('a', 1);
+
     expect(note).toBeDefined();
     expect(note.id).toBe(1);
   });
@@ -59,17 +62,20 @@ describe('Delete discussion', () => {
 
   it('deletes discussion by ID', () => {
     CommentsStore.delete('a', 1);
+
     expect(Object.keys(CommentsStore.state).length).toBe(0);
   });
 
   it('deletes discussion when no more notes', () => {
     createDiscussion();
     createDiscussion(2);
+
     expect(Object.keys(CommentsStore.state).length).toBe(1);
     expect(Object.keys(CommentsStore.state['a'].notes).length).toBe(2);
 
     CommentsStore.delete('a', 1);
     CommentsStore.delete('a', 2);
+
     expect(Object.keys(CommentsStore.state).length).toBe(0);
   });
 });
@@ -84,6 +90,7 @@ describe('Update note', () => {
     CommentsStore.update('a', 1, false, 'test');
 
     const note = CommentsStore.get('a', 1);
+
     expect(note.resolved).toBe(false);
   });
 });
@@ -96,6 +103,7 @@ describe('Discussion resolved', () => {
 
   it('is resolved with single note', () => {
     const discussion = CommentsStore.state['a'];
+
     expect(discussion.isResolved()).toBe(true);
   });
 
@@ -118,6 +126,7 @@ describe('Discussion resolved', () => {
     createDiscussion(2, false);
 
     discussion.resolveAllNotes();
+
     expect(discussion.isResolved()).toBe(true);
   });
 
@@ -126,6 +135,7 @@ describe('Discussion resolved', () => {
     createDiscussion(2);
 
     discussion.unResolveAllNotes();
+
     expect(discussion.isResolved()).toBe(false);
   });
 });

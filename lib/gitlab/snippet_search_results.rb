@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class SnippetSearchResults < SearchResults
     include SnippetsHelper
@@ -30,13 +32,17 @@ module Gitlab
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def snippet_titles
       limit_snippets.search(query).order('updated_at DESC').includes(:author)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def snippet_blobs
       limit_snippets.search_code(query).order('updated_at DESC').includes(:author)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def default_scope
       'snippet_blobs'

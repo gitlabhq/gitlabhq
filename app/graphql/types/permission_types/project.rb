@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Types
   module PermissionTypes
     class Project < BasePermissionType
@@ -14,7 +16,7 @@ module Types
                 :create_deployment, :push_to_delete_protected_branch,
                 :admin_wiki, :admin_project, :update_pages,
                 :admin_remote_mirror, :create_label, :update_wiki, :destroy_wiki,
-                :create_pages, :destroy_pages
+                :create_pages, :destroy_pages, :read_pages_content
     end
   end
 end

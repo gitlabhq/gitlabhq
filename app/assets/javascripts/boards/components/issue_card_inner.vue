@@ -1,14 +1,15 @@
 <script>
   import $ from 'jquery';
+  import Icon from '~/vue_shared/components/icon.vue';
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
   import tooltip from '../../vue_shared/directives/tooltip';
-
-  const Store = gl.issueBoards.BoardsStore;
+  import boardsStore from '../stores/boards_store';
 
   export default {
     components: {
       UserAvatarLink,
+      Icon,
     },
     directives: {
       tooltip,
@@ -110,7 +111,7 @@
       filterByLabel(label, e) {
         if (!this.updateFilters) return;
 
-        const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+        const filterPath = boardsStore.filter.path.split('&');
         const labelTitle = encodeURIComponent(label.title);
         const param = `label_name[]=${labelTitle}`;
         const labelIndex = filterPath.indexOf(param);
@@ -122,9 +123,9 @@
           filterPath.splice(labelIndex, 1);
         }
 
-        gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
+        boardsStore.filter.path = filterPath.join('&');
 
-        Store.updateFiltersUrl();
+        boardsStore.updateFiltersUrl();
 
         eventHub.$emit('updateTokens');
       },
@@ -141,18 +142,19 @@
   <div>
     <div class="board-card-header">
       <h4 class="board-card-title">
-        <i
+        <icon
           v-if="issue.confidential"
-          class="fa fa-eye-slash confidential-icon"
-          aria-hidden="true"
-        ></i>
+          name="eye-slash"
+          class="confidential-icon"
+        />
         <a
           :href="issue.path"
           :title="issue.title"
-          class="js-no-trigger">{{ issue.title }}</a>
+          class="js-no-trigger"
+          @mousemove.stop>{{ issue.title }}</a>
         <span
           v-if="issueId"
-          class="board-card-number"
+          class="board-card-number append-right-5"
         >
           {{ issue.referencePath }}
         </span>
@@ -170,8 +172,8 @@
           tooltip-placement="bottom"
         />
         <span
-          v-tooltip
           v-if="shouldRenderCounter"
+          v-tooltip
           :title="assigneeCounterTooltip"
           class="avatar-counter"
         >
@@ -184,10 +186,10 @@
       class="board-card-footer"
     >
       <button
-        v-tooltip
         v-for="label in issue.labels"
         v-if="showLabel(label)"
         :key="label.id"
+        v-tooltip
         :style="labelStyle(label)"
         :title="label.description"
         class="badge color-label"

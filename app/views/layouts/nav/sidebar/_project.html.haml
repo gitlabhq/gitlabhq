@@ -86,7 +86,7 @@
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-          = link_to project_issues_path(@project), class: 'shortcuts-issues' do
+          = link_to project_issues_path(@project), class: 'shortcuts-issues qa-issues-item' do
             .nav-icon-container
               = sprite_icon('issues')
             %span.nav-item-name
@@ -115,7 +115,7 @@
                   = boards_link_text
 
             = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: _('Labels') do
+              = link_to project_labels_path(@project), title: _('Labels'), class: 'qa-labels-link' do
                 %span
                   = _('Labels')
 
@@ -158,7 +158,7 @@
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts]) do
-          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
+          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines' do
             .nav-icon-container
               = sprite_icon('rocket')
             %span.nav-item-name
@@ -216,7 +216,7 @@
                     = _('Metrics')
 
               = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
-                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments' do
+                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
                   %span
                     = _('Environments')
 
@@ -245,7 +245,7 @@
                         = link_to _('Auto DevOps'), help_page_path('topics/autodevops/index.md')
                         %span= _('uses Kubernetes clusters to deploy your code!')
                       %hr
-                      %button.btn.btn-create.btn-sm.dismiss-feature-highlight{ type: 'button' }
+                      %button.btn.btn-success.btn-sm.dismiss-feature-highlight{ type: 'button' }
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
 
@@ -309,14 +309,9 @@
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: _('Members') do
+              = link_to project_project_members_path(@project), title: _('Members'), class: 'qa-link-members-settings' do
                 %span
                   = _('Members')
-            - if can_edit
-              = nav_link(controller: :badges) do
-                = link_to project_settings_badges_path(@project), title: _('Badges') do
-                  %span
-                    = _('Badges')
             - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
                 = link_to project_settings_integrations_path(@project), title: _('Integrations') do

@@ -140,9 +140,11 @@ class PagesDomain < ActiveRecord::Base
     self.verification_code = SecureRandom.hex(16)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_daemon
     ::Projects::UpdatePagesConfigurationService.new(project).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def pages_config_changed?
     project_id_changed? ||

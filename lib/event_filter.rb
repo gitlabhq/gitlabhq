@@ -1,74 +1,42 @@
+# frozen_string_literal: true
+
 class EventFilter
-  attr_accessor :params
+  attr_accessor :filter
 
-  class << self
-    def all
-      'all'
-    end
+  ALL = 'all'
+  PUSH = 'push'
+  MERGED = 'merged'
+  ISSUE = 'issue'
+  COMMENTS = 'comments'
+  TEAM = 'team'
+  FILTERS = [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM].freeze
 
-    def push
-      'push'
-    end
-
-    def merged
-      'merged'
-    end
-
-    def issue
-      'issue'
-    end
-
-    def comments
-      'comments'
-    end
-
-    def team
-      'team'
-    end
-  end
-
-  def initialize(params)
-    @params = if params
-                params.dup
-              else
-                [] # EventFilter.default_filter
-              end
-  end
-
-  def apply_filter(events)
-    return events if params.blank? || params == EventFilter.all
-
-    case params
-    when EventFilter.push
-      events.where(action: Event::PUSHED)
-    when EventFilter.merged
-      events.where(action: Event::MERGED)
-    when EventFilter.comments
-      events.where(action: Event::COMMENTED)
-    when EventFilter.team
-      events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
-    when EventFilter.issue
-      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED])
-    end
-  end
-
-  def options(key)
-    filter = params.dup
-
-    if filter.include? key
-      filter.delete key
-    else
-      filter << key
-    end
-
-    filter
+  def initialize(filter)
+    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
+    filter = filter.to_s.split(',')[0].to_s
+    @filter = FILTERS.include?(filter) ? filter : ALL
   end
 
   def active?(key)
-    if params.present?
-      params.include? key
+    filter == key.to_s
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def apply_filter(events)
+    case filter
+    when PUSH
+      events.where(action: Event::PUSHED)
+    when MERGED
+      events.where(action: Event::MERGED)
+    when COMMENTS
+      events.where(action: Event::COMMENTED)
+    when TEAM
+      events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
+    when ISSUE
+      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED])
     else
-      key == EventFilter.all
+      events
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemCheck
   module IncomingEmail
     class ImapAuthenticationCheck < SystemCheck::BaseCheck
@@ -7,7 +9,7 @@ module SystemCheck
         if config
           try_connect_imap
         else
-          @error = "#{mail_room_config_path} does not have mailboxes setup"
+          @error = "#{mail_room_config_path} does not have mailboxes set up"
           false
         end
       end

@@ -14,7 +14,8 @@ describe('MrWidgetAuthorTime', () => {
         name: 'Administrator',
         username: 'root',
         webUrl: 'http://localhost:3000/root',
-        avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        avatarUrl:
+          'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       },
       dateTitle: '2017-03-23T23:02:00.807Z',
       dateReadable: '12 hours ago',
@@ -34,7 +35,10 @@ describe('MrWidgetAuthorTime', () => {
   });
 
   it('renders provided time', () => {
-    expect(vm.$el.querySelector('time').getAttribute('data-original-title')).toEqual('2017-03-23T23:02:00.807Z');
+    expect(vm.$el.querySelector('time').getAttribute('data-original-title')).toEqual(
+      '2017-03-23T23:02:00.807Z',
+    );
+
     expect(vm.$el.querySelector('time').textContent.trim()).toEqual('12 hours ago');
   });
 });

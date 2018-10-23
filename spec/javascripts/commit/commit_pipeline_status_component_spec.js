@@ -26,15 +26,18 @@ describe('Commit pipeline status component', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
       mock.onGet('/dummy/endpoint').reply(() => {
-        const res = Promise.resolve([200, {
-          pipelines: [
-            {
-              details: {
-                status: mockCiStatus,
+        const res = Promise.resolve([
+          200,
+          {
+            pipelines: [
+              {
+                details: {
+                  status: mockCiStatus,
+                },
               },
-            },
-          ],
-        }]);
+            ],
+          },
+        ]);
         return res;
       });
       vm = mountComponent(Component, {
@@ -48,7 +51,7 @@ describe('Commit pipeline status component', () => {
       mock.restore();
     });
 
-    it('shows the loading icon when polling is starting', (done) => {
+    it('shows the loading icon when polling is starting', done => {
       expect(vm.$el.querySelector('.loading-container')).not.toBe(null);
       setTimeout(() => {
         expect(vm.$el.querySelector('.loading-container')).toBe(null);
@@ -56,17 +59,19 @@ describe('Commit pipeline status component', () => {
       });
     });
 
-    it('contains a ciStatus when the polling is succesful ', (done) => {
+    it('contains a ciStatus when the polling is succesful ', done => {
       setTimeout(() => {
         expect(vm.ciStatus).toEqual(mockCiStatus);
         done();
       });
     });
 
-    it('contains a ci-status icon when polling is succesful', (done) => {
+    it('contains a ci-status icon when polling is succesful', done => {
       setTimeout(() => {
         expect(vm.$el.querySelector('.ci-status-icon')).not.toBe(null);
-        expect(vm.$el.querySelector('.ci-status-icon').classList).toContain(`ci-status-icon-${mockCiStatus.group}`);
+        expect(vm.$el.querySelector('.ci-status-icon').classList).toContain(
+          `ci-status-icon-${mockCiStatus.group}`,
+        );
         done();
       });
     });
@@ -89,7 +94,7 @@ describe('Commit pipeline status component', () => {
       mock.restore();
     });
 
-    it('calls an errorCallback', (done) => {
+    it('calls an errorCallback', done => {
       spyOn(vm, 'errorCallback').and.callThrough();
       vm.$mount();
       setTimeout(() => {

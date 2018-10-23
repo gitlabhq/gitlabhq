@@ -1,122 +1,168 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require 'net/http'
-require 'json'
-require 'cgi'
+require 'gitlab'
+
+#
+# Configure credentials to be used with gitlab gem
+#
+Gitlab.configure do |config|
+  config.endpoint = 'https://gitlab.com/api/v4'
+end
 
 module Trigger
-  OMNIBUS_PROJECT_PATH = 'gitlab-org/omnibus-gitlab'.freeze
-  CNG_PROJECT_PATH = 'gitlab-org/build/CNG'.freeze
-  TOKEN = ENV['BUILD_TRIGGER_TOKEN']
-
   def self.ee?
     ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
   end
 
-  class Omnibus
-    def initialize
-      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Trigger::OMNIBUS_PROJECT_PATH)}/trigger/pipeline")
-      @params = env_params.merge(file_params).merge(token: Trigger::TOKEN)
-    end
+  class Base
+    def invoke!(post_comment: false)
+      pipeline = Gitlab.run_trigger(
+        downstream_project_path,
+        trigger_token,
+        ref,
+        variables)
 
-    def invoke!
-      res = Net::HTTP.post_form(@uri, @params)
-      id = JSON.parse(res.body)['id']
-      project = Trigger::OMNIBUS_PROJECT_PATH
+      puts "Triggered downstream pipeline: #{pipeline.web_url}\n"
+      puts "Waiting for downstream pipeline status"
 
-      if id
-        puts "Triggered https://gitlab.com/#{project}/pipelines/#{id}"
-        puts "Waiting for downstream pipeline status"
-      else
-        raise "Trigger failed! The response from the trigger is: #{res.body}"
-      end
-
-      Trigger::Pipeline.new(project, id)
+      Trigger::CommitComment.post!(pipeline, access_token) if post_comment
+      Trigger::Pipeline.new(downstream_project_path, pipeline.id, access_token)
     end
 
     private
 
-    def env_params
+    # Must be overriden
+    def downstream_project_path
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def ref
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def trigger_token
+      raise NotImplementedError
+    end
+
+    # Must be overriden
+    def access_token
+      raise NotImplementedError
+    end
+
+    # Can be overriden
+    def extra_variables
+      {}
+    end
+
+    # Can be overriden
+    def version_param_value(version_file)
+      File.read(version_file).strip
+    end
+
+    def variables
+      base_variables.merge(extra_variables).merge(version_file_variables)
+    end
+
+    def base_variables
       {
-        "ref" => ENV["OMNIBUS_BRANCH"] || "master",
-        "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
-        "variables[ALTERNATIVE_SOURCES]" => true,
-        "variables[ee]" => Trigger.ee? ? 'true' : 'false',
-        "variables[TRIGGERED_USER]" => ENV["GITLAB_USER_NAME"],
-        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{ENV['CI_PROJECT_NAME']}/-/jobs/#{ENV['CI_JOB_ID']}"
+        'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
+        'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
+        'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
+        'TOP_UPSTREAM_SOURCE_JOB' => ENV['CI_JOB_URL'],
+        'TOP_UPSTREAM_SOURCE_SHA' => ENV['CI_COMMIT_SHA']
       }
     end
 
-    def file_params
-      Hash.new.tap do |params|
-        Dir.glob("*_VERSION").each do |version_file|
-          params["variables[#{version_file}]"] = File.read(version_file).strip
-        end
+    # Read version files from all components
+    def version_file_variables
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
+        params[version_file] = version_param_value(version_file)
       end
     end
   end
 
-  class CNG
-    def initialize
-      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Trigger::CNG_PROJECT_PATH)}/trigger/pipeline")
-      @ref_name = ENV['CI_COMMIT_REF_NAME']
-      @username = ENV['GITLAB_USER_NAME']
-      @project_name = ENV['CI_PROJECT_NAME']
-      @job_id = ENV['CI_JOB_ID']
-      @params = env_params.merge(file_params).merge(token: Trigger::TOKEN)
-    end
-
-    #
-    # Trigger a pipeline
-    #
-    def invoke!
-      res = Net::HTTP.post_form(@uri, @params)
-      id = JSON.parse(res.body)['id']
-      project = Trigger::CNG_PROJECT_PATH
-
-      if id
-        puts "Triggered https://gitlab.com/#{project}/pipelines/#{id}"
-        puts "Waiting for downstream pipeline status"
-      else
-        raise "Trigger failed! The response from the trigger is: #{res.body}"
-      end
-
-      Trigger::Pipeline.new(project, id)
-    end
-
+  class Omnibus < Base
     private
 
-    def env_params
-      params = {
-        "ref" => ENV["CNG_BRANCH"] || "master",
-        "variables[TRIGGERED_USER]" => @username,
-        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{@project_name}/-/jobs/#{@job_id}"
-      }
-
-      if Trigger.ee?
-        params["variables[GITLAB_EE_VERSION]"] = @ref_name
-        params["variables[EE_PIPELINE]"] = 'true'
-      else
-        params["variables[GITLAB_CE_VERSION]"] = @ref_name
-        params["variables[CE_PIPELINE]"] = 'true'
-      end
-
-      params
+    def downstream_project_path
+      'gitlab-org/omnibus-gitlab'
     end
 
-    # Read version files from all components
-    def file_params
-      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
-        raw_version = File.read(version_file).strip
-        # if the version matches semver format, treat it as a tag and prepend `v`
-        version = if raw_version =~ Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/)
-                    "v#{raw_version}"
-                  else
-                    raw_version
-                  end
+    def ref
+      ENV['OMNIBUS_BRANCH'] || 'master'
+    end
 
-        params["variables[#{version_file}]"] = version
+    def trigger_token
+      ENV['BUILD_TRIGGER_TOKEN']
+    end
+
+    def access_token
+      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+    end
+
+    def extra_variables
+      {
+        'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
+        'ALTERNATIVE_SOURCES' => 'true',
+        'ee' => Trigger.ee? ? 'true' : 'false'
+      }
+    end
+  end
+
+  class CNG < Base
+    private
+
+    def downstream_project_path
+      ENV['CNG_PROJECT_PATH'] || 'gitlab-org/build/CNG-mirror'
+    end
+
+    def ref
+      ENV['CNG_BRANCH'] || 'master'
+    end
+
+    def trigger_token
+      ENV['BUILD_TRIGGER_TOKEN']
+    end
+
+    def access_token
+      ENV['GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN']
+    end
+
+    def extra_variables
+      edition = Trigger.ee? ? 'EE' : 'CE'
+
+      {
+        "GITLAB_#{edition}_VERSION" => ENV['CI_COMMIT_REF_NAME'],
+        "#{edition}_PIPELINE" => 'true'
+      }
+    end
+
+    def version_param_value(_version_file)
+      raw_version = super
+
+      # if the version matches semver format, treat it as a tag and prepend `v`
+      if raw_version =~ Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/)
+        "v#{raw_version}"
+      else
+        raw_version
       end
+    end
+  end
+
+  class CommitComment
+    def self.post!(downstream_pipeline, access_token)
+      Gitlab.private_token = access_token
+
+      Gitlab.create_commit_comment(
+        ENV['CI_PROJECT_PATH'],
+        ENV['CI_COMMIT_SHA'],
+        "The [`#{ENV['CI_JOB_NAME']}`](#{ENV['CI_JOB_URL']}) job from pipeline #{ENV['CI_PIPELINE_URL']} triggered #{downstream_pipeline.web_url} downstream.")
+
+    rescue Gitlab::Error::Error => error
+      puts "Ignoring the following error: #{error}"
     end
   end
 
@@ -124,9 +170,16 @@ module Trigger
     INTERVAL = 60 # seconds
     MAX_DURATION = 3600 * 3 # 3 hours
 
-    def initialize(project, id)
+    attr_reader :project, :id, :api_token
+
+    def initialize(project, id, api_token)
+      @project = project
+      @id = id
+      @api_token = api_token
       @start = Time.now.to_i
-      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(project)}/pipelines/#{id}")
+
+      # gitlab-bot's token "GitLab multi-project pipeline polling"
+      Gitlab.private_token = api_token
     end
 
     def wait!
@@ -157,15 +210,9 @@ module Trigger
     end
 
     def status
-      req = Net::HTTP::Get.new(@uri)
-      req['PRIVATE-TOKEN'] = ENV['GITLAB_QA_ACCESS_TOKEN']
-
-      res = Net::HTTP.start(@uri.hostname, @uri.port, use_ssl: true) do |http|
-        http.request(req)
-      end
-
-      JSON.parse(res.body)['status'].to_s.to_sym
-    rescue JSON::ParserError
+      Gitlab.pipeline(project, id).status.to_sym
+    rescue Gitlab::Error::Error => error
+      puts "Ignoring the following error: #{error}"
       # Ignore GitLab API hiccups. If GitLab is really down, we'll hit the job
       # timeout anyway.
       :running
@@ -175,7 +222,7 @@ end
 
 case ARGV[0]
 when 'omnibus'
-  Trigger::Omnibus.new.invoke!.wait!
+  Trigger::Omnibus.new.invoke!(post_comment: true).wait!
 when 'cng'
   Trigger::CNG.new.invoke!.wait!
 else

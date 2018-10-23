@@ -19,7 +19,7 @@ module Clusters
       def set_initial_status
         return unless not_installable?
 
-        if cluster&.application_ingress_installed? && cluster.application_ingress.external_ip
+        if cluster&.application_ingress_available? && cluster.application_ingress.external_ip
           self.status = 'installable'
         end
       end
@@ -40,6 +40,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
           repository: repository
@@ -71,6 +72,11 @@ module Clusters
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url
+            }
+          },
+          "singleuser" => {
+            "extraEnv" => {
+              "GITLAB_CLUSTER_ID" => cluster.id
             }
           }
         }

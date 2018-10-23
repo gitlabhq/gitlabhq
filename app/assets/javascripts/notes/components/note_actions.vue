@@ -7,16 +7,16 @@ import editSvg from 'icons/_icon_pencil.svg';
 import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   name: 'NoteActions',
+  components: {
+    Icon,
+  },
   directives: {
     tooltip,
-  },
-  components: {
-    loadingIcon,
   },
   props: {
     authorId: {
@@ -24,12 +24,13 @@ export default {
       required: true,
     },
     noteId: {
-      type: Number,
+      type: [String, Number],
       required: true,
     },
     noteUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     accessLevel: {
       type: String,
@@ -38,7 +39,8 @@ export default {
     },
     reportAbusePath: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     canEdit: {
       type: Boolean,
@@ -86,6 +88,9 @@ export default {
     ...mapGetters(['getUserDataByProp']),
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
+    },
+    showDeleteAction() {
+      return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;
     },
     isAuthoredByCurrentUser() {
       return this.authorId === this.currentUserId;
@@ -152,9 +157,9 @@ export default {
             v-else
             v-html="resolveDiscussionSvg"></div>
         </template>
-        <loading-icon
+        <gl-loading-icon
           v-else
-          :inline="true"
+          inline
         />
       </button>
     </div>
@@ -171,7 +176,7 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <loading-icon :inline="true" />
+        <gl-loading-icon inline/>
         <span
           class="link-highlight award-control-icon-neutral"
           v-html="emojiSmiling">
@@ -204,7 +209,26 @@ export default {
       </button>
     </div>
     <div
-      v-if="shouldShowActionsDropdown"
+      v-if="showDeleteAction"
+      class="note-actions-item"
+    >
+      <button
+        v-tooltip
+        type="button"
+        title="Delete comment"
+        class="note-action-button js-note-delete btn btn-transparent"
+        data-container="body"
+        data-placement="bottom"
+        @click="onDelete"
+      >
+        <icon
+          name="remove"
+          class="link-highlight"
+        />
+      </button>
+    </div>
+    <div
+      v-else-if="shouldShowActionsDropdown"
       class="dropdown more-actions note-actions-item">
       <button
         v-tooltip
@@ -225,11 +249,11 @@ export default {
             Report as abuse
           </a>
         </li>
-        <li>
+        <li v-if="noteUrl">
           <button
             :data-clipboard-text="noteUrl"
             type="button"
-            css-class="btn-default btn-transparent"
+            class="btn-default btn-transparent js-btn-copy-note-link"
           >
             Copy link
           </button>

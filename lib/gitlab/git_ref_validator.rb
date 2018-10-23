@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: JV: does not need to be migrated, works without a repo.
 
 module Gitlab

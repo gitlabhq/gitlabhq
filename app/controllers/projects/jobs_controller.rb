@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
+  include ContinueParams
 
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!
@@ -11,6 +14,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   layout 'project'
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @scope = params[:scope]
     @all_builds = project.builds.relevant
@@ -33,6 +37,7 @@ class Projects::JobsController < Projects::ApplicationController
     ])
     @builds = @builds.page(params[:page]).per(30).without_count
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def cancel_all
     return access_denied! unless can?(current_user, :update_build, project)
@@ -44,6 +49,7 @@ class Projects::JobsController < Projects::ApplicationController
     redirect_to project_jobs_path(project)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @pipeline = @build.pipeline
     @builds = @pipeline.builds
@@ -61,6 +67,7 @@ class Projects::JobsController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def trace
     build.trace.read do |stream|
@@ -101,6 +108,18 @@ class Projects::JobsController < Projects::ApplicationController
     return respond_422 unless @build.cancelable?
 
     @build.cancel
+
+    if continue_params
+      redirect_to continue_params[:to]
+    else
+      redirect_to builds_project_pipeline_path(@project, @build.pipeline.id)
+    end
+  end
+
+  def unschedule
+    return respond_422 unless @build.scheduled?
+
+    @build.unschedule!
     redirect_to build_path(@build)
   end
 

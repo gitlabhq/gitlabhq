@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventsFinder
   prepend FinderMethods
   prepend FinderWithCrossProjectAccess
@@ -10,6 +12,7 @@ class EventsFinder
   # Arguments:
   #   source - which user or project to looks for events on
   #   current_user - only return events for projects visible to this user
+  #                  WARNING: does not consider project feature visibility!
   #   params:
   #     action: string
   #     target_type: string
@@ -36,32 +39,42 @@ class EventsFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_current_user_access(events)
-    events.merge(ProjectsFinder.new(current_user: current_user).execute)
+    events.merge(ProjectsFinder.new(current_user: current_user).execute) # rubocop: disable CodeReuse/Finder
       .joins(:project)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_action(events)
     return events unless Event::ACTIONS[params[:action]]
 
     events.where(action: Event::ACTIONS[params[:action]])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_target_type(events)
     return events unless Event::TARGET_TYPES[params[:target_type]]
 
     events.where(target_type: Event::TARGET_TYPES[params[:target_type]])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_created_at_before(events)
     return events unless params[:before]
 
     events.where('events.created_at < ?', params[:before].beginning_of_day)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_created_at_after(events)
     return events unless params[:after]
 
     events.where('events.created_at > ?', params[:after].end_of_day)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

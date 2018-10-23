@@ -12,6 +12,7 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Pipelines
   include Emails::Members
+  include Emails::AutoDevops
 
   helper MergeRequestsHelper
   helper DiffHelper
@@ -117,6 +118,7 @@ class Notify < BaseMailer
     add_unsubscription_headers_and_links
 
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
+    headers["X-GitLab-#{model.class.name}-IID"] = model.iid if model.respond_to?(:iid)
     headers['X-GitLab-Reply-Key'] = reply_key
 
     @reason = headers['X-GitLab-NotificationReason']

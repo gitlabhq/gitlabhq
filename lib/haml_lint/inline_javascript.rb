@@ -1,7 +1,10 @@
-unless Rails.env.production? # rubocop:disable Naming/FileName
-  require 'haml_lint/haml_visitor'
-  require 'haml_lint/linter'
-  require 'haml_lint/linter_registry'
+# rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+unless Rails.env.production?
+  require_dependency 'haml_lint/haml_visitor'
+  require_dependency 'haml_lint/linter'
+  require_dependency 'haml_lint/linter_registry'
 
   module HamlLint
     class Linter::InlineJavaScript < Linter

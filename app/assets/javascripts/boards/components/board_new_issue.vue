@@ -1,15 +1,16 @@
 <script>
 import $ from 'jquery';
+import { Button } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
+    'gl-button': Button,
   },
   props: {
     groupId: {
@@ -66,8 +67,8 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          Store.detail.issue = issue;
-          Store.detail.list = this.list;
+          boardsStore.detail.issue = issue;
+          boardsStore.detail.list = this.list;
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
@@ -110,9 +111,9 @@ export default {
           Title
         </label>
         <input
+          :id="list.id + '-title'"
           ref="input"
           v-model="title"
-          :id="list.id + '-title'"
           class="form-control"
           type="text"
           name="issue_title"
@@ -123,21 +124,23 @@ export default {
           :group-id="groupId"
         />
         <div class="clearfix prepend-top-10">
-          <button
+          <gl-button
             ref="submit-button"
             :disabled="disabled"
-            class="btn btn-success float-left"
+            class="float-left"
+            variant="success"
             type="submit"
           >
             Submit issue
-          </button>
-          <button
-            class="btn btn-default float-right"
+          </gl-button>
+          <gl-button
+            class="float-right"
             type="button"
+            variant="default"
             @click="cancel"
           >
             Cancel
-          </button>
+          </gl-button>
         </div>
       </form>
     </div>

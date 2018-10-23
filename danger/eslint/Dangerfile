@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+def get_eslint_files(files)
+  files.select do |file|
+    file.end_with?('.js', '.vue') &&
+      File.read(file).include?('/* eslint-disable')
+  end
+end
+
+eslint_candidates = get_eslint_files(helper.all_changed_files)
+
+return if eslint_candidates.empty?
+
+warn 'This merge request changed files with disabled eslint rules. Please consider fixing them.'
+
+markdown(<<~MARKDOWN)
+  ## Disabled eslint rules
+
+  The following files have disabled `eslint` rules. Please consider fixing them:
+
+  * #{eslint_candidates.map { |path| "`#{path}`" }.join("\n* ")}
+
+  Run the following command for more details
+
+  ```
+  node_modules/.bin/eslint --report-unused-disable-directives --no-inline-config \\
+  #{eslint_candidates.map { |path| "  '#{path}'" }.join(" \\\n")}
+  ```
+MARKDOWN

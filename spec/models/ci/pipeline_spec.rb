@@ -75,6 +75,18 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#delay' do
+    subject { pipeline.delay }
+
+    let(:pipeline) { build(:ci_pipeline, status: :created) }
+
+    it 'changes pipeline status to schedule' do
+      subject
+
+      expect(pipeline).to be_scheduled
+    end
+  end
+
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
@@ -767,6 +779,41 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe 'ref_exists?' do
+    context 'when repository exists' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:project) { create(:project, :repository) }
+
+      where(:tag, :ref, :result) do
+        false | 'master'              | true
+        false | 'non-existent-branch' | false
+        true  | 'v1.1.0'              | true
+        true  | 'non-existent-tag'    | false
+      end
+
+      with_them do
+        let(:pipeline) do
+          create(:ci_empty_pipeline, project: project, tag: tag, ref: ref)
+        end
+
+        it "correctly detects ref" do
+          expect(pipeline.ref_exists?).to be result
+        end
+      end
+    end
+
+    context 'when repository does not exist' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project, ref: 'master')
+      end
+
+      it 'always returns false' do
+        expect(pipeline.ref_exists?).to eq false
+      end
+    end
+  end
+
   context 'with non-empty project' do
     let(:project) { create(:project, :repository) }
 
@@ -821,6 +868,57 @@ describe Ci::Pipeline, :mailer do
         it 'returns latest one' do
           is_expected.to contain_exactly(manual2)
         end
+      end
+    end
+  end
+
+  describe '#branch_updated?' do
+    context 'when pipeline has before SHA' do
+      before do
+        pipeline.update_column(:before_sha, 'a1b2c3d4')
+      end
+
+      it 'runs on a branch update push' do
+        expect(pipeline.before_sha).not_to be Gitlab::Git::BLANK_SHA
+        expect(pipeline.branch_updated?).to be true
+      end
+    end
+
+    context 'when pipeline does not have before SHA' do
+      before do
+        pipeline.update_column(:before_sha, Gitlab::Git::BLANK_SHA)
+      end
+
+      it 'does not run on a branch updating push' do
+        expect(pipeline.branch_updated?).to be false
+      end
+    end
+  end
+
+  describe '#modified_paths' do
+    context 'when old and new revisions are set' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        pipeline.update(before_sha: '1234abcd', sha: '2345bcde')
+      end
+
+      it 'fetches stats for changes between commits' do
+        expect(project.repository)
+          .to receive(:diff_stats).with('1234abcd', '2345bcde')
+          .and_call_original
+
+        pipeline.modified_paths
+      end
+    end
+
+    context 'when either old or new revision is missing' do
+      before do
+        pipeline.update_column(:before_sha, Gitlab::Git::BLANK_SHA)
+      end
+
+      it 'raises an error' do
+        expect { pipeline.modified_paths }.to raise_error(ArgumentError)
       end
     end
   end
@@ -1151,7 +1249,11 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'when pipelines does not contain needed data' do
+    context 'when pipelines does not contain needed data and auto devops is disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
       it 'defines source to be unknown' do
         pipeline.set_config_source
 
@@ -1196,7 +1298,6 @@ describe Ci::Pipeline, :mailer do
 
         context 'auto devops enabled' do
           before do
-            stub_application_setting(auto_devops_enabled: true)
             allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
@@ -1282,6 +1383,19 @@ describe Ci::Pipeline, :mailer do
       it 'updates pipeline status to running' do
         expect { pipeline.update_status }
           .to change { pipeline.reload.status }.to 'running'
+      end
+    end
+
+    context 'when updating status to scheduled' do
+      before do
+        allow(pipeline)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:scheduled)
+      end
+
+      it 'updates pipeline status to scheduled' do
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'scheduled'
       end
     end
 
@@ -1743,7 +1857,7 @@ describe Ci::Pipeline, :mailer do
         create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
       end
 
-      it 'does not containyaml errors' do
+      it 'does not contain yaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
     end
@@ -1939,6 +2053,60 @@ describe Ci::Pipeline, :mailer do
 
     it 'returns all jobs (including failed and retried)' do
       expect(pipeline.total_size).to eq(5)
+    end
+  end
+
+  describe '#status' do
+    context 'when transitioning to failed' do
+      context 'when pipeline has autodevops as source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :auto_devops_source) }
+
+        it 'calls autodevops disable service' do
+          expect(AutoDevops::DisableWorker).to receive(:perform_async).with(pipeline.id)
+
+          pipeline.drop
+        end
+      end
+
+      context 'when pipeline has other source' do
+        let(:pipeline) { create(:ci_pipeline, :running, :repository_source) }
+
+        it 'does not call auto devops disable service' do
+          expect(AutoDevops::DisableWorker).not_to receive(:perform_async)
+
+          pipeline.drop
+        end
+      end
+    end
+  end
+
+  describe '#default_branch?' do
+    let(:default_branch) { 'master'}
+
+    subject { pipeline.default_branch? }
+
+    before do
+      allow(project).to receive(:default_branch).and_return(default_branch)
+    end
+
+    context 'when pipeline ref is the default branch of the project' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, ref: default_branch)
+      end
+
+      it "returns true" do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context 'when pipeline ref is not the default branch of the project' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, ref: 'another_branch')
+      end
+
+      it "returns false" do
+        expect(subject).to be_falsey
+      end
     end
   end
 end

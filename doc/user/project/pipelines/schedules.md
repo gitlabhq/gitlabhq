@@ -1,9 +1,9 @@
 # Pipeline Schedules
 
 > **Notes**:
-- This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
-- In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
-- Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
+> - This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
+> - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
+> - Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
 
 Pipeline schedules can be used to run a pipeline at specific intervals, for example every
 month on the 22nd for a certain branch.
@@ -19,7 +19,7 @@ In order to schedule a pipeline:
 
 ![New Schedule Form](img/pipeline_schedules_new_form.png)
 
->**Attention:**
+> **Attention:**
 The pipelines won't be executed precisely, because schedules are handled by
 Sidekiq, which runs according to its interval.
 See [advanced admin configuration](#advanced-admin-configuration) for more
@@ -83,7 +83,7 @@ The next time a pipeline is scheduled, your credentials will be used.
 
 ![Schedules list](img/pipeline_schedules_ownership.png)
 
->**Note:**
+> **Note:**
 When the owner of the schedule doesn't have the ability to create pipelines
 anymore, due to e.g., being blocked or removed from the project, or lacking
 the permission to run on protected branches or tags. When this happened, the

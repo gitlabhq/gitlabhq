@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { glEmojiTag } from '~/emoji';
 
 import detailedMetric from './detailed_metric.vue';
 import requestSelector from './request_selector.vue';
@@ -42,7 +43,7 @@ export default {
       keys: ['feature', 'request'],
     },
   ],
-  simpleMetrics: ['redis', 'sidekiq'],
+  simpleMetrics: ['redis'],
   data() {
     return { currentRequestId: '' };
   },
@@ -63,6 +64,16 @@ export default {
     },
     lineProfileModal() {
       return $('#modal-peek-line-profile');
+    },
+    hasHost() {
+      return this.currentRequest && this.currentRequest.details && this.currentRequest.details.host;
+    },
+    birdEmoji() {
+      if (this.hasHost && this.currentRequest.details.host.canary) {
+        return glEmojiTag('baby_chick');
+      }
+
+      return '';
     },
   },
   mounted() {
@@ -93,9 +104,11 @@ export default {
         class="view"
       >
         <span
-          v-if="currentRequest.details"
+          v-if="hasHost"
           class="current-host"
+          :class="{ 'canary' : currentRequest.details.host.canary }"
         >
+          <span v-html="birdEmoji"></span>
           {{ currentRequest.details.host.hostname }}
         </span>
       </div>
@@ -130,8 +143,8 @@ export default {
       </div>
       <simple-metric
         v-for="metric in $options.simpleMetrics"
-        :current-request="currentRequest"
         :key="metric"
+        :current-request="currentRequest"
         :metric="metric"
       />
       <div

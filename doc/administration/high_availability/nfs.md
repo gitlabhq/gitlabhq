@@ -3,6 +3,11 @@
 You can view information and options set for each of the mounted NFS file
 systems by running `nfsstat -m` and `cat /etc/fstab`.
 
+NOTE: **Note:** Filesystem performance has a big impact on overall GitLab
+performance, especially for actions that read or write to Git repositories. See
+[Filesystem Performance Benchmarking](../operations/filesystem_benchmarking.md)
+for steps to test filesystem performance.
+
 ## NFS Server features
 
 ### Required features
@@ -32,6 +37,30 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
+### Known issues
+
+On some customer systems, we have seen NFS clients slow precipitously due to
+[excessive network traffic from numerous `TEST_STATEID` NFS
+messages](https://gitlab.com/gitlab-org/gitlab-ce/issues/52017). This is
+likely due to a [Linux kernel
+bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203) that may be fixed in
+[more recent kernels with this
+commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
+
+Users encountering a similar issue may be advised to disable the NFS server
+delegation feature, which is an optimization to reduce the number of network
+round-trips needed to read or write files. To disable NFS server delegations
+on an Linux NFS server, do the following:
+
+1. On the NFS server, run:
+
+    ```sh
+    echo 0 > /proc/sys/fs/leases-enable
+    sysctl -w fs.leases-enable=0
+    ```
+
+2. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
+
 ## AWS Elastic File System
 
 GitLab strongly recommends against using AWS Elastic File System (EFS).
@@ -47,7 +76,7 @@ there because this will also affect performance. We recommend that the log files
 stored on a local volume.
 
 For more details on another person's experience with EFS, see
-[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
+[Amazon's Elastic File System: Burst Credits](https://rawkode.com/2017/04/16/amazons-elastic-file-system-burst-credits/)
 
 ## NFS Client mount options
 
@@ -58,10 +87,11 @@ GitLab.com:
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nofail,lookupcache=positive 0 2
 ```
 
-Notice several options that you should consider using:
+Note there are several options that you should consider using:
 
 | Setting | Description |
 | ------- | ----------- |
+| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/issues/1339) that can cause significant problems due to stale data.
 | `nofail` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 
@@ -87,7 +117,7 @@ Mount `/gitlab-nfs` then use the following Omnibus
 configuration to move each data location to a subdirectory:
 
 ```ruby
-git_data_dirs({"default" => "/gitlab-nfs/gitlab-data/git-data"})
+git_data_dirs({"default" => { "path" => "/gitlab-nfs/gitlab-data/git-data"} })
 user['home'] = '/gitlab-nfs/gitlab-data/home'
 gitlab_rails['uploads_directory'] = '/gitlab-nfs/gitlab-data/uploads'
 gitlab_rails['shared_path'] = '/gitlab-nfs/gitlab-data/shared'
@@ -133,7 +163,7 @@ following are the 5 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
-| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => "/var/opt/gitlab/git-data"})`
+| `/var/opt/gitlab/git-data` | Git repository data. This will account for a large portion of your data | `git_data_dirs({"default" => { "path" => "/var/opt/gitlab/git-data"} })`
 | `/var/opt/gitlab/.ssh` | SSH `authorized_keys` file and keys used to import repositories from some other Git services | `user['home'] = '/var/opt/gitlab/'`
 | `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
 | `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, etc. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`

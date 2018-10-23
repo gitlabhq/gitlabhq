@@ -35,6 +35,7 @@ describe('DropdownTitleComponent', () => {
 
     it('renders `Edit` button element', () => {
       const editBtnEl = vm.$el.querySelector('button.edit-link.js-sidebar-dropdown-toggle');
+
       expect(editBtnEl).not.toBeNull();
       expect(editBtnEl.innerText.trim()).toBe('Edit');
     });

@@ -29,20 +29,14 @@ describe('Confidential Issue Sidebar Block', () => {
   });
 
   it('shows if confidential and/or editable', () => {
-    expect(
-      vm1.$el.innerHTML.includes('Edit'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Edit')).toBe(true);
 
-    expect(
-      vm1.$el.innerHTML.includes('This issue is confidential'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('This issue is confidential')).toBe(true);
 
-    expect(
-      vm2.$el.innerHTML.includes('Not confidential'),
-    ).toBe(true);
+    expect(vm2.$el.innerHTML.includes('Not confidential')).toBe(true);
   });
 
-  it('displays the edit form when editable', (done) => {
+  it('displays the edit form when editable', done => {
     expect(vm1.edit).toBe(false);
 
     vm1.$el.querySelector('.confidential-edit').click();
@@ -50,17 +44,15 @@ describe('Confidential Issue Sidebar Block', () => {
     expect(vm1.edit).toBe(true);
 
     setTimeout(() => {
-      expect(
-        vm1.$el
-          .innerHTML
-          .includes('You are going to turn off the confidentiality.'),
-      ).toBe(true);
+      expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
+        true,
+      );
 
       done();
     });
   });
 
-  it('displays the edit form when opened from collapsed state', (done) => {
+  it('displays the edit form when opened from collapsed state', done => {
     expect(vm1.edit).toBe(false);
 
     vm1.$el.querySelector('.sidebar-collapsed-icon').click();
@@ -68,11 +60,9 @@ describe('Confidential Issue Sidebar Block', () => {
     expect(vm1.edit).toBe(true);
 
     setTimeout(() => {
-      expect(
-        vm1.$el
-          .innerHTML
-          .includes('You are going to turn off the confidentiality.'),
-      ).toBe(true);
+      expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
+        true,
+      );
 
       done();
     });

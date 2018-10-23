@@ -1,6 +1,6 @@
 # Test and deploy to Heroku a Scala application
 
-This example demonstrates the integration of Gitlab CI with Scala
+This example demonstrates the integration of GitLab CI with Scala
 applications using SBT. Checkout the example
 [project](https://gitlab.com/gitlab-examples/scala-sbt) and
 [build status](https://gitlab.com/gitlab-examples/scala-sbt/builds).
@@ -25,7 +25,7 @@ before_script:
   - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
   - apt-get update -y
   - apt-get install sbt -y
-  - sbt sbt-version
+  - sbt sbtVersion
 
 test:
   stage: test

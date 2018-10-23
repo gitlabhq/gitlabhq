@@ -5,13 +5,7 @@ import ImageBadge from '~/image_diff/image_badge';
 import * as mockData from '../mock_data';
 
 describe('utilsHelper', () => {
-  const {
-    noteId,
-    discussionId,
-    image,
-    imageProperties,
-    imageMeta,
-  } = mockData;
+  const { noteId, discussionId, image, imageProperties, imageMeta } = mockData;
 
   describe('resizeCoordinatesToImageElement', () => {
     let result;
@@ -57,6 +51,7 @@ describe('utilsHelper', () => {
 
     it('should return actual image properties', () => {
       const { actual } = result;
+
       expect(actual.x).toEqual(imageMeta.x);
       expect(actual.y).toEqual(imageMeta.y);
       expect(actual.width).toEqual(imageMeta.width);
@@ -65,6 +60,7 @@ describe('utilsHelper', () => {
 
     it('should return browser image properties', () => {
       const { browser } = result;
+
       expect(browser.x).toBeDefined();
       expect(browser.y).toBeDefined();
       expect(browser.width).toBeDefined();
@@ -106,6 +102,7 @@ describe('utilsHelper', () => {
       const result = utilsHelper.getTargetSelection(event);
 
       const { browser } = result;
+
       expect(browser.x).toEqual(event.offsetX);
       expect(browser.y).toEqual(event.offsetY);
       expect(browser.width).toEqual(imageProperties.width);
@@ -117,6 +114,7 @@ describe('utilsHelper', () => {
       const result = utilsHelper.getTargetSelection(event);
 
       const { actual } = result;
+
       expect(actual.x).toEqual(100);
       expect(actual.y).toEqual(100);
       expect(actual.width).toEqual(imageProperties.naturalWidth);
@@ -127,24 +125,28 @@ describe('utilsHelper', () => {
       it('should return x = 0 if x < 0', () => {
         const event = generateEvent(-5, 50);
         const result = utilsHelper.getTargetSelection(event);
+
         expect(result.browser.x).toEqual(0);
       });
 
       it('should return x = width if x > width', () => {
         const event = generateEvent(1000, 50);
         const result = utilsHelper.getTargetSelection(event);
+
         expect(result.browser.x).toEqual(imageProperties.width);
       });
 
       it('should return y = 0 if y < 0', () => {
         const event = generateEvent(50, -10);
         const result = utilsHelper.getTargetSelection(event);
+
         expect(result.browser.y).toEqual(0);
       });
 
       it('should return y = height if y > height', () => {
         const event = generateEvent(50, 1000);
         const result = utilsHelper.getTargetSelection(event);
+
         expect(result.browser.y).toEqual(imageProperties.height);
       });
     });
@@ -178,6 +180,7 @@ describe('utilsHelper', () => {
       `;
 
       const imageDiff = utilsHelper.initImageDiff(fileEl, true, false);
+
       expect(ImageDiff.prototype.init).toHaveBeenCalled();
       expect(imageDiff.canCreateNote).toEqual(true);
       expect(imageDiff.renderCommentBadge).toEqual(false);
@@ -191,6 +194,7 @@ describe('utilsHelper', () => {
       `;
 
       const replacedImageDiff = utilsHelper.initImageDiff(fileEl, false, true);
+
       expect(ReplacedImageDiff.prototype.init).toHaveBeenCalled();
       expect(replacedImageDiff.canCreateNote).toEqual(false);
       expect(replacedImageDiff.renderCommentBadge).toEqual(true);

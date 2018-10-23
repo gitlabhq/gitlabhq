@@ -3,7 +3,7 @@ import U2FAuthenticate from '~/u2f/authenticate';
 import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
 
-describe('U2FAuthenticate', function () {
+describe('U2FAuthenticate', function() {
   preloadFixtures('u2f/authenticate.html.raw');
 
   beforeEach(() => {
@@ -32,30 +32,40 @@ describe('U2FAuthenticate', function () {
       window.u2f = this.oldu2f;
     });
 
-    it('falls back to normal 2fa', (done) => {
-      this.component.start().then(() => {
-        expect(this.component.switchToFallbackUI).toHaveBeenCalled();
-        done();
-      }).catch(done.fail);
+    it('falls back to normal 2fa', done => {
+      this.component
+        .start()
+        .then(() => {
+          expect(this.component.switchToFallbackUI).toHaveBeenCalled();
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
   describe('with u2f available', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       // bypass automatic form submission within renderAuthenticated
       spyOn(this.component, 'renderAuthenticated').and.returnValue(true);
       this.u2fDevice = new MockU2FDevice();
 
-      this.component.start().then(done).catch(done.fail);
+      this.component
+        .start()
+        .then(done)
+        .catch(done.fail);
     });
 
     it('allows authenticating via a U2F device', () => {
       const inProgressMessage = this.container.find('p');
+
       expect(inProgressMessage.text()).toContain('Trying to communicate with your device');
       this.u2fDevice.respondToAuthenticateRequest({
         deviceData: 'this is data from the device',
       });
-      expect(this.component.renderAuthenticated).toHaveBeenCalledWith('{"deviceData":"this is data from the device"}');
+
+      expect(this.component.renderAuthenticated).toHaveBeenCalledWith(
+        '{"deviceData":"this is data from the device"}',
+      );
     });
 
     describe('errors', () => {
@@ -66,7 +76,8 @@ describe('U2FAuthenticate', function () {
           errorCode: 'error!',
         });
         const errorMessage = this.container.find('p');
-        return expect(errorMessage.text()).toContain('There was a problem communicating with your device');
+
+        expect(errorMessage.text()).toContain('There was a problem communicating with your device');
       });
       return it('allows retrying authentication after an error', () => {
         let setupButton = this.container.find('#js-login-u2f-device');
@@ -81,7 +92,10 @@ describe('U2FAuthenticate', function () {
         this.u2fDevice.respondToAuthenticateRequest({
           deviceData: 'this is data from the device',
         });
-        expect(this.component.renderAuthenticated).toHaveBeenCalledWith('{"deviceData":"this is data from the device"}');
+
+        expect(this.component.renderAuthenticated).toHaveBeenCalledWith(
+          '{"deviceData":"this is data from the device"}',
+        );
       });
     });
   });

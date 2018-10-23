@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names */
+/* eslint-disable object-shorthand, func-names */
 /* global CommentsStore */
 
 import Vue from 'vue';
@@ -13,17 +13,17 @@ window.ResolveCount = Vue.extend({
       required: true,
     },
   },
-  data: function () {
+  data: function() {
     return {
-      discussions: CommentsStore.state
+      discussions: CommentsStore.state,
     };
   },
   computed: {
-    allResolved: function () {
+    allResolved: function() {
       return this.resolvedDiscussionCount === this.discussionCount;
     },
     resolvedCountText() {
       return this.discussionCount === 1 ? 'discussion' : 'discussions';
-    }
-  }
+    },
+  },
 });

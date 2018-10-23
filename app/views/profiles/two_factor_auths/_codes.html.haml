@@ -1,5 +1,5 @@
 %p.slead
-  Should you ever lose your phone, each of these recovery codes can be used one
+  Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one
   time each to regain access to your account. Please save them in a safe place, or you
   %b will
   lose access to your account.
@@ -10,4 +10,6 @@
       %li
         %span.monospace= code
 
-= link_to 'Proceed', profile_account_path, class: 'btn btn-success'
+.d-flex
+  = link_to 'Proceed', profile_account_path, class: 'btn btn-success append-right-10'
+  = link_to 'Download codes', "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}", download: "gitlab-recovery-codes.txt", class: 'btn btn-default'

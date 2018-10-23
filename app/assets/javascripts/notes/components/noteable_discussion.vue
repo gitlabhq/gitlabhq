@@ -137,8 +137,10 @@ export default {
       return this.unresolvedDiscussions.length > 1;
     },
     showJumpToNextDiscussion() {
-      return this.hasMultipleUnresolvedDiscussions &&
-        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder);
+      return (
+        this.hasMultipleUnresolvedDiscussions &&
+        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder)
+      );
     },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.transformedDiscussion;
@@ -189,6 +191,7 @@ export default {
         if (note.placeholderType === SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
+
         return placeholderNote;
       }
 
@@ -199,7 +202,7 @@ export default {
       return noteableNote;
     },
     componentData(note) {
-      return note.isPlaceholderNote ? this.discussion.notes[0] : note;
+      return note.isPlaceholderNote ? note.notes[0] : note;
     },
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
@@ -256,10 +259,15 @@ Please check your network connection and try again.`;
         });
     },
     jumpToNextDiscussion() {
-      const nextId =
-        this.nextUnresolvedDiscussionId(this.discussion.id, this.discussionsByDiffOrder);
+      const nextId = this.nextUnresolvedDiscussionId(
+        this.discussion.id,
+        this.discussionsByDiffOrder,
+      );
 
       this.jumpToDiscussion(nextId);
+    },
+    deleteNoteHandler(note) {
+      this.$emit('noteDeleted', this.discussion, note);
     },
   },
 };
@@ -270,6 +278,7 @@ Please check your network connection and try again.`;
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
+          v-if="author"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="author.name"
@@ -340,10 +349,11 @@ Please check your network connection and try again.`;
               <div class="discussion-notes">
                 <ul class="notes">
                   <component
-                    v-for="note in discussion.notes"
                     :is="componentName(note)"
-                    :note="componentData(note)"
+                    v-for="note in discussion.notes"
                     :key="note.id"
+                    :note="componentData(note)"
+                    @handleDeleteNote="deleteNoteHandler"
                   />
                 </ul>
                 <div
@@ -369,7 +379,7 @@ Please check your network connection and try again.`;
                         role="group">
                         <button
                           type="button"
-                          class="btn btn-default mr-2"
+                          class="btn btn-default"
                           @click="resolveHandler()"
                         >
                           <i

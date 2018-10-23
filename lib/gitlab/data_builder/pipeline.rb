@@ -26,7 +26,8 @@ module Gitlab
           stages: pipeline.stages_names,
           created_at: pipeline.created_at,
           finished_at: pipeline.finished_at,
-          duration: pipeline.duration
+          duration: pipeline.duration,
+          variables: pipeline.variables.map(&:hook_attrs)
         }
       end
 

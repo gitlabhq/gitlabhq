@@ -8,15 +8,17 @@
   height: auto;
   border-bottom: 1px solid $border-color;
 
-  li {
+  li:not(.md-header-toolbar) {
     display: flex;
 
-    a {
+    a,
+    button {
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       font-size: 14px;
       line-height: 28px;
       color: $gl-text-color-secondary;
+      border: 0;
       border-bottom: 2px solid transparent;
       white-space: nowrap;
 
@@ -33,7 +35,12 @@
       }
     }
 
+    button {
+      padding-top: 0;
+    }
+
     &.active a,
+    &.active button,
     a.active {
       color: $black;
       font-weight: $gl-font-weight-bold;
@@ -41,6 +48,10 @@
       .badge.badge-pill {
         color: $black;
       }
+    }
+
+    &.md-header-tab button {
+      line-height: 19px;
     }
   }
 }

@@ -1,3 +1,4 @@
+# coding: utf-8
 require "spec_helper"
 
 describe Gitlab::EncodingHelper do
@@ -185,6 +186,17 @@ describe Gitlab::EncodingHelper do
       it "encodes #{input.inspect} to #{result.inspect}" do
         expect(ext_class.encode_binary(input)).to eq(result)
       end
+    end
+  end
+
+  describe '#binary_stringio' do
+    it 'does not mutate the original string encoding' do
+      test = 'my-test'
+
+      io_stream = ext_class.binary_stringio(test)
+
+      expect(io_stream.external_encoding.name).to eq('ASCII-8BIT')
+      expect(test.encoding.name).to eq('UTF-8')
     end
   end
 end

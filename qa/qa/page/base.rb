@@ -1,11 +1,16 @@
+# frozen_string_literal: true
+
 require 'capybara/dsl'
 
 module QA
   module Page
     class Base
+      prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
       extend SingleForwardable
+
+      ElementNotFound = Class.new(RuntimeError)
 
       def_delegators :evaluator, :view, :views
 
@@ -23,6 +28,21 @@ module QA
           sleep(time)
 
           refresh if reload
+        end
+
+        false
+      end
+
+      def with_retry(max_attempts: 3, reload: false)
+        attempts = 0
+
+        while attempts < max_attempts
+          result = yield
+          return result if result
+
+          refresh if reload
+
+          attempts += 1
         end
 
         false
@@ -68,6 +88,10 @@ module QA
         all(element_selector_css(name))
       end
 
+      def check_element(name)
+        find_element(name).set(true)
+      end
+
       def click_element(name)
         find_element(name).click
       end
@@ -76,10 +100,18 @@ module QA
         find_element(name).set(content)
       end
 
+      def has_element?(name)
+        has_css?(element_selector_css(name))
+      end
+
       def within_element(name)
         page.within(element_selector_css(name)) do
           yield
         end
+      end
+
+      def scroll_to_element(name, *args)
+        scroll_to(element_selector_css(name), *args)
       end
 
       def element_selector_css(name)

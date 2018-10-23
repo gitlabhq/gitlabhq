@@ -1,12 +1,12 @@
 <script>
 import _ from 'underscore';
-import JobComponent from './job_component.vue';
-import DropdownJobComponent from './dropdown_job_component.vue';
+import JobItem from './job_item.vue';
+import JobGroupDropdown from './job_group_dropdown.vue';
 
 export default {
   components: {
-    JobComponent,
-    DropdownJobComponent,
+    JobItem,
+    JobGroupDropdown,
   },
   props: {
     title: {
@@ -14,7 +14,7 @@ export default {
       required: true,
     },
 
-    jobs: {
+    groups: {
       type: Array,
       required: true,
     },
@@ -33,12 +33,8 @@ export default {
   },
 
   methods: {
-    firstJob(list) {
-      return list[0];
-    },
-
-    jobId(job) {
-      return `ci-badge-${_.escape(job.name)}`;
+    groupId(group) {
+      return `ci-badge-${_.escape(group.name)}`;
     },
 
     buildConnnectorClass(index) {
@@ -61,25 +57,25 @@ export default {
     <div class="builds-container">
       <ul>
         <li
-          v-for="(job, index) in jobs"
-          :key="job.id"
+          v-for="(group, index) in groups"
+          :id="groupId(group)"
+          :key="group.id"
           :class="buildConnnectorClass(index)"
-          :id="jobId(job)"
           class="build"
         >
 
           <div class="curve"></div>
 
-          <job-component
-            v-if="job.size === 1"
-            :job="job"
+          <job-item
+            v-if="group.size === 1"
+            :job="group.jobs[0]"
             css-class-job-name="build-content"
             @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 
-          <dropdown-job-component
-            v-if="job.size > 1"
-            :job="job"
+          <job-group-dropdown
+            v-if="group.size > 1"
+            :group="group"
             @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 

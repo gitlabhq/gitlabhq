@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Auth
     class OmniauthIdentityLinkerBase
@@ -33,11 +35,13 @@ module Gitlab
         @changed = identity.save
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def identity
         @identity ||= current_user.identities
                                   .with_extern_uid(provider, uid)
                                   .first_or_initialize(extern_uid: uid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def provider
         oauth['provider']

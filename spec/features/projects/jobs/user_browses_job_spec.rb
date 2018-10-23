@@ -16,9 +16,11 @@ describe 'User browses a job', :js do
     visit(project_job_path(project, build))
   end
 
-  it 'erases the job log' do
+  it 'erases the job log', :js do
+    wait_for_requests
+
     expect(page).to have_content("Job ##{build.id}")
-    expect(page).to have_css('#build-trace')
+    expect(page).to have_css('.js-build-trace')
 
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"
@@ -29,18 +31,17 @@ describe 'User browses a job', :js do
     expect(build.artifacts_file.exists?).to be_falsy
     expect(build.artifacts_metadata.exists?).to be_falsy
 
-    page.within('.erased') do
-      expect(page).to have_content('Job has been erased')
-    end
+    expect(page).to have_content('Job has been erased')
   end
 
   context 'with a failed job' do
     let!(:build) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason' do
+      wait_for_all_requests
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed - (unknown failure)')
+        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
       end
     end
   end
@@ -49,9 +50,10 @@ describe 'User browses a job', :js do
     let!(:build) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
+      wait_for_all_requests
       within('.builds-container') do
         build_link = first('.build-job > a')
-        expect(build_link['data-title']).to eq('test - failed - (unknown failure) (retried)')
+        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure) (retried)')
       end
     end
   end

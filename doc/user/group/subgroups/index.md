@@ -1,9 +1,8 @@
 # Subgroups
 
->**Notes:**
-- [Introduced][ce-2772] in GitLab 9.0.
-- Not available when using MySQL as external database (support removed in
-  GitLab 9.3 [due to performance reasons][issue]).
+NOTE: **Note:**
+[Introduced][ce-2772] in GitLab 9.0. Not available when using MySQL as external
+database (support removed in GitLab 9.3 [due to performance reasons][issue]).
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
@@ -79,14 +78,14 @@ structure.
 
 ## Creating a subgroup
 
->**Notes:**
-- You need to be an Owner of a group in order to be able to create
-  a subgroup. For more information check the [permissions table][permissions].
-- For a list of words that are not allowed to be used as group names see the
-  [reserved names][reserved].
-- Users can always create subgroups if they are explicitly added as an Owner to
-  a parent group even if group creation is disabled by an administrator in their
-  settings.
+NOTE: **Note:**
+You need to be an Owner of a group in order to be able to create a subgroup. For
+more information check the [permissions table][permissions].
+For a list of words that are not allowed to be used as group names see the
+[reserved names][reserved].
+Users can always create subgroups if they are explicitly added as an Owner to
+a parent group even if group creation is disabled by an administrator in their
+settings.
 
 To create a subgroup:
 
@@ -136,12 +135,15 @@ From the image above, we can deduct the following things:
 
 ### Overriding the ancestor group membership
 
->**Note:**
+NOTE: **Note:**
 You need to be an Owner of a group in order to be able to add members to it.
 
+NOTE: **Note:**
+A user's permissions in a subgroup cannot be lower than in any of its ancestor groups.
+Therefore, you cannot reduce a user's permissions in a subgroup with respect to its ancestor groups.
+
 To override a user's membership of an ancestor group (the first group they were
-added to), simply add the user in the new subgroup again, but with different
-permissions.
+added to), add the user to the new subgroup again with a higher set of permissions.
 
 For example, if User0 was first added to group `group-1/group-1-1` with Developer
 permissions, then they will inherit those permissions in every other subgroup

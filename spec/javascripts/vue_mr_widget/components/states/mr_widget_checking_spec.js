@@ -24,6 +24,8 @@ describe('MRWidgetChecking', () => {
   });
 
   it('renders information about merging', () => {
-    expect(vm.$el.querySelector('.media-body').textContent.trim()).toEqual('Checking ability to merge automatically');
+    expect(vm.$el.querySelector('.media-body').textContent.trim()).toEqual(
+      'Checking ability to merge automatically',
+    );
   });
 });

@@ -18,6 +18,20 @@ describe Projects::UploadsController do
     end
   end
 
+  context "when exception occurs" do
+    before do
+      allow(FileUploader).to receive(:workhorse_authorize).and_raise(SocketError.new)
+      sign_in(create(:user))
+    end
+
+    it "responds with status internal_server_error" do
+      post_authorize
+
+      expect(response).to have_gitlab_http_status(500)
+      expect(response.body).to eq('Error uploading file')
+    end
+  end
+
   def post_authorize(verified: true)
     request.headers.merge!(workhorse_internal_api_request_header) if verified
 

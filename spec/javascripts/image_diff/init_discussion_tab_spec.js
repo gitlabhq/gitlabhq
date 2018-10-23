@@ -11,7 +11,7 @@ describe('initDiscussionTab', () => {
     `);
   });
 
-  it('should pass canCreateNote as false to initImageDiff', (done) => {
+  it('should pass canCreateNote as false to initImageDiff', done => {
     spyOn(imageDiffHelper, 'initImageDiff').and.callFake((diffFileEl, canCreateNote) => {
       expect(canCreateNote).toEqual(false);
       done();
@@ -20,11 +20,13 @@ describe('initDiscussionTab', () => {
     initDiscussionTab();
   });
 
-  it('should pass renderCommentBadge as true to initImageDiff', (done) => {
-    spyOn(imageDiffHelper, 'initImageDiff').and.callFake((diffFileEl, canCreateNote, renderCommentBadge) => {
-      expect(renderCommentBadge).toEqual(true);
-      done();
-    });
+  it('should pass renderCommentBadge as true to initImageDiff', done => {
+    spyOn(imageDiffHelper, 'initImageDiff').and.callFake(
+      (diffFileEl, canCreateNote, renderCommentBadge) => {
+        expect(renderCommentBadge).toEqual(true);
+        done();
+      },
+    );
 
     initDiscussionTab();
   });
@@ -32,6 +34,7 @@ describe('initDiscussionTab', () => {
   it('should call initImageDiff for each diffFileEls', () => {
     spyOn(imageDiffHelper, 'initImageDiff').and.callFake(() => {});
     initDiscussionTab();
+
     expect(imageDiffHelper.initImageDiff.calls.count()).toEqual(2);
   });
 });

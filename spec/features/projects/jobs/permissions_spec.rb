@@ -67,7 +67,7 @@ describe 'Project Jobs Permissions' do
         it_behaves_like 'recent job page details responds with status', 200 do
           it 'renders job details', :js do
             expect(page).to have_content "Job ##{job.id}"
-            expect(page).to have_css '#build-trace'
+            expect(page).to have_css '.js-build-trace'
           end
         end
 

@@ -64,6 +64,9 @@ acs-*.bib
 # changes
 *.soc
 
+# comment
+*.cut
+
 # cprotect
 *.cpt
 
@@ -188,6 +191,9 @@ sympy-plots-for-*.tex/
 *.pytxcode
 pythontex-files-*/
 
+# tcolorbox
+*.listing
+
 # thmtools
 *.loe
 
@@ -201,6 +207,9 @@ pythontex-files-*/
 
 # easy-todo
 *.lod
+
+# xcolor
+*.xcp
 
 # xmpincl
 *.xmpi

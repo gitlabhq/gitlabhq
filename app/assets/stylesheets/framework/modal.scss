@@ -19,6 +19,17 @@
     }
   }
 
+  // leave enough space for the close icon
+  .modal-title {
+    &.mw-100,
+    &.w-100 {
+      // after upgrading to Bootstrap 4.2 we can use $modal-header-padding-x here
+      // https://github.com/twbs/bootstrap/pull/26976
+      margin-right: -2rem;
+      padding-right: 2rem;
+    }
+  }
+
   .page-title {
     margin-top: 0;
   }
@@ -59,7 +70,7 @@
   }
 
   @include media-breakpoint-up(sm) {
-    .btn:first-of-type {
+    .btn:nth-child(1) {
       margin-left: auto;
     }
   }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Notes < Grape::API
     include PaginationParams
@@ -28,6 +30,7 @@ module API
                           desc: 'Return notes sorted in `asc` or `desc` order.'
           use :pagination
         end
+        # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_str}/:noteable_id/notes" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
@@ -45,6 +48,7 @@ module API
             .reject { |n| n.cross_reference_not_visible_for?(current_user) }
           present notes, with: Entities::Note
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Get a single #{noteable_type.to_s.downcase} note" do
           success Entities::Note

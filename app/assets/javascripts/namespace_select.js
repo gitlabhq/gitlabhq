@@ -1,4 +1,4 @@
-/* eslint-disable func-names, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, object-shorthand, no-else-return, prefer-template, prefer-arrow-callback */
 
 import $ from 'jquery';
 import Api from './api';
@@ -14,14 +14,14 @@ export default class NamespaceSelect {
       selectable: true,
       filterRemote: true,
       search: {
-        fields: ['path']
+        fields: ['path'],
       },
       fieldName: fieldName,
       toggleLabel: function(selected) {
         if (selected.id == null) {
           return selected.text;
         } else {
-          return selected.kind + ": " + selected.full_path;
+          return selected.kind + ': ' + selected.full_path;
         }
       },
       data: function(term, dataCallback) {
@@ -29,7 +29,7 @@ export default class NamespaceSelect {
           if (isFilter) {
             const anyNamespace = {
               text: 'Any namespace',
-              id: null
+              id: null,
             };
             namespaces.unshift(anyNamespace);
             namespaces.splice(1, 0, 'divider');
@@ -41,7 +41,7 @@ export default class NamespaceSelect {
         if (namespace.id == null) {
           return namespace.text;
         } else {
-          return namespace.kind + ": " + namespace.full_path;
+          return namespace.kind + ': ' + namespace.full_path;
         }
       },
       renderRow: this.renderRow,

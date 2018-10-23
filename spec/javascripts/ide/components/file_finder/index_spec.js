@@ -85,8 +85,7 @@ describe('IDE File finder item spec', () => {
     it('clear button resets searchText', done => {
       vm.searchText = 'index';
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('.dropdown-input-clear').click();
         })
@@ -102,8 +101,7 @@ describe('IDE File finder item spec', () => {
       spyOn(vm.$refs.searchInput, 'focus');
       vm.searchText = 'index';
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('.dropdown-input-clear').click();
         })
@@ -178,8 +176,7 @@ describe('IDE File finder item spec', () => {
           vm.searchText = 'test';
           vm.$store.state.fileFindVisible = true;
 
-          vm
-            .$nextTick()
+          vm.$nextTick()
             .then(() => {
               vm.$store.state.fileFindVisible = false;
             })

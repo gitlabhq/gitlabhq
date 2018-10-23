@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # This module provides helper methods which are intregrated with GitLab::ExclusiveLease
   module ExclusiveLeaseHelpers

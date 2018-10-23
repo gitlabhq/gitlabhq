@@ -1,22 +1,10 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Definition of done](#definition-of-done)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Merge requests
+# Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
-community contributions are listed with the label
-[`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee], but you are free to contribute to any other issue
-you want.
+community contributions are listed with
+[the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors),
+but you are free to contribute to any other issue you want.
 
 Please note that if an issue is marked for the current milestone either before
 or while you are working on it, a team member may take over the merge request
@@ -30,13 +18,16 @@ wireframes if the feature will also change the UI.
 Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
 
 If you are new to GitLab development (or web development in general), see the
-[I want to contribute!](#i-want-to-contribute) section to get you started with
+[I want to contribute!](index.md#i-want-to-contribute) section to get you started with
 some potentially easy issues.
 
 To start with GitLab development download the [GitLab Development Kit][gdk] and
-see the [Development section](../README.md) for some guidelines.
+see the [Development section](../../README.md) for some guidelines.
 
-### Merge request guidelines
+[gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
+[gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
+
+## Merge request guidelines
 
 If you can, please submit a merge request with the fix or improvements
 including tests. If you don't know how to fix the issue but can write a test
@@ -55,30 +46,30 @@ request is as follows:
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
-  1. Your merge request needs at least 1 approval but feel free to require more.
-    For instance if you're touching backend and frontend code, it's a good idea
-    to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
-    maintainer
-  1. You don't have to select any approvers, but you can if you really want
-    specific people to approve your merge request
+   1. Your merge request needs at least 1 approval but feel free to require more.
+      For instance if you're touching backend and frontend code, it's a good idea
+      to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
+      maintainer
+   1. You don't have to select any approvers, but you can if you really want
+      specific people to approve your merge request
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
-  1. If you are contributing code, fill in the template already provided in the
-     "Description" field.
-  1. If you are contributing documentation, choose `Documentation` from the
-     "Choose a template" menu and fill in the template.
-  1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
-    `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
-    be merged.
+   1. If you are contributing code, fill in the template already provided in the
+      "Description" field.
+   1. If you are contributing documentation, choose `Documentation` from the
+      "Choose a template" menu and fill in the template.
+   1. Mention the issue(s) your merge request solves, using the `Solves #XXX` or
+      `Closes #XXX` syntax to auto-close the issue(s) once the merge request will
+      be merged.
 1. If you're allowed to, set a relevant milestone and labels
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Be prepared to answer questions and incorporate feedback even if requests
    for this arrive weeks or months after your MR submission
-  1. If a discussion has been addressed, select the "Resolve discussion" button
-    beneath it to mark it resolved.
+   1. If a discussion has been addressed, select the "Resolve discussion" button
+      beneath it to mark it resolved.
 1. If your MR touches code that executes shell commands, reads or opens files or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
@@ -114,7 +105,11 @@ Please ensure that your merge request meets the contribution acceptance criteria
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](../code_review.md) into account.
 
-### Contribution acceptance criteria
+[git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
+[closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
+[team]: https://about.gitlab.com/team/
+
+## Contribution acceptance criteria
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
@@ -138,13 +133,13 @@ When having your code reviewed and when reviewing merge requests please take the
    making and testing future changes
 1. Changes do not adversely degrade performance.
    - Avoid repeated polling of endpoints that require a significant amount of overhead
-   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/mer ge_request_performance_guidelines.html)
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
    - Avoid repeated access of filesystem
 1. If you need polling to support real-time features, please use
    [polling with ETag caching][polling-etag].
 1. Changes after submitting the merge request should be in separate commits
    (no squashing).
-1. It conforms to the [style guides](#style-guides) and the following:
+1. It conforms to the [style guides](style_guides.md) and the following:
     - If your change touches a line that does not follow the style, modify the
       entire line to follow it. This prevents linting tools from generating warnings.
     - Don't touch neighbouring lines. As an exception, automatic mass
@@ -154,6 +149,9 @@ When having your code reviewed and when reviewing merge requests please take the
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
 1. The merge request meets the [definition of done](#definition-of-done).
+
+[license-finder-doc]: ../licensing.md
+[polling-etag]: ../polling.md
 
 ## Definition of done
 
@@ -167,7 +165,7 @@ the feature you contribute through all of these steps.
 1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
-1. Reviewed and any concerns are addressed
+1. Reviewed by UX/FE/BE and any concerns are addressed
 1. Merged by a project maintainer
 1. Added to the release blog article, if relevant
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant
@@ -186,6 +184,12 @@ merge request:
 1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
 
+[definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
+[testing]: ../testing_guide/index.md
+
 ---
 
 [Return to Contributing documentation](index.md)
+
+[changelog]: ../changelog.md "Generate a changelog entry"
+[doc-guidelines]: ../documentation/index.md "Documentation guidelines"

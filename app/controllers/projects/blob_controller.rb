@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for viewing a file's blame
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
@@ -7,7 +9,7 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   prepend_before_action :authenticate_user!, only: [:edit]
 
-  before_action :set_request_format, only: [:edit, :show, :update]
+  before_action :set_request_format, only: [:edit, :show, :update, :destroy]
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
 
@@ -81,7 +83,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def destroy
     create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
-                                        success_path: -> { project_tree_path(@project, @branch_name) },
+                                        success_path: -> { after_delete_path },
                                         failure_view: :show,
                                         failure_path: project_blob_path(@project, @id))
   end
@@ -127,7 +129,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     add_match_line
 
-    render json: @lines
+    render json: DiffLineSerializer.new.represent(@lines)
   end
 
   def add_match_line
@@ -177,6 +179,7 @@ class Projects::BlobController < Projects::ApplicationController
     render_404
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def after_edit_path
     from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:from_merge_request_iid])
     if from_merge_request && @branch_name == @ref
@@ -184,6 +187,16 @@ class Projects::BlobController < Projects::ApplicationController
         "##{hexdigest(@path)}"
     else
       project_blob_path(@project, File.join(@branch_name, @path))
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  def after_delete_path
+    branch = BranchesFinder.new(@repository, search: @ref).execute.first
+    if @repository.tree(branch.target, tree_path).entries.empty?
+      project_tree_path(@project, @ref)
+    else
+      project_tree_path(@project, File.join(@ref, tree_path))
     end
   end
 
@@ -251,9 +264,6 @@ class Projects::BlobController < Projects::ApplicationController
 
   def show_json
     set_last_commit_sha
-    path_segments = @path.split('/')
-    path_segments.pop
-    tree_path = path_segments.join('/')
 
     json = {
       id: @blob.id,
@@ -278,5 +288,9 @@ class Projects::BlobController < Projects::ApplicationController
     json.merge!(blob_json(@blob) || {}) unless params[:viewer] == 'none'
 
     render json: json
+  end
+
+  def tree_path
+    @path.rpartition('/').first
   end
 end

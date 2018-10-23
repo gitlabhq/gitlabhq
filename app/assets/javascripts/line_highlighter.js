@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
+/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, prefer-template, consistent-return, one-var, no-else-return */
 
 import $ from 'jquery';
 
@@ -70,7 +70,7 @@ LineHighlighter.prototype.highlightHash = function(newHash) {
       const scrollOptions = {
         // Scroll to the first highlighted line on initial load
         // Offset -50 for the sticky top bar, and another -100 for some context
-        offset: -150
+        offset: -150,
       };
       if (this.options.scrollFileHolder) {
         $(this.options.fileHolderSelector).scrollTo(lineSelector, scrollOptions);
@@ -85,7 +85,9 @@ LineHighlighter.prototype.clickHandler = function(event) {
   var current, lineNumber, range;
   event.preventDefault();
   this.clearHighlight();
-  lineNumber = $(event.target).closest('a').data('lineNumber');
+  lineNumber = $(event.target)
+    .closest('a')
+    .data('lineNumber');
   current = this.hashToRange(this._hash);
   if (!(current[0] && event.shiftKey)) {
     // If there's no current selection, or there is but Shift wasn't held,
@@ -104,7 +106,7 @@ LineHighlighter.prototype.clickHandler = function(event) {
 };
 
 LineHighlighter.prototype.clearHighlight = function() {
-  return $("." + this.highlightLineClass).removeClass(this.highlightLineClass);
+  return $('.' + this.highlightLineClass).removeClass(this.highlightLineClass);
 };
 
 // Convert a URL hash String into line numbers
@@ -135,7 +137,7 @@ LineHighlighter.prototype.hashToRange = function(hash) {
 //
 // lineNumber - Line number to highlight
 LineHighlighter.prototype.highlightLine = function(lineNumber) {
-  return $("#LC" + lineNumber).addClass(this.highlightLineClass);
+  return $('#LC' + lineNumber).addClass(this.highlightLineClass);
 };
 
 // Highlight all lines within a range
@@ -160,9 +162,9 @@ LineHighlighter.prototype.highlightRange = function(range) {
 LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
   var hash;
   if (lastLineNumber) {
-    hash = "#L" + firstLineNumber + "-" + lastLineNumber;
+    hash = '#L' + firstLineNumber + '-' + lastLineNumber;
   } else {
-    hash = "#L" + firstLineNumber;
+    hash = '#L' + firstLineNumber;
   }
   this._hash = hash;
   return this.__setLocationHash__(hash);
@@ -172,11 +174,15 @@ LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
 //
 // This method is stubbed in tests.
 LineHighlighter.prototype.__setLocationHash__ = function(value) {
-  return window.history.pushState({
-    url: value
-  // We're using pushState instead of assigning location.hash directly to
-  // prevent the page from scrolling on the hashchange event
-  }, document.title, value);
+  return window.history.pushState(
+    {
+      url: value,
+      // We're using pushState instead of assigning location.hash directly to
+      // prevent the page from scrolling on the hashchange event
+    },
+    document.title,
+    value,
+  );
 };
 
 export default LineHighlighter;

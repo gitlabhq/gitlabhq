@@ -40,7 +40,8 @@ export const registryServerResponse = [
     layers: 19,
     location: 'location',
     created_at: 1505828744434,
-  }];
+  },
+];
 
 export const parsedReposServerResponse = [
   {

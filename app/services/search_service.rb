@@ -8,6 +8,7 @@ class SearchService
     @params = params.dup
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project
     return @project if defined?(@project)
 
@@ -19,7 +20,9 @@ class SearchService
         nil
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def group
     return @group if defined?(@group)
 
@@ -31,6 +34,7 @@ class SearchService
         nil
       end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def show_snippets?
     return @show_snippets if defined?(@show_snippets)

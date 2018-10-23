@@ -1,17 +1,19 @@
 - with_label = local_assigns.fetch(:with_label, true)
 
-.form-group.row.visibility-level-setting
+.form-group.visibility-level-setting
   - if with_label
-    = f.label :visibility_level, class: 'col-form-label col-sm-2' do
-      Visibility Level
-      = link_to icon('question-circle'), help_page_path("public_access/public_access")
-  %div{ :class => (with_label ? "col-sm-10" : "col-sm-12") }
-    - if can_change_visibility_level
-      = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: visibility_level, form_model: form_model)
-    - else
-      %div
-        %span.info
-          = visibility_level_icon(visibility_level)
-          %strong
-            = visibility_level_label(visibility_level)
-          .light= visibility_level_description(visibility_level, form_model)
+    = f.label :visibility_level, _('Visibility level'), class: 'label-bold append-bottom-0'
+    %p
+      = _('Who can see this group?')
+      - visibility_docs_path = help_page_path('public_access/public_access')
+      - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: visibility_docs_path }
+      = s_('Check the %{docs_link_start}documentation%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+  - if can_change_visibility_level
+    = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: visibility_level, form_model: form_model)
+  - else
+    %div
+      %span.info
+        = visibility_level_icon(visibility_level)
+        %strong
+          = visibility_level_label(visibility_level)
+        .light= visibility_level_description(visibility_level, form_model)

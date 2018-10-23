@@ -29,6 +29,7 @@ describe('CopyAsGFM', () => {
     it('wraps pasted code when not already in code tags', () => {
       spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
         const insertedText = textFunc('This is code: ', '');
+
         expect(insertedText).toEqual('`code`');
       });
 
@@ -38,6 +39,7 @@ describe('CopyAsGFM', () => {
     it('does not wrap pasted code when already in code tags', () => {
       spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
         const insertedText = textFunc('This is code: `', '`');
+
         expect(insertedText).toEqual('code');
       });
 
@@ -54,7 +56,7 @@ describe('CopyAsGFM', () => {
           const fragment = document.createDocumentFragment();
           const node = document.createElement('div');
           node.innerHTML = html;
-          Array.from(node.childNodes).forEach((item) => fragment.appendChild(item));
+          Array.from(node.childNodes).forEach(item => fragment.appendChild(item));
           return fragment;
         },
       }),
@@ -86,6 +88,7 @@ describe('CopyAsGFM', () => {
         simulateCopy();
 
         const expectedGFM = '- List Item1\n- List Item2';
+
         expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
       });
 
@@ -95,6 +98,7 @@ describe('CopyAsGFM', () => {
         simulateCopy();
 
         const expectedGFM = '1. List Item1\n1. List Item2';
+
         expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
       });
     });

@@ -47,7 +47,7 @@ export default {
       required: true,
     },
     cancelingPipeline: {
-      type: String,
+      type: Number,
       required: false,
       default: null,
     },
@@ -59,6 +59,13 @@ export default {
     };
   },
   computed: {
+    actions() {
+      if (!this.pipeline || !this.pipeline.details) {
+        return [];
+      }
+      const { details } = this.pipeline;
+      return [...(details.manual_actions || []), ...(details.scheduled_actions || [])];
+    },
     /**
      * If provided, returns the commit tag.
      * Needed to render the commit component column.
@@ -132,10 +139,8 @@ export default {
       if (this.pipeline.ref) {
         return Object.keys(this.pipeline.ref).reduce((accumulator, prop) => {
           if (prop === 'path') {
-            // eslint-disable-next-line no-param-reassign
             accumulator.ref_url = this.pipeline.ref[prop];
           } else {
-            // eslint-disable-next-line no-param-reassign
             accumulator[prop] = this.pipeline.ref[prop];
           }
           return accumulator;
@@ -323,8 +328,8 @@ export default {
     >
       <div class="btn-group table-action-buttons">
         <pipelines-actions-component
-          v-if="pipeline.details.manual_actions.length"
-          :actions="pipeline.details.manual_actions"
+          v-if="actions.length > 0"
+          :actions="actions"
         />
 
         <pipelines-artifacts-component

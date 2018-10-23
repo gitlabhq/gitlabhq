@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   class Tag
     attr_reader :repository, :name
@@ -73,11 +75,13 @@ module ContainerRegistry
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def total_size
       return unless layers
 
       layers.map(&:size).sum if v2?
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def delete
       return unless digest

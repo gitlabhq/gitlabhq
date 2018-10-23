@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, one-var, no-unused-vars, prefer-template, no-new, consistent-return, object-shorthand, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -11,6 +11,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 import flash from './flash';
 import ModalStore from './boards/stores/modal_store';
+import boardsStore from './boards/stores/boards_store';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -378,7 +379,7 @@ export default class LabelsSelect {
           }
           else if ($dropdown.hasClass('js-issue-board-sidebar')) {
             if ($el.hasClass('is-active')) {
-              gl.issueBoards.BoardsStore.detail.issue.labels.push(new ListLabel({
+              boardsStore.detail.issue.labels.push(new ListLabel({
                 id: label.id,
                 title: label.title,
                 color: label.color[0],
@@ -386,16 +387,16 @@ export default class LabelsSelect {
               }));
             }
             else {
-              var { labels } = gl.issueBoards.BoardsStore.detail.issue;
+              var { labels } = boardsStore.detail.issue;
               labels = labels.filter(function (selectedLabel) {
                 return selectedLabel.id !== label.id;
               });
-              gl.issueBoards.BoardsStore.detail.issue.labels = labels;
+              boardsStore.detail.issue.labels = labels;
             }
 
             $loading.fadeIn();
 
-            gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
+            boardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(fadeOutLoader)
               .catch(fadeOutLoader);
           }
@@ -449,11 +450,11 @@ export default class LabelsSelect {
   }
 
   bindEvents() {
-    return $('body').on('change', '.selected_issue', this.onSelectCheckboxIssue);
+    return $('body').on('change', '.selected-issuable', this.onSelectCheckboxIssue);
   }
   // eslint-disable-next-line class-methods-use-this
   onSelectCheckboxIssue() {
-    if ($('.selected_issue:checked').length) {
+    if ($('.selected-issuable:checked').length) {
       return;
     }
     return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text('Label');

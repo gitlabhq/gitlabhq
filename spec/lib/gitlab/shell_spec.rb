@@ -7,15 +7,10 @@ describe Gitlab::Shell do
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
-  let(:gitlab_projects) { double('gitlab_projects') }
   let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
 
   before do
     allow(Project).to receive(:find).and_return(project)
-
-    allow(gitlab_shell).to receive(:gitlab_projects)
-      .with(project.repository_storage, project.disk_path + '.git')
-      .and_return(gitlab_projects)
   end
 
   it { is_expected.to respond_to :add_key }

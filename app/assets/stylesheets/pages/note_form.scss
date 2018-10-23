@@ -2,7 +2,7 @@
  * Note Form
  */
 .comment-btn {
-  @extend .btn-create;
+  @extend .btn-success;
 }
 
 .diff-file .diff-content {
@@ -340,6 +340,8 @@
 }
 
 .note-form-actions {
+  color: $gl-text-color;
+
   @include media-breakpoint-down(xs) {
     .btn {
       float: none;

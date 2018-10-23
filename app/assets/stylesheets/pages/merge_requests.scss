@@ -47,7 +47,6 @@
   }
 }
 
-
 .mr-widget-heading {
   position: relative;
   border: 1px solid $border-color;
@@ -201,7 +200,6 @@
 
   .mr-widget-icon {
     font-size: 22px;
-    margin-right: $gl-btn-padding;
   }
 
   .ci-status-icon svg {
@@ -455,12 +453,12 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px  0 10px 15px;
+    padding: 10px 0 10px 15px;
     position: relative;
     display: -webkit-flex;
     display: flex;
 
-    .issue-info-container {
+    .issuable-info-container {
       -webkit-flex: 1;
       flex: 1;
     }
@@ -469,7 +467,6 @@
       margin-bottom: 2px;
 
       .ci-status-link {
-
         svg {
           height: 16px;
           width: 16px;
@@ -699,7 +696,6 @@
 
 .table-holder {
   .ci-table {
-
     th {
       background-color: $white-light;
       color: $gl-text-color-secondary;
@@ -723,6 +719,17 @@
     align-items: center;
     padding: 16px;
     z-index: 199;
+    white-space: nowrap;
+
+    .dropdown-menu-toggle {
+      width: auto;
+      max-width: 170px;
+
+      svg {
+        top: 10px;
+        right: 8px;
+      }
+    }
   }
 
   .content-block {
@@ -765,7 +772,7 @@
 
   &.affix {
     left: 0;
-    transition: right .15s;
+    transition: right 0.15s;
 
     @include media-breakpoint-down(xs) {
       right: 0;
@@ -874,7 +881,7 @@
   }
 
   > *:not(:last-child) {
-    margin-right: .3em;
+    margin-right: 0.3em;
   }
 
   svg {
@@ -897,6 +904,10 @@
   .btn svg {
     fill: $theme-gray-700;
   }
+
+  .dropdown-menu {
+    width: 400px;
+  }
 }
 
 // Hack alert: we've rewritten `btn` class in a way that
@@ -907,10 +918,10 @@
   &[disabled] {
     cursor: not-allowed;
     box-shadow: none;
-    opacity: .65;
+    opacity: 0.65;
 
     &:hover {
-      color: $file-mode-changed;
+      color: $gl-gray-500;
       text-decoration: none;
     }
   }

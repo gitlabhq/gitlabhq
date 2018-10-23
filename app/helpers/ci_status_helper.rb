@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # DEPRECATED
 #
@@ -18,6 +20,8 @@ module CiStatusHelper
               'passed with warnings'
             when 'manual'
               'waiting for manual action'
+            when 'scheduled'
+              'waiting for delayed job'
             else
               status
             end
@@ -37,6 +41,8 @@ module CiStatusHelper
       s_('CiStatusText|passed')
     when 'manual'
       s_('CiStatusText|blocked')
+    when 'scheduled'
+      s_('CiStatusText|delayed')
     else
       # All states are already being translated inside the detailed statuses:
       # :running => Gitlab::Ci::Status::Running
@@ -81,6 +87,8 @@ module CiStatusHelper
         'status_skipped'
       when 'manual'
         'status_manual'
+      when 'scheduled'
+        'status_scheduled'
       else
         'status_canceled'
       end
@@ -119,11 +127,6 @@ module CiStatusHelper
     project = pipeline.project
     path = project_pipeline_path(project, pipeline)
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
-  end
-
-  def no_runners_for_project?(project)
-    project.runners.blank? &&
-      Ci::Runner.instance_type.blank?
   end
 
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)

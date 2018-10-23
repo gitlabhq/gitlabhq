@@ -18,10 +18,6 @@ describe('BalsamiqViewer', () => {
     });
   });
 
-  describe('fileLoaded', () => {
-
-  });
-
   describe('loadFile', () => {
     let xhr;
     let loadFile;
@@ -64,12 +60,16 @@ describe('BalsamiqViewer', () => {
       viewer = jasmine.createSpyObj('viewer', ['appendChild']);
       previews = [document.createElement('ul'), document.createElement('ul')];
 
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['initDatabase', 'getPreviews', 'renderPreview']);
+      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', [
+        'initDatabase',
+        'getPreviews',
+        'renderPreview',
+      ]);
       balsamiqViewer.viewer = viewer;
 
       balsamiqViewer.getPreviews.and.returnValue(previews);
       balsamiqViewer.renderPreview.and.callFake(preview => preview);
-      viewer.appendChild.and.callFake((containerElement) => {
+      viewer.appendChild.and.callFake(containerElement => {
         container = containerElement;
       });
 
@@ -198,7 +198,9 @@ describe('BalsamiqViewer', () => {
     });
 
     it('should call database.exec', () => {
-      expect(database.exec).toHaveBeenCalledWith(`SELECT * FROM resources WHERE id = '${resourceID}'`);
+      expect(database.exec).toHaveBeenCalledWith(
+        `SELECT * FROM resources WHERE id = '${resourceID}'`,
+      );
     });
 
     it('should return the selected resource', () => {
@@ -281,7 +283,7 @@ describe('BalsamiqViewer', () => {
       expect(BalsamiqViewer.parseTitle).toHaveBeenCalledWith(resource);
     });
 
-    it('should return the template string', function () {
+    it('should return the template string', function() {
       expect(renderTemplate.replace(/\s/g, '')).toEqual(template.replace(/\s/g, ''));
     });
   });

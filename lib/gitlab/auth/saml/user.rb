@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # SAML extension for User model
 #
 # * Find GitLab user based on SAML uid and provider

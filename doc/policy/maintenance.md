@@ -44,7 +44,7 @@ This decision is made on a case-by-case basis.
 
 ## Upgrade recommendations
 
-We encourage everyone to run the [latest stable release](https://about.gitlab.com/blog/categories/release/) to ensure that you can
+We encourage everyone to run the [latest stable release](https://about.gitlab.com/blog/categories/releases/) to ensure that you can
 easily upgrade to the most secure and feature-rich GitLab experience. In order
 to make sure you can easily run the most recent stable release, we are working
 hard to keep the update process simple and reliable.
@@ -75,7 +75,8 @@ Please see the table below for some examples:
 | Latest stable version | Your version | Recommended upgrade path | Note |
 | -------------- | ------------ | ------------------------ | ---------------- |
 | 9.4.5   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.4.5`     | `8.17.7` is the last version in version `8` |
-| 10.1.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.8` -> `10.1.4` | `8.17.7` is the last version in version `8`, `9.5.8` is the last version in version `9` |
+| 10.1.4   | 8.13.4   | `8.13.4 -> 8.17.7 -> 9.5.10 -> 10.1.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9` |
+| 11.3.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
 
 More information about the release procedures can be found in our
 [release-tools documentation][rel]. You may also want to read our

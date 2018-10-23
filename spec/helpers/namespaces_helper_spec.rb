@@ -50,9 +50,12 @@ describe NamespacesHelper do
     end
 
     it 'selects the new group by default' do
+      # Ensure we don't select a group with the same name
+      create(:group, name: 'new-group', path: 'another-path')
+
       allow(helper).to receive(:current_user).and_return(user)
 
-      options = helper.namespaces_options(:extra_group, display_path: true, extra_group: build(:group, name: 'new-group'))
+      options = helper.namespaces_options(:extra_group, display_path: true, extra_group: build(:group, name: 'new-group', path: 'new-group'))
 
       expect(options).to include(user_group.name)
       expect(options).not_to include(admin_group.name)

@@ -42,7 +42,7 @@ class TodoService
   # updates the todo counts for those users.
   #
   def destroy_target(target)
-    todo_users = User.where(id: target.todos.pending.select(:user_id)).to_a
+    todo_users = UsersWithPendingTodosFinder.new(target).execute.to_a
 
     yield target
 
@@ -199,21 +199,20 @@ class TodoService
   end
 
   def todo_exist?(issuable, current_user)
-    TodosFinder.new(current_user).execute.exists?(target: issuable)
+    TodosFinder.new(current_user).any_for_target?(issuable)
   end
 
   private
 
   def todos_by_ids(ids, current_user)
-    current_user.todos.where(id: Array(ids))
+    current_user.todos_limited_to(Array(ids))
   end
 
   def update_todos_state(todos, current_user, state)
-    # Only update those that are not really on that state
-    todos = todos.where.not(state: state)
-    todos_ids = todos.pluck(:id)
-    todos.unscope(:order).update_all(state: state)
+    todos_ids = todos.update_state(state)
+
     current_user.update_todos_count_cache
+
     todos_ids
   end
 
@@ -341,7 +340,6 @@ class TodoService
   end
 
   def pending_todos(user, criteria = {})
-    valid_keys = [:project_id, :target_id, :target_type, :commit_id]
-    user.todos.pending.where(criteria.slice(*valid_keys))
+    PendingTodosFinder.new(user, criteria).execute
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Forever
   POSTGRESQL_DATE = DateTime.new(3000, 1, 1)
   MYSQL_DATE = DateTime.new(2038, 01, 19)

@@ -1,10 +1,15 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BareRepositoryImport
     class Importer
       NoAdminError = Class.new(StandardError)
 
       def self.execute(import_path)
-        import_path << '/' unless import_path.ends_with?('/')
+        unless import_path.ends_with?('/')
+          import_path = "#{import_path}/"
+        end
+
         repos_to_import = Dir.glob(import_path + '**/*.git')
 
         unless user = User.admins.order_id_asc.first

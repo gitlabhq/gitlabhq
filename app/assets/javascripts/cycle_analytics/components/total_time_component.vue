@@ -1,18 +1,18 @@
 <script>
-  export default {
-    props: {
-      time: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
+export default {
+  props: {
+    time: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    computed: {
-      hasData() {
-        return Object.keys(this.time).length;
-      },
+  },
+  computed: {
+    hasData() {
+      return Object.keys(this.time).length;
     },
-  };
+  },
+};
 </script>
 <template>
   <span class="total-time">

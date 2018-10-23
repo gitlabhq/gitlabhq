@@ -13,10 +13,15 @@
     "groups": { "optional": true },
     "latest_statuses": {
       "type": "array",
-      "items": { "$ref": "job.json" },
+      "items": { "$ref": "job/job.json" },
       "optional": true
     },
-    "status": { "$ref": "ci_detailed_status.json" },
+    "retried": {
+      "type": "array",
+      "items": { "$ref": "job/job.json" },
+      "optional": true
+    },
+    "status": { "$ref": "status/ci_detailed_status.json" },
     "path": { "type": "string" },
     "dropdown_path": { "type": "string" }
   },

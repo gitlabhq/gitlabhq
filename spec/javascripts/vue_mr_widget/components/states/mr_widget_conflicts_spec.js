@@ -59,7 +59,9 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should show proper message', () => {
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('ask someone with write access');
+      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain(
+        'ask someone with write access',
+      );
     });
 
     it('should not have action buttons', () => {
@@ -79,9 +81,9 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should tell you to rebase locally', () => {
-      expect(
-        removeBreakLine(vm.$el.textContent).trim(),
-      ).toContain('Fast-forward merge is not possible. To merge this request, first rebase locally.');
+      expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
+        'Fast-forward merge is not possible. To merge this request, first rebase locally.',
+      );
     });
   });
 });

@@ -2,7 +2,6 @@
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
-import svg4everybody from 'svg4everybody';
 
 // bootstrap webpack, common libs, polyfills, and behaviors
 import './webpack';
@@ -25,10 +24,12 @@ import initLayoutNav from './layout_nav';
 import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
-import './milestone_select';
 import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
-import initDispatcher from './dispatcher';
+import initUsagePingConsent from './usage_ping_consent';
+import initPerformanceBar from './performance_bar';
+import initSearchAutocomplete from './search_autocomplete';
+import GlFieldErrors from './gl_field_errors';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
@@ -39,8 +40,6 @@ if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
   $.fx.off = true;
   import(/* webpackMode: "eager" */ './test_utils/');
 }
-
-svg4everybody();
 
 document.addEventListener('beforeunload', () => {
   // Unbind scroll events
@@ -78,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
+  initUsagePingConsent();
+
+  if (document.querySelector('.search')) initSearchAutocomplete();
+  if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
@@ -199,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
-    gl.lazyLoader.loadCheck();
   });
 
   // Show/hide comments on diff
@@ -268,5 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  initDispatcher();
+  // initialize field errors
+  $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
 });

@@ -1,4 +1,5 @@
 - page_title @application.name, "Applications"
+
 %h3.page-title
   Application: #{@application.name}
 
@@ -6,23 +7,29 @@
   %table.table
     %tr
       %td
-        Application Id
+        = _('Application ID')
       %td
-        %code#application_id= @application.uid
+        .clipboard-group
+          .input-group
+            %input.label.label-monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true }
+            .input-group-append
+              = clipboard_button(target: '#application_id', title: _("Copy ID to clipboard"), class: "btn btn btn-default")
     %tr
       %td
-        Secret:
+        = _('Secret')
       %td
-        %code#secret= @application.secret
-
+        .clipboard-group
+          .input-group
+            %input.label.label-monospace{ id: "secret", type: "text", autocomplete: 'off', value: @application.secret, readonly: true }
+            .input-group-append
+              = clipboard_button(target: '#secret', title: _("Copy secret to clipboard"), class: "btn btn btn-default")
     %tr
       %td
-        Callback url
+        = _('Callback URL')
       %td
         - @application.redirect_uri.split.each do |uri|
           %div
             %span.monospace= uri
-
     %tr
       %td
         Trusted

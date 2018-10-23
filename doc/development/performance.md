@@ -43,7 +43,7 @@ GitLab provides built-in tools to aid the process of improving performance:
 * [QueryRecoder](query_recorder.md) for preventing `N+1` regressions
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
-<http://performance.gitlab.net>, this requires you to log in using your
+<https://dashboards.gitlab.net>, this requires you to log in using your
 `@gitlab.com` Email address. Non-GitLab employees are advised to set up their
 own InfluxDB + Grafana stack.
 
@@ -364,8 +364,7 @@ Depending on the size of the String and how frequently it would be allocated
 there's no guarantee it will.
 
 Strings will be frozen by default in Ruby 3.0. To prepare our code base for
-this eventuality, it's a good practice to add the following header to all
-Ruby files:
+this eventuality, we will be adding the following header to all Ruby files:
 
 ```ruby
 # frozen_string_literal: true
@@ -378,6 +377,9 @@ strings. Instead of using `dup`, use the unary plus to get an unfrozen string:
 test = +"hello"
 test += " world"
 ```
+
+When adding new Ruby files, please check that you can add the above header,
+as omitting it may lead to style check failures.
 
 ## Anti-Patterns
 

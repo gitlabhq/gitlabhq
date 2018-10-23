@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class ProjectTemplate
     attr_reader :title, :name, :description, :preview

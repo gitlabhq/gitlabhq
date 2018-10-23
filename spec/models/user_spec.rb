@@ -167,6 +167,55 @@ describe User do
       subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
     end
 
+    describe '#commit_email' do
+      subject(:user) { create(:user) }
+
+      it 'defaults to the primary email' do
+        expect(user.email).to be_present
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'defaults to the primary email when the column in the database is null' do
+        user.update_column(:commit_email, nil)
+
+        found_user = described_class.find_by(id: user.id)
+
+        expect(found_user.commit_email).to eq(user.email)
+      end
+
+      it 'can be set to a confirmed email' do
+        confirmed = create(:email, :confirmed, user: user)
+        user.commit_email = confirmed.email
+
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(confirmed.email)
+      end
+
+      it 'can not be set to an unconfirmed email' do
+        unconfirmed = create(:email, user: user)
+        user.commit_email = unconfirmed.email
+
+        # This should set the commit_email attribute to the primary email
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'can not be set to a non-existent email' do
+        user.commit_email = 'non-existent-email@nonexistent.nonexistent'
+
+        # This should set the commit_email attribute to the primary email
+        expect(user).to be_valid
+        expect(user.commit_email).to eq(user.email)
+      end
+
+      it 'can not be set to an invalid email, even if confirmed' do
+        confirmed = create(:email, :confirmed, :skip_validate, user: user, email: 'invalid')
+        user.commit_email = confirmed.email
+
+        expect(user).not_to be_valid
+      end
+    end
+
     describe 'email' do
       context 'when no signup domains whitelisted' do
         before do
@@ -403,6 +452,23 @@ describe User do
 
           expect(rel).to include(user1, user2)
         end
+      end
+    end
+
+    describe '.by_username' do
+      it 'finds users regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+        user2 = create(:user, username: 'UPPERCASE')
+
+        expect(described_class.by_username(%w(CAMELCASED uppercase)))
+          .to contain_exactly(user, user2)
+      end
+
+      it 'finds a single user regardless of the case passed' do
+        user = create(:user, username: 'CaMeLcAsEd')
+
+        expect(described_class.by_username('CAMELCASED'))
+          .to contain_exactly(user)
       end
     end
   end
@@ -1373,7 +1439,6 @@ describe User do
     it 'returns only confirmed emails' do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
-      user.reload
 
       expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
     end
@@ -2478,6 +2543,34 @@ describe User do
     end
   end
 
+  describe '#assigned_open_merge_requests_count' do
+    it 'returns number of open merge requests from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:merge_request, source_project: project, author: user, assignee: user)
+      create(:merge_request, :closed, source_project: project, author: user, assignee: user)
+      create(:merge_request, source_project: archived_project, author: user, assignee: user)
+
+      expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
+    end
+  end
+
+  describe '#assigned_open_issues_count' do
+    it 'returns number of open issues from non-archived projects' do
+      user    = create(:user)
+      project = create(:project, :public)
+      archived_project = create(:project, :public, :archived)
+
+      create(:issue, project: project, author: user, assignees: [user])
+      create(:issue, :closed, project: project, author: user, assignees: [user])
+      create(:issue, project: archived_project, author: user, assignees: [user])
+
+      expect(user.assigned_open_issues_count(force: true)).to eq 1
+    end
+  end
+
   describe '#personal_projects_count' do
     it 'returns the number of personal projects using a single query' do
       user = build(:user)
@@ -2937,6 +3030,48 @@ describe User do
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+    end
+  end
+
+  describe '#requires_usage_stats_consent?' do
+    let(:user) { create(:user, created_at: 8.days.ago) }
+
+    before do
+      allow(user).to receive(:has_current_license?).and_return false
+    end
+
+    context 'in single-user environment' do
+      it 'requires user consent after one week' do
+        create(:user, ghost: true)
+
+        expect(user.requires_usage_stats_consent?).to be true
+      end
+
+      it 'requires user consent after one week if there is another ghost user' do
+        expect(user.requires_usage_stats_consent?).to be true
+      end
+
+      it 'does not require consent in the first week' do
+        user.created_at = 6.days.ago
+
+        expect(user.requires_usage_stats_consent?).to be false
+      end
+
+      it 'does not require consent if usage stats were set by this user' do
+        allow(Gitlab::CurrentSettings).to receive(:usage_stats_set_by_user_id).and_return(user.id)
+
+        expect(user.requires_usage_stats_consent?).to be false
+      end
+    end
+
+    context 'in multi-user environment' do
+      before do
+        create(:user)
+      end
+
+      it 'does not require consent' do
+        expect(user.requires_usage_stats_consent?).to be false
+      end
     end
   end
 

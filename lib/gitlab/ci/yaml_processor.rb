@@ -16,7 +16,7 @@ module Gitlab
         end
 
         initial_parsing
-      rescue Gitlab::Ci::Config::Loader::FormatError => e
+      rescue Gitlab::Ci::Config::ConfigError => e
         raise ValidationError, e.message
       end
 
@@ -49,7 +49,8 @@ module Gitlab
             script: job[:script],
             after_script: job[:after_script],
             environment: job[:environment],
-            retry: job[:retry]
+            retry: job[:retry],
+            start_in: job[:start_in]
           }.compact }
       end
 

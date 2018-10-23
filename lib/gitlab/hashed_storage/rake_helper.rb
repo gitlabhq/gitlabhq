@@ -21,6 +21,7 @@ module Gitlab
         !range_from.nil? && range_from == range_to
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.project_id_batches(&block)
         Project.with_unmigrated_storage.in_batches(of: batch_size, start: range_from, finish: range_to) do |relation| # rubocop: disable Cop/InBatches
           ids = relation.pluck(:id)
@@ -28,20 +29,25 @@ module Gitlab
           yield ids.min, ids.max
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.legacy_attachments_relation
         Upload.joins(<<~SQL).where('projects.storage_version < :version OR projects.storage_version IS NULL', version: Project::HASHED_STORAGE_FEATURES[:attachments])
           JOIN projects
             ON (uploads.model_type='Project' AND uploads.model_id=projects.id)
         SQL
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.hashed_attachments_relation
         Upload.joins(<<~SQL).where('projects.storage_version >= :version', version: Project::HASHED_STORAGE_FEATURES[:attachments])
           JOIN projects
           ON (uploads.model_type='Project' AND uploads.model_id=projects.id)
         SQL
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def self.relation_summary(relation_name, relation)
         relation_count = relation.count
@@ -62,6 +68,7 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def self.listing(relation_name, relation)
         relation_count = relation_summary(relation_name, relation)
         return unless relation_count > 0
@@ -78,6 +85,7 @@ module Gitlab
           break if index + 1 >= limit
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

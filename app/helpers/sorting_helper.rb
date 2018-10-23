@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SortingHelper
   def sort_options_hash
     {
@@ -22,7 +24,8 @@ module SortingHelper
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_popularity       => sort_title_popularity,
       sort_value_priority         => sort_title_priority,
-      sort_value_upvotes          => sort_title_upvotes
+      sort_value_upvotes          => sort_title_upvotes,
+      sort_value_contacted_date   => sort_title_contacted_date
     }
   end
 
@@ -32,7 +35,8 @@ module SortingHelper
       sort_value_name             => sort_title_name,
       sort_value_oldest_activity  => sort_title_oldest_activity,
       sort_value_oldest_created   => sort_title_oldest_created,
-      sort_value_recently_created => sort_title_recently_created
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_most_stars       => sort_title_most_stars
     }
 
     if current_controller?('admin/projects')
@@ -44,13 +48,19 @@ module SortingHelper
 
   def groups_sort_options_hash
     {
-      sort_value_name => sort_title_name,
-      sort_value_name_desc => sort_title_name_desc,
+      sort_value_name             => sort_title_name,
+      sort_value_name_desc        => sort_title_name_desc,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_oldest_created   => sort_title_oldest_created,
       sort_value_recently_updated => sort_title_recently_updated,
-      sort_value_oldest_updated => sort_title_oldest_updated
+      sort_value_oldest_updated   => sort_title_oldest_updated
     }
+  end
+
+  def subgroups_sort_options_hash
+    groups_sort_options_hash.merge(
+      sort_value_most_stars => sort_title_most_stars
+    )
   end
 
   def admin_groups_sort_options_hash
@@ -96,6 +106,17 @@ module SortingHelper
       sort_value_name             => sort_title_name,
       sort_value_oldest_updated   => sort_title_oldest_updated,
       sort_value_recently_updated => sort_title_recently_updated
+    }
+  end
+
+  def label_sort_options_hash
+    {
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_oldest_updated => sort_title_oldest_updated
     }
   end
 
@@ -228,6 +249,14 @@ module SortingHelper
     s_('SortOptions|Most popular')
   end
 
+  def sort_title_contacted_date
+    s_('SortOptions|Last Contact')
+  end
+
+  def sort_title_most_stars
+    s_('SortOptions|Most stars')
+  end
+
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -347,5 +376,13 @@ module SortingHelper
 
   def sort_value_upvotes
     'upvotes_desc'
+  end
+
+  def sort_value_contacted_date
+    'contacted_asc'
+  end
+
+  def sort_value_most_stars
+    'stars_desc'
   end
 end

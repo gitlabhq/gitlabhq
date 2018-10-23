@@ -47,5 +47,19 @@ describe Clusters::Applications::Helm do
       cert = OpenSSL::X509::Certificate.new(subject.files[:'cert.pem'])
       expect(cert.not_after).to be > 999.years.from_now
     end
+
+    describe 'rbac' do
+      context 'non rbac cluster' do
+        it { expect(subject).not_to be_rbac }
+      end
+
+      context 'rbac cluster' do
+        before do
+          helm.cluster.platform_kubernetes.rbac!
+        end
+
+        it { expect(subject).to be_rbac }
+      end
+    end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :load_autocomplete_service, except: [:members]
 
@@ -23,6 +25,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   def commands
     render json: @autocomplete_service.commands(target, params[:type])
+  end
+
+  def snippets
+    render json: @autocomplete_service.snippets
   end
 
   private

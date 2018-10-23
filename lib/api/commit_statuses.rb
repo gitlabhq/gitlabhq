@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -21,6 +23,7 @@ module API
         optional :all,   type: String, desc: 'Show all statuses, default: false'
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
 
@@ -34,6 +37,7 @@ module API
         statuses = statuses.where(name: params[:name]) if params[:name].present?
         present paginate(statuses), with: Entities::CommitStatus
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Post status to a commit' do
         success Entities::CommitStatus
@@ -49,6 +53,7 @@ module API
         optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
         optional :coverage,    type: Float,   desc: 'The total code coverage'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
 
@@ -118,6 +123,7 @@ module API
           render_api_error!(e.message, 400)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

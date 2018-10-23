@@ -141,19 +141,6 @@ describe ApplicationSetting do
       end
     end
 
-    context 'circuitbreaker settings' do
-      [:circuitbreaker_failure_count_threshold,
-       :circuitbreaker_check_interval,
-       :circuitbreaker_failure_reset_time,
-       :circuitbreaker_storage_timeout].each do |field|
-        it "Validates #{field} as number" do
-          is_expected.to validate_numericality_of(field)
-                           .only_integer
-                           .is_greater_than_or_equal_to(0)
-        end
-      end
-    end
-
     context 'repository storages' do
       before do
         storages = {
@@ -302,6 +289,36 @@ describe ApplicationSetting do
 
     it 'raises an record creation violation if already created' do
       expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
+  describe 'setting Sentry DSNs' do
+    context 'server DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(sentry_dsn: ' http://test ')
+
+        expect(subject.sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(sentry_dsn: nil)
+
+        expect(subject.sentry_dsn).to be_nil
+      end
+    end
+
+    context 'client-side DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(clientside_sentry_dsn: ' http://test ')
+
+        expect(subject.clientside_sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(clientside_sentry_dsn: nil)
+
+        expect(subject.clientside_sentry_dsn).to be_nil
+      end
     end
   end
 
@@ -536,6 +553,45 @@ describe ApplicationSetting do
       allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
 
       expect(setting.allow_signup?).to be_falsey
+    end
+  end
+
+  describe '#user_default_internal_regex_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                        | false
+      false | ''                         | false
+      false | '^(?:(?!\.ext@).)*$\r?\n?' | false
+      true  | ''                         | false
+      true  | nil                        | false
+      true  | '^(?:(?!\.ext@).)*$\r?\n?' | true
+    end
+
+    with_them do
+      before do
+        setting.update(user_default_external: user_default_external)
+        setting.update(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { setting.user_default_internal_regex_enabled? }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  context 'diff limit settings' do
+    describe '#diff_max_patch_bytes' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
+
+        it do
+          is_expected.to validate_numericality_of(:diff_max_patch_bytes)
+          .only_integer
+          .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+          .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
+        end
+      end
     end
   end
 end

@@ -1,5 +1,3 @@
-require 'thread'
-
 class RenameReservedProjectNames < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   include Gitlab::ShellAdapter
@@ -115,7 +113,9 @@ class RenameReservedProjectNames < ActiveRecord::Migration
       begin
         # Because project path update is quite complex operation we can't safely
         # copy-paste all code from GitLab. As exception we use Rails code here
-        project.rename_repo if rename_project_row(project, path)
+        if rename_project_row(project, path)
+          Projects::AfterRenameService.new(project).execute
+        end
       rescue Exception => e # rubocop: disable Lint/RescueException
         Rails.logger.error "Exception when renaming project #{id}: #{e.message}"
       end
@@ -125,6 +125,6 @@ class RenameReservedProjectNames < ActiveRecord::Migration
   def rename_project_row(project, path)
     project.respond_to?(:update_attributes) &&
       project.update(path: path) &&
-      project.respond_to?(:rename_repo)
+      defined?(Projects::AfterRenameService)
   end
 end

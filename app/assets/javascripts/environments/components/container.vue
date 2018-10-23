@@ -1,52 +1,50 @@
 <script>
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import tablePagination from '../../vue_shared/components/table_pagination.vue';
-  import environmentTable from '../components/environments_table.vue';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
+import environmentTable from '../components/environments_table.vue';
 
-  export default {
-    components: {
-      environmentTable,
-      loadingIcon,
-      tablePagination,
+export default {
+  components: {
+    environmentTable,
+    tablePagination,
+  },
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
-      environments: {
-        type: Array,
-        required: true,
-      },
-      pagination: {
-        type: Object,
-        required: true,
-      },
-      canCreateDeployment: {
-        type: Boolean,
-        required: true,
-      },
-      canReadEnvironment: {
-        type: Boolean,
-        required: true,
-      },
+    environments: {
+      type: Array,
+      required: true,
     },
-    methods: {
-      onChangePage(page) {
-        this.$emit('onChangePage', page);
-      },
+    pagination: {
+      type: Object,
+      required: true,
     },
-  };
+    canCreateDeployment: {
+      type: Boolean,
+      required: true,
+    },
+    canReadEnvironment: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    onChangePage(page) {
+      this.$emit('onChangePage', page);
+    },
+  },
+};
 </script>
 
 <template>
   <div class="environments-container">
 
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
+      :size="3"
       class="prepend-top-default"
       label="Loading environments"
-      size="3"
     />
 
     <slot name="emptyState"></slot>

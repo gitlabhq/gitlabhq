@@ -30,6 +30,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [Crowdin](https://crowdin.com/profile/BawAppie)
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
 - Portuguese, Brazilian
@@ -65,7 +66,6 @@ are very appreciative of the work done by translators and proofreaders!
 
     Add your language in alphabetical order, and add yourself to the list
     including:
-
     - name
     - link to your GitLab profile
     - link to your CrowdIn profile
@@ -74,6 +74,8 @@ are very appreciative of the work done by translators and proofreaders!
     have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
-   your previous translations.
+   your previous translations by [GitLab team members](https://about.gitlab.com/team/)
+   or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
+   the language or current proofreaders.
 
 [proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md

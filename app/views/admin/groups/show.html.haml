@@ -63,10 +63,9 @@
 
     .card
       .card-header
-        %h3.card-title
-          = _('Projects')
-          %span.badge.badge-pill
-            #{@group.projects.count}
+        = _('Projects')
+        %span.badge.badge-pill
+          #{@group.projects.count}
       %ul.content-list
         - @projects.each do |project|
           %li
@@ -111,7 +110,7 @@
             .prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
-            = button_tag _('Add users to group'), class: "btn btn-create"
+            = button_tag _('Add users to group'), class: "btn btn-success"
       = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
     .card
@@ -119,7 +118,7 @@
         = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), polymorphic_url([@group, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: _('Manage access')), group_group_members_path(@group), class: "btn btn-sm"
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer

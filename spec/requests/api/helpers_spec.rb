@@ -368,6 +368,14 @@ describe API::Helpers do
                 it_behaves_like 'successful sudo'
               end
 
+              context 'when providing username (case insensitive)' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.username.upcase
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
               context 'when providing user ID' do
                 before do
                   env[API::Helpers::SUDO_HEADER] = user.id.to_s
@@ -381,6 +389,14 @@ describe API::Helpers do
               context 'when providing username' do
                 before do
                   set_param(API::Helpers::SUDO_PARAM, user.username)
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing username (case insensitive)' do
+                before do
+                  set_param(API::Helpers::SUDO_PARAM, user.username.upcase)
                 end
 
                 it_behaves_like 'successful sudo'

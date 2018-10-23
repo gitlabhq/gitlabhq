@@ -1,11 +1,7 @@
 <script>
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../eventhub';
 
 export default {
-  components: {
-    loadingIcon,
-  },
   props: {
     deployKey: {
       type: Object,
@@ -45,7 +41,7 @@ export default {
     class="btn"
     @click="doAction">
     <slot></slot>
-    <loading-icon
+    <gl-loading-icon
       v-if="isLoading"
       :inline="true"
     />

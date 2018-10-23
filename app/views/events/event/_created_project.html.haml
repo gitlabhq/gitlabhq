@@ -1,11 +1,11 @@
 = icon_for_profile_event(event)
 
 .event-title
-  %span.author_name= link_to_author event
+  %span.author_name= link_to_author(event)
   %span{ class: event.action_name }
     = event_action_name(event)
 
   - if event.project
-    = link_to_project event.project
+    = link_to_project(event.project)
   - else
     = event.project_name

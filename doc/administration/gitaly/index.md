@@ -25,14 +25,12 @@ gitaly['prometheus_listen_addr'] = 'localhost:9236'
 ```
 
 To change a Gitaly setting in installations from source you can edit
-`/home/git/gitaly/config.toml`.
+`/home/git/gitaly/config.toml`. Changes will be applied when you run 
+`service gitlab restart`.
 
 ```toml
 prometheus_listen_addr = "localhost:9236"
 ```
-
-Changes to `/home/git/gitaly/config.toml` are applied when you run `service
-gitlab restart`.
 
 ## Client-side GRPC logs
 
@@ -101,8 +99,13 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-> 
-**NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+Gitaly must trigger some callbacks to GitLab via GitLab Shell. As a result, 
+the GitLab Shell secret must be the same between the other GitLab servers and
+the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gitlab-secrets.json`
+from an existing GitLab server to the Gitaly server. Without this shared secret,
+Git operations in GitLab will result in an API error. 
+
+> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
 different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
@@ -149,7 +152,7 @@ listen_addr = '0.0.0.0:8075'
 [auth]
 token = 'abc123secret'
 
-[[storage]
+[[storage]]
 name = 'default'
 path = '/mnt/gitlab/default/repositories'
 
@@ -214,7 +217,7 @@ repository from your GitLab server over HTTP.
 
 If you are running Gitaly [as a remote
 service](#running-gitaly-on-its-own-server) you may want to disable
-the local Gitaly service that runs on your Gitlab server by default.
+the local Gitaly service that runs on your GitLab server by default.
 
 > 'Disabling Gitaly' only makes sense when you run GitLab in a custom
 cluster configuration, where different services run on different

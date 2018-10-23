@@ -59,6 +59,9 @@ GET /users?active=true
 GET /users?blocked=true
 ```
 
+NOTE: **Note:**
+Username search is case insensitive.
+
 ### For admins
 
 ```
@@ -199,6 +202,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -230,6 +234,7 @@ Parameters:
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -263,7 +268,7 @@ GET /users/:id?with_custom_attributes=true
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority). If `reset_password` is `false`, then `password` is required.
 
 ```
 POST /users
@@ -286,6 +291,7 @@ Parameters:
 - `provider` (optional)          - External provider name
 - `bio` (optional)               - User's biography
 - `location` (optional)          - User's location
+- `public_email` (optional)      - The public email of the user
 - `admin` (optional)             - User is admin - true or false (default)
 - `can_create_group` (optional)  - User can create groups - true or false
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
@@ -303,26 +309,27 @@ PUT /users/:id
 
 Parameters:
 
-- `email`                       - Email
-- `username`                    - Username
-- `name`                        - Name
-- `password`                    - Password
-- `skype`                       - Skype ID
-- `linkedin`                    - LinkedIn
-- `twitter`                     - Twitter account
-- `website_url`                 - Website URL
-- `organization`                - Organization name
-- `projects_limit`              - Limit projects each user can create
-- `extern_uid`                  - External UID
-- `provider`                    - External provider name
-- `bio`                         - User's biography
-- `location` (optional)         - User's location
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
+- `email`                          - Email
+- `username`                       - Username
+- `name`                           - Name
+- `password`                       - Password
+- `skype`                          - Skype ID
+- `linkedin`                       - LinkedIn
+- `twitter`                        - Twitter account
+- `website_url`                    - Website URL
+- `organization`                   - Organization name
+- `projects_limit`                 - Limit projects each user can create
+- `extern_uid`                     - External UID
+- `provider`                       - External provider name
+- `bio`                            - User's biography
+- `location` (optional)            - User's location
+- `public_email` (optional)        - The public email of the user
+- `admin` (optional)               - User is admin - true or false (default)
+- `can_create_group` (optional)    - User can create groups - true or false
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
-- `external` (optional)         - Flags the user as external - true or false(default)
-- `avatar` (optional)           - Image file for user's avatar
-- `private_profile` (optional)  - User's profile is private - true or false
+- `external` (optional)            - Flags the user as external - true or false(default)
+- `avatar` (optional)              - Image file for user's avatar
+- `private_profile` (optional)     - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -367,6 +374,7 @@ GET /user
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -415,6 +423,7 @@ GET /user
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -504,7 +513,7 @@ PUT /user/status
 When both parameters `emoji` and `message` are empty, the status will be cleared.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "emoji=I crave coffee" https://gitlab.example.com/api/v4/user/status
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "message=I crave coffee" https://gitlab.example.com/api/v4/user/status
 ```
 
 Example responses
@@ -552,7 +561,7 @@ Parameters:
 
 ## List SSH keys for user
 
-Get a list of a specified user's SSH keys. Available only for admin
+Get a list of a specified user's SSH keys.
 
 ```
 GET /users/:id/keys
@@ -972,6 +981,7 @@ Parameters:
 
 - `id` (required)    - id of specified user
 - `email` (required) - email address
+- `skip_confirmation` (optional) - Skip confirmation and assume e-mail is verified - true or false (default)
 
 ## Delete email for current user
 

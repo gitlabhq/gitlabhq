@@ -9,6 +9,12 @@ module Banzai
       def self.object_class
         Epic
       end
+
+      private
+
+      def group
+        context[:group] || context[:project]&.group
+      end
     end
   end
 end

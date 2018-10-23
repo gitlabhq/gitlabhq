@@ -11,7 +11,7 @@ describe('Modal store', () => {
   let issue2;
 
   beforeEach(() => {
-    // Setup default state
+    // Set up default state
     Store.store.issues = [];
     Store.store.selectedIssues = [];
 

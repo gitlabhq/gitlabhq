@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BoardsHelper
   def board
     @board ||= @board || @boards.first
@@ -57,8 +59,8 @@ module BoardsHelper
 
     {
       toggle: "dropdown",
-      list_labels_path: labels_filter_path(true, include_ancestor_groups: true),
-      labels: labels_filter_path(true, include_descendant_groups: include_descendant_groups),
+      list_labels_path: labels_filter_path_with_defaults(only_group_labels: true, include_ancestor_groups: true),
+      labels: labels_filter_path_with_defaults(only_group_labels: true, include_descendant_groups: include_descendant_groups),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
       project_path: @project&.path,

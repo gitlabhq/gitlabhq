@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
@@ -135,14 +137,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_signup_error
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
+    message = ["Signing in using your #{label} account without a pre-existing GitLab account is not allowed."]
 
     if Gitlab::CurrentSettings.allow_signup?
-      message << " Create a GitLab account first, and then connect it to your #{label} account."
+      message << "Create a GitLab account first, and then connect it to your #{label} account."
     end
 
-    flash[:notice] = message
-
+    flash[:notice] = message.join(' ')
     redirect_to new_user_session_path
   end
 

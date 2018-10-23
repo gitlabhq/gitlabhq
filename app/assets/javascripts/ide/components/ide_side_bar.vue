@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
@@ -13,7 +13,7 @@ import { activityBarViews } from '../constants';
 
 export default {
   components: {
-    SkeletonLoadingContainer,
+    SkeletonLoading,
     ResizablePanel,
     ActivityBar,
     CommitSection,
@@ -24,13 +24,7 @@ export default {
     IdeProjectHeader,
   },
   computed: {
-    ...mapState([
-      'loading',
-      'currentActivityView',
-      'changedFiles',
-      'stagedFiles',
-      'lastCommitMsg',
-    ]),
+    ...mapState(['loading', 'currentActivityView', 'changedFiles', 'stagedFiles', 'lastCommitMsg']),
     ...mapGetters(['currentProject', 'someUncommitedChanges']),
     showSuccessMessage() {
       return (
@@ -56,7 +50,7 @@ export default {
           :key="n"
           class="multi-file-loading-container"
         >
-          <skeleton-loading-container />
+          <skeleton-loading />
         </div>
       </div>
     </template>

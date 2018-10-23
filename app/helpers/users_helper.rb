@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UsersHelper
   def user_link(user)
     link_to(user.name, user_path(user),
@@ -21,6 +23,17 @@ module UsersHelper
 
   def profile_tab?(tab)
     profile_tabs.include?(tab)
+  end
+
+  def user_internal_regex_data
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    pattern, options = if settings.user_default_internal_regex_enabled?
+                         regex = settings.user_default_internal_regex_instance
+                         JsRegex.new(regex).to_h.slice(:source, :options).values
+                       end
+
+    { user_internal_regex_pattern: pattern, user_internal_regex_options: options }
   end
 
   def current_user_menu_items
@@ -63,7 +76,7 @@ module UsersHelper
     tabs = []
 
     if can?(current_user, :read_user_profile, @user)
-      tabs += [:activity, :groups, :contributed, :projects, :snippets]
+      tabs += [:overview, :activity, :groups, :contributed, :projects, :snippets]
     end
 
     tabs

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class AwardEmoji < Grape::API
     include PaginationParams
@@ -103,6 +105,7 @@ module API
         awardable.user_can_award?(current_user)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def awardable
         @awardable ||=
           begin
@@ -119,6 +122,7 @@ module API
             end
           end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def read_ability(awardable)
         case awardable

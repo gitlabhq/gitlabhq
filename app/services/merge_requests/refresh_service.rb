@@ -3,16 +3,16 @@
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     def execute(oldrev, newrev, ref)
-      return true unless Gitlab::Git.branch_ref?(ref)
+      push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
+      return true unless push.branch_push?
 
-      do_execute(oldrev, newrev, ref)
+      refresh_merge_requests!(push)
     end
 
     private
 
-    def do_execute(oldrev, newrev, ref)
-      @oldrev, @newrev = oldrev, newrev
-      @branch_name = Gitlab::Git.ref_name(ref)
+    def refresh_merge_requests!(push)
+      @push = push
 
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
@@ -25,7 +25,7 @@ module MergeRequests
       cache_merge_requests_closing_issues
 
       # Leave a system note if a branch was deleted/added
-      if branch_added? || branch_removed?
+      if @push.branch_added? || @push.branch_removed?
         comment_mr_branch_presence_changed
       end
 
@@ -51,10 +51,13 @@ module MergeRequests
     # and close if push to master include last commit from merge request
     # We need this to close(as merged) merge requests that were merged into
     # target branch manually
+    # rubocop: disable CodeReuse/ActiveRecord
     def post_merge_manually_merged
       commit_ids = @commits.map(&:id)
-      merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
-      merge_requests = merge_requests.select(&:diff_head_commit)
+      merge_requests = @project.merge_requests.opened
+        .preload(:latest_merge_request_diff)
+        .where(target_branch: @push.branch_name).to_a
+        .select(&:diff_head_commit)
 
       merge_requests = merge_requests.select do |merge_request|
         commit_ids.include?(merge_request.diff_head_sha) &&
@@ -67,24 +70,22 @@ module MergeRequests
           .execute(merge_request)
       end
     end
-
-    def force_push?
-      Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
-    end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
+    # rubocop: disable CodeReuse/ActiveRecord
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened
-        .by_source_or_target_branch(@branch_name).to_a
+        .by_source_or_target_branch(@push.branch_name).to_a
 
       # Fork merge requests
       merge_requests += MergeRequest.opened
-        .where(source_branch: @branch_name, source_project: @project)
+        .where(source_branch: @push.branch_name, source_project: @project)
         .where.not(target_project: @project).to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
-        if merge_request.source_branch == @branch_name || force_push?
+        if merge_request.source_branch == @push.branch_name || @push.force_push?
           merge_request.reload_diff(current_user)
         else
           mr_commit_ids = merge_request.commit_shas
@@ -101,6 +102,7 @@ module MergeRequests
       # @source_merge_requests diffs (for MergeRequest#commit_shas for instance).
       merge_requests_for_source_branch(reload: true)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
@@ -113,7 +115,7 @@ module MergeRequests
     end
 
     def find_new_commits
-      if branch_added?
+      if @push.branch_added?
         @commits = []
 
         merge_request = merge_requests_for_source_branch.first
@@ -122,28 +124,28 @@ module MergeRequests
         begin
           # Since any number of commits could have been made to the restored branch,
           # find the common root to see what has been added.
-          common_ref = @project.repository.merge_base(merge_request.diff_head_sha, @newrev)
+          common_ref = @project.repository.merge_base(merge_request.diff_head_sha, @push.newrev)
           # If the a commit no longer exists in this repo, gitlab_git throws
           # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
-          @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref
+          @commits = @project.repository.commits_between(common_ref, @push.newrev) if common_ref
         rescue
         end
-      elsif branch_removed?
+      elsif @push.branch_removed?
         # No commits for a deleted branch.
         @commits = []
       else
-        @commits = @project.repository.commits_between(@oldrev, @newrev)
+        @commits = @project.repository.commits_between(@push.oldrev, @push.newrev)
       end
     end
 
     # Add comment about branches being deleted or added to merge requests
     def comment_mr_branch_presence_changed
-      presence = branch_added? ? :add : :delete
+      presence = @push.branch_added? ? :add : :delete
 
       merge_requests_for_source_branch.each do |merge_request|
         SystemNoteService.change_branch_presence(
           merge_request, merge_request.project, @current_user,
-            :source, @branch_name, presence)
+          :source, @push.branch_name, presence)
       end
     end
 
@@ -160,7 +162,7 @@ module MergeRequests
 
         SystemNoteService.add_commits(merge_request, merge_request.project,
                                       @current_user, new_commits,
-                                      existing_commits, @oldrev)
+                                      existing_commits, @push.oldrev)
 
         notification_service.push_to_merge_request(merge_request, @current_user, new_commits: new_commits, existing_commits: existing_commits)
       end
@@ -191,17 +193,19 @@ module MergeRequests
     # Call merge request webhook with update branches
     def execute_mr_web_hooks
       merge_requests_for_source_branch.each do |merge_request|
-        execute_hooks(merge_request, 'update', old_rev: @oldrev)
+        execute_hooks(merge_request, 'update', old_rev: @push.oldrev)
       end
     end
 
     # If the merge requests closes any issues, save this information in the
     # `MergeRequestsClosingIssues` model (as a performance optimization).
+    # rubocop: disable CodeReuse/ActiveRecord
     def cache_merge_requests_closing_issues
-      @project.merge_requests.where(source_branch: @branch_name).each do |merge_request|
+      @project.merge_requests.where(source_branch: @push.branch_name).each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_merge_requests(merge_requests)
       merge_requests.uniq.select(&:source_project)
@@ -209,15 +213,7 @@ module MergeRequests
 
     def merge_requests_for_source_branch(reload: false)
       @source_merge_requests = nil if reload
-      @source_merge_requests ||= merge_requests_for(@branch_name)
-    end
-
-    def branch_added?
-      Gitlab::Git.blank_ref?(@oldrev)
-    end
-
-    def branch_removed?
-      Gitlab::Git.blank_ref?(@newrev)
+      @source_merge_requests ||= merge_requests_for(@push.branch_name)
     end
   end
 end

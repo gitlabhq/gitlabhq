@@ -109,8 +109,7 @@ describe('IDE jobs detail view', () => {
 
       vm.scrollPos = 1;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => vm.$el.querySelector('.btn-scroll').click())
         .then(() => vm.$nextTick())
         .then(() => {

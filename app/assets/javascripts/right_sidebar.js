@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, no-else-return, no-param-reassign, max-len */
+/* eslint-disable func-names, no-var, no-unused-vars, consistent-return, one-var, prefer-template, no-else-return, no-param-reassign */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -57,8 +57,6 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
     $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
     $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-
-    if (gl.lazyLoader) gl.lazyLoader.loadCheck();
   }
 
   $this.attr('data-original-title', tooltipLabel);

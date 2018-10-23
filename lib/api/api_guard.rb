@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Guard API with OAuth 2.0 Access Token
 
 require 'rack/oauth2'
@@ -84,7 +86,7 @@ module API
       end
     end
 
-    module ClassMethods
+    class_methods do
       private
 
       def install_error_responders(base)

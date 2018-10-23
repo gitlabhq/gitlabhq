@@ -38,8 +38,8 @@ describe('AjaxFilter', () => {
       dummyList.list.appendChild(dynamicList);
     });
 
-    it('calls onLoadingFinished after loading data', (done) => {
-      ajaxSpy = (url) => {
+    it('calls onLoadingFinished after loading data', done => {
+      ajaxSpy = url => {
         expect(url).toBe('dummy endpoint?dummy search key=');
         return Promise.resolve(dummyData);
       };
@@ -52,16 +52,16 @@ describe('AjaxFilter', () => {
         .catch(done.fail);
     });
 
-    it('does not call onLoadingFinished if Ajax call fails', (done) => {
+    it('does not call onLoadingFinished if Ajax call fails', done => {
       const dummyError = new Error('My dummy is sick! :-(');
-      ajaxSpy = (url) => {
+      ajaxSpy = url => {
         expect(url).toBe('dummy endpoint?dummy search key=');
         return Promise.reject(dummyError);
       };
 
       AjaxFilter.trigger()
         .then(done.fail)
-        .catch((error) => {
+        .catch(error => {
           expect(error).toBe(dummyError);
           expect(dummyConfig.onLoadingFinished.calls.count()).toBe(0);
         })

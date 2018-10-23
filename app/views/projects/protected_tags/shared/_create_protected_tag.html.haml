@@ -2,8 +2,7 @@
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-tags-settings' }
   .card
     .card-header
-      %h3.card-title
-        Protect a tag
+      Protect a tag
     .card-body
       = form_errors(@protected_tag)
       .form-group.row
@@ -26,4 +25,4 @@
             = yield :create_access_levels
 
     .card-footer
-      = f.submit 'Protect', class: 'btn-create btn', disabled: true
+      = f.submit 'Protect', class: 'btn-success btn', disabled: true

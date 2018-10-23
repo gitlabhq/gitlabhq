@@ -56,6 +56,7 @@ describe('Empty State', () => {
       vm = mountComponent(Component, {
         ...props,
       });
+
       expect(vm.$el.querySelector('.js-job-empty-state-content')).toBeNull();
     });
   });
@@ -66,8 +67,8 @@ describe('Empty State', () => {
         ...props,
         content,
         action: {
-          link: 'runner',
-          title: 'Check runner',
+          path: 'runner',
+          button_title: 'Check runner',
           method: 'post',
         },
       });
@@ -84,6 +85,7 @@ describe('Empty State', () => {
         ...props,
         content,
       });
+
       expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
     });
   });

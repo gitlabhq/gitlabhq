@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::IssuesController < Projects::ApplicationController
   include RendersNotes
   include ToggleSubscriptionAction
@@ -125,7 +127,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def related_branches
-    @related_branches = @issue.related_branches(current_user)
+    @related_branches = Issues::RelatedBranchesService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -161,6 +163,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
@@ -172,6 +175,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue

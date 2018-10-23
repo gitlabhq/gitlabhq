@@ -11,16 +11,18 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   presents :project
 
+  AnchorData = Struct.new(:enabled, :label, :link, :class_modifier)
+  MAX_TAGS_TO_SHOW = 3
+
   def statistics_anchors(show_auto_devops_callout:)
     [
+      readme_anchor_data,
+      changelog_anchor_data,
+      contribution_guide_anchor_data,
       files_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      readme_anchor_data,
-      changelog_anchor_data,
-      license_anchor_data,
-      contribution_guide_anchor_data,
       gitlab_ci_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data
@@ -31,17 +33,19 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     [
       readme_anchor_data,
       changelog_anchor_data,
-      license_anchor_data,
       contribution_guide_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
-      gitlab_ci_anchor_data,
-      koding_anchor_data
+      gitlab_ci_anchor_data
     ].compact.reject { |item| item.enabled }
   end
 
   def empty_repo_statistics_anchors
     [
+      files_anchor_data,
+      commits_anchor_data,
+      branches_anchor_data,
+      tags_anchor_data,
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
     ].compact.select { |item| item.enabled }
@@ -51,7 +55,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     [
       new_file_anchor_data,
       readme_anchor_data,
-      license_anchor_data,
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
     ].compact.reject { |item| item.enabled }
@@ -121,43 +124,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     add_special_file_path(file_name: 'README.md')
   end
 
-  def add_koding_stack_path
-    project_new_blob_path(
-      project,
-      default_branch || 'master',
-      file_name:      '.koding.yml',
-      commit_message: "Add Koding stack script",
-      content: <<-CONTENT.strip_heredoc
-        provider:
-          aws:
-            access_key: '${var.aws_access_key}'
-            secret_key: '${var.aws_secret_key}'
-        resource:
-          aws_instance:
-            #{project.path}-vm:
-              instance_type: t2.nano
-              user_data: |-
-
-                # Created by GitLab UI for :>
-
-                echo _KD_NOTIFY_@Installing Base packages...@
-
-                apt-get update -y
-                apt-get install git -y
-
-                echo _KD_NOTIFY_@Cloning #{project.name}...@
-
-                export KODING_USER=${var.koding_user_username}
-                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
-                export BRANCH=${var.koding_queryString_branch}
-
-                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
-
-                echo _KD_NOTIFY_@#{project.name} cloned.@
-      CONTENT
-    )
-  end
-
   def license_short_name
     license = repository.license
     license&.nickname || license&.name || 'LICENSE'
@@ -182,95 +148,101 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def files_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
-                   link: project_tree_path(project))
+    AnchorData.new(true,
+                   _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
+                   empty_repo? ? nil : project_tree_path(project))
   end
 
   def commits_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
-                   link: project_commits_path(project, repository.root_ref))
+    AnchorData.new(true,
+                   n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
+                   empty_repo? ? nil : project_commits_path(project, repository.root_ref))
   end
 
   def branches_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
-                   link: project_branches_path(project))
+    AnchorData.new(true,
+                   n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
+                   empty_repo? ? nil : project_branches_path(project))
   end
 
   def tags_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
-                   link: project_tags_path(project))
+    AnchorData.new(true,
+                   n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
+                   empty_repo? ? nil : project_tags_path(project))
   end
 
   def new_file_anchor_data
     if current_user && can_current_user_push_to_default_branch?
-      OpenStruct.new(enabled: false,
-                     label: _('New file'),
-                     link: project_new_blob_path(project, default_branch || 'master'),
-                     class_modifier: 'new')
+      AnchorData.new(false,
+                     _('New file'),
+                     project_new_blob_path(project, default_branch || 'master'),
+                     'new')
     end
   end
 
   def readme_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Readme'),
-                     link: add_readme_path)
+      AnchorData.new(false,
+                     _('Add Readme'),
+                     add_readme_path)
     elsif repository.readme
-      OpenStruct.new(enabled: true,
-                     label: _('Readme'),
-                     link: default_view != 'readme' ? readme_path : '#readme')
+      AnchorData.new(true,
+                     _('Readme'),
+                     default_view != 'readme' ? readme_path : '#readme')
     end
   end
 
   def changelog_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Changelog'),
-                     link: add_changelog_path)
+      AnchorData.new(false,
+                     _('Add Changelog'),
+                     add_changelog_path)
     elsif repository.changelog.present?
-      OpenStruct.new(enabled: true,
-                     label: _('Changelog'),
-                     link: changelog_path)
+      AnchorData.new(true,
+                     _('Changelog'),
+                     changelog_path)
     end
   end
 
   def license_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.license_blob.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add License'),
-                     link: add_license_path)
-    elsif repository.license_blob.present?
-      OpenStruct.new(enabled: true,
-                     label: license_short_name,
-                     link: license_path)
+    if repository.license_blob.present?
+      AnchorData.new(true,
+                     license_short_name,
+                     license_path)
+    else
+      if current_user && can_current_user_push_to_default_branch?
+        AnchorData.new(false,
+                       _('Add license'),
+                       add_license_path)
+      else
+        AnchorData.new(false,
+                       _('No license. All rights reserved'),
+                       nil)
+      end
     end
   end
 
   def contribution_guide_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Contribution guide'),
-                     link: add_contribution_guide_path)
+      AnchorData.new(false,
+                     _('Add Contribution guide'),
+                     add_contribution_guide_path)
     elsif repository.contribution_guide.present?
-      OpenStruct.new(enabled: true,
-                     label: _('Contribution guide'),
-                     link: contribution_guide_path)
+      AnchorData.new(true,
+                     _('Contribution guide'),
+                     contribution_guide_path)
     end
   end
 
   def autodevops_anchor_data(show_auto_devops_callout: false)
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
-      OpenStruct.new(enabled: auto_devops_enabled?,
-                     label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-                     link: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+      AnchorData.new(auto_devops_enabled?,
+                     auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
+                     project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
     elsif auto_devops_enabled?
-      OpenStruct.new(enabled: true,
-                     label: _('Auto DevOps enabled'),
-                     link: nil)
+      AnchorData.new(true,
+                     _('Auto DevOps enabled'),
+                     nil)
     end
   end
 
@@ -282,30 +254,38 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         cluster_link = new_project_cluster_path(project)
       end
 
-      OpenStruct.new(enabled: !clusters.empty?,
-                     label: clusters.empty? ? _('Add Kubernetes cluster') : _('Kubernetes configured'),
-                     link: cluster_link)
+      AnchorData.new(!clusters.empty?,
+                     clusters.empty? ? _('Add Kubernetes cluster') : _('Kubernetes configured'),
+                     cluster_link)
     end
   end
 
   def gitlab_ci_anchor_data
     if current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
-      OpenStruct.new(enabled: false,
-                     label: _('Set up CI/CD'),
-                     link: add_ci_yml_path)
+      AnchorData.new(false,
+                     _('Set up CI/CD'),
+                     add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
-      OpenStruct.new(enabled: true,
-                     label: _('CI/CD configuration'),
-                     link: ci_configuration_path)
+      AnchorData.new(true,
+                     _('CI/CD configuration'),
+                     ci_configuration_path)
     end
   end
 
-  def koding_anchor_data
-    if current_user && can_current_user_push_code? && koding_enabled? && repository.koding_yml.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Set up Koding'),
-                     link: add_koding_stack_path)
+  def tags_to_show
+    project.tag_list.take(MAX_TAGS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def count_of_extra_tags_not_shown
+    if project.tag_list.count > MAX_TAGS_TO_SHOW
+      project.tag_list.count - MAX_TAGS_TO_SHOW
+    else
+      0
     end
+  end
+
+  def has_extra_tags?
+    count_of_extra_tags_not_shown > 0
   end
 
   private
@@ -336,9 +316,5 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commit_message: commit_message,
       branch_name:    branch_name
     )
-  end
-
-  def koding_enabled?
-    Gitlab::CurrentSettings.koding_enabled?
   end
 end

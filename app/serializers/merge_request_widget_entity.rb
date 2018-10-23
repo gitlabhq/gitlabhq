@@ -222,7 +222,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :preview_note_path do |merge_request|
-    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.id)
+    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.iid)
   end
 
   expose :merge_commit_path do |merge_request|
@@ -243,7 +243,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   def presenter(merge_request)
     @presenters ||= {}
-    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 
   # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,

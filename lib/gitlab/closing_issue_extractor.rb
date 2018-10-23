@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class ClosingIssueExtractor
     ISSUE_CLOSING_REGEX = begin

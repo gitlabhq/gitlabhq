@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe InstanceConfiguration do
+describe InstanceConfiguration do
   context 'without cache' do
     describe '#settings' do
       describe '#ssh_algorithms_hashes' do
-        let(:md5) { '54:e0:f8:70:d6:4f:4c:b1:b3:02:44:77:cf:cd:0d:fc' }
-        let(:sha256) { '9327f0d15a48c4d9f6a3aee65a1825baf9a3412001c98169c5fd022ac27762fc' }
+        let(:md5) { '5a:65:6c:4d:d4:4c:6d:e6:59:25:b8:cf:ba:34:e7:64' }
+        let(:sha256) { 'SHA256:2KJDT7xf2i68mBgJ3TVsjISntg4droLbXYLfQj0VvSY' }
 
         it 'does not return anything if file does not exist' do
           stub_pub_file(exist: false)
@@ -52,7 +52,7 @@ RSpec.describe InstanceConfiguration do
           expect(gitlab_pages).to eq(Settings.pages.symbolize_keys)
         end
 
-        it 'returns the Gitlab\'s pages host ip address' do
+        it 'returns the GitLab\'s pages host ip address' do
           expect(gitlab_pages.keys).to include(:ip_address)
         end
 

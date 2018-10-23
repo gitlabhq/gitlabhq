@@ -11,8 +11,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
   end
 
   context 'when pipeline has a core status' do
-    (HasStatus::AVAILABLE_STATUSES - [HasStatus::BLOCKED_STATUS])
-      .each do |simple_status|
+    (HasStatus::AVAILABLE_STATUSES - HasStatus::BLOCKED_STATUS).each do |simple_status|
       context "when core status is #{simple_status}" do
         let(:pipeline) { create(:ci_pipeline, status: simple_status) }
 
@@ -52,6 +51,27 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
       it 'matches a correct extended statuses' do
         expect(factory.extended_statuses)
           .to eq [Gitlab::Ci::Status::Pipeline::Blocked]
+      end
+
+      it 'extends core status with common pipeline methods' do
+        expect(status).to have_details
+        expect(status).not_to have_action
+        expect(status.details_path)
+          .to include "pipelines/#{pipeline.id}"
+      end
+    end
+
+    context "when core status is scheduled" do
+      let(:pipeline) { create(:ci_pipeline, status: :scheduled) }
+
+      it "matches scheduled core status" do
+        expect(factory.core_status)
+          .to be_a Gitlab::Ci::Status::Scheduled
+      end
+
+      it 'matches a correct extended statuses' do
+        expect(factory.extended_statuses)
+          .to eq [Gitlab::Ci::Status::Pipeline::Delayed]
       end
 
       it 'extends core status with common pipeline methods' do

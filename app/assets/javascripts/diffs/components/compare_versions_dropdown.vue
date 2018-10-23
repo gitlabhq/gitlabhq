@@ -108,16 +108,17 @@ export default {
 <template>
   <span class="dropdown inline">
     <a
-      class="dropdown-toggle btn btn-default"
+      class="dropdown-menu-toggle btn btn-default w-100"
       data-toggle="dropdown"
       aria-expanded="false"
     >
       <span>
         {{ selectedVersionName }}
       </span>
-      <Icon
+      <icon
         :size="12"
         name="angle-down"
+        class="position-absolute"
       />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
@@ -163,3 +164,10 @@ export default {
     </div>
   </span>
 </template>
+
+<style>
+.dropdown {
+  min-width: 0;
+  max-height: 170px;
+}
+</style>

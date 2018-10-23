@@ -1,0 +1,35 @@
+import { __ } from '~/locale';
+
+export default () => ({
+  jobEndpoint: null,
+  traceEndpoint: null,
+
+  // sidebar
+  isSidebarOpen: true,
+
+  isLoading: false,
+  hasError: false,
+  job: {},
+
+  // scroll buttons state
+  isScrollBottomDisabled: true,
+  isScrollTopDisabled: true,
+
+  // Used to check if we should keep the automatic scroll
+  isScrolledToBottomBeforeReceivingTrace: true,
+
+  trace: '',
+  isTraceComplete: false,
+  traceSize: 0,
+  isTraceSizeVisible: false,
+
+  // used as a query parameter to fetch the trace
+  traceState: null,
+
+  // sidebar dropdown & list of jobs
+  isLoadingStages: false,
+  isLoadingJobs: false,
+  selectedStage: __('More'),
+  stages: [],
+  jobs: [],
+});

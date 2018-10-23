@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ContainerRegistry
   ##
   # Class responsible for extracting project and repository name from
@@ -28,6 +30,7 @@ module ContainerRegistry
       @components ||= @path.split('/')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def nodes
       raise InvalidRegistryPathError unless valid?
 
@@ -35,17 +38,20 @@ module ContainerRegistry
         components.take(length).join('/')
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def has_project?
       repository_project.present?
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def has_repository?
       return false unless has_project?
 
       repository_project.container_repositories
         .where(name: repository_name).any?
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def root_repository?
       @path == project_path

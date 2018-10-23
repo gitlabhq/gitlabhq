@@ -24,21 +24,33 @@ export default {
       default: null,
     },
   },
-  mounted() {
-    this.$refs.fileUpload.addEventListener('change', this.openFile);
-  },
-  beforeDestroy() {
-    this.$refs.fileUpload.removeEventListener('change', this.openFile);
-  },
   methods: {
-    createFile(target, file, isText) {
+    isText(content, fileType) {
+      const knownBinaryFileTypes = ['image/'];
+      const knownTextFileTypes = ['text/'];
+      const isKnownBinaryFileType = knownBinaryFileTypes.find(type => fileType.includes(type));
+      const isKnownTextFileType = knownTextFileTypes.find(type => fileType.includes(type));
+      const asciiRegex = /^[ -~\t\n\r]+$/; // tests whether a string contains ascii characters only (ranges from space to tilde, tabs and new lines)
+
+      if (isKnownBinaryFileType) {
+        return false;
+      }
+
+      if (isKnownTextFileType) {
+        return true;
+      }
+
+      // if it's not a known file type, determine the type by evaluating the file contents
+      return asciiRegex.test(content);
+    },
+    createFile(target, file) {
       const { name } = file;
       let { result } = target;
+      const encodedContent = result.split('base64,')[1];
+      const rawContent = encodedContent ? atob(encodedContent) : '';
+      const isText = this.isText(rawContent, file.type);
 
-      if (!isText) {
-        // eslint-disable-next-line prefer-destructuring
-        result = result.split('base64,')[1];
-      }
+      result = isText ? rawContent : encodedContent;
 
       this.$emit('create', {
         name: `${this.path ? `${this.path}/` : ''}${name}`,
@@ -49,15 +61,9 @@ export default {
     },
     readFile(file) {
       const reader = new FileReader();
-      const isText = file.type.match(/text.*/) !== null;
 
-      reader.addEventListener('load', e => this.createFile(e.target, file, isText), { once: true });
-
-      if (isText) {
-        reader.readAsText(file);
-      } else {
-        reader.readAsDataURL(file);
-      }
+      reader.addEventListener('load', e => this.createFile(e.target, file), { once: true });
+      reader.readAsDataURL(file);
     },
     openFile() {
       Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
@@ -85,6 +91,8 @@ export default {
       ref="fileUpload"
       type="file"
       class="hidden"
+      multiple
+      @change="openFile"
     />
   </div>
 </template>

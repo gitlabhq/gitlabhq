@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ActiveRecord::Base
-      VERSION = '0.1.31'.freeze
+      VERSION = '0.1.34'.freeze
 
       self.table_name = 'clusters_applications_runners'
 
@@ -33,6 +33,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
           repository: repository

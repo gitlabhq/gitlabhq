@@ -223,7 +223,7 @@ describe Ci::Runner do
     subject { described_class.online }
 
     before do
-      @runner1 = create(:ci_runner, :instance, contacted_at: 1.year.ago)
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
       @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
     end
 
@@ -298,6 +298,17 @@ describe Ci::Runner do
           .and_return({ contacted_at: value }.to_json).at_least(:once)
       end
     end
+  end
+
+  describe '.offline' do
+    subject { described_class.offline }
+
+    before do
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
+      @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
+    end
+
+    it { is_expected.to eq([@runner1])}
   end
 
   describe '#can_pick?' do
@@ -784,6 +795,24 @@ describe Ci::Runner do
     it 'can be destroyed' do
       subject
       expect { subject.destroy }.to change { described_class.count }.by(-1)
+    end
+  end
+
+  describe '.order_by' do
+    it 'supports ordering by the contact date' do
+      runner1 = create(:ci_runner, contacted_at: 1.year.ago)
+      runner2 = create(:ci_runner, contacted_at: 1.month.ago)
+      runners = described_class.order_by('contacted_asc')
+
+      expect(runners).to eq([runner1, runner2])
+    end
+
+    it 'supports ordering by the creation date' do
+      runner1 = create(:ci_runner, created_at: 1.year.ago)
+      runner2 = create(:ci_runner, created_at: 1.month.ago)
+      runners = described_class.order_by('created_asc')
+
+      expect(runners).to eq([runner2, runner1])
     end
   end
 end

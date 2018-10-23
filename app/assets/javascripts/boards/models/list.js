@@ -1,10 +1,11 @@
-/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len */
+/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign */
 /* global ListIssue */
 
 import { __ } from '~/locale';
 import ListLabel from '~/vue_shared/models/label';
 import ListAssignee from '~/vue_shared/models/assignee';
-import queryData from '../utils/query_data';
+import { urlParamsToObject } from '~/lib/utils/common_utils';
+import boardsStore from '../stores/boards_store';
 
 const PER_PAGE = 20;
 
@@ -89,9 +90,9 @@ class List {
   }
 
   destroy() {
-    const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
-    gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
-    gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
+    const index = boardsStore.state.lists.indexOf(this);
+    boardsStore.state.lists.splice(index, 1);
+    boardsStore.updateNewListDropdown(this.id);
 
     gl.boardService.destroyList(this.id).catch(() => {
       // TODO: handle request error
@@ -115,7 +116,10 @@ class List {
   }
 
   getIssues(emptyIssues = true) {
-    const data = queryData(gl.issueBoards.BoardsStore.filter.path, { page: this.page });
+    const data = {
+      ...urlParamsToObject(boardsStore.filter.path),
+      page: this.page,
+    };
 
     if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);

@@ -1,13 +1,13 @@
 - model_name = source.model_name.to_s.downcase
 
-- if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id))
+- if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id)) # rubocop: disable CodeReuse/ActiveRecord
   .project-action-button.inline
     - link_text = source.is_a?(Group) ? _('Leave group') : _('Leave project')
     = link_to link_text, polymorphic_path([:leave, source, :members]),
               method: :delete,
               data: { confirm: leave_confirmation_message(source) },
               class: 'btn'
-- elsif requester = source.requesters.find_by(user_id: current_user.id)
+- elsif requester = source.requesters.find_by(user_id: current_user.id) # rubocop: disable CodeReuse/ActiveRecord
   .project-action-button.inline
     = link_to _('Withdraw Access Request'), polymorphic_path([:leave, source, :members]),
               method: :delete,
