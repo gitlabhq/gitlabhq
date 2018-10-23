@@ -1716,12 +1716,16 @@ include:
 ---
 
 
-Since GitLab 10.8 we are now recursively merging the files defined in `include`
+Since GitLab 10.8 we are now deep merging the files defined in `include`
 with those in `.gitlab-ci.yml`. Files defined by `include` are always
-evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+evaluated first and merged with the content of `.gitlab-ci.yml`, no
 matter the position of the `include` keyword. You can take advantage of
-recursive merging to customize and override details in included CI
+merging to customize and override details in included CI
 configurations with local definitions.
+
+NOTE: **Note:**
+The recursive includes are not supported, meaning your external files
+should not use the `include` keyword, as it will be ignored.
 
 The following example shows specific YAML-defined variables and details of the
 `production` job from an include file being customized in `.gitlab-ci.yml`.
@@ -1772,11 +1776,7 @@ with the environment url of the `production` job defined in
 `autodevops-template.yml` have been overridden by new values defined in
 `.gitlab-ci.yml`.
 
-NOTE: **Note:**
-Recursive includes are not supported meaning your external files
-should not use the `include` keyword, as it will be ignored.
-
-Recursive merging lets you extend and override dictionary mappings, but
+The merging lets you extend and override dictionary mappings, but
 you cannot add or modify items to an included array. For example, to add
 an additional item to the production job script, you must repeat the
 existing script items.
