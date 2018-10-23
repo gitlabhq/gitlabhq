@@ -74,7 +74,9 @@ export default {
     outputText() {
       const text = this.file[this.displayTextKey];
 
-      if (this.truncateStart === 0) return text;
+      if (this.truncateStart === 0) {
+        return text;
+      }
 
       return `...${text.substring(this.truncateStart, text.length)}`;
     },

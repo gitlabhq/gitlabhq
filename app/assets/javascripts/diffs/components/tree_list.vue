@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { TooltipDirective as Tooltip } from '@gitlab-org/gitlab-ui';
+import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
@@ -17,10 +18,12 @@ export default {
   },
   data() {
     const treeListStored = localStorage.getItem(treeListStorageKey);
+    const renderTreeList = treeListStored !== null ?
+      convertPermissionToBoolean(treeListStored) : true;
 
     return {
       search: '',
-      renderTreeList: treeListStored !== null ? treeListStored === 'true' : true,
+      renderTreeList,
       focusSearch: false,
     };
   },
