@@ -236,6 +236,16 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 Find out about [bulk editing merge requests](../../project/bulk_editing.md).
 
+## Troubleshooting
+
+### MR can not retrieve the pipeline status
+
+The MR won't be able to retrieve the pipeline status if you created the MR,
+closed it, made changes in the project then reopened it.
+
+The workaround is to close and reopen the Merge Request so it can properly fetch
+the pipeline status.
+
 ## Tips
 
 Here are some tips that will help you be more efficient with merge requests in
