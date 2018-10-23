@@ -338,13 +338,14 @@ When we add `draw :admin` in `config/routes.rb`, the application will try to
 load the file located in `config/routes/admin.rb`, and also try to load the
 file located in `ee/config/routes/admin.rb`.
 
-It should at least load one file, at most two files. If it cannot find any
-files, an error will be raised.
+In EE, it should at least load one file, at most two files. If it cannot find
+any files, an error will be raised. In CE, since we don't know if there will
+be an EE route, it will not raise any errors even if it cannot find anything.
 
 This means if we want to extend a particular CE route file, just add the same
 file located in `ee/config/routes`. If we want to add an EE only route, we
-could still use `draw :ee_only` and add `ee/config/routes/ee_only.rb` without
-adding `config/routes/ee_only.rb`.
+could still put `draw :ee_only` in both CE and EE, and add
+`ee/config/routes/ee_only.rb` in EE, similar to `render_if_exists`.
 
 ### Code in `app/controllers/`
 

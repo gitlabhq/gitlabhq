@@ -16,8 +16,8 @@ module Gitlab
         draw_route(route_path("config/routes/#{routes_name}.rb"))
       end
 
-      def draw_ee(routes_name)
-        draw_route(route_path("ee/config/routes/#{routes_name}.rb"))
+      def draw_ee(_)
+        true
       end
 
       def route_path(routes_name)
