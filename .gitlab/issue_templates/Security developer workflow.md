@@ -16,7 +16,6 @@ Set the title to: `[Security] Description of the original issue`
 - [ ] Add a link to the MR to the [links section](#links)
 - [ ] Add a link to an EE MR if required
 - [ ] Make sure the MR remains in-progress and gets approved after the review cycle, **but never merged**.
-- [ ] Assign this issue to **all** RMs from the [RM list]. You can leave the MRs unassigned.
 
 #### Backports
 
@@ -26,6 +25,7 @@ Set the title to: `[Security] Description of the original issue`
     - [ ] Create the branch `security-X-Y` from `X-Y-stable` if it doesn't exist (and make sure it's up to date with stable)
     - [ ] Create each MR targetting the security branch `security-X-Y`
     - [ ] Add the ~security label and prefix with the version `WIP: [X.Y]` the title of the MR
+- [ ] Add the ~"Merge into Security" label to all of the MRs.
 - [ ] Make sure all MRs have a link in the [links section](#links)
 
 [secpick documentation]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#secpick-script
