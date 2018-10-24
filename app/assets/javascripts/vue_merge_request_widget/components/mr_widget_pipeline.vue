@@ -39,8 +39,7 @@ export default {
     },
     troubleshootingDocsPath: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
   },
   computed: {
@@ -68,7 +67,7 @@ export default {
         linkStart: `<a href="${this.troubleshootingDocsPath}">`,
         linkEnd: '</a>',
       });
-    }
+    },
   },
 };
 </script>

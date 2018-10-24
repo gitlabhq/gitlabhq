@@ -174,7 +174,7 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_text('Could not retrieve the pipeline status. For potential solutions please read the documentation.')
+      expect(page).to have_text('Could not retrieve the pipeline status. For troubleshooting steps, read the <a href=\"\">documentation.</a>')
     end
   end
 
