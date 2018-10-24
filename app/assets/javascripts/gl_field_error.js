@@ -116,7 +116,8 @@ export default class GlFieldError {
     this.form.focusOnFirstInvalid.apply(this.form);
 
     // For UX, wait til after first invalid submission to check each keyup
-    this.inputElement.off('keyup.fieldValidator')
+    this.inputElement
+      .off('keyup.fieldValidator')
       .on('keyup.fieldValidator', this.updateValidity.bind(this));
   }
 

@@ -23,7 +23,8 @@ export default class GroupLabelSubscription {
     event.preventDefault();
 
     const url = this.$unsubscribeButtons.attr('data-url');
-    axios.post(url)
+    axios
+      .post(url)
       .then(() => {
         this.toggleSubscriptionButtons();
         this.$unsubscribeButtons.removeAttr('data-url');
@@ -39,7 +40,8 @@ export default class GroupLabelSubscription {
 
     this.$unsubscribeButtons.attr('data-url', url);
 
-    axios.post(url)
+    axios
+      .post(url)
       .then(() => GroupLabelSubscription.setNewTooltip($btn))
       .then(() => this.toggleSubscriptionButtons())
       .catch(() => flash(__('There was an error when subscribing to this label.')));
@@ -58,6 +60,8 @@ export default class GroupLabelSubscription {
     const newTitle = tooltipTitles[type];
 
     $('.js-unsubscribe-button', $button.closest('.label-actions-list'))
-      .tooltip('hide').attr('title', newTitle).tooltip('_fixTitle');
+      .tooltip('hide')
+      .attr('title', newTitle)
+      .tooltip('_fixTitle');
   }
 }
