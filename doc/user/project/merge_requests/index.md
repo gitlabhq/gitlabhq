@@ -238,13 +238,17 @@ Find out about [bulk editing merge requests](../../project/bulk_editing.md).
 
 ## Troubleshooting
 
-### MR can not retrieve the pipeline status
+### Merge Request cannot retrieve the pipeline status
 
-The MR won't be able to retrieve the pipeline status if you created the MR,
-closed it, made changes in the project then reopened it.
+Merge Request pipeline statuses can't be retrieved when the following occurs:
 
-The workaround is to close and reopen the Merge Request so it can properly fetch
-the pipeline status.
+1. A Merge Requst is created
+1. The Merge Request is closed
+1. Changes are made in the project
+1. The Merge Request is reopened
+
+To enable the pipeline status to be properly retrieved, close and reopen the
+Merge Request again.
 
 ## Tips
 
