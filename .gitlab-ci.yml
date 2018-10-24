@@ -75,11 +75,6 @@ stages:
     - mysql:5.7
     - redis:alpine
 
-.rails5-variables: &rails5-variables
-  script:
-    - export RAILS5=${RAILS5}
-    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
-
 .rails5: &rails5
   allow_failure: true
   only:
@@ -150,7 +145,6 @@ stages:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
-  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
