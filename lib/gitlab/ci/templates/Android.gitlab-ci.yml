@@ -1,4 +1,4 @@
-# Read more about this script on this blog post https://about.gitlab.com/2018/10/23/setting-up-gitlab-ci-for-android-projects/, by Jason Lenny
+# Read more about this script on this blog post https://about.gitlab.com/2018/10/24/setting-up-gitlab-ci-for-android-projects/, by Jason Lenny
 image: openjdk:8-jdk
 
 variables:
