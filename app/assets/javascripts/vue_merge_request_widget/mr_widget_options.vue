@@ -266,6 +266,7 @@ export default {
       :has-ci="mr.hasCI"
       :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
+      :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
     <deployment
       v-for="deployment in mr.deployments"
