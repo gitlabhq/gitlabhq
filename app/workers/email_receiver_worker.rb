@@ -40,6 +40,8 @@ class EmailReceiverWorker
         "You are not allowed to perform this action. If you believe this is in error, contact a staff member."
       when Gitlab::Email::NoteableNotFoundError
         "The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
+      when Gitlab::Email::InvalidAttachment
+        error.message
       when Gitlab::Email::InvalidRecordError
         can_retry = true
         error.message

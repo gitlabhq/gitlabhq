@@ -299,6 +299,29 @@ module Gitlab
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
 
+      def user_commit_patches(user, branch_name, patches)
+        header = Gitaly::UserApplyPatchRequest::Header.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          target_branch: encode_binary(branch_name)
+        )
+        reader = binary_stringio(patches)
+
+        chunks = Enumerator.new do |chunk|
+          chunk.yield Gitaly::UserApplyPatchRequest.new(header: header)
+
+          until reader.eof?
+            patch_chunk = reader.read(MAX_MSG_SIZE)
+
+            chunk.yield(Gitaly::UserApplyPatchRequest.new(patches: patch_chunk))
+          end
+        end
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_apply_patch, chunks)
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      end
+
       private
 
       def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
