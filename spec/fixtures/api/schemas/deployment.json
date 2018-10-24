@@ -48,6 +48,10 @@
     "manual_actions": {
       "type": "array",
       "items": { "$ref": "job/job.json" }
+    },
+    "scheduled_actions": {
+      "type": "array",
+      "items": { "$ref": "job/job.json" }
     }
   },
   "additionalProperties": false
