@@ -79,39 +79,41 @@ let timeagoInstance;
  */
 export const getTimeago = () => {
   if (!timeagoInstance) {
-    const localeRemaining = (number, index) => [
-      [s__('Timeago|just now'), s__('Timeago|right now')],
-      [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
-      [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
-      [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
-      [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
-      [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
-      [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
-      [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
-      [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
-      [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
-      [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
-      [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
-      [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
-      [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
-    ][index];
+    const localeRemaining = (number, index) =>
+      [
+        [s__('Timeago|just now'), s__('Timeago|right now')],
+        [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
+        [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
+        [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+        [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
+        [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
+        [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
+        [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+        [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
+        [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+        [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
+        [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+        [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
+        [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+      ][index];
 
-    const locale = (number, index) => [
-      [s__('Timeago|just now'), s__('Timeago|right now')],
-      [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
-      [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
-      [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
-      [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
-      [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
-      [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
-      [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
-      [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
-      [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
-      [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
-      [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
-      [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
-      [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
-    ][index];
+    const locale = (number, index) =>
+      [
+        [s__('Timeago|just now'), s__('Timeago|right now')],
+        [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
+        [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
+        [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+        [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
+        [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
+        [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
+        [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+        [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
+        [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+        [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
+        [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+        [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
+        [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+      ][index];
 
     timeago.register(timeagoLanguageCode, locale);
     timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
@@ -119,7 +121,7 @@ export const getTimeago = () => {
   }
 
   return timeagoInstance;
-}
+};
 
 /**
  * For the given element, renders a timeago instance.
@@ -184,7 +186,7 @@ export const getDayDifference = (a, b) => {
  * @param  {Number} seconds
  * @return {String}
  */
-export const timeIntervalInWords = (intervalInSeconds) => {
+export const timeIntervalInWords = intervalInSeconds => {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
   const seconds = secondsInteger - minutes * 60;
@@ -196,7 +198,7 @@ export const timeIntervalInWords = (intervalInSeconds) => {
     text = `${seconds} ${pluralize('second', seconds)}`;
   }
   return text;
-}
+};
 
 export const dateInWords = (date, abbreviated = false, hideYear = false) => {
   if (!date) return date;
@@ -240,7 +242,7 @@ export const dateInWords = (date, abbreviated = false, hideYear = false) => {
   }
 
   return `${monthName} ${date.getDate()}, ${year}`;
-}
+};
 
 /**
  * Returns month name based on provided date.
@@ -447,13 +449,13 @@ export const parseSeconds = (seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 
     return periodCount;
   });
-}
+};
 
 /**
  * Accepts a timeObject (see parseSeconds) and returns a condensed string representation of it
  * (e.g. '1w 2d 3h 1m' or '1h 30m'). Zero value units are not included.
  */
-export const stringifyTime = (timeObject) => {
+export const stringifyTime = timeObject => {
   const reducedTime = _.reduce(
     timeObject,
     (memo, unitValue, unitName) => {
@@ -463,10 +465,11 @@ export const stringifyTime = (timeObject) => {
     '',
   ).trim();
   return reducedTime.length ? reducedTime : '0m';
-}
+};
 
 /**
  * Accepts a time string of any size (e.g. '1w 2d 3h 5m' or '1w 2d') and returns
  *  the first non-zero unit/value pair.
  */
-export const abbreviateTime = (timeStr) => timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
+export const abbreviateTime = timeStr =>
+  timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];

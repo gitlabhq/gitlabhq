@@ -225,7 +225,7 @@ describe('prettyTime methods', () => {
     expect(obj.hours).toBe(hours);
     expect(obj.days).toBe(days);
     expect(obj.weeks).toBe(weeks);
-  }
+  };
 
   describe('parseSeconds', () => {
     it('should correctly parse a negative value', () => {
