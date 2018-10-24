@@ -140,6 +140,10 @@ module GroupsHelper
       can?(current_user, "read_group_#{resource}".to_sym, @group)
     end
 
+    if can?(current_user, :read_cluster, @group)
+      links << :kubernetes
+    end
+
     if can?(current_user, :admin_group, @group)
       links << :settings
     end
