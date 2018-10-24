@@ -2,6 +2,8 @@
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 
+const LINK_TAG_PATTERN = '[{text}](url)';
+
 function selectedText(text, textarea) {
   return text.substring(textarea.selectionStart, textarea.selectionEnd);
 }
@@ -75,6 +77,21 @@ export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wr
   removedLastNewLine = false;
   removedFirstNewLine = false;
   currentLineEmpty = false;
+
+  // check for link pattern and selected text is an URL
+  // if so fill in the url part instead of the text part of the pattern.
+  if (tag === LINK_TAG_PATTERN) {
+    if (URL) {
+      try {
+        const ignoredUrl = new URL(selected);
+        // valid url
+        tag = '[text]({text})';
+        select = 'text';
+      } catch (e) {
+        // ignore - no valid url
+      }
+    }
+  }
 
   // Remove the first newline
   if (selected.indexOf('\n') === 0) {
