@@ -158,8 +158,9 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:install[#{gitaly_dir},#{repos_path}]") do
 
-      start_gitaly(gitaly_dir)
-    end
+        Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        start_gitaly(gitaly_dir)
+      end
   end
 
   def start_gitaly(gitaly_dir)
