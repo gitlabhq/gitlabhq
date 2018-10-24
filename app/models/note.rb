@@ -10,6 +10,7 @@ class Note < ActiveRecord::Base
   include Awardable
   include Importable
   include FasterCacheKeys
+  include Redactable
   include CacheMarkdownField
   include AfterCommitQueue
   include ResolvableNote
@@ -31,6 +32,8 @@ class Note < ActiveRecord::Base
   ignore_column :original_discussion_id
 
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
+
+  redact_field :note
 
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with notes.
   # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10392/diffs#note_28719102
