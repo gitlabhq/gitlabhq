@@ -35,6 +35,21 @@ describe 'GFM autocomplete', :js do
     expect(page).to have_selector('.atwho-container')
   end
 
+  it 'opens autocomplete menu when field starts with text with item escaping HTML characters' do
+    alert_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
+    create(:issue, project: project, title: alert_title)
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('#')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-issues' do
+      expect(page.all('li').first.text).to include(alert_title)
+    end
+  end
+
   it 'doesnt open autocomplete menu character is prefixed with text' do
     page.within '.timeline-content-form' do
       find('#note-body').native.send_keys('testing')
