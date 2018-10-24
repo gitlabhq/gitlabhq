@@ -24,7 +24,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
-    "@gitlab-org/gitlab-svgs": "^1.32.0",
+    "@gitlab-org/gitlab-svgs": "^1.33.0",
     "@gitlab-org/gitlab-ui": "^1.8.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",

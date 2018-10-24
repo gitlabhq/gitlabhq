@@ -1,17 +1,30 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import { TooltipDirective as Tooltip } from '@gitlab-org/gitlab-ui';
+import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
 
+const treeListStorageKey = 'mr_diff_tree_list';
+
 export default {
+  directives: {
+    Tooltip,
+  },
   components: {
     Icon,
     FileRow,
   },
   data() {
+    const treeListStored = localStorage.getItem(treeListStorageKey);
+    const renderTreeList = treeListStored !== null ?
+      convertPermissionToBoolean(treeListStored) : true;
+
     return {
       search: '',
+      renderTreeList,
+      focusSearch: false,
     };
   },
   computed: {
@@ -20,15 +33,35 @@ export default {
     filteredTreeList() {
       const search = this.search.toLowerCase().trim();
 
-      if (search === '') return this.tree;
+      if (search === '') return this.renderTreeList ? this.tree : this.allBlobs;
 
       return this.allBlobs.filter(f => f.name.toLowerCase().indexOf(search) >= 0);
+    },
+    rowDisplayTextKey() {
+      if (this.renderTreeList && this.search.trim() === '') {
+        return 'name';
+      }
+
+      return 'path';
     },
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
     clearSearch() {
       this.search = '';
+      this.toggleFocusSearch(false);
+    },
+    toggleRenderTreeList(toggle) {
+      this.renderTreeList = toggle;
+      localStorage.setItem(treeListStorageKey, this.renderTreeList);
+    },
+    toggleFocusSearch(toggle) {
+      this.focusSearch = toggle;
+    },
+    blurSearch() {
+      if (this.search.trim() === '') {
+        this.toggleFocusSearch(false);
+      }
     },
   },
   FileRowStats,
@@ -37,28 +70,67 @@ export default {
 
 <template>
   <div class="tree-list-holder d-flex flex-column">
-    <div class="append-bottom-8 position-relative tree-list-search">
-      <icon
-        name="search"
-        class="position-absolute tree-list-icon"
-      />
-      <input
-        v-model="search"
-        :placeholder="s__('MergeRequest|Filter files')"
-        type="search"
-        class="form-control"
-      />
-      <button
-        v-show="search"
-        :aria-label="__('Clear search')"
-        type="button"
-        class="position-absolute tree-list-icon tree-list-clear-icon border-0 p-0"
-        @click="clearSearch"
-      >
+    <div class="append-bottom-8 position-relative tree-list-search d-flex">
+      <div class="flex-fill d-flex">
         <icon
-          name="close"
+          name="search"
+          class="position-absolute tree-list-icon"
         />
-      </button>
+        <input
+          v-model="search"
+          :placeholder="s__('MergeRequest|Filter files')"
+          type="search"
+          class="form-control"
+          @focus="toggleFocusSearch(true)"
+          @blur="blurSearch"
+        />
+        <button
+          v-show="search"
+          :aria-label="__('Clear search')"
+          type="button"
+          class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
+          @click="clearSearch"
+        >
+          <icon
+            name="close"
+          />
+        </button>
+      </div>
+      <div
+        v-show="!focusSearch"
+        class="btn-group prepend-left-8 tree-list-view-toggle"
+      >
+        <button
+          v-tooltip.hover
+          :aria-label="__('List view')"
+          :title="__('List view')"
+          :class="{
+            active: !renderTreeList
+          }"
+          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
+          type="button"
+          @click="toggleRenderTreeList(false)"
+        >
+          <icon
+            name="hamburger"
+          />
+        </button>
+        <button
+          v-tooltip.hover
+          :aria-label="__('Tree view')"
+          :title="__('Tree view')"
+          :class="{
+            active: renderTreeList
+          }"
+          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
+          type="button"
+          @click="toggleRenderTreeList(true)"
+        >
+          <icon
+            name="file-tree"
+          />
+        </button>
+      </div>
     </div>
     <div
       class="tree-list-scroll"
@@ -72,6 +144,8 @@ export default {
           :hide-extra-on-tree="true"
           :extra-component="$options.FileRowStats"
           :show-changed-icon="true"
+          :display-text-key="rowDisplayTextKey"
+          :should-truncate-start="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />

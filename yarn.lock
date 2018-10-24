@@ -616,10 +616,15 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.23.0", "@gitlab-org/gitlab-svgs@^1.32.0":
+"@gitlab-org/gitlab-svgs@^1.23.0":
   version "1.32.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.32.0.tgz#a65ab7724fa7d55be8e5cc9b2dbe3f0757432fd3"
   integrity sha512-L3o8dFUd2nSkVZBwh2hCJWzNzADJ3dTBZxamND8NLosZK9/ohNhccmsQOZGyMCUHaOzm4vifaaXkAXh04UtMKA==
+
+"@gitlab-org/gitlab-svgs@^1.33.0":
+  version "1.33.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.33.0.tgz#068566e8ee00795f6f09f58236f08e1716f9f04a"
+  integrity sha512-8ajtUHk6gQ1xosL/CO5IzHSFM/t18hx5pfzQ3cd0VuQXcyR6QKGuXTLwbYdmJDYOw1Etoo5DqDWxPEClHyZpiA==
 
 "@gitlab-org/gitlab-ui@^1.8.0":
   version "1.8.0"
