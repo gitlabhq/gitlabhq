@@ -8,14 +8,19 @@ const hideFlash = (flashEl, fadeTransition = true) => {
     });
   }
 
-  flashEl.addEventListener('transitionend', () => {
-    flashEl.remove();
-    window.dispatchEvent(new Event('resize'));
-    if (document.body.classList.contains('flash-shown')) document.body.classList.remove('flash-shown');
-  }, {
-    once: true,
-    passive: true,
-  });
+  flashEl.addEventListener(
+    'transitionend',
+    () => {
+      flashEl.remove();
+      window.dispatchEvent(new Event('resize'));
+      if (document.body.classList.contains('flash-shown'))
+        document.body.classList.remove('flash-shown');
+    },
+    {
+      once: true,
+      passive: true,
+    },
+  );
 
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
 };
@@ -84,7 +89,9 @@ const createFlash = function createFlash(
     flashEl.innerHTML += createAction(actionConfig);
 
     if (actionConfig.clickHandler) {
-      flashEl.querySelector('.flash-action').addEventListener('click', e => actionConfig.clickHandler(e));
+      flashEl
+        .querySelector('.flash-action')
+        .addEventListener('click', e => actionConfig.clickHandler(e));
     }
   }
 
@@ -95,11 +102,5 @@ const createFlash = function createFlash(
   return flashContainer;
 };
 
-export {
-  createFlash as default,
-  createFlashEl,
-  createAction,
-  hideFlash,
-  removeFlashClickListener,
-};
+export { createFlash as default, createFlashEl, createAction, hideFlash, removeFlashClickListener };
 window.Flash = createFlash;
