@@ -548,6 +548,8 @@ class Project < ActiveRecord::Base
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
+  alias_method :lfs_enabled, :lfs_enabled?
+
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
       has_auto_devops_implicitly_enabled?

@@ -170,7 +170,7 @@ export default class UserTabs {
     this.loadActivityCalendar('activity');
 
     // eslint-disable-next-line no-new
-    new Activities();
+    new Activities('#activity');
 
     this.loaded.activity = true;
   }

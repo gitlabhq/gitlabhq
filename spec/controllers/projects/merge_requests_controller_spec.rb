@@ -87,6 +87,14 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when user is setting notes filters' do
+      let(:issuable) { merge_request }
+      let!(:discussion_note) { create(:discussion_note_on_merge_request, :system, noteable: issuable, project: project) }
+      let!(:discussion_comment) { create(:discussion_note_on_merge_request, noteable: issuable, project: project) }
+
+      it_behaves_like 'issuable notes filter'
+    end
+
     describe 'as json' do
       context 'with basic serializer param' do
         it 'renders basic MR entity as json' do

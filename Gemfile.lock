@@ -303,7 +303,7 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
-    google-protobuf (3.5.1)
+    google-protobuf (3.6.1)
     googleapis-common-protos-types (1.0.2)
       google-protobuf (~> 3.0)
     googleauth (0.6.6)
@@ -1005,7 +1005,7 @@ DEPENDENCIES
   gitlab_omniauth-ldap (~> 2.0.4)
   gon (~> 6.2)
   google-api-client (~> 0.23)
-  google-protobuf (= 3.5.1)
+  google-protobuf (~> 3.6)
   gpgme
   grape (~> 1.1)
   grape-entity (~> 0.7.1)

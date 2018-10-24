@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
@@ -9,11 +8,9 @@ export default {
     CiIcon,
     Icon,
   },
-
   directives: {
     tooltip,
   },
-
   props: {
     job: {
       type: Object,
@@ -24,10 +21,9 @@ export default {
       required: true,
     },
   },
-
   computed: {
     tooltipText() {
-      return `${_.escape(this.job.name)} - ${this.job.status.tooltip}`;
+      return `${this.job.name} - ${this.job.status.tooltip}`;
     },
   },
 };
@@ -36,7 +32,10 @@ export default {
 <template>
   <div
     class="build-job"
-    :class="{ retried: job.retried, active: isActive }"
+    :class="{
+      retried: job.retried,
+      active: isActive
+    }"
   >
     <a
       v-tooltip

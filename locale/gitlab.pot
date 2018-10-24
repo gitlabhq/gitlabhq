@@ -4027,6 +4027,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No Assignee"
+msgstr ""
+
+msgid "No Label"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
@@ -4130,6 +4136,12 @@ msgid "Note: Consider asking your GitLab administrator to configure %{github_int
 msgstr ""
 
 msgid "Notes|Are you sure you want to cancel creating this comment?"
+msgstr ""
+
+msgid "Notes|Show all activity"
+msgstr ""
+
+msgid "Notes|Show comments only"
 msgstr ""
 
 msgid "Notification events"
@@ -5589,6 +5601,9 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
+msgid "Something went wrong while fetching comments. Please try again."
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -6583,6 +6598,9 @@ msgid "Unverified"
 msgstr ""
 
 msgid "Up to date"
+msgstr ""
+
+msgid "Upcoming"
 msgstr ""
 
 msgid "Update"

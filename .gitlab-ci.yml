@@ -139,7 +139,7 @@ stages:
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
-    - chmod 755 $SCRIPT_NAME
+    - chmod 755 $(basename $SCRIPT_NAME)
 
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -929,3 +929,94 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     - //@gitlab-org/gitlab-ce
+
+# GitLab Review apps
+review:
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  allow_failure: true
+  before_script:
+    - gem install gitlab --no-document
+  variables:
+    GIT_DEPTH: "1"
+    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
+    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
+    GITLAB_HELM_CHART_REF: "master"
+  script:
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - source ./scripts/review_apps/review-apps.sh
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+    - check_kube_domain
+    - download_gitlab_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - install_external_dns
+    - deploy
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://gitlab-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN
+    on_stop: stop_review
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - master
+      - /(^docs[\/-].*|.*-docs$)/
+
+stop_review:
+  <<: *single-script-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  variables:
+    SCRIPT_NAME: "review_apps/review-apps.sh"
+  script:
+    - source $(basename "${SCRIPT_NAME}")
+    - delete
+    - cleanup
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    - master
+    - /(^docs[\/-].*|.*-docs$)/
+
+schedule:review_apps_cleanup:
+  <<: *dedicated-no-docs-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: build
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  before_script:
+    - gem install gitlab --no-document
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+  environment:
+    name: review/auto-cleanup
+    action: stop
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    - master
+    - tags
+    - /(^docs[\/-].*|.*-docs$)/
