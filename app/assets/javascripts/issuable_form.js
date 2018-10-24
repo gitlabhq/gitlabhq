@@ -8,7 +8,7 @@ import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 
 export default class IssuableForm {
   constructor(form) {
