@@ -25,6 +25,7 @@ module Clusters
         algorithm: 'aes-256-cbc'
 
       before_validation :enforce_namespace_to_lower_case
+      before_validation :enforce_ca_whitespace_trimming
 
       validates :namespace,
         allow_blank: true,
@@ -189,6 +190,11 @@ module Clusters
 
       def enforce_namespace_to_lower_case
         self.namespace = self.namespace&.downcase
+      end
+
+      def enforce_ca_whitespace_trimming
+        self.ca_pem = self.ca_pem&.strip
+        self.token = self.token&.strip
       end
 
       def prevent_modification

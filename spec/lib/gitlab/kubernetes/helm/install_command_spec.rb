@@ -24,6 +24,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       <<~EOS
       helm init --client-only >/dev/null
       helm repo add app-name https://repository.example.com
+      helm repo update >/dev/null
       #{helm_install_comand}
       EOS
     end
@@ -51,6 +52,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
         helm init --client-only >/dev/null
         helm repo add app-name https://repository.example.com
+        helm repo update >/dev/null
         #{helm_install_command}
         EOS
       end
@@ -107,6 +109,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
         helm init --client-only >/dev/null
         helm repo add app-name https://repository.example.com
+        helm repo update >/dev/null
         #{helm_install_command}
         EOS
       end
@@ -131,6 +134,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
         helm init --client-only >/dev/null
         helm repo add app-name https://repository.example.com
+        helm repo update >/dev/null
         #{helm_install_command}
         EOS
       end

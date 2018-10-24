@@ -4,21 +4,23 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files, :chart, :version, :repository
+        attr_reader :name, :files, :chart, :version, :repository, :setargs
 
-        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil)
+        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, setargs: nil)
           @name = name
           @chart = chart
           @version = version
           @rbac = rbac
           @files = files
           @repository = repository
+          @setargs = setargs
         end
 
         def generate_script
           super + [
             init_command,
             repository_command,
+            repository_update_command,
             script_command
           ].compact.join("\n")
         end
@@ -37,6 +39,10 @@ module Gitlab
           ['helm', 'repo', 'add', name, repository].shelljoin if repository
         end
 
+        def repository_update_command
+          'helm repo update >/dev/null' if repository
+        end
+
         def script_command
           command = ['helm', 'install', chart] + install_command_flags
 
@@ -47,13 +53,15 @@ module Gitlab
           name_flag      = ['--name', name]
           namespace_flag = ['--namespace', Gitlab::Kubernetes::Helm::NAMESPACE]
           value_flag     = ['-f', "/data/helm/#{name}/config/values.yaml"]
+          args_flag      = optional_install_set_args_flag
 
           name_flag +
             optional_tls_flags +
             optional_version_flag +
             optional_rbac_create_flag +
             namespace_flag +
-            value_flag
+            value_flag +
+            args_flag
         end
 
         def optional_rbac_create_flag
@@ -62,6 +70,15 @@ module Gitlab
           # jupyterhub helm chart is using rbac.enabled
           #   https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/master/jupyterhub
           %w[--set rbac.create=true,rbac.enabled=true]
+        end
+
+        def optional_install_set_args_flag
+          return [] unless setargs
+
+          args = []
+          setargs.each do |s|
+            args.push("--set", s)
+          end
         end
 
         def optional_version_flag
