@@ -303,7 +303,7 @@ A [tool](https://docs.gitlab.com/ee/integration/external-issue-tracker.html) use
 
 ### Jenkins
 
-An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins-ci.org/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html). 
+An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins.io/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html). 
 
 ### Jira
 
