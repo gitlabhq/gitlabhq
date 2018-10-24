@@ -1495,6 +1495,14 @@ describe Ci::Build do
           expect(subject.retries_max).to eq 0
         end
       end
+
+      context 'with integer only config option' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns the number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
     end
 
     describe '#retry_when' do
@@ -1508,6 +1516,14 @@ describe Ci::Build do
 
       context 'without retries when config option' do
         subject { create(:ci_build) }
+
+        it 'returns always array' do
+          expect(subject.retry_when).to eq ['always']
+        end
+      end
+
+      context 'with integer only config option' do
+        subject { create(:ci_build, options: { retry: 1 }) }
 
         it 'returns always array' do
           expect(subject.retry_when).to eq ['always']

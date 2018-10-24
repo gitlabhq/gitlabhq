@@ -317,12 +317,23 @@ module Ci
       pipeline.builds.retried.where(name: self.name).count
     end
 
+    # The format of the retry option changed in GitLab 11.5. Before it was an
+    # integer only, after it is a hash. New builds always created have the
+    # correct format, but builds created before GitLab 11.5 and saved in
+    # database still have the old integer only format. This helper method makes
+    # sure that the format is always correct when accessing the retry options,
+    # even on old builds.
+    def sanitized_retry_option
+      value = options&.[](:retry)
+      value.is_a?(Integer) ? { max: value } : value
+    end
+
     def retries_max
-      options&.dig(:retry, :max) || 0
+      sanitized_retry_option&.[](:max) || 0
     end
 
     def retry_when
-      options&.dig(:retry, :when) || ['always']
+      sanitized_retry_option&.[](:when) || ['always']
     end
 
     def retry_failure?
