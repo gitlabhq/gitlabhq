@@ -20,7 +20,7 @@ describe('GlCountdown', () => {
   describe('when there is time remaining', () => {
     beforeEach(done => {
       vm = mountComponent(Component, {
-        endDate: '2000-01-01T01:02:03Z',
+        endDateString: '2000-01-01T01:02:03Z',
       });
 
       Vue.nextTick()
@@ -48,7 +48,7 @@ describe('GlCountdown', () => {
   describe('when there is no time remaining', () => {
     beforeEach(done => {
       vm = mountComponent(Component, {
-        endDate: '1900-01-01T00:00:00Z',
+        endDateString: '1900-01-01T00:00:00Z',
       });
 
       Vue.nextTick()
@@ -58,6 +58,20 @@ describe('GlCountdown', () => {
 
     it('displays 00:00:00', () => {
       expect(vm.$el).toContainText('00:00:00');
+    });
+  });
+
+  describe('when an invalid date is passed', () => {
+    it('throws a validation error', () => {
+      spyOn(Vue.config, 'warnHandler').and.stub();
+      vm = mountComponent(Component, {
+        endDateString: 'this is invalid',
+      });
+
+      expect(Vue.config.warnHandler).toHaveBeenCalledTimes(1);
+      const [errorMessage] = Vue.config.warnHandler.calls.argsFor(0);
+
+      expect(errorMessage).toMatch(/^Invalid prop: .* "endDateString"/);
     });
   });
 });

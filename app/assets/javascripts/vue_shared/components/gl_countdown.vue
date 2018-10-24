@@ -6,9 +6,12 @@ import { calculateRemainingMilliseconds, formatTime } from '~/lib/utils/datetime
  */
 export default {
   props: {
-    endDate: {
+    endDateString: {
       type: String,
       required: true,
+      validator(value) {
+        return !Number.isNaN(new Date(value).getTime());
+      },
     },
   },
 
@@ -21,7 +24,7 @@ export default {
 
   mounted() {
     const updateRemainingTime = () => {
-      const remainingMilliseconds = calculateRemainingMilliseconds(this.endDate);
+      const remainingMilliseconds = calculateRemainingMilliseconds(this.endDateString);
       this.remainingTime = formatTime(remainingMilliseconds);
     };
 
@@ -38,8 +41,8 @@ export default {
 <template>
   <time
     v-gl-tooltip
-    :datetime="endDate"
-    :title="endDate"
+    :datetime="endDateString"
+    :title="endDateString"
   >
     {{ remainingTime }}
   </time>
