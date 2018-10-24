@@ -113,18 +113,13 @@ To add an existing Kubernetes cluster to your project:
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](#installing-applications).
 
-If you need to determine some of the above values, the following should prove helpful:
+To determine the:
 
-- The API URL:
-  - You can get this via the command: `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`
-- The Token:
-  - You will first need to determine which secret you need the token for.
-  - To list the secrets, run the command: `kubectl get secrets`
-  - Determine which secret you want the token for
-  - Run this command to get the token: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 -D`
-    - Replace `<SECRET_NAME>` with the secret you want the token for
-- The CA Certificate:
-  - You can determine the certificate via this command: `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
+- API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`
+- Token:
+  1. List the secrets by running `kubectl get secrets`. Note the name of the secret you need the token for.
+  2. Get the token for the noted secret by running `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 -D`
+- CA Certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
 
 ## Security implications
 
