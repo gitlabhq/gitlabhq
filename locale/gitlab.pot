@@ -2166,7 +2166,7 @@ msgstr ""
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
-msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes."
+msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes."
 msgstr ""
 
 msgid "DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes."
