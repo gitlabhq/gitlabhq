@@ -1,6 +1,8 @@
+import Vue from 'vue';
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
+import TaskList from '../../task_list';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
@@ -367,6 +369,14 @@ export const filterDiscussion = ({ dispatch }, { path, filter }) => {
 export const setCommentsDisabled = ({ commit }, data) => {
   commit(types.DISABLE_COMMENTS, data);
 };
+
+export const startTaskList = ({ dispatch }) =>
+  new TaskList({
+    dataType: 'note',
+    fieldName: 'note',
+    selector: '.notes .is-editable',
+    onSuccess: () => Vue.$nextTick(() => dispatch('startTaskList')),
+  });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
