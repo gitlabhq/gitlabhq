@@ -47,7 +47,7 @@ module Gitlab
         @protocol = protocol
 
         @logger = logger
-        @logger.log << "Running checks for ref: #{@branch_name || @tag_name}"
+        @logger.append_message("Running checks for ref: #{@branch_name || @tag_name}")
       end
 
       def exec(skip_commits_check: false)

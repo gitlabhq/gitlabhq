@@ -5,15 +5,18 @@ module Gitlab
     class TimedLogger
       TimeoutError = Class.new(StandardError)
 
-      attr_reader :start_time
-      attr_accessor :log, :timeout
+      attr_reader :start_time, :header, :log, :timeout
 
-      def initialize(start_time: Time.now, log: [], timeout:)
+      def initialize(start_time: Time.now, log: [], timeout:, header: "")
         @start_time = start_time
         @timeout = timeout
+        @header = header
         @log = log
       end
 
+      # Adds trace of method being tracked with
+      # the correspondent time it took to run it
+      #
       def log_timed(log_message, start = Time.now)
         check_timeout_reached
 
@@ -21,12 +24,12 @@ module Gitlab
 
         yield
 
-        log << log_message + time_suffix_message(start: start)
+        append_message(log_message + time_suffix_message(start: start))
       rescue GRPC::DeadlineExceeded, TimeoutError
         args = { cancelled: true }
         args[:start] = start if timed
 
-        log << log_message + time_suffix_message(args)
+        append_message(log_message + time_suffix_message(args))
 
         raise TimeoutError
       end
@@ -39,6 +42,15 @@ module Gitlab
 
       def time_left
         (start_time + timeout.seconds) - Time.now
+      end
+
+      def full_message
+        header + log.join("\n")
+      end
+
+      # We always want to append in-place on the log
+      def append_message(message)
+        log << message
       end
 
       private
