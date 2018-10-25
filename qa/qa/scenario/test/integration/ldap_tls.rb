@@ -2,8 +2,8 @@ module QA
   module Scenario
     module Test
       module Integration
-        class LDAPSSL < Test::Instance::All
-          tags :ldap_ssl
+        class LDAPTLS < Test::Instance::All
+          tags :ldap_tls
         end
       end
     end

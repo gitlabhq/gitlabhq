@@ -2,8 +2,8 @@ module QA
   module Scenario
     module Test
       module Integration
-        class LDAPNoSSL < Test::Instance::All
-          tags :ldap_no_ssl
+        class LDAPNoTLS < Test::Instance::All
+          tags :ldap_no_tls
         end
       end
     end
