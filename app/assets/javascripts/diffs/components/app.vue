@@ -63,7 +63,7 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapState('diffs', ['showTreeList']),
+    ...mapState('diffs', ['showTreeList', 'isLoading']),
     ...mapGetters('diffs', ['isParallelView']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
@@ -152,7 +152,7 @@ export default {
       }
     },
     setDiscussions() {
-      if (this.isNotesFetched && !this.assignedDiscussions) {
+      if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
         requestIdleCallback(
           () =>
             this.assignDiscussionsToDiff().then(() => {

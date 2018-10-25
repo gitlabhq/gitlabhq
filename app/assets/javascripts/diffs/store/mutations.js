@@ -90,49 +90,66 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { diffFile, discussions, diffPositionByLineCode }) {
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode }) {
     const { latestDiff } = state;
 
-    discussions.forEach(discussion => {
-      const discussionLineCode = discussion.line_code;
-      const lineCheck = ({ lineCode }) =>
-        lineCode === discussionLineCode &&
-        isDiscussionApplicableToLine({
-          discussion,
-          diffPosition: diffPositionByLineCode[lineCode],
-          latestDiff,
-        });
+    const discussionLineCode = discussion.line_code;
+    const fileHash = discussion.diff_file.file_hash;
+    const lineCheck = ({ lineCode }) =>
+      lineCode === discussionLineCode &&
+      isDiscussionApplicableToLine({
+        discussion,
+        diffPosition: diffPositionByLineCode[lineCode],
+        latestDiff,
+      });
 
-      if (diffFile.highlightedDiffLines) {
-        const line = diffFile.highlightedDiffLines.find(lineCheck);
+    state.diffFiles = state.diffFiles.map(diffFile => {
+      if (diffFile.fileHash === fileHash) {
+        const file = { ...diffFile };
 
-        if (line) {
-          Object.assign(line, {
-            discussions: line.discussions.concat(discussion),
+        if (file.highlightedDiffLines) {
+          file.highlightedDiffLines = file.highlightedDiffLines.map(line => {
+            if (lineCheck(line)) {
+              return {
+                ...line,
+                discussions: line.discussions.concat(discussion),
+              };
+            }
+
+            return line;
           });
         }
-      }
 
-      if (diffFile.parallelDiffLines) {
-        const { left, right } = diffFile.parallelDiffLines.find(
-          parallelLine =>
-            (parallelLine.left && lineCheck(parallelLine.left)) ||
-            (parallelLine.right && lineCheck(parallelLine.right)),
-        );
-        const line = left && left.lineCode === discussionLineCode ? left : right;
+        if (file.parallelDiffLines) {
+          file.parallelDiffLines = file.parallelDiffLines.map(line => {
+            const left = line.left && lineCheck(line.left);
+            const right = line.right && lineCheck(line.right);
 
-        if (line) {
-          Object.assign(line, {
-            discussions: line.discussions.concat(discussion),
+            if (left || right) {
+              return {
+                left: {
+                  ...line.left,
+                  discussions: left ? line.left.discussions.concat(discussion) : [],
+                },
+                right: {
+                  ...line.right,
+                  discussions: right ? line.right.discussions.concat(discussion) : [],
+                },
+              };
+            }
+
+            return line;
           });
         }
+
+        if (!file.parallelDiffLines || !file.highlightedDiffLines) {
+          file.discussions = file.discussions.concat(discussion);
+        }
+
+        return file;
       }
 
-      if (!diffFile.parallelDiffLines || !diffFile.highlightedDiffLines) {
-        Object.assign(diffFile, {
-          discussions: diffFile.discussions.concat(discussion),
-        });
-      }
+      return diffFile;
     });
   },
 

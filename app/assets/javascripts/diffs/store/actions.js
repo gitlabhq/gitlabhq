@@ -37,29 +37,13 @@ export const fetchDiffFiles = ({ state, commit }) => {
 // once for parallel and once for inline mode
 export const assignDiscussionsToDiff = (
   { commit, state, rootState },
-  discussionsToAssign = rootState.notes.discussions,
+  discussions = rootState.notes.discussions,
 ) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
-  const discussionsByDiffFile = discussionsToAssign
-    .filter(discussion => discussion.diff_discussion)
-    .reduce((acc, discussion) => {
-      const discussions = (
-        acc[discussion.diff_file.file_hash] || { discussions: [] }
-      ).discussions.concat(discussion);
 
-      return {
-        ...acc,
-        [discussion.diff_file.file_hash]: {
-          diffFile: state.diffFiles.find(file => file.fileHash === discussion.diff_file.file_hash),
-          discussions,
-        },
-      };
-    }, {});
-
-  Object.values(discussionsByDiffFile).forEach(({ discussions, diffFile }) => {
+  discussions.filter(discussion => discussion.diff_discussion).forEach(discussion => {
     commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-      diffFile,
-      discussions,
+      discussion,
       diffPositionByLineCode,
     });
   });
