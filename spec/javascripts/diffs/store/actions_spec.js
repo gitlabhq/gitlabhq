@@ -161,8 +161,7 @@ describe('DiffsStoreActions', () => {
           {
             type: types.SET_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
-              diffFile: state.diffFiles[0],
-              discussions: [singleDiscussion],
+              discussion: singleDiscussion,
               diffPositionByLineCode: {
                 ABC_1_1: {
                   baseSha: 'abc',
