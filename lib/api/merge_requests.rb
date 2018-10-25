@@ -89,7 +89,11 @@ module API
         optional :updated_before, type: DateTime, desc: 'Return merge requests updated before the specified time'
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
-        optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
+        optional :assignee_id, types: [Integer, String],
+                               values: -> (v) {
+                                 v.is_a?(Integer) || [IssuableFinder::FILTER_NONE, IssuableFinder::FILTER_ANY].include?(v)
+                               },
+                               desc: 'Return merge requests which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                          desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'

@@ -42,7 +42,7 @@ module API
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, types: [Integer, String],
                                values: -> (v) {
-                                 v.is_a?(Integer) or [IssuableFinder::FILTER_NONE, IssuableFinder::FILTER_ANY].include?(v)
+                                 v.is_a?(Integer) || [IssuableFinder::FILTER_NONE, IssuableFinder::FILTER_ANY].include?(v)
                                },
                                desc: 'Return issues which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],

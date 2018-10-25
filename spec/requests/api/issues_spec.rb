@@ -188,6 +188,9 @@ describe API::Issues do
       end
 
       it 'returns issues with any assignee' do
+        # This issue without assignee should not be returned
+        create(:issue, author: user2, project: project)
+
         get api('/issues', user), assignee_id: 'Any', scope: 'all'
 
         expect_paginated_array_response(size: 3)
