@@ -12,6 +12,11 @@ Tests relevant for frontend development can be found at two places:
 In addition there were feature tests in `features/` run by Spinach in the past.
 These have been removed from our codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-ce/issues/23036)).
 
+See also:
+
+- [old testing guide](../../testing_guide/frontend_testing.html)
+- [notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components)
+
 ## Frontend unit tests
 
 Unit tests are on the lowest abstraction level and typically test functionality that is not directly perceivable by a user.
@@ -275,30 +280,6 @@ expect(page).not_to have_selector('.card')
   * **[Full feature tests](#full-feature-tests-spec-features-rb)** (`/spec/features/**/*.rb`)
 * **[Karma](#karma-tests-spec-javascripts-js)** (`/spec/javascripts/**/*.js`)
 * <s>Spinach</s> — These have been removed from our codebase in May 2018. (`/features/`)
-
-## Karma tests `/spec/javascripts/**/*.js`
-
-These are the more frontend-focused, at the moment. They're **faster** than `rspec` and make for very quick testing of frontend components.
-
-### When do we write/update these tests?
-
-When we add/update a method/action/mutation to Vue or Vuex, we write karma tests to ensure the logic we wrote doesn't break. We should, however, refrain from writing tests that double-test Vue's internal features.
-
-### Relevant notes
-
-Karma tests are run against a virtual DOM.
-
-To populate the DOM, we can use fixtures to fake the generation of HTML instead of having Rails do that.
-
-Be sure to check the [best practices for karma tests](../../testing_guide/frontend_testing.html#best-practices).
-
-### Vue and Vuex
-
-Test as much as possible without double-testing Vue's internal features, as mentioned above.
-
-Make sure to test computedProperties, mutations, actions. Run the action and test that the proper mutations are committed.
-
-Also check these [notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components).
 
 #### Vuex Helper: `testAction`
 
