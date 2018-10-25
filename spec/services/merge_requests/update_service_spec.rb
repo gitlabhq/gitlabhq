@@ -593,8 +593,8 @@ describe MergeRequests::UpdateService, :mailer do
     end
 
     context 'setting `allow_collaboration`' do
-      let(:target_project) { create(:project, :public) }
-      let(:source_project) { fork_project(target_project) }
+      let(:target_project) { create(:project, :repository, :public) }
+      let(:source_project) { fork_project(target_project, nil, repository: true) }
       let(:user) { create(:user) }
       let(:merge_request) do
         create(:merge_request,

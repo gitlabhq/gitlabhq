@@ -10,7 +10,7 @@ describe TodoService do
   let(:john_doe) { create(:user) }
   let(:skipped) { create(:user) }
   let(:skip_users) { [skipped] }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
