@@ -19,6 +19,10 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
+          if application.has_attribute?(:domainname)
+            application.domainname = params[:domainname]
+          end
+
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end
@@ -45,7 +49,8 @@ module Clusters
           "ingress" => -> (cluster) { cluster.application_ingress || cluster.build_application_ingress },
           "prometheus" => -> (cluster) { cluster.application_prometheus || cluster.build_application_prometheus },
           "runner" => -> (cluster) { cluster.application_runner || cluster.build_application_runner },
-          "jupyter" => -> (cluster) { cluster.application_jupyter || cluster.build_application_jupyter }
+          "jupyter" => -> (cluster) { cluster.application_jupyter || cluster.build_application_jupyter },
+          "knative" => -> (cluster) { cluster.application_knative || cluster.build_application_knative }
         }
       end
 

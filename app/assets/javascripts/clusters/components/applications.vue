@@ -7,6 +7,7 @@ import helmLogo from 'images/cluster_app_logos/helm.png';
 import jeagerLogo from 'images/cluster_app_logos/jeager.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
+import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import { s__, sprintf } from '../../locale';
@@ -53,6 +54,7 @@ export default {
     jeagerLogo,
     jupyterhubLogo,
     kubernetesLogo,
+    knativeLogo,
     meltanoLogo,
     prometheusLogo,
   }),
@@ -135,6 +137,9 @@ export default {
     },
     jupyterHostname() {
       return this.applications.jupyter.hostname;
+    },
+    knativeInstalled() {
+      return this.applications.knative.status === APPLICATION_STATUS.INSTALLED;
     },
   },
   created() {
@@ -321,7 +326,6 @@ export default {
         :request-reason="applications.jupyter.requestReason"
         :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
       >
         <div slot="description">
@@ -368,6 +372,58 @@ export default {
                 {{ __('More information') }}
               </a>
             </p>
+          </template>
+        </div>
+      </application-row>
+      <application-row
+        id="knative"
+        :logo-url="knativeLogo"
+        :title="applications.knative.title"
+        :status="applications.knative.status"
+        :status-reason="applications.knative.statusReason"
+        :request-status="applications.knative.requestStatus"
+        :request-reason="applications.knative.requestReason"
+        :install-application-request-params="{ domainname: applications.knative.domainname}"
+        :disabled="!helmInstalled"
+        class="hide-bottom-border rounded-bottom"
+        title-link="https://github.com/knative/docs"
+      >
+        <div slot="description">
+          <p>
+            {{ s__(`ClusterIntegration||A Knative build extends Kubernetes
+              and utilizes existing Kubernetes primitives to provide you with
+              the ability to run on-cluster container builds from source.
+              For example, you can write a build that uses Kubernetes-native
+              resources to obtain your source code from a repository,
+              build it into container a image, and then run that image.`) }}
+          </p>
+
+          <template v-if="knativeInstalled">
+            <div class="form-group">
+              <label for="knative-domainname">
+                {{ s__('ClusterIntegration|Knative Domain Name:') }}
+              </label>
+              <input
+                id="knative-domainname"
+                v-model="applications.knative.domainname"
+                type="text"
+                class="form-control js-domainname"
+                readonly
+              />
+            </div>
+          </template>
+          <template v-else>
+            <div class="form-group">
+              <label for="knative-domainname">
+                {{ s__('ClusterIntegration|Knative Domain Name:') }}
+              </label>
+              <input
+                id="knative-domainname"
+                v-model="applications.knative.domainname"
+                type="text"
+                class="form-control js-domainname"
+              />
+            </div>
           </template>
         </div>
       </application-row>

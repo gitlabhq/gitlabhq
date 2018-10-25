@@ -668,6 +668,16 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.text "status_reason"
   end
 
+  create_table "clusters_applications_knative", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "domainname", null: false
+    t.text "status_reason"
+  end
+
   create_table "clusters_applications_prometheus", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status", null: false
@@ -1805,6 +1815,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2349,6 +2360,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "oauth_applications", on_delete: :nullify
+  add_foreign_key "clusters_applications_knative", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade

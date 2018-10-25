@@ -25,5 +25,6 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
 
   def create_cluster_application_params
     params.permit(:application, :hostname)
+    params.permit(:application, :domainname)
   end
 end

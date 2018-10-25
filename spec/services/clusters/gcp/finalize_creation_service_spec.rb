@@ -80,7 +80,7 @@ describe Clusters::Gcp::FinalizeCreationService do
 
             expect(provider.endpoint).to eq(endpoint)
             expect(platform.api_url).to eq(api_url)
-            expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
+            expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert).chomp)
             expect(platform.username).to eq(username)
             expect(platform.password).to eq(password)
             expect(platform).to be_abac
@@ -110,7 +110,7 @@ describe Clusters::Gcp::FinalizeCreationService do
 
               expect(provider.endpoint).to eq(endpoint)
               expect(platform.api_url).to eq(api_url)
-              expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
+              expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert).chomp)
               expect(platform.username).to eq(username)
               expect(platform.password).to eq(password)
               expect(platform).to be_rbac

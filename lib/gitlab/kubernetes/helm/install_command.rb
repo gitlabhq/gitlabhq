@@ -79,6 +79,7 @@ module Gitlab
           setargs.each do |s|
             args.push("--set", s)
           end
+          args
         end
 
         def optional_version_flag
