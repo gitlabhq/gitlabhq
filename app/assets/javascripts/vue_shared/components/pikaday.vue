@@ -1,6 +1,6 @@
 <script>
 import Pikaday from 'pikaday';
-import { parsePikadayDate, pikadayToString } from '../../lib/utils/datefix';
+import { parsePikadayDate, pikadayToString } from '~/lib/utils/datetime_utility';
 
 export default {
   name: 'DatePicker',
