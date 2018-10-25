@@ -267,20 +267,6 @@ expect(page).not_to have_selector('.card')
 
 ## Test helpers
 
----
-
-> TODO: update the following sections
-
----
-
-## Types of tests in our codebase
-
-* **RSpec**
-  * **[Ruby unit tests](#ruby-unit-tests-spec-rb)** for models, controllers, helpers, etc. (`/spec/**/*.rb`)
-  * **[Full feature tests](#full-feature-tests-spec-features-rb)** (`/spec/features/**/*.rb`)
-* **[Karma](#karma-tests-spec-javascripts-js)** (`/spec/javascripts/**/*.js`)
-* <s>Spinach</s> — These have been removed from our codebase in May 2018. (`/features/`)
-
 #### Vuex Helper: `testAction`
 
 We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/en/testing.html):
