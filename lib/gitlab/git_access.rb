@@ -27,13 +27,13 @@ module Gitlab
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
+    INTERNAL_TIMEOUT = 50.seconds.freeze
     LOG_HEADER = <<~MESSAGE
       Push operation timed out
 
       Timing information for debugging purposes:
     MESSAGE
 
-    INTERNAL_TIMEOUT = 50.seconds.freeze
     DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS

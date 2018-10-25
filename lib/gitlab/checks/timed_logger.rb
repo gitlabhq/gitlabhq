@@ -7,7 +7,7 @@ module Gitlab
 
       attr_reader :start_time, :header, :log, :timeout
 
-      def initialize(start_time: Time.now, log: [], timeout:, header: "")
+      def initialize(start_time: Time.now, log: [], header: "", timeout:)
         @start_time = start_time
         @timeout = timeout
         @header = header
@@ -15,7 +15,9 @@ module Gitlab
       end
 
       # Adds trace of method being tracked with
-      # the correspondent time it took to run it
+      # the correspondent time it took to run it.
+      # We make use of the start default argument
+      # on unit tests related to this method
       #
       def log_timed(log_message, start = Time.now)
         check_timeout_reached
