@@ -4,14 +4,14 @@ module QA
   module Factory
     module Resource
       class Label < Factory::Base
-        attr_accessor :title,
-                      :description,
-                      :color
+        attr_accessor :description, :color
 
-        product(:title) { |factory| factory.title }
+        attribute :title
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-label'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-label'
+          end
         end
 
         def initialize
@@ -23,8 +23,8 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Project::Menu.act { go_to_labels }
-          Page::Label::Index.act { go_to_new_label }
+          Page::Project::Menu.perform(&:go_to_labels)
+          Page::Label::Index.perform(&:go_to_new_label)
 
           Page::Label::New.perform do |page|
             page.fill_title(@title)

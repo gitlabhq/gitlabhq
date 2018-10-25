@@ -5,7 +5,6 @@ module QA
     module Resource
       class User < Factory::Base
         attr_reader :unique_id
-        attr_writer :username, :password, :name, :email
 
         def initialize
           @unique_id = SecureRandom.hex(8)
@@ -31,14 +30,14 @@ module QA
           defined?(@username) && defined?(@password)
         end
 
-        product :name
-        product :username
-        product :email
-        product :password
+        attribute :name
+        attribute :username
+        attribute :email
+        attribute :password
 
         def fabricate!
           # Don't try to log-out if we're not logged-in
-          if Page::Main::Menu.act { has_personal_area?(wait: 0) }
+          if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
             Page::Main::Menu.perform { |main| main.sign_out }
           end
 

@@ -39,7 +39,6 @@ module QA
   module Factory
     autoload :ApiFabricator, 'qa/factory/api_fabricator'
     autoload :Base, 'qa/factory/base'
-    autoload :Dependency, 'qa/factory/dependency'
     autoload :Product, 'qa/factory/product'
 
     module Resource

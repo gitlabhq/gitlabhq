@@ -4,11 +4,11 @@ module QA
       class Group < Factory::Base
         attr_accessor :path, :description
 
-        dependency Factory::Resource::Sandbox, as: :sandbox
-
-        product :id do
-          true # We don't retrieve the Group ID when using the Browser UI
+        attribute :sandbox do
+          Factory::Resource::Sandbox.fabricate!
         end
+
+        attribute :id
 
         def initialize
           @path = Runtime::Namespace.name
