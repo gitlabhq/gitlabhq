@@ -153,6 +153,11 @@ group :unicorn do
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
+group :puma do
+  gem 'puma', '~> 3.12', require: false
+  gem 'puma_worker_killer', require: false
+end
+
 # State machine
 gem 'state_machines-activerecord', '~> 0.5.1'
 
