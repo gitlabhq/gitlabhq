@@ -1,0 +1,5 @@
+---
+title: Use gitlab_environment for ldap rake task
+merge_request: 22582
+author:
+type: fixed
