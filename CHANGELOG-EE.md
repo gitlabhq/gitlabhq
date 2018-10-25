@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.4.2 (2018-10-25)
+
+### Security (1 change)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !707
+
+
 ## 11.4.1 (2018-10-23)
 
 - No changes.
