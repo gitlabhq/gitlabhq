@@ -17,36 +17,36 @@ No matter how you use GitLab, we have documentation for you.
 <table>
   <tbody>
     <tr>
-      <td>
+      <td width="50%">
         <a href="user/index.md"><strong>User documentation</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         Discover features and concepts for GitLab users.
       </td>
-      <td>
+      <td width="50%">
         <a href="administration/index.md"><strong>Administrator documentation</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         Everything GitLab administrators need to know.
       </td>
     </tr>
     <tr>
-      <td>
+      <td width="50%">
         <a href="#contributing-to-gitlab"><strong>Contributing to GitLab</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         At GitLab, everyone can contribute!
       </td>
-      <td>
+      <td width="50%">
         <a href="#new-to-git-and-gitlab"><strong>New to Git and GitLab?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         We have resources to get you started.
       </td>
     </tr>
     <tr>
-      <td>
+      <td width="50%">
         <a href="#building-an-integration-with-gitlab"><strong>Building an integration with GitLab?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         Consult our our automation and integration documentation.
       </td>
-      <td>
+      <td width="50%">
         <a href="#coming-to-gitlab-from-another-platform"><strong>Coming to GitLab from another platform?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
         <br/>
         Consult our handy guides.
@@ -84,54 +84,68 @@ GitLab provides solutions for [all the stages of the DevOps lifecycle](https://a
 
 The following sections provide links to documentation for each DevOps stage:
 
-| DevOps Stage            | Documentation for                  |
-|:------------------------|:-----------------------------------|
-| [Manage](#manage)       | Business insight features.         |
-| [Plan](#plan)           | Project planning tools.            |
-| [Create](#create)       | Source code version control tools. |
-| [Verify](#verify)       | Testing and code quality tools.    |
-| [Package](#package)     | Code packaging tools.              |
-| [Release](#release)     | Code release tools.                |
-| [Configure](#configure) | Configuration tools.               |
-| [Monitor](#monitor)     | Application monitoring.            |
-| [Secure](#secure)       | Security capabilities.             |
+| DevOps Stage            | Documentation for                                           |
+|:------------------------|:------------------------------------------------------------|
+| [Manage](#manage)       | Statistics and analytics features.                          |
+| [Plan](#plan)           | Project planning and management features.                   |
+| [Create](#create)       | Source code and data creation and management features.      |
+| [Verify](#verify)       | Testing, code quality, and continuous integration features. |
+| [Package](#package)     | Docker container registry.                                  |
+| [Release](#release)     | Application release and delivery features.                  |
+| [Configure](#configure) | Application and infrastructure configuration tools.         |
+| [Monitor](#monitor)     | Application monitoring and metrics features.                |
+| [Secure](#secure)       | Security capability feature.                                |
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Manage
 
-| Manage Topics                                                     | Description                                                                                                                                                                                                                                   |
-|:------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Authentication and Authorization](administration/auth/README.md) | Supported authentication and authorization providers.                                                                                                                                                                                         |
-| [GitLab Cycle Analytics](user/project/cycle_analytics.md)         | Cycle Analytics measures the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
-| [Instance Statistics](user/instance_statistics/index.md)          | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                                    |
+GitLab provides statistics and insight into ways you can maximize the value of GitLab in your organization.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+The following documentation relates to the DevOps **Manage** stage:
+
+| Manage Topics                                                     | Description                                                                                                                                                                                                                  |
+|:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Authentication and Authorization](administration/auth/README.md) | Supported authentication and authorization providers.                                                                                                                                                                        |
+| [GitLab Cycle Analytics](user/project/cycle_analytics.md)         | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
+| [Instance Statistics](user/instance_statistics/index.md)          | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
+
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Plan
 
-Whether you use Waterfall, Agile, or Conversational Development,
-GitLab streamlines your collaborative workflows.
+Whether you use Waterfall, Agile, or Conversational Development, GitLab streamlines your collaborative workflows.
 
 Visualize, prioritize, coordinate, and track your progress your way with GitLab’s flexible project
 management tools.
 
 The following documentation relates to the DevOps **Plan** stage:
 
-| Plan Topics                                                                  | Description                                                                                                                             |
-|:-----------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------|
-| [Confidential issues](user/project/issues/confidential_issues.md)            | Restrict access to issues to members with sufficient permissions.                                                                       |
-| [Discussions](user/discussions/index.md)                                     | Threads, comments, and resolvable discussions in issues, commits, and  merge requests.                                                  |
-| [Due Dates](user/project/issues/due_dates.md)                                | Keep track of issue deadlines.                                                                                                          |
-| [GitLab Quick Actions](user/project/quick_actions.md)                        | Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI. |
-| [Issues](user/project/issues/index.md)                                       | Project issues.                                                                                                                         |
-| [Issues and merge requests templates](user/project/description_templates.md) | Create templates for submitting new issues and merge requests.                                                                          |
-| [Labels](user/project/labels.md)                                             | Categorize your issues or merge requests based on descriptive titles.                                                                   |
-| [Milestones](user/project/milestones/index.md)                               | Organize issues and merge requests into a cohesive group, optionally setting a due date.                                                |
-| [Moving Issues](user/project/issues/moving_issues.md)                        | Move issues between projects.                                                                                                           |
-| [Project Issue Board](user/project/issue_board.md)                           | Project issue boards.                                                                                                                   |
-| [Time Tracking](workflow/time_tracking.md)                                   | Track time spent on issues and merge requests.                                                                                          |
-| [Todos](workflow/todos.md)                                                   | A chronological list of to-dos that are waiting for your input, all in a simple dashboard.                                              |
+| Plan Topics                                                                                                                                                                                                                                                | Description                                                                                                                                      |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Discussions](user/discussions/index.md)                                                                                                                                                                                                                   | Threads, comments, and resolvable discussions in issues, commits, and  merge requests.                                                           |
+| [Due Dates](user/project/issues/due_dates.md)                                                                                                                                                                                                              | Keep track of issue deadlines.                                                                                                                   |
+| [Quick Actions](user/project/quick_actions.md)                                                                                                                                                                                                             | Shortcuts for common actions on issues or merge requests, replacing the need to click buttons or use dropdowns in GitLab's UI.                   |
+| [Issues](user/project/issues/index.md), including [confidential issues](user/project/issues/confidential_issues.md), [issue and merge request templates](user/project/description_templates.md), and [moving issues](user/project/issues/moving_issues.md) | Project issues, restricting access to issues, create templates for submitting new issues and merge requests, and moving issues between projects. |
+| [Labels](user/project/labels.md)                                                                                                                                                                                                                           | Categorize issues or merge requests with descriptive labels.                                                                                     |
+| [Milestones](user/project/milestones/index.md)                                                                                                                                                                                                             | Set milestones for delivery of issues and merge requests, with optional due date.                                                                |
+| [Project Issue Board](user/project/issue_board.md)                                                                                                                                                                                                         | Display issues on a Scrum or Kanban board.                                                                                                       |
+| [Time Tracking](workflow/time_tracking.md)                                                                                                                                                                                                                 | Track time spent on issues and merge requests.                                                                                                   |
+| [Todos](workflow/todos.md)                                                                                                                                                                                                                                 | Keep track of work requiring attention with a chronological list displayed on a simple dashboard.                                                       |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Create
 
@@ -159,7 +173,11 @@ The following documentation relates to the DevOps **Create** stage:
 | [Web IDE](user/project/web_ide/index.md)                                                     | Edit files within GitLab's user interface.                                              |
 | [Wikis](user/project/wiki/index.md)                                                          | Enhance your repository documentation with built-in wikis.                              |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ---
 
@@ -177,7 +195,11 @@ The following documentation relates to the DevOps **Create** stage:
 | [Repositories](user/project/repository/index.md)                                                                                                                                                                               | Manage source code repositories in GitLab's user interface.     |
 | [Start a merge request](user/project/repository/web_editor.md#tips)                                                                                                                                                            | Start merge request when commiting via GitLab's user interface. |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ---
 
@@ -189,7 +211,11 @@ The following documentation relates to the DevOps **Create** stage:
 | [Merge requests](user/project/merge_requests/index.md)                                                      | Merge request management.                                                                                                                     |
 | [Work In Progress "WIP" merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)     | Prevent merges of work-in-progress merge requests.                                                                                            |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ---
 
@@ -199,7 +225,11 @@ The following documentation relates to the DevOps **Create** stage:
 | [Project Services](user/project/integrations/project_services.md) | Integrate a project with external services, such as CI and chat.                                                       |
 | [Trello Power-Up](integration/trello_power_up.md)                 | Integrate with GitLab's Trello Power-Up.                                                                               |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ---
 
@@ -208,7 +238,11 @@ The following documentation relates to the DevOps **Create** stage:
 | [API](api/README.md)                                     | Automate GitLab via a simple and powerful API.                       |
 | [GitLab Webhooks](user/project/integrations/webhooks.md) | Let GitLab notify you when new code has been pushed to your project. |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Verify
 
@@ -229,7 +263,11 @@ The following documentation relates to the DevOps **Verify** stage:
 | [Pipeline Graphs](ci/pipelines.md#pipeline-graphs) | Visualize builds.                                                                                                            |
 | [Review Apps](ci/review_apps/index.md)             | Preview changes to your app right from a merge request.                                                                      |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Package
 
@@ -243,7 +281,11 @@ The following documentation relates to the DevOps **Package** stage:
 |:----------------------------------------------------------------|:-------------------------------------------------------|
 | [GitLab Container Registry](user/project/container_registry.md) | Learn how to use GitLab's built-in Container Registry. |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Release
 
@@ -261,7 +303,11 @@ The following documentation relates to the DevOps **Release** stage:
 | [Protected Runners](ci/runners/README.md#protected-runners) | Select Runners to only pick jobs for protected branches and tags.                            |
 | [Scheduled Pipelines](user/project/pipelines/schedules.md)  | Execute pipelines on a schedule.                                                             |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Configure
 
@@ -281,7 +327,11 @@ The following documentation relates to the DevOps **Configure** stage:
 | [Protected variables](ci/variables/README.md#protected-variables)                                                              | Restrict variables to protected branches and tags.                        |
 | [Slack slash commands](user/project/integrations/slack_slash_commands.md)                                                      |                                                                           |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Monitor
 
@@ -301,9 +351,15 @@ The following documentation relates to the DevOps **Monitor** stage:
 | [Prometheus project integration](user/project/integrations/prometheus.md)       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
 | [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md)   | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Secure
+
+The following documentation relates to the DevOps **Secure** stage:
 
 | Monitor Topics                                          | Description                                                |
 |:--------------------------------------------------------|:-----------------------------------------------------------|
@@ -322,7 +378,11 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 - [Auto DevOps](topics/autodevops/index.md).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### User account
 
@@ -334,7 +394,11 @@ Learn more about GitLab account management:
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### Git and GitLab
 
@@ -344,7 +408,11 @@ Learn more about using Git, and using Git with GitLab:
 - [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### GitLab subscriptions
 
@@ -354,7 +422,11 @@ You have two options to use GitLab:
 - [GitLab.com](#gitlab-com): GitLab's SaaS offering. You don't need to install anything to use GitLab.com,
   you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab straight away.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### GitLab self-managed
 
@@ -365,7 +437,11 @@ Every feature available in Core is also available in Starter, Premium, and Ultim
 Starter features are also available in Premium and Ultimate, and Premium features are also
 available in Ultimate.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ### GitLab.com
 
@@ -389,7 +465,11 @@ for all GitLab.com **public** projects, regardless of the subscription.
 To know more about GitLab subscriptions and licensing, please refer to the
 [GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ## Coming to GitLab from another platform
 
@@ -399,7 +479,11 @@ If you are coming to GitLab from another platform, you'll find the following inf
   Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ## Building an integration with GitLab
 
@@ -408,7 +492,11 @@ There are many ways to integration with GitLab, including:
 - Our [API](api/README.md).
 - Other [integrations](#integrations) and [automation](#automation).
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
 
 ## Contributing to GitLab
 
@@ -420,4 +508,8 @@ Learn how to contribute to GitLab:
 - [Legal](legal/README.md): Contributor license agreements.
 - [Writing documentation](development/documentation/index.md): Contributing to GitLab Docs.
 
-<div align="right"><a href="#overview">Overview <i class="fa fa-arrow-up" aria-hidden="true"></i></a></div>
+<div align="right">
+  <a type="button" class="btn btn-default" href="#overview">
+    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  </a>
+</div>
