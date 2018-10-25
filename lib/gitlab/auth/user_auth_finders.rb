@@ -73,7 +73,6 @@ module Gitlab
         end
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_personal_access_token
         token =
           current_request.params[PRIVATE_TOKEN_PARAM].presence ||
@@ -82,9 +81,8 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        PersonalAccessToken.find_by(token: token) || raise(UnauthorizedError)
+        PersonalAccessToken.find_by_token(token) || raise(UnauthorizedError)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def find_oauth_access_token
         token = Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)

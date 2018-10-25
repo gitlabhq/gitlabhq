@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   ignore_column :email_provider
   ignore_column :authentication_token
 
-  add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
 
   default_value_for :admin, false
@@ -1470,15 +1470,6 @@ class User < ActiveRecord::Base
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
       regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
       signup_domain =~ regexp
-    end
-  end
-
-  def generate_token(token_field)
-    if token_field == :incoming_email_token
-      # Needs to be all lowercase and alphanumeric because it's gonna be used in an email address.
-      SecureRandom.hex.to_i(16).to_s(36)
-    else
-      super
     end
   end
 
