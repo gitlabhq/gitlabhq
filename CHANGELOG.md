@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.2 (2018-10-25)
+
+### Security (5 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2571
+- Persist only SHA digest of PersonalAccessToken#token.
+- Redact personal tokens in unsubscribe links.
+- Block loopback addresses in UrlBlocker.
+- Validate Wiki attachments are valid temporary files.
+
+
 ## 11.4.1 (2018-10-23)
 
 ### Security (2 changes)
