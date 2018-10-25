@@ -41,6 +41,17 @@ describe PostReceive do
       end
     end
 
+    context 'unidentified user' do
+      let!(:key_id) { "" }
+
+      it 'returns false' do
+        expect(GitPushService).not_to receive(:new)
+        expect(GitTagPushService).not_to receive(:new)
+
+        expect(described_class.new.perform(gl_repository, key_id, base64_changes)).to be false
+      end
+    end
+
     context 'with changes' do
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)

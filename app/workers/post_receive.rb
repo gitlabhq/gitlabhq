@@ -31,10 +31,12 @@ class PostReceive
     refs = Set.new
     @user = post_received.identify
 
-    post_received.changes_refs do |oldrev, newrev, ref|
-      @user ||= post_received.identify(newrev)
-      break unless @user
+    unless @user
+      log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
+      return false
+    end
 
+    post_received.changes_refs do |oldrev, newrev, ref|
       if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       elsif Gitlab::Git.branch_ref?(ref)
@@ -43,11 +45,6 @@ class PostReceive
 
       changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
       refs << ref
-    end
-
-    unless @user
-      log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-      return false
     end
 
     after_project_changes_hooks(post_received, @user, refs.to_a, changes)
