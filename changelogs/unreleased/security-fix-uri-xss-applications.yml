@@ -1,0 +1,5 @@
+---
+title: Resolve reflected XSS in Ouath authorize window
+merge_request:
+author:
+type: security

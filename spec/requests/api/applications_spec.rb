@@ -25,12 +25,22 @@ describe API::Applications, :api do
 
       it 'does not allow creating an application with the wrong redirect_uri format' do
         expect do
-          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'wrong_url_format', scopes: ''
+          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'http://', scopes: ''
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response).to be_a Hash
         expect(json_response['message']['redirect_uri'][0]).to eq('must be an absolute URI.')
+      end
+
+      it 'does not allow creating an application with a forbidden URI format' do
+        expect do
+          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'javascript://alert()', scopes: ''
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response).to be_a Hash
+        expect(json_response['message']['redirect_uri'][0]).to eq('is forbidden by the server.')
       end
 
       it 'does not allow creating an application without a name' do

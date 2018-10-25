@@ -40,6 +40,23 @@ describe Oauth::ApplicationsController do
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(profile_path)
       end
+
+      context 'redirect_uri' do
+        render_views
+
+        it 'shows an error for a forbidden URI' do
+          invalid_uri_params = {
+            doorkeeper_application: {
+              name: 'foo',
+              redirect_uri: 'javascript://alert()'
+            }
+          }
+
+          post :create, invalid_uri_params
+
+          expect(response.body).to include 'Redirect URI is forbidden by the server'
+        end
+      end
     end
   end
 
