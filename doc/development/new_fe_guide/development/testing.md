@@ -267,7 +267,7 @@ expect(page).not_to have_selector('.card')
 
 ## Test helpers
 
-#### Vuex Helper: `testAction`
+### Vuex Helper: `testAction`
 
 We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/en/testing.html):
 
@@ -290,7 +290,7 @@ testAction(
 
 Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
-#### Vue Helper: `mountComponent`
+### Vue Helper: `mountComponent`
 
 To make mounting a Vue component easier and more readable, we have a few helpers available in `spec/helpers/vue_mount_component_helper`.
 
@@ -326,6 +326,7 @@ afterEach(() => {
   vm.$destroy();
 });
 ```
+
 ## Testing with older browsers
 
 Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or Browserstack using the following steps:
