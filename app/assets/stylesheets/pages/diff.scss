@@ -1027,8 +1027,12 @@
   overflow-x: auto;
 }
 
-.tree-list-search .form-control {
-  padding-left: 30px;
+.tree-list-search {
+  flex: 0 0 34px;
+
+  .form-control {
+    padding-left: 30px;
+  }
 }
 
 .tree-list-icon {
@@ -1061,5 +1065,11 @@
       max-height: calc(50px + 50vh);
       padding-right: 0;
     }
+  }
+}
+
+.tree-list-view-toggle {
+  svg {
+    top: 0;
   }
 }

@@ -23,7 +23,7 @@ export default function groupsSelect() {
           axios[params.type.toLowerCase()](params.url, {
             params: params.data,
           })
-            .then((res) => {
+            .then(res => {
               const results = res.data || [];
               const headers = normalizeHeaders(res.headers);
               const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
@@ -36,7 +36,8 @@ export default function groupsSelect() {
                   more,
                 },
               });
-            }).catch(params.error);
+            })
+            .catch(params.error);
         },
         data(search, page) {
           return {
@@ -68,7 +69,9 @@ export default function groupsSelect() {
         }
       },
       formatResult(object) {
-        return `<div class='group-result'> <div class='group-name'>${object.full_name}</div> <div class='group-path'>${object.full_path}</div> </div>`;
+        return `<div class='group-result'> <div class='group-name'>${
+          object.full_name
+        }</div> <div class='group-path'>${object.full_path}</div> </div>`;
       },
       formatSelection(object) {
         return object.full_name;
