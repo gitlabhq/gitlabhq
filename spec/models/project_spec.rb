@@ -3963,6 +3963,28 @@ describe Project do
     end
   end
 
+  describe '#snippets_visible?' do
+    it 'returns true when a logged in user can read snippets' do
+      project = create(:project, :public)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(true)
+    end
+
+    it 'returns true when an anonymous user can read snippets' do
+      project = create(:project, :public)
+
+      expect(project.snippets_visible?).to eq(true)
+    end
+
+    it 'returns false when a user can not read snippets' do
+      project = create(:project, :private)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(false)
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end
