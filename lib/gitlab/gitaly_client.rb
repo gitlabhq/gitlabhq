@@ -53,6 +53,10 @@ module Gitlab
       base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
     end
 
+    def self.creds
+      Gitlab.config.gitaly.tls.credentials
+    end
+
     def self.stub(name, storage)
       MUTEX.synchronize do
         @stubs ||= {}
@@ -60,8 +64,17 @@ module Gitlab
         @stubs[storage][name] ||= begin
           klass = stub_class(name)
           addr = stub_address(storage)
-          klass.new(addr, :this_channel_is_insecure)
+          creds = stub_creds(storage)
+          klass.new(addr, creds)
         end
+      end
+    end
+
+    def self.stub_creds(storage)
+      if URI(address(storage)).scheme == 'tls'
+        GRPC::Code::ChannelCredentials.new
+      else
+        :this_channel_is_insecure
       end
     end
 
@@ -75,7 +88,7 @@ module Gitlab
 
     def self.stub_address(storage)
       addr = address(storage)
-      addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
+      addr = addr.sub(%r{^tcp://|^tls://}, '') if %w(tcp tls).include? URI(addr).scheme
       addr
     end
 
@@ -98,8 +111,8 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless URI(address).scheme.in?(%w(tcp unix))
-        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix'"
+      unless URI(address).scheme.in?(%w(tcp unix tls))
+        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls'"
       end
 
       address
