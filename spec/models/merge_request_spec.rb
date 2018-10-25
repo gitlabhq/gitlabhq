@@ -631,6 +631,44 @@ describe MergeRequest do
     end
   end
 
+  describe '#modified_paths' do
+    let(:paths) { double(:paths) }
+    subject(:merge_request) { build(:merge_request) }
+
+    before do
+      expect(diff).to receive(:modified_paths).and_return(paths)
+    end
+
+    context 'when past_merge_request_diff is specified' do
+      let(:another_diff) { double(:merge_request_diff) }
+      let(:diff) { another_diff }
+
+      it 'returns affected file paths from specified past_merge_request_diff' do
+        expect(merge_request.modified_paths(past_merge_request_diff: another_diff)).to eq(paths)
+      end
+    end
+
+    context 'when compare is present' do
+      let(:compare) { double(:compare) }
+      let(:diff) { compare }
+
+      it 'returns affected file paths from compare' do
+        merge_request.compare = compare
+
+        expect(merge_request.modified_paths).to eq(paths)
+      end
+    end
+
+    context 'when no arguments provided' do
+      let(:diff) { merge_request.merge_request_diff }
+      subject(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
+
+      it 'returns affected file paths for merge_request_diff' do
+        expect(merge_request.modified_paths).to eq(paths)
+      end
+    end
+  end
+
   describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 

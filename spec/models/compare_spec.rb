@@ -92,4 +92,33 @@ describe Compare do
       expect(subject.diff_refs.head_sha).to eq(head_commit.id)
     end
   end
+
+  describe '#modified_paths' do
+    context 'changes are present' do
+      let(:raw_compare) do
+        Gitlab::Git::Compare.new(
+          project.repository.raw_repository, 'before-create-delete-modify-move', 'after-create-delete-modify-move'
+        )
+      end
+
+      it 'returns affected file paths, without duplication' do
+        expect(subject.modified_paths).to contain_exactly(*%w{
+          foo/for_move.txt
+          foo/bar/for_move.txt
+          foo/for_create.txt
+          foo/for_delete.txt
+          foo/for_edit.txt
+        })
+      end
+    end
+
+    context 'changes are absent' do
+      let(:start_commit) { sample_commit }
+      let(:head_commit) { sample_commit }
+
+      it 'returns empty array' do
+        expect(subject.modified_paths).to eq([])
+      end
+    end
+  end
 end
