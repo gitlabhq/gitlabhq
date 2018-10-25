@@ -306,6 +306,66 @@ describe MergeRequests::RefreshService do
       end
     end
 
+    context 'forked projects with the same source branch name as target branch' do
+      let!(:first_commit) do
+        @fork_project.repository.create_file(@user, 'test1.txt', 'Test data',
+                                             message: 'Test commit',
+                                             branch_name: 'master')
+      end
+      let!(:second_commit) do
+        @fork_project.repository.create_file(@user, 'test2.txt', 'More test data',
+                                             message: 'Second test commit',
+                                             branch_name: 'master')
+      end
+      let!(:forked_master_mr) do
+        create(:merge_request,
+               source_project: @fork_project,
+               source_branch: 'master',
+               target_branch: 'master',
+               target_project: @project)
+      end
+      let(:force_push_commit) { @project.commit('feature').id }
+
+      it 'should reload a new diff for a push to the forked project' do
+        expect do
+          service.new(@fork_project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
+          reload_mrs
+        end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+      end
+
+      it 'should reload a new diff for a force push to the source branch' do
+        expect do
+          service.new(@fork_project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
+          reload_mrs
+        end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+      end
+
+      it 'should reload a new diff for a force push to the target branch' do
+        expect do
+          service.new(@project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
+          reload_mrs
+        end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+      end
+
+      it 'should reload a new diff for a push to the target project that contains a commit in the MR' do
+        expect do
+          service.new(@project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
+          reload_mrs
+        end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
+      end
+
+      it 'should not increase the diff count for a new push to target branch' do
+        new_commit = @project.repository.create_file(@user, 'new-file.txt', 'A new file',
+                                                     message: 'This is a test',
+                                                     branch_name: 'master')
+
+        expect do
+          service.new(@project, @user).execute(@newrev, new_commit, 'refs/heads/master')
+          reload_mrs
+        end.not_to change { forked_master_mr.merge_request_diffs.count }
+      end
+    end
+
     context 'push to origin repo target branch after fork project was removed' do
       before do
         @fork_project.destroy
