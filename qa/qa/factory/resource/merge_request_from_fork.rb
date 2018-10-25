@@ -4,19 +4,24 @@ module QA
       class MergeRequestFromFork < MergeRequest
         attr_accessor :fork_branch
 
-        dependency Factory::Resource::Fork, as: :fork
+        attribute :fork do
+          Factory::Resource::Fork.fabricate!
+        end
 
-        dependency Factory::Repository::ProjectPush, as: :push do |push, factory|
-          push.project = factory.fork
-          push.branch_name = factory.fork_branch
-          push.file_name = 'file2.txt'
-          push.user = factory.fork.user
+        attribute :push do
+          Factory::Repository::ProjectPush.fabricate! do |resource|
+            resource.project = fork
+            resource.branch_name = fork_branch
+            resource.file_name = 'file2.txt'
+            resource.user = fork.user
+          end
         end
 
         def fabricate!
+          push
           fork.visit!
-          Page::Project::Show.act { new_merge_request }
-          Page::MergeRequest::New.act { create_merge_request }
+          Page::Project::Show.perform(&:new_merge_request)
+          Page::MergeRequest::New.perform(&:create_merge_request)
         end
       end
     end

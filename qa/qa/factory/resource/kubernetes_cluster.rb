@@ -7,24 +7,21 @@ module QA
         attr_writer :project, :cluster,
           :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner
 
-        product :ingress_ip do
-          Page::Project::Operations::Kubernetes::Show.perform do |page|
-            page.ingress_ip
-          end
+        attribute :ingress_ip do
+          Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
         end
 
         def fabricate!
           @project.visit!
 
-          Page::Project::Menu.act { click_operations_kubernetes }
+          Page::Project::Menu.perform(
+            &:click_operations_kubernetes)
 
-          Page::Project::Operations::Kubernetes::Index.perform do |page|
-            page.add_kubernetes_cluster
-          end
+          Page::Project::Operations::Kubernetes::Index.perform(
+            &:add_kubernetes_cluster)
 
-          Page::Project::Operations::Kubernetes::Add.perform do |page|
-            page.add_existing_cluster
-          end
+          Page::Project::Operations::Kubernetes::Add.perform(
+            &:add_existing_cluster)
 
           Page::Project::Operations::Kubernetes::AddExisting.perform do |page|
             page.set_cluster_name(@cluster.cluster_name)
