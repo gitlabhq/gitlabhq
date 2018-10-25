@@ -19,36 +19,36 @@ No matter how you use GitLab, we have documentation for you.
     <tr>
       <td>
         <a href="user/index.md"><strong>User documentation</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         Discover features and concepts for GitLab users.
       </td>
       <td>
         <a href="administration/index.md"><strong>Administrator documentation</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         Everything GitLab administrators need to know.
       </td>
     </tr>
     <tr>
       <td>
         <a href="#contributing-to-gitlab"><strong>Contributing to GitLab</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         At GitLab, everyone can contribute!
       </td>
       <td>
         <a href="#new-to-git-and-gitlab"><strong>New to Git and GitLab?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         We have resources to get you started.
       </td>
     </tr>
     <tr>
       <td>
         <a href="#building-an-integration-with-gitlab"><strong>Building an integration with GitLab?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         Consult our our automation and integration documentation.
       </td>
       <td>
         <a href="#coming-to-gitlab-from-another-platform"><strong>Coming to GitLab from another platform?</strong> <i class="fa fa-gitlab" aria-hidden="true"></i></a>
-        <br/><br/>
+        <br/>
         Consult our handy guides.
       </td>
     </tr>
