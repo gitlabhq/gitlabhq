@@ -371,9 +371,6 @@ describe Milestone do
         expected_count = { opened: 5, closed: 6, all: 11 }
 
         count = described_class.states_count(Project.all, Group.all)
-
-        p Project.all, Group.all
-
         expect(count).to eq(expected_count)
       end
     end
