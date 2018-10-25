@@ -18,6 +18,7 @@
     "runner": { "$ref": "runner.json" },
     "runners": { "$ref": "runners.json" },
     "has_trace": { "type": "boolean" },
-    "stage": { "type": "string" }
+    "stage": { "type": "string" },
+    "stuck": { "type": "boolean" }
   }
 }

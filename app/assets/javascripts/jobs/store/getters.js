@@ -41,17 +41,10 @@ export const emptyStateIllustration = state =>
   (state.job && state.job.status && state.job.status.illustration) || {};
 
 export const emptyStateAction = state =>  (state.job && state.job.status && state.job.status.action) || {};
-/**
- * When the job is pending and there are no available runners
- * we need to render the stuck block;
- *
- * @returns {Boolean}
- */
-export const isJobStuck = state =>
-  (!_.isEmpty(state.job.status) && state.job.status.group === 'pending') &&
-  (!_.isEmpty(state.job.runners) && state.job.runners.available === false);
 
 export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceComplete;
+
+export const hasRunnersForProject = state => state.job.runners.available && !state.job.runners.online;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
