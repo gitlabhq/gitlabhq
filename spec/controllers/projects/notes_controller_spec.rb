@@ -47,6 +47,37 @@ describe Projects::NotesController do
       get :index, request_params
     end
 
+    context 'when user notes_filter is present' do
+      let(:notes_json) { parsed_response[:notes] }
+      let!(:comment) { create(:note, noteable: issue, project: project) }
+      let!(:system_note) { create(:note, noteable: issue, project: project, system: true) }
+
+      it 'filters system notes by comments' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
+        get :index, request_params
+
+        expect(notes_json.count).to eq(1)
+        expect(notes_json.first[:id].to_i).to eq(comment.id)
+      end
+
+      it 'returns all notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:all_notes], issue)
+
+        get :index, request_params
+
+        expect(notes_json.map { |note| note[:id].to_i }).to contain_exactly(comment.id, system_note.id)
+      end
+
+      it 'does not merge label event notes' do
+        user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
+
+        expect(ResourceEvents::MergeIntoNotesService).not_to receive(:new)
+
+        get :index, request_params
+      end
+    end
+
     context 'for a discussion note' do
       let(:project) { create(:project, :repository) }
       let!(:note) { create(:discussion_note_on_merge_request, project: project) }

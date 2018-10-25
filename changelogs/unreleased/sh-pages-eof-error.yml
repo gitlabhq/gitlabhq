@@ -1,0 +1,5 @@
+---
+title: Fix EOF detection with CI artifacts metadata
+merge_request: 22479
+author:
+type: fixed

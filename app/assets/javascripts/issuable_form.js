@@ -1,6 +1,3 @@
-/* eslint-disable no-new, no-unused-vars, consistent-return, no-else-return */
-/* global GitLab */
-
 import $ from 'jquery';
 import Pikaday from 'pikaday';
 import Autosave from './autosave';
@@ -8,7 +5,7 @@ import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 
 export default class IssuableForm {
   constructor(form) {
@@ -19,9 +16,11 @@ export default class IssuableForm {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
 
-    new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
-    new UsersSelect();
-    new ZenMode();
+    this.gfmAutoComplete = new GfmAutoComplete(
+      gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources,
+    ).setup();
+    this.usersSelect = new UsersSelect();
+    this.zenMode = new ZenMode();
 
     this.titleField = this.form.find('input[name*="[title]"]');
     this.descriptionField = this.form.find('textarea[name*="[description]"]');
@@ -57,8 +56,16 @@ export default class IssuableForm {
   }
 
   initAutosave() {
-    new Autosave(this.titleField, [document.location.pathname, document.location.search, 'title']);
-    return new Autosave(this.descriptionField, [document.location.pathname, document.location.search, 'description']);
+    this.autosave = new Autosave(this.titleField, [
+      document.location.pathname,
+      document.location.search,
+      'title',
+    ]);
+    return new Autosave(this.descriptionField, [
+      document.location.pathname,
+      document.location.search,
+      'description',
+    ]);
   }
 
   handleSubmit() {
@@ -74,7 +81,7 @@ export default class IssuableForm {
     this.$wipExplanation = this.form.find('.js-wip-explanation');
     this.$noWipExplanation = this.form.find('.js-no-wip-explanation');
     if (!(this.$wipExplanation.length && this.$noWipExplanation.length)) {
-      return;
+      return undefined;
     }
     this.form.on('click', '.js-toggle-wip', this.toggleWip);
     this.titleField.on('keyup blur', this.renderWipExplanation);
@@ -89,10 +96,9 @@ export default class IssuableForm {
     if (this.workInProgress()) {
       this.$wipExplanation.show();
       return this.$noWipExplanation.hide();
-    } else {
-      this.$wipExplanation.hide();
-      return this.$noWipExplanation.show();
     }
+    this.$wipExplanation.hide();
+    return this.$noWipExplanation.show();
   }
 
   toggleWip(event) {
@@ -110,7 +116,7 @@ export default class IssuableForm {
   }
 
   addWip() {
-    this.titleField.val(`WIP: ${(this.titleField.val())}`);
+    this.titleField.val(`WIP: ${this.titleField.val()}`);
   }
 
   initTargetBranchDropdown() {

@@ -334,6 +334,14 @@ img.emoji {
   }
 }
 
+.outline-0 {
+  outline: 0;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-2 { margin-top: 2px; }
@@ -369,3 +377,5 @@ img.emoji {
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
+.mw-460 { max-width: 460px; }
+.ws-initial { white-space: initial; }

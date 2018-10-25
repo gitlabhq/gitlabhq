@@ -19,7 +19,9 @@ export function renderIdenticon(entity, options = {}) {
   const bgClass = getIdenticonBackgroundClass(entity.id);
   const title = getIdenticonTitle(entity.name);
 
-  return `<div class="avatar identicon ${_.escape(sizeClass)} ${_.escape(bgClass)}">${_.escape(title)}</div>`;
+  return `<div class="avatar identicon ${_.escape(sizeClass)} ${_.escape(bgClass)}">${_.escape(
+    title,
+  )}</div>`;
 }
 
 export function renderAvatar(entity, options = {}) {

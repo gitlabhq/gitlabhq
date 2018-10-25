@@ -37,20 +37,22 @@ export default class NewGroupChild {
 
   getDroplabConfig() {
     return {
-      InputSetter: [{
-        input: this.newGroupChildButton,
-        valueAttribute: 'data-value',
-        inputAttribute: 'data-action',
-      }, {
-        input: this.newGroupChildButton,
-        valueAttribute: 'data-text',
-      }],
+      InputSetter: [
+        {
+          input: this.newGroupChildButton,
+          valueAttribute: 'data-value',
+          inputAttribute: 'data-action',
+        },
+        {
+          input: this.newGroupChildButton,
+          valueAttribute: 'data-text',
+        },
+      ],
     };
   }
 
   bindEvents() {
-    this.newGroupChildButton
-      .addEventListener('click', this.onClickNewGroupChildButton.bind(this));
+    this.newGroupChildButton.addEventListener('click', this.onClickNewGroupChildButton.bind(this));
   }
 
   onClickNewGroupChildButton(e) {

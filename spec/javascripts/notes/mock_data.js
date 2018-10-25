@@ -1244,3 +1244,18 @@ export const discussion3 = {
 export const unresolvableDiscussion = {
   resolvable: false,
 };
+
+export const discussionFiltersMock = [
+  {
+    title: 'Show all activity',
+    value: 0,
+  },
+  {
+    title: 'Show comments only',
+    value: 1,
+  },
+  {
+    title: 'Show system notes only',
+    value: 2,
+  },
+];

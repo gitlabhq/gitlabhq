@@ -50,11 +50,11 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
+      currentFilter: null,
     };
   },
   computed: {
-    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount', 'isLoading']),
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -102,6 +102,7 @@ export default {
   },
   methods: {
     ...mapActions({
+      setLoadingState: 'setLoadingState',
       fetchDiscussions: 'fetchDiscussions',
       poll: 'poll',
       actionToggleAward: 'toggleAward',
@@ -133,19 +134,19 @@ export default {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
-      return this.fetchDiscussions(this.getNotesDataByProp('discussionsPath'))
+      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
           this.initPolling();
         })
         .then(() => {
-          this.isLoading = false;
+          this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
         .catch(() => {
-          this.isLoading = false;
+          this.setLoadingState(false);
           this.setNotesFetchedState(true);
           Flash('Something went wrong while fetching comments. Please try again.');
         });

@@ -60,18 +60,15 @@ module Clusters
           'https://' + gke_cluster.endpoint,
           Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           gke_cluster.master_auth.username,
-          gke_cluster.master_auth.password,
-          api_groups: ['api', 'apis/rbac.authorization.k8s.io']
+          gke_cluster.master_auth.password
         )
       end
 
-      def build_kube_client!(api_url, ca_pem, username, password, api_groups: ['api'], api_version: 'v1')
+      def build_kube_client!(api_url, ca_pem, username, password)
         raise "Incomplete settings" unless api_url && username && password
 
         Gitlab::Kubernetes::KubeClient.new(
           api_url,
-          api_groups,
-          api_version,
           auth_options: { username: username, password: password },
           ssl_options: kubeclient_ssl_options(ca_pem),
           http_proxy_uri: ENV['http_proxy']

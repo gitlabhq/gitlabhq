@@ -68,6 +68,11 @@ export const conditions = [
     value: 'none',
   },
   {
+    url: 'milestone_title=Any+Milestone',
+    tokenKey: 'milestone',
+    value: 'any',
+  },
+  {
     url: 'milestone_title=%23upcoming',
     tokenKey: 'milestone',
     value: 'upcoming',

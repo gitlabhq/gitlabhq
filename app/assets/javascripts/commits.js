@@ -32,22 +32,31 @@ export default class CommitsList {
     if (search === this.lastSearch) return Promise.resolve();
     const commitsUrl = `${form.attr('action')}?${form.serialize()}`;
     this.content.fadeTo('fast', 0.5);
-    const params = form.serializeArray().reduce((acc, obj) => Object.assign(acc, {
-      [obj.name]: obj.value,
-    }), {});
+    const params = form.serializeArray().reduce(
+      (acc, obj) =>
+        Object.assign(acc, {
+          [obj.name]: obj.value,
+        }),
+      {},
+    );
 
-    return axios.get(form.attr('action'), {
-      params,
-    })
+    return axios
+      .get(form.attr('action'), {
+        params,
+      })
       .then(({ data }) => {
         this.lastSearch = search;
         this.content.html(data.html);
         this.content.fadeTo('fast', 1.0);
 
         // Change url so if user reload a page - search results are saved
-        window.history.replaceState({
-          page: commitsUrl,
-        }, document.title, commitsUrl);
+        window.history.replaceState(
+          {
+            page: commitsUrl,
+          },
+          document.title,
+          commitsUrl,
+        );
       })
       .catch(() => {
         this.content.fadeTo('fast', 1.0);
@@ -75,8 +84,15 @@ export default class CommitsList {
       processedData = $processedData.not(`li.js-commit-header[data-day='${loadedShownDayFirst}']`);
 
       // Update commits count in the previous commits header.
-      commitsCount += Number($(processedData).nextUntil('li.js-commit-header').first().find('li.commit').length);
-      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${pluralize('commit', commitsCount)}`);
+      commitsCount += Number(
+        $(processedData)
+          .nextUntil('li.js-commit-header')
+          .first()
+          .find('li.commit').length,
+      );
+      $commitsHeadersLast
+        .find('span.commits-count')
+        .text(`${commitsCount} ${pluralize('commit', commitsCount)}`);
     }
 
     localTimeAgo($processedData.find('.js-timeago'));

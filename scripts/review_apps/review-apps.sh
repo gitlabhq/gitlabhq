@@ -47,15 +47,23 @@ function create_secret() {
     --dry-run -o json | kubectl apply -f -
 }
 
+function deployExists() {
+  local namespace="${1}"
+  local deploy="${2}"
+  helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
+  return $?
+}
+
 function previousDeployFailed() {
   set +e
-  echo "Checking for previous deployment of $CI_ENVIRONMENT_SLUG"
-  deployment_status=$(helm status $CI_ENVIRONMENT_SLUG >/dev/null 2>&1)
+  deploy="${1}"
+  echo "Checking for previous deployment of ${deploy}"
+  deployment_status=$(helm status ${deploy} >/dev/null 2>&1)
   status=$?
   # if `status` is `0`, deployment exists, has a status
   if [ $status -eq 0 ]; then
     echo "Previous deployment found, checking status"
-    deployment_status=$(helm status $CI_ENVIRONMENT_SLUG | grep ^STATUS | cut -d' ' -f2)
+    deployment_status=$(helm status ${deploy} | grep ^STATUS | cut -d' ' -f2)
     echo "Previous deployment state: $deployment_status"
     if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
       status=0;
@@ -113,7 +121,7 @@ function deploy() {
   fi
 
   # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-  if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previousDeployFailed ; then
+  if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previousDeployFailed "$CI_ENVIRONMENT_SLUG" ; then
     echo "Deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
     delete
     cleanup
@@ -149,6 +157,7 @@ HELM_CMD=$(cat << EOF
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
     --set gitlab.unicorn.workhorse.image="$gitlab_workhorse_image_repository" \
     --set gitlab.unicorn.workhorse.tag="$CI_COMMIT_REF_NAME" \
+    --set nginx-ingress.controller.config.ssl-ciphers="ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4" \
     --namespace="$KUBE_NAMESPACE" \
     --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
     "$name" \
@@ -181,4 +190,24 @@ function cleanup() {
     | awk '{print $1}' \
     | xargs kubectl -n "$KUBE_NAMESPACE" delete \
     || true
+}
+
+function install_external_dns() {
+  local release_name="dns-gitlab-review-app"
+  local domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
+
+  if ! deployExists "${KUBE_NAMESPACE}" "${release_name}" || previousDeployFailed "${release_name}" ; then
+    echo "Installing external-dns helm chart"
+    helm repo update
+    helm install stable/external-dns \
+      -n "${release_name}" \
+      --namespace "${KUBE_NAMESPACE}" \
+      --set provider="aws" \
+      --set aws.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \
+      --set aws.accessKey="${REVIEW_APPS_AWS_ACCESS_KEY}" \
+      --set aws.zoneType="public" \
+      --set domainFilters[0]="${domain}" \
+      --set txtOwnerId="${KUBE_NAMESPACE}" \
+      --set rbac.create="true"
+  fi
 }

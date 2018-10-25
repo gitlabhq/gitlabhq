@@ -445,6 +445,14 @@ describe('DiffsStoreUtils', () => {
           fileHash: 'test',
         },
         {
+          newPath: 'app/test/filepathneedstruncating.js',
+          deletedFile: false,
+          newFile: true,
+          removedLines: 0,
+          addedLines: 0,
+          fileHash: 'test',
+        },
+        {
           newPath: 'package.json',
           deletedFile: true,
           newFile: false,
@@ -498,6 +506,19 @@ describe('DiffsStoreUtils', () => {
                   type: 'blob',
                   tree: [],
                 },
+                {
+                  addedLines: 0,
+                  changed: true,
+                  deleted: false,
+                  fileHash: 'test',
+                  key: 'app/test/filepathneedstruncating.js',
+                  name: 'filepathneedstruncating.js',
+                  path: 'app/test/filepathneedstruncating.js',
+                  removedLines: 0,
+                  tempFile: true,
+                  type: 'blob',
+                  tree: [],
+                },
               ],
             },
           ],
@@ -527,6 +548,7 @@ describe('DiffsStoreUtils', () => {
         'app/index.js',
         'app/test',
         'app/test/index.js',
+        'app/test/filepathneedstruncating.js',
         'package.json',
       ]);
     });

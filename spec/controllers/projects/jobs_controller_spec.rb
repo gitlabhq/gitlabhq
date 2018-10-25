@@ -297,6 +297,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
           expect(json_response['runners']['available']).to be false
+          expect(json_response['stuck']).to be true
         end
       end
 
@@ -309,6 +310,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
           expect(json_response['runners']['available']).to be true
+          expect(json_response['stuck']).to be true
         end
       end
 
