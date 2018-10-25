@@ -276,48 +276,6 @@ expect(page).not_to have_selector('.card')
 * **[Karma](#karma-tests-spec-javascripts-js)** (`/spec/javascripts/**/*.js`)
 * <s>Spinach</s> — These have been removed from our codebase in May 2018. (`/features/`)
 
-## RSpec: Ruby unit tests `/spec/**/*.rb`
-
-These tests are meant to unit test the ruby models, controllers and helpers.
-
-### When do we write/update these tests?
-
-Whenever we create or modify any Ruby models, controllers or helpers we add/update corresponding tests.
-
----
-
-## RSpec: Full feature tests `/spec/features/**/*.rb`
-
-Full feature tests will load a full app environment and allow us to test things like rendering DOM, interacting with links and buttons, testing the outcome of those interactions through multiple pages if necessary. These are also called end-to-end tests but should not be confused with QA end-to-end tests (`package-and-qa` manual pipeline job).
-
-### When do we write/update these tests?
-
-When we add a new feature, we write at least two tests covering the success and the failure scenarios.
-
-### Relevant notes
-
-A `:js` flag is added to the test to make sure the full environment is loaded.
-
-```
-scenario 'successfully', :js do
-  sign_in(create(:admin))
-end
-```
-
-The steps of each test are written using capybara methods ([documentation](http://www.rubydoc.info/gems/capybara/2.15.1)).
-
-Bear in mind <abbr title="XMLHttpRequest">XHR</abbr> calls might require you to use `wait_for_requests` in between steps, like so:
-
-```rspec
-find('.form-control').native.send_keys(:enter)
-
-wait_for_requests
-
-expect(page).not_to have_selector('.card')
-```
-
----
-
 ## Karma tests `/spec/javascripts/**/*.js`
 
 These are the more frontend-focused, at the moment. They're **faster** than `rspec` and make for very quick testing of frontend components.
