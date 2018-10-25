@@ -50,14 +50,10 @@ module BoardsResponses
   end
 
   def authorize_create_issue
-    board = board_parent.boards.find(issue_params[:board_id])
-    list = board.lists.find(issue_params[:list_id])
+    list = List.find(issue_params[:list_id])
+    action = list.backlog? ? :create_issue : :admin_issue
 
-    if list.backlog?
-      authorize_action_for!(project, :create_issue)
-    else
-      authorize_action_for!(project, :admin_issue)
-    end
+    authorize_action_for!(project, action)
   end
 
   def authorize_admin_list
