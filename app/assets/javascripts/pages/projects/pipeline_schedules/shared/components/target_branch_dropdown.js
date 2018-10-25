@@ -26,8 +26,7 @@ export default class TargetBranchDropdown {
   }
 
   formatBranchesList() {
-    return this.$dropdown.data('data')
-      .map(val => ({ name: val }));
+    return this.$dropdown.data('data').map(val => ({ name: val }));
   }
 
   setDropdownToggle() {

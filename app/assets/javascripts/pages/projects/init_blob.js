@@ -16,7 +16,8 @@ export default () => {
   );
 
   const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-  const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+  const fileBlobPermalinkUrl =
+    fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
 
   new ShortcutsNavigation(); // eslint-disable-line no-new
 
