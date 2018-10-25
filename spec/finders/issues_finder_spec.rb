@@ -59,8 +59,24 @@ describe IssuesFinder do
       context 'filtering by no assignee' do
         let(:params) { { assignee_id: 0 } }
 
-        it 'returns issues not assign to any assignee' do
+        it 'returns issues not assigned to any assignee' do
           expect(issues).to contain_exactly(issue4)
+        end
+      end
+
+      context 'filtering by no assignee' do
+        let(:params) { { assignee_id: 'None' } }
+
+        it 'returns issues not assigned to any assignee' do
+          expect(issues).to contain_exactly(issue4)
+        end
+      end
+
+      context 'filtering by any assignee' do
+        let(:params) { { assignee_id: 'Any' } }
+
+        it 'returns issues assigned to any assignee' do
+          expect(issues).to contain_exactly(issue1, issue2, issue3)
         end
       end
 
