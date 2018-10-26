@@ -502,6 +502,32 @@ describe API::Groups do
         expect(json_response.first['name']).to eq(public_project.name)
       end
 
+      it 'returns projects excluding shared' do
+        create(:project_group_link, project: create(:project), group: group1)
+        create(:project_group_link, project: create(:project), group: group1)
+        create(:project_group_link, project: create(:project), group: group1)
+
+        get api("/groups/#{group1.id}/projects", user1), include_shared: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(2)
+      end
+
+      it 'returns projects including those in subgroups' do
+        subgroup = create(:group, parent: group1)
+        create(:project, group: subgroup)
+        create(:project, group: subgroup)
+
+        get api("/groups/#{group1.id}/projects", user1), include_subgroups: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(4)
+      end
+
       it "does not return a non existing group" do
         get api("/groups/1328/projects", user1)
 
