@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181013005024) do
+ActiveRecord::Schema.define(version: 20181016152238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -203,6 +203,32 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
   add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
+
+  create_table "board_group_recent_visits", id: :bigserial, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "user_id"
+    t.integer "board_id"
+    t.integer "group_id"
+  end
+
+  add_index "board_group_recent_visits", ["board_id"], name: "index_board_group_recent_visits_on_board_id", using: :btree
+  add_index "board_group_recent_visits", ["group_id"], name: "index_board_group_recent_visits_on_group_id", using: :btree
+  add_index "board_group_recent_visits", ["user_id", "group_id", "board_id"], name: "index_board_group_recent_visits_on_user_group_and_board", unique: true, using: :btree
+  add_index "board_group_recent_visits", ["user_id"], name: "index_board_group_recent_visits_on_user_id", using: :btree
+
+  create_table "board_project_recent_visits", id: :bigserial, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "user_id"
+    t.integer "project_id"
+    t.integer "board_id"
+  end
+
+  add_index "board_project_recent_visits", ["board_id"], name: "index_board_project_recent_visits_on_board_id", using: :btree
+  add_index "board_project_recent_visits", ["project_id"], name: "index_board_project_recent_visits_on_project_id", using: :btree
+  add_index "board_project_recent_visits", ["user_id", "project_id", "board_id"], name: "index_board_project_recent_visits_on_user_project_and_board", unique: true, using: :btree
+  add_index "board_project_recent_visits", ["user_id"], name: "index_board_project_recent_visits_on_user_id", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
@@ -2306,6 +2332,12 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "boards", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "users", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "boards", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "projects", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "users", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
