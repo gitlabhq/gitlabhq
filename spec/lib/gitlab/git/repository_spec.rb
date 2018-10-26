@@ -476,6 +476,27 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#fetch_remote' do
+    it 'delegates to the gitaly RepositoryService' do
+      ssh_auth = double(:ssh_auth)
+      expected_opts = {
+        ssh_auth: ssh_auth,
+        forced: true,
+        no_tags: true,
+        timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
+        prune: false
+      }
+
+      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)
+
+      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false)
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do
+      subject { repository.fetch_remote('remote-name') }
+    end
+  end
+
   describe '#find_remote_root_ref' do
     it 'gets the remote root ref from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
