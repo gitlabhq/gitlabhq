@@ -1594,7 +1594,7 @@ ActiveRecord::Schema.define(version: 20181031190559) do
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
     t.integer "wiki_access_level"
-    t.integer "snippets_access_level"
+    t.integer "snippets_access_level", default: 20, null: false
     t.integer "builds_access_level"
     t.datetime "created_at"
     t.datetime "updated_at"
