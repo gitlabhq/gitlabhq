@@ -86,10 +86,10 @@ module CreatesCommit
   def new_merge_request_path
     project_new_merge_request_path(
       @project_to_commit_into,
+      merge_request_source_branch: @branch_name,
       merge_request: {
         source_project_id: @project_to_commit_into.id,
         target_project_id: @project.id,
-        source_branch: @branch_name,
         target_branch: @start_branch
       }
     )

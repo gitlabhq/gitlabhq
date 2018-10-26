@@ -20,10 +20,10 @@ describe 'Merge request > User sees merge widget', :js do
     before do
       visit project_new_merge_request_path(
         project,
+        merge_request_source_branch: 'feature',
         merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
-          source_branch: 'feature',
           target_branch: 'master'
         })
     end
