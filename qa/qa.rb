@@ -99,7 +99,8 @@ module QA
 
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
-        autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
+        autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'

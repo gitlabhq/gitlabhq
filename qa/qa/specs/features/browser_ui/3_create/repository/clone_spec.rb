@@ -2,7 +2,7 @@
 
 module QA
   context 'Create' do
-    describe 'Git clone over HTTP', :ldap do
+    describe 'Git clone over HTTP', :ldap_no_tls do
       let(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http
