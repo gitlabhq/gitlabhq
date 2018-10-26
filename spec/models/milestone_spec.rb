@@ -351,12 +351,12 @@ describe Milestone do
 
   describe '.states_count' do
     context 'when the projects have milestones' do
-      let(:project_1) { create(:project) }
-      let(:project_2) { create(:project) }
-      let(:group_1) { create(:group) }
-      let(:group_2) { create(:group) }
-
       before do
+        project_1 = create(:project)
+        project_2 = create(:project)
+        group_1 = create(:group)
+        group_2 = create(:group)
+
         create(:active_milestone, title: 'Active Group Milestone', project: project_1)
         create(:closed_milestone, title: 'Closed Group Milestone', project: project_1)
         create(:active_milestone, title: 'Active Group Milestone', project: project_2)
