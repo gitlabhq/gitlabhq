@@ -1011,6 +1011,5 @@ schedule:review_apps_cleanup:
       - schedules@gitlab-org/gitlab-ee
     kubernetes: active
   except:
-    - master
     - tags
     - /(^docs[\/-].*|.*-docs$)/

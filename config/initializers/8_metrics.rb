@@ -158,7 +158,9 @@ if Gitlab::Metrics.enabled? && !Rails.env.test?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
+  Gitlab::Cluster::LifecycleEvents.on_worker_start do
+    Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
+  end
 
   module TrackNewRedisConnections
     def connect(*args)

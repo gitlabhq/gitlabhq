@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { deleteWikiUrl, pageTitle } = deleteWikiModalWrapperEl.dataset;
 
-    new Vue({ // eslint-disable-line no-new
+    // eslint-disable-next-line no-new
+    new Vue({
       el: deleteWikiModalWrapperEl,
       data: {
         deleteWikiUrl: '',

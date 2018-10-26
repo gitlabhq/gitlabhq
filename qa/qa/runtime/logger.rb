@@ -7,14 +7,16 @@ module QA
     module Logger
       extend SingleForwardable
 
-      def_delegators :logger, :debug, :info, :error, :warn, :fatal, :unknown
+      def_delegators :logger, :debug, :info, :warn, :error, :fatal, :unknown
 
       singleton_class.module_eval do
+        attr_writer :logger
+
         def logger
           return @logger if @logger
 
           @logger = ::Logger.new Runtime::Env.log_destination
-          @logger.level = ::Logger::DEBUG
+          @logger.level = Runtime::Env.debug? ? ::Logger::DEBUG : ::Logger::ERROR
           @logger
         end
       end

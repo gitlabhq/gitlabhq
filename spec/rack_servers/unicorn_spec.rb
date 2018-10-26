@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 
 require 'excon'
@@ -6,12 +8,16 @@ require 'spec_helper'
 
 describe 'Unicorn' do
   before(:all) do
-    config_lines = File.read('config/unicorn.rb.example').split("\n")
+    project_root = File.expand_path('../..', __dir__)
+
+    config_lines = File.read('config/unicorn.rb.example')
+      .gsub('/home/git/gitlab', project_root)
+      .gsub('/home/git', project_root)
+      .split("\n")
 
     # Remove these because they make setup harder.
     config_lines = config_lines.reject do |line|
       %w[
-        working_directory
         worker_processes
         listen
         pid
@@ -26,33 +32,18 @@ describe 'Unicorn' do
     # predictable which process will handle our requests.
     config_lines << 'worker_processes 1'
 
-    @socket_path = File.join(Dir.pwd, 'tmp/tests/unicorn.socket')
+    @socket_path = File.join(project_root, 'tmp/tests/unicorn.socket')
     config_lines << "listen '#{@socket_path}'"
 
-    ready_file = 'tmp/tests/unicorn-worker-ready'
+    ready_file = File.join(project_root, 'tmp/tests/unicorn-worker-ready')
     FileUtils.rm_f(ready_file)
     after_fork_index = config_lines.index { |l| l.start_with?('after_fork') }
     config_lines.insert(after_fork_index + 1, "File.write('#{ready_file}', Process.pid)")
 
-    config_path = 'tmp/tests/unicorn.rb'
+    config_path = File.join(project_root, 'tmp/tests/unicorn.rb')
     File.write(config_path, config_lines.join("\n") + "\n")
 
-    rackup_path = 'tmp/tests/config.ru'
-    File.write(rackup_path, <<~EOS)
-      app =
-        proc do |env|
-          if env['REQUEST_METHOD'] == 'GET'
-            [200, {}, [Process.pid]]
-          else
-            Process.kill(env['QUERY_STRING'], Process.pid)
-            [200, {}, ['Bye!']]
-          end
-        end
-
-      run app
-    EOS
-
-    cmd = %W[unicorn -E test -c #{config_path} #{rackup_path}]
+    cmd = %W[unicorn -E test -c #{config_path} spec/rack_servers/configs/config.ru]
     @unicorn_master_pid = spawn(*cmd)
     wait_unicorn_boot!(@unicorn_master_pid, ready_file)
     WebMock.allow_net_connect!

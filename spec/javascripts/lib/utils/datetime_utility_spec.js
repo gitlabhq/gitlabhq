@@ -192,3 +192,181 @@ describe('formatTime', () => {
     });
   });
 });
+
+describe('datefix', () => {
+  describe('pad', () => {
+    it('should add a 0 when length is smaller than 2', () => {
+      expect(datetimeUtility.pad(2)).toEqual('02');
+    });
+
+    it('should not add a zero when lenght matches the default', () => {
+      expect(datetimeUtility.pad(12)).toEqual('12');
+    });
+
+    it('should add a 0 when lenght is smaller than the provided', () => {
+      expect(datetimeUtility.pad(12, 3)).toEqual('012');
+    });
+  });
+
+  describe('parsePikadayDate', () => {
+    // removed because of https://gitlab.com/gitlab-org/gitlab-ce/issues/39834
+  });
+
+  describe('pikadayToString', () => {
+    it('should format a UTC date into yyyy-mm-dd format', () => {
+      expect(datetimeUtility.pikadayToString(new Date('2020-01-29:00:00'))).toEqual('2020-01-29');
+    });
+  });
+});
+
+describe('prettyTime methods', () => {
+  const assertTimeUnits = (obj, minutes, hours, days, weeks) => {
+    expect(obj.minutes).toBe(minutes);
+    expect(obj.hours).toBe(hours);
+    expect(obj.days).toBe(days);
+    expect(obj.weeks).toBe(weeks);
+  };
+
+  describe('parseSeconds', () => {
+    it('should correctly parse a negative value', () => {
+      const zeroSeconds = datetimeUtility.parseSeconds(-1000);
+
+      assertTimeUnits(zeroSeconds, 16, 0, 0, 0);
+    });
+
+    it('should correctly parse a zero value', () => {
+      const zeroSeconds = datetimeUtility.parseSeconds(0);
+
+      assertTimeUnits(zeroSeconds, 0, 0, 0, 0);
+    });
+
+    it('should correctly parse a small non-zero second values', () => {
+      const subOneMinute = datetimeUtility.parseSeconds(10);
+      const aboveOneMinute = datetimeUtility.parseSeconds(100);
+      const manyMinutes = datetimeUtility.parseSeconds(1000);
+
+      assertTimeUnits(subOneMinute, 0, 0, 0, 0);
+      assertTimeUnits(aboveOneMinute, 1, 0, 0, 0);
+      assertTimeUnits(manyMinutes, 16, 0, 0, 0);
+    });
+
+    it('should correctly parse large second values', () => {
+      const aboveOneHour = datetimeUtility.parseSeconds(4800);
+      const aboveOneDay = datetimeUtility.parseSeconds(110000);
+      const aboveOneWeek = datetimeUtility.parseSeconds(25000000);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 3, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 3, 173);
+    });
+
+    it('should correctly accept a custom param for hoursPerDay', () => {
+      const config = { hoursPerDay: 24 };
+
+      const aboveOneHour = datetimeUtility.parseSeconds(4800, config);
+      const aboveOneDay = datetimeUtility.parseSeconds(110000, config);
+      const aboveOneWeek = datetimeUtility.parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 1, 0);
+      assertTimeUnits(aboveOneWeek, 26, 8, 4, 57);
+    });
+
+    it('should correctly accept a custom param for daysPerWeek', () => {
+      const config = { daysPerWeek: 7 };
+
+      const aboveOneHour = datetimeUtility.parseSeconds(4800, config);
+      const aboveOneDay = datetimeUtility.parseSeconds(110000, config);
+      const aboveOneWeek = datetimeUtility.parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 6, 3, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 0, 124);
+    });
+
+    it('should correctly accept custom params for daysPerWeek and hoursPerDay', () => {
+      const config = { daysPerWeek: 55, hoursPerDay: 14 };
+
+      const aboveOneHour = datetimeUtility.parseSeconds(4800, config);
+      const aboveOneDay = datetimeUtility.parseSeconds(110000, config);
+      const aboveOneWeek = datetimeUtility.parseSeconds(25000000, config);
+
+      assertTimeUnits(aboveOneHour, 20, 1, 0, 0);
+      assertTimeUnits(aboveOneDay, 33, 2, 2, 0);
+      assertTimeUnits(aboveOneWeek, 26, 0, 1, 9);
+    });
+  });
+
+  describe('stringifyTime', () => {
+    it('should stringify values with all non-zero units', () => {
+      const timeObject = {
+        weeks: 1,
+        days: 4,
+        hours: 7,
+        minutes: 20,
+      };
+
+      const timeString = datetimeUtility.stringifyTime(timeObject);
+
+      expect(timeString).toBe('1w 4d 7h 20m');
+    });
+
+    it('should stringify values with some non-zero units', () => {
+      const timeObject = {
+        weeks: 0,
+        days: 4,
+        hours: 0,
+        minutes: 20,
+      };
+
+      const timeString = datetimeUtility.stringifyTime(timeObject);
+
+      expect(timeString).toBe('4d 20m');
+    });
+
+    it('should stringify values with no non-zero units', () => {
+      const timeObject = {
+        weeks: 0,
+        days: 0,
+        hours: 0,
+        minutes: 0,
+      };
+
+      const timeString = datetimeUtility.stringifyTime(timeObject);
+
+      expect(timeString).toBe('0m');
+    });
+  });
+
+  describe('abbreviateTime', () => {
+    it('should abbreviate stringified times for weeks', () => {
+      const fullTimeString = '1w 3d 4h 5m';
+
+      expect(datetimeUtility.abbreviateTime(fullTimeString)).toBe('1w');
+    });
+
+    it('should abbreviate stringified times for non-weeks', () => {
+      const fullTimeString = '0w 3d 4h 5m';
+
+      expect(datetimeUtility.abbreviateTime(fullTimeString)).toBe('3d');
+    });
+  });
+});
+
+describe('calculateRemainingMilliseconds', () => {
+  beforeEach(() => {
+    spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
+  });
+
+  it('calculates the remaining time for a given end date', () => {
+    const milliseconds = datetimeUtility.calculateRemainingMilliseconds('2063-04-04T01:44:03Z');
+
+    expect(milliseconds).toBe(3723000);
+  });
+
+  it('returns 0 if the end date has passed', () => {
+    const milliseconds = datetimeUtility.calculateRemainingMilliseconds('2063-04-03T00:00:00Z');
+
+    expect(milliseconds).toBe(0);
+  });
+});

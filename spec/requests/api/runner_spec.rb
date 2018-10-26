@@ -797,6 +797,15 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           it { expect(job).to be_runner_system_failure }
         end
+
+        context 'when failure_reason is unrecognized value' do
+          before do
+            update_job(state: 'failed', failure_reason: 'what_is_this')
+            job.reload
+          end
+
+          it { expect(job).to be_unknown_failure }
+        end
       end
 
       context 'when trace is given' do

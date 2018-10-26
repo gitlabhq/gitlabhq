@@ -1,5 +1,5 @@
 <script>
-import { parseSeconds, stringifyTime } from '../../../lib/utils/pretty_time';
+import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
