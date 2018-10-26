@@ -178,6 +178,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resource :mirror, only: [:show, :update] do
         member do
+          get :ssh_host_keys, constraints: { format: :json }
           post :update_now
         end
       end

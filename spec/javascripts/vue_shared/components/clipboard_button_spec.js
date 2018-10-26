@@ -44,6 +44,7 @@ describe('clipboard button', () => {
         title: 'Copy this value into Clipboard!',
         cssClass: 'btn-danger',
       });
+
       expect(vm.$el.getAttribute('data-clipboard-text')).toEqual(
         '{"text":"copy me","gfm":"`path/to/file`"}',
       );

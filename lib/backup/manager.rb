@@ -164,7 +164,7 @@ module Backup
 
     def tar_version
       tar_version, _ = Gitlab::Popen.popen(%w(tar --version))
-      tar_version.force_encoding('locale').split("\n").first
+      tar_version.dup.force_encoding('locale').split("\n").first
     end
 
     def skipped?(item)

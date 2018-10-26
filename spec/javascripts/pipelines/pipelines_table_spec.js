@@ -38,10 +38,21 @@ describe('Pipelines Table', () => {
     });
 
     it('should render table head with correct columns', () => {
-      expect(component.$el.querySelector('.table-section.js-pipeline-status').textContent.trim()).toEqual('Status');
-      expect(component.$el.querySelector('.table-section.js-pipeline-info').textContent.trim()).toEqual('Pipeline');
-      expect(component.$el.querySelector('.table-section.js-pipeline-commit').textContent.trim()).toEqual('Commit');
-      expect(component.$el.querySelector('.table-section.js-pipeline-stages').textContent.trim()).toEqual('Stages');
+      expect(
+        component.$el.querySelector('.table-section.js-pipeline-status').textContent.trim(),
+      ).toEqual('Status');
+
+      expect(
+        component.$el.querySelector('.table-section.js-pipeline-info').textContent.trim(),
+      ).toEqual('Pipeline');
+
+      expect(
+        component.$el.querySelector('.table-section.js-pipeline-commit').textContent.trim(),
+      ).toEqual('Commit');
+
+      expect(
+        component.$el.querySelector('.table-section.js-pipeline-stages').textContent.trim(),
+      ).toEqual('Stages');
     });
   });
 
@@ -54,6 +65,7 @@ describe('Pipelines Table', () => {
           viewType: 'root',
         },
       }).$mount();
+
       expect(component.$el.querySelectorAll('.commit.gl-responsive-table-row').length).toEqual(0);
     });
   });

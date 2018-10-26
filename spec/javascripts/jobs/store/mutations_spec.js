@@ -15,28 +15,24 @@ describe('Jobs Store Mutations', () => {
   describe('SET_JOB_ENDPOINT', () => {
     it('should set jobEndpoint', () => {
       mutations[types.SET_JOB_ENDPOINT](stateCopy, 'job/21312321.json');
+
       expect(stateCopy.jobEndpoint).toEqual('job/21312321.json');
     });
   });
 
-  describe('REQUEST_STATUS_FAVICON', () => {
-    it('should set fetchingStatusFavicon to true', () => {
-      mutations[types.REQUEST_STATUS_FAVICON](stateCopy);
-      expect(stateCopy.fetchingStatusFavicon).toEqual(true);
+  describe('HIDE_SIDEBAR', () => {
+    it('should set isSidebarOpen to false', () => {
+      mutations[types.HIDE_SIDEBAR](stateCopy);
+
+      expect(stateCopy.isSidebarOpen).toEqual(false);
     });
   });
 
-  describe('RECEIVE_STATUS_FAVICON_SUCCESS', () => {
-    it('should set fetchingStatusFavicon to false', () => {
-      mutations[types.RECEIVE_STATUS_FAVICON_SUCCESS](stateCopy);
-      expect(stateCopy.fetchingStatusFavicon).toEqual(false);
-    });
-  });
+  describe('SHOW_SIDEBAR', () => {
+    it('should set isSidebarOpen to true', () => {
+      mutations[types.SHOW_SIDEBAR](stateCopy);
 
-  describe('RECEIVE_STATUS_FAVICON_ERROR', () => {
-    it('should set fetchingStatusFavicon to false', () => {
-      mutations[types.RECEIVE_STATUS_FAVICON_ERROR](stateCopy);
-      expect(stateCopy.fetchingStatusFavicon).toEqual(false);
+      expect(stateCopy.isSidebarOpen).toEqual(true);
     });
   });
 
@@ -48,6 +44,7 @@ describe('Jobs Store Mutations', () => {
         mutations[types.RECEIVE_TRACE_SUCCESS](stateCopy, {
           state: stateLog,
         });
+
         expect(stateCopy.traceState).toEqual(stateLog);
       });
     });
@@ -77,6 +74,7 @@ describe('Jobs Store Mutations', () => {
         size: 511846,
         complete: true,
       });
+
       expect(stateCopy.trace).toEqual(html);
       expect(stateCopy.traceSize).toEqual(511846);
       expect(stateCopy.isTraceComplete).toEqual(true);
@@ -86,6 +84,7 @@ describe('Jobs Store Mutations', () => {
   describe('STOP_POLLING_TRACE', () => {
     it('sets isTraceComplete to true', () => {
       mutations[types.STOP_POLLING_TRACE](stateCopy);
+
       expect(stateCopy.isTraceComplete).toEqual(true);
     });
   });
@@ -93,9 +92,8 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_TRACE_ERROR', () => {
     it('resets trace state and sets error to true', () => {
       mutations[types.RECEIVE_TRACE_ERROR](stateCopy);
-      expect(stateCopy.isLoadingTrace).toEqual(false);
+
       expect(stateCopy.isTraceComplete).toEqual(true);
-      expect(stateCopy.hasTraceError).toEqual(true);
     });
   });
 
@@ -110,29 +108,35 @@ describe('Jobs Store Mutations', () => {
   describe('RECEIVE_JOB_SUCCESS', () => {
     it('sets is loading to false', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.isLoading).toEqual(false);
     });
 
     it('sets hasError to false', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.hasError).toEqual(false);
     });
 
     it('sets job data', () => {
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
+
       expect(stateCopy.job).toEqual({ id: 1312321 });
     });
 
     it('sets selectedStage when the selectedStage is More', () => {
       expect(stateCopy.selectedStage).toEqual('More');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('deploy');
     });
 
     it('does not set selectedStage when the selectedStage is not More', () => {
-      stateCopy.selectedStage = 'notify'
+      stateCopy.selectedStage = 'notify';
+
       expect(stateCopy.selectedStage).toEqual('notify');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('notify');
     });
   });
@@ -142,42 +146,14 @@ describe('Jobs Store Mutations', () => {
       mutations[types.RECEIVE_JOB_ERROR](stateCopy);
 
       expect(stateCopy.isLoading).toEqual(false);
-      expect(stateCopy.hasError).toEqual(true);
       expect(stateCopy.job).toEqual({});
-    });
-  });
-
-  describe('SCROLL_TO_TOP', () => {
-    beforeEach(() => {
-      mutations[types.SCROLL_TO_TOP](stateCopy);
-    });
-
-    it('sets isTraceScrolledToBottom to false', () => {
-      expect(stateCopy.isTraceScrolledToBottom).toEqual(false);
-    });
-
-    it('sets hasBeenScrolled to true', () => {
-      expect(stateCopy.hasBeenScrolled).toEqual(true);
-    });
-  });
-
-  describe('SCROLL_TO_BOTTOM', () => {
-    beforeEach(() => {
-      mutations[types.SCROLL_TO_BOTTOM](stateCopy);
-    });
-
-    it('sets isTraceScrolledToBottom to true', () => {
-      expect(stateCopy.isTraceScrolledToBottom).toEqual(true);
-    });
-
-    it('sets hasBeenScrolled to true', () => {
-      expect(stateCopy.hasBeenScrolled).toEqual(true);
     });
   });
 
   describe('REQUEST_STAGES', () => {
     it('sets isLoadingStages to true', () => {
       mutations[types.REQUEST_STAGES](stateCopy);
+
       expect(stateCopy.isLoadingStages).toEqual(true);
     });
   });
@@ -213,13 +189,15 @@ describe('Jobs Store Mutations', () => {
   describe('REQUEST_JOBS_FOR_STAGE', () => {
     it('sets isLoadingStages to true', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
+
       expect(stateCopy.isLoadingJobs).toEqual(true);
     });
 
     it('sets selectedStage', () => {
       mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
+
       expect(stateCopy.selectedStage).toEqual('deploy');
-    })
+    });
   });
 
   describe('RECEIVE_JOBS_FOR_STAGE_SUCCESS', () => {

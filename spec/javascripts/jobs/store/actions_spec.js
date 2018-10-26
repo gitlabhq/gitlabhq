@@ -2,9 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import {
   setJobEndpoint,
-  setTraceEndpoint,
-  setStagesEndpoint,
-  setJobsEndpoint,
+  setTraceOptions,
   clearEtagPoll,
   stopPolling,
   requestJob,
@@ -18,10 +16,6 @@ import {
   stopPollingTrace,
   receiveTraceSuccess,
   receiveTraceError,
-  fetchFavicon,
-  requestStatusFavicon,
-  receiveStatusFaviconSuccess,
-  requestStatusFaviconError,
   requestStages,
   fetchStages,
   receiveStagesSuccess,
@@ -30,6 +24,9 @@ import {
   fetchJobsForStage,
   receiveJobsForStageSuccess,
   receiveJobsForStageError,
+  hideSidebar,
+  showSidebar,
+  toggleSidebar,
 } from '~/jobs/store/actions';
 import state from '~/jobs/store/state';
 import * as types from '~/jobs/store/mutation_types';
@@ -56,42 +53,72 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('setTraceEndpoint', () => {
-    it('should commit SET_TRACE_ENDPOINT mutation', done => {
+  describe('setTraceOptions', () => {
+    it('should commit SET_TRACE_OPTIONS mutation', done => {
       testAction(
-        setTraceEndpoint,
-        'job/872324/trace.json',
+        setTraceOptions,
+        { pagePath: 'job/872324/trace.json' },
         mockedState,
-        [{ type: types.SET_TRACE_ENDPOINT, payload: 'job/872324/trace.json' }],
+        [{ type: types.SET_TRACE_OPTIONS, payload: { pagePath: 'job/872324/trace.json' } }],
         [],
         done,
       );
     });
   });
 
-  describe('setStagesEndpoint', () => {
-    it('should commit SET_STAGES_ENDPOINT mutation', done => {
+  describe('hideSidebar', () => {
+    it('should commit HIDE_SIDEBAR mutation', done => {
       testAction(
-        setStagesEndpoint,
-        'job/872324/stages.json',
+        hideSidebar,
+        null,
         mockedState,
-        [{ type: types.SET_STAGES_ENDPOINT, payload: 'job/872324/stages.json' }],
+        [{ type: types.HIDE_SIDEBAR }],
         [],
         done,
       );
     });
   });
 
-  describe('setJobsEndpoint', () => {
-    it('should commit SET_JOBS_ENDPOINT mutation', done => {
+  describe('showSidebar', () => {
+    it('should commit HIDE_SIDEBAR mutation', done => {
       testAction(
-        setJobsEndpoint,
-        'job/872324/stages/build.json',
+        showSidebar,
+        null,
         mockedState,
-        [{ type: types.SET_JOBS_ENDPOINT, payload: 'job/872324/stages/build.json' }],
+        [{ type: types.SHOW_SIDEBAR }],
         [],
         done,
       );
+    });
+  });
+
+  describe('toggleSidebar', () => {
+    describe('when isSidebarOpen is true', () => {
+      it('should dispatch hideSidebar', done => {
+        testAction(
+          toggleSidebar,
+          null,
+          mockedState,
+          [],
+          [{ type: 'hideSidebar' }],
+          done,
+        );
+      });
+    });
+
+    describe('when isSidebarOpen is false', () => {
+      it('should dispatch showSidebar', done => {
+        mockedState.isSidebarOpen = false;
+
+        testAction(
+          toggleSidebar,
+          null,
+          mockedState,
+          [],
+          [{ type: 'showSidebar' }],
+          done,
+        );
+      });
     });
   });
 
@@ -183,14 +210,14 @@ describe('Job State actions', () => {
   });
 
   describe('scrollTop', () => {
-    it('should commit SCROLL_TO_TOP mutation', done => {
-      testAction(scrollTop, null, mockedState, [{ type: types.SCROLL_TO_TOP }], [], done);
+    it('should dispatch toggleScrollButtons action', done => {
+      testAction(scrollTop, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
     });
   });
 
   describe('scrollBottom', () => {
-    it('should commit SCROLL_TO_BOTTOM mutation', done => {
-      testAction(scrollBottom, null, mockedState, [{ type: types.SCROLL_TO_BOTTOM }], [], done);
+    it('should dispatch toggleScrollButtons action', done => {
+      testAction(scrollBottom, null, mockedState, [], [{ type: 'toggleScrollButtons' }], done);
     });
   });
 
@@ -215,7 +242,7 @@ describe('Job State actions', () => {
     });
 
     describe('success', () => {
-      it('dispatches requestTrace, fetchFavicon, receiveTraceSuccess and stopPollingTrace when job is complete', done => {
+      it('dispatches requestTrace, receiveTraceSuccess and stopPollingTrace when job is complete', done => {
         mock.onGet(`${TEST_HOST}/endpoint/trace.json`).replyOnce(200, {
           html: 'I, [2018-08-17T22:57:45.707325 #1841]  INFO -- :',
           complete: true,
@@ -228,10 +255,8 @@ describe('Job State actions', () => {
           [],
           [
             {
-              type: 'requestTrace',
-            },
-            {
-              type: 'fetchFavicon',
+              type: 'toggleScrollisInBottom',
+              payload: true,
             },
             {
               payload: {
@@ -261,9 +286,6 @@ describe('Job State actions', () => {
           mockedState,
           [],
           [
-            {
-              type: 'requestTrace',
-            },
             {
               type: 'receiveTraceError',
             },
@@ -313,104 +335,6 @@ describe('Job State actions', () => {
     });
   });
 
-  describe('fetchFavicon', () => {
-    let mock;
-
-    beforeEach(() => {
-      mockedState.pagePath = `${TEST_HOST}/endpoint`;
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    describe('success', () => {
-      it('dispatches requestStatusFavicon and receiveStatusFaviconSuccess ', done => {
-        mock.onGet(`${TEST_HOST}/endpoint/status.json`).replyOnce(200);
-
-        testAction(
-          fetchFavicon,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestStatusFavicon',
-            },
-            {
-              type: 'receiveStatusFaviconSuccess',
-            },
-          ],
-          done,
-        );
-      });
-    });
-
-    describe('error', () => {
-      beforeEach(() => {
-        mock.onGet(`${TEST_HOST}/endpoint/status.json`).replyOnce(500);
-      });
-
-      it('dispatches requestStatusFavicon and requestStatusFaviconError ', done => {
-        testAction(
-          fetchFavicon,
-          null,
-          mockedState,
-          [],
-          [
-            {
-              type: 'requestStatusFavicon',
-            },
-            {
-              type: 'requestStatusFaviconError',
-            },
-          ],
-          done,
-        );
-      });
-    });
-  });
-
-  describe('requestStatusFavicon', () => {
-    it('should commit REQUEST_STATUS_FAVICON mutation ', done => {
-      testAction(
-        requestStatusFavicon,
-        null,
-        mockedState,
-        [{ type: types.REQUEST_STATUS_FAVICON }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('receiveStatusFaviconSuccess', () => {
-    it('should commit RECEIVE_STATUS_FAVICON_SUCCESS mutation ', done => {
-      testAction(
-        receiveStatusFaviconSuccess,
-        null,
-        mockedState,
-        [{ type: types.RECEIVE_STATUS_FAVICON_SUCCESS }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('requestStatusFaviconError', () => {
-    it('should commit RECEIVE_STATUS_FAVICON_ERROR mutation ', done => {
-      testAction(
-        requestStatusFaviconError,
-        null,
-        mockedState,
-        [{ type: types.RECEIVE_STATUS_FAVICON_ERROR }],
-        [],
-        done,
-      );
-    });
-  });
-
   describe('requestStages', () => {
     it('should commit REQUEST_STAGES mutation ', done => {
       testAction(requestStages, null, mockedState, [{ type: types.REQUEST_STAGES }], [], done);
@@ -424,7 +348,7 @@ describe('Job State actions', () => {
       mockedState.job.pipeline = {
         path: `${TEST_HOST}/endpoint`,
       };
-      mockedState.selectedStage = 'deploy'
+      mockedState.selectedStage = 'deploy';
       mock = new MockAdapter(axios);
     });
 

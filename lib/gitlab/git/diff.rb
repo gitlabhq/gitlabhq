@@ -72,7 +72,7 @@ module Gitlab
         #    and `safe_max_bytes`
         #
         #  :expanded ::
-        #    If true, patch raw data will not be included in the diff after
+        #    If false, patch raw data will not be included in the diff after
         #    `max_files`, `max_lines` or any of the limits in `limits` are
         #    exceeded
         def filter_diff_options(options, default_options = {})

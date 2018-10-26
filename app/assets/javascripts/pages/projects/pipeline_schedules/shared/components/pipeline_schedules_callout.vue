@@ -1,31 +1,31 @@
 <script>
-  import Vue from 'vue';
-  import Cookies from 'js-cookie';
-  import Translate from '../../../../../vue_shared/translate';
-  import illustrationSvg from '../icons/intro_illustration.svg';
+import Vue from 'vue';
+import Cookies from 'js-cookie';
+import Translate from '../../../../../vue_shared/translate';
+import illustrationSvg from '../icons/intro_illustration.svg';
 
-  Vue.use(Translate);
+Vue.use(Translate);
 
-  const cookieKey = 'pipeline_schedules_callout_dismissed';
+const cookieKey = 'pipeline_schedules_callout_dismissed';
 
-  export default {
-    name: 'PipelineSchedulesCallout',
-    data() {
-      return {
-        docsUrl: document.getElementById('pipeline-schedules-callout').dataset.docsUrl,
-        calloutDismissed: Cookies.get(cookieKey) === 'true',
-      };
+export default {
+  name: 'PipelineSchedulesCallout',
+  data() {
+    return {
+      docsUrl: document.getElementById('pipeline-schedules-callout').dataset.docsUrl,
+      calloutDismissed: Cookies.get(cookieKey) === 'true',
+    };
+  },
+  created() {
+    this.illustrationSvg = illustrationSvg;
+  },
+  methods: {
+    dismissCallout() {
+      this.calloutDismissed = true;
+      Cookies.set(cookieKey, this.calloutDismissed, { expires: 365 });
     },
-    created() {
-      this.illustrationSvg = illustrationSvg;
-    },
-    methods: {
-      dismissCallout() {
-        this.calloutDismissed = true;
-        Cookies.set(cookieKey, this.calloutDismissed, { expires: 365 });
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div

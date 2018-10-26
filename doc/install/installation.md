@@ -132,9 +132,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz
-    echo 'ec82b0d53bd0adad9b19e6b45e44d54e9ec3f10c  ruby-2.4.4.tar.gz' | shasum -c - && tar xzf ruby-2.4.4.tar.gz
-    cd ruby-2.4.4
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.5.tar.gz
+    echo '4d650f302f1ec00256450b112bb023644b6ab6dd  ruby-2.4.5.tar.gz' | shasum -c - && tar xzf ruby-2.4.5.tar.gz
+    cd ruby-2.4.5
 
     ./configure --disable-install-rdoc
     make
@@ -460,11 +460,11 @@ GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is o
 ### Install Gitaly
 
     # Fetch Gitaly source with Git and compile with Go
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 
 You can specify a different Git repository by providing it as an extra parameter:
 
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories,https://example.com/gitaly.git]" RAILS_ENV=production
 
 Next, make sure gitaly configured:
 

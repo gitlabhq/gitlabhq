@@ -268,6 +268,12 @@ module Ci
       stage unless stage.statuses_count.zero?
     end
 
+    def ref_exists?
+      project.repository.ref_exists?(git_ref)
+    rescue Gitlab::Git::Repository::NoRepository
+      false
+    end
+
     ##
     # TODO We do not completely switch to persisted stages because of
     # race conditions with setting statuses gitlab-ce#23257.
@@ -674,11 +680,11 @@ module Ci
 
     def push_details
       strong_memoize(:push_details) do
-        Gitlab::Git::Push.new(project, before_sha, sha, push_ref)
+        Gitlab::Git::Push.new(project, before_sha, sha, git_ref)
       end
     end
 
-    def push_ref
+    def git_ref
       if branch?
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
       elsif tag?

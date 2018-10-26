@@ -1,6 +1,6 @@
 <script>
 import { __, sprintf } from '~/locale';
-import { abbreviateTime } from '~/lib/utils/pretty_time';
+import { abbreviateTime } from '~/lib/utils/datetime_utility';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 

@@ -1,6 +1,4 @@
-require 'fast_spec_helper'
-
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config do
   let(:config) do
@@ -202,8 +200,8 @@ describe Gitlab::Ci::Config do
 
       it 'raises error YamlProcessor validationError' do
         expect { config }.to raise_error(
-          ::Gitlab::Ci::YamlProcessor::ValidationError,
-          "Local file 'invalid' is not valid."
+          described_class::ConfigError,
+          "Included file `invalid` does not have YAML extension!"
         )
       end
     end

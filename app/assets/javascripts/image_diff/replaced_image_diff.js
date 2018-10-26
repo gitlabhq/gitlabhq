@@ -26,7 +26,7 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.imageEls = {};
 
     const viewTypeNames = Object.getOwnPropertyNames(viewTypes);
-    viewTypeNames.forEach((viewType) => {
+    viewTypeNames.forEach(viewType => {
       this.imageEls[viewType] = this.imageFrameEls[viewType].querySelector('img');
     });
   }
@@ -79,13 +79,12 @@ export default class ReplacedImageDiff extends ImageDiff {
 
     // Re-render indicator in new view
     if (indicator.removed) {
-      const normalizedIndicator = imageDiffHelper
-        .resizeCoordinatesToImageElement(this.imageEl, {
-          x: indicator.x,
-          y: indicator.y,
-          width: indicator.image.width,
-          height: indicator.image.height,
-        });
+      const normalizedIndicator = imageDiffHelper.resizeCoordinatesToImageElement(this.imageEl, {
+        x: indicator.x,
+        y: indicator.y,
+        width: indicator.image.width,
+        height: indicator.image.height,
+      });
       imageDiffHelper.showCommentIndicator(this.imageFrameEl, normalizedIndicator);
     }
   }

@@ -23,13 +23,10 @@ describe('Pagination links component', () => {
   let destinationComponent;
 
   beforeEach(() => {
-    paginationLinks = mountComponent(
-      paginationLinksComponent,
-      {
-        change,
-        pageInfo,
-      },
-    );
+    paginationLinks = mountComponent(paginationLinksComponent, {
+      change,
+      pageInfo,
+    });
     [glPagination] = paginationLinks.$children;
     [destinationComponent] = glPagination.$children;
   });
@@ -39,34 +36,24 @@ describe('Pagination links component', () => {
   });
 
   it('should provide translated text to GitLab UI pagination', () => {
-    Object.entries(translations).forEach(entry =>
-      expect(
-        destinationComponent[entry[0]],
-      ).toBe(entry[1]),
-    );
+    Object.entries(translations).forEach(entry => {
+      expect(destinationComponent[entry[0]]).toBe(entry[1]);
+    });
   });
 
   it('should pass change to GitLab UI pagination', () => {
-    expect(
-      Object.is(glPagination.change, change),
-    ).toBe(true);
+    expect(Object.is(glPagination.change, change)).toBe(true);
   });
 
   it('should pass page from pageInfo to GitLab UI pagination', () => {
-    expect(
-      destinationComponent.value,
-    ).toBe(pageInfo.page);
+    expect(destinationComponent.value).toBe(pageInfo.page);
   });
 
   it('should pass per page from pageInfo to GitLab UI pagination', () => {
-    expect(
-      destinationComponent.perPage,
-    ).toBe(pageInfo.perPage);
+    expect(destinationComponent.perPage).toBe(pageInfo.perPage);
   });
 
   it('should pass total items from pageInfo to GitLab UI pagination', () => {
-    expect(
-      destinationComponent.totalRows,
-    ).toBe(pageInfo.total);
+    expect(destinationComponent.totalRows).toBe(pageInfo.total);
   });
 });

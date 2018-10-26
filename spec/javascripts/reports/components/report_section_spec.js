@@ -97,6 +97,7 @@ describe('Report section', () => {
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
+
       expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report');
     });
   });
@@ -169,6 +170,7 @@ describe('Report section', () => {
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
+
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
     });
   });

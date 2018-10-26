@@ -34,6 +34,7 @@ describe('Commit block', () => {
       expect(vm.$el.querySelector('.js-commit-sha').getAttribute('href')).toEqual(
         props.commit.commit_path,
       );
+
       expect(vm.$el.querySelector('.js-commit-sha').textContent.trim()).toEqual(
         props.commit.short_id,
       );
@@ -55,6 +56,7 @@ describe('Commit block', () => {
       expect(vm.$el.querySelector('.js-link-commit').getAttribute('href')).toEqual(
         props.mergeRequest.path,
       );
+
       expect(vm.$el.querySelector('.js-link-commit').textContent.trim()).toEqual(
         `!${props.mergeRequest.iid}`,
       );

@@ -1,0 +1,5 @@
+---
+title: Resolve LFS not correctly showing enabled
+merge_request: 22501
+author:
+type: fixed

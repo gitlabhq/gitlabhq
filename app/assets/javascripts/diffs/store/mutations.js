@@ -90,53 +90,67 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
-    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
-    const firstDiscussion = discussions[0];
-    const isDiffDiscussion = firstDiscussion.diff_discussion;
-    const hasLineCode = firstDiscussion.line_code;
-    const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode }) {
+    const { latestDiff } = state;
 
-    if (
-      selectedFile &&
-      isDiffDiscussion &&
-      hasLineCode &&
-      diffPosition &&
+    const discussionLineCode = discussion.line_code;
+    const fileHash = discussion.diff_file.file_hash;
+    const lineCheck = ({ lineCode }) =>
+      lineCode === discussionLineCode &&
       isDiscussionApplicableToLine({
-        discussion: firstDiscussion,
-        diffPosition,
-        latestDiff: state.latestDiff,
-      })
-    ) {
-      const targetLine = selectedFile.parallelDiffLines.find(
-        line =>
-          (line.left && line.left.lineCode === firstDiscussion.line_code) ||
-          (line.right && line.right.lineCode === firstDiscussion.line_code),
-      );
-      if (targetLine) {
-        if (targetLine.left && targetLine.left.lineCode === firstDiscussion.line_code) {
-          Object.assign(targetLine.left, {
-            discussions,
-          });
-        } else {
-          Object.assign(targetLine.right, {
-            discussions,
+        discussion,
+        diffPosition: diffPositionByLineCode[lineCode],
+        latestDiff,
+      });
+
+    state.diffFiles = state.diffFiles.map(diffFile => {
+      if (diffFile.fileHash === fileHash) {
+        const file = { ...diffFile };
+
+        if (file.highlightedDiffLines) {
+          file.highlightedDiffLines = file.highlightedDiffLines.map(line => {
+            if (lineCheck(line)) {
+              return {
+                ...line,
+                discussions: line.discussions.concat(discussion),
+              };
+            }
+
+            return line;
           });
         }
-      }
 
-      if (selectedFile.highlightedDiffLines) {
-        const targetInlineLine = selectedFile.highlightedDiffLines.find(
-          line => line.lineCode === firstDiscussion.line_code,
-        );
+        if (file.parallelDiffLines) {
+          file.parallelDiffLines = file.parallelDiffLines.map(line => {
+            const left = line.left && lineCheck(line.left);
+            const right = line.right && lineCheck(line.right);
 
-        if (targetInlineLine) {
-          Object.assign(targetInlineLine, {
-            discussions,
+            if (left || right) {
+              return {
+                left: {
+                  ...line.left,
+                  discussions: left ? line.left.discussions.concat(discussion) : [],
+                },
+                right: {
+                  ...line.right,
+                  discussions: right ? line.right.discussions.concat(discussion) : [],
+                },
+              };
+            }
+
+            return line;
           });
         }
+
+        if (!file.parallelDiffLines || !file.highlightedDiffLines) {
+          file.discussions = file.discussions.concat(discussion);
+        }
+
+        return file;
       }
-    }
+
+      return diffFile;
+    });
   },
 
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {

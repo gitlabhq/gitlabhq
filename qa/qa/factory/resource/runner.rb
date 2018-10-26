@@ -6,9 +6,11 @@ module QA
       class Runner < Factory::Base
         attr_writer :name, :tags, :image
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-ci-cd'
-          project.description = 'Project with CI/CD Pipelines'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-ci-cd'
+            resource.description = 'Project with CI/CD Pipelines'
+          end
         end
 
         def name
@@ -26,7 +28,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Project::Menu.act { click_ci_cd_settings }
+          Page::Project::Menu.perform(&:click_ci_cd_settings)
 
           Service::Runner.new(name).tap do |runner|
             Page::Project::Settings::CICD.perform do |settings|

@@ -11,6 +11,7 @@ import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import { __ } from '~/locale';
 
 let eTagPoll;
 
@@ -36,9 +37,9 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchDiscussions = ({ commit }, path) =>
+export const fetchDiscussions = ({ commit }, { path, filter }) =>
   service
-    .fetchDiscussions(path)
+    .fetchDiscussions(path, filter)
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
@@ -251,7 +252,7 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
         } else if (note.type === constants.DIFF_NOTE) {
-          dispatch('fetchDiscussions', state.notesData.discussionsPath);
+          dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
@@ -343,6 +344,24 @@ export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
 
 export const updateMergeRequestWidget = () => {
   mrWidgetEventHub.$emit('mr.discussion.updated');
+};
+
+export const setLoadingState = ({ commit }, data) => {
+  commit(types.SET_NOTES_LOADING_STATE, data);
+};
+
+export const filterDiscussion = ({ dispatch }, { path, filter }) => {
+  dispatch('setLoadingState', true);
+  dispatch('fetchDiscussions', { path, filter })
+    .then(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+    })
+    .catch(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      Flash(__('Something went wrong while fetching comments. Please try again.'));
+    });
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

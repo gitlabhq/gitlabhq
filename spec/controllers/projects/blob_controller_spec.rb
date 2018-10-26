@@ -343,4 +343,76 @@ describe Projects::BlobController do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    let(:user) { create(:user) }
+    let(:project_root_path) { project_tree_path(project, 'master') }
+
+    before do
+      project.add_maintainer(user)
+
+      sign_in(user)
+    end
+
+    context 'for a file in a subdirectory' do
+      let(:default_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master/files/whitespace',
+          original_branch: 'master',
+          branch_name: 'master',
+          commit_message: 'Delete whitespace'
+        }
+      end
+
+      let(:after_delete_path) { project_tree_path(project, 'master/files') }
+
+      it 'redirects to the sub directory' do
+        delete :destroy, default_params
+
+        expect(response).to redirect_to(after_delete_path)
+      end
+    end
+
+    context 'if deleted file is the last one in a subdirectory' do
+      let(:default_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: 'master/bar/branch-test.txt',
+          original_branch: 'master',
+          branch_name: 'master',
+          commit_message: 'Delete whitespace'
+        }
+      end
+
+      it 'redirects to the project root' do
+        delete :destroy, default_params
+
+        expect(response).to redirect_to(project_root_path)
+      end
+
+      context 'when deleting a file in a branch other than master' do
+        let(:default_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 'binary-encoding/foo/bar/.gitkeep',
+            original_branch: 'binary-encoding',
+            branch_name: 'binary-encoding',
+            commit_message: 'Delete whitespace'
+          }
+        end
+
+        let(:after_delete_path) { project_tree_path(project, 'binary-encoding') }
+
+        it 'redirects to the project root of the branch' do
+          delete :destroy, default_params
+
+          expect(response).to redirect_to(after_delete_path)
+        end
+      end
+    end
+  end
 end

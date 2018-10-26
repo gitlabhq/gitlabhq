@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import '~/behaviors/quick_submit';
 
-describe('Quick Submit behavior', function () {
+describe('Quick Submit behavior', function() {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
   preloadFixtures('snippets/show.html.raw');
@@ -30,6 +30,7 @@ describe('Quick Submit behavior', function () {
         keyCode: 32,
       }),
     );
+
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
@@ -40,6 +41,7 @@ describe('Quick Submit behavior', function () {
         metaKey: false,
       }),
     );
+
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
@@ -49,6 +51,7 @@ describe('Quick Submit behavior', function () {
         repeat: true,
       }),
     );
+
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
@@ -86,7 +89,8 @@ describe('Quick Submit behavior', function () {
     describe('In Macintosh', () => {
       it('responds to Meta+Enter', () => {
         this.textarea.trigger(keydownEvent());
-        return expect(this.spies.submit).toHaveBeenTriggered();
+
+        expect(this.spies.submit).toHaveBeenTriggered();
       });
 
       it('excludes other modifier keys', () => {
@@ -105,13 +109,15 @@ describe('Quick Submit behavior', function () {
             shiftKey: true,
           }),
         );
-        return expect(this.spies.submit).not.toHaveBeenTriggered();
+
+        expect(this.spies.submit).not.toHaveBeenTriggered();
       });
     });
   } else {
     it('responds to Ctrl+Enter', () => {
       this.textarea.trigger(keydownEvent());
-      return expect(this.spies.submit).toHaveBeenTriggered();
+
+      expect(this.spies.submit).toHaveBeenTriggered();
     });
 
     it('excludes other modifier keys', () => {
@@ -130,7 +136,8 @@ describe('Quick Submit behavior', function () {
           shiftKey: true,
         }),
       );
-      return expect(this.spies.submit).not.toHaveBeenTriggered();
+
+      expect(this.spies.submit).not.toHaveBeenTriggered();
     });
   }
 });

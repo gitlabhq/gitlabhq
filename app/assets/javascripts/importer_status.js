@@ -60,66 +60,71 @@ class ImporterStatus {
       attributes = Object.assign(repoData, attributes);
     }
 
-    return axios.post(this.importUrl, attributes)
-    .then(({ data }) => {
-      const job = $(`tr#repo_${id}`);
-      job.attr('id', `project_${data.id}`);
+    return axios
+      .post(this.importUrl, attributes)
+      .then(({ data }) => {
+        const job = $(`tr#repo_${id}`);
+        job.attr('id', `project_${data.id}`);
 
-      job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
-      $('table.import-jobs tbody').prepend(job);
+        job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
+        $('table.import-jobs tbody').prepend(job);
 
-      job.addClass('table-active');
-      const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
-      job.find('.import-actions').html(sprintf(
-        _.escape(__('%{loadingIcon} Started')), {
-          loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${_.escape(connectingVerb)}"></i>`,
-        },
-        false,
-      ));
-    })
-    .catch((error) => {
-      let details = error;
+        job.addClass('table-active');
+        const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
+        job.find('.import-actions').html(
+          sprintf(
+            _.escape(__('%{loadingIcon} Started')),
+            {
+              loadingIcon: `<i class="fa fa-spinner fa-spin" aria-label="${_.escape(
+                connectingVerb,
+              )}"></i>`,
+            },
+            false,
+          ),
+        );
+      })
+      .catch(error => {
+        let details = error;
 
-      const $statusField = $(`#repo_${this.id} .job-status`);
-      $statusField.text(__('Failed'));
+        const $statusField = $(`#repo_${this.id} .job-status`);
+        $statusField.text(__('Failed'));
 
-      if (error.response && error.response.data && error.response.data.errors) {
-        details = error.response.data.errors;
-      }
+        if (error.response && error.response.data && error.response.data.errors) {
+          details = error.response.data.errors;
+        }
 
-      flash(sprintf(__('An error occurred while importing project: %{details}'), { details }));
-    });
+        flash(sprintf(__('An error occurred while importing project: %{details}'), { details }));
+      });
   }
 
   autoUpdate() {
-    return axios.get(this.jobsUrl)
-      .then(({ data = [] }) => {
-        data.forEach((job) => {
-          const jobItem = $(`#project_${job.id}`);
-          const statusField = jobItem.find('.job-status');
+    return axios.get(this.jobsUrl).then(({ data = [] }) => {
+      data.forEach(job => {
+        const jobItem = $(`#project_${job.id}`);
+        const statusField = jobItem.find('.job-status');
 
-          const spinner = '<i class="fa fa-spinner fa-spin"></i>';
+        const spinner = '<i class="fa fa-spinner fa-spin"></i>';
 
-          switch (job.import_status) {
-            case 'finished':
-              jobItem.removeClass('table-active').addClass('table-success');
-              statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
-              break;
-            case 'scheduled':
-              statusField.html(`${spinner} ${__('Scheduled')}`);
-              break;
-            case 'started':
-              statusField.html(`${spinner} ${__('Started')}`);
-              break;
-            case 'failed':
-              statusField.html(__('Failed'));
-              break;
-            default:
-              statusField.html(job.import_status);
-              break;
-          }
-        });
+        switch (job.import_status) {
+          case 'finished':
+            jobItem.removeClass('table-active').addClass('table-success');
+            statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
+            break;
+          case 'scheduled':
+            statusField.html(`${spinner} ${__('Scheduled')}`);
+            break;
+          case 'started':
+            statusField.html(`${spinner} ${__('Started')}`);
+            break;
+          case 'failed':
+            statusField.html(__('Failed'));
+            break;
+          default:
+            statusField.html(job.import_status);
+            break;
+        }
       });
+    });
   }
 
   setAutoUpdate() {
@@ -141,7 +146,4 @@ function initImporterStatus() {
   }
 }
 
-export {
-  initImporterStatus as default,
-  ImporterStatus,
-};
+export { initImporterStatus as default, ImporterStatus };

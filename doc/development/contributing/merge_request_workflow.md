@@ -2,10 +2,9 @@
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
-community contributions are listed with the
-[`Backlog (Accepting merge requests)` milestone in the CE issue tracker][accepting-mrs-ce]
-and [EE issue tracker][accepting-mrs-ee], but you are free to contribute to any other issue
-you want.
+community contributions are listed with
+[the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors),
+but you are free to contribute to any other issue you want.
 
 Please note that if an issue is marked for the current milestone either before
 or while you are working on it, a team member may take over the merge request
@@ -25,8 +24,6 @@ some potentially easy issues.
 To start with GitLab development download the [GitLab Development Kit][gdk] and
 see the [Development section](../../README.md) for some guidelines.
 
-[accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
-[accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
 [gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
 [gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 

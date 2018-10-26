@@ -23,13 +23,16 @@ describe('Store', () => {
     gl.boardService = mockBoardService();
     boardsStore.create();
 
-    spyOn(gl.boardService, 'moveIssue').and.callFake(() => new Promise((resolve) => {
-      resolve();
-    }));
+    spyOn(gl.boardService, 'moveIssue').and.callFake(
+      () =>
+        new Promise(resolve => {
+          resolve();
+        }),
+    );
 
     Cookies.set('issue_board_welcome_hidden', 'false', {
       expires: 365 * 10,
-      path: ''
+      path: '',
     });
   });
 
@@ -62,7 +65,7 @@ describe('Store', () => {
       expect(list).toBeDefined();
     });
 
-    it('gets issue when new list added', (done) => {
+    it('gets issue when new list added', done => {
       boardsStore.addList(listObj);
       const list = boardsStore.findList('id', listObj.id);
 
@@ -75,7 +78,7 @@ describe('Store', () => {
       }, 0);
     });
 
-    it('persists new list', (done) => {
+    it('persists new list', done => {
       boardsStore.new({
         title: 'Test',
         list_type: 'label',
@@ -83,13 +86,15 @@ describe('Store', () => {
           id: 1,
           title: 'Testing',
           color: 'red',
-          description: 'testing;'
-        }
+          description: 'testing;',
+        },
       });
+
       expect(boardsStore.state.lists.length).toBe(1);
 
       setTimeout(() => {
         const list = boardsStore.findList('id', listObj.id);
+
         expect(list).toBeDefined();
         expect(list.id).toBe(listObj.id);
         expect(list.position).toBe(0);
@@ -103,12 +108,13 @@ describe('Store', () => {
 
     it('check for blank state not adding', () => {
       boardsStore.addList(listObj);
+
       expect(boardsStore.shouldAddBlankState()).toBe(false);
     });
 
     it('check for blank state adding when closed list exist', () => {
       boardsStore.addList({
-        list_type: 'closed'
+        list_type: 'closed',
       });
 
       expect(boardsStore.shouldAddBlankState()).toBe(true);
@@ -118,6 +124,7 @@ describe('Store', () => {
       boardsStore.addBlankState();
 
       const list = boardsStore.findList('type', 'blank', 'blank');
+
       expect(list).toBeDefined();
     });
 
@@ -142,7 +149,7 @@ describe('Store', () => {
       expect(listOne.position).toBe(1);
     });
 
-    it('moves an issue from one list to another', (done) => {
+    it('moves an issue from one list to another', done => {
       const listOne = boardsStore.addList(listObj);
       const listTwo = boardsStore.addList(listObjDuplicate);
 
@@ -161,7 +168,7 @@ describe('Store', () => {
       }, 0);
     });
 
-    it('moves an issue from backlog to a list', (done) => {
+    it('moves an issue from backlog to a list', done => {
       const backlog = boardsStore.addList({
         ...listObj,
         list_type: 'backlog',
@@ -183,7 +190,7 @@ describe('Store', () => {
       }, 0);
     });
 
-    it('moves issue to top of another list', (done) => {
+    it('moves issue to top of another list', done => {
       const listOne = boardsStore.addList(listObj);
       const listTwo = boardsStore.addList(listObjDuplicate);
 
@@ -206,7 +213,7 @@ describe('Store', () => {
       }, 0);
     });
 
-    it('moves issue to bottom of another list', (done) => {
+    it('moves issue to bottom of another list', done => {
       const listOne = boardsStore.addList(listObj);
       const listTwo = boardsStore.addList(listObjDuplicate);
 
@@ -229,7 +236,7 @@ describe('Store', () => {
       }, 0);
     });
 
-    it('moves issue in list', (done) => {
+    it('moves issue in list', done => {
       const issue = new ListIssue({
         title: 'Testing',
         id: 2,

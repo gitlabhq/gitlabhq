@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Git clone over HTTP', :ldap do
       let(:location) do
         Page::Project::Show.act do
@@ -14,10 +14,11 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Project.fabricate! do |scenario|
+        project = Factory::Resource::Project.fabricate! do |scenario|
           scenario.name = 'project-with-code'
           scenario.description = 'project for git clone tests'
         end
+        project.visit!
 
         Git::Repository.perform do |repository|
           repository.uri = location.uri

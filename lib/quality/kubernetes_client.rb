@@ -4,19 +4,22 @@ require_relative '../gitlab/popen' unless defined?(Gitlab::Popen)
 
 module Quality
   class KubernetesClient
+    CommandFailedError = Class.new(StandardError)
+
     attr_reader :namespace
 
-    def initialize(namespace: ENV['KUBE_NAMESPACE'])
+    def initialize(namespace:)
       @namespace = namespace
     end
 
     def cleanup(release_name:)
-      command = ['kubectl']
-      command << %(-n "#{namespace}" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa 2>&1)
-      command << '|' << %(grep "#{release_name}")
-      command << '|' << "awk '{print $1}'"
-      command << '|' << %(xargs kubectl -n "#{namespace}" delete)
-      command << '||' << 'true'
+      command = [
+        %(--namespace "#{namespace}"),
+        'delete',
+        'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa',
+        '--now',
+        %(-l release="#{release_name}")
+      ]
 
       run_command(command)
     end
@@ -24,9 +27,16 @@ module Quality
     private
 
     def run_command(command)
-      puts "Running command: `#{command.join(' ')}`" # rubocop:disable Rails/Output
+      final_command = ['kubectl', *command].join(' ')
+      puts "Running command: `#{final_command}`" # rubocop:disable Rails/Output
 
-      Gitlab::Popen.popen_with_detail(command)
+      result = Gitlab::Popen.popen_with_detail([final_command])
+
+      if result.status.success?
+        result.stdout.chomp.freeze
+      else
+        raise CommandFailedError, "The `#{final_command}` command failed (status: #{result.status}) with the following error:\n#{result.stderr}"
+      end
     end
   end
 end

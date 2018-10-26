@@ -1,6 +1,0 @@
----
-title: Update to Rouge 3.3.0 including frozen string literals for improved memory
-  usage
-merge_request:
-author:
-type: changed

@@ -50,7 +50,7 @@ describe('Environment', () => {
 
         expect(
           component.$el.querySelector('.js-blank-state-title').textContent,
-        ).toContain('You don\'t have any environments right now.');
+        ).toContain('You don\'t have any environments right now');
       });
     });
 
@@ -94,6 +94,7 @@ describe('Environment', () => {
           spyOn(component, 'updateContent');
           setTimeout(() => {
             component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
+
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
             done();
           }, 0);
@@ -126,7 +127,7 @@ describe('Environment', () => {
     it('should render empty state', () => {
       expect(
         component.$el.querySelector('.js-blank-state-title').textContent,
-      ).toContain('You don\'t have any environments right now.');
+      ).toContain('You don\'t have any environments right now');
     });
   });
 

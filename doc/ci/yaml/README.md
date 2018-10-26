@@ -681,7 +681,7 @@ Delayed job are for executing scripts after a certain period.
 This is useful if you want to avoid jobs entering `pending` state immediately.
 
 You can set the period with `start_in` key. The value of `start_in` key is an elapsed time in seconds, unless a unit is
-provided. `start_key` must be less than or equal to one hour. Examples of valid values include:
+provided. `start_in` key must be less than or equal to one hour. Examples of valid values include:
 
 - `10 seconds`
 - `30 minutes`
@@ -2031,3 +2031,5 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
+[ee]: https://about.gitlab.com/gitlab-ee/
+[gitlab-versions]: https://about.gitlab.com/products/

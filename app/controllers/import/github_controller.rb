@@ -20,7 +20,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def personal_access_token
-    session[access_token_key] = params[:personal_access_token]
+    session[access_token_key] = params[:personal_access_token]&.strip
     redirect_to status_import_url
   end
 

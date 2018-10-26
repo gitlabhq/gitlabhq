@@ -2,6 +2,9 @@
 - page_title "Todos"
 - header_title "Todos", dashboard_todos_path
 
+.page-title-holder
+  %h1.page-title= _('Todos')
+
 - if current_user.todos.any?
   .top-area
     %ul.nav-links.mobile-separator.nav.nav-tabs

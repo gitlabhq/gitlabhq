@@ -15,9 +15,13 @@ describe('DirtySubmitCollection', () => {
       expect(submit.disabled).toBe(true);
 
       return setInput(input, `${originalValue} changes`)
-        .then(() => expect(submit.disabled).toBe(false))
+        .then(() => {
+          expect(submit.disabled).toBe(false);
+        })
         .then(() => setInput(input, originalValue))
-        .then(() => expect(submit.disabled).toBe(true))
+        .then(() => {
+          expect(submit.disabled).toBe(true);
+        })
         .then(done)
         .catch(done.fail);
     });

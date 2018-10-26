@@ -24,11 +24,15 @@ describe('DropdownHeaderComponent', () => {
   describe('template', () => {
     it('renders header text element', () => {
       const headerEl = vm.$el.querySelector('.dropdown-title span');
+
       expect(headerEl.innerText.trim()).toBe('Assign labels');
     });
 
     it('renders `Close` button element', () => {
-      const closeBtnEl = vm.$el.querySelector('.dropdown-title button.dropdown-title-button.dropdown-menu-close');
+      const closeBtnEl = vm.$el.querySelector(
+        '.dropdown-title button.dropdown-title-button.dropdown-menu-close',
+      );
+
       expect(closeBtnEl).not.toBeNull();
       expect(closeBtnEl.querySelector('.fa-times.dropdown-menu-close-icon')).not.toBeNull();
     });

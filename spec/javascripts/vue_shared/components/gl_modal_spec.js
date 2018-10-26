@@ -48,6 +48,7 @@ describe('GlModal', () => {
 
       it('sets the modal title', () => {
         const modalTitle = vm.$el.querySelector('.modal-title');
+
         expect(modalTitle.innerHTML.trim()).toBe(props.headerTitleText);
       });
     });
@@ -63,6 +64,7 @@ describe('GlModal', () => {
 
       it('sets the primary button class', () => {
         const primaryButton = vm.$el.querySelector('.modal-footer button:last-of-type');
+
         expect(primaryButton).toHaveClass(`btn-${props.footerPrimaryButtonVariant}`);
       });
     });
@@ -78,6 +80,7 @@ describe('GlModal', () => {
 
       it('sets the primary button text', () => {
         const primaryButton = vm.$el.querySelector('.modal-footer button:last-of-type');
+
         expect(primaryButton.innerHTML.trim()).toBe(props.footerPrimaryButtonText);
       });
     });
@@ -173,6 +176,7 @@ describe('GlModal', () => {
 
       it('sets the modal body', () => {
         const modalBody = vm.$el.querySelector('.modal-body');
+
         expect(modalBody.innerHTML).toBe(slotContent);
       });
     });
@@ -184,6 +188,7 @@ describe('GlModal', () => {
 
       it('sets the modal header', () => {
         const modalHeader = vm.$el.querySelector('.modal-header');
+
         expect(modalHeader.innerHTML).toBe(slotContent);
       });
     });
@@ -195,6 +200,7 @@ describe('GlModal', () => {
 
       it('sets the modal title', () => {
         const modalTitle = vm.$el.querySelector('.modal-title');
+
         expect(modalTitle.innerHTML).toBe(slotContent);
       });
     });
@@ -206,6 +212,7 @@ describe('GlModal', () => {
 
       it('sets the modal footer', () => {
         const modalFooter = vm.$el.querySelector('.modal-footer');
+
         expect(modalFooter.innerHTML).toBe(slotContent);
       });
     });

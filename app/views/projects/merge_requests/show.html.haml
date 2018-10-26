@@ -51,8 +51,10 @@
               = tab_link_for @merge_request, :diffs do
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size
-
-        #js-vue-discussion-counter
+        .d-inline-flex.flex-wrap
+          #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@merge_request),
+            notes_filters: UserPreference.notes_filters.to_json } }
+          #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
       #notes.notes.tab-pane.voting_notes

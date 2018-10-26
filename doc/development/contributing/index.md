@@ -3,10 +3,12 @@
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
+We want to create a welcoming environment for everyone who is interested in contributing. Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
+
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
-Looking for something to work on? Look for issues in the [Backlog (Accepting merge requests) milestone](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [`Accepting merge requests`](#i-want-to-contribute).
 
 GitLab comes in two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -30,77 +32,8 @@ vulnerabilities.
 
 ## Code of conduct
 
-### Our Pledge
-
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, sex characteristics, gender identity and expression,
-level of experience, education, socio-economic status, nationality, personal
-appearance, race, religion, or sexual identity and orientation.
-
-### Our Standards
-
-Examples of behavior that contributes to creating a positive environment
-include:
-
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
-
-Examples of unacceptable behavior by participants include:
-
-* The use of sexualized language or imagery and unwelcome sexual attention or
-  advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
-
-### Our Responsibilities
-
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
-
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
-
-### Scope
-
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
-
-### Enforcement
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at conduct@gitlab.com. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
-
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
-
-### Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
-
-[homepage]: https://www.contributor-covenant.org
+Our code of conduct can be found on the
+["Contributing to GitLab"](https://about.gitlab.com/contributing/) page.
 
 ## Closing policy for issues and merge requests
 
@@ -133,10 +66,10 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, [issues in the `Backlog (Accepting merge requests)` milestone][accepting-mrs-weight]
-are a great place to start. Issues with a lower weight (1 or 2) are deemed
-suitable for beginners. These issues will be of reasonable size and challenge,
-for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+If you want to contribute to GitLab,
+[issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
+are a great place to start.
+If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
 please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
@@ -198,4 +131,3 @@ This [documentation](style_guides.md) outlines the current style guidelines.
 [team]: https://about.gitlab.com/team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?scope=all&utf8=✓&state=opened&assignee_id=0&milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;

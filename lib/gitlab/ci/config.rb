@@ -13,10 +13,10 @@ module Gitlab
 
         @global = Entry::Global.new(@config)
         @global.compose!
-      rescue Loader::FormatError, Extendable::ExtensionError => e
+      rescue Loader::FormatError,
+             Extendable::ExtensionError,
+             External::Processor::IncludeError => e
         raise Config::ConfigError, e.message
-      rescue ::Gitlab::Ci::External::Processor::FileError => e
-        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?
@@ -81,7 +81,7 @@ module Gitlab
 
       def process_external_files(config, project, opts)
         sha = opts.fetch(:sha) { project.repository.root_ref_sha }
-        ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
+        Config::External::Processor.new(config, project, sha).perform
       end
     end
   end

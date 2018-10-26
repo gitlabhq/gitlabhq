@@ -47,7 +47,6 @@
   }
 }
 
-
 .mr-widget-heading {
   position: relative;
   border: 1px solid $border-color;
@@ -454,7 +453,7 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px  0 10px 15px;
+    padding: 10px 0 10px 15px;
     position: relative;
     display: -webkit-flex;
     display: flex;
@@ -468,7 +467,6 @@
       margin-bottom: 2px;
 
       .ci-status-link {
-
         svg {
           height: 16px;
           width: 16px;
@@ -698,7 +696,6 @@
 
 .table-holder {
   .ci-table {
-
     th {
       background-color: $white-light;
       color: $gl-text-color-secondary;
@@ -775,7 +772,7 @@
 
   &.affix {
     left: 0;
-    transition: right .15s;
+    transition: right 0.15s;
 
     @include media-breakpoint-down(xs) {
       right: 0;
@@ -821,8 +818,16 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(md) {
     flex-direction: column-reverse;
+  }
+
+  .discussion-filter-container {
+    margin-top: $gl-padding-8;
+
+    &:not(:only-child) {
+      padding-right: $gl-padding-8;
+    }
   }
 }
 
@@ -884,7 +889,7 @@
   }
 
   > *:not(:last-child) {
-    margin-right: .3em;
+    margin-right: 0.3em;
   }
 
   svg {
@@ -907,6 +912,10 @@
   .btn svg {
     fill: $theme-gray-700;
   }
+
+  .dropdown-menu {
+    width: 400px;
+  }
 }
 
 // Hack alert: we've rewritten `btn` class in a way that
@@ -917,7 +926,7 @@
   &[disabled] {
     cursor: not-allowed;
     box-shadow: none;
-    opacity: .65;
+    opacity: 0.65;
 
     &:hover {
       color: $gl-gray-500;

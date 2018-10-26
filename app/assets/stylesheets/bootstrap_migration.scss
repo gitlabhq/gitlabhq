@@ -238,10 +238,6 @@ h3.popover-header {
 }
 
 .card {
-  .card-title {
-    margin-bottom: 0;
-  }
-
   &.card-without-border {
     @extend .border-0;
   }
@@ -252,13 +248,6 @@ h3.popover-header {
 
   &.bg-light {
     @extend .border-0;
-  }
-}
-
-.card-header {
-  h3.card-title,
-  h4.card-title {
-    margin-top: 0;
   }
 }
 

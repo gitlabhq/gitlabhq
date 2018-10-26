@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'json'
 require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)

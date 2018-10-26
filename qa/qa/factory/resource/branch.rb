@@ -5,8 +5,10 @@ module QA
         attr_accessor :project, :branch_name,
                       :allow_to_push, :allow_to_merge, :protected
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'protected-branch-project'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'protected-branch-project'
+          end
         end
 
         def initialize
@@ -43,9 +45,7 @@ module QA
           # to `allow_to_push` variable.
           return branch unless @protected
 
-          Page::Project::Menu.act do
-            click_repository_settings
-          end
+          Page::Project::Menu.perform(&:click_repository_settings)
 
           Page::Project::Settings::Repository.perform do |setting|
             setting.expand_protected_branches do |page|

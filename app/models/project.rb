@@ -167,20 +167,15 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
   has_one :hangouts_chat_service
 
-  # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
-
-  has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
-  # TODO: replace these relations with the fork network versions
-
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
+  has_one :forked_from_project, through: :fork_network_member
+  has_many :forked_to_members, class_name: 'ForkNetworkMember', foreign_key: 'forked_from_project_id'
+  has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -553,6 +548,8 @@ class Project < ActiveRecord::Base
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
+  alias_method :lfs_enabled, :lfs_enabled?
+
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
       has_auto_devops_implicitly_enabled?
@@ -693,6 +690,8 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  rescue
+    super
   end
 
   def valid_import_url?
@@ -1250,12 +1249,7 @@ class Project < ActiveRecord::Base
   end
 
   def forked?
-    return true if fork_network && fork_network.root_project != self
-
-    # TODO: Use only the above conditional using the `fork_network`
-    # This is the old conditional that looks at the `forked_project_link`, we
-    # fall back to this while we're migrating the new models
-    !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+    fork_network && fork_network.root_project != self
   end
 
   def fork_source
@@ -1546,9 +1540,7 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    # self.forked_from_project will be nil before the project is saved, so
-    # we need to go through the relation
-    original_project = forked_project_link&.forked_from_project
+    original_project = fork_source
     return true unless original_project
 
     level <= original_project.visibility_level
@@ -1639,34 +1631,6 @@ class Project < ActiveRecord::Base
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def rename_repo
-    path_before      = previous_changes['path'].first
-    full_path_before = full_path_was
-    full_path_after  = build_full_path
-
-    Gitlab::AppLogger.info("Attempting to rename #{full_path_was} -> #{full_path_after}")
-
-    if has_container_registry_tags?
-      Gitlab::AppLogger.info("Project #{full_path_was} cannot be renamed because container registry tags are present!")
-
-      # we currently don't support renaming repository if it contains images in container registry
-      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
-    end
-
-    expire_caches_before_rename(full_path_before)
-
-    if rename_or_migrate_repository!
-      Gitlab::AppLogger.info("Project was renamed: #{full_path_before} -> #{full_path_after}")
-      after_rename_repository(full_path_before, path_before)
-    else
-      Gitlab::AppLogger.info("Repository could not be renamed: #{full_path_before} -> #{full_path_after}")
-
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('Repository cannot be renamed')
-    end
-  end
 
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
@@ -2096,51 +2060,6 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
-  private
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def rename_or_migrate_repository!
-    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        storage_upgradable? &&
-        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
-      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
-    else
-      storage.rename_repo
-    end
-  end
-  # rubocop: enable CodeReuse/ServiceClass
-
-  def storage_upgradable?
-    storage_version != LATEST_STORAGE_VERSION
-  end
-
-  def after_rename_repository(full_path_before, path_before)
-    execute_rename_repository_hooks!(full_path_before)
-
-    write_repository_config
-
-    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-    # if we need execute any take action or no-op.
-    unless hashed_storage?(:attachments)
-      Gitlab::UploadsTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-    end
-
-    Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-  end
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def execute_rename_repository_hooks!(full_path_before)
-    # When we import a project overwriting the original project, there
-    # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_before) unless import_started?
-
-    self.old_path_with_namespace = full_path_before
-    SystemHooksService.new.execute_hooks_for(self, :rename)
-
-    reload_repository!
-  end
-  # rubocop: enable CodeReuse/ServiceClass
-
   def storage
     @storage ||=
       if hashed_storage?(:repository)
@@ -2149,6 +2068,12 @@ class Project < ActiveRecord::Base
         Storage::LegacyProject.new(self)
       end
   end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
+  end
+
+  private
 
   def use_hashed_storage
     if self.new_record? && Gitlab::CurrentSettings.hashed_storage_enabled

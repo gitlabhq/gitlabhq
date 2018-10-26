@@ -8,17 +8,14 @@ export default class DeployKeysService {
   }
 
   getKeys() {
-    return this.axios.get()
-      .then(response => response.data);
+    return this.axios.get().then(response => response.data);
   }
 
   enableKey(id) {
-    return this.axios.put(`${id}/enable`)
-      .then(response => response.data);
+    return this.axios.put(`${id}/enable`).then(response => response.data);
   }
 
   disableKey(id) {
-    return this.axios.put(`${id}/disable`)
-      .then(response => response.data);
+    return this.axios.put(`${id}/disable`).then(response => response.data);
   }
 }

@@ -152,6 +152,7 @@ class User < ActiveRecord::Base
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_one :status, class_name: 'UserStatus'
+  has_one :user_preference
 
   #
   # Validations
@@ -224,6 +225,8 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :notes_filter_for, to: :user_preference
+  delegate :set_notes_filter, to: :user_preference
 
   state_machine :state, initial: :active do
     event :block do
@@ -264,7 +267,7 @@ class User < ActiveRecord::Base
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  scope :by_username, -> (usernames) { iwhere(username: usernames) }
+  scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
@@ -1365,6 +1368,11 @@ class User < ActiveRecord::Base
 
   def requires_usage_stats_consent?
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
+  end
+
+  # Avoid migrations only building user preference object when needed.
+  def user_preference
+    super.presence || build_user_preference
   end
 
   def todos_limited_to(ids)

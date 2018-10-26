@@ -112,7 +112,8 @@ export default {
     eventHub.$on('mr.discussion.updated', this.checkStatus);
   },
   mounted() {
-    this.handleMounted();
+    this.setFaviconHelper();
+    this.initDeploymentsPolling();
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
@@ -250,10 +251,6 @@ export default {
         this.stopPolling();
       });
     },
-    handleMounted() {
-      this.setFaviconHelper();
-      this.initDeploymentsPolling();
-    },
   },
 };
 </script>
@@ -275,12 +272,13 @@ export default {
       :key="deployment.id"
       :deployment="deployment"
     />
-    <grouped-test-reports-app
-      v-if="mr.testResultsPath"
-      class="js-reports-container"
-      :endpoint="mr.testResultsPath"
-    />
     <div class="mr-section-container">
+      <grouped-test-reports-app
+        v-if="mr.testResultsPath"
+        class="js-reports-container"
+        :endpoint="mr.testResultsPath"
+      />
+
       <div class="mr-widget-section">
         <component
           :is="componentName"

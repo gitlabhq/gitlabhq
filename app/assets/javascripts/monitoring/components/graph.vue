@@ -121,6 +121,7 @@ export default {
     draw() {
       const breakpointSize = bp.getBreakpointSize();
       const query = this.graphData.queries[0];
+      const svgWidth = this.$refs.baseSvg.getBoundingClientRect().width;
       this.margin = measurements.large.margin;
       if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
         this.graphHeight = 300;
@@ -130,13 +131,13 @@ export default {
       this.unitOfDisplay = query.unit || '';
       this.yAxisLabel = this.graphData.y_label || 'Values';
       this.legendTitle = query.label || 'Average';
-      this.graphWidth = this.$refs.baseSvg.clientWidth - this.margin.left - this.margin.right;
+      this.graphWidth = svgWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
       this.baseGraphHeight = this.graphHeight - 50;
       this.baseGraphWidth = this.graphWidth;
 
       // pixel offsets inside the svg and outside are not 1:1
-      this.realPixelRatio = this.$refs.baseSvg.clientWidth / this.baseGraphWidth;
+      this.realPixelRatio = svgWidth / this.baseGraphWidth;
 
       this.renderAxesPaths();
       this.formatDeployments();

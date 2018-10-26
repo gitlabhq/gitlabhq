@@ -48,7 +48,7 @@
       - if job.try(:allow_failure)
         %span.badge.badge-danger allowed to fail
       - if job.schedulable?
-        %span.badge.badge-info= s_('DelayedJobs|scheduled')
+        %span.badge.badge-info= s_('DelayedJobs|delayed')
       - elsif job.action?
         %span.badge.badge-info manual
 
@@ -108,7 +108,7 @@
             .btn.btn-default.has-tooltip{ disabled: true,
               title: job.scheduled_at }
               = sprite_icon('planning')
-              = duration_in_numbers(job.execute_in, true)
+              = duration_in_numbers(job.execute_in)
             - confirmation_message = s_("DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes.") % { job_name: job.name }
             = link_to play_project_job_path(job.project, job, return_to: request.original_url),
               method: :post,

@@ -2,10 +2,12 @@ module QA
   module Factory
     module Repository
       class WikiPush < Factory::Repository::Push
-        dependency Factory::Resource::Wiki, as: :wiki do |wiki|
-          wiki.title = 'Home'
-          wiki.content = '# My First Wiki Content'
-          wiki.message = 'Update home'
+        attribute :wiki do
+          Factory::Resource::Wiki.fabricate! do |resource|
+            resource.title = 'Home'
+            resource.content = '# My First Wiki Content'
+            resource.message = 'Update home'
+          end
         end
 
         def initialize

@@ -98,6 +98,7 @@ describe('diff_file_header', () => {
         props.discussionPath = 'link://to/discussion';
         vm = mountComponentWithStore(Component, { props, store });
         const href = vm.$el.querySelector('.js-title-wrapper').getAttribute('href');
+
         expect(href).toBe(vm.discussionPath);
       });
     });
@@ -270,6 +271,7 @@ describe('diff_file_header', () => {
 
     it('displays an file icon in the title', () => {
       vm = mountComponentWithStore(Component, { props, store });
+
       expect(vm.$el.querySelector('svg.js-file-icon use').getAttribute('xlink:href')).toContain(
         'ruby',
       );
@@ -312,8 +314,11 @@ describe('diff_file_header', () => {
       vm = mountComponentWithStore(Component, { props, store });
 
       const button = vm.$el.querySelector('.btn-clipboard');
+
       expect(button).not.toBe(null);
-      expect(button.dataset.clipboardText).toBe('{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}');
+      expect(button.dataset.clipboardText).toBe(
+        '{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}',
+      );
     });
 
     describe('file mode', () => {
@@ -323,6 +328,7 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         const { fileMode } = vm.$refs;
+
         expect(fileMode).not.toBe(undefined);
         expect(fileMode).toContainText(props.diffFile.aMode);
         expect(fileMode).toContainText(props.diffFile.bMode);
@@ -334,6 +340,7 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         const { fileMode } = vm.$refs;
+
         expect(fileMode).toBe(undefined);
       });
     });

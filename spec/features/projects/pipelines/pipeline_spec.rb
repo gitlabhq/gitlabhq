@@ -68,6 +68,10 @@ describe 'Pipeline', :js do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
+    it 'shows link to the pipeline ref' do
+      expect(page).to have_link(pipeline.ref)
+    end
+
     it_behaves_like 'showing user status' do
       let(:user_with_status) { pipeline.user }
 
@@ -234,6 +238,20 @@ describe 'Pipeline', :js do
         end
 
         it { expect(page).not_to have_content('Cancel running') }
+      end
+    end
+
+    context 'when pipeline ref does not exist in repository anymore' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   ref: 'non-existent',
+                                   sha: project.commit.id,
+                                   user: user)
+      end
+
+      it 'does not render link to the pipeline ref' do
+        expect(page).not_to have_link(pipeline.ref)
+        expect(page).to have_content(pipeline.ref)
       end
     end
   end

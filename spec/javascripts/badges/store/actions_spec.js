@@ -94,6 +94,7 @@ describe('Badges store actions', () => {
             link_url: badgeInAddForm.linkUrl,
           }),
         );
+
         expect(dispatch.calls.allArgs()).toEqual([['requestNewBadge']]);
         dispatch.calls.reset();
         return [200, dummyResponse];
@@ -117,6 +118,7 @@ describe('Badges store actions', () => {
             link_url: badgeInAddForm.linkUrl,
           }),
         );
+
         expect(dispatch.calls.allArgs()).toEqual([['requestNewBadge']]);
         dispatch.calls.reset();
         return [500, ''];
@@ -296,6 +298,7 @@ describe('Badges store actions', () => {
         .loadBadges({ state, dispatch }, dummyData)
         .then(() => {
           const badges = dummyReponse.map(transformBackendBadge);
+
           expect(dispatch.calls.allArgs()).toEqual([['receiveLoadBadges', badges]]);
         })
         .then(done)
@@ -416,6 +419,7 @@ describe('Badges store actions', () => {
         .then(() => {
           expect(axios.get.calls.count()).toBe(1);
           const url = axios.get.calls.argsFor(0)[0];
+
           expect(url).toMatch(`^${dummyEndpointUrl}/render?`);
           expect(url).toMatch('\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&');
           expect(url).toMatch('&image_url=%26make-sandwhich%3Dtrue$');
@@ -436,6 +440,7 @@ describe('Badges store actions', () => {
         .renderBadge({ state, dispatch })
         .then(() => {
           const renderedBadge = transformBackendBadge(dummyReponse);
+
           expect(dispatch.calls.allArgs()).toEqual([['receiveRenderedBadge', renderedBadge]]);
         })
         .then(done)
@@ -525,6 +530,7 @@ describe('Badges store actions', () => {
             link_url: badgeInEditForm.linkUrl,
           }),
         );
+
         expect(dispatch.calls.allArgs()).toEqual([['requestUpdatedBadge']]);
         dispatch.calls.reset();
         return [200, dummyResponse];
@@ -548,6 +554,7 @@ describe('Badges store actions', () => {
             link_url: badgeInEditForm.linkUrl,
           }),
         );
+
         expect(dispatch.calls.allArgs()).toEqual([['requestUpdatedBadge']]);
         dispatch.calls.reset();
         return [500, ''];

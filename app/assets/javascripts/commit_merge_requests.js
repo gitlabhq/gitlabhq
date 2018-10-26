@@ -50,7 +50,7 @@ export function createContent(mergeRequests) {
   if (mergeRequests.length === 0) {
     $content.text(s__('Commits|No related merge requests found'));
   } else {
-    mergeRequests.forEach((mergeRequest) => {
+    mergeRequests.forEach(mergeRequest => {
       const $header = createHeader($content.children().length, mergeRequests.length);
       const $item = createItem(mergeRequest);
       $content.append($header);
@@ -64,8 +64,9 @@ export function createContent(mergeRequests) {
 export function fetchCommitMergeRequests() {
   const $container = $('.merge-requests');
 
-  axios.get($container.data('projectCommitPath'))
-    .then((response) => {
+  axios
+    .get($container.data('projectCommitPath'))
+    .then(response => {
       const $content = createContent(response.data);
 
       $container.html($content);

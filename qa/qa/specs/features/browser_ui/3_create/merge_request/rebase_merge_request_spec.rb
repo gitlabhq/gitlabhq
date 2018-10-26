@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Merge request rebasing' do
       it 'user rebases source branch of merge request'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -10,6 +10,7 @@ module QA
         project = Factory::Resource::Project.fabricate! do |project|
           project.name = "only-fast-forward"
         end
+        project.visit!
 
         Page::Project::Menu.act { go_to_settings }
         Page::Project::Settings::MergeRequest.act { enable_ff_only }

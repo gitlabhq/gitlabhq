@@ -7,6 +7,8 @@ module Clusters
       include ReactiveCaching
       include EnumWithNil
 
+      RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
+
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
@@ -32,6 +34,8 @@ module Clusters
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
+      validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
+
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
@@ -45,6 +49,7 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
+      delegate :kubernetes_namespace, to: :cluster
 
       alias_method :active?, :enabled?
 
@@ -102,7 +107,7 @@ module Clusters
       end
 
       def kubeclient
-        @kubeclient ||= build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
+        @kubeclient ||= build_kube_client!
       end
 
       private
@@ -116,13 +121,22 @@ module Clusters
       end
 
       def default_namespace
+        kubernetes_namespace&.namespace.presence || fallback_default_namespace
+      end
+
+      # DEPRECATED
+      #
+      # On 11.4 Clusters::KubernetesNamespace was introduced, this model will allow to
+      # have multiple namespaces per project. This method will be removed after migration
+      # has been completed.
+      def fallback_default_namespace
         return unless project
 
         slug = "#{project.path}-#{project.id}".downcase
-        slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+        Gitlab::NamespaceSanitizer.sanitize(slug)
       end
 
-      def build_kube_client!(api_groups: ['api'], api_version: 'v1')
+      def build_kube_client!
         raise "Incomplete settings" unless api_url && actual_namespace
 
         unless (username && password) || token
@@ -131,8 +145,6 @@ module Clusters
 
         Gitlab::Kubernetes::KubeClient.new(
           api_url,
-          api_groups,
-          api_version,
           auth_options: kubeclient_auth_options,
           ssl_options: kubeclient_ssl_options,
           http_proxy_uri: ENV['http_proxy']

@@ -17,10 +17,17 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    notes = notes_finder.execute
-      .inc_relations_for_view
+    notes = notes_finder
+              .execute
+              .inc_relations_for_view
 
-    notes = ResourceEvents::MergeIntoNotesService.new(noteable, current_user, last_fetched_at: current_fetched_at).execute(notes)
+    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
+      notes =
+        ResourceEvents::MergeIntoNotesService
+          .new(noteable, current_user, last_fetched_at: current_fetched_at)
+          .execute(notes)
+    end
+
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -222,6 +229,10 @@ module NotesActions
 
   def last_fetched_at
     request.headers['X-Last-Fetched-At']
+  end
+
+  def notes_filter
+    current_user&.notes_filter_for(params[:target_type])
   end
 
   def notes_finder

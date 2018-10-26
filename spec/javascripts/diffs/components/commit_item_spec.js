@@ -14,7 +14,8 @@ const TEST_PIPELINE_STATUS_PATH = `${TEST_HOST}/pipeline/status`;
 
 const getTitleElement = vm => vm.$el.querySelector('.commit-row-message.item-title');
 const getDescElement = vm => vm.$el.querySelector('pre.commit-row-description');
-const getDescExpandElement = vm => vm.$el.querySelector('.commit-content .text-expander.js-toggle-button');
+const getDescExpandElement = vm =>
+  vm.$el.querySelector('.commit-content .text-expander.js-toggle-button');
 const getShaElement = vm => vm.$el.querySelector('.commit-sha-group');
 const getAvatarElement = vm => vm.$el.querySelector('.user-avatar-link');
 const getCommitterElement = vm => vm.$el.querySelector('.commiter');

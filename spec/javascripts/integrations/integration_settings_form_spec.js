@@ -68,21 +68,27 @@ describe('IntegrationSettingsForm', () => {
       integrationSettingsForm.canTestService = true;
 
       integrationSettingsForm.toggleSubmitBtnLabel(true);
-      expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Test settings and save changes');
+
+      expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual(
+        'Test settings and save changes',
+      );
     });
 
     it('should set Save button label to "Save changes" when either serviceActive or canTestService (or both) is `false`', () => {
       integrationSettingsForm.canTestService = false;
 
       integrationSettingsForm.toggleSubmitBtnLabel(false);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
       integrationSettingsForm.toggleSubmitBtnLabel(true);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
 
       integrationSettingsForm.canTestService = true;
 
       integrationSettingsForm.toggleSubmitBtnLabel(false);
+
       expect(integrationSettingsForm.$submitBtnLabel.text()).toEqual('Save changes');
     });
   });
@@ -127,8 +133,9 @@ describe('IntegrationSettingsForm', () => {
       mock.restore();
     });
 
-    it('should make an ajax request with provided `formData`', (done) => {
-      integrationSettingsForm.testSettings(formData)
+    it('should make an ajax request with provided `formData`', done => {
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           expect(axios.put).toHaveBeenCalledWith(integrationSettingsForm.testEndPoint, formData);
 
@@ -137,7 +144,7 @@ describe('IntegrationSettingsForm', () => {
         .catch(done.fail);
     });
 
-    it('should show error Flash with `Save anyway` action if ajax request responds with error in test', (done) => {
+    it('should show error Flash with `Save anyway` action if ajax request responds with error in test', done => {
       const errorMessage = 'Test failed.';
       mock.onPut(integrationSettingsForm.testEndPoint).reply(200, {
         error: true,
@@ -146,19 +153,32 @@ describe('IntegrationSettingsForm', () => {
         test_failed: true,
       });
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           const $flashContainer = $('.flash-container');
-          expect($flashContainer.find('.flash-text').text().trim()).toEqual('Test failed. some error');
+
+          expect(
+            $flashContainer
+              .find('.flash-text')
+              .text()
+              .trim(),
+          ).toEqual('Test failed. some error');
+
           expect($flashContainer.find('.flash-action')).toBeDefined();
-          expect($flashContainer.find('.flash-action').text().trim()).toEqual('Save anyway');
+          expect(
+            $flashContainer
+              .find('.flash-action')
+              .text()
+              .trim(),
+          ).toEqual('Save anyway');
 
           done();
         })
         .catch(done.fail);
     });
 
-    it('should not show error Flash with `Save anyway` action if ajax request responds with error in validation', (done) => {
+    it('should not show error Flash with `Save anyway` action if ajax request responds with error in validation', done => {
       const errorMessage = 'Validations failed.';
       mock.onPut(integrationSettingsForm.testEndPoint).reply(200, {
         error: true,
@@ -167,26 +187,40 @@ describe('IntegrationSettingsForm', () => {
         test_failed: false,
       });
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           const $flashContainer = $('.flash-container');
-          expect($flashContainer.find('.flash-text').text().trim()).toEqual('Validations failed. some error');
+
+          expect(
+            $flashContainer
+              .find('.flash-text')
+              .text()
+              .trim(),
+          ).toEqual('Validations failed. some error');
+
           expect($flashContainer.find('.flash-action')).toBeDefined();
-          expect($flashContainer.find('.flash-action').text().trim()).toEqual('');
+          expect(
+            $flashContainer
+              .find('.flash-action')
+              .text()
+              .trim(),
+          ).toEqual('');
 
           done();
         })
         .catch(done.fail);
     });
 
-    it('should submit form if ajax request responds without any error in test', (done) => {
+    it('should submit form if ajax request responds without any error in test', done => {
       spyOn(integrationSettingsForm.$form, 'submit');
 
       mock.onPut(integrationSettingsForm.testEndPoint).reply(200, {
         error: false,
       });
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           expect(integrationSettingsForm.$form.submit).toHaveBeenCalled();
 
@@ -195,7 +229,7 @@ describe('IntegrationSettingsForm', () => {
         .catch(done.fail);
     });
 
-    it('should submit form when clicked on `Save anyway` action of error Flash', (done) => {
+    it('should submit form when clicked on `Save anyway` action of error Flash', done => {
       spyOn(integrationSettingsForm.$form, 'submit');
 
       const errorMessage = 'Test failed.';
@@ -205,9 +239,11 @@ describe('IntegrationSettingsForm', () => {
         test_failed: true,
       });
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           const $flashAction = $('.flash-container .flash-action');
+
           expect($flashAction).toBeDefined();
 
           $flashAction.get(0).click();
@@ -220,26 +256,32 @@ describe('IntegrationSettingsForm', () => {
         .catch(done.fail);
     });
 
-    it('should show error Flash if ajax request failed', (done) => {
+    it('should show error Flash if ajax request failed', done => {
       const errorMessage = 'Something went wrong on our end.';
 
       mock.onPut(integrationSettingsForm.testEndPoint).networkError();
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
-          expect($('.flash-container .flash-text').text().trim()).toEqual(errorMessage);
+          expect(
+            $('.flash-container .flash-text')
+              .text()
+              .trim(),
+          ).toEqual(errorMessage);
 
           done();
         })
         .catch(done.fail);
     });
 
-    it('should always call `toggleSubmitBtnState` with `false` once request is completed', (done) => {
+    it('should always call `toggleSubmitBtnState` with `false` once request is completed', done => {
       mock.onPut(integrationSettingsForm.testEndPoint).networkError();
 
       spyOn(integrationSettingsForm, 'toggleSubmitBtnState');
 
-      integrationSettingsForm.testSettings(formData)
+      integrationSettingsForm
+        .testSettings(formData)
         .then(() => {
           expect(integrationSettingsForm.toggleSubmitBtnState).toHaveBeenCalledWith(false);
 

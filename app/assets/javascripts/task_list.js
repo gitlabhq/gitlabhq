@@ -26,7 +26,11 @@ export default class TaskList {
     // Prevent duplicate event bindings
     this.disable();
     $(`${this.selector} .js-task-list-container`).taskList('enable');
-    $(document).on('tasklist:changed', `${this.selector} .js-task-list-container`, this.update.bind(this));
+    $(document).on(
+      'tasklist:changed',
+      `${this.selector} .js-task-list-container`,
+      this.update.bind(this),
+    );
   }
 
   disable() {
@@ -41,7 +45,8 @@ export default class TaskList {
       [this.fieldName]: $target.val(),
     };
 
-    return axios.patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
+    return axios
+      .patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
       .then(({ data }) => this.onSuccess(data))
       .catch(err => this.onError(err));
   }

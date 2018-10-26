@@ -54,7 +54,7 @@ describe 'User views empty wiki' do
     it_behaves_like 'empty wiki and non-accessible issues'
   end
 
-  context 'when user is logged in and a memeber' do
+  context 'when user is logged in and a member' do
     let(:project) { create(:project, :public, :wiki_repo) }
 
     before do

@@ -23,7 +23,6 @@ describe Project do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks) }
     it { is_expected.to have_many(:protected_branches) }
-    it { is_expected.to have_one(:forked_project_link) }
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
@@ -56,7 +55,7 @@ describe Project do
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
-    it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
@@ -77,7 +76,8 @@ describe Project do
     it { is_expected.to have_many(:lfs_objects_projects) }
     it { is_expected.to have_many(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
-    it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:forked_to_members).class_name('ForkNetworkMember') }
+    it { is_expected.to have_many(:forks).through(:forked_to_members) }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -527,28 +527,28 @@ describe Project do
   end
 
   describe "#readme_url" do
-    let(:project) { create(:project, :repository, path: "somewhere") }
-
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(project.readme_url).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(project.readme_url).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
-          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+          expect(project.readme_url).to eq("#{project.web_url}/blob/master/README.md")
         end
       end
     end
@@ -1380,7 +1380,7 @@ describe Project do
 
     context 'when checking on forked project' do
       let(:project)        { create(:project, :internal) }
-      let(:forked_project) { create(:project, forked_from_project: project) }
+      let(:forked_project) { fork_project(project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
@@ -1992,9 +1992,12 @@ describe Project do
     let(:import_jid) { '123' }
 
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
-      let(:forked_from_project) { forked_project_link.forked_from_project }
-      let(:project) { forked_project_link.forked_to_project }
+      let(:forked_from_project) { create(:project, :repository) }
+      let(:project) { create(:project) }
+
+      before do
+        fork_project(forked_from_project, nil, target_project: project)
+      end
 
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
@@ -2278,6 +2281,12 @@ describe Project do
 
       it 'returns nil if it is the root of the fork network' do
         expect(project.fork_source).to be_nil
+      end
+    end
+
+    describe '#forks' do
+      it 'includes direct forks of the project' do
+        expect(project.forks).to contain_exactly(forked_project)
       end
     end
 
@@ -2956,88 +2965,6 @@ describe Project do
       end
     end
 
-    describe '#rename_repo' do
-      before do
-        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
-        # call. This makes testing a bit easier.
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
-      end
-
-      it 'renames a repository' do
-        stub_container_registry_config(enabled: false)
-
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-          .and_return(true)
-
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-          .and_return(true)
-
-        expect_any_instance_of(SystemHooksService)
-          .to receive(:execute_hooks_for)
-            .with(project, :rename)
-
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
-        expect(project).to receive(:expire_caches_before_rename)
-
-        project.rename_repo
-      end
-
-      context 'container registry with images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-          project.container_repositories << container_repository
-        end
-
-        subject { project.rename_repo }
-
-        it { expect { subject }.to raise_error(StandardError) }
-      end
-
-      context 'gitlab pages' do
-        before do
-          expect(project_storage).to receive(:rename_repo) { true }
-        end
-
-        it 'moves pages folder to new location' do
-          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      context 'attachments' do
-        before do
-          expect(project_storage).to receive(:rename_repo) { true }
-        end
-
-        it 'moves uploads folder to new location' do
-          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      it 'updates project full path in .git/config' do
-        allow(project_storage).to receive(:rename_repo).and_return(true)
-
-        project.rename_repo
-
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
-      end
-    end
-
     describe '#pages_path' do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
@@ -3125,91 +3052,6 @@ describe Project do
         expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, hashed_prefix)
 
         project.ensure_storage_path_exists
-      end
-    end
-
-    describe '#rename_repo' do
-      before do
-        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
-        # call. This makes testing a bit easier.
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
-      end
-
-      context 'migration to hashed storage' do
-        it 'calls HashedStorageMigrationService with correct options' do
-          project = create(:project, :repository, :legacy_storage)
-          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
-          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
-            expect(service).to receive(:execute).and_return(true)
-          end
-
-          project.rename_repo
-        end
-      end
-
-      it 'renames a repository' do
-        stub_container_registry_config(enabled: false)
-
-        expect(gitlab_shell).not_to receive(:mv_repository)
-
-        expect_any_instance_of(SystemHooksService)
-          .to receive(:execute_hooks_for)
-            .with(project, :rename)
-
-        expect(project).to receive(:expire_caches_before_rename)
-
-        project.rename_repo
-      end
-
-      context 'container registry with images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-          project.container_repositories << container_repository
-        end
-
-        subject { project.rename_repo }
-
-        it { expect { subject }.to raise_error(StandardError) }
-      end
-
-      context 'gitlab pages' do
-        it 'moves pages folder to new location' do
-          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      context 'attachments' do
-        it 'keeps uploads folder location unchanged' do
-          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
-
-          project.rename_repo
-        end
-
-        context 'when not rolled out' do
-          let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
-
-          it 'moves pages folder to hashed storage' do
-            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
-              expect(service).to receive(:execute)
-            end
-
-            project.rename_repo
-          end
-        end
-      end
-
-      it 'updates project full path in .git/config' do
-        project.rename_repo
-
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 

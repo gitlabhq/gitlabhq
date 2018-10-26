@@ -17,19 +17,20 @@ describe('Cycle analytics banner', () => {
   });
 
   it('should render cycle analytics information', () => {
-    expect(
-      vm.$el.querySelector('h4').textContent.trim(),
-    ).toEqual('Introducing Cycle Analytics');
+    expect(vm.$el.querySelector('h4').textContent.trim()).toEqual('Introducing Cycle Analytics');
 
     expect(
-      vm.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
-    ).toContain('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.');
-    expect(
-      vm.$el.querySelector('a').textContent.trim(),
-    ).toEqual('Read more');
-    expect(
-      vm.$el.querySelector('a').getAttribute('href'),
-    ).toEqual('path');
+      vm.$el
+        .querySelector('p')
+        .textContent.trim()
+        .replace(/[\r\n]+/g, ' '),
+    ).toContain(
+      'Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.',
+    );
+
+    expect(vm.$el.querySelector('a').textContent.trim()).toEqual('Read more');
+
+    expect(vm.$el.querySelector('a').getAttribute('href')).toEqual('path');
   });
 
   it('should emit an event when close button is clicked', () => {

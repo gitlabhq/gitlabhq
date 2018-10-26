@@ -5,23 +5,28 @@ module QA
     class Product
       include Capybara::DSL
 
-      Attribute = Struct.new(:name, :block)
+      attr_reader :factory
 
-      def initialize
-        @location = current_url
+      def initialize(factory)
+        @factory = factory
+
+        define_attributes
       end
 
       def visit!
-        visit @location
+        visit(web_url)
       end
 
-      def self.populate!(factory)
-        new.tap do |product|
-          factory.class.attributes.each_value do |attribute|
-            product.instance_exec(factory, attribute.block) do |factory, block|
-              value = block.call(factory)
-              product.define_singleton_method(attribute.name) { value }
-            end
+      def populate(*attributes)
+        attributes.each(&method(:public_send))
+      end
+
+      private
+
+      def define_attributes
+        factory.class.attributes_names.each do |name|
+          define_singleton_method(name) do
+            factory.public_send(name)
           end
         end
       end

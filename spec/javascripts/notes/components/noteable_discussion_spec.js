@@ -138,23 +138,21 @@ describe('noteable_discussion component', () => {
     it('should return first note object for placeholder note', () => {
       const data = {
         isPlaceholderNote: true,
-        notes: [
-          { body: 'hello world!' },
-        ],
+        notes: [{ body: 'hello world!' }],
       };
 
       const note = vm.componentData(data);
+
       expect(note).toEqual(data.notes[0]);
     });
 
     it('should return given note for nonplaceholder notes', () => {
       const data = {
-        notes: [
-          { id: 12 },
-        ],
+        notes: [{ id: 12 }],
       };
 
       const note = vm.componentData(data);
+
       expect(note).toEqual(data);
     });
   });

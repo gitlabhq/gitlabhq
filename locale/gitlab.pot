@@ -330,6 +330,9 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
+msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
+msgstr ""
+
 msgid "Add a table"
 msgstr ""
 
@@ -625,6 +628,9 @@ msgid "Archived projects"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to erase this build?"
 msgstr ""
 
 msgid "Are you sure you want to lose unsaved changes?"
@@ -1211,6 +1217,9 @@ msgstr ""
 msgid "CiStatusLabel|created"
 msgstr ""
 
+msgid "CiStatusLabel|delayed"
+msgstr ""
+
 msgid "CiStatusLabel|failed"
 msgstr ""
 
@@ -1224,9 +1233,6 @@ msgid "CiStatusLabel|passed with warnings"
 msgstr ""
 
 msgid "CiStatusLabel|pending"
-msgstr ""
-
-msgid "CiStatusLabel|scheduled"
 msgstr ""
 
 msgid "CiStatusLabel|skipped"
@@ -1247,6 +1253,9 @@ msgstr ""
 msgid "CiStatusText|created"
 msgstr ""
 
+msgid "CiStatusText|delayed"
+msgstr ""
+
 msgid "CiStatusText|failed"
 msgstr ""
 
@@ -1257,9 +1266,6 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
-msgstr ""
-
-msgid "CiStatusText|scheduled"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -2046,6 +2052,9 @@ msgstr ""
 msgid "Create project label"
 msgstr ""
 
+msgid "Create your first page"
+msgstr ""
+
 msgid "CreateTag|Tag"
 msgstr ""
 
@@ -2169,7 +2178,7 @@ msgstr ""
 msgid "DelayedJobs|Unschedule"
 msgstr ""
 
-msgid "DelayedJobs|scheduled"
+msgid "DelayedJobs|delayed"
 msgstr ""
 
 msgid "Delete"
@@ -2597,7 +2606,7 @@ msgstr ""
 msgid "Environments|Updated"
 msgstr ""
 
-msgid "Environments|You don't have any environments right now."
+msgid "Environments|You don't have any environments right now"
 msgstr ""
 
 msgid "Epic"
@@ -3590,6 +3599,9 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List view"
+msgstr ""
+
 msgid "List your Bitbucket Server repositories"
 msgstr ""
 
@@ -4018,6 +4030,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No Assignee"
+msgstr ""
+
+msgid "No Label"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
@@ -4121,6 +4139,12 @@ msgid "Note: Consider asking your GitLab administrator to configure %{github_int
 msgstr ""
 
 msgid "Notes|Are you sure you want to cancel creating this comment?"
+msgstr ""
+
+msgid "Notes|Show all activity"
+msgstr ""
+
+msgid "Notes|Show comments only"
 msgstr ""
 
 msgid "Notification events"
@@ -4905,9 +4929,6 @@ msgstr ""
 msgid "PrometheusService|Automatically deploy and configure Prometheus on your clusters to monitor your project’s environments"
 msgstr ""
 
-msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
-msgstr ""
-
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
@@ -5583,6 +5604,9 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
+msgid "Something went wrong while fetching comments. Please try again."
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -6107,7 +6131,7 @@ msgstr ""
 msgid "This is a confidential issue."
 msgstr ""
 
-msgid "This is a scheduled to run in "
+msgid "This is a delayed to run in "
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."
@@ -6195,6 +6219,9 @@ msgid "This project"
 msgstr ""
 
 msgid "This project does not belong to a group and can therefore not make use of group Runners."
+msgstr ""
+
+msgid "This project does not have a wiki homepage yet"
 msgstr ""
 
 msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
@@ -6495,6 +6522,9 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
+msgid "Tree view"
+msgstr ""
+
 msgid "Trending"
 msgstr ""
 
@@ -6574,6 +6604,9 @@ msgid "Unverified"
 msgstr ""
 
 msgid "Up to date"
+msgstr ""
+
+msgid "Upcoming"
 msgstr ""
 
 msgid "Update"
@@ -6706,6 +6739,9 @@ msgid "Verified"
 msgstr ""
 
 msgid "Version"
+msgstr ""
+
+msgid "View app"
 msgstr ""
 
 msgid "View file @ "

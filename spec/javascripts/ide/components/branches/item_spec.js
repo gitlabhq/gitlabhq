@@ -29,13 +29,16 @@ describe('IDE branch item', () => {
 
   it('renders branch name and timeago', () => {
     const timeText = getTimeago().format(TEST_BRANCH.committedDate);
+
     expect(vm.$el).toContainText(TEST_BRANCH.name);
     expect(vm.$el.querySelector('time')).toHaveText(timeText);
     expect(vm.$el.querySelector('.ic-mobile-issue-close')).toBe(null);
   });
 
   it('renders link to branch', () => {
-    const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`).href;
+    const expectedHref = router.resolve(`/project/${TEST_PROJECT_ID}/edit/${TEST_BRANCH.name}`)
+      .href;
+
     expect(vm.$el).toMatch('a');
     expect(vm.$el).toHaveAttr('href', expectedHref);
   });

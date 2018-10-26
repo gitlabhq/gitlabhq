@@ -112,6 +112,6 @@ describe('Board component', () => {
         ).toBe(true);
 
         done();
-      });
+      }).catch(done.fail);
   });
 });

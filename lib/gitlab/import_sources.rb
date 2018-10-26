@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitlab::ImportSources module
 #
 # Define import sources that can be used

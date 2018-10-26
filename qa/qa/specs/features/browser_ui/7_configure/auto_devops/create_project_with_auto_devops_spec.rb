@@ -3,7 +3,7 @@
 require 'pathname'
 
 module QA
-  context :configure, :orchestrated, :kubernetes do
+  context 'Configure', :orchestrated, :kubernetes do
     describe 'Auto DevOps support' do
       after do
         @cluster&.remove!
@@ -49,11 +49,13 @@ module QA
               cluster.install_prometheus = true
               cluster.install_runner = true
             end
+            kubernetes_cluster.populate(:ingress_ip)
 
             project.visit!
             Page::Project::Menu.act { click_ci_cd_settings }
             Page::Project::Settings::CICD.perform do |p|
-              p.enable_auto_devops_with_domain("#{kubernetes_cluster.ingress_ip}.nip.io")
+              p.enable_auto_devops_with_domain(
+                "#{kubernetes_cluster.ingress_ip}.nip.io")
             end
 
             project.visit!

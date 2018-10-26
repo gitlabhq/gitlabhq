@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Web IDE file templates' do
       include Runtime::Fixtures
 
@@ -17,6 +17,7 @@ module QA
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Web IDE'
         end
+        @project.visit!
 
         # Add a file via the regular Files view because the Web IDE isn't
         # available unless there is a file present

@@ -22,6 +22,7 @@ module QA
           element :activity_link, "title: _('Activity')" # rubocop:disable QA/ElementWithPattern
           element :wiki_link_text, "Wiki" # rubocop:disable QA/ElementWithPattern
           element :milestones_link
+          element :labels_link
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
@@ -86,6 +87,14 @@ module QA
           end
         end
 
+        def go_to_labels
+          hover_issues do
+            within_submenu do
+              click_element(:labels_link)
+            end
+          end
+        end
+
         def click_merge_requests
           within_sidebar do
             click_link('Merge Requests')
@@ -104,7 +113,21 @@ module QA
           end
         end
 
+        def click_repository
+          within_sidebar do
+            click_link('Repository')
+          end
+        end
+
         private
+
+        def hover_issues
+          within_sidebar do
+            find_element(:issues_item).hover
+
+            yield
+          end
+        end
 
         def hover_settings
           within_sidebar do

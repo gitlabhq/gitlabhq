@@ -23,14 +23,7 @@ export default {
 <template>
   <div class="bs-callout bs-callout-warning">
     <p
-      v-if="hasNoRunnersForProject"
-      class="js-stuck-no-runners append-bottom-0"
-    >
-      {{ s__(`Job|This job is stuck, because the project
-  doesn't have any runners online assigned to it.`) }}
-    </p>
-    <p
-      v-else-if="tags.length"
+      v-if="tags.length"
       class="js-stuck-with-tags append-bottom-0"
     >
       {{ s__(`This job is stuck, because you don't have
@@ -42,6 +35,13 @@ export default {
       >
         {{ tag }}
       </span>
+    </p>
+    <p
+      v-else-if="hasNoRunnersForProject"
+      class="js-stuck-no-runners append-bottom-0"
+    >
+      {{ s__(`Job|This job is stuck, because the project
+  doesn't have any runners online assigned to it.`) }}
     </p>
     <p
       v-else

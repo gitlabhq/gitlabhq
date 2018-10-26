@@ -87,6 +87,14 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when user is setting notes filters' do
+      let(:issuable) { merge_request }
+      let!(:discussion_note) { create(:discussion_note_on_merge_request, :system, noteable: issuable, project: project) }
+      let!(:discussion_comment) { create(:discussion_note_on_merge_request, noteable: issuable, project: project) }
+
+      it_behaves_like 'issuable notes filter'
+    end
+
     describe 'as json' do
       context 'with basic serializer param' do
         it 'renders basic MR entity as json' do
@@ -838,12 +846,14 @@ describe Projects::MergeRequestsController do
     end
 
     context 'with a forked project' do
-      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-      let(:fork_owner) { fork_project.owner }
+      let(:forked_project) { fork_project(project, fork_owner, repository: true) }
+      let(:fork_owner) { create(:user) }
 
       before do
-        merge_request.update!(source_project: fork_project)
-        fork_project.add_reporter(user)
+        project.add_developer(fork_owner)
+
+        merge_request.update!(source_project: forked_project)
+        forked_project.add_reporter(user)
       end
 
       context 'user cannot push to source branch' do

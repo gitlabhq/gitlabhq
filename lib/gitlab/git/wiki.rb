@@ -1,8 +1,3 @@
-# We only need Gollum::Page so let's not load all of gollum-lib.
-require 'gollum-lib/pagination'
-require 'gollum-lib/wiki'
-require 'gollum-lib/page'
-
 module Gitlab
   module Git
     class Wiki
@@ -16,7 +11,43 @@ module Gitlab
           { user_id: user_id, username: username, name: name, email: email, message: message }
         end
       end
-      PageBlob = Struct.new(:name)
+
+      # GollumSlug inlines just enough knowledge from Gollum::Page to generate a
+      # slug, which is used when previewing pages that haven't been persisted
+      class GollumSlug
+        class << self
+          def cname(name, char_white_sub = '-', char_other_sub = '-')
+            if name.respond_to?(:gsub)
+              name.gsub(/\s/, char_white_sub).gsub(/[<>+]/, char_other_sub)
+            else
+              ''
+            end
+          end
+
+          def format_to_ext(format)
+            format == :markdown ? "md" : format.to_s
+          end
+
+          def canonicalize_filename(filename)
+            ::File.basename(filename, ::File.extname(filename)).tr('-', ' ')
+          end
+
+          def generate(title, format)
+            ext = format_to_ext(format.to_sym)
+            name = cname(title) + '.' + ext
+            canonical_name = canonicalize_filename(name)
+
+            path =
+              if name.include?('/')
+                name.sub(%r{/[^/]+$}, '/')
+              else
+                ''
+              end
+
+            path + cname(canonical_name, '-', '-')
+          end
+        end
+      end
 
       attr_reader :repository
 
@@ -90,15 +121,7 @@ module Gitlab
       end
 
       def preview_slug(title, format)
-        # Adapted from gollum gem (Gollum::Wiki#preview_page) to avoid
-        # using Rugged through a Gollum::Wiki instance
-        page_class = Gollum::Page
-        page = page_class.new(nil)
-        ext = page_class.format_to_ext(format.to_sym)
-        name = page_class.cname(title) + '.' + ext
-        blob = PageBlob.new(name)
-        page.populate(blob)
-        page.url_path
+        GollumSlug.generate(title, format)
       end
 
       def page_formatted_data(title:, dir: nil, version: nil)

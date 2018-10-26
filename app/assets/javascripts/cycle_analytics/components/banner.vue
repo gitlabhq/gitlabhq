@@ -1,28 +1,28 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
-  import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
+import Icon from '~/vue_shared/components/icon.vue';
+import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  components: {
+    Icon,
+  },
+  props: {
+    documentationLink: {
+      type: String,
+      required: true,
     },
-    props: {
-      documentationLink: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {
+    iconCycleAnalyticsSplash() {
+      return iconCycleAnalyticsSplash;
     },
-    computed: {
-      iconCycleAnalyticsSplash() {
-        return iconCycleAnalyticsSplash;
-      },
+  },
+  methods: {
+    dismissOverviewDialog() {
+      this.$emit('dismiss-overview-dialog');
     },
-    methods: {
-      dismissOverviewDialog() {
-        this.$emit('dismiss-overview-dialog');
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div class="landing content-block">

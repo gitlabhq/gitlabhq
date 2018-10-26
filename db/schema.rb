@@ -691,6 +691,23 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_index "clusters_applications_runners", ["cluster_id"], name: "index_clusters_applications_runners_on_cluster_id", unique: true, using: :btree
   add_index "clusters_applications_runners", ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
 
+  create_table "clusters_kubernetes_namespaces", id: :bigserial, force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "project_id"
+    t.integer "cluster_project_id"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "encrypted_service_account_token"
+    t.string "encrypted_service_account_token_iv"
+    t.string "namespace", null: false
+    t.string "service_account_name"
+  end
+
+  add_index "clusters_kubernetes_namespaces", ["cluster_id", "namespace"], name: "kubernetes_namespaces_cluster_and_namespace", unique: true, using: :btree
+  add_index "clusters_kubernetes_namespaces", ["cluster_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_id", using: :btree
+  add_index "clusters_kubernetes_namespaces", ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id", using: :btree
+  add_index "clusters_kubernetes_namespaces", ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id", using: :btree
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -2117,6 +2134,16 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_index "user_interacted_projects", ["project_id", "user_id"], name: "index_user_interacted_projects_on_project_id_and_user_id", unique: true, using: :btree
   add_index "user_interacted_projects", ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
 
+  create_table "user_preferences", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "issue_notes_filter", limit: 2, default: 0, null: false
+    t.integer "merge_request_notes_filter", limit: 2, default: 0, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "user_preferences", ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
+
   create_table "user_statuses", primary_key: "user_id", force: :cascade do |t|
     t.integer "cached_markdown_version"
     t.string "emoji", default: "speech_balloon", null: false
@@ -2325,6 +2352,9 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_kubernetes_namespaces", "cluster_projects", on_delete: :nullify
+  add_foreign_key "clusters_kubernetes_namespaces", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_kubernetes_namespaces", "projects", on_delete: :nullify
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
@@ -2440,6 +2470,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
+  add_foreign_key "user_preferences", "users", on_delete: :cascade
   add_foreign_key "user_statuses", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users", "application_setting_terms", column: "accepted_term_id", name: "fk_789cd90b35", on_delete: :cascade

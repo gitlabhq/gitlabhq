@@ -4,14 +4,17 @@ export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
     state.jobEndpoint = endpoint;
   },
-  [types.REQUEST_STATUS_FAVICON](state) {
-    state.fetchingStatusFavicon = true;
+
+  [types.SET_TRACE_OPTIONS](state, options = {}) {
+    state.traceEndpoint = options.pagePath;
+    state.traceState = options.logState;
   },
-  [types.RECEIVE_STATUS_FAVICON_SUCCESS](state) {
-    state.fetchingStatusFavicon = false;
+
+  [types.HIDE_SIDEBAR](state) {
+    state.isSidebarOpen = false;
   },
-  [types.RECEIVE_STATUS_FAVICON_ERROR](state) {
-    state.fetchingStatusFavicon = false;
+  [types.SHOW_SIDEBAR](state) {
+    state.isSidebarOpen = true;
   },
 
   [types.RECEIVE_TRACE_SUCCESS](state, log) {
@@ -23,8 +26,12 @@ export default {
       state.trace += log.html;
       state.traceSize += log.size;
     } else {
-      state.trace = log.html;
-      state.traceSize = log.size;
+      // When the job still does not have a trace
+      // the trace response will not have a defined
+      // html or size. We keep the old value otherwise these
+      // will be set to `undefined`
+      state.trace = log.html || state.trace;
+      state.traceSize = log.size || state.traceSize;
     }
 
     if (state.traceSize < log.total) {
@@ -33,25 +40,29 @@ export default {
       state.isTraceSizeVisible = false;
     }
 
-    state.isTraceComplete = log.complete;
-    state.hasTraceError = false;
+    state.isTraceComplete = log.complete || state.isTraceComplete;
   },
+
+  /**
+   * Will remove loading animation
+   */
   [types.STOP_POLLING_TRACE](state) {
     state.isTraceComplete = true;
   },
-  // todo_fl: check this.
+
+  /**
+   * Will remove loading animation
+   */
   [types.RECEIVE_TRACE_ERROR](state) {
-    state.isLoadingTrace = false;
     state.isTraceComplete = true;
-    state.hasTraceError = true;
   },
 
   [types.REQUEST_JOB](state) {
     state.isLoading = true;
   },
   [types.RECEIVE_JOB_SUCCESS](state, job) {
-    state.isLoading = false;
     state.hasError = false;
+    state.isLoading = false;
     state.job = job;
 
     /**
@@ -66,17 +77,28 @@ export default {
   },
   [types.RECEIVE_JOB_ERROR](state) {
     state.isLoading = false;
-    state.hasError = true;
     state.job = {};
+    state.hasError = true;
   },
 
-  [types.SCROLL_TO_TOP](state) {
-    state.isTraceScrolledToBottom = false;
-    state.hasBeenScrolled = true;
+  [types.ENABLE_SCROLL_TOP](state) {
+    state.isScrollTopDisabled = false;
   },
-  [types.SCROLL_TO_BOTTOM](state) {
-    state.isTraceScrolledToBottom = true;
-    state.hasBeenScrolled = true;
+  [types.DISABLE_SCROLL_TOP](state) {
+    state.isScrollTopDisabled = true;
+  },
+  [types.ENABLE_SCROLL_BOTTOM](state) {
+    state.isScrollBottomDisabled = false;
+  },
+  [types.DISABLE_SCROLL_BOTTOM](state) {
+    state.isScrollBottomDisabled = true;
+  },
+  [types.TOGGLE_SCROLL_ANIMATION](state, toggle) {
+    state.isScrollingDown = toggle;
+  },
+
+  [types.TOGGLE_IS_SCROLL_IN_BOTTOM_BEFORE_UPDATING_TRACE](state, toggle) {
+    state.isScrolledToBottomBeforeReceivingTrace = toggle;
   },
 
   [types.REQUEST_STAGES](state) {

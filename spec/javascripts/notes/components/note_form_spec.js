@@ -76,6 +76,7 @@ describe('issue_note_form component', () => {
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
         'Markdown',
       );

@@ -10,8 +10,8 @@ describe('Ajax Loading Spinner', () => {
     AjaxLoadingSpinner.init();
   });
 
-  it('change current icon with spinner icon and disable link while waiting ajax response', (done) => {
-    spyOn($, 'ajax').and.callFake((req) => {
+  it('change current icon with spinner icon and disable link while waiting ajax response', done => {
+    spyOn($, 'ajax').and.callFake(req => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
       const icon = ajaxLoadingSpinner.querySelector('i');
@@ -33,8 +33,8 @@ describe('Ajax Loading Spinner', () => {
     document.querySelector('.js-ajax-loading-spinner').click();
   });
 
-  it('use original icon again and enabled the link after complete the ajax request', (done) => {
-    spyOn($, 'ajax').and.callFake((req) => {
+  it('use original icon again and enabled the link after complete the ajax request', done => {
+    spyOn($, 'ajax').and.callFake(req => {
       const xhr = new XMLHttpRequest();
       const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
 
@@ -42,6 +42,7 @@ describe('Ajax Loading Spinner', () => {
       req.complete({});
 
       const icon = ajaxLoadingSpinner.querySelector('i');
+
       expect(icon).toHaveClass('fa-trash-o');
       expect(icon).not.toHaveClass('fa-spinner');
       expect(icon).not.toHaveClass('fa-spin');

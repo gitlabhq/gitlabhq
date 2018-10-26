@@ -79,10 +79,6 @@ gem 'gpgme'
 gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
-# Git Wiki
-# Only used to compute wiki page slugs
-gem 'gitlab-gollum-lib', '~> 4.2', require: false
-
 # API
 gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
@@ -157,6 +153,11 @@ group :unicorn do
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
+group :puma do
+  gem 'puma', '~> 3.12', require: false
+  gem 'puma_worker_killer', require: false
+end
+
 # State machine
 gem 'state_machines-activerecord', '~> 0.5.1'
 
@@ -210,7 +211,7 @@ gem 'hipchat', '~> 1.5.0'
 gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
-gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
+gem 'flowdock', '~> 0.7'
 
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
@@ -421,8 +422,7 @@ end
 gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
-# Locked until https://github.com/google/protobuf/issues/4210 is closed
-gem 'google-protobuf', '= 3.5.1'
+gem 'google-protobuf', '~> 3.6'
 
 gem 'toml-rb', '~> 1.0.0', require: false
 

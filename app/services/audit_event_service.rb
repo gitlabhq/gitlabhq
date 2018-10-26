@@ -17,11 +17,29 @@ class AuditEventService
   end
 
   def security_event
-    SecurityEvent.create(
+    log_security_event_to_file
+    log_security_event_to_database
+  end
+
+  private
+
+  def base_payload
+    {
       author_id: @author.id,
       entity_id: @entity.id,
-      entity_type: @entity.class.name,
-      details: @details
-    )
+      entity_type: @entity.class.name
+    }
+  end
+
+  def file_logger
+    @file_logger ||= Gitlab::AuditJsonLogger.build
+  end
+
+  def log_security_event_to_file
+    file_logger.info(base_payload.merge(@details))
+  end
+
+  def log_security_event_to_database
+    SecurityEvent.create(base_payload.merge(details: @details))
   end
 end

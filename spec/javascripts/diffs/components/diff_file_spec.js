@@ -97,8 +97,11 @@ describe('DiffFile', () => {
         expect(vm.$el.innerText).toContain(
           'This source diff could not be displayed because it is too large',
         );
+
         expect(vm.$el.querySelector('.js-too-large-diff')).toBeDefined();
-        expect(vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK)).toBeGreaterThan(-1);
+        expect(
+          vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK),
+        ).toBeGreaterThan(-1);
 
         done();
       });

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :release do
+  context 'Release' do
     describe 'Deploy token creation' do
       it 'user adds a deploy token' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

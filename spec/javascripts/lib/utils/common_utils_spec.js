@@ -1,4 +1,3 @@
-/* eslint-disable promise/catch-or-return */
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -43,6 +42,7 @@ describe('common_utils', () => {
 
     it('should remove the question mark from the search params', () => {
       const paramsArray = commonUtils.urlParamsToArray('?test=thing');
+
       expect(paramsArray[0][0]).not.toBe('?');
     });
   });
@@ -122,6 +122,7 @@ describe('common_utils', () => {
       commonUtils.handleLocationHash();
 
       expectGetElementIdToHaveBeenCalledWith('test');
+
       expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
 
       document.getElementById('parent').remove();
@@ -140,6 +141,7 @@ describe('common_utils', () => {
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
       expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
 
       document.getElementById('parent').remove();
@@ -160,6 +162,7 @@ describe('common_utils', () => {
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
       expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
       expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
 
@@ -223,20 +226,24 @@ describe('common_utils', () => {
 
     it('should return valid parameter', () => {
       const value = commonUtils.getParameterByName('scope');
+
       expect(commonUtils.getParameterByName('p')).toEqual('2');
       expect(value).toBe('all');
     });
 
     it('should return invalid parameter', () => {
       const value = commonUtils.getParameterByName('fakeParameter');
+
       expect(value).toBe(null);
     });
 
     it('should return valid paramentes if URL is provided', () => {
       let value = commonUtils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+
       expect(value).toBe('bar');
 
       value = commonUtils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+
       expect(value).toBe('canchu');
     });
   });
@@ -360,10 +367,10 @@ describe('common_utils', () => {
         }).then((resp) => {
           stop(resp);
         })
-      )).then((respBackoff) => {
+      ).catch(done.fail)).then((respBackoff) => {
         expect(respBackoff).toBe(expectedResponseValue);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('catches the rejected promise from the callback ', (done) => {
@@ -394,18 +401,20 @@ describe('common_utils', () => {
               stop(resp);
             }
           })
-      )).then((respBackoff) => {
+      ).catch(done.fail)).then((respBackoff) => {
         const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
         expect(timeouts).toEqual([2000, 4000]);
         expect(respBackoff).toBe(expectedResponseValue);
         done();
-      });
+      }).catch(done.fail);
     });
 
     it('rejects the backOff promise after timing out', (done) => {
       commonUtils.backOff(next => next(), 64000)
         .catch((errBackoffResp) => {
           const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
           expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
           expect(errBackoffResp instanceof Error).toBe(true);
           expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
@@ -451,6 +460,7 @@ describe('common_utils', () => {
       const favicon = document.getElementById('favicon');
       favicon.setAttribute('href', 'new/favicon');
       commonUtils.resetFavicon();
+
       expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
     });
   });
@@ -460,7 +470,7 @@ describe('common_utils', () => {
       commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
         expect(url).toEqual(faviconWithOverlayDataUrl);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -480,7 +490,7 @@ describe('common_utils', () => {
       commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
         expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
         done();
-      });
+      }).catch(done.fail);
     });
   });
 
@@ -508,6 +518,7 @@ describe('common_utils', () => {
       commonUtils.setCiStatusFavicon(BUILD_URL)
         .catch(() => {
           const favicon = document.getElementById('favicon');
+
           expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
           done();
         });
@@ -521,6 +532,7 @@ describe('common_utils', () => {
       commonUtils.setCiStatusFavicon(BUILD_URL)
         .then(() => {
           const favicon = document.getElementById('favicon');
+
           expect(favicon.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
           done();
         })

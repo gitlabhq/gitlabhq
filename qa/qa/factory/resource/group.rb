@@ -4,7 +4,11 @@ module QA
       class Group < Factory::Base
         attr_accessor :path, :description
 
-        dependency Factory::Resource::Sandbox, as: :sandbox
+        attribute :sandbox do
+          Factory::Resource::Sandbox.fabricate!
+        end
+
+        attribute :id
 
         def initialize
           @path = Runtime::Namespace.name
@@ -34,6 +38,29 @@ module QA
               end
             end
           end
+        end
+
+        def fabricate_via_api!
+          resource_web_url(api_get)
+        rescue ResourceNotFoundError
+          super
+        end
+
+        def api_get_path
+          "/groups/#{CGI.escape("#{sandbox.path}/#{path}")}"
+        end
+
+        def api_post_path
+          '/groups'
+        end
+
+        def api_post_body
+          {
+            parent_id: sandbox.id,
+            path: path,
+            name: path,
+            visibility: 'public'
+          }
         end
       end
     end

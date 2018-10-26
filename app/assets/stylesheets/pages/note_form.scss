@@ -340,6 +340,8 @@
 }
 
 .note-form-actions {
+  color: $gl-text-color;
+
   @include media-breakpoint-down(xs) {
     .btn {
       float: none;

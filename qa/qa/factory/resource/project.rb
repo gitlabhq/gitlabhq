@@ -4,26 +4,24 @@ module QA
   module Factory
     module Resource
       class Project < Factory::Base
-        attr_writer :description
-        attr_reader :name
+        attribute :name
+        attribute :description
 
-        dependency Factory::Resource::Group, as: :group
-
-        product :name do |factory|
-          factory.name
+        attribute :group do
+          Factory::Resource::Group.fabricate!
         end
 
-        product :repository_ssh_location do
-          Page::Project::Show.act do
-            choose_repository_clone_ssh
-            repository_location
+        attribute :repository_ssh_location do
+          Page::Project::Show.perform do |page|
+            page.choose_repository_clone_ssh
+            page.repository_location
           end
         end
 
-        product :repository_http_location do
-          Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location
+        attribute :repository_http_location do
+          Page::Project::Show.perform do |page|
+            page.choose_repository_clone_http
+            page.repository_location
           end
         end
 
@@ -38,7 +36,7 @@ module QA
         def fabricate!
           group.visit!
 
-          Page::Group::Show.act { go_to_new_project }
+          Page::Group::Show.perform(&:go_to_new_project)
 
           Page::Project::New.perform do |page|
             page.choose_test_namespace
@@ -47,6 +45,32 @@ module QA
             page.set_visibility('Public')
             page.create_new_project
           end
+        end
+
+        def api_get_path
+          "/projects/#{name}"
+        end
+
+        def api_post_path
+          '/projects'
+        end
+
+        def api_post_body
+          {
+            namespace_id: group.id,
+            path: name,
+            name: name,
+            description: description,
+            visibility: 'public'
+          }
+        end
+
+        private
+
+        def transform_api_resource(resource)
+          resource[:repository_ssh_location] = Git::Location.new(resource[:ssh_url_to_repo])
+          resource[:repository_http_location] = Git::Location.new(resource[:http_url_to_repo])
+          resource
         end
       end
     end

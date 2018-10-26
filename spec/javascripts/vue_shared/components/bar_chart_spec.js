@@ -71,12 +71,6 @@ describe('Bar chart component', () => {
     expect(barChart.xAxisLocation).toEqual('translate(100, 250)');
   });
 
-  it('Contains a total of 4 ticks across the y axis', () => {
-    const ticks = barChart.$el.querySelector('.y-axis').querySelectorAll('.tick').length;
-
-    expect(ticks).toEqual(4);
-  });
-
   it('rotates the x axis labels a total of 90 degress (CCW)', () => {
     const xAxisLabel = barChart.$el.querySelector('.x-axis').querySelectorAll('text')[0];
 

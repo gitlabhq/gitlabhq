@@ -1,6 +1,0 @@
----
-title: Fix the state of the Done button when there is an error in the GitLab Todos
-  section
-merge_request:
-author: marcos8896
-type: fixed

@@ -20,6 +20,7 @@ describe('MRWidgetMissingBranch', () => {
         expect(vm.missingBranchName).toEqual('source');
 
         vm.mr.sourceBranchRemoved = false;
+
         expect(vm.missingBranchName).toEqual('target');
       });
     });

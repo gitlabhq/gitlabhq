@@ -29,14 +29,9 @@ export default {
       required: false,
       default: '',
     },
-    terminalPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   computed: {
-    ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage']),
+    ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
     coverage() {
       return `${this.job.coverage}%`;
     },
@@ -64,10 +59,10 @@ export default {
         return '';
       }
 
-      let t = this.job.metadata.timeout_human_readable;
-      if (this.job.metadata.timeout_source !== '') {
-        t += ` (from ${this.job.metadata.timeout_source})`;
-      }
+    let t = this.job.metadata.timeout_human_readable;
+    if (this.job.metadata.timeout_source !== '') {
+      t += ` (from ${this.job.metadata.timeout_source})`;
+    }
 
       return t;
     },
@@ -100,196 +95,190 @@ export default {
       );
     },
     commit() {
-      return this.job.pipeline.commit || {};
+      return this.job.pipeline && this.job.pipeline.commit ? this.job.pipeline.commit : {};
     },
   },
   methods: {
-    ...mapActions(['fetchJobsForStage']),
+    ...mapActions(['fetchJobsForStage', 'toggleSidebar']),
   },
 };
 </script>
 <template>
   <aside
-    class="js-build-sidebar right-sidebar right-sidebar-expanded build-sidebar"
+    class="right-sidebar build-sidebar"
     data-offset-top="101"
     data-spy="affix"
   >
     <div class="sidebar-container">
       <div class="blocks-container">
-        <template v-if="!isLoading">
-          <div class="block">
-            <strong class="inline prepend-top-8">
-              {{ job.name }}
-            </strong>
-            <a
-              v-if="job.retry_path"
-              :class="retryButtonClass"
-              :href="job.retry_path"
-              data-method="post"
-              rel="nofollow"
-            >
-              {{ __('Retry') }}
-            </a>
-            <a
-              v-if="terminalPath"
-              :href="terminalPath"
-              class="js-terminal-link pull-right btn btn-primary
-        btn-inverted visible-md-block visible-lg-block"
-              target="_blank"
-            >
-              {{ __('Debug') }}
-              <icon name="external-link" />
-            </a>
-            <button
-              :aria-label="__('Toggle Sidebar')"
-              type="button"
-              class="btn btn-blank gutter-toggle
-          float-right d-block d-md-none js-sidebar-build-toggle"
-            >
-              <i
-                aria-hidden="true"
-                data-hidden="true"
-                class="fa fa-angle-double-right"
-              ></i>
-            </button>
-          </div>
-          <div
-            v-if="job.retry_path || job.new_issue_path"
-            class="block retry-link"
+        <div class="block">
+          <strong class="inline prepend-top-8">
+            {{ job.name }}
+          </strong>
+          <a
+            v-if="job.retry_path"
+            :class="retryButtonClass"
+            :href="job.retry_path"
+            data-method="post"
+            rel="nofollow"
           >
-            <a
-              v-if="job.new_issue_path"
-              :href="job.new_issue_path"
-              class="js-new-issue btn btn-success btn-inverted"
-            >
-              {{ __('New issue') }}
+            {{ __('Retry') }}
+          </a>
+          <a
+            v-if="job.terminal_path"
+            :href="job.terminal_path"
+            class="js-terminal-link pull-right btn btn-primary
+      btn-inverted visible-md-block visible-lg-block"
+            target="_blank"
+          >
+            {{ __('Debug') }}
+            <icon name="external-link" />
+          </a>
+          <button
+            :aria-label="__('Toggle Sidebar')"
+            type="button"
+            class="btn btn-blank gutter-toggle
+        float-right d-block d-md-none js-sidebar-build-toggle"
+            @click="toggleSidebar"
+          >
+            <i
+              aria-hidden="true"
+              data-hidden="true"
+              class="fa fa-angle-double-right"
+            ></i>
+          </button>
+        </div>
+        <div
+          v-if="job.retry_path || job.new_issue_path"
+          class="block retry-link"
+        >
+          <a
+            v-if="job.new_issue_path"
+            :href="job.new_issue_path"
+            class="js-new-issue btn btn-success btn-inverted"
+          >
+            {{ __('New issue') }}
+          </a>
+          <a
+            v-if="job.retry_path"
+            :href="job.retry_path"
+            class="js-retry-job btn btn-inverted-secondary"
+            data-method="post"
+            rel="nofollow"
+          >
+            {{ __('Retry') }}
+          </a>
+        </div>
+        <div :class="{ block : renderBlock }">
+          <p
+            v-if="job.merge_request"
+            class="build-detail-row js-job-mr"
+          >
+            <span class="build-light-text">
+              {{ __('Merge Request:') }}
+            </span>
+            <a :href="job.merge_request.path">
+              !{{ job.merge_request.iid }}
             </a>
+          </p>
+
+          <detail-row
+            v-if="job.duration"
+            :value="duration"
+            class="js-job-duration"
+            title="Duration"
+          />
+          <detail-row
+            v-if="job.finished_at"
+            :value="timeFormated(job.finished_at)"
+            class="js-job-finished"
+            title="Finished"
+          />
+          <detail-row
+            v-if="job.erased_at"
+            :value="timeFormated(job.erased_at)"
+            class="js-job-erased"
+            title="Erased"
+          />
+          <detail-row
+            v-if="job.queued"
+            :value="queued"
+            class="js-job-queued"
+            title="Queued"
+          />
+          <detail-row
+            v-if="hasTimeout"
+            :help-url="runnerHelpUrl"
+            :value="timeout"
+            class="js-job-timeout"
+            title="Timeout"
+          />
+          <detail-row
+            v-if="job.runner"
+            :value="runnerId"
+            class="js-job-runner"
+            title="Runner"
+          />
+          <detail-row
+            v-if="job.coverage"
+            :value="coverage"
+            class="js-job-coverage"
+            title="Coverage"
+          />
+          <p
+            v-if="job.tags.length"
+            class="build-detail-row js-job-tags"
+          >
+            <span class="build-light-text">
+              {{ __('Tags:') }}
+            </span>
+            <span
+              v-for="(tag, i) in job.tags"
+              :key="i"
+              class="label label-primary">
+              {{ tag }}
+            </span>
+          </p>
+
+          <div
+            v-if="job.cancel_path"
+            class="btn-group prepend-top-5"
+            role="group">
             <a
-              v-if="job.retry_path"
-              :href="job.retry_path"
-              class="js-retry-job btn btn-inverted-secondary"
+              :href="job.cancel_path"
+              class="js-cancel-job btn btn-sm btn-default"
               data-method="post"
               rel="nofollow"
             >
-              {{ __('Retry') }}
+              {{ __('Cancel') }}
             </a>
           </div>
-          <div :class="{ block : renderBlock }">
-            <p
-              v-if="job.merge_request"
-              class="build-detail-row js-job-mr"
-            >
-              <span class="build-light-text">
-                {{ __('Merge Request:') }}
-              </span>
-              <a :href="job.merge_request.path">
-                !{{ job.merge_request.iid }}
-              </a>
-            </p>
+        </div>
 
-            <detail-row
-              v-if="job.duration"
-              :value="duration"
-              class="js-job-duration"
-              title="Duration"
-            />
-            <detail-row
-              v-if="job.finished_at"
-              :value="timeFormated(job.finished_at)"
-              class="js-job-finished"
-              title="Finished"
-            />
-            <detail-row
-              v-if="job.erased_at"
-              :value="timeFormated(job.erased_at)"
-              class="js-job-erased"
-              title="Erased"
-            />
-            <detail-row
-              v-if="job.queued"
-              :value="queued"
-              class="js-job-queued"
-              title="Queued"
-            />
-            <detail-row
-              v-if="hasTimeout"
-              :help-url="runnerHelpUrl"
-              :value="timeout"
-              class="js-job-timeout"
-              title="Timeout"
-            />
-            <detail-row
-              v-if="job.runner"
-              :value="runnerId"
-              class="js-job-runner"
-              title="Runner"
-            />
-            <detail-row
-              v-if="job.coverage"
-              :value="coverage"
-              class="js-job-coverage"
-              title="Coverage"
-            />
-            <p
-              v-if="job.tags.length"
-              class="build-detail-row js-job-tags"
-            >
-              <span class="build-light-text">
-                {{ __('Tags:') }}
-              </span>
-              <span
-                v-for="(tag, i) in job.tags"
-                :key="i"
-                class="label label-primary">
-                {{ tag }}
-              </span>
-            </p>
+        <artifacts-block
+          v-if="hasArtifact"
+          :artifact="job.artifact"
+        />
+        <trigger-block
+          v-if="hasTriggers"
+          :trigger="job.trigger"
+        />
+        <commit-block
+          :is-last-block="hasStages"
+          :commit="commit"
+          :merge-request="job.merge_request"
+        />
 
-            <div
-              v-if="job.cancel_path"
-              class="btn-group prepend-top-5"
-              role="group">
-              <a
-                :href="job.cancel_path"
-                class="js-cancel-job btn btn-sm btn-default"
-                data-method="post"
-                rel="nofollow"
-              >
-                {{ __('Cancel') }}
-              </a>
-            </div>
-          </div>
-          <artifacts-block
-            v-if="hasArtifact"
-            :artifact="job.artifact"
-          />
-          <trigger-block
-            v-if="hasTriggers"
-            :trigger="job.trigger"
-          />
-          <commit-block
-            :is-last-block="hasStages"
-            :commit="commit"
-            :merge-request="job.merge_request"
-          />
-
-          <stages-dropdown
-            :stages="stages"
-            :pipeline="job.pipeline"
-            :selected-stage="selectedStage"
-            @requestSidebarStageDropdown="fetchJobsForStage"
-          />
-
-        </template>
-        <gl-loading-icon
-          v-else
-          :size="2"
-          class="prepend-top-10"
+        <stages-dropdown
+          :stages="stages"
+          :pipeline="job.pipeline"
+          :selected-stage="selectedStage"
+          @requestSidebarStageDropdown="fetchJobsForStage"
         />
       </div>
 
       <jobs-container
-        v-if="!isLoading && jobs.length"
+        v-if="jobs.length"
         :jobs="jobs"
         :job-id="job.id"
       />

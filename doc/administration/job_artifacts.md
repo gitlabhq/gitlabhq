@@ -1,12 +1,10 @@
 # Jobs artifacts administration
 
->**Notes:**
->- Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
->- Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format
-   changed to `ZIP`.
->- Starting with GitLab 8.17, builds are renamed to jobs.
->- This is the administration documentation. For the user guide see
-   [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
+> **Notes:**
+> - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
+> - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
+> - Starting with GitLab 8.17, builds are renamed to jobs.
+> - This is the administration documentation. For the user guide see [pipelines/job_artifacts](../user/project/pipelines/job_artifacts.md).
 
 Artifacts is a list of files and directories which are attached to a job
 after it completes successfully. This feature is enabled by default in all

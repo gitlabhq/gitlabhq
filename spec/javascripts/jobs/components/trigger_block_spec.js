@@ -45,13 +45,18 @@ describe('Trigger block', () => {
 
         vm.$el.querySelector('.js-reveal-variables').click();
 
-        vm
-          .$nextTick()
+        vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelector('.js-build-variables')).not.toBeNull();
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('UPLOAD_TO_GCS');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
+              'UPLOAD_TO_GCS',
+            );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('false');
-            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('UPLOAD_TO_S3');
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
+              'UPLOAD_TO_S3',
+            );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('true');
           })
           .then(done)

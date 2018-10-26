@@ -150,13 +150,21 @@ module BlobHelper
   # example of Javascript) we tell the browser of the victim not to
   # execute untrusted data.
   def safe_content_type(blob)
-    if blob.text?
+    if blob.extension == 'svg'
+      blob.mime_type
+    elsif blob.text?
       'text/plain; charset=utf-8'
     elsif blob.image?
       blob.content_type
     else
       'application/octet-stream'
     end
+  end
+
+  def content_disposition(blob, inline)
+    return 'attachment' if blob.extension == 'svg'
+
+    inline ? 'inline' : 'attachment'
   end
 
   def ref_project
@@ -175,23 +183,23 @@ module BlobHelper
   end
   private :template_dropdown_names
 
-  def licenses_for_select(project = @project)
+  def licenses_for_select(project)
     @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
   end
 
-  def gitignore_names(project = @project)
+  def gitignore_names(project)
     @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
   end
 
-  def gitlab_ci_ymls(project = @project)
+  def gitlab_ci_ymls(project)
     @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
-  def dockerfile_names(project = @project)
+  def dockerfile_names(project)
     @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
   end
 
-  def blob_editor_paths(project = @project)
+  def blob_editor_paths(project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,

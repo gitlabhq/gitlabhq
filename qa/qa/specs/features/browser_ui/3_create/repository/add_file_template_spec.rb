@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'File templates' do
       include Runtime::Fixtures
 

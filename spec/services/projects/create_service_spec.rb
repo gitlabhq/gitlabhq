@@ -295,6 +295,17 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  it 'calls the passed block' do
+    fake_block = double('block')
+    opts[:relations_block] = fake_block
+
+    expect_next_instance_of(Project) do |project|
+      expect(fake_block).to receive(:call).with(project)
+    end
+
+    create_project(user, opts)
+  end
+
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
     rugged = rugged_repo(project.repository)

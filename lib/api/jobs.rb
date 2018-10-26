@@ -151,7 +151,7 @@ module API
         present build, with: Entities::Job
       end
 
-      desc 'Trigger a actionable job (manual, scheduled, etc)' do
+      desc 'Trigger a actionable job (manual, delayed, etc)' do
         success Entities::Job
         detail 'This feature was added in GitLab 8.11'
       end

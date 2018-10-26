@@ -772,9 +772,6 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
-      broken:
-        path: tmp/tests/non-existent-repositories
-        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
 
   gitaly:
     client_path: tmp/tests/gitaly

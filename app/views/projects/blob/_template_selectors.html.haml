@@ -5,13 +5,13 @@
     .template-type-selector.js-template-type-selector-wrap.hidden
       = dropdown_tag("Choose type", options: { toggle_class: 'js-template-type-selector qa-template-type-dropdown', title: "Choose a template type" } )
     .license-selector.js-license-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag("Apply a license template", options: { toggle_class: 'js-license-selector qa-license-dropdown', title: "Apply a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select, project: @project.name, fullname: @project.namespace.human_name } } )
+      = dropdown_tag("Apply a license template", options: { toggle_class: 'js-license-selector qa-license-dropdown', title: "Apply a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select(@project), project: @project.name, fullname: @project.namespace.human_name } } )
     .gitignore-selector.js-gitignore-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag("Apply a .gitignore template", options: { toggle_class: 'js-gitignore-selector qa-gitignore-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: gitignore_names } } )
+      = dropdown_tag("Apply a .gitignore template", options: { toggle_class: 'js-gitignore-selector qa-gitignore-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: gitignore_names(@project) } } )
     .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag("Apply a GitLab CI Yaml template", options: { toggle_class: 'js-gitlab-ci-yml-selector qa-gitlab-ci-yml-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls } } )
+      = dropdown_tag("Apply a GitLab CI Yaml template", options: { toggle_class: 'js-gitlab-ci-yml-selector qa-gitlab-ci-yml-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls(@project) } } )
     .dockerfile-selector.js-dockerfile-selector-wrap.js-template-selector-wrap.hidden
-      = dropdown_tag("Apply a Dockerfile template", options: { toggle_class: 'js-dockerfile-selector qa-dockerfile-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: dockerfile_names } } )
+      = dropdown_tag("Apply a Dockerfile template", options: { toggle_class: 'js-dockerfile-selector qa-dockerfile-dropdown', title: "Apply a template", filter: true, placeholder: "Filter", data: { data: dockerfile_names(@project) } } )
   .template-selectors-undo-menu.hidden
     %span.text-info Template applied
     %button.btn.btn-sm.btn-info Undo

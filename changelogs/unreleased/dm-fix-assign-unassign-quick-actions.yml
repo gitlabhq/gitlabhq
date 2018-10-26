@@ -1,6 +1,0 @@
----
-title: Don't ignore first action when assign and unassign quick actions are used in
-  the same comment
-merge_request: 21749
-author:
-type: fixed

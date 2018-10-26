@@ -7,29 +7,35 @@ describe('Boards blank state', () => {
   let vm;
   let fail = false;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const Comp = Vue.extend(BoardBlankState);
 
     boardsStore.create();
     gl.boardService = mockBoardService();
 
-    spyOn(gl.boardService, 'generateDefaultLists').and.callFake(() => new Promise((resolve, reject) => {
-      if (fail) {
-        reject();
-      } else {
-        resolve({
-          data: [{
-            id: 1,
-            title: 'To Do',
-            label: { id: 1 },
-          }, {
-            id: 2,
-            title: 'Doing',
-            label: { id: 2 },
-          }],
-        });
-      }
-    }));
+    spyOn(gl.boardService, 'generateDefaultLists').and.callFake(
+      () =>
+        new Promise((resolve, reject) => {
+          if (fail) {
+            reject();
+          } else {
+            resolve({
+              data: [
+                {
+                  id: 1,
+                  title: 'To Do',
+                  label: { id: 1 },
+                },
+                {
+                  id: 2,
+                  title: 'Doing',
+                  label: { id: 2 },
+                },
+              ],
+            });
+          }
+        }),
+    );
 
     vm = new Comp();
 
@@ -40,20 +46,18 @@ describe('Boards blank state', () => {
   });
 
   it('renders pre-defined labels', () => {
-    expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li').length,
-    ).toBe(2);
+    expect(vm.$el.querySelectorAll('.board-blank-state-list li').length).toBe(2);
 
-    expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li')[0].textContent.trim(),
-    ).toEqual('To Do');
+    expect(vm.$el.querySelectorAll('.board-blank-state-list li')[0].textContent.trim()).toEqual(
+      'To Do',
+    );
 
-    expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li')[1].textContent.trim(),
-    ).toEqual('Doing');
+    expect(vm.$el.querySelectorAll('.board-blank-state-list li')[1].textContent.trim()).toEqual(
+      'Doing',
+    );
   });
 
-  it('clears blank state', (done) => {
+  it('clears blank state', done => {
     vm.$el.querySelector('.btn-default').click();
 
     setTimeout(() => {
@@ -63,7 +67,7 @@ describe('Boards blank state', () => {
     });
   });
 
-  it('creates pre-defined labels', (done) => {
+  it('creates pre-defined labels', done => {
     vm.$el.querySelector('.btn-success').click();
 
     setTimeout(() => {
@@ -75,7 +79,7 @@ describe('Boards blank state', () => {
     });
   });
 
-  it('resets the store if request fails', (done) => {
+  it('resets the store if request fails', done => {
     fail = true;
 
     vm.$el.querySelector('.btn-success').click();

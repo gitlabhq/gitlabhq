@@ -1,0 +1,5 @@
+---
+title: Add preload for routes and namespaces for issues controller.
+merge_request: 21651
+author:
+type: performance

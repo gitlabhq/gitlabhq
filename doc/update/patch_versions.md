@@ -83,7 +83,7 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 ```bash
 cd /home/git/gitlab
 
-sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
 ### 6. Update gitlab-shell to the corresponding version

@@ -18,15 +18,6 @@ describe('Sidebar details block', () => {
     vm.$destroy();
   });
 
-  describe('when it is loading', () => {
-    it('should render a loading spinner', () => {
-      store.dispatch('requestJob');
-      vm = mountComponentWithStore(SidebarComponent, { store });
-
-      expect(vm.$el.querySelector('.fa-spinner')).toBeDefined();
-    });
-  });
-
   describe('when there is no retry path retry', () => {
     it('should not render a retry button', () => {
       const copy = Object.assign({}, job);
@@ -52,12 +43,12 @@ describe('Sidebar details block', () => {
 
   describe('with terminal path', () => {
     it('renders terminal link', () => {
-      store.dispatch('receiveJobSuccess', job);
+      store.dispatch(
+        'receiveJobSuccess',
+        Object.assign({}, job, { terminal_path: 'job/43123/terminal' }),
+      );
       vm = mountComponentWithStore(SidebarComponent, {
         store,
-        props: {
-          terminalPath: 'job/43123/terminal',
-        },
       });
 
       expect(vm.$el.querySelector('.js-terminal-link')).not.toBeNull();
@@ -74,6 +65,7 @@ describe('Sidebar details block', () => {
       expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
         job.new_issue_path,
       );
+
       expect(vm.$el.querySelector('.js-new-issue').textContent.trim()).toEqual('New issue');
     });
 

@@ -1028,6 +1028,13 @@ describe Projects::IssuesController do
           .not_to exceed_query_limit(control)
       end
 
+      context 'when user is setting notes filters' do
+        let(:issuable) { issue }
+        let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
+
+        it_behaves_like 'issuable notes filter'
+      end
+
       context 'with cross-reference system note', :request_store do
         let(:new_issue) { create(:issue) }
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }

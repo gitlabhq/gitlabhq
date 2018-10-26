@@ -31,21 +31,21 @@ describe('List model', () => {
     mock.restore();
   });
 
-  it('gets issues when created', (done) => {
+  it('gets issues when created', done => {
     setTimeout(() => {
       expect(list.issues.length).toBe(1);
       done();
     }, 0);
   });
 
-  it('saves list and returns ID', (done) => {
+  it('saves list and returns ID', done => {
     list = new List({
       title: 'test',
       label: {
         id: _.random(10000),
         title: 'test',
-        color: 'red'
-      }
+        color: 'red',
+      },
     });
     list.save();
 
@@ -57,9 +57,10 @@ describe('List model', () => {
     }, 0);
   });
 
-  it('destroys the list', (done) => {
+  it('destroys the list', done => {
     boardsStore.addList(listObj);
     list = boardsStore.findList('id', listObj.id);
+
     expect(boardsStore.state.lists.length).toBe(1);
     list.destroy();
 
@@ -69,19 +70,22 @@ describe('List model', () => {
     }, 0);
   });
 
-  it('gets issue from list', (done) => {
+  it('gets issue from list', done => {
     setTimeout(() => {
       const issue = list.findIssue(1);
+
       expect(issue).toBeDefined();
       done();
     }, 0);
   });
 
-  it('removes issue', (done) => {
+  it('removes issue', done => {
     setTimeout(() => {
       const issue = list.findIssue(1);
+
       expect(list.issues.length).toBe(1);
       list.removeIssue(issue);
+
       expect(list.issues.length).toBe(0);
       done();
     }, 0);
@@ -105,8 +109,13 @@ describe('List model', () => {
 
     listDup.updateIssueLabel(issue, list);
 
-    expect(gl.boardService.moveIssue)
-      .toHaveBeenCalledWith(issue.id, list.id, listDup.id, undefined, undefined);
+    expect(gl.boardService.moveIssue).toHaveBeenCalledWith(
+      issue.id,
+      list.id,
+      listDup.id,
+      undefined,
+      undefined,
+    );
   });
 
   describe('page number', () => {
@@ -116,14 +125,16 @@ describe('List model', () => {
 
     it('increase page number if current issue count is more than the page size', () => {
       for (let i = 0; i < 30; i += 1) {
-        list.issues.push(new ListIssue({
-          title: 'Testing',
-          id: _.random(10000) + i,
-          iid: _.random(10000) + i,
-          confidential: false,
-          labels: [list.label],
-          assignees: [],
-        }));
+        list.issues.push(
+          new ListIssue({
+            title: 'Testing',
+            id: _.random(10000) + i,
+            iid: _.random(10000) + i,
+            confidential: false,
+            labels: [list.label],
+            assignees: [],
+          }),
+        );
       }
       list.issuesSize = 50;
 
@@ -136,13 +147,15 @@ describe('List model', () => {
     });
 
     it('does not increase page number if issue count is less than the page size', () => {
-      list.issues.push(new ListIssue({
-        title: 'Testing',
-        id: _.random(10000),
-        confidential: false,
-        labels: [list.label],
-        assignees: [],
-      }));
+      list.issues.push(
+        new ListIssue({
+          title: 'Testing',
+          id: _.random(10000),
+          confidential: false,
+          labels: [list.label],
+          assignees: [],
+        }),
+      );
       list.issuesSize = 2;
 
       list.nextPage();
@@ -154,21 +167,25 @@ describe('List model', () => {
 
   describe('newIssue', () => {
     beforeEach(() => {
-      spyOn(gl.boardService, 'newIssue').and.returnValue(Promise.resolve({
-        data: {
-          id: 42,
-        },
-      }));
+      spyOn(gl.boardService, 'newIssue').and.returnValue(
+        Promise.resolve({
+          data: {
+            id: 42,
+          },
+        }),
+      );
     });
 
-    it('adds new issue to top of list', (done) => {
-      list.issues.push(new ListIssue({
-        title: 'Testing',
-        id: _.random(10000),
-        confidential: false,
-        labels: [list.label],
-        assignees: [],
-      }));
+    it('adds new issue to top of list', done => {
+      list.issues.push(
+        new ListIssue({
+          title: 'Testing',
+          id: _.random(10000),
+          confidential: false,
+          labels: [list.label],
+          assignees: [],
+        }),
+      );
       const dummyIssue = new ListIssue({
         title: 'new issue',
         id: _.random(10000),
@@ -177,7 +194,8 @@ describe('List model', () => {
         assignees: [],
       });
 
-      list.newIssue(dummyIssue)
+      list
+        .newIssue(dummyIssue)
         .then(() => {
           expect(list.issues.length).toBe(2);
           expect(list.issues[0]).toBe(dummyIssue);

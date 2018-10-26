@@ -34,6 +34,7 @@ describe('Page component', () => {
       page: testPage,
       number: 1,
     });
+
     expect(vm.rendering).toBe(true);
 
     promise

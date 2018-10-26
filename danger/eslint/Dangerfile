@@ -7,7 +7,7 @@ def get_eslint_files(files)
   end
 end
 
-eslint_candidates = get_eslint_files(git.added_files + git.modified_files)
+eslint_candidates = get_eslint_files(helper.all_changed_files)
 
 return if eslint_candidates.empty?
 

@@ -312,7 +312,7 @@ We're always looking for contributions that can mitigate these
 
 If you think that registration token for a Project was revealed, you should
 reset them. It's recommended because such token can be used to register another
-Runner to thi Project. It may be next used to obtain the values of secret
+Runner to the Project. It may be next used to obtain the values of secret
 variables or clone the project code, that normally may be unavailable for the
 attacker.
 

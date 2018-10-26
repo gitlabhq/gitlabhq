@@ -1,7 +1,19 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module Env
       extend self
+
+      attr_writer :personal_access_token
+
+      def debug?
+        enabled?(ENV['QA_DEBUG'], default: false)
+      end
+
+      def log_destination
+        ENV['QA_LOG_PATH'] || $stdout
+      end
 
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
@@ -22,7 +34,7 @@ module QA
 
       # specifies token that can be used for the api
       def personal_access_token
-        ENV['PERSONAL_ACCESS_TOKEN']
+        @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
       end
 
       def user_username
@@ -42,7 +54,7 @@ module QA
       end
 
       def forker?
-        forker_username && forker_password
+        !!(forker_username && forker_password)
       end
 
       def forker_username

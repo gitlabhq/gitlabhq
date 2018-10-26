@@ -23,10 +23,7 @@ describe('IDE pane module getters', () => {
 
   describe('isAliveView', () => {
     it('returns true if given view is in keepAliveViews', () => {
-      const result = getters.isAliveView(
-        { keepAliveViews: TEST_KEEP_ALIVE_VIEWS },
-        {},
-      )(TEST_VIEW);
+      const result = getters.isAliveView({ keepAliveViews: TEST_KEEP_ALIVE_VIEWS }, {})(TEST_VIEW);
 
       expect(result).toBe(true);
     });
@@ -41,10 +38,7 @@ describe('IDE pane module getters', () => {
     });
 
     it('returns false if given view is active view and closed', () => {
-      const result = getters.isAliveView(
-        state(),
-        { isActiveView: () => true },
-      )(TEST_VIEW);
+      const result = getters.isAliveView(state(), { isActiveView: () => true })(TEST_VIEW);
 
       expect(result).toBe(false);
     });

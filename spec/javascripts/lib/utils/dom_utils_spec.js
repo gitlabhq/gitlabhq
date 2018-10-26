@@ -18,6 +18,7 @@ describe('DOM Utils', () => {
 
     it('adds class if element exists', () => {
       const childElement = parentElement.querySelector('.child');
+
       expect(childElement).not.toBe(null);
 
       addClassIfElementExists(childElement, className);
@@ -27,6 +28,7 @@ describe('DOM Utils', () => {
 
     it('does not throw if element does not exist', () => {
       const childElement = parentElement.querySelector('.other-child');
+
       expect(childElement).toBe(null);
 
       addClassIfElementExists(childElement, className);

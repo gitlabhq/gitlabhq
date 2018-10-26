@@ -1,3 +1,4 @@
+danger.import_plugin('danger/plugins/helper.rb')
 danger.import_dangerfile(path: 'danger/metadata')
 danger.import_dangerfile(path: 'danger/changes_size')
 danger.import_dangerfile(path: 'danger/changelog')

@@ -20,6 +20,7 @@ are very appreciative of the work done by translators and proofreaders!
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
 - German
+  - Michael Hahnle - [GitLab](https://gitlab.com/mhah), [Crowdin](https://crowdin.com/profile/mhah)
 - Indonesian
   - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
@@ -74,6 +75,8 @@ are very appreciative of the work done by translators and proofreaders!
     have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
-   your previous translations.
+   your previous translations by [GitLab team members](https://about.gitlab.com/team/)
+   or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
+   the language or current proofreaders.
 
 [proofreader-src]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/i18n/proofreader.md

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module RepoPath
     NotFoundError = Class.new(StandardError)
