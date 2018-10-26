@@ -8,6 +8,7 @@ import { resetStore } from '../store/helpers';
 import job from '../mock_data';
 
 describe('Job App ', () => {
+  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const Component = Vue.extend(jobApp);
   let store;
   let vm;
@@ -419,6 +420,34 @@ describe('Job App ', () => {
 
           done();
         }, 0);
+      });
+
+      it('displays remaining time for a delayed job', (done) => {
+        const oneHourInMilliseconds = 3600000;
+        spyOn(Date, 'now').and.callFake(() => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds);
+        mock.onGet(props.endpoint).replyOnce(200, { ... delayedJobFixture });
+
+        vm = mountComponentWithStore(Component, {
+          props,
+          store,
+        });
+
+        store.subscribeAction((action) => {
+          if (action.type !== 'receiveJobSuccess') {
+            return;
+          }
+
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.$el.querySelector('.js-job-empty-state')).not.toBeNull();
+
+              const title = vm.$el.querySelector('.js-job-empty-state-title');
+
+              expect(title).toContainText('01:00:00');
+              done();
+            })
+            .catch(done.fail);
+        });
       });
     });
   });
