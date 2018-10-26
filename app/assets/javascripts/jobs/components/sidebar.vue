@@ -36,7 +36,7 @@
       },
     },
     computed: {
-      ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage']),
+      ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage', 'isLoadingStages']),
       coverage() {
         return `${this.job.coverage}%`;
       },
@@ -274,6 +274,7 @@
           />
 
           <stages-dropdown
+            v-if="!isLoadingStages"
             :stages="stages"
             :pipeline="job.pipeline"
             :selected-stage="selectedStage"
