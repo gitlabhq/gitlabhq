@@ -6188,7 +6188,7 @@ msgstr ""
 msgid "This is a confidential issue."
 msgstr ""
 
-msgid "This is a delayed to run in "
+msgid "This is a delayed job to run in %{remainingTime}"
 msgstr ""
 
 msgid "This is the author's first Merge Request to this project."
