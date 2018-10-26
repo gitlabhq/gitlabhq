@@ -1,0 +1,5 @@
+---
+title: Support backward compatibility when introduce new failure reason
+merge_request: 22566
+author:
+type: changed
