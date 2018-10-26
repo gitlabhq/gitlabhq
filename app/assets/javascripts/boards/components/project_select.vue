@@ -50,7 +50,7 @@ export default {
         this.loading = true;
         return Api.groupProjects(this.groupId, term, {
           with_issues_enabled: true,
-          include_shared: false,
+          with_shared: false,
           include_subgroups: true
         }, projects => {
           this.loading = false;

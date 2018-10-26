@@ -507,7 +507,7 @@ describe API::Groups do
         create(:project_group_link, project: create(:project), group: group1)
         create(:project_group_link, project: create(:project), group: group1)
 
-        get api("/groups/#{group1.id}/projects", user1), include_shared: false
+        get api("/groups/#{group1.id}/projects", user1), with_shared: false
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
