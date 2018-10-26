@@ -147,10 +147,12 @@ describe 'Dashboard Projects' do
   end
 
   context 'last push widget', :use_clean_rails_memory_store_caching do
+    let(:ref) { "feature" }
+
     before do
       event = create(:push_event, project: project, author: user)
 
-      create(:push_event_payload, event: event, ref: 'feature', action: :created)
+      create(:push_event_payload, event: event, ref: ref, action: :created)
 
       Users::LastPushEventService.new(user).cache_last_push_event(event)
 
@@ -165,9 +167,9 @@ describe 'Dashboard Projects' do
       end
 
       expect(page).to have_selector('.merge-request-form')
-      expect(current_path).to eq project_new_merge_request_path(project)
+      expect(current_path).to eq project_new_merge_request_path(project, merge_request_source_branch: ref)
       expect(find('#merge_request_target_project_id', visible: false).value).to eq project.id.to_s
-      expect(find('input#merge_request_source_branch', visible: false).value).to eq 'feature'
+      expect(find('input#merge_request_source_branch', visible: false).value).to eq ref
       expect(find('input#merge_request_target_branch', visible: false).value).to eq 'master'
     end
   end

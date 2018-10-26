@@ -163,7 +163,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :diff_for_path
           get :branch_from
           get :branch_to
-          get '(:merge_request_source_branch)', action: :new
+          get '', action: :new
         end
       end
 
