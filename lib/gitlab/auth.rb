@@ -150,7 +150,7 @@ module Gitlab
       def personal_access_token_check(password)
         return unless password.present?
 
-        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
 
         if token && valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
