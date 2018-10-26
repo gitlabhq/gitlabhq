@@ -71,7 +71,7 @@ export default {
      * after the first request,
      * and we do not want to hijack that
      */
-    if (state.selectedStage === 'More' && job.stage) {
+    if (state.selectedStage === '' && job.stage) {
       state.selectedStage = job.stage;
     }
   },
