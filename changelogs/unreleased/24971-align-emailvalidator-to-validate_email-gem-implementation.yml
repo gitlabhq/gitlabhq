@@ -1,0 +1,5 @@
+---
+title: Align EmailValidator to validate_email gem implementation
+merge_request: 24971
+author: Horatiu Eugen Vlad
+type: fixed
