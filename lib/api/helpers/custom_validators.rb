@@ -16,7 +16,7 @@ module API
           value = params[attr_name]
 
           return if value.is_a?(Integer) ||
-              [IssuableFinder::FILTER_NONE, IssuableFinder::FILTER_ANY].include?(value)
+              [IssuableFinder::FILTER_NONE, IssuableFinder::FILTER_ANY].include?(value.to_s.downcase)
 
           raise Grape::Exceptions::Validation, params: [@scope.full_name(attr_name)],
                                                message: "should be an integer, 'None' or 'Any'"

@@ -38,6 +38,8 @@ describe API::Helpers::CustomValidators do
         expect_no_validation_error({ 'test' => 100 })
         expect_no_validation_error({ 'test' => 'None' })
         expect_no_validation_error({ 'test' => 'Any' })
+        expect_no_validation_error({ 'test' => 'none' })
+        expect_no_validation_error({ 'test' => 'any' })
       end
     end
 

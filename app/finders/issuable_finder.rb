@@ -35,8 +35,8 @@ class IssuableFinder
   requires_cross_project_access unless: -> { project? }
 
   # This is used as a common filter for None / Any
-  FILTER_NONE = 'None'.freeze
-  FILTER_ANY = 'Any'.freeze
+  FILTER_NONE = 'none'.freeze
+  FILTER_ANY = 'any'.freeze
 
   # This is accepted as a deprecated filter and is also used in unassigning users
   NONE = '0'.freeze
@@ -250,11 +250,11 @@ class IssuableFinder
 
   def filter_by_no_assignee?
     # Assignee_id takes precedence over assignee_username
-    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s) || params[:assignee_username].to_s == NONE
+    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
   end
 
   def filter_by_any_assignee?
-    params[:assignee_id].to_s == FILTER_ANY
+    params[:assignee_id].to_s.downcase == FILTER_ANY
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
