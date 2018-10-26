@@ -41,7 +41,7 @@
 
         %button.issue-count-badge-add-button.btn.btn-sm.btn-default.ml-1.has-tooltip.js-no-trigger-collapse{ type: "button",
           "@click" => "showNewIssueForm",
-          "v-if" => 'list.type == "backlog" || (!disabled && list.type !== "closed")',
+          "v-if" => "isNewIssueShown",
           "aria-label" => _("New issue"),
           "title" => _("New issue"),
           data: { placement: "top", container: "body" } }
