@@ -24,7 +24,7 @@
       .block.milestone
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           = icon('clock-o', 'aria-hidden': 'true')
-          %span.milestone-title
+          %span.milestone-title.collapse-truncated-title
             - if issuable.milestone
               = issuable.milestone.title
             - else
