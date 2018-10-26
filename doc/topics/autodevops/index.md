@@ -246,12 +246,6 @@ There is also a feature flag to enable Auto DevOps to a percentage of projects
 which can be enabled from the console with
 `Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
 
-### Disable Auto DevOps at the project level
-
-1. Go to your project's **Settings > CI/CD > Auto DevOps**.
-1. Uncheck the **Default to Auto DevOps pipeline** checkbox.
-1. Click **Save changes** for the changes to take effect.
-
 ### Deployment strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38542) in GitLab 11.0.
