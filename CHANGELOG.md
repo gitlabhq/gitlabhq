@@ -246,6 +246,18 @@ entry.
 - Check frozen string in style builds. (gfyoung)
 
 
+## 11.3.7 (2018-10-26)
+
+### Security (6 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2557
+- Persist only SHA digest of PersonalAccessToken#token.
+- Fix XSS in merge request source branch name.
+- Redact personal tokens in unsubscribe links.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
+
+
 ## 11.3.6 (2018-10-17)
 
 - No changes.
