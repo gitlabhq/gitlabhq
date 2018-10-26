@@ -28,7 +28,7 @@ module Gitlab
         protected_tag_checks: "Checking if you are creating, updating or deleting a protected tag...",
         lfs_objects_exist_check: "Scanning repository for blobs stored in LFS and verifying their files have been uploaded to GitLab...",
         commits_check_file_paths_validation: "Validating commits' file paths...",
-        commits_check: "Validating commits..." # different message in EE
+        commits_check: "Validating commit contents..."
       }.freeze
 
       attr_reader :user_access, :project, :skip_authorization, :skip_lfs_integrity_check, :protocol, :oldrev, :newrev, :ref, :branch_name, :tag_name, :logger
