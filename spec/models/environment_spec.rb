@@ -334,7 +334,7 @@ describe Environment do
   describe '#has_terminals?' do
     subject { environment.has_terminals? }
 
-    context 'when the enviroment is available' do
+    context 'when the environment is available' do
       context 'with a deployment service' do
         shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
           context 'and a deployment' do
@@ -447,7 +447,7 @@ describe Environment do
   describe '#has_metrics?' do
     subject { environment.has_metrics? }
 
-    context 'when the enviroment is available' do
+    context 'when the environment is available' do
       context 'with a deployment service' do
         let(:project) { create(:prometheus_project) }
 
@@ -456,8 +456,8 @@ describe Environment do
           it { is_expected.to be_truthy }
         end
 
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
+        context 'and no deployments' do
+          it { is_expected.to be_truthy }
         end
       end
 
@@ -501,39 +501,6 @@ describe Environment do
       end
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#has_metrics?' do
-    subject { environment.has_metrics? }
-
-    context 'when the enviroment is available' do
-      context 'with a deployment service' do
-        let(:project) { create(:prometheus_project) }
-
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
-        end
-
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
-        end
-      end
-
-      context 'without a monitoring service' do
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'when the environment is unavailable' do
-      let(:project) { create(:prometheus_project) }
-
-      before do
-        environment.stop
-      end
-
-      it { is_expected.to be_falsy }
     end
   end
 
