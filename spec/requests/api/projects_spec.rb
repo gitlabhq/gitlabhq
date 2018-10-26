@@ -200,6 +200,24 @@ describe API::Projects do
         expect(json_response.first).to include 'statistics'
       end
 
+      it "does not include license by default" do
+        get api('/projects', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('license', 'license_url')
+      end
+
+      it "does not include license if requested" do
+        get api('/projects', user), license: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('license', 'license_url')
+      end
+
       context 'when external issue tracker is enabled' do
         let!(:jira_service) { create(:jira_service, project: project) }
 
@@ -991,6 +1009,26 @@ describe API::Projects do
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
           'parent_id' => nil
+        })
+      end
+
+      it "does not include license fields by default" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).not_to include('license', 'license_url')
+      end
+
+      it 'includes license fields when requested' do
+        get api("/projects/#{project.id}", user), license: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['license']).to eq({
+          'key' => project.repository.license.key,
+          'name' => project.repository.license.name,
+          'nickname' => project.repository.license.nickname,
+          'html_url' => project.repository.license.url,
+          'source_url' => project.repository.license.meta['source']
         })
       end
 
