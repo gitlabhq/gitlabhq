@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.2.6 (2018-10-26)
+
+### Security (5 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2558
+- Fix XSS in merge request source branch name.
+- Redact personal tokens in unsubscribe links.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Prevent SSRF attacks in HipChat integration.
+
+
 ## 11.2.5 (2018-10-05)
 
 ### Security (3 changes)
