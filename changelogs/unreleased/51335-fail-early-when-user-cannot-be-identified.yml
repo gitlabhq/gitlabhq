@@ -1,0 +1,5 @@
+---
+title: If user was not found, service hooks won't run on post receive background job
+merge_request: 22519
+author:
+type: fixed
