@@ -472,7 +472,7 @@ class User < ActiveRecord::Base
     def find_by_personal_access_token(token_string)
       return unless token_string
 
-      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user # rubocop: disable CodeReuse/Finder
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
