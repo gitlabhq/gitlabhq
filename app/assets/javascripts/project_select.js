@@ -14,6 +14,8 @@ export default function projectSelect() {
     this.orderBy = $(select).data('orderBy') || 'id';
     this.withIssuesEnabled = $(select).data('withIssuesEnabled');
     this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
+    this.includeShared = $(select).data('includeShared') === undefined ? true : $(select).data('includeShared');
+    this.includeProjectsInSubgroups = $(select).data('includeProjectsInSubgroups') || false;
     this.allowClear = $(select).data('allowClear') || false;
 
     placeholder = 'Search for project';
@@ -54,6 +56,8 @@ export default function projectSelect() {
               {
                 with_issues_enabled: _this.withIssuesEnabled,
                 with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+                include_shared: _this.includeShared,
+                include_subgroups: _this.includeProjectsInSubgroups,
               },
               projectsCallback,
             );
