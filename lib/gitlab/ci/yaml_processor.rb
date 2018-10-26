@@ -50,6 +50,7 @@ module Gitlab
             after_script: job[:after_script],
             environment: job[:environment],
             retry: job[:retry],
+            parallel: job[:parallel],
             start_in: job[:start_in]
           }.compact }
       end
