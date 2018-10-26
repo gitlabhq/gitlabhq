@@ -1,9 +1,9 @@
 <script>
 import { s__, sprintf } from '~/locale';
-import { formatTime } from '~/lib/utils/datetime_utility';
 import eventHub from '../event_hub';
 import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
+import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 
 export default {
   directives: {
@@ -11,6 +11,7 @@ export default {
   },
   components: {
     icon,
+    GlCountdown,
   },
   props: {
     actions: {
@@ -50,11 +51,6 @@ export default {
       }
 
       return !action.playable;
-    },
-
-    remainingTime(action) {
-      const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
-      return formatTime(Math.max(0, remainingMilliseconds));
     },
   },
 };
@@ -100,7 +96,7 @@ export default {
             class="pull-right"
           >
             <icon name="clock" />
-            {{ remainingTime(action) }}
+            <gl-countdown :end-date-string="action.scheduled_at" />
           </span>
         </button>
       </li>
