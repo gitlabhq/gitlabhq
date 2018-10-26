@@ -225,10 +225,11 @@ Auto DevOps at the project level.
 
 ### Enabling/disabling Auto DevOps at the project-level
 
-1. Check that your project doesn't have a `.gitlab-ci.yml`, or if one exists, remove it.
+If enabling, check that your project doesn't have a `.gitlab-ci.yml`, or if one exists, remove it.
+
 1. Go to your project's **Settings > CI/CD > Auto DevOps**.
-1. Check the **Default to Auto DevOps pipeline** checkbox.
-1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
+1. Toggle the **Default to Auto DevOps pipeline** checkbox (checked to enable, unchecked to disable)
+1. When enabling, it's optional but recommended to add in the [base domain](#auto-devops-base-domain)
    that will be used by Auto DevOps to [deploy your application](#auto-deploy)
    and choose the [deployment strategy](#deployment-strategy).
 1. Click **Save changes** for the changes to take effect.
