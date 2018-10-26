@@ -193,7 +193,19 @@ class IssuableFinder
   end
 
   def filter_by_no_milestone?
-    milestones? && params[:milestone_title] == Milestone::None.title
+    [FILTER_NONE, Milestone::None.title].include?(params[:milestone_title].to_s.downcase)
+  end
+
+  def filter_by_any_milestone?
+    [FILTER_ANY, Milestone::Any.title].include?(params[:milestone_title].to_s.downcase)
+  end
+
+  def filter_by_upcoming_milestone?
+    params[:milestone_title] == Milestone::Upcoming.name
+  end
+
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
   end
 
   def milestones
@@ -431,18 +443,6 @@ class IssuableFinder
     items
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def filter_by_upcoming_milestone?
-    params[:milestone_title] == Milestone::Upcoming.name
-  end
-
-  def filter_by_any_milestone?
-    params[:milestone_title] == Milestone::Any.title
-  end
-
-  def filter_by_started_milestone?
-    params[:milestone_title] == Milestone::Started.name
-  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)

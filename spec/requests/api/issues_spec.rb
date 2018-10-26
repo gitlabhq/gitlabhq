@@ -55,8 +55,8 @@ describe API::Issues do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
-  let(:no_milestone_title) { URI.escape(Milestone::None.title) }
-  let(:any_milestone_title) { URI.escape(Milestone::Any.title) }
+  let(:no_milestone_title) { "None" }
+  let(:any_milestone_title) { "Any" }
 
   before(:all) do
     project.add_reporter(user)
