@@ -165,7 +165,7 @@ configuration. Then customize everything from buildpacks to CI/CD.
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
 - [Protected variables](ci/variables/README.md#protected-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
-- [Executable Runbooks](topics/runbooks/index.md)
+- [Executable Runbooks](user/project/clusters/runbooks/index.md)
 
 ### Monitor
 
