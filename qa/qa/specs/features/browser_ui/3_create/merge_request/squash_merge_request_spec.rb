@@ -25,6 +25,7 @@ module QA
           push.file_content = "Test with unicode characters ❤✓€❄"
         end
 
+        Page::Project::Show.perform(&:wait_for_push)
         merge_request.visit!
 
         expect(page).to have_text('to be squashed')
