@@ -30,10 +30,10 @@ Parameters:
 
 | Attribute           | Type     | Required | Description                                                                                                            |
 | ------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                       |
+| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                             |
 | `order_by`          | string   | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
 | `sort`              | string   | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
-| `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
+| `milestone`         | string   | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
 | `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
 | `created_after`     | datetime | no       | Return merge requests created on or after the given time                                                               |
@@ -47,7 +47,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
-| `wip`            | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                                                        |
+| `wip`               | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
 [
@@ -154,10 +154,10 @@ Parameters:
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                | integer        | yes      | The ID of a project                                                                                                            |
 | `iids[]`            | Array[integer] | no       | Return the request having the given `iid`                                                                                      |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                               |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
 | `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
-| `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
+| `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
@@ -168,8 +168,8 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
-| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
-| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
+| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
 
 ```json
@@ -266,11 +266,11 @@ Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                | integer        | yes      | The ID of a group                                                                                                           |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                               |
-| `order_by`          | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
-| `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
-| `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
+| `id`                | integer        | yes      | The ID of a group                                                                                                              |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                     |
+| `order_by`          | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                  |
+| `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                       |
+| `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
 | `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
@@ -281,8 +281,8 @@ Parameters:
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. _([Introduced][ce-13060] in GitLab 9.5)_ |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
-| `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
-| `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
+| `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
+| `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
 
 ```json
