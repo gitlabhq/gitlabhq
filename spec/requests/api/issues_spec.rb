@@ -178,6 +178,24 @@ describe API::Issues do
         expect(first_issue['id']).to eq(issue2.id)
       end
 
+      it 'returns issues with no assignee' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), assignee_id: 'None', scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues with any assignee' do
+        # This issue without assignee should not be returned
+        create(:issue, author: user2, project: project)
+
+        get api('/issues', user), assignee_id: 'Any', scope: 'all'
+
+        expect_paginated_array_response(size: 3)
+      end
+
       it 'returns issues reacted by the authenticated user by the given emoji' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
         award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')

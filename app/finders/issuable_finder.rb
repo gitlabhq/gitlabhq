@@ -14,7 +14,7 @@
 #     project_id: integer
 #     milestone_title: string
 #     author_id: integer
-#     assignee_id: integer
+#     assignee_id: integer or 'None' or 'Any'
 #     search: string
 #     label_name: string
 #     sort: string
@@ -34,6 +34,11 @@ class IssuableFinder
 
   requires_cross_project_access unless: -> { project? }
 
+  # This is used as a common filter for None / Any
+  FILTER_NONE = 'none'.freeze
+  FILTER_ANY = 'any'.freeze
+
+  # This is accepted as a deprecated filter and is also used in unassigning users
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params
@@ -236,16 +241,20 @@ class IssuableFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
+    params[:assignee_id].present?
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
+    params[:assignee_username].present?
   end
 
-  def no_assignee?
+  def filter_by_no_assignee?
     # Assignee_id takes precedence over assignee_username
-    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
+    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
+  end
+
+  def filter_by_any_assignee?
+    params[:assignee_id].to_s.downcase == FILTER_ANY
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -399,15 +408,17 @@ class IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
-    if assignee
-      items = items.where(assignee_id: assignee.id)
-    elsif no_assignee?
-      items = items.where(assignee_id: nil)
+    if filter_by_no_assignee?
+      items.where(assignee_id: nil)
+    elsif filter_by_any_assignee?
+      items.where('assignee_id IS NOT NULL')
+    elsif assignee
+      items.where(assignee_id: assignee.id)
     elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
+      items.none
+    else
+      items
     end
-
-    items
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
