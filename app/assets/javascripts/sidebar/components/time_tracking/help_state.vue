@@ -15,16 +15,22 @@ export default {
     },
     estimateText() {
       return sprintf(
-        s__('estimateCommand|%{slash_command} will update the estimated time with the latest command.'), {
+        s__(
+          'estimateCommand|%{slash_command} will update the estimated time with the latest command.',
+        ),
+        {
           slash_command: '<code>/estimate</code>',
-        }, false,
+        },
+        false,
       );
     },
     spendText() {
       return sprintf(
-        s__('spendCommand|%{slash_command} will update the sum of the time spent.'), {
+        s__('spendCommand|%{slash_command} will update the sum of the time spent.'),
+        {
           slash_command: '<code>/spend</code>',
-        }, false,
+        },
+        false,
       );
     },
   },

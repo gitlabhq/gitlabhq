@@ -1,28 +1,28 @@
 <script>
-  import { mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
-  export default {
-    name: 'TestIssueBody',
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
-      // failed || success
-      status: {
-        type: String,
-        required: true,
-      },
-      isNew: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+export default {
+  name: 'TestIssueBody',
+  props: {
+    issue: {
+      type: Object,
+      required: true,
     },
-    methods: {
-      ...mapActions(['openModal']),
+    // failed || success
+    status: {
+      type: String,
+      required: true,
     },
-  };
+    isNew: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    ...mapActions(['openModal']),
+  },
+};
 </script>
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">

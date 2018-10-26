@@ -29,8 +29,12 @@ export default class ProtectedBranchEdit {
   }
 
   onSelect() {
-    const $allowedToMergeInput = this.$wrap.find(`input[name="${this.$allowedToMergeDropdown.data('fieldName')}"]`);
-    const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
+    const $allowedToMergeInput = this.$wrap.find(
+      `input[name="${this.$allowedToMergeDropdown.data('fieldName')}"]`,
+    );
+    const $allowedToPushInput = this.$wrap.find(
+      `input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`,
+    );
 
     // Do not update if one dropdown has not selected any option
     if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return;
@@ -38,25 +42,36 @@ export default class ProtectedBranchEdit {
     this.$allowedToMergeDropdown.disable();
     this.$allowedToPushDropdown.disable();
 
-    axios.patch(this.$wrap.data('url'), {
-      protected_branch: {
-        merge_access_levels_attributes: [{
-          id: this.$allowedToMergeDropdown.data('accessLevelId'),
-          access_level: $allowedToMergeInput.val(),
-        }],
-        push_access_levels_attributes: [{
-          id: this.$allowedToPushDropdown.data('accessLevelId'),
-          access_level: $allowedToPushInput.val(),
-        }],
-      },
-    }).then(() => {
-      this.$allowedToMergeDropdown.enable();
-      this.$allowedToPushDropdown.enable();
-    }).catch(() => {
-      this.$allowedToMergeDropdown.enable();
-      this.$allowedToPushDropdown.enable();
+    axios
+      .patch(this.$wrap.data('url'), {
+        protected_branch: {
+          merge_access_levels_attributes: [
+            {
+              id: this.$allowedToMergeDropdown.data('accessLevelId'),
+              access_level: $allowedToMergeInput.val(),
+            },
+          ],
+          push_access_levels_attributes: [
+            {
+              id: this.$allowedToPushDropdown.data('accessLevelId'),
+              access_level: $allowedToPushInput.val(),
+            },
+          ],
+        },
+      })
+      .then(() => {
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
+      })
+      .catch(() => {
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
 
-      flash('Failed to update branch!', 'alert', document.querySelector('.js-protected-branches-list'));
-    });
+        flash(
+          'Failed to update branch!',
+          'alert',
+          document.querySelector('.js-protected-branches-list'),
+        );
+      });
   }
 }

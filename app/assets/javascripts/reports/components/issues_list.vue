@@ -1,10 +1,6 @@
 <script>
 import IssuesBlock from '~/reports/components/report_issues.vue';
-import {
-  STATUS_SUCCESS,
-  STATUS_FAILED,
-  STATUS_NEUTRAL,
-} from '~/reports/constants';
+import { STATUS_SUCCESS, STATUS_FAILED, STATUS_NEUTRAL } from '~/reports/constants';
 
 /**
  * Renders block of issues

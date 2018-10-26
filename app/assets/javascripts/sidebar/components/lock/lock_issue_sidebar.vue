@@ -34,11 +34,7 @@ export default {
       required: true,
       type: Object,
       validator(mediatorObject) {
-        return (
-          mediatorObject.service &&
-          mediatorObject.service.update &&
-          mediatorObject.store
-        );
+        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
       },
     },
   },
@@ -67,8 +63,7 @@ export default {
 
   methods: {
     toggleForm() {
-      this.mediator.store.isLockDialogOpen = !this.mediator.store
-        .isLockDialogOpen;
+      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
     },
 
     updateLockedAttribute(locked) {
@@ -79,9 +74,14 @@ export default {
         .then(() => window.location.reload())
         .catch(() =>
           Flash(
-            sprintf(__('Something went wrong trying to change the locked state of this %{issuableDisplayName}'), {
-              issuableDisplayName: this.issuableDisplayName,
-            }),
+            sprintf(
+              __(
+                'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
+              ),
+              {
+                issuableDisplayName: this.issuableDisplayName,
+              },
+            ),
           ),
         );
     },

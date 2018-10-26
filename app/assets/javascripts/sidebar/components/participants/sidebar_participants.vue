@@ -1,23 +1,23 @@
 <script>
-  import Store from '../../stores/sidebar_store';
-  import participants from './participants.vue';
+import Store from '../../stores/sidebar_store';
+import participants from './participants.vue';
 
-  export default {
-    components: {
-      participants,
+export default {
+  components: {
+    participants,
+  },
+  props: {
+    mediator: {
+      type: Object,
+      required: true,
     },
-    props: {
-      mediator: {
-        type: Object,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        store: new Store(),
-      };
-    },
-  };
+  },
+  data() {
+    return {
+      store: new Store(),
+    };
+  },
+};
 </script>
 
 <template>
