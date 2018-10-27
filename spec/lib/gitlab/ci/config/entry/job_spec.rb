@@ -147,13 +147,13 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
 
-        context 'when it is lower than one' do
-          let(:config) { { parallel: 0 } }
+        context 'when it is lower than two' do
+          let(:config) { { parallel: 1 } }
 
           it 'returns error about value too low' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include 'job parallel must be greater than or equal to 1'
+              .to include 'job parallel must be greater than or equal to 2'
           end
         end
 

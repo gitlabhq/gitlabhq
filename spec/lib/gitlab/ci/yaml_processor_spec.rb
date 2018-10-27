@@ -141,11 +141,11 @@ module Gitlab
           context 'when parallel is defined' do
             let(:config) do
               YAML.dump(rspec: { script: 'rspec',
-                                 parallel: 1 })
+                                 parallel: 2 })
             end
 
             it 'has the attributes' do
-              expect(subject[:options][:parallel]).to eq 1
+              expect(subject[:options][:parallel]).to eq 2
             end
           end
         end

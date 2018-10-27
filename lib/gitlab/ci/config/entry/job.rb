@@ -28,7 +28,7 @@ module Gitlab
                                                 greater_than_or_equal_to: 0,
                                                 less_than_or_equal_to: 2 }
               validates :parallel, numericality: { only_integer: true,
-                                                   greater_than_or_equal_to: 1 }
+                                                   greater_than_or_equal_to: 2 }
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
