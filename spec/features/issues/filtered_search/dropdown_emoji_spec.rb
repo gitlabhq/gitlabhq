@@ -121,6 +121,22 @@ describe 'Dropdown emoji', :js do
         send_keys_to_filtered_search(':')
       end
 
+      it 'selects `None`' do
+        find('#js-dropdown-assignee .filter-dropdown-item', text: 'None').click
+
+        expect(page).to have_css(js_dropdown_emoji, visible: false)
+        expect_tokens([emoji_token('none')])
+        expect_filtered_search_input_empty
+      end
+
+      it 'selects `Any`' do
+        find('#js-dropdown-assignee .filter-dropdown-item', text: 'Any').click
+
+        expect(page).to have_css(js_dropdown_emoji, visible: false)
+        expect_tokens([emoji_token('any')])
+        expect_filtered_search_input_empty
+      end
+
       it 'fills in the my-reaction name' do
         click_emoji('thumbsup')
 
