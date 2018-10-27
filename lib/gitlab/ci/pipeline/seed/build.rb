@@ -24,22 +24,14 @@ module Gitlab
             end
           end
 
-          def parallelized?
-            @attributes[:options].include?(:parallel)
+          def parallel?
+            !!@attributes.dig(:options, :parallel)
           end
 
           def parallelize_build
-            builds = []
-
             total = @attributes[:options][:parallel]
-
-            total.times do |i|
-              build = ::Ci::Build.new(attributes.merge(options: { variables: { CI_NODE_INDEX: i + 1, CI_NODE_TOTAL: total } }))
-              build.name = build.name + "_#{i + 1}/#{total}"
-              builds << build
-            end
-
-            builds
+            Array.new(total) { ::Ci::Build.new(attributes) }
+              .each_with_index { |build, idx| build.name = "#{build.name} #{idx + 1}/#{total}" }
           end
 
           def attributes
@@ -56,11 +48,7 @@ module Gitlab
 
           def to_resource
             strong_memoize(:resource) do
-              if parallelized?
-                parallelize_build
-              else
-                ::Ci::Build.new(attributes)
-              end
+              parallel? ? parallelize_build : ::Ci::Build.new(attributes)
             end
           end
         end
