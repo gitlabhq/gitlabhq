@@ -13,6 +13,46 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     described_class.new(pipeline, attributes)
   end
 
+  describe '#parallel?' do
+    context 'when build is not parallelized' do
+      it 'should be false' do
+        expect(subject.parallel?).to eq(false)
+      end
+    end
+
+    context 'when build is parallelized' do
+      before do
+        attributes[:options] = { parallel: 5 }
+      end
+
+      it 'should be true' do
+        expect(subject.parallel?).to eq(true)
+      end
+    end
+  end
+
+  describe '#parallelize_build' do
+    let(:total) { 5 }
+
+    before do
+      attributes[:options] = { parallel: total }
+    end
+
+    it 'returns duplicated builds' do
+      builds = subject.parallelize_build
+
+      expect(builds.size).to eq(total)
+    end
+
+    it 'returns builds with indexed names' do
+      builds = subject.parallelize_build
+
+      base_name = builds.first.name.split(' ')[0]
+      names = builds.map(&:name)
+      expect(names).to all(match(%r{^#{base_name} \d+/\d+$}))
+    end
+  end
+
   describe '#attributes' do
     it 'returns hash attributes of a build' do
       expect(subject.attributes).to be_a Hash
@@ -22,9 +62,22 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
   end
 
   describe '#to_resource' do
-    it 'returns a valid build resource' do
-      expect(subject.to_resource).to be_a(::Ci::Build)
-      expect(subject.to_resource).to be_valid
+    context 'when build is not parallelized' do
+      it 'returns a valid build resource' do
+        expect(subject.to_resource).to be_a(::Ci::Build)
+        expect(subject.to_resource).to be_valid
+      end
+    end
+
+    context 'when build is parallelized' do
+      before do
+        attributes[:options] = { parallel: 5 }
+      end
+
+      it 'returns a group of valid build resources' do
+        expect(subject.to_resource).to all(be_a(::Ci::Build))
+        expect(subject.to_resource).to all(be_valid)
+      end
     end
 
     it 'memoizes a resource object' do
