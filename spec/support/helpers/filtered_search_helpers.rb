@@ -120,8 +120,12 @@ module FilteredSearchHelpers
     create_token('Label', label_name, symbol)
   end
 
-  def emoji_token(emoji_name = nil)
-    { name: 'My-Reaction', emoji_name: emoji_name }
+  def reaction_token(reaction_name = nil, is_emoji = true)
+    if is_emoji
+      { name: 'My-Reaction', emoji_name: reaction_name }
+    else
+      create_token('My-Reaction', reaction_name)
+    end
   end
 
   def default_placeholder

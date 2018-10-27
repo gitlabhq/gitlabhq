@@ -198,7 +198,7 @@ describe API::Issues do
 
       it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
-        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
 
         create(:award_emoji, awardable: issue, user: user2, name: 'thumbsup')
 

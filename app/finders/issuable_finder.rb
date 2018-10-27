@@ -480,13 +480,14 @@ class IssuableFinder
 
   def by_my_reaction_emoji(items)
     if params[:my_reaction_emoji].present? && current_user
-      if filter_by_no_reaction?
-        items = items.not_awarded(current_user)
-      elsif filter_by_any_reaction?
-        items = items.awarded_any(current_user)
-      else
-        items = items.awarded(current_user, params[:my_reaction_emoji])
-      end
+      items =
+        if filter_by_no_reaction?
+          items.not_awarded(current_user)
+        elsif filter_by_any_reaction?
+          items.awarded(current_user)
+        else
+          items.awarded(current_user, params[:my_reaction_emoji])
+        end
     end
 
     items
