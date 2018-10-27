@@ -136,6 +136,19 @@ module Gitlab
             end
           end
         end
+
+        describe 'parallel entry' do
+          context 'when parallel is defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec',
+                                 parallel: 1 })
+            end
+
+            it 'has the attributes' do
+              expect(subject[:options][:parallel]).to eq 1
+            end
+          end
+        end
       end
 
       describe '#stages_attributes' do
@@ -641,6 +654,25 @@ module Gitlab
 
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
+          end
+        end
+      end
+
+      describe 'Parallel' do
+        context 'when job is parallelized' do
+          let(:parallel) { 5 }
+
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec',
+                               parallel: parallel })
+          end
+
+          it 'returns parallelized job' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes("test")
+
+            expect(builds.size).to eq(1)
+            expect(builds.first[:options][:parallel]).to eq(parallel)
           end
         end
       end
