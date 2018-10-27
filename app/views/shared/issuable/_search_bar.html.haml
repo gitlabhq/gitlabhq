@@ -1,7 +1,7 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
-- full_path = @project.present? ? @project.full_path : @group.full_path
+- full_path = if @project.present? then @project.full_path elsif @group.present? then @group.full_path else request.path end
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 

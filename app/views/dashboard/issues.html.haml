@@ -16,7 +16,7 @@
   .nav-controls
     = render 'shared/issuable/feed_buttons'
 
-= render 'shared/issuable/filter', type: :issues
+= render 'shared/issuable/search_bar', type: :issues
 
 - if current_user && @no_filters_set
   = render 'shared/dashboard/no_filter_selected'

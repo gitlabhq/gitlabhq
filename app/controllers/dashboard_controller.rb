@@ -5,10 +5,11 @@ class DashboardController < Dashboard::ApplicationController
   include MergeRequestsAction
 
   FILTER_PARAMS = [
-    :author_id,
-    :assignee_id,
+    :author_username,
+    :assignee_username,
     :milestone_title,
-    :label_name
+    :label_name,
+    :my_reaction_emoji
   ].freeze
 
   before_action :event_filter, only: :activity
