@@ -25,7 +25,7 @@ describe Gitlab::Database::Count do
     context 'with PostgreSQL', :postgresql do
       describe 'when reltuples have not been updated' do
         it 'counts all models the normal way' do
-          expect(described_class).to receive(:reltuples_from_recently_updated).with(%w(projects identities)).and_return({})
+          expect(described_class).to receive(:reltuples_from_recently_updated).with(models).and_return({})
 
           expect(Project).to receive(:count).and_call_original
           expect(Identity).to receive(:count).and_call_original
@@ -45,7 +45,7 @@ describe Gitlab::Database::Count do
 
       describe 'when some reltuples have been updated' do
         it 'counts projects in the fast way' do
-          expect(described_class).to receive(:reltuples_from_recently_updated).with(%w(projects identities)).and_return({ 'projects' => 3 })
+          expect(described_class).to receive(:reltuples_from_recently_updated).with(models).and_return({ Project => 3 })
 
           expect(Project).not_to receive(:count).and_call_original
           expect(Identity).to receive(:count).and_call_original

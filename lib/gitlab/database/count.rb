@@ -26,24 +26,17 @@ module Gitlab
       # @param [Array]
       # @return [Hash] of Model -> count mapping
       def self.approximate_counts(models)
-        table_to_model_map = models.each_with_object({}) do |model, hash|
-          hash[model.table_name] = model
+        counts_by_model = {}
+
+        if Gitlab::Database.postgresql?
+          #counts_by_model = ReltuplesCountStrategy.new(models).count
+          counts_by_model = reltuples_from_recently_updated(models)
         end
 
-        table_names = table_to_model_map.keys
-        counts_by_table_name = Gitlab::Database.postgresql? ? reltuples_from_recently_updated(table_names) : {}
+        missing_models = models - counts_by_model.keys
 
-        # Convert table -> count to Model -> count
-        counts_by_model = counts_by_table_name.each_with_object({}) do |pair, hash|
-          model = table_to_model_map[pair.first]
-          hash[model] = pair.second
-        end
-
-        missing_tables = table_names - counts_by_table_name.keys
-
-        missing_tables.each do |table|
-          model = table_to_model_map[table]
-          counts_by_model[model] = model.count
+        ExactCountStrategy.new(missing_models).count.each do |model, count|
+          counts_by_model[model] = count
         end
 
         counts_by_model
@@ -51,10 +44,10 @@ module Gitlab
 
       # Returns a hash of the table names that have recently updated tuples.
       #
-      # @param [Array] table names
+      # @param [Array] models to count
       # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
-      def self.reltuples_from_recently_updated(table_names)
-        ReltuplesCountStrategy.new(table_names).count
+      def self.reltuples_from_recently_updated(models)
+        ReltuplesCountStrategy.new(models).count
       end
 
       class ExactCountStrategy
@@ -71,11 +64,9 @@ module Gitlab
       end
 
       class ReltuplesCountStrategy
-        attr_reader :table_names
-
-        # @param [Array] table names
-        def initialize(table_names)
-          @table_names = table_names
+        attr_reader :models
+        def initialize(models)
+          @models = models
         end
 
         # Returns a hash of the table names that have recently updated tuples.
@@ -91,12 +82,21 @@ module Gitlab
             rows = ActiveRecord::Base.connection.select_all(query)
           end
 
-          rows.each_with_object({}) { |row, data| data[row['table_name']] = row['estimate'].to_i }
+          table_to_model = models.each_with_object({}) { |model, h| h[model.table_name] = model }
+
+          rows.each_with_object({}) do |row, data|
+            model = table_to_model[row['table_name']]
+            data[model] = row['estimate'].to_i
+          end
         rescue *CONNECTION_ERRORS => e
           {}
         end
 
         private
+
+        def table_names
+          models.map(&:table_name)
+        end
 
         # Generates the PostgreSQL query to return the tuples for tables
         # that have been vacuumed or analyzed in the last hour.
