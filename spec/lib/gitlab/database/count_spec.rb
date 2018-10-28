@@ -35,7 +35,7 @@ describe Gitlab::Database::Count do
 
       describe 'no permission' do
         it 'falls back to standard query' do
-          allow(described_class).to receive(:postgresql_estimate_query).and_raise(PG::InsufficientPrivilege)
+          allow(ActiveRecord::Base).to receive(:transaction).and_raise(PG::InsufficientPrivilege)
 
           expect(Project).to receive(:count).and_call_original
           expect(Identity).to receive(:count).and_call_original

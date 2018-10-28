@@ -54,34 +54,51 @@ module Gitlab
       # @param [Array] table names
       # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
       def self.reltuples_from_recently_updated(table_names)
-        query = postgresql_estimate_query(table_names)
-        rows = []
-
-        # Querying tuple stats only works on the primary. Due to load
-        # balancing, we need to ensure this query hits the load balancer.  The
-        # easiest way to do this is to start a transaction.
-        ActiveRecord::Base.transaction do
-          rows = ActiveRecord::Base.connection.select_all(query)
-        end
-
-        rows.each_with_object({}) { |row, data| data[row['table_name']] = row['estimate'].to_i }
-      rescue *CONNECTION_ERRORS
-        {}
+        ReltuplesCountStrategy.new(table_names).count
       end
 
-      # Generates the PostgreSQL query to return the tuples for tables
-      # that have been vacuumed or analyzed in the last hour.
-      #
-      # @param [Array] table names
-      # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
-      def self.postgresql_estimate_query(table_names)
-        time = "to_timestamp(#{1.hour.ago.to_i})"
-        <<~SQL
+      class ReltuplesCountStrategy
+        attr_reader :table_names
+
+        # @param [Array] table names
+        def initialize(table_names)
+          @table_names = table_names
+        end
+
+        # Returns a hash of the table names that have recently updated tuples.
+        #
+        # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
+        def count
+          query = postgresql_estimate_query(table_names)
+          rows = []
+
+          # Querying tuple stats only works on the primary. Due to load
+          # easiest way to do this is to start a transaction.
+          ActiveRecord::Base.transaction do
+            rows = ActiveRecord::Base.connection.select_all(query)
+          end
+
+          rows.each_with_object({}) { |row, data| data[row['table_name']] = row['estimate'].to_i }
+        rescue *CONNECTION_ERRORS => e
+          {}
+        end
+
+        private
+
+        # Generates the PostgreSQL query to return the tuples for tables
+        # that have been vacuumed or analyzed in the last hour.
+        #
+        # @param [Array] table names
+        # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
+        def postgresql_estimate_query(table_names)
+          time = "to_timestamp(#{1.hour.ago.to_i})"
+          <<~SQL
           SELECT pg_class.relname AS table_name, reltuples::bigint AS estimate FROM pg_class
           LEFT JOIN pg_stat_user_tables ON pg_class.relname = pg_stat_user_tables.relname
           WHERE pg_class.relname IN (#{table_names.map { |table| "'#{table}'" }.join(',')})
           AND (last_vacuum > #{time} OR last_autovacuum > #{time} OR last_analyze > #{time} OR last_autoanalyze > #{time})
-        SQL
+          SQL
+        end
       end
     end
   end
