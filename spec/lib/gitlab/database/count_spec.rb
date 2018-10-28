@@ -7,28 +7,29 @@ describe Gitlab::Database::Count do
   end
 
   let(:models) { [Project, Identity] }
+  let(:reltuples_strategy) { double('reltuples_strategy', count: {}) }
+  let(:exact_strategy) { double('exact_strategy', count: {}) }
 
-  describe '.approximate_counts' do
-    context 'with MySQL' do
-      context 'when reltuples have not been updated' do
-        it 'counts all models the normal way' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+  before do
+    allow(Gitlab::Database::Count::ReltuplesCountStrategy).to receive(:new).with(models).and_return(reltuples_strategy)
+  end
 
-          expect(Project).to receive(:count).and_call_original
-          expect(Identity).to receive(:count).and_call_original
+  context '.approximate_counts' do
+    context 'selecting strategies' do
+      let(:strategies) { [double('s1', :enabled? => true), double('s2', :enabled? => false)] }
 
-          expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
-        end
+      it 'uses only enabled strategies' do
+        expect(strategies[0]).to receive(:new).and_return(double('strategy1', count: {}))
+        expect(strategies[1]).not_to receive(:new)
+
+        described_class.approximate_counts(models, strategies: strategies)
       end
     end
 
+    context 'fallbacks' do
+    end
+
     context 'with PostgreSQL', :postgresql do
-      let(:reltuples_strategy) { double('reltuples_strategy', count: {}) }
-
-      before do
-        allow(Gitlab::Database::Count::ReltuplesCountStrategy).to receive(:new).with(models).and_return(reltuples_strategy)
-      end
-
       describe 'when reltuples have not been updated' do
         it 'counts all models the normal way' do
           expect(Project).to receive(:count).and_call_original
@@ -77,10 +78,54 @@ describe Gitlab::Database::Count do
       describe Gitlab::Database::Count::ExactCountStrategy do
         subject { described_class.new(models).count }
 
-        it 'counts all models' do
-          models.each { |model| expect(model).to receive(:count).and_call_original }
+        describe '#count' do
+          it 'counts all models' do
+            models.each { |model| expect(model).to receive(:count).and_call_original }
 
-          expect(subject).to eq({ Project => 3, Identity => 1 })
+            expect(subject).to eq({ Project => 3, Identity => 1 })
+          end
+        end
+
+        describe '.enabled?' do
+          it 'is enabled for PostgreSQL' do
+            allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+            expect(described_class.enabled?).to be_truthy
+          end
+
+          it 'is enabled for MySQL' do
+            allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+            expect(described_class.enabled?).to be_truthy
+          end
+        end
+      end
+
+      describe Gitlab::Database::Count::ReltuplesCountStrategy do
+        subject { described_class.new(models).count }
+
+        describe '#count' do
+          context 'when reltuples is not up to date' do
+            it 'returns an empty hash' do
+              models.each { |model| expect(model).not_to receive(:count) }
+
+              expect(subject).to eq({})
+            end
+          end
+        end
+
+        describe '.enabled?' do
+          it 'is enabled for PostgreSQL' do
+            allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+            expect(described_class.enabled?).to be_truthy
+          end
+
+          it 'is disabled for MySQL' do
+            allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+            expect(described_class.enabled?).to be_falsey
+          end
         end
       end
     end

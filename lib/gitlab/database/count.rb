@@ -25,7 +25,7 @@ module Gitlab
       #
       # @param [Array]
       # @return [Hash] of Model -> count mapping
-      def self.approximate_counts(models, strategies = [ReltuplesCountStrategy, ExactCountStrategy])
+      def self.approximate_counts(models, strategies: [ReltuplesCountStrategy, ExactCountStrategy])
         strategies.each_with_object({}) do |strategy, counts_by_model|
           if strategy.enabled?
             models_with_missing_counts = models - counts_by_model.keys
@@ -36,14 +36,6 @@ module Gitlab
             end
           end
         end
-      end
-
-      # Returns a hash of the table names that have recently updated tuples.
-      #
-      # @param [Array] models to count
-      # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
-      def self.reltuples_from_recently_updated(models)
-        ReltuplesCountStrategy.new(models).count
       end
 
       class ExactCountStrategy
