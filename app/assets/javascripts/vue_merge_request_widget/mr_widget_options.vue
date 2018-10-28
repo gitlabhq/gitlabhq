@@ -2,39 +2,37 @@
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
-import {
-  WidgetHeader,
-  WidgetMergeHelp,
-  WidgetPipeline,
-  Deployment,
-  WidgetRelatedLinks,
-  MergedState,
-  ClosedState,
-  MergingState,
-  RebaseState,
-  WorkInProgressState,
-  ArchivedState,
-  ConflictsState,
-  NothingToMergeState,
-  MissingBranchState,
-  NotAllowedState,
-  ReadyToMergeState,
-  ShaMismatchState,
-  UnresolvedDiscussionsState,
-  PipelineBlockedState,
-  PipelineFailedState,
-  FailedToMerge,
-  MergeWhenPipelineSucceedsState,
-  AutoMergeFailed,
-  CheckingState,
-  MRWidgetStore,
-  MRWidgetService,
-  eventHub,
-  stateMaps,
-  SquashBeforeMerge,
-  notify,
-  SourceBranchRemovalStatus,
-} from './dependencies';
+import WidgetHeader from './components/mr_widget_header.vue';
+import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
+import WidgetPipeline from './components/mr_widget_pipeline.vue';
+import Deployment from './components/deployment.vue';
+import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
+import MergedState from './components/states/mr_widget_merged.vue';
+import ClosedState from './components/states/mr_widget_closed.vue';
+import MergingState from './components/states/mr_widget_merging.vue';
+import RebaseState from './components/states/mr_widget_rebase.vue';
+import WorkInProgressState from './components/states/work_in_progress.vue';
+import ArchivedState from './components/states/mr_widget_archived.vue';
+import ConflictsState from './components/states/mr_widget_conflicts.vue';
+import NothingToMergeState from './components/states/nothing_to_merge.vue';
+import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
+import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
+import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import ShaMismatchState from './components/states/sha_mismatch.vue';
+import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
+import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
+import PipelineFailedState from './components/states/pipeline_failed.vue';
+import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
+import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
+import CheckingState from './components/states/mr_widget_checking.vue';
+import MRWidgetStore from './stores/ee_switch_mr_widget_store';
+import MRWidgetService from './services/ee_switch_mr_widget_service';
+import eventHub from './event_hub';
+import stateMaps from './stores/ee_switch_state_maps';
+import SquashBeforeMerge from './components/states/squash_before_merge.vue';
+import notify from '~/lib/utils/notify';
+import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 

@@ -9,6 +9,7 @@ module Gitlab
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
+    TimeoutError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
 
     ERROR_MESSAGES = {
@@ -26,11 +27,18 @@ module Gitlab
       cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
+    INTERNAL_TIMEOUT = 50.seconds.freeze
+    LOG_HEADER = <<~MESSAGE
+      Push operation timed out
+
+      Timing information for debugging purposes:
+    MESSAGE
+
     DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes, :logger
 
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
@@ -44,6 +52,7 @@ module Gitlab
     end
 
     def check(cmd, changes)
+      @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
 
       check_protocol!
@@ -269,14 +278,19 @@ module Gitlab
     end
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)
-      Checks::ChangeAccess.new(
+      change_access = Checks::ChangeAccess.new(
         change,
         user_access: user_access,
         project: project,
         skip_authorization: deploy_key?,
         skip_lfs_integrity_check: skip_lfs_integrity_check,
-        protocol: protocol
-      ).exec
+        protocol: protocol,
+        logger: logger
+      )
+
+      change_access.exec
+    rescue Checks::TimedLogger::TimeoutError
+      raise TimeoutError, logger.full_message
     end
 
     def deploy_key

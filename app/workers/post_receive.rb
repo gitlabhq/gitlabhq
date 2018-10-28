@@ -29,15 +29,14 @@ class PostReceive
   def process_project_changes(post_received)
     changes = []
     refs = Set.new
+    @user = post_received.identify
+
+    unless @user
+      log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
+      return false
+    end
 
     post_received.changes_refs do |oldrev, newrev, ref|
-      @user ||= post_received.identify(newrev)
-
-      unless @user
-        log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-        return false # rubocop:disable Cop/AvoidReturnFromBlocks
-      end
-
       if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       elsif Gitlab::Git.branch_ref?(ref)

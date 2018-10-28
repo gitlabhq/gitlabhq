@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
@@ -63,7 +65,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    # On CE only index and show actions are needed
     resources :boards, only: [:index, :show]
 
     resources :runners, only: [:index, :edit, :update, :destroy, :show] do

@@ -53,6 +53,9 @@ export default Vue.extend({
       const { issuesSize } = this.list;
       return `${n__('%d issue', '%d issues', issuesSize)}`;
     },
+    isNewIssueShown() {
+      return this.list.type === 'backlog' || (!this.disabled && this.list.type !== 'closed');
+    }
   },
   watch: {
     filter: {

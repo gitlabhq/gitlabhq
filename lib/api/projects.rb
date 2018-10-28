@@ -114,7 +114,8 @@ module API
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          current_user: current_user
+          current_user: current_user,
+          license: false
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
@@ -230,13 +231,17 @@ module API
       params do
         use :statistics_params
         use :with_custom_attributes
+
+        optional :license, type: Boolean, default: false,
+                           desc: 'Include project license data'
       end
       get ":id" do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
           user_can_admin_project: can?(current_user, :admin_project, user_project),
-          statistics: params[:statistics]
+          statistics: params[:statistics],
+          license: params[:license]
         }
 
         project, options = with_custom_attributes(user_project, options)

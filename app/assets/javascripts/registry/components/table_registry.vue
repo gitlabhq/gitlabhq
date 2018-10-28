@@ -1,66 +1,62 @@
 <script>
-  import { mapActions } from 'vuex';
-  import { n__ } from '../../locale';
-  import Flash from '../../flash';
-  import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import tablePagination from '../../vue_shared/components/table_pagination.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import timeagoMixin from '../../vue_shared/mixins/timeago';
-  import { errorMessages, errorMessagesTypes } from '../constants';
-  import { numberToHumanSize } from '../../lib/utils/number_utils';
+import { mapActions } from 'vuex';
+import { n__ } from '../../locale';
+import Flash from '../../flash';
+import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import timeagoMixin from '../../vue_shared/mixins/timeago';
+import { errorMessages, errorMessagesTypes } from '../constants';
+import { numberToHumanSize } from '../../lib/utils/number_utils';
 
-  export default {
-    components: {
-      clipboardButton,
-      tablePagination,
+export default {
+  components: {
+    clipboardButton,
+    tablePagination,
+  },
+  directives: {
+    tooltip,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    repo: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
+  },
+  computed: {
+    shouldRenderPagination() {
+      return this.repo.pagination.total > this.repo.pagination.perPage;
     },
-    mixins: [
-      timeagoMixin,
-    ],
-    props: {
-      repo: {
-        type: Object,
-        required: true,
-      },
+  },
+  methods: {
+    ...mapActions(['fetchList', 'deleteRegistry']),
+
+    layers(item) {
+      return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
     },
-    computed: {
-      shouldRenderPagination() {
-        return this.repo.pagination.total > this.repo.pagination.perPage;
-      },
+
+    formatSize(size) {
+      return numberToHumanSize(size);
     },
-    methods: {
-      ...mapActions([
-        'fetchList',
-        'deleteRegistry',
-      ]),
 
-      layers(item) {
-        return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
-      },
-
-      formatSize(size) {
-        return numberToHumanSize(size);
-      },
-
-      handleDeleteRegistry(registry) {
-        this.deleteRegistry(registry)
-          .then(() => this.fetchList({ repo: this.repo }))
-          .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
-      },
-
-      onPageChange(pageNumber) {
-        this.fetchList({ repo: this.repo, page: pageNumber })
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
-      },
-
-      showError(message) {
-        Flash(errorMessages[message]);
-      },
+    handleDeleteRegistry(registry) {
+      this.deleteRegistry(registry)
+        .then(() => this.fetchList({ repo: this.repo }))
+        .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
     },
-  };
+
+    onPageChange(pageNumber) {
+      this.fetchList({ repo: this.repo, page: pageNumber }).catch(() =>
+        this.showError(errorMessagesTypes.FETCH_REGISTRY),
+      );
+    },
+
+    showError(message) {
+      Flash(errorMessages[message]);
+    },
+  },
+};
 </script>
 <template>
   <div>

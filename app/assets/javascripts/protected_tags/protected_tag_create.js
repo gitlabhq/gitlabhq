@@ -40,7 +40,9 @@ export default class ProtectedTagCreate {
     const $tagInput = this.$form.find('input[name="protected_tag[name]"]');
     const $allowedToCreateInput = this.$form.find('#create_access_levels_attributes');
 
-    this.$form.find('input[type="submit"]').prop('disabled', !($tagInput.val() && $allowedToCreateInput.length));
+    this.$form
+      .find('input[type="submit"]')
+      .prop('disabled', !($tagInput.val() && $allowedToCreateInput.length));
   }
 
   static getProtectedTags(term, callback) {

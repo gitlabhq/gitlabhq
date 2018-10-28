@@ -208,11 +208,22 @@ describe Boards::IssuesController do
       end
     end
 
-    context 'with unauthorized user' do
-      it 'returns a forbidden 403 response' do
-        create_issue user: guest, board: board, list: list1, title: 'New issue'
+    context 'with guest user' do
+      context 'in open list' do
+        it 'returns a successful 200 response' do
+          open_list = board.lists.create(list_type: :backlog)
+          create_issue user: guest, board: board, list: open_list, title: 'New issue'
 
-        expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'in label list' do
+        it 'returns a forbidden 403 response' do
+          create_issue user: guest, board: board, list: list1, title: 'New issue'
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 

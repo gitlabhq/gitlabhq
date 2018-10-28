@@ -68,10 +68,7 @@ export const collapseSystemNotes = notes => {
         lastDescriptionSystemNote = note;
         lastDescriptionSystemNoteIndex = acc.length;
       } else if (lastDescriptionSystemNote) {
-        const timeDifferenceMinutes = getTimeDifferenceMinutes(
-          lastDescriptionSystemNote,
-          note,
-        );
+        const timeDifferenceMinutes = getTimeDifferenceMinutes(lastDescriptionSystemNote, note);
 
         // are they less than 10 minutes appart?
         if (timeDifferenceMinutes > 10) {
