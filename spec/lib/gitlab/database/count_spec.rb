@@ -55,60 +55,6 @@ describe Gitlab::Database::Count do
         subject
       end
     end
-
-    xcontext 'with PostgreSQL', :postgresql do
-      let(:reltuples_strategy) { double('reltuples_strategy', count: {}) }
-      let(:exact_strategy) { double('exact_strategy', count: {}) }
-
-      before do
-        allow(Gitlab::Database::Count::ReltuplesCountStrategy).to receive(:new).with(models).and_return(reltuples_strategy)
-      end
-
-      describe 'when reltuples have not been updated' do
-        it 'counts all models the normal way' do
-          expect(Project).to receive(:count).and_call_original
-          expect(Identity).to receive(:count).and_call_original
-          expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
-        end
-      end
-
-      describe 'no permission' do
-        it 'falls back to standard query' do
-          allow(ActiveRecord::Base).to receive(:transaction).and_raise(PG::InsufficientPrivilege)
-
-          expect(Project).to receive(:count).and_call_original
-          expect(Identity).to receive(:count).and_call_original
-          expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
-        end
-      end
-
-      describe 'when some reltuples have been updated' do
-        it 'counts projects in the fast way' do
-          expect(reltuples_strategy).to receive(:count).and_return({ Project => 3 })
-
-          expect(Project).not_to receive(:count).and_call_original
-          expect(Identity).to receive(:count).and_call_original
-          expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
-        end
-      end
-
-      # TODO: This covers two parts: reltuple strategy itself and the fallback
-      # TODO: Add spec that covers strategy details for reltuple strategy
-      describe 'when all reltuples have been updated' do
-        #before do
-          #ActiveRecord::Base.connection.execute('ANALYZE projects')
-          #ActiveRecord::Base.connection.execute('ANALYZE identities')
-        #end
-
-        it 'counts models with the standard way' do
-          allow(reltuples_strategy).to receive(:count).and_return({ Project => 3, Identity => 1 })
-          expect(Project).not_to receive(:count)
-          expect(Identity).not_to receive(:count)
-
-          expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
-        end
-      end
-    end
   end
 
   describe Gitlab::Database::Count::ExactCountStrategy do
@@ -141,9 +87,22 @@ describe Gitlab::Database::Count do
     subject { described_class.new(models).count }
 
     describe '#count' do
-      context 'when reltuples is not up to date' do
-        it 'returns an empty hash' do
+      context 'when reltuples is up to date' do
+        before do
+          ActiveRecord::Base.connection.execute('ANALYZE projects')
+          ActiveRecord::Base.connection.execute('ANALYZE identities')
+        end
+
+        it 'uses statistics to do the count' do
           models.each { |model| expect(model).not_to receive(:count) }
+
+          expect(subject).to eq({ Project => 3, Identity => 1 })
+        end
+      end
+
+      context 'insufficient permissions' do
+        it 'returns an empty hash' do
+          allow(ActiveRecord::Base).to receive(:transaction).and_raise(PG::InsufficientPrivilege)
 
           expect(subject).to eq({})
         end
