@@ -163,6 +163,10 @@ describe Gitlab::Database::Count do
     end
 
     describe '.enabled?' do
+      before do
+        stub_feature_flags(tablesample_counts: true)
+      end
+
       it 'is enabled for PostgreSQL' do
         allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
 

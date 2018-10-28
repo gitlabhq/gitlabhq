@@ -172,6 +172,10 @@ module Gitlab
           {}
         end
 
+        def self.enabled?
+          Gitlab::Database.postgresql? && Feature.enabled?(:tablesample_counts)
+        end
+
         private
         def perform_count(model, estimate)
           # If we estimate 0, we may not have statistics at all. Don't use them.
