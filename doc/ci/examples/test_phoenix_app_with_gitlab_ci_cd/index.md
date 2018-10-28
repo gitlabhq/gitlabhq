@@ -398,10 +398,10 @@ other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams
 - [Using Docker images documentation][using-docker]
 - [Example project: Hello GitLab CI/CD on GitLab][hello-gitlab]
 
-[phoenix-site]: http://phoenixframework.org/ "Phoenix Framework"
+[phoenix-site]: https://phoenixframework.org/ "Phoenix Framework"
 [phoenix-learning-guide]: https://hexdocs.pm/phoenix/learning.html "Phoenix Learning Guide"
-[phoenix-install]: http://www.phoenixframework.org/docs/installation "Phoenix Installation"
-[phoenix-mysql]: http://www.phoenixframework.org/docs/using-mysql "Phoenix with MySQL"
+[phoenix-install]: https://hexdocs.pm/phoenix/installation.html "Phoenix Installation"
+[phoenix-mysql]: https://hexdocs.pm/phoenix/ecto.html#using-mysql "Phoenix with MySQL"
 [elixir-site]: http://elixir-lang.org/ "Elixir"
 [elixir-mix]: http://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html "Introduction to mix"
 [elixir-docs]: http://elixir-lang.org/getting-started/introduction.html "Elixir Documentation"
