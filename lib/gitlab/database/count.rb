@@ -29,6 +29,9 @@ module Gitlab
         strategies.each_with_object({}) do |strategy, counts_by_model|
           if strategy.enabled?
             models_with_missing_counts = models - counts_by_model.keys
+
+            return counts_by_model if models_with_missing_counts.empty?
+
             counts = strategy.new(models_with_missing_counts).count
 
             counts.each do |model, count|
