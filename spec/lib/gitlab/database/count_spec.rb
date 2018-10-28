@@ -23,10 +23,14 @@ describe Gitlab::Database::Count do
     end
 
     context 'with PostgreSQL', :postgresql do
+      let(:reltuples_strategy) { double('reltuples_strategy', count: {}) }
+
+      before do
+        allow(Gitlab::Database::Count::ReltuplesCountStrategy).to receive(:new).with(models).and_return(reltuples_strategy)
+      end
+
       describe 'when reltuples have not been updated' do
         it 'counts all models the normal way' do
-          expect(described_class).to receive(:reltuples_from_recently_updated).with(models).and_return({})
-
           expect(Project).to receive(:count).and_call_original
           expect(Identity).to receive(:count).and_call_original
           expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
@@ -45,7 +49,7 @@ describe Gitlab::Database::Count do
 
       describe 'when some reltuples have been updated' do
         it 'counts projects in the fast way' do
-          expect(described_class).to receive(:reltuples_from_recently_updated).with(models).and_return({ Project => 3 })
+          expect(reltuples_strategy).to receive(:count).and_return({ Project => 3 })
 
           expect(Project).not_to receive(:count).and_call_original
           expect(Identity).to receive(:count).and_call_original
@@ -53,13 +57,16 @@ describe Gitlab::Database::Count do
         end
       end
 
+      # TODO: This covers two parts: reltuple strategy itself and the fallback
+      # TODO: Add spec that covers strategy details for reltuple strategy
       describe 'when all reltuples have been updated' do
-        before do
-          ActiveRecord::Base.connection.execute('ANALYZE projects')
-          ActiveRecord::Base.connection.execute('ANALYZE identities')
-        end
+        #before do
+          #ActiveRecord::Base.connection.execute('ANALYZE projects')
+          #ActiveRecord::Base.connection.execute('ANALYZE identities')
+        #end
 
         it 'counts models with the standard way' do
+          allow(reltuples_strategy).to receive(:count).and_return({ Project => 3, Identity => 1 })
           expect(Project).not_to receive(:count)
           expect(Identity).not_to receive(:count)
 

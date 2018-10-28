@@ -25,21 +25,17 @@ module Gitlab
       #
       # @param [Array]
       # @return [Hash] of Model -> count mapping
-      def self.approximate_counts(models)
-        counts_by_model = {}
+      def self.approximate_counts(models, strategies = [ReltuplesCountStrategy, ExactCountStrategy])
+        strategies.each_with_object({}) do |strategy, counts_by_model|
+          if strategy.enabled?
+            models_with_missing_counts = models - counts_by_model.keys
+            counts = strategy.new(models_with_missing_counts).count
 
-        if Gitlab::Database.postgresql?
-          #counts_by_model = ReltuplesCountStrategy.new(models).count
-          counts_by_model = reltuples_from_recently_updated(models)
+            counts.each do |model, count|
+              counts_by_model[model] = count
+            end
+          end
         end
-
-        missing_models = models - counts_by_model.keys
-
-        ExactCountStrategy.new(missing_models).count.each do |model, count|
-          counts_by_model[model] = count
-        end
-
-        counts_by_model
       end
 
       # Returns a hash of the table names that have recently updated tuples.
@@ -60,6 +56,10 @@ module Gitlab
           models.each_with_object({}) do |model, data|
             data[model] = model.count
           end
+        end
+
+        def self.enabled?
+          true
         end
       end
 
@@ -90,6 +90,10 @@ module Gitlab
           end
         rescue *CONNECTION_ERRORS => e
           {}
+        end
+
+        def self.enabled?
+          Gitlab::Database.postgresql?
         end
 
         private
