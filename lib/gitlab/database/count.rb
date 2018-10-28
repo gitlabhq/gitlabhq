@@ -57,6 +57,19 @@ module Gitlab
         ReltuplesCountStrategy.new(table_names).count
       end
 
+      class ExactCountStrategy
+        attr_reader :models
+        def initialize(models)
+          @models = models
+        end
+
+        def count
+          models.each_with_object({}) do |model, data|
+            data[model] = model.count
+          end
+        end
+      end
+
       class ReltuplesCountStrategy
         attr_reader :table_names
 

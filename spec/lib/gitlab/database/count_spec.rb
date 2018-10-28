@@ -66,6 +66,16 @@ describe Gitlab::Database::Count do
           expect(described_class.approximate_counts(models)).to eq({ Project => 3, Identity => 1 })
         end
       end
+
+      describe Gitlab::Database::Count::ExactCountStrategy do
+        subject { described_class.new(models).count }
+
+        it 'counts all models' do
+          models.each { |model| expect(model).to receive(:count).and_call_original }
+
+          expect(subject).to eq({ Project => 3, Identity => 1 })
+        end
+      end
     end
   end
 end
