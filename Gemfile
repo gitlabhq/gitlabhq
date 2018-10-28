@@ -244,9 +244,6 @@ gem 'rack-attack', '~> 4.4.1'
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'
 
-# Keyboard shortcuts
-gem 'mousetrap-rails', '~> 1.4.6'
-
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
 
