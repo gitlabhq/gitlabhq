@@ -4030,9 +4030,6 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-msgid "No Assignee"
-msgstr ""
-
 msgid "No Label"
 msgstr ""
 

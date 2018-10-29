@@ -61,7 +61,10 @@
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link{ type: 'button' }
-                    = _('No Assignee')
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
                 %li.divider.droplab-item-ignore
                 - if current_user
                   = render 'shared/issuable/user_dropdown_item',
@@ -81,7 +84,7 @@
                 %li.filter-dropdown-item{ data: { value: 'upcoming' } }
                   %button.btn.btn-link{ type: 'button' }
                     = _('Upcoming')
-                %li.filter-dropdown-item{ 'data-value' => 'started' }
+                %li.filter-dropdown-item{ data: { value: 'started' } }
                   %button.btn.btn-link{ type: 'button' }
                     = _('Started')
                 %li.divider.droplab-item-ignore
