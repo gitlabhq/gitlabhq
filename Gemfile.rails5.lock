@@ -344,11 +344,11 @@ GEM
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.26.0)
+    haml_lint (0.28.0)
       haml (>= 4.0, < 5.1)
       rainbow
       rake (>= 10, < 13)
-      rubocop (>= 0.49.0)
+      rubocop (>= 0.50.0)
       sysexits (~> 1.1)
     hamlit (2.8.8)
       temple (>= 0.8.0)
@@ -1027,7 +1027,7 @@ DEPENDENCIES
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.8.0)
   grpc (~> 1.15.0)
-  haml_lint (~> 0.26.0)
+  haml_lint (~> 0.28.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
   hashie-forbidden_attributes
