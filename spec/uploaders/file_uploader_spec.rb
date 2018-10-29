@@ -81,19 +81,24 @@ describe FileUploader do
   end
 
   describe 'copy_to' do
+    let(:new_project) { create(:project) }
+    let(:moved) { described_class.copy_to(subject, new_project) }
+
     shared_examples 'returns a valid uploader' do
       describe 'returned uploader' do
-        let(:new_project) { create(:project) }
-        let(:moved) { described_class.copy_to(subject, new_project) }
-
         it 'generates a new secret' do
           expect(subject).to be
           expect(described_class).to receive(:generate_secret).once.and_call_original
           expect(moved).to be
         end
 
-        it 'create new upload' do
-          expect(moved.upload).not_to eq(subject.upload)
+        it 'creates new upload correctly' do
+          upload = moved.upload
+
+          expect(upload).not_to eq(subject.upload)
+          expect(upload.model).to eq(new_project)
+          expect(upload.uploader).to eq('FileUploader')
+          expect(upload.secret).not_to eq(subject.upload.secret)
         end
 
         it 'copies the file' do
@@ -111,6 +116,12 @@ describe FileUploader do
       end
 
       include_examples 'returns a valid uploader'
+
+      it 'copies the file to the correct location' do
+        expect(moved.upload.path).to eq("#{moved.upload.secret}/dk.png")
+        expect(moved.file.path).to end_with("public/uploads/#{new_project.disk_path}/#{moved.upload.secret}/dk.png")
+        expect(moved.filename).to eq('dk.png')
+      end
     end
 
     context 'files are stored remotely' do
@@ -121,6 +132,12 @@ describe FileUploader do
       end
 
       include_examples 'returns a valid uploader'
+
+      it 'copies the file to the correct location' do
+        expect(moved.upload.path).to eq("#{new_project.disk_path}/#{moved.upload.secret}/dk.png")
+        expect(moved.file.path).to eq("#{new_project.disk_path}/#{moved.upload.secret}/dk.png")
+        expect(moved.filename).to eq('dk.png')
+      end
     end
   end
 
