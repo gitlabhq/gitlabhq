@@ -113,7 +113,7 @@ describe Gitlab::Ci::Config::Entry::Retry do
           end
         end
 
-        CommitStatus.failure_reasons.each_key do |reason|
+        ::Ci::Build.failure_reasons.each_key do |reason|
           context "with when from CommitStatus.failure_reasons `#{reason}`" do
             let(:when) { reason }
 
