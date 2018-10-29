@@ -1,0 +1,5 @@
+---
+title: Use key-value pair arrays for API query parameter logging instead of hashes
+merge_request: 22623
+author:
+type: other
