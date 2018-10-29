@@ -1,0 +1,5 @@
+---
+title: Hide all tables on Pipeline when no Jobs for the Pipeline
+merge_request: 18540
+author: Takuya Noguchi
+type: fixed
