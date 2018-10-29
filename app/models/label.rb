@@ -9,15 +9,10 @@ class Label < ActiveRecord::Base
   include Sortable
   include FromUnion
 
-  # Represents a "No Label" state used for filtering Issues and Merge
-  # Requests that have no label assigned.
-  LabelStruct = Struct.new(:title, :name)
-  None = LabelStruct.new('No Label', 'No Label')
-  Any = LabelStruct.new('Any Label', '')
-
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'.freeze
+  DEFAULT_COLOR = '#428BCA'
+  NONE = 'no label'
 
   default_value_for :color, DEFAULT_COLOR
 

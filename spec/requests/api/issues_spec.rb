@@ -300,17 +300,31 @@ describe API::Issues do
         expect(json_response.first['state']).to eq('opened')
       end
 
-      it 'returns unlabeled issues for "No Label" label' do
-        get api("/issues", user), labels: 'No Label'
-
-        expect_paginated_array_response(size: 1)
-        expect(json_response.first['labels']).to be_empty
-      end
-
       it 'returns an empty array if no issue matches labels and state filters' do
-        get api("/issues?labels=#{label.title}&state=closed", user)
+        get api("/issues", user), labels: label.title, state: :closed
 
         expect_paginated_array_response(size: 0)
+      end
+
+      it 'returns an array of issues with any label' do
+        get api("/issues", user), labels: IssuesFinder::FILTER_ANY
+
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+
+      it 'returns an array of issues with no label' do
+        get api("/issues", user), labels: IssuesFinder::FILTER_NONE
+
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an array of issues with no label when using the legacy No+Label filter' do
+        get api("/issues", user), labels: "No Label"
+
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
       end
 
       it 'returns an empty array if no issue matches milestone' do
@@ -492,58 +506,58 @@ describe API::Issues do
       end
 
       it 'returns group issues without confidential issues for non project members' do
-        get api("#{base_url}?state=opened", non_member)
+        get api(base_url, non_member), state: :opened
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['title']).to eq(group_issue.title)
       end
 
       it 'returns group confidential issues for author' do
-        get api("#{base_url}?state=opened", author)
+        get api(base_url, author), state: :opened
 
         expect_paginated_array_response(size: 2)
       end
 
       it 'returns group confidential issues for assignee' do
-        get api("#{base_url}?state=opened", assignee)
+        get api(base_url, assignee), state: :opened
 
         expect_paginated_array_response(size: 2)
       end
 
       it 'returns group issues with confidential issues for project members' do
-        get api("#{base_url}?state=opened", user)
+        get api(base_url, user), state: :opened
 
         expect_paginated_array_response(size: 2)
       end
 
       it 'returns group confidential issues for admin' do
-        get api("#{base_url}?state=opened", admin)
+        get api(base_url, admin), state: :opened
 
         expect_paginated_array_response(size: 2)
       end
 
       it 'returns an array of labeled group issues' do
-        get api("#{base_url}?labels=#{group_label.title}", user)
+        get api(base_url, user), labels: group_label.title
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['labels']).to eq([group_label.title])
       end
 
       it 'returns an array of labeled group issues where all labels match' do
-        get api("#{base_url}?labels=#{group_label.title},foo,bar", user)
+        get api(base_url, user), labels: "#{group_label.title},foo,bar"
 
         expect_paginated_array_response(size: 0)
       end
 
       it 'returns issues matching given search string for title' do
-        get api("#{base_url}?search=#{group_issue.title}", user)
+        get api(base_url, user), search: group_issue.title
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['id']).to eq(group_issue.id)
       end
 
       it 'returns issues matching given search string for description' do
-        get api("#{base_url}?search=#{group_issue.description}", user)
+        get api(base_url, user), search: group_issue.description
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['id']).to eq(group_issue.id)
@@ -556,7 +570,7 @@ describe API::Issues do
         create(:label_link, label: label_b, target: group_issue)
         create(:label_link, label: label_c, target: group_issue)
 
-        get api("#{base_url}", user), labels: "#{group_label.title},#{label_b.title},#{label_c.title}"
+        get api(base_url, user), labels: "#{group_label.title},#{label_b.title},#{label_c.title}"
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['labels']).to eq([label_c.title, label_b.title, group_label.title])
@@ -576,40 +590,55 @@ describe API::Issues do
       end
 
       it 'returns an empty array if no group issue matches labels' do
-        get api("#{base_url}?labels=foo,bar", user)
+        get api(base_url, user), labels: 'foo,bar'
 
         expect_paginated_array_response(size: 0)
       end
 
+      it 'returns an array of group issues with any label' do
+        get api(base_url, user), labels: IssuesFinder::FILTER_ANY
+
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_issue.id)
+      end
+
+      it 'returns an array of group issues with no label' do
+        get api(base_url, user), labels: IssuesFinder::FILTER_NONE
+
+        response_ids = json_response.map { |issue| issue['id'] }
+
+        expect_paginated_array_response(size: 2)
+        expect(response_ids).to contain_exactly(group_closed_issue.id, group_confidential_issue.id)
+      end
+
       it 'returns an empty array if no issue matches milestone' do
-        get api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
+        get api(base_url, user), milestone: group_empty_milestone.title
 
         expect_paginated_array_response(size: 0)
       end
 
       it 'returns an empty array if milestone does not exist' do
-        get api("#{base_url}?milestone=foo", user)
+        get api(base_url, user), milestone: 'foo'
 
         expect_paginated_array_response(size: 0)
       end
 
       it 'returns an array of issues in given milestone' do
-        get api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
+        get api(base_url, user), state: :opened, milestone: group_milestone.title
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['id']).to eq(group_issue.id)
       end
 
       it 'returns an array of issues matching state in milestone' do
-        get api("#{base_url}?milestone=#{group_milestone.title}"\
-                '&state=closed', user)
+        get api(base_url, user), milestone: group_milestone.title, state: :closed
 
         expect_paginated_array_response(size: 1)
         expect(json_response.first['id']).to eq(group_closed_issue.id)
       end
 
       it 'returns an array of issues with no milestone' do
-        get api("#{base_url}?milestone=#{no_milestone_title}", user)
+        get api(base_url, user), milestone: no_milestone_title
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -645,7 +674,7 @@ describe API::Issues do
       end
 
       it 'sorts by updated_at ascending when requested' do
-        get api("#{base_url}?order_by=updated_at&sort=asc", user)
+        get api(base_url, user), order_by: :updated_at, sort: :asc
 
         response_dates = json_response.map { |issue| issue['updated_at'] }
 
@@ -748,7 +777,7 @@ describe API::Issues do
     end
 
     it 'returns an array of labeled project issues' do
-      get api("#{base_url}/issues?labels=#{label.title}", user)
+      get api("#{base_url}/issues", user), labels: label.title
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['labels']).to eq([label.title])
@@ -800,26 +829,42 @@ describe API::Issues do
       expect_paginated_array_response(size: 0)
     end
 
+    it 'returns an array of project issues with any label' do
+      get api("#{base_url}/issues", user), labels: IssuesFinder::FILTER_ANY
+
+      expect_paginated_array_response(size: 1)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
+
+    it 'returns an array of project issues with no label' do
+      get api("#{base_url}/issues", user), labels: IssuesFinder::FILTER_NONE
+
+      response_ids = json_response.map { |issue| issue['id'] }
+
+      expect_paginated_array_response(size: 2)
+      expect(response_ids).to contain_exactly(closed_issue.id, confidential_issue.id)
+    end
+
     it 'returns an empty array if no project issue matches labels' do
-      get api("#{base_url}/issues?labels=foo,bar", user)
+      get api("#{base_url}/issues", user), labels: 'foo,bar'
 
       expect_paginated_array_response(size: 0)
     end
 
     it 'returns an empty array if no issue matches milestone' do
-      get api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
+      get api("#{base_url}/issues", user), milestone: empty_milestone.title
 
       expect_paginated_array_response(size: 0)
     end
 
     it 'returns an empty array if milestone does not exist' do
-      get api("#{base_url}/issues?milestone=foo", user)
+      get api("#{base_url}/issues", user), milestone: :foo
 
       expect_paginated_array_response(size: 0)
     end
 
     it 'returns an array of issues in given milestone' do
-      get api("#{base_url}/issues?milestone=#{milestone.title}", user)
+      get api("#{base_url}/issues", user), milestone: milestone.title
 
       expect_paginated_array_response(size: 2)
       expect(json_response.first['id']).to eq(issue.id)
@@ -827,21 +872,21 @@ describe API::Issues do
     end
 
     it 'returns an array of issues matching state in milestone' do
-      get api("#{base_url}/issues?milestone=#{milestone.title}&state=closed", user)
+      get api("#{base_url}/issues", user), milestone: milestone.title, state: :closed
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['id']).to eq(closed_issue.id)
     end
 
     it 'returns an array of issues with no milestone' do
-      get api("#{base_url}/issues?milestone=#{no_milestone_title}", user)
+      get api("#{base_url}/issues", user), milestone: no_milestone_title
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['id']).to eq(confidential_issue.id)
     end
 
     it 'returns an array of issues with any milestone' do
-      get api("#{base_url}/issues?milestone=#{any_milestone_title}", user)
+      get api("#{base_url}/issues", user), milestone: any_milestone_title
 
       response_ids = json_response.map { |issue| issue['id'] }
 
@@ -859,7 +904,7 @@ describe API::Issues do
     end
 
     it 'sorts ascending when requested' do
-      get api("#{base_url}/issues?sort=asc", user)
+      get api("#{base_url}/issues", user), sort: :asc
 
       response_dates = json_response.map { |issue| issue['created_at'] }
 
@@ -868,7 +913,7 @@ describe API::Issues do
     end
 
     it 'sorts by updated_at descending when requested' do
-      get api("#{base_url}/issues?order_by=updated_at", user)
+      get api("#{base_url}/issues", user), order_by: :updated_at
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
@@ -877,7 +922,7 @@ describe API::Issues do
     end
 
     it 'sorts by updated_at ascending when requested' do
-      get api("#{base_url}/issues?order_by=updated_at&sort=asc", user)
+      get api("#{base_url}/issues", user), order_by: :updated_at, sort: :asc
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
