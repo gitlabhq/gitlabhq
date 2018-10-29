@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, prefer-template, vars-on-top */
+/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -186,7 +186,7 @@ describe('Search autocomplete dropdown', () => {
     widget.searchInput.val('help');
     widget.searchInput.triggerHandler('focus');
     list = widget.wrap.find('.dropdown-menu').find('ul');
-    link = "a[href='" + projectIssuesPath + '/?assignee_username=' + userName + "']";
+    link = `a[href='${projectIssuesPath}/?assignee_username=${userName}']`;
 
     expect(list.find(link).length).toBe(0);
   });
