@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 describe QA::Runtime::Logger do
+  before do
+    logger = Logger.new $stdout
+    logger.level = ::Logger::DEBUG
+    described_class.logger = logger
+  end
+
   it 'logs debug' do
     expect { described_class.debug('test') }.to output(/DEBUG -- : test/).to_stdout_from_any_process
   end

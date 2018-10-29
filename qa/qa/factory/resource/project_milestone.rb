@@ -3,11 +3,12 @@ module QA
     module Resource
       class ProjectMilestone < Factory::Base
         attr_accessor :description
-        attr_reader :title
 
-        dependency Factory::Resource::Project, as: :project
+        attribute :project do
+          Factory::Resource::Project.fabricate!
+        end
 
-        product :title
+        attribute :title
 
         def title=(title)
           @title = "#{title}-#{SecureRandom.hex(4)}"
@@ -17,12 +18,12 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Project::Menu.act do
-            click_issues
-            click_milestones
+          Page::Project::Menu.perform do |page|
+            page.click_issues
+            page.click_milestones
           end
 
-          Page::Project::Milestone::Index.act { click_new_milestone }
+          Page::Project::Milestone::Index.perform(&:click_new_milestone)
 
           Page::Project::Milestone::New.perform do |milestone_new|
             milestone_new.set_title(@title)

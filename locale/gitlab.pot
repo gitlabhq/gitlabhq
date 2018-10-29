@@ -648,6 +648,9 @@ msgstr ""
 msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
+msgid "Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr ""
 
@@ -2324,6 +2327,12 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
+msgid "Deployed to"
+msgstr ""
+
+msgid "Deploying to"
+msgstr ""
+
 msgid "Deprioritize label"
 msgstr ""
 
@@ -2748,6 +2757,9 @@ msgid "Failed to change the owner"
 msgstr ""
 
 msgid "Failed to check related branches."
+msgstr ""
+
+msgid "Failed to deploy to"
 msgstr ""
 
 msgid "Failed to load emoji list."
@@ -4028,9 +4040,6 @@ msgid "New..."
 msgstr ""
 
 msgid "No"
-msgstr ""
-
-msgid "No Assignee"
 msgstr ""
 
 msgid "No Label"
@@ -5607,6 +5616,9 @@ msgstr ""
 msgid "Something went wrong while fetching comments. Please try again."
 msgstr ""
 
+msgid "Something went wrong while fetching the environments for this merge request. Please try again."
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -5782,6 +5794,12 @@ msgid "Starred projects"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start and due date"
+msgstr ""
+
+msgid "Start date"
 msgstr ""
 
 msgid "Start the Runner!"
@@ -6996,9 +7014,6 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
-msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
-msgstr ""
-
 msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
@@ -7018,6 +7033,9 @@ msgid "You can resolve the merge conflict using either the Interactive mode, by 
 msgstr ""
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
+msgstr ""
+
+msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."

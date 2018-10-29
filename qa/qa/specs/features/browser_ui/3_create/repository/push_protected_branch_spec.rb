@@ -2,7 +2,7 @@
 
 module QA
   context 'Create' do
-    describe 'Protected branch support', :ldap do
+    describe 'Protected branch support', :ldap_no_tls do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
       let(:project) do

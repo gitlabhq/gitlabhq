@@ -1,10 +1,14 @@
 import { __ } from '~/locale';
 
 export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE = __('Regex pattern');
-export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE = __('To define internal users, first enable new users set to external');
+export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE = __(
+  'To define internal users, first enable new users set to external',
+);
 
 function setUserInternalRegexPlaceholder(checkbox) {
-  const userInternalRegex = document.getElementById('application_setting_user_default_internal_regex');
+  const userInternalRegex = document.getElementById(
+    'application_setting_user_default_internal_regex',
+  );
   if (checkbox && userInternalRegex) {
     if (checkbox.checked) {
       userInternalRegex.readOnly = false;

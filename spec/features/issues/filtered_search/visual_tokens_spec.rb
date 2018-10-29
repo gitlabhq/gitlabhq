@@ -118,7 +118,7 @@ describe 'Visual tokens', :js do
 
     describe 'selecting static option from dropdown' do
       before do
-        find("#js-dropdown-assignee").find('.filter-dropdown-item', text: 'No Assignee').click
+        find("#js-dropdown-assignee").find('.filter-dropdown-item', text: 'None').click
       end
 
       it 'changes value in visual token' do

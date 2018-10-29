@@ -1,0 +1,5 @@
+---
+title: Upgrade Prometheus to 2.4.3 and Alertmanager to 0.15.2
+merge_request: 22600
+author:
+type: other

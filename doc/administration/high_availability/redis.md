@@ -15,7 +15,7 @@ Omnibus GitLab packages.
 
 > **Notes:**
 > - Redis requires authentication for High Availability. See
->  [Redis Security](http://redis.io/topics/security) documentation for more
+>  [Redis Security](https://redis.io/topics/security) documentation for more
 >  information. We recommend using a combination of a Redis password and tight
 >  firewall rules to secure your Redis service.
 > - You are highly encouraged to read the [Redis Sentinel][sentinel] documentation
@@ -82,7 +82,7 @@ When a **Master** fails to respond, it's the application's responsibility
 for a new **Master**).
 
 To get a better understanding on how to correctly set up Sentinel, please read
-the [Redis Sentinel documentation](http://redis.io/topics/sentinel) first, as
+the [Redis Sentinel documentation](https://redis.io/topics/sentinel) first, as
 failing to configure it correctly can lead to data loss or can bring your
 whole cluster down, invalidating the failover effort.
 
@@ -885,8 +885,8 @@ Read more on High Availability:
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [gh-534]: https://github.com/redis/redis-rb/issues/534
-[redis]: http://redis.io/
-[sentinel]: http://redis.io/topics/sentinel
+[redis]: https://redis.io/
+[sentinel]: https://redis.io/topics/sentinel
 [omnifile]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/libraries/gitlab_rails.rb
 [source]: ../../install/installation.md
 [ce]: https://about.gitlab.com/downloads

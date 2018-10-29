@@ -4,9 +4,11 @@ module QA
       class Wiki < Factory::Base
         attr_accessor :title, :content, :message
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-for-wikis'
-          project.description = 'project for adding wikis'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-for-wikis'
+            resource.description = 'project for adding wikis'
+          end
         end
 
         def fabricate!

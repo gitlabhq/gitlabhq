@@ -22,7 +22,6 @@ export default {
       required: true,
     },
   },
-
   computed: {
     hasRef() {
       return !_.isEmpty(this.pipeline.ref);

@@ -86,7 +86,7 @@ describe 'Projects > Files > User edits files', :js do
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
 
-      expect(current_path).to eq(project_new_merge_request_path(project))
+      expect(current_path).to eq(project_new_merge_request_path(project, merge_request_source_branch: "new_branch_name"))
 
       click_link('Changes')
 
@@ -155,7 +155,7 @@ describe 'Projects > Files > User edits files', :js do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "patch-1"))
 
       wait_for_requests
 
@@ -183,7 +183,7 @@ describe 'Projects > Files > User edits files', :js do
 
         fork = user.fork_of(project2)
 
-        expect(current_path).to eq(project_new_merge_request_path(fork))
+        expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "patch-1"))
 
         wait_for_requests
 

@@ -10,13 +10,16 @@ describe Gitlab::Checks::ChangeAccess do
     let(:ref) { 'refs/heads/master' }
     let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
+    let(:timeout) { Gitlab::GitAccess::INTERNAL_TIMEOUT }
+    let(:logger) { Gitlab::Checks::TimedLogger.new(timeout: timeout) }
 
     subject(:change_access) do
       described_class.new(
         changes,
         project: project,
         user_access: user_access,
-        protocol: protocol
+        protocol: protocol,
+        logger: logger
       )
     end
 
@@ -27,6 +30,19 @@ describe Gitlab::Checks::ChangeAccess do
     context 'without failed checks' do
       it "doesn't raise an error" do
         expect { subject.exec }.not_to raise_error
+      end
+    end
+
+    context 'when time limit was reached' do
+      it 'raises a TimeoutError' do
+        logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
+        access = described_class.new(changes,
+                                     project: project,
+                                     user_access: user_access,
+                                     protocol: protocol,
+                                     logger: logger)
+
+        expect { access.exec }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
     end
 

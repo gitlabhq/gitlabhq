@@ -42,7 +42,7 @@ module Gitlab
         end
 
         def self.cache_key_for_project(project)
-          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:projects/#{project.id}/pipeline_status"
+          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:projects/#{project.id}/pipeline_status/#{project.commit&.sha}"
         end
 
         def self.update_for_pipeline(pipeline)
@@ -84,9 +84,7 @@ module Gitlab
         def load_from_project
           return unless commit
 
-          self.sha = commit.sha
-          self.status = commit.status
-          self.ref = project.default_branch
+          self.sha, self.status, self.ref = commit.sha, commit.status, project.default_branch
         end
 
         # We only cache the status for the HEAD commit of a project
@@ -104,6 +102,8 @@ module Gitlab
         def load_from_cache
           Gitlab::Redis::Cache.with do |redis|
             self.sha, self.status, self.ref = redis.hmget(cache_key, :sha, :status, :ref)
+
+            self.status = nil if self.status.empty?
           end
         end
 

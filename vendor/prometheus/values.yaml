@@ -1,5 +1,7 @@
 alertmanager:
   enabled: false
+  image:
+    tag: v0.15.2
 
 kubeStateMetrics:
   enabled: true
@@ -16,7 +18,7 @@ rbac:
 server:
   fullnameOverride: "prometheus-prometheus-server"
   image:
-    tag: v2.1.0
+    tag: v2.4.3
 
 serverFiles:
   alerts: {}

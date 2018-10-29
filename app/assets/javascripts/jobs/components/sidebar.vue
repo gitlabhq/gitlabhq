@@ -31,7 +31,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
+    ...mapState(['job', 'stages', 'jobs', 'selectedStage', 'isLoadingStages']),
     coverage() {
       return `${this.job.coverage}%`;
     },
@@ -59,10 +59,10 @@ export default {
         return '';
       }
 
-    let t = this.job.metadata.timeout_human_readable;
-    if (this.job.metadata.timeout_source !== '') {
-      t += ` (from ${this.job.metadata.timeout_source})`;
-    }
+      let t = this.job.metadata.timeout_human_readable;
+      if (this.job.metadata.timeout_source !== '') {
+        t += ` (from ${this.job.metadata.timeout_source})`;
+      }
 
       return t;
     },
@@ -270,6 +270,7 @@ export default {
         />
 
         <stages-dropdown
+          v-if="!isLoadingStages"
           :stages="stages"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"

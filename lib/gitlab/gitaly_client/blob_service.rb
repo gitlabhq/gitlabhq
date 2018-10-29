@@ -72,7 +72,7 @@ module Gitlab
         GitalyClient::BlobsStitcher.new(response)
       end
 
-      def get_new_lfs_pointers(revision, limit, not_in)
+      def get_new_lfs_pointers(revision, limit, not_in, dynamic_timeout = nil)
         request = Gitaly::GetNewLFSPointersRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(revision),
@@ -85,7 +85,20 @@ module Gitlab
           request.not_in_refs += not_in
         end
 
-        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_new_lfs_pointers, request, timeout: GitalyClient.medium_timeout)
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
+        response = GitalyClient.call(
+          @gitaly_repo.storage_name,
+          :blob_service,
+          :get_new_lfs_pointers,
+          request,
+          timeout: timeout
+        )
 
         map_lfs_pointers(response)
       end

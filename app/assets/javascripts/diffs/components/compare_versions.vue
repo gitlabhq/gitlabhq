@@ -40,17 +40,14 @@ export default {
     comparableDiffs() {
       return this.mergeRequestDiffs.slice(1);
     },
-    isWhitespaceVisible() {
-      return !getParameterValues('w')[0];
-    },
     toggleWhitespaceText() {
-      if (this.isWhitespaceVisible) {
+      if (this.isWhitespaceVisible()) {
         return __('Hide whitespace changes');
       }
       return __('Show whitespace changes');
     },
     toggleWhitespacePath() {
-      if (this.isWhitespaceVisible) {
+      if (this.isWhitespaceVisible()) {
         return mergeUrlParams({ w: 1 }, window.location.href);
       }
 
@@ -67,6 +64,9 @@ export default {
       'expandAllFiles',
       'toggleShowTreeList',
     ]),
+    isWhitespaceVisible() {
+      return getParameterValues('w')[0] !== '1';
+    },
   },
 };
 </script>
@@ -121,7 +121,7 @@ export default {
         </a>
         <a
           :href="toggleWhitespacePath"
-          class="btn btn-default"
+          class="btn btn-default qa-toggle-whitespace"
         >
           {{ toggleWhitespaceText }}
         </a>

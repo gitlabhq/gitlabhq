@@ -1,5 +1,5 @@
 import Timeago from 'timeago.js';
-import { getStateKey } from '../dependencies';
+import getStateKey from './ee_switch_get_state_key';
 import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 
@@ -32,7 +32,9 @@ export default class MergeRequestStore {
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
+    this.mergePipeline = data.merge_pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
+    this.postMergeDeployments = this.postMergeDeployments || [];
     this.initRebase(data);
 
     if (data.issues_links) {

@@ -43,9 +43,11 @@ export const fetchReports = ({ state, dispatch }) => {
     },
     data: state.endpoint,
     method: 'getReports',
-    successCallback: ({ data, status }) => dispatch('receiveReportsSuccess', {
-      data, status,
-    }),
+    successCallback: ({ data, status }) =>
+      dispatch('receiveReportsSuccess', {
+        data,
+        status,
+      }),
     errorCallback: () => dispatch('receiveReportsError'),
   });
 

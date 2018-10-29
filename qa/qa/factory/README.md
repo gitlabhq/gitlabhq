@@ -26,11 +26,7 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
-
-        def initialize(name)
-          @name = name
-        end
+        attr_accessor :name
 
         def fabricate!
           Page::Dashboard::Index.perform do |dashboard_index|
@@ -64,21 +60,10 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
-
-        def initialize(name)
-          @name = name
-        end
+        attr_accessor :name
 
         def fabricate!
-          Page::Dashboard::Index.perform do |dashboard_index|
-            dashboard_index.go_to_new_shirt
-          end
-
-          Page::Shirt::New.perform do |shirt_new|
-            shirt_new.set_name(name)
-            shirt_new.create_shirt!
-          end
+          # ... same as before
         end
 
         def api_get_path
@@ -103,33 +88,69 @@ end
 The [`Project` factory](./resource/project.rb) is a good real example of Browser
 UI and API implementations.
 
-### Define dependencies
+### Define attributes
 
-A resource may need an other resource to exist first. For instance, a project
-needs a group to be created in.
-
-To define a dependency, you can use the `dependency` DSL method.
-The first argument is a factory class, then you should pass `as: <name>` to give
-a name to the dependency.
-That will allow access to the dependency from your resource object's methods.
-You would usually use it in `#fabricate!`, `#api_get_path`, `#api_post_path`,
-`#api_post_body`.
-
-Let's take the `Shirt` factory, and add a `project` dependency to it:
+After the resource is fabricated, we would like to access the attributes on
+the resource. We define the attributes with `attribute` method. Suppose
+we want to access the name on the resource, we could change `attr_accessor`
+to `attribute`:
 
 ```ruby
 module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
+        attribute :name
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-create-a-shirt'
-        end
+        # ... same as before
+      end
+    end
+  end
+end
+```
 
-        def initialize(name)
-          @name = name
+The difference between `attr_accessor` and `attribute` is that by using
+`attribute` it can also be accessed from the product:
+
+```ruby
+shirt =
+  QA::Factory::Resource::Shirt.fabricate! do |resource|
+    resource.name = "GitLab QA"
+  end
+
+shirt.name # => "GitLab QA"
+```
+
+In the above example, if we use `attr_accessor :name` then `shirt.name` won't
+be available. On the other hand, using `attribute :name` will allow you to use
+`shirt.name`, so most of the time you'll want to use `attribute` instead of
+`attr_accessor` unless we clearly don't need it for the product.
+
+#### Resource attributes
+
+A resource may need another resource to exist first. For instance, a project
+needs a group to be created in.
+
+To define a resource attribute, you can use the `attribute` method with a
+block using the other factory to fabricate the resource.
+
+That will allow access to the other resource from your resource object's
+methods. You would usually use it in `#fabricate!`, `#api_get_path`,
+`#api_post_path`, `#api_post_body`.
+
+Let's take the `Shirt` factory, and add a `project` attribute to it:
+
+```ruby
+module QA
+  module Factory
+    module Resource
+      class Shirt < Factory::Base
+        attribute :name
+
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-to-create-a-shirt'
+          end
         end
 
         def fabricate!
@@ -164,19 +185,19 @@ module QA
 end
 ```
 
-**Note that dependencies are always built via the API fabrication method if
-supported by their factories.**
+**Note that all the attributes are lazily constructed. This means if you want
+a specific attribute to be fabricated first, you'll need to call the
+attribute method first even if you're not using it.**
 
-### Define attributes on the created resource
+#### Product data attributes
 
 Once created, you may want to populate a resource with attributes that can be
 found in the Web page, or in the API response.
 For instance, once you create a project, you may want to store its repository
 SSH URL as an attribute.
 
-To define an attribute, you can use the `product` DSL method.
-The first argument is the attribute name, then you should define a name for the
-dependency to be accessible from your resource object's methods.
+Again we could use the `attribute` method with a block, using a page object
+to retrieve the data on the page.
 
 Let's take the `Shirt` factory, and define a `:brand` attribute:
 
@@ -185,90 +206,74 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
+        attribute :name
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-create-a-shirt'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-to-create-a-shirt'
+          end
         end
 
         # Attribute populated from the Browser UI (using the block)
-        product :brand do
+        attribute :brand do
           Page::Shirt::Show.perform do |shirt_show|
             shirt_show.fetch_brand_from_page
           end
         end
 
-        def initialize(name)
-          @name = name
-        end
-
-        def fabricate!
-          project.visit!
-
-          Page::Project::Show.perform do |project_show|
-            project_show.go_to_new_shirt
-          end
-
-          Page::Shirt::New.perform do |shirt_new|
-            shirt_new.set_name(name)
-            shirt_new.create_shirt!
-          end
-        end
-
-        def api_get_path
-          "/project/#{project.path}/shirt/#{name}"
-        end
-
-        def api_post_path
-          "/project/#{project.path}/shirts"
-        end
-
-        def api_post_body
-          {
-            name: name
-          }
-        end
+        # ... same as before
       end
     end
   end
 end
 ```
 
-#### Inherit a factory's attribute
+**Note again that all the attributes are lazily constructed. This means if
+you call `shirt.brand` after moving to the other page, it'll not properly
+retrieve the data because we're no longer on the expected page.**
 
-Sometimes, you want a resource to inherit its factory attributes. For instance,
-it could be useful to pass the `size` attribute from the `Shirt` factory to the
-created resource.
-You can do that by defining `product :attribute_name` without a block.
+Consider this:
 
-Let's take the `Shirt` factory, and define a `:name` and a `:size` attributes:
+```ruby
+shirt =
+  QA::Factory::Resource::Shirt.fabricate! do |resource|
+    resource.name = "GitLab QA"
+  end
+
+shirt.project.visit!
+
+shirt.brand # => FAIL!
+```
+
+The above example will fail because now we're on the project page, trying to
+construct the brand data from the shirt page, however we moved to the project
+page already. There are two ways to solve this, one is that we could try to
+retrieve the brand before visiting the project again:
+
+```ruby
+shirt =
+  QA::Factory::Resource::Shirt.fabricate! do |resource|
+    resource.name = "GitLab QA"
+  end
+
+shirt.brand # => OK!
+
+shirt.project.visit!
+
+shirt.brand # => OK!
+```
+
+The attribute will be stored in the instance therefore all the following calls
+will be fine, using the data previously constructed. If we think that this
+might be too brittle, we could eagerly construct the data right before
+ending fabrication:
 
 ```ruby
 module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
-
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-create-a-shirt'
-        end
-
-        # Attribute from the Browser UI (using the block)
-        product :brand do
-          Page::Shirt::Show.perform do |shirt_show|
-            shirt_show.fetch_brand_from_page
-          end
-        end
-
-        # Attribute inherited from the Shirt factory if present,
-        # or a QA::Factory::Product::NoValueError is raised otherwise
-        product :name
-        product :size
-
-        def initialize(name)
-          @name = name
-        end
+        # ... same as before
 
         def fabricate!
           project.visit!
@@ -281,26 +286,56 @@ module QA
             shirt_new.set_name(name)
             shirt_new.create_shirt!
           end
-        end
 
-        def api_get_path
-          "/project/#{project.path}/shirt/#{name}"
-        end
-
-        def api_post_path
-          "/project/#{project.path}/shirts"
-        end
-
-        def api_post_body
-          {
-            name: name
-          }
+          brand # Eagerly construct the data
         end
       end
     end
   end
 end
 ```
+
+This will make sure we construct the data right after we created the shirt.
+The drawback for this will become we're forced to construct the data even
+if we don't really need to use it.
+
+Alternatively, we could just make sure we're on the right page before
+constructing the brand data:
+
+```ruby
+module QA
+  module Factory
+    module Resource
+      class Shirt < Factory::Base
+        attribute :name
+
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-to-create-a-shirt'
+          end
+        end
+
+        # Attribute populated from the Browser UI (using the block)
+        attribute :brand do
+          back_url = current_url
+          visit!
+
+          Page::Shirt::Show.perform do |shirt_show|
+            shirt_show.fetch_brand_from_page
+          end
+
+          visit(back_url)
+        end
+
+        # ... same as before
+      end
+    end
+  end
+end
+```
+
+This will make sure it's on the shirt page before constructing brand, and
+move back to the previous page to avoid breaking the state.
 
 #### Define an attribute based on an API response
 
@@ -311,7 +346,6 @@ the API returns
 ```ruby
 {
   brand: 'a-brand-new-brand',
-  size: 'extra-small',
   style: 't-shirt',
   materials: [[:cotton, 80], [:polyamide, 20]]
 }
@@ -319,18 +353,6 @@ the API returns
 
 you may want to store `style` as-is in the resource, and fetch the first value
 of the first `materials` item in a `main_fabric` attribute.
-
-For both attributes, you will need to define an inherited attribute, as shown
-in "Inherit a factory's attribute" above, but in the case of `main_fabric`, you
-will need to implement the
-`#transform_api_resource` method to first populate the `:main_fabric` key in the
-API response so that it can be used later to automatically populate the
-attribute on your resource.
-
-If an attribute can only be retrieved from the API response, you should define
-a block to give it a default value, otherwise you could get a
-`QA::Factory::Product::NoValueError` when creating your resource via the
-Browser UI.
 
 Let's take the `Shirt` factory, and define a `:style` and a `:main_fabric`
 attributes:
@@ -340,69 +362,21 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attr_accessor :name, :size
+        # ... same as before
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-create-a-shirt'
+        # Attribute from the Shirt factory if present,
+        # or fetched from the API response if present,
+        # or a QA::Factory::Base::NoValueError is raised otherwise
+        attribute :style
+
+        # If the attribute from the Shirt factory is not present,
+        # and if the API does not contain this field, this block will be
+        # used to construct the value based on the API response.
+        attribute :main_fabric do
+          api_response.&dig(:materials, 0, 0)
         end
 
-        # Attribute fetched from the API response if present,
-        # or from the Browser UI otherwise (using the block)
-        product :brand do
-          Page::Shirt::Show.perform do |shirt_show|
-            shirt_show.fetch_brand_from_page
-          end
-        end
-
-        # Attribute fetched from the API response if present,
-        # or from the Shirt factory if present,
-        # or a QA::Factory::Product::NoValueError is raised otherwise
-        product :name
-        product :size
-        product :style do
-          'unknown'
-        end
-        product :main_fabric do
-          'unknown'
-        end
-
-        def initialize(name)
-          @name = name
-        end
-
-        def fabricate!
-          project.visit!
-
-          Page::Project::Show.perform do |project_show|
-            project_show.go_to_new_shirt
-          end
-
-          Page::Shirt::New.perform do |shirt_new|
-            shirt_new.set_name(name)
-            shirt_new.create_shirt!
-          end
-        end
-
-        def api_get_path
-          "/project/#{project.path}/shirt/#{name}"
-        end
-
-        def api_post_path
-          "/project/#{project.path}/shirts"
-        end
-
-        def api_post_body
-          {
-            name: name
-          }
-        end
-
-        private
-
-        def transform_api_resource(api_response)
-          api_response[:main_fabric] = api_response[:materials][0][0]
-          api_response
-        end
+        # ... same as before
       end
     end
   end
@@ -411,11 +385,10 @@ end
 
 **Notes on attributes precedence:**
 
+- attributes from the factory have the highest precedence
 - attributes from the API response take precedence over attributes from the
-  Browser UI
-- attributes from the Browser UI take precedence over attributes from the
-  factory (i.e inherited)
-- attributes without a value will raise a `QA::Factory::Product::NoValueError` error
+  block (usually from Browser UI)
+- attributes without a value will raise a `QA::Factory::Base::NoValueError` error
 
 ## Creating resources in your tests
 
@@ -428,42 +401,40 @@ Here is an example that will use the API fabrication method under the hood since
 it's supported by the `Shirt` factory:
 
 ```ruby
-my_shirt = Factory::Resource::Shirt.fabricate!('my-shirt') do |shirt|
-  shirt.size = 'small'
+my_shirt = Factory::Resource::Shirt.fabricate! do |shirt|
+  shirt.name = 'my-shirt'
 end
 
+expect(page).to have_text(my_shirt.name) # => "my-shirt" from the factory's attribute
 expect(page).to have_text(my_shirt.brand) # => "a-brand-new-brand" from the API response
-expect(page).to have_text(my_shirt.name) # => "my-shirt" from the inherited factory's attribute
-expect(page).to have_text(my_shirt.size) # => "extra-small" from the API response
 expect(page).to have_text(my_shirt.style) # => "t-shirt" from the API response
-expect(page).to have_text(my_shirt.main_fabric) # => "cotton" from the (transformed) API response
+expect(page).to have_text(my_shirt.main_fabric) # => "cotton" from the API response via the block
 ```
 
-If you explicitely want to use the Browser UI fabrication method, you can call
+If you explicitly want to use the Browser UI fabrication method, you can call
 the `.fabricate_via_browser_ui!` method instead:
 
 ```ruby
-my_shirt = Factory::Resource::Shirt.fabricate_via_browser_ui!('my-shirt') do |shirt|
-  shirt.size = 'small'
+my_shirt = Factory::Resource::Shirt.fabricate_via_browser_ui! do |shirt|
+  shirt.name = 'my-shirt'
 end
 
-expect(page).to have_text(my_shirt.brand) # => the brand name fetched from the `Page::Shirt::Show` page
-expect(page).to have_text(my_shirt.name) # => "my-shirt" from the inherited factory's attribute
-expect(page).to have_text(my_shirt.size) # => "small" from the inherited factory's attribute
-expect(page).to have_text(my_shirt.style) # => "unknown" from the attribute block
-expect(page).to have_text(my_shirt.main_fabric) # => "unknown" from the attribute block
+expect(page).to have_text(my_shirt.name) # => "my-shirt" from the factory's attribute
+expect(page).to have_text(my_shirt.brand) # => the brand name fetched from the `Page::Shirt::Show` page via the block
+expect(page).to have_text(my_shirt.style) # => QA::Factory::Base::NoValueError will be raised because no API response nor a block is provided
+expect(page).to have_text(my_shirt.main_fabric) # => QA::Factory::Base::NoValueError will be raised because no API response and the block didn't provide a value (because it's also based on the API response)
 ```
 
-You can also explicitely use the API fabrication method, by calling the
+You can also explicitly use the API fabrication method, by calling the
 `.fabricate_via_api!` method:
 
 ```ruby
-my_shirt = Factory::Resource::Shirt.fabricate_via_api!('my-shirt') do |shirt|
-  shirt.size = 'small'
+my_shirt = Factory::Resource::Shirt.fabricate_via_api! do |shirt|
+  shirt.name = 'my-shirt'
 end
 ```
 
-In this case, the result will be similar to calling `Factory::Resource::Shirt.fabricate!('my-shirt')`.
+In this case, the result will be similar to calling `Factory::Resource::Shirt.fabricate!`.
 
 ## Where to ask for help?
 

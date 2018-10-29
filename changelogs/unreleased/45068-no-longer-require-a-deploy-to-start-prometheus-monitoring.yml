@@ -1,0 +1,5 @@
+---
+title: No longer require a deploy to start Prometheus monitoring
+merge_request: 22401
+author:
+type: changed

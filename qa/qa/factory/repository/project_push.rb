@@ -2,13 +2,14 @@ module QA
   module Factory
     module Repository
       class ProjectPush < Factory::Repository::Push
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-code'
-          project.description = 'Project with repository'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-code'
+            resource.description = 'Project with repository'
+          end
         end
 
-        product :output
-        product :project
+        attribute :output
 
         def initialize
           @file_name = 'file.txt'

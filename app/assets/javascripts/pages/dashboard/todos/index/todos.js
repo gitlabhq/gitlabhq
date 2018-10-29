@@ -79,7 +79,8 @@ export default class Todos {
       .then(({ data }) => {
         this.updateRowState(target);
         this.updateBadges(data);
-      }).catch(() => {
+      })
+      .catch(() => {
         this.updateRowState(target, true);
         return flash(__('Error updating todo status.'));
       });
@@ -118,10 +119,12 @@ export default class Todos {
 
     axios[target.dataset.method](target.dataset.href, {
       ids: this.todo_ids,
-    }).then(({ data }) => {
-      this.updateAllState(target, data);
-      this.updateBadges(data);
-    }).catch(() => flash(__('Error updating status for all todos.')));
+    })
+      .then(({ data }) => {
+        this.updateAllState(target, data);
+        this.updateBadges(data);
+      })
+      .catch(() => flash(__('Error updating status for all todos.')));
   }
 
   updateAllState(target, data) {
@@ -133,7 +136,7 @@ export default class Todos {
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
 
-    this.todo_ids = (target === markAllDoneBtn) ? data.updated_ids : [];
+    this.todo_ids = target === markAllDoneBtn ? data.updated_ids : [];
     undoAllBtn.classList.toggle('hidden');
     markAllDoneBtn.classList.toggle('hidden');
     todoListContainer.classList.toggle('hidden');

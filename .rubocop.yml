@@ -76,10 +76,14 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
     - 'config/**/*'
+    - 'ee/config/**/*'
     - 'lib/generators/**/*'
     - 'locale/unfound_translations.rb'
     - 'ee/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
+    - 'qa/qa/scenario/test/integration/ldap_no_tls.rb'
+    - 'qa/qa/scenario/test/integration/ldap_tls.rb'
+
   IgnoreExecutableScripts: true
   AllowedAcronyms:
     - EE

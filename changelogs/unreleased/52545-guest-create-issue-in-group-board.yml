@@ -1,0 +1,5 @@
+---
+title: Always show new issue button in boards' Open list
+merge_request: 22557
+author: Heinrich Lee Yu
+type: fixed

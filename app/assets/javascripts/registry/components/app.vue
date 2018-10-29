@@ -1,42 +1,35 @@
 <script>
-  import { mapGetters, mapActions } from 'vuex';
-  import Flash from '../../flash';
-  import store from '../stores';
-  import collapsibleContainer from './collapsible_container.vue';
-  import { errorMessages, errorMessagesTypes } from '../constants';
+import { mapGetters, mapActions } from 'vuex';
+import Flash from '../../flash';
+import store from '../stores';
+import collapsibleContainer from './collapsible_container.vue';
+import { errorMessages, errorMessagesTypes } from '../constants';
 
-  export default {
-    name: 'RegistryListApp',
-    components: {
-      collapsibleContainer,
+export default {
+  name: 'RegistryListApp',
+  components: {
+    collapsibleContainer,
+  },
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
     },
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      },
-    },
-    store,
-    computed: {
-      ...mapGetters([
-        'isLoading',
-        'repos',
-      ]),
-    },
-    created() {
-      this.setMainEndpoint(this.endpoint);
-    },
-    mounted() {
-      this.fetchRepos()
-        .catch(() => Flash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
-    },
-    methods: {
-      ...mapActions([
-        'setMainEndpoint',
-        'fetchRepos',
-      ]),
-    },
-  };
+  },
+  store,
+  computed: {
+    ...mapGetters(['isLoading', 'repos']),
+  },
+  created() {
+    this.setMainEndpoint(this.endpoint);
+  },
+  mounted() {
+    this.fetchRepos().catch(() => Flash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
+  },
+  methods: {
+    ...mapActions(['setMainEndpoint', 'fetchRepos']),
+  },
+};
 </script>
 <template>
   <div>

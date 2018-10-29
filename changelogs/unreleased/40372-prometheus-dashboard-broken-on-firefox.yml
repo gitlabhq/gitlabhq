@@ -1,0 +1,5 @@
+---
+title: Fix prometheus graphs in firefox
+merge_request: 22400
+author:
+type: fixed

@@ -49,6 +49,11 @@ module MergeRequests
       end
     end
 
+    # Overridden in EE.
+    def hooks_validation_pass?(_merge_request)
+      true
+    end
+
     private
 
     def error_check!

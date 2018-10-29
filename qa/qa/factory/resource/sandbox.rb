@@ -8,17 +8,15 @@ module QA
       class Sandbox < Factory::Base
         attr_reader :path
 
-        product :id do
-          true # We don't retrieve the Group ID when using the Browser UI
-        end
-        product :path
+        attribute :id
+        attribute :path
 
         def initialize
           @path = Runtime::Namespace.sandbox_name
         end
 
         def fabricate!
-          Page::Main::Menu.act { go_to_groups }
+          Page::Main::Menu.perform(&:go_to_groups)
 
           Page::Dashboard::Groups.perform do |page|
             if page.has_group?(path)

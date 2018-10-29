@@ -210,7 +210,7 @@ container_scanning:
     refs:
       - branches
     variables:
-      - $GITLAB_FEATURES =~ /\bsast_container\b/
+      - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
