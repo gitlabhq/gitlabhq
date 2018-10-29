@@ -45,11 +45,21 @@ module Gitlab
     # Passing an `upto` will stop the recursion once the specified parent_id is
     # reached. So all ancestors *lower* than the specified acestor will be
     # included.
-    def base_and_ancestors(upto: nil)
+    #
+    # Passing an `depth` with either `:asc` or `:desc` will cause the recursive
+    # query to use a depth column to order by depth (`:asc` returns most nested
+    # group to root; `desc` returns opposite order). We define 1 as the depth
+    # for the base and increment as we go up each parent.
+    # rubocop: disable CodeReuse/ActiveRecord
+    def base_and_ancestors(upto: nil, depth: nil)
       return ancestors_base unless Group.supports_nested_groups?
 
-      read_only(base_and_ancestors_cte(upto).apply_to(model.all))
+      recursive_query = base_and_ancestors_cte(upto, depth).apply_to(model.all)
+      recursive_query = recursive_query.order(depth: depth) if depth
+
+      read_only(recursive_query)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the descendants_base set of groups
     # and all their descendants (recursively).
@@ -107,16 +117,21 @@ module Gitlab
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def base_and_ancestors_cte(stop_id = nil)
+    def base_and_ancestors_cte(stop_id = nil, depth = nil)
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
-      cte << ancestors_base.except(:order)
+      base_query = ancestors_base.except(:order)
+      base_query = base_query.select('1 AS depth', groups_table[Arel.star]) if depth
+
+      cte << base_query
 
       # Recursively get all the ancestors of the base set.
       parent_query = model
         .from([groups_table, cte.table])
         .where(groups_table[:id].eq(cte.table[:parent_id]))
         .except(:order)
+
+      parent_query = parent_query.select(cte.table[:depth] + 1, groups_table[Arel.star]) if depth
       parent_query = parent_query.where(cte.table[:parent_id].not_eq(stop_id)) if stop_id
 
       cte << parent_query

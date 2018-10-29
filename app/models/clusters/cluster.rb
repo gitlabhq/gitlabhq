@@ -86,6 +86,16 @@ module Clusters
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
+    # Returns an ordered list of group clusters order from clusters of closest
+    # group up to furthest ancestor group
+    def self.ordered_group_clusters_for_project(project_id)
+      project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
+      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups)
+        .base_and_ancestors(depth: :desc)
+
+      hierarchy_groups.flat_map(&:clusters)
+    end
+
     def status_name
       if provider
         provider.status_name
