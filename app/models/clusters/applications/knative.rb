@@ -3,8 +3,12 @@
 module Clusters
   module Applications
     class Knative < ActiveRecord::Base
-      VERSION = '0.1.2'.freeze
+      VERSION = '0.1.3'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
+
+      # This is required for helm version <= 2.10.x in order to support
+      # Setting up CRDs
+      ISTIO_CRDS = 'http://cabnetworks.net/triggermesh-charts/istio-crds.yaml'.freeze
 
       self.table_name = 'clusters_applications_knative'
 
@@ -12,16 +16,9 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
-      include AfterCommitQueue
 
       default_value_for :version, VERSION
       default_value_for :domainname, ''
-
-      def set_initial_status
-        return unless not_installable?
-
-        self.status = 'installable' if cluster&.platform_kubernetes_active?
-      end
 
       def chart
         'knative/knative'
