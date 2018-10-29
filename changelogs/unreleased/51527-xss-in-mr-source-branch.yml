@@ -1,0 +1,5 @@
+---
+title: Fix XSS in merge request source branch name
+merge_request:
+author:
+type: security
