@@ -1,9 +1,9 @@
 <script>
-import { Link } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
-    'gl-link': Link,
+    GlLink,
   },
   props: {
     markdownDocsPath: {
