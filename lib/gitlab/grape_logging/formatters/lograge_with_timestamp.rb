@@ -6,7 +6,7 @@ module Gitlab
 
         def call(severity, datetime, _, data)
           time = data.delete :time
-          data[:params] = utf8_encode_values(data[:params]) if data.has_key?(:params)
+          data[:params] = process_params(data)
 
           attributes = {
             time: datetime.utc.iso8601(3),
@@ -19,6 +19,14 @@ module Gitlab
         end
 
         private
+
+        def process_params(data)
+          return [] unless data.has_key?(:params)
+
+          data[:params]
+            .each_pair
+            .map { |k, v| { key: k, value: utf8_encode_values(v) } }
+        end
 
         def utf8_encode_values(data)
           case data
