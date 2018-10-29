@@ -45,11 +45,11 @@ describe 'Navigation bar counter', :use_clean_rails_memory_store_caching do
   end
 
   def issues_path
-    issues_dashboard_path(assignee_id: user.id)
+    issues_dashboard_path(assignee_username: user.username)
   end
 
   def merge_requests_path
-    merge_requests_dashboard_path(assignee_id: user.id)
+    merge_requests_dashboard_path(assignee_username: user.username)
   end
 
   def expect_counters(issuable_type, count)

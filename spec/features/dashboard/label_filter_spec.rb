@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'Dashboard > label filter', :js do
+  include FilteredSearchHelpers
+
+  let(:filtered_search) { find('.filtered-search') }
+  let(:filter_dropdown) { find("#js-dropdown-label .filter-dropdown") }
+
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:project2) { create(:project, name: 'test2', path: 'test2', namespace: user.namespace) }
@@ -13,17 +18,15 @@ describe 'Dashboard > label filter', :js do
 
     sign_in(user)
     visit issues_dashboard_path
+
+    init_label_search
   end
 
   context 'duplicate labels' do
     it 'removes duplicate labels' do
-      page.within('.labels-filter') do
-        click_button 'Label'
-      end
+      filtered_search.send_keys('bu')
 
-      page.within('.dropdown-menu-labels') do
-        expect(page).to have_selector('.dropdown-content a', text: 'bug', count: 1)
-      end
+      expect(filter_dropdown).to have_selector('.filter-dropdown-item', text: 'bug', count: 1)
     end
   end
 end

@@ -5,6 +5,9 @@ class DashboardController < Dashboard::ApplicationController
   include MergeRequestsAction
 
   FILTER_PARAMS = [
+    # author_id and assignee_id are kept so old RSS links still work
+    :author_id,
+    :assignee_id,
     :author_username,
     :assignee_username,
     :milestone_title,

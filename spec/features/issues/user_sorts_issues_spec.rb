@@ -26,7 +26,7 @@ describe "User sorts issues" do
       click_link('Milestone')
     end
 
-    visit(issues_dashboard_path(assignee_id: user.id))
+    visit(issues_dashboard_path(assignee_username: user.username))
 
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
 

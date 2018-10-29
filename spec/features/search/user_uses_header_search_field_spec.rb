@@ -21,13 +21,17 @@ describe 'User uses header search field' do
       it 'shows assigned issues' do
         find('.search-input-container .dropdown-menu').click_link('Issues assigned to me')
 
-        expect(find('.js-assignee-search')).to have_content(user.name)
+        expect(page).to have_selector('.filtered-search')
+        expect_tokens([assignee_token(user.name)])
+        expect_filtered_search_input_empty
       end
 
       it 'shows created issues' do
         find('.search-input-container .dropdown-menu').click_link("Issues I've created")
 
-        expect(find('.js-author-search')).to have_content(user.name)
+        expect(page).to have_selector('.filtered-search')
+        expect_tokens([author_token(user.name)])
+        expect_filtered_search_input_empty
       end
     end
 
@@ -37,13 +41,17 @@ describe 'User uses header search field' do
       it 'shows assigned merge requests' do
         find('.search-input-container .dropdown-menu').click_link('Merge requests assigned to me')
 
-        expect(find('.js-assignee-search')).to have_content(user.name)
+        expect(page).to have_selector('.filtered-search')
+        expect_tokens([assignee_token(user.name)])
+        expect_filtered_search_input_empty
       end
 
       it 'shows created merge requests' do
         find('.search-input-container .dropdown-menu').click_link("Merge requests I've created")
 
-        expect(find('.js-author-search')).to have_content(user.name)
+        expect(page).to have_selector('.filtered-search')
+        expect_tokens([author_token(user.name)])
+        expect_filtered_search_input_empty
       end
     end
   end

@@ -109,16 +109,16 @@ describe('Search autocomplete dropdown', () => {
 
   assertLinks = function(list, issuesPath, mrsPath) {
     if (issuesPath) {
-      const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_id=${userId}"]`;
-      const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_id=${userId}"]`;
+      const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_username=${userName}"]`;
+      const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_username=${userName}"]`;
 
       expect(list.find(issuesAssignedToMeLink).length).toBe(1);
       expect(list.find(issuesAssignedToMeLink).text()).toBe('Issues assigned to me');
       expect(list.find(issuesIHaveCreatedLink).length).toBe(1);
       expect(list.find(issuesIHaveCreatedLink).text()).toBe("Issues I've created");
     }
-    const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_id=${userId}"]`;
-    const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_id=${userId}"]`;
+    const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_username=${userName}"]`;
+    const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_username=${userName}"]`;
 
     expect(list.find(mrsAssignedToMeLink).length).toBe(1);
     expect(list.find(mrsAssignedToMeLink).text()).toBe('Merge requests assigned to me');
