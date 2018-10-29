@@ -5784,6 +5784,12 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start and due date"
+msgstr ""
+
+msgid "Start date"
+msgstr ""
+
 msgid "Start the Runner!"
 msgstr ""
 

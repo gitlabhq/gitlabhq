@@ -11,27 +11,11 @@ describe('collapsedGroupedDatePicker', () => {
     });
   });
 
-  it('should render toggle sidebar if showToggleSidebar', (done) => {
-    expect(vm.$el.querySelector('.issuable-sidebar-header')).toBeDefined();
-
-    vm.showToggleSidebar = false;
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.issuable-sidebar-header')).toBeNull();
-      done();
-    });
-  });
-
   describe('toggleCollapse events', () => {
     beforeEach((done) => {
       spyOn(vm, 'toggleSidebar');
       vm.minDate = new Date('07/17/2016');
       Vue.nextTick(done);
-    });
-
-    it('should emit when sidebar is toggled', () => {
-      vm.$el.querySelector('.gutter-toggle').click();
-
-      expect(vm.toggleSidebar).toHaveBeenCalled();
     });
 
     it('should emit when collapsed-calendar-icon is clicked', () => {
@@ -91,6 +75,12 @@ describe('collapsedGroupedDatePicker', () => {
 
       expect(icons.length).toEqual(1);
       expect(icons[0].innerText.trim()).toEqual('None');
+    });
+
+    it('should have tooltip as `Start and due date`', () => {
+      const icons = vm.$el.querySelectorAll('.sidebar-collapsed-icon');
+
+      expect(icons[0].dataset.originalTitle).toBe('Start and due date');
     });
   });
 });
