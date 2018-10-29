@@ -1,0 +1,5 @@
+---
+title: Adds model and migrations to enable group level clusters
+merge_request: 22307
+author:
+type: other
