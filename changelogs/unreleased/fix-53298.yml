@@ -1,0 +1,5 @@
+---
+title: 'Fix #53298: JupyterHub restarts should work without errors'
+merge_request: 22671
+author: Amit Rathi
+type: fixed
