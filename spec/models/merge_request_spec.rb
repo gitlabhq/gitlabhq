@@ -1058,6 +1058,26 @@ describe MergeRequest do
     end
   end
 
+  describe '#merge_pipeline' do
+    it 'returns nil when not merged' do
+      expect(subject.merge_pipeline).to be_nil
+    end
+
+    context 'when the MR is merged' do
+      let(:sha)      { subject.target_project.commit.id }
+      let(:pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+
+      before do
+        subject.mark_as_merged!
+        subject.update_attribute(:merge_commit_sha, pipeline.sha)
+      end
+
+      it 'returns the post-merge pipeline' do
+        expect(subject.merge_pipeline).to eq(pipeline)
+      end
+    end
+  end
+
   describe '#has_ci?' do
     let(:merge_request) { build_stubbed(:merge_request) }
 

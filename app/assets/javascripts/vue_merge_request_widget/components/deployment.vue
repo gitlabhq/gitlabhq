@@ -2,6 +2,7 @@
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
+import { __ } from '~/locale';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -31,6 +32,11 @@ export default {
       required: true,
     },
   },
+  deployedTextMap: {
+    running: __('Deploying to'),
+    success: __('Deployed to'),
+    failed: __('Failed to deploy to'),
+  },
   data() {
     const features = window.gon.features || {};
     return {
@@ -54,10 +60,13 @@ export default {
     hasMetrics() {
       return !!this.deployment.metrics_url;
     },
+    deployedText() {
+      return this.$options.deployedTextMap[this.deployment.status];
+    },
   },
   methods: {
     stopEnvironment() {
-      const msg = 'Are you sure you want to stop this environment?';
+      const msg = __('Are you sure you want to stop this environment?');
       const isConfirmed = confirm(msg); // eslint-disable-line
 
       if (isConfirmed) {
@@ -87,10 +96,10 @@ export default {
     <div class="ci-widget media">
       <div class="media-body">
         <div class="deploy-body">
-          <div class="deployment-info">
+          <div class="js-deployment-info deployment-info">
             <template v-if="hasDeploymentMeta">
               <span>
-                Deployed to
+                {{ deployedText }}
               </span>
               <tooltip-on-truncate
                 :title="deployment.name"
