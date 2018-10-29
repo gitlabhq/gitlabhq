@@ -10,7 +10,7 @@ describe Gitlab::Database::Count do
 
   context '.approximate_counts' do
     context 'selecting strategies' do
-      let(:strategies) { [double('s1', :enabled? => true), double('s2', :enabled? => false)] }
+      let(:strategies) { [double('s1', enabled?: true), double('s2', enabled?: false)] }
 
       it 'uses only enabled strategies' do
         expect(strategies[0]).to receive(:new).and_return(double('strategy1', count: {}))
@@ -25,8 +25,8 @@ describe Gitlab::Database::Count do
 
       let(:strategies) do
         [
-          double('s1', :enabled? => true, new: first_strategy),
-          double('s2', :enabled? => true, new: second_strategy)
+          double('s1', enabled?: true, new: first_strategy),
+          double('s2', enabled?: true, new: second_strategy)
         ]
       end
 
@@ -62,7 +62,7 @@ describe Gitlab::Database::Count do
 
     describe '#count' do
       it 'counts all models' do
-        models.each { |model| expect(model).to receive(:count).and_call_original }
+        expect(models).to all(receive(:count).and_call_original)
 
         expect(subject).to eq({ Project => 3, Identity => 1 })
       end

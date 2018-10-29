@@ -40,7 +40,7 @@ module Gitlab
           if strategy.enabled?
             models_with_missing_counts = models - counts_by_model.keys
 
-            return counts_by_model if models_with_missing_counts.empty?
+            break if models_with_missing_counts.empty?
 
             counts = strategy.new(models_with_missing_counts).count
 
@@ -139,6 +139,7 @@ module Gitlab
           LEFT JOIN pg_stat_user_tables ON pg_class.relname = pg_stat_user_tables.relname
           WHERE pg_class.relname IN (#{table_names.map { |table| "'#{table}'" }.join(',')})
           SQL
+
           if check_statistics
             base_query + "AND (last_vacuum > #{time} OR last_autovacuum > #{time} OR last_analyze > #{time} OR last_autoanalyze > #{time})"
           else
@@ -177,6 +178,7 @@ module Gitlab
         end
 
         private
+
         def perform_count(model, estimate)
           # If we estimate 0, we may not have statistics at all. Don't use them.
           return nil unless estimate && estimate > 0
@@ -193,10 +195,10 @@ module Gitlab
 
         def tablesample_count(model, estimate)
           portion = (TABLESAMPLE_ROW_TARGET.to_f / estimate).round(4)
-          inverse = 1/portion
+          inverse = 1 / portion
           query = <<~SQL
             SELECT (COUNT(*)*#{inverse})::integer AS count
-            FROM #{model.table_name} TABLESAMPLE SYSTEM (#{portion*100})
+            FROM #{model.table_name} TABLESAMPLE SYSTEM (#{portion * 100})
           SQL
 
           rows = ActiveRecord::Base.connection.select_all(query)
