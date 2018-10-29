@@ -14,10 +14,10 @@ module Gitlab
               test_case = create_test_case(test_case)
               test_suite.add_test_case(test_case)
             end
-          rescue REXML::ParseException => e
-            raise JunitParserError, "XML parsing failed: #{e.message}"
-          rescue => e
-            raise JunitParserError, "JUnit parsing failed: #{e.message}"
+          rescue REXML::ParseException
+            raise JunitParserError, "XML parsing failed"
+          rescue
+            raise JunitParserError, "JUnit parsing failed"
           end
 
           private
