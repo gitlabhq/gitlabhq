@@ -4,9 +4,9 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files, :chart, :version, :repository, :setargs
+        attr_reader :name, :files, :chart, :version, :repository, :setargs, :script
 
-        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, setargs: nil)
+        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, setargs: nil, script: nil)
           @name = name
           @chart = chart
           @version = version
@@ -14,6 +14,7 @@ module Gitlab
           @files = files
           @repository = repository
           @setargs = setargs
+          @script = script
         end
 
         def generate_script
@@ -21,7 +22,8 @@ module Gitlab
             init_command,
             repository_command,
             repository_update_command,
-            script_command
+            script_command,
+            install_command
           ].compact.join("\n")
         end
 
@@ -43,10 +45,16 @@ module Gitlab
           'helm repo update >/dev/null' if repository
         end
 
-        def script_command
+        def install_command
           command = ['helm', 'install', chart] + install_command_flags
 
           command.shelljoin + " >/dev/null\n"
+        end
+
+        def script_command
+          unless script.nil?
+            script.shelljoin + " >/dev/null\n"
+          end
         end
 
         def install_command_flags

@@ -8,7 +8,7 @@ module Clusters
 
       # This is required for helm version <= 2.10.x in order to support
       # Setting up CRDs
-      ISTIO_CRDS = 'http://cabnetworks.net/triggermesh-charts/istio-crds.yaml'.freeze
+      ISTIO_CRDS = 'https://storage.googleapis.com/triggermesh-charts/istio-crds.yaml'.freeze
 
       self.table_name = 'clusters_applications_knative'
 
@@ -37,8 +37,13 @@ module Clusters
           chart: chart,
           files: files,
           repository: REPOSITORY,
-          setargs: args
+          setargs: args,
+          script: install_script
         )
+      end
+
+      def install_script
+        ['/usr/bin/kubectl', 'apply', '-f', ISTIO_CRDS]
       end
 
       def client
