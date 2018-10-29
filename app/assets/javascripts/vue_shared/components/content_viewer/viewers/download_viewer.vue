@@ -1,11 +1,11 @@
 <script>
-import { Link } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab-org/gitlab-ui';
 import Icon from '../../icon.vue';
 import { numberToHumanSize } from '../../../../lib/utils/number_utils';
 
 export default {
   components: {
-    'gl-link': Link,
+    GlLink,
     Icon,
   },
   props: {

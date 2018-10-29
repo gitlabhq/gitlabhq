@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { TooltipDirective as Tooltip } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
@@ -10,7 +10,7 @@ const treeListStorageKey = 'mr_diff_tree_list';
 
 export default {
   directives: {
-    Tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     Icon,
@@ -101,7 +101,7 @@ export default {
         class="btn-group prepend-left-8 tree-list-view-toggle"
       >
         <button
-          v-tooltip.hover
+          v-gl-tooltip.hover
           :aria-label="__('List view')"
           :title="__('List view')"
           :class="{
@@ -116,7 +116,7 @@ export default {
           />
         </button>
         <button
-          v-tooltip.hover
+          v-gl-tooltip.hover
           :aria-label="__('Tree view')"
           :title="__('Tree view')"
           :class="{

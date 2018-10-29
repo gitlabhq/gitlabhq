@@ -2,14 +2,14 @@
 /**
  * Renders the Monitoring (Metrics) link in environments table.
  */
-import { Button } from '@gitlab-org/gitlab-ui';
+import { GlButton } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   components: {
     Icon,
-    'gl-button': Button,
+    GlButton,
   },
   directives: {
     tooltip,
