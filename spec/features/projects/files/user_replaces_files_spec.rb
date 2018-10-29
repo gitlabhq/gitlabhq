@@ -78,7 +78,7 @@ describe 'Projects > Files > User replaces files', :js do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "undefined"))
 
       click_link('Changes')
 

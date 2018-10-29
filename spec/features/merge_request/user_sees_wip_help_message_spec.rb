@@ -13,10 +13,10 @@ describe 'Merge request > User sees WIP help message' do
     it 'shows a specific WIP hint' do
       visit project_new_merge_request_path(
         project,
+        merge_request_source_branch: 'wip',
         merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
-          source_branch: 'wip',
           target_branch: 'master'
         })
 
@@ -32,10 +32,10 @@ describe 'Merge request > User sees WIP help message' do
     it 'shows the regular WIP message' do
       visit project_new_merge_request_path(
         project,
+        merge_request_source_branch: 'fix',
         merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
-          source_branch: 'fix',
           target_branch: 'master'
         })
 

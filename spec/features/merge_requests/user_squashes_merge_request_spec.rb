@@ -65,7 +65,7 @@ describe 'User squashes a merge request', :js do
 
   context 'when squash is enabled on merge request creation' do
     before do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
+      visit project_new_merge_request_path(project, merge_request_source_branch: source_branch, merge_request: { target_branch: 'master' })
       check 'merge_request[squash]'
       click_on 'Submit merge request'
       wait_for_requests
@@ -95,7 +95,7 @@ describe 'User squashes a merge request', :js do
 
   context 'when squash is not enabled on merge request creation' do
     before do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
+      visit project_new_merge_request_path(project, merge_request_source_branch: source_branch, merge_request: { target_branch: 'master' })
       click_on 'Submit merge request'
       wait_for_requests
     end

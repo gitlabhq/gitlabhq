@@ -9,10 +9,10 @@ describe 'create a merge request, allowing commits from members who can merge to
   def visit_new_merge_request
     visit project_new_merge_request_path(
       source_project,
+      merge_request_source_branch: 'fix',
       merge_request: {
         source_project_id: source_project.id,
         target_project_id: target_project.id,
-        source_branch: 'fix',
         target_branch: 'master'
       })
   end
