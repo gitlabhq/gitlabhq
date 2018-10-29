@@ -19,29 +19,22 @@
     #js-pipeline-graph-vue
 
   #js-tab-builds.tab-pane
-    - if pipeline.yaml_errors.present?
-      .bs-callout.bs-callout-danger
-        %h4 Found errors in your .gitlab-ci.yml:
-        %ul
-          - pipeline.yaml_errors.split(",").each do |error|
-            %li= error
-        You can also test your .gitlab-ci.yml in the #{link_to "Lint", project_ci_lint_path(@project)}
+    - if pipeline.legacy_stages.present?
+      .table-holder.pipeline-holder
+        %table.table.ci-table.pipeline
+          %thead
+            %tr
+              %th Status
+              %th Job ID
+              %th Name
+              %th
+              %th Coverage
+              %th
+          = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
-    - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
+    - elsif pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
       .bs-callout.bs-callout-warning
         \.gitlab-ci.yml not found in this commit
-
-    .table-holder.pipeline-holder
-      %table.table.ci-table.pipeline
-        %thead
-          %tr
-            %th Status
-            %th Job ID
-            %th Name
-            %th
-            %th Coverage
-            %th
-        = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page
