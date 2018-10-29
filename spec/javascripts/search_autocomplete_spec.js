@@ -186,7 +186,7 @@ describe('Search autocomplete dropdown', () => {
     widget.searchInput.val('help');
     widget.searchInput.triggerHandler('focus');
     list = widget.wrap.find('.dropdown-menu').find('ul');
-    link = "a[href='" + projectIssuesPath + '/?assignee_id=' + userId + "']";
+    link = "a[href='" + projectIssuesPath + '/?assignee_username=' + userName + "']";
 
     expect(list.find(link).length).toBe(0);
   });
