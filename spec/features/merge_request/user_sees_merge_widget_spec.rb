@@ -40,21 +40,26 @@ describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request' do
     let!(:environment) { create(:environment, project: project) }
+    let(:sha)          { project.commit(merge_request.source_branch).sha }
+    let(:pipeline)     { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
       create(:deployment, environment: environment,
-                          ref: 'feature',
-                          sha: merge_request.diff_head_sha)
+                          ref: merge_request.source_branch,
+                          deployable: build,
+                          sha: sha)
     end
 
     before do
+      merge_request.update!(head_pipeline: pipeline)
       visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows environments link' do
       wait_for_requests
 
-      page.within('.mr-widget-heading') do
+      page.within('.js-pre-merge-deploy') do
         expect(page).to have_content("Deployed to #{environment.name}")
         expect(find('.js-deploy-url')[:href]).to include(environment.formatted_external_url)
       end

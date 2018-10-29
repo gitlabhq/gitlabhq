@@ -749,19 +749,50 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)      { fork_project(project, user, repository: true) }
-      let!(:environment) { create(:environment, project: forked) }
-      let!(:deployment)  { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
-      let(:admin)        { create(:admin) }
+      let(:forked)      { fork_project(project, user, repository: true) }
+      let(:sha)         { forked.commit.sha }
+      let(:environment) { create(:environment, project: forked) }
+      let(:pipeline)    { create(:ci_pipeline, sha: sha, project: forked) }
+      let(:build)       { create(:ci_build, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: 'master', deployable: build) }
 
       let(:merge_request) do
-        create(:merge_request, source_project: forked, target_project: project)
+        create(:merge_request, source_project: forked, target_project: project, target_branch: 'master', head_pipeline: pipeline)
       end
 
       it 'links to the environment on that project' do
         get_ci_environments_status
 
         expect(json_response.first['url']).to match /#{forked.full_path}/
+      end
+
+      context "when environment_target is 'merge_commit'" do
+        it 'returns nothing' do
+          get_ci_environments_status(environment_target: 'merge_commit')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
+
+        context 'when is merged' do
+          let(:source_environment)  { create(:environment, project: project) }
+          let(:merge_commit_sha)    { project.repository.merge(user, forked.commit.id, merge_request, "merged in test") }
+          let(:post_merge_pipeline) { create(:ci_pipeline, sha: merge_commit_sha, project: project) }
+          let(:post_merge_build)    { create(:ci_build, pipeline: post_merge_pipeline) }
+          let!(:source_deployment)  { create(:deployment, environment: source_environment, sha: merge_commit_sha, ref: 'master', deployable: post_merge_build) }
+
+          before do
+            merge_request.update!(merge_commit_sha: merge_commit_sha)
+            merge_request.mark_as_merged!
+          end
+
+          it 'returns the enviroment on the source project' do
+            get_ci_environments_status(environment_target: 'merge_commit')
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.first['url']).to match /#{project.full_path}/
+          end
+        end
       end
 
       # we're trying to reduce the overall number of queries for this method.
@@ -772,11 +803,15 @@ describe Projects::MergeRequestsController do
         expect(control_count).to be <= 137
       end
 
-      def get_ci_environments_status
-        get :ci_environments_status,
+      def get_ci_environments_status(extra_params = {})
+        params = {
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
-          id: merge_request.iid, format: 'json'
+          id: merge_request.iid,
+          format: 'json'
+        }
+
+        get :ci_environments_status, params.merge(extra_params)
       end
     end
   end

@@ -5,6 +5,7 @@ class EnvironmentStatusEntity < Grape::Entity
 
   expose :id
   expose :name
+  expose :status
 
   expose :url do |es|
     project_environment_path(es.project, es.environment)
