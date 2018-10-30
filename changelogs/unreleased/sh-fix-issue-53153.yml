@@ -1,0 +1,5 @@
+---
+title: Fix extra merge request versions created from forked merge requests
+merge_request: 22611
+author:
+type: fixed
