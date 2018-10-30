@@ -19,10 +19,6 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
-          if application.has_attribute?(:domainname)
-            application.domainname = params[:domainname]
-          end
-
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end

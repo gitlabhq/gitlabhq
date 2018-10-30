@@ -106,7 +106,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[5].status_reason,
             requestStatus: null,
             requestReason: null,
-            domainname: '',
+            hostname: '',
           },
         },
       });

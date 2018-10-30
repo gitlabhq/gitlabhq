@@ -383,7 +383,7 @@ export default {
         :status-reason="applications.knative.statusReason"
         :request-status="applications.knative.requestStatus"
         :request-reason="applications.knative.requestReason"
-        :install-application-request-params="{ domainname: applications.knative.domainname}"
+        :install-application-request-params="{ hostname: applications.knative.domainname}"
         :disabled="!helmInstalled"
         class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"

@@ -6,5 +6,4 @@ class ClusterApplicationEntity < Grape::Entity
   expose :status_reason
   expose :external_ip, if: -> (e, _) { e.respond_to?(:external_ip) }
   expose :hostname, if: -> (e, _) { e.respond_to?(:hostname) }
-  expose :domainname, if: -> (e, _) { e.respond_to?(:domainname) }
 end

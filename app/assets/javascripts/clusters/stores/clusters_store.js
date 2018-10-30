@@ -52,7 +52,7 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
-          domainname: ''
+          hostname: ''
         },
       },
     };

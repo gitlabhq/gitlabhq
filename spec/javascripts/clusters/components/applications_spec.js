@@ -92,7 +92,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
-              knative: { title: 'Knative', domainname: '' },
+              knative: { title: 'Knative', hostname: '' },
             },
           });
 
@@ -112,7 +112,7 @@ describe('Applications', () => {
             runner: { title: 'GitLab Runner' },
             prometheus: { title: 'Prometheus' },
             jupyter: { title: 'JupyterHub', hostname: '' },
-            knative: { title: 'Knative', domainname: '' },
+            knative: { title: 'Knative', hostname: '' },
           },
         });
 
@@ -131,7 +131,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', domainname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -148,7 +148,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', domainname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -165,7 +165,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
-              knative: { title: 'Knative', status: 'installed', domainname: '' },
+              knative: { title: 'Knative', status: 'installed', hostname: '' },
             },
           });
 

@@ -18,7 +18,7 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
 
       default_value_for :version, VERSION
-      default_value_for :domainname, ''
+      default_value_for :hostname, ''
 
       def chart
         'knative/knative'
@@ -26,8 +26,8 @@ module Clusters
 
       def install_command
         args = []
-        if !domainname.nil? && !domainname.eql?('')
-          args = ["domain=" + domainname]
+        if !hostname.nil? && !hostname.eql?('')
+          args = ["domain=" + hostname]
         end
 
         Gitlab::Kubernetes::Helm::InstallCommand.new(
