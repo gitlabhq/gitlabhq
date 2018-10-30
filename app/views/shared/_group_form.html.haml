@@ -2,10 +2,19 @@
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
-.form-group.row
-  = f.label :path, class: 'col-form-label col-sm-2' do
-    Group path
-  .col-sm-10
+.row
+  .form-group.group-name-holder.col-sm-12
+    = f.label :name, class: 'label-bold' do
+      = _("Group name")
+    = f.text_field :name, placeholder: 'My Awesome Group', class: 'form-control input-lg',
+      required: true,
+      title: _('Please fill in a descriptive name for your group.'),
+      autofocus: true
+
+.row
+  .form-group.col-xs-12.col-sm-8
+    = f.label :path, class: 'label-bold' do
+      = _("Group URL")
     .input-group.gl-field-error-anchor
       .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
         .input-group-text
@@ -13,10 +22,10 @@
           - if parent
             %strong= parent.full_path + '/'
       = f.hidden_field :parent_id
-      = f.text_field :path, placeholder: 'open-source', class: 'form-control',
+      = f.text_field :path, placeholder: 'my-awesome-group', class: 'form-control',
         autofocus: local_assigns[:autofocus] || false, required: true,
         pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
-        title: 'Please choose a group path with no special characters.',
+        title: _('Please choose a group URL with no special characters.'),
         "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
 
     - if @group.persisted?
@@ -25,23 +34,17 @@
         = succeed '.' do
           = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
-.form-group.row.group-name-holder
-  = f.label :name, class: 'col-form-label col-sm-2' do
-    Group name
-  .col-sm-10
-    = f.text_field :name, class: 'form-control',
-      required: true,
-      title: 'You can choose a descriptive name different from the path.'
-
 - if @group.persisted?
-  .form-group.row.group-name-holder
-    = f.label :id, class: 'col-form-label col-sm-2' do
-      = _("Group ID")
-    .col-sm-10
+  .row
+    .form-group.group-name-holder.col-sm-8
+      = f.label :id, class: 'label-bold' do
+        = _("Group ID")
       = f.text_field :id, class: 'form-control', readonly: true
 
-.form-group.row.group-description-holder
-  = f.label :description, class: 'col-form-label col-sm-2'
-  .col-sm-10
+.row
+  .form-group.group-description-holder.col-sm-8
+    = f.label :description, class: 'label-bold' do
+      = _("Group description")
+      %span (optional)
     = f.text_area :description, maxlength: 250,
         class: 'form-control js-gfm-input', rows: 4
