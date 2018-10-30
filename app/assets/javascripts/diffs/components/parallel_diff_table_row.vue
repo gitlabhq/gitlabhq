@@ -143,7 +143,7 @@ export default {
         :show-comment-button="true"
         :diff-view-type="parallelDiffViewType"
         line-position="right"
-        class="diff-line-num new_line qa-new-diff-line"
+        class="diff-line-num new_line"
       />
       <td
         :id="line.right.lineCode"
