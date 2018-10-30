@@ -390,7 +390,7 @@ export default {
       >
         <div slot="description">
           <p>
-            {{ s__(`ClusterIntegration||A Knative build extends Kubernetes
+            {{ s__(`ClusterIntegration|A Knative build extends Kubernetes
               and utilizes existing Kubernetes primitives to provide you with
               the ability to run on-cluster container builds from source.
               For example, you can write a build that uses Kubernetes-native
