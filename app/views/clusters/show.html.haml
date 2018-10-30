@@ -1,18 +1,18 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs "Kubernetes Clusters", clusters_page_path
+- add_to_breadcrumbs "Kubernetes Clusters", clusterable.index_path
 - breadcrumb_title @cluster.name
 - page_title _("Kubernetes Cluster")
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 
 - expanded = Rails.env.test?
 
-- status_path = status_cluster_path(@cluster.id, clusterable_params.merge(format: :json)) if can?(current_user, :admin_cluster, @cluster)
+- status_path = status_cluster_path(@cluster.id, clusterable.clusterable_params.merge(format: :json)) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: install_applications_cluster_path(@cluster, :helm, clusterable_params),
-  install_ingress_path: install_applications_cluster_path(@cluster, :ingress, clusterable_params),
-  install_prometheus_path: install_applications_cluster_path(@cluster, :prometheus, clusterable_params),
-  install_runner_path: install_applications_cluster_path(@cluster, :runner, clusterable_params),
-  install_jupyter_path: install_applications_cluster_path(@cluster, :jupyter, clusterable_params),
+  install_helm_path: install_applications_cluster_path(@cluster, :helm, clusterable.clusterable_params),
+  install_ingress_path: install_applications_cluster_path(@cluster, :ingress, clusterable.clusterable_params),
+  install_prometheus_path: install_applications_cluster_path(@cluster, :prometheus, clusterable.clusterable_params),
+  install_runner_path: install_applications_cluster_path(@cluster, :runner, clusterable.clusterable_params),
+  install_jupyter_path: install_applications_cluster_path(@cluster, :jupyter, clusterable.clusterable_params),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,

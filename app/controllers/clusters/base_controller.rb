@@ -11,7 +11,7 @@ class Clusters::BaseController < ApplicationController
 
   layout :determine_layout
 
-  helper_method :clusters_page_path, :cluster_page_path, :new_cluster_page_path
+  helper_method :clusterable
 
   private
 
@@ -43,27 +43,7 @@ class Clusters::BaseController < ApplicationController
   end
 
   def clusterable
-    if project_type?
-      project
-    end
-  end
-
-  def cluster_page_path(cluster)
-    if project_type?
-      project_cluster_path(project, cluster)
-    end
-  end
-
-  def clusters_page_path
-    if project_type?
-      project_clusters_path(project)
-    end
-  end
-
-  def new_cluster_page_path
-    if project_type?
-      new_project_cluster_path(project)
-    end
+    @clusterable ||= ClusterablePresenter.fabricate(project, current_user: current_user)
   end
 
   def project_type?

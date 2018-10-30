@@ -50,7 +50,7 @@ class ClustersController < Clusters::BaseController
         end
         format.html do
           flash[:notice] = _('Kubernetes cluster was successfully updated.')
-          redirect_to cluster_page_path(cluster)
+          redirect_to cluster.show_path
         end
       end
     else
@@ -64,7 +64,7 @@ class ClustersController < Clusters::BaseController
   def destroy
     if cluster.destroy
       flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
-      redirect_to clusters_page_path, status: :found
+      redirect_to clusterable.index_path, status: :found
     else
       flash[:notice] = _('Kubernetes cluster integration was not removed.')
       render :show
@@ -75,9 +75,10 @@ class ClustersController < Clusters::BaseController
     @gcp_cluster = ::Clusters::CreateService
       .new(current_user, create_gcp_cluster_params)
       .execute(access_token: token_in_session)
+      .present(current_user: current_user)
 
     if @gcp_cluster.persisted?
-      redirect_to cluster_page_path(@gcp_cluster)
+      redirect_to @gcp_cluster.show_path
     else
       generate_gcp_authorize_url
       validate_gcp_token
@@ -91,9 +92,10 @@ class ClustersController < Clusters::BaseController
     @user_cluster = ::Clusters::CreateService
       .new(current_user, create_user_cluster_params)
       .execute(access_token: token_in_session)
+      .present(current_user: current_user)
 
     if @user_cluster.persisted?
-      redirect_to cluster_page_path(@user_cluster)
+      redirect_to @user_cluster.show_path
     else
       generate_gcp_authorize_url
       validate_gcp_token
@@ -148,7 +150,7 @@ class ClustersController < Clusters::BaseController
       ]).merge(
         provider_type: :gcp,
         platform_type: :kubernetes,
-        clusterable: clusterable
+        clusterable: clusterable.subject
       )
   end
 
@@ -166,12 +168,12 @@ class ClustersController < Clusters::BaseController
       ]).merge(
         provider_type: :user,
         platform_type: :kubernetes,
-        clusterable: clusterable
+        clusterable: clusterable.subject
       )
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(new_cluster_page_path.to_s)
+    state = generate_session_key_redirect(clusterable.new_path.to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,
