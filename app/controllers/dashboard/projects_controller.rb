@@ -4,6 +4,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
 
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param
   before_action :default_sorting
   skip_cross_project_access_check :index, :starred

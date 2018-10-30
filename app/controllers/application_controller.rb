@@ -12,9 +12,9 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include SessionlessAuthentication
   include InvalidUTF8ErrorHandler
 
-  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
@@ -149,13 +149,6 @@ class ApplicationController < ActionController::Base
     else
       try(:authenticated_user)
     end
-  end
-
-  # This filter handles personal access tokens, and atom requests with rss tokens
-  def authenticate_sessionless_user!
-    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
-
-    sessionless_sign_in(user) if user
   end
 
   def log_exception(exception)
@@ -424,23 +417,9 @@ class ApplicationController < ActionController::Base
     Gitlab::I18n.with_user_locale(current_user, &block)
   end
 
-  def sessionless_sign_in(user)
-    if user && can?(user, :log_in)
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in(user, store: false, message: :sessionless_sign_in)
-    end
-  end
-
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
-  end
-
-  def sessionless_user?
-    current_user && !session.keys.include?('warden.user.user.key')
   end
 
   def peek_request?

@@ -7,6 +7,8 @@ class ProjectsController < Projects::ApplicationController
   include PreviewMarkdown
   include SendFileUpload
 
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :redirect_git_extension, only: [:show]
