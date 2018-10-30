@@ -369,7 +369,7 @@ class Group < Namespace
     }
   end
 
-  def secret_variables_for(ref, project)
+  def ci_variables_for(ref, project)
     list_of_ids = [self] + ancestors
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)

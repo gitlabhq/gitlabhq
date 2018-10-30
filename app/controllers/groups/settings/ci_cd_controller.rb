@@ -7,7 +7,7 @@ module Groups
       before_action :authorize_admin_pipeline!
 
       def show
-        define_secret_variables
+        define_ci_variables
       end
 
       def reset_registration_token
@@ -19,7 +19,7 @@ module Groups
 
       private
 
-      def define_secret_variables
+      def define_ci_variables
         @variable = Ci::GroupVariable.new(group: group)
           .present(current_user: current_user)
         @variables = group.variables.order_key_asc

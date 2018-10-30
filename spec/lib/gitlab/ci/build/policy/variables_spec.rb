@@ -54,7 +54,7 @@ describe Gitlab::Ci::Build::Policy::Variables do
       expect(policy).not_to be_satisfied_by(pipeline, seed)
     end
 
-    it 'allows to evaluate regular secret variables' do
+    it 'allows to evaluate regular CI variables' do
       create(:ci_variable, project: project, key: 'SECRET', value: 'my secret')
 
       policy = described_class.new(["$SECRET == 'my secret'"])
