@@ -229,7 +229,7 @@ describe('Deployment component', () => {
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
       expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
     });
-  })
+  });
 
   describe('deployment status', () => {
     describe('running', () => {
