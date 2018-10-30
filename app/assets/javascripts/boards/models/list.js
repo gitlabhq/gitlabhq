@@ -234,11 +234,11 @@ class List {
     });
   }
 
-  getTypeInfo (type) {
+  getTypeInfo(type) {
     return TYPES[type] || {};
   }
 
-  onNewIssueResponse (issue, data) {
+  onNewIssueResponse(issue, data) {
     issue.id = data.id;
     issue.iid = data.iid;
     issue.project = data.project;

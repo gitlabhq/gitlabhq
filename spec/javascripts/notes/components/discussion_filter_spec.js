@@ -11,11 +11,13 @@ describe('DiscussionFilter component', () => {
   beforeEach(() => {
     store = createStore();
 
-    const discussions = [{
-      ...discussionMock,
-      id: discussionMock.id,
-      notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
-    }];
+    const discussions = [
+      {
+        ...discussionMock,
+        id: discussionMock.id,
+        notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
+      },
+    ];
     const Component = Vue.extend(DiscussionFilter);
     const defaultValue = discussionFiltersMock[0].value;
 
@@ -35,11 +37,15 @@ describe('DiscussionFilter component', () => {
   });
 
   it('renders the all filters', () => {
-    expect(vm.$el.querySelectorAll('.dropdown-menu li').length).toEqual(discussionFiltersMock.length);
+    expect(vm.$el.querySelectorAll('.dropdown-menu li').length).toEqual(
+      discussionFiltersMock.length,
+    );
   });
 
   it('renders the default selected item', () => {
-    expect(vm.$el.querySelector('#discussion-filter-dropdown').textContent.trim()).toEqual(discussionFiltersMock[0].title);
+    expect(vm.$el.querySelector('#discussion-filter-dropdown').textContent.trim()).toEqual(
+      discussionFiltersMock[0].title,
+    );
   });
 
   it('updates to the selected item', () => {

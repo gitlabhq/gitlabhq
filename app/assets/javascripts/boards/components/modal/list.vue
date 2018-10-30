@@ -1,120 +1,120 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
-  import bp from '../../../breakpoints';
-  import ModalStore from '../../stores/modal_store';
-  import IssueCardInner from '../issue_card_inner.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import bp from '../../../breakpoints';
+import ModalStore from '../../stores/modal_store';
+import IssueCardInner from '../issue_card_inner.vue';
 
-  export default {
-    components: {
-      IssueCardInner,
-      Icon,
+export default {
+  components: {
+    IssueCardInner,
+    Icon,
+  },
+  props: {
+    issueLinkBase: {
+      type: String,
+      required: true,
     },
-    props: {
-      issueLinkBase: {
-        type: String,
-        required: true,
-      },
-      rootPath: {
-        type: String,
-        required: true,
-      },
-      emptyStateSvg: {
-        type: String,
-        required: true,
-      },
+    rootPath: {
+      type: String,
+      required: true,
     },
-    data() {
-      return ModalStore.store;
+    emptyStateSvg: {
+      type: String,
+      required: true,
     },
-    computed: {
-      loopIssues() {
-        if (this.activeTab === 'all') {
-          return this.issues;
+  },
+  data() {
+    return ModalStore.store;
+  },
+  computed: {
+    loopIssues() {
+      if (this.activeTab === 'all') {
+        return this.issues;
+      }
+
+      return this.selectedIssues;
+    },
+    groupedIssues() {
+      const groups = [];
+      this.loopIssues.forEach((issue, i) => {
+        const index = i % this.columns;
+
+        if (!groups[index]) {
+          groups.push([]);
         }
 
-        return this.selectedIssues;
-      },
-      groupedIssues() {
-        const groups = [];
-        this.loopIssues.forEach((issue, i) => {
-          const index = i % this.columns;
+        groups[index].push(issue);
+      });
 
-          if (!groups[index]) {
-            groups.push([]);
-          }
-
-          groups[index].push(issue);
-        });
-
-        return groups;
-      },
+      return groups;
     },
-    watch: {
-      activeTab() {
-        if (this.activeTab === 'all') {
-          ModalStore.purgeUnselectedIssues();
-        }
-      },
+  },
+  watch: {
+    activeTab() {
+      if (this.activeTab === 'all') {
+        ModalStore.purgeUnselectedIssues();
+      }
     },
-    mounted() {
-      this.scrollHandlerWrapper = this.scrollHandler.bind(this);
-      this.setColumnCountWrapper = this.setColumnCount.bind(this);
-      this.setColumnCount();
+  },
+  mounted() {
+    this.scrollHandlerWrapper = this.scrollHandler.bind(this);
+    this.setColumnCountWrapper = this.setColumnCount.bind(this);
+    this.setColumnCount();
 
-      this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
-      window.addEventListener('resize', this.setColumnCountWrapper);
+    this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
+    window.addEventListener('resize', this.setColumnCountWrapper);
+  },
+  beforeDestroy() {
+    this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
+    window.removeEventListener('resize', this.setColumnCountWrapper);
+  },
+  methods: {
+    scrollHandler() {
+      const currentPage = Math.floor(this.issues.length / this.perPage);
+
+      if (
+        this.scrollTop() > this.scrollHeight() - 100 &&
+        !this.loadingNewPage &&
+        currentPage === this.page
+      ) {
+        this.loadingNewPage = true;
+        this.page += 1;
+      }
     },
-    beforeDestroy() {
-      this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
-      window.removeEventListener('resize', this.setColumnCountWrapper);
+    toggleIssue(e, issue) {
+      if (e.target.tagName !== 'A') {
+        ModalStore.toggleIssue(issue);
+      }
     },
-    methods: {
-      scrollHandler() {
-        const currentPage = Math.floor(this.issues.length / this.perPage);
-
-        if (
-          this.scrollTop() > this.scrollHeight() - 100 &&
-          !this.loadingNewPage &&
-          currentPage === this.page
-        ) {
-          this.loadingNewPage = true;
-          this.page += 1;
-        }
-      },
-      toggleIssue(e, issue) {
-        if (e.target.tagName !== 'A') {
-          ModalStore.toggleIssue(issue);
-        }
-      },
-      listHeight() {
-        return this.$refs.list.getBoundingClientRect().height;
-      },
-      scrollHeight() {
-        return this.$refs.list.scrollHeight;
-      },
-      scrollTop() {
-        return this.$refs.list.scrollTop + this.listHeight();
-      },
-      showIssue(issue) {
-        if (this.activeTab === 'all') return true;
-
-        const index = ModalStore.selectedIssueIndex(issue);
-
-        return index !== -1;
-      },
-      setColumnCount() {
-        const breakpoint = bp.getBreakpointSize();
-
-        if (breakpoint === 'lg' || breakpoint === 'md') {
-          this.columns = 3;
-        } else if (breakpoint === 'sm') {
-          this.columns = 2;
-        } else {
-          this.columns = 1;
-        }
-      },
+    listHeight() {
+      return this.$refs.list.getBoundingClientRect().height;
     },
-  };
+    scrollHeight() {
+      return this.$refs.list.scrollHeight;
+    },
+    scrollTop() {
+      return this.$refs.list.scrollTop + this.listHeight();
+    },
+    showIssue(issue) {
+      if (this.activeTab === 'all') return true;
+
+      const index = ModalStore.selectedIssueIndex(issue);
+
+      return index !== -1;
+    },
+    setColumnCount() {
+      const breakpoint = bp.getBreakpointSize();
+
+      if (breakpoint === 'lg' || breakpoint === 'md') {
+        this.columns = 3;
+      } else if (breakpoint === 'sm') {
+        this.columns = 2;
+      } else {
+        this.columns = 1;
+      }
+    },
+  },
+};
 </script>
 <template>
   <section
