@@ -177,7 +177,7 @@ describe Groups::TransferService, :postgresql do
 
         it 'should add an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Path has already been taken')
+          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
         end
       end
 
