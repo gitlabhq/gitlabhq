@@ -133,7 +133,7 @@ export default {
                 },
                 right: {
                   ...line.right,
-                  discussions: right ? line.right.discussions.concat(discussion) : [],
+                  discussions: right && !left ? line.right.discussions.concat(discussion) : [],
                 },
               };
             }
