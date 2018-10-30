@@ -91,6 +91,7 @@ describe('Assignee component', () => {
       expect(assignee.querySelector('.avatar').getAttribute('alt')).toEqual(
         `${UsersMock.user.name}'s avatar`,
       );
+
       expect(assignee.querySelector('.author').innerText.trim()).toEqual(UsersMock.user.name);
     });
 
@@ -154,6 +155,7 @@ describe('Assignee component', () => {
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(
         `${users[0].name}'s avatar`,
       );
+
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
@@ -162,6 +164,7 @@ describe('Assignee component', () => {
       expect(second.querySelector('.avatar').getAttribute('alt')).toEqual(
         `${users[1].name}'s avatar`,
       );
+
       expect(second.querySelector('.author').innerText.trim()).toEqual(users[1].name);
     });
 
@@ -185,6 +188,7 @@ describe('Assignee component', () => {
       expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(
         `${users[0].name}'s avatar`,
       );
+
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
@@ -219,6 +223,7 @@ describe('Assignee component', () => {
       expect(component.$el.querySelectorAll('.user-item').length).toEqual(
         component.defaultRenderCount,
       );
+
       expect(component.$el.querySelector('.user-list-more')).not.toBe(null);
       const usersLabelExpectation = users.length - component.defaultRenderCount;
 

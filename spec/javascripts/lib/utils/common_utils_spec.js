@@ -183,6 +183,7 @@ describe('common_utils', () => {
         scope: 'all',
         page: '2',
       });
+
       expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
       expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
     });

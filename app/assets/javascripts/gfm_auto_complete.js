@@ -569,8 +569,8 @@ GfmAutoComplete.Members = {
   template: '<li>${avatarTag} ${username} <small>${title}</small></li>',
 };
 GfmAutoComplete.Labels = {
-  // eslint-disable-next-line no-template-curly-in-string
   template:
+    // eslint-disable-next-line no-template-curly-in-string
     '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>',
 };
 // Issues, MergeRequests and Snippets
