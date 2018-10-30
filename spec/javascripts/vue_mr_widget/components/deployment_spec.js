@@ -211,6 +211,26 @@ describe('Deployment component', () => {
     });
   });
 
+  describe('without changes', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = true;
+      delete deploymentMockData.changes;
+
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
+    });
+
+    afterEach(() => {
+      delete window.gon.features.ciEnvironmentsStatusChanges;
+    });
+
+    it('renders the link to the review app without dropdown', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+    });
+  });
+
   describe('deployment status', () => {
     describe('running', () => {
       beforeEach(() => {
