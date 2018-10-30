@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "diff_max_patch_bytes", default: 102400, null: false
     t.integer "archive_builds_in_seconds"
     t.string "commit_email_hostname"
+    t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -435,6 +436,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
+    t.index ["owner_id"], name: "index_ci_pipeline_schedules_on_owner_id", using: :btree
     t.index ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
   end
 
@@ -547,6 +549,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime "updated_at"
     t.integer "commit_id"
     t.index ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
+    t.index ["trigger_id"], name: "index_ci_trigger_requests_on_trigger_id", using: :btree
   end
 
   create_table "ci_triggers", force: :cascade do |t|
@@ -557,6 +560,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "owner_id"
     t.string "description"
     t.string "ref"
+    t.index ["owner_id"], name: "index_ci_triggers_on_owner_id", using: :btree
     t.index ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
   end
 
@@ -646,6 +650,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.text "encrypted_ca_key"
     t.text "encrypted_ca_key_iv"
     t.text "ca_cert"
+    t.index ["cluster_id"], name: "index_clusters_applications_helm_on_cluster_id", unique: true, using: :btree
   end
 
   create_table "clusters_applications_ingress", force: :cascade do |t|
@@ -658,6 +663,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.string "cluster_ip"
     t.text "status_reason"
     t.string "external_ip"
+    t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true, using: :btree
   end
 
   create_table "clusters_applications_jupyter", force: :cascade do |t|
@@ -669,6 +675,8 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
+    t.index ["cluster_id"], name: "index_clusters_applications_jupyter_on_cluster_id", unique: true, using: :btree
+    t.index ["oauth_application_id"], name: "index_clusters_applications_jupyter_on_oauth_application_id", using: :btree
   end
 
   create_table "clusters_applications_knative", force: :cascade do |t|
@@ -688,6 +696,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.text "status_reason"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.index ["cluster_id"], name: "index_clusters_applications_prometheus_on_cluster_id", unique: true, using: :btree
   end
 
   create_table "clusters_applications_runners", force: :cascade do |t|
@@ -871,6 +880,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "project_id", null: false
     t.integer "forked_from_project_id"
     t.index ["fork_network_id"], name: "index_fork_network_members_on_fork_network_id", using: :btree
+    t.index ["forked_from_project_id"], name: "index_fork_network_members_on_forked_from_project_id", using: :btree
     t.index ["project_id"], name: "index_fork_network_members_on_project_id", unique: true, using: :btree
   end
 
@@ -960,6 +970,8 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "usage", null: false
     t.integer "last_value", null: false
     t.integer "namespace_id"
+    t.index ["namespace_id"], name: "index_internal_ids_on_namespace_id", using: :btree
+    t.index ["project_id"], name: "index_internal_ids_on_project_id", using: :btree
     t.index ["usage", "namespace_id"], name: "index_internal_ids_on_usage_and_namespace_id", unique: true, where: "(namespace_id IS NOT NULL)", using: :btree
     t.index ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, where: "(project_id IS NOT NULL)", using: :btree
   end
@@ -1007,6 +1019,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime_with_timezone "closed_at"
     t.integer "closed_by_id"
     t.index ["author_id"], name: "index_issues_on_author_id", using: :btree
+    t.index ["closed_by_id"], name: "index_issues_on_closed_by_id", using: :btree
     t.index ["confidential"], name: "index_issues_on_confidential", using: :btree
     t.index ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
     t.index ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
@@ -1052,6 +1065,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "priority", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["label_id"], name: "index_label_priorities_on_label_id", using: :btree
     t.index ["priority"], name: "index_label_priorities_on_priority", using: :btree
     t.index ["project_id", "label_id"], name: "index_label_priorities_on_project_id_and_label_id", unique: true, using: :btree
   end
@@ -1194,7 +1208,9 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "latest_closed_by_id"
     t.datetime_with_timezone "latest_closed_at"
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
+    t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id", using: :btree
     t.index ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
+    t.index ["merged_by_id"], name: "index_merge_request_metrics_on_merged_by_id", using: :btree
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
   end
 
@@ -1436,6 +1452,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
   create_table "oauth_openid_requests", force: :cascade do |t|
     t.integer "access_grant_id", null: false
     t.string "nonce", null: false
+    t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id", using: :btree
   end
 
   create_table "pages_domains", force: :cascade do |t|
@@ -1700,6 +1717,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_protected_tag_create_access_levels_on_group_id", using: :btree
     t.index ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
     t.index ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
   end
@@ -1903,6 +1921,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "project_id"
+    t.index ["project_id"], name: "index_subscriptions_on_project_id", using: :btree
     t.index ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
   end
 
@@ -2067,6 +2086,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.string "emoji", default: "speech_balloon", null: false
     t.string "message", limit: 100
     t.string "message_html"
+    t.index ["user_id"], name: "index_user_statuses_on_user_id", using: :btree
   end
 
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
@@ -2147,6 +2167,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.boolean "private_profile"
     t.boolean "include_private_contributions"
     t.string "commit_email"
+    t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id", using: :btree
     t.index ["admin"], name: "index_users_on_admin", using: :btree
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["created_at"], name: "index_users_on_created_at", using: :btree

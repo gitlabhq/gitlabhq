@@ -187,12 +187,7 @@ end
 When adding a foreign-key constraint to either an existing or new
 column remember to also add a index on the column.
 
-This is _required_ if the foreign-key constraint specifies
-`ON DELETE CASCADE` or `ON DELETE SET NULL` behavior. On a cascading
-delete, the [corresponding record needs to be retrieved using an
-index](https://www.cybertec-postgresql.com/en/postgresql-indexes-and-foreign-keys/)
-(otherwise, we'd need to scan the whole table) for subsequent update or
-deletion.
+This is _required_ for all foreign-keys.
 
 Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.

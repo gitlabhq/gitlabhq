@@ -1,0 +1,5 @@
+---
+title: Validate foreign keys being indexed
+merge_request:
+author:
+type: performance
