@@ -153,13 +153,9 @@ export default {
     },
     setDiscussions() {
       if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
-        requestIdleCallback(
-          () =>
-            this.assignDiscussionsToDiff().then(() => {
-              this.assignedDiscussions = true;
-            }),
-          { timeout: 1000 },
-        );
+        this.assignedDiscussions = true;
+
+        requestIdleCallback(() => this.assignDiscussionsToDiff(), { timeout: 1000 });
       }
     },
     adjustView() {
