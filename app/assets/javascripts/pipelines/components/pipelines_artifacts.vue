@@ -1,13 +1,13 @@
 <script>
 import tooltip from '../../vue_shared/directives/tooltip';
-import icon from '../../vue_shared/components/icon.vue';
+import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
     tooltip,
   },
   components: {
-    icon,
+    Icon,
   },
   props: {
     artifacts: {
