@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import {
-  Pagination,
-  ProgressBar,
-  Modal,
-  LoadingIcon,
-  ModalDirective,
-  TooltipDirective,
+  GlPagination,
+  GlProgressBar,
+  GlModal,
+  GlLoadingIcon,
+  GlModalDirective,
+  GlTooltipDirective,
 } from '@gitlab-org/gitlab-ui';
 
-Vue.component('gl-pagination', Pagination);
-Vue.component('gl-progress-bar', ProgressBar);
-Vue.component('gl-ui-modal', Modal);
-Vue.component('gl-loading-icon', LoadingIcon);
+Vue.component('gl-pagination', GlPagination);
+Vue.component('gl-progress-bar', GlProgressBar);
+Vue.component('gl-ui-modal', GlModal);
+Vue.component('gl-loading-icon', GlLoadingIcon);
 
-Vue.directive('gl-modal', ModalDirective);
-Vue.directive('gl-tooltip', TooltipDirective);
+Vue.directive('gl-modal', GlModalDirective);
+Vue.directive('gl-tooltip', GlTooltipDirective);

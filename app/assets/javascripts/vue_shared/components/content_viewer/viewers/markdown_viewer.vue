@@ -2,14 +2,14 @@
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import $ from 'jquery';
-import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
 
 const { CancelToken } = axios;
 let axiosSource;
 
 export default {
   components: {
-    SkeletonLoading,
+    GlSkeletonLoading,
   },
   props: {
     content: {
@@ -81,7 +81,7 @@ export default {
   <div
     ref="markdown-preview"
     class="md md-previewer">
-    <skeleton-loading v-if="isLoading" />
+    <gl-skeleton-loading v-if="isLoading" />
     <div
       v-else
       v-html="previewContent">
