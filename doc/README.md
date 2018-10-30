@@ -221,7 +221,7 @@ The following documentation relates to the DevOps **Create** stage:
 
 | Create Topics - Integration and Automation                        | Description                                                                                                            |
 |:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
-| [GitLan API](api/README.md)                                       | Integrate GitLab via a simple and powerful API.                                                                        |
+| [GitLab API](api/README.md)                                       | Integrate GitLab via a simple and powerful API.                                                                        |
 | [GitLab Integration](integration/README.md)                       | Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication. |
 | [GitLab Webhooks](user/project/integrations/webhooks.md)          | Let GitLab notify you when new code has been pushed to your project.                                                   |
 | [Project Services](user/project/integrations/project_services.md) | Integrate a project with external services, such as CI and chat.                                                       |
@@ -352,9 +352,12 @@ GitLab can help you secure your applications from within your development lifecy
 
 The following documentation relates to the DevOps **Secure** stage:
 
-| Monitor Topics                                          | Description                                                |
-|:--------------------------------------------------------|:-----------------------------------------------------------|
-| [Container Scanning](ci/examples/container_scanning.md) | Use Clair to scan docker images for known vulnerabilities. |
+| Monitor Topics                                                  | Description                                                                                                |
+|:----------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
+| [Container Scanning example](ci/examples/container_scanning.md) | `.gitlab-ci.yml` example of using Clair and clair-scanner to scan docker images for known vulnerabilities. |
+
+NOTE: **Note:**
+Viewing [Container Scanning reports](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html) within merge requests requires [GitLab Ultimate](https://about.gitlab.com/pricing/).
 
 ## Subscribe to GitLab
 
