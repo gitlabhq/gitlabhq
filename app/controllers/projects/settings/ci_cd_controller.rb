@@ -68,7 +68,7 @@ module Projects
 
       def define_variables
         define_runners_variables
-        define_secret_variables
+        define_ci_variables
         define_triggers_variables
         define_badges_variables
         define_auto_devops_variables
@@ -90,7 +90,7 @@ module Projects
         @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
       end
 
-      def define_secret_variables
+      def define_ci_variables
         @variable = ::Ci::Variable.new(project: project)
           .present(current_user: current_user)
         @variables = project.variables.order_key_asc

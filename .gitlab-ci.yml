@@ -265,7 +265,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build-docs
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
-    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
     url: http://$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup

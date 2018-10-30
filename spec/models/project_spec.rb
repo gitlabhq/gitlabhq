@@ -2432,10 +2432,10 @@ describe Project do
     end
   end
 
-  describe '#secret_variables_for' do
+  describe '#ci_variables_for' do
     let(:project) { create(:project) }
 
-    let!(:secret_variable) do
+    let!(:ci_variable) do
       create(:ci_variable, value: 'secret', project: project)
     end
 
@@ -2443,7 +2443,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.reload.secret_variables_for(ref: 'ref') }
+    subject { project.reload.ci_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
@@ -2452,13 +2452,13 @@ describe Project do
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
-        is_expected.to contain_exactly(secret_variable, protected_variable)
+        is_expected.to contain_exactly(ci_variable, protected_variable)
       end
     end
 
     context 'when the ref is not protected' do
-      it 'contains only the secret variables' do
-        is_expected.to contain_exactly(secret_variable)
+      it 'contains only the CI variables' do
+        is_expected.to contain_exactly(ci_variable)
       end
     end
 
