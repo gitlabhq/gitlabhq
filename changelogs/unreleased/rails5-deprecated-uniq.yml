@@ -1,0 +1,5 @@
+---
+title: Replace deprecated uniq on a Relation with distinct
+merge_request: 22625
+author: Jasper Maes
+type: other

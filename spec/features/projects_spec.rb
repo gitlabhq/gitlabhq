@@ -322,6 +322,22 @@ describe 'Project' do
     end
   end
 
+  context 'content is not cached after signing out', :js do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    it 'does not load activity', :js do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit project_path(project)
+      sign_out(user)
+
+      page.evaluate_script('window.history.back()')
+
+      expect(page).not_to have_selector('.event-item')
+    end
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

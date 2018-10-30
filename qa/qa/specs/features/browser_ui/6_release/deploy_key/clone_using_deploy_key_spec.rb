@@ -55,7 +55,7 @@ module QA
 
           deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
 
-          Factory::Resource::SecretVariable.fabricate! do |resource|
+          Factory::Resource::CiVariable.fabricate! do |resource|
             resource.project = @project
             resource.key = deploy_key_name
             resource.value = key.private_key

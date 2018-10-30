@@ -2,24 +2,24 @@
 
 module QA
   context 'Verify' do
-    describe 'Secret variable support' do
-      it 'user adds a secret variable' do
+    describe 'CI variable support' do
+      it 'user adds a CI variable' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::SecretVariable.fabricate! do |resource|
+        Factory::Resource::CiVariable.fabricate! do |resource|
           resource.key = 'VARIABLE_KEY'
-          resource.value = 'some secret variable'
+          resource.value = 'some CI variable'
         end
 
         Page::Project::Settings::CICD.perform do |settings|
-          settings.expand_secret_variables do |page|
+          settings.expand_ci_variables do |page|
             expect(page).to have_field(with: 'VARIABLE_KEY')
-            expect(page).not_to have_field(with: 'some secret variable')
+            expect(page).not_to have_field(with: 'some CI variable')
 
             page.reveal_variables
 
-            expect(page).to have_field(with: 'some secret variable')
+            expect(page).to have_field(with: 'some CI variable')
           end
         end
       end

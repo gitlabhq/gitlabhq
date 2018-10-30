@@ -52,6 +52,40 @@ describe MergeRequestWidgetEntity do
     end
   end
 
+  describe 'merge_pipeline' do
+    it 'returns nil' do
+      expect(subject[:merge_pipeline]).to be_nil
+    end
+
+    context 'when is merged' do
+      let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns merge_pipeline' do
+        pipeline.reload
+        pipeline_payload = PipelineDetailsEntity
+                             .represent(pipeline, request: request)
+                             .as_json
+
+        expect(subject[:merge_pipeline]).to eq(pipeline_payload)
+      end
+
+      context 'when user cannot read pipelines on target project' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns nil' do
+          expect(subject[:merge_pipeline]).to be_nil
+        end
+      end
+    end
+  end
+
   describe 'metrics' do
     context 'when metrics record exists with merged data' do
       before do

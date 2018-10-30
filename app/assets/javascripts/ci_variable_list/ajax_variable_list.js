@@ -47,7 +47,7 @@ export default class AjaxVariableList {
   }
 
   onSaveClicked() {
-    const loadingIcon = this.saveButton.querySelector('.js-secret-variables-save-loading-icon');
+    const loadingIcon = this.saveButton.querySelector('.js-ci-variables-save-loading-icon');
     loadingIcon.classList.toggle('hide', false);
     this.errorBox.classList.toggle('hide', true);
     // We use this to prevent a user from changing a key before we have a chance

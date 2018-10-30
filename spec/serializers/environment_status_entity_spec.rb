@@ -9,7 +9,7 @@ describe EnvironmentStatusEntity do
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
 
-  let(:environment_status) { EnvironmentStatus.new(environment, merge_request) }
+  let(:environment_status) { EnvironmentStatus.new(environment, merge_request, merge_request.diff_head_sha) }
   let(:entity)             { described_class.new(environment_status, request: request) }
 
   subject { entity.as_json }
@@ -26,6 +26,7 @@ describe EnvironmentStatusEntity do
   it { is_expected.to include(:deployed_at) }
   it { is_expected.to include(:deployed_at_formatted) }
   it { is_expected.to include(:changes) }
+  it { is_expected.to include(:status) }
 
   it { is_expected.not_to include(:stop_url) }
   it { is_expected.not_to include(:metrics_url) }

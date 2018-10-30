@@ -106,7 +106,7 @@ describe 'Issue Boards add issue modal filtering', :js do
 
     it 'filters by unassigned' do
       set_filter('assignee')
-      click_filter_link('No Assignee')
+      click_filter_link('None')
       submit_filter
 
       page.within('.add-issues-modal') do

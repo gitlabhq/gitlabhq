@@ -58,9 +58,14 @@ export const alternativeTokenKeys = [
 
 export const conditions = [
   {
-    url: 'assignee_id=0',
+    url: 'assignee_id=None',
     tokenKey: 'assignee',
     value: 'none',
+  },
+  {
+    url: 'assignee_id=Any',
+    tokenKey: 'assignee',
+    value: 'any',
   },
   {
     url: 'milestone_title=No+Milestone',

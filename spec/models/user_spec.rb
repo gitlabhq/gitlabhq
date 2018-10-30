@@ -730,6 +730,14 @@ describe User do
 
       expect(user.incoming_email_token).not_to be_blank
     end
+
+    it 'uses SecureRandom to generate the incoming email token' do
+      expect(SecureRandom).to receive(:hex).and_return('3b8ca303')
+
+      user = create(:user)
+
+      expect(user.incoming_email_token).to eql('gitlab')
+    end
   end
 
   describe '#ensure_user_rights_and_limits' do

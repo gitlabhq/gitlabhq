@@ -37,9 +37,9 @@ Review Apps are automatically deployed by each pipeline, both in
   review app manually, and is also started by GitLab once a branch is deleted
 - [TBD] Review apps are cleaned up regularly using a pipeline schedule that runs
   the [`scripts/review_apps/automated_cleanup.rb`][automated_cleanup.rb] script
-- If you're unable to log in using the `root` username and password the 
-  deployment may have failed. Stop the review app via the `stop_review` 
-  manual job and then retry the `review` job to redeploy the review app.
+- If you're unable to log in using the `root` username and password, the 
+  deployment may have failed. Stop the Review App via the `stop_review` 
+  manual job and then retry the `review` job to redeploy the Review App.
 
 [^1]: We use the `CNG-mirror` project so that the `CNG`, (**C**loud **N**ative **G**itLab), project's registry is
   not overloaded with a lot of transient Docker images.

@@ -626,10 +626,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.33.0.tgz#068566e8ee00795f6f09f58236f08e1716f9f04a"
   integrity sha512-8ajtUHk6gQ1xosL/CO5IzHSFM/t18hx5pfzQ3cd0VuQXcyR6QKGuXTLwbYdmJDYOw1Etoo5DqDWxPEClHyZpiA==
 
-"@gitlab-org/gitlab-ui@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-ui/-/gitlab-ui-1.8.0.tgz#dee33d78f68c91644273dbd51734b796108263ee"
-  integrity sha512-Owm8bkP4vEihiLD3pmMw1r+UWr3WYGaGUtj0JcwaAg3d05ZneozFEZjazIOWeYTcFsk+ZvNmSk1UA+ARIauhgQ==
+"@gitlab-org/gitlab-ui@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-ui/-/gitlab-ui-1.9.0.tgz#c47851587316f60926e8304747d1fcdd1222c779"
+  integrity sha512-OQ/mhWnbeG4pmjnCGwLsyvmHDYdLh2IRnt4Jx6G9jf96oyjEHzY1rveImfqcQ2bvx9azfuI6CU9dmDSY3aWvvQ==
   dependencies:
     "@gitlab-org/gitlab-svgs" "^1.23.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -5502,12 +5502,7 @@ mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   dependencies:
     minimist "0.0.8"
 
-moment@2.x:
-  version "2.19.2"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
-  integrity sha512-Rf6jiHPEfxp9+dlzxPTmRHbvoFXsh2L/U8hOupUMpnuecHQmI6cF6lUbJl3QqKPko1u6ujO+FxtcajLVfLpAtA==
-
-moment@^2.21.0:
+moment@2.x, moment@^2.21.0:
   version "2.22.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
   integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=

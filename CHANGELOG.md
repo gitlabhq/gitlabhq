@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.3 (2018-10-26)
+
+- No changes.
+
+## 11.4.2 (2018-10-25)
+
+### Security (5 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2571
+- Persist only SHA digest of PersonalAccessToken#token.
+- Redact personal tokens in unsubscribe links.
+- Block loopback addresses in UrlBlocker.
+- Validate Wiki attachments are valid temporary files.
+
+
+## 11.4.1 (2018-10-23)
+
+### Security (2 changes)
+
+- Fix XSS in merge request source branch name.
+- Prevent SSRF attacks in HipChat integration.
+
+
 ## 11.4.0 (2018-10-22)
 
 ### Security (9 changes)
@@ -225,6 +248,22 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.8 (2018-10-27)
+
+- No changes.
+
+## 11.3.7 (2018-10-26)
+
+### Security (6 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2557
+- Persist only SHA digest of PersonalAccessToken#token.
+- Fix XSS in merge request source branch name.
+- Redact personal tokens in unsubscribe links.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
 
 
 ## 11.3.6 (2018-10-17)
@@ -514,6 +553,21 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.7 (2018-10-27)
+
+- No changes.
+
+## 11.2.6 (2018-10-26)
+
+### Security (5 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2558
+- Fix XSS in merge request source branch name.
+- Redact personal tokens in unsubscribe links.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Prevent SSRF attacks in HipChat integration.
 
 
 ## 11.2.5 (2018-10-05)

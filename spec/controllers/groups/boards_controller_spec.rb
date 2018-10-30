@@ -37,7 +37,7 @@ describe Groups::BoardsController do
         allow(visited).to receive(:board_id).and_return(12)
         allow_any_instance_of(Boards::Visits::LatestService).to receive(:execute).and_return(visited)
 
-        list_boards
+        list_boards format: :html
 
         expect(response).to render_template :index
         expect(response.content_type).to eq 'text/html'

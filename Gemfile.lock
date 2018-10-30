@@ -463,7 +463,6 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.7.0)
-    mousetrap-rails (1.4.6)
     msgpack (1.2.4)
     multi_json (1.13.1)
     multi_xml (0.6.0)
@@ -547,7 +546,7 @@ GEM
     orm_adapter (0.5.0)
     os (1.0.0)
     parallel (1.12.1)
-    parser (2.5.1.2)
+    parser (2.5.3.0)
       ast (~> 2.4.0)
     parslet (1.8.2)
     peek (1.0.1)
@@ -1046,7 +1045,6 @@ DEPENDENCIES
   method_source (~> 0.8)
   mini_magick
   minitest (~> 5.7.0)
-  mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.4.10)
   net-ldap
   net-ssh (~> 5.0)

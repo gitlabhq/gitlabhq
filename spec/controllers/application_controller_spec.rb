@@ -792,4 +792,30 @@ describe ApplicationController do
       end
     end
   end
+
+  context 'control headers' do
+    controller(described_class) do
+      def index
+        render json: :ok
+      end
+    end
+
+    context 'user not logged in' do
+      it 'sets the default headers' do
+        get :index
+
+        expect(response.headers['Cache-Control']).to be_nil
+      end
+    end
+
+    context 'user logged in' do
+      it 'sets the default headers' do
+        sign_in(user)
+
+        get :index
+
+        expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate, no-store'
+      end
+    end
+  end
 end
