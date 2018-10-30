@@ -155,14 +155,6 @@ export default {
       );
     },
 
-    shouldRenderPagination() {
-      return (
-        !this.isLoading &&
-        this.state.pipelines.length &&
-        this.state.pageInfo.total > this.state.pageInfo.perPage
-      );
-    },
-
     emptyTabMessage() {
       const { scopes } = this.$options;
       const possibleScopes = [scopes.pending, scopes.running, scopes.finished];
@@ -232,36 +224,6 @@ export default {
         this.setCommonData(resp.data.pipelines);
       }
     },
-    /**
-     * Handles URL and query parameter changes.
-     * When the user uses the pagination or the tabs,
-     *  - update URL
-     *  - Make API request to the server with new parameters
-     *  - Update the polling function
-     *  - Update the internal state
-     */
-    updateContent(parameters) {
-      this.updateInternalState(parameters);
-
-      // fetch new data
-      return this.service
-        .getPipelines(this.requestData)
-        .then(response => {
-          this.isLoading = false;
-          this.successCallback(response);
-
-          // restart polling
-          this.poll.restart({ data: this.requestData });
-        })
-        .catch(() => {
-          this.isLoading = false;
-          this.errorCallback();
-
-          // restart polling
-          this.poll.restart({ data: this.requestData });
-        });
-    },
-
     handleResetRunnersCache(endpoint) {
       this.isResetCacheButtonLoading = true;
 
