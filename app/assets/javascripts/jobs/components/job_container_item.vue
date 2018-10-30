@@ -2,6 +2,8 @@
 import { GlTooltipDirective, GlLink } from '@gitlab-org/gitlab-ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
+import { sprintf } from '~/locale';
 
 export default {
   components: {
@@ -12,6 +14,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [delayedJobMixin],
   props: {
     job: {
       type: Object,
@@ -24,7 +27,14 @@ export default {
   },
   computed: {
     tooltipText() {
-      return `${this.job.name} - ${this.job.status.tooltip}`;
+      const { name, status } = this.job;
+      const text = `${name} - ${status.tooltip}`;
+
+      if (this.isDelayedJob) {
+        return sprintf(text, { remainingTime: this.remainingTime })
+      }
+
+      return text;
     },
   },
 };
