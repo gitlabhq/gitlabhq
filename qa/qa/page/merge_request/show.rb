@@ -77,7 +77,7 @@ module QA
           element :discussion_reply
         end
 
-        view 'app/assets/javascripts/diffs/components/parallel_diff_table_row.vue' do
+        view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
           element :new_diff_line
         end
 
