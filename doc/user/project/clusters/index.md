@@ -115,11 +115,11 @@ to install some [pre-defined applications](#installing-applications).
 
 To determine the:
 
-- API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`
+- API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`.
 - Token:
-  1. List the secrets by running `kubectl get secrets`. Note the name of the secret you need the token for.
-  2. Get the token for the noted secret by running `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 -D`
-- CA Certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
+  1. List the secrets by running: `kubectl get secrets`. Note the name of the secret you need the token for.
+  1. Get the token for the appropriate secret by running: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 -D`.
+- CA certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`.
 
 ## Security implications
 
