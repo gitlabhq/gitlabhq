@@ -24,7 +24,7 @@ describe Gitlab::Ci::Build::Policy::Variables do
       expect(policy).to be_satisfied_by(pipeline, seed)
     end
 
-    it 'is not satisfied by an overriden empty variable' do
+    it 'is not satisfied by an overridden empty variable' do
       policy = described_class.new(['$CI_PROJECT_NAME'])
 
       expect(policy).not_to be_satisfied_by(pipeline, seed)

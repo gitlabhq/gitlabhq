@@ -167,12 +167,12 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  # To be overriden when inherrited from
+  # To be overridden when inherrited from
   def retryable?
     false
   end
 
-  # To be overriden when inherrited from
+  # To be overridden when inherrited from
   def cancelable?
     false
   end

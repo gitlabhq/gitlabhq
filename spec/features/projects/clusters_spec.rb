@@ -40,7 +40,7 @@ describe 'Clusters', :js do
         expect(page).to have_selector('.js-project-feature-toggle')
       end
 
-      context 'with sucessfull request' do
+      context 'with successful request' do
         it 'user sees updated cluster' do
           expect do
             page.find('.js-project-feature-toggle').click

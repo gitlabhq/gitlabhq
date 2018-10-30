@@ -110,7 +110,7 @@ export default {
       // Get the remaining list to use in `and x more` text.
       const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
 
-      // Add myself to the begining of the list so title will start with You.
+      // Add myself to the beginning of the list so title will start with You.
       if (hasReactionByCurrentUser) {
         namesToShow.unshift('You');
       }

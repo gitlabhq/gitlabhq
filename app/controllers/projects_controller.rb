@@ -276,7 +276,7 @@ class ProjectsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Render project landing depending of which features are available
-  # So if page is not availble in the list it renders the next page
+  # So if page is not available in the list it renders the next page
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page

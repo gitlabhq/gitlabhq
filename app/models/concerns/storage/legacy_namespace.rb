@@ -94,7 +94,7 @@ module Storage
         if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
           Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
-          # Remove namespace directroy async with delay so
+          # Remove namespace directory async with delay so
           # GitLab has time to remove all projects first
           run_after_commit do
             GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)

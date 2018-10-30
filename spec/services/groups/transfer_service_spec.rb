@@ -347,7 +347,7 @@ describe Groups::TransferService, :postgresql do
         end
       end
 
-      context 'when transfering a group with nested groups and projects' do
+      context 'when transferring a group with nested groups and projects' do
         let!(:group) { create(:group, :public) }
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }

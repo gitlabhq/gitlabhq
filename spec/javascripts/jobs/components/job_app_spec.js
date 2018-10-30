@@ -52,7 +52,7 @@ describe('Job App ', () => {
     });
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet(`${props.pagePath}/trace.json`).replyOnce(200, {});
     });

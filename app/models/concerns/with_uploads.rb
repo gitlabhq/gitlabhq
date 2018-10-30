@@ -2,7 +2,7 @@
 
 # Mounted uploaders are destroyed by carrierwave's after_commit
 # hook. This hook fetches upload location (local vs remote) from
-# Upload model. So it's neccessary to make sure that during that
+# Upload model. So it's necessary to make sure that during that
 # after_commit hook model's associated uploads are not deleted yet.
 # IOW we can not use dependent: :destroy :
 # has_many :uploads, as: :model, dependent: :destroy

@@ -24,7 +24,7 @@ module Gitlab
         # head of `feature` was commit B, resulting in the original diff A->B.
         # Since creation, `master` was updated to C.
         # Now `feature` is being updated to D, and the newly generated MR diff is C->D.
-        # It is possible that C and D are direct decendants of A and B respectively,
+        # It is possible that C and D are direct descendants of A and B respectively,
         # but this isn't necessarily the case as rebases and merges come into play.
         #
         # Suppose we have a diff note on the original diff A->B. Now that the MR

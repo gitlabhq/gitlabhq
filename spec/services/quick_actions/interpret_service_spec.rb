@@ -315,7 +315,7 @@ describe QuickActions::InterpretService do
     end
 
     shared_examples 'award command' do
-      it 'toggle award 100 emoji if content containts /award :100:' do
+      it 'toggle award 100 emoji if content contains /award :100:' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(emoji_award: "100")
@@ -1395,7 +1395,7 @@ describe QuickActions::InterpretService do
       it 'includes the formatted duration and proper verb' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Substracts 2h spent time.'])
+        expect(explanations).to eq(['Subtracts 2h spent time.'])
       end
     end
 

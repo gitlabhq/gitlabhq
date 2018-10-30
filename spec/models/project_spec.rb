@@ -2746,7 +2746,7 @@ describe Project do
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
-    it 'updates the project succesfully' do
+    it 'updates the project successfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
@@ -3314,7 +3314,7 @@ describe Project do
       end
     end
 
-    context 'when explicitely enabled' do
+    context 'when explicitly enabled' do
       context 'when domain is empty' do
         before do
           create(:project_auto_devops, project: project, domain: nil)

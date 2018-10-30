@@ -40,7 +40,7 @@ describe('Pipelines stage component', () => {
     expect(component.$el.querySelector('button').getAttribute('data-toggle')).toEqual('dropdown');
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet('path.json').reply(200, stageReply);
     });

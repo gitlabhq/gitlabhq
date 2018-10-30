@@ -433,14 +433,14 @@ module QuickActions
       end
     end
 
-    desc 'Add or substract spent time'
+    desc 'Add or subtract spent time'
     explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
           value = time_spent
         else
-          verb = 'Substracts'
+          verb = 'Subtracts'
           value = -time_spent
         end
 

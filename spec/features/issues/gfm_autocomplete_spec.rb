@@ -15,7 +15,7 @@ describe 'GFM autocomplete', :js do
     wait_for_requests
   end
 
-  it 'updates issue descripton with GFM reference' do
+  it 'updates issue description with GFM reference' do
     find('.js-issuable-edit').click
 
     simulate_input('#issue-description', "@#{user.name[0...3]}")
