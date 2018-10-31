@@ -196,7 +196,6 @@ class IssuableFinder
     milestones? && params[:milestone_title] == Milestone::None.title
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def milestones
     return @milestones if defined?(@milestones)
 
@@ -217,7 +216,6 @@ class IssuableFinder
         Milestone.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def labels?
     params[:label_name].present?
@@ -227,7 +225,6 @@ class IssuableFinder
     labels? && params[:label_name].include?(Label::None.title)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def labels
     return @labels if defined?(@labels)
 
@@ -238,7 +235,6 @@ class IssuableFinder
         Label.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
     params[:assignee_id].present?

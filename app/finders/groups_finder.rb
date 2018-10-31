@@ -40,7 +40,6 @@ class GroupsFinder < UnionFinder
 
   attr_reader :current_user, :params
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def all_groups
     return [owned_groups] if params[:owned]
     return [groups_with_min_access_level] if min_access_level?
@@ -52,7 +51,6 @@ class GroupsFinder < UnionFinder
     groups << Group.none if groups.empty?
     groups
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def groups_for_ancestors
     current_user.authorized_groups
@@ -82,11 +80,9 @@ class GroupsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def owned_groups
     current_user&.owned_groups || Group.none
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def include_public_groups?
     current_user.nil? || all_available?
