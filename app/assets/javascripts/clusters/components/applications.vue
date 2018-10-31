@@ -383,7 +383,7 @@ export default {
         :status-reason="applications.knative.statusReason"
         :request-status="applications.knative.requestStatus"
         :request-reason="applications.knative.requestReason"
-        :install-application-request-params="{ hostname: applications.knative.domainname}"
+        :install-application-request-params="{ hostname: applications.knative.hostname}"
         :disabled="!helmInstalled"
         class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"
@@ -405,7 +405,7 @@ export default {
               </label>
               <input
                 id="knative-domainname"
-                v-model="applications.knative.domainname"
+                v-model="applications.knative.hostname"
                 type="text"
                 class="form-control js-domainname"
                 readonly
@@ -419,7 +419,7 @@ export default {
               </label>
               <input
                 id="knative-domainname"
-                v-model="applications.knative.domainname"
+                v-model="applications.knative.hostname"
                 type="text"
                 class="form-control js-domainname"
               />

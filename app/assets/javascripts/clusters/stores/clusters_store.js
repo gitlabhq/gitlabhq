@@ -1,5 +1,5 @@
 import { s__ } from '../../locale';
-import { INGRESS, JUPYTER } from '../constants';
+import { INGRESS, JUPYTER, KNATIVE } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -105,6 +105,8 @@ export default class ClusterStore {
           (this.state.applications.ingress.externalIp
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
+      } else if (appId === KNATIVE) {
+       this.state.applications.knative.hostname = serverAppEntry.hostname ? serverAppEntry.hostname : '';
       }
     });
   }

@@ -68,7 +68,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
-              knative: { title: 'Knative', domainname: '' },
+              knative: { title: 'Knative', hostname: '' },
             },
           });
 
