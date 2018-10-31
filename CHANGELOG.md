@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.9 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
+
+
 ## 11.3.8 (2018-10-27)
 
 - No changes.
