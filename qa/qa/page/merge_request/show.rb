@@ -55,32 +55,6 @@ module QA
           element :labels_block
         end
 
-        view 'app/views/projects/merge_requests/show.html.haml' do
-          element :notes_tab
-          element :diffs_tab
-        end
-
-        view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
-          element :diff_comment
-        end
-
-        view 'app/assets/javascripts/notes/components/comment_form.vue' do
-          element :note_dropdown
-          element :discussion_option
-        end
-
-        view 'app/assets/javascripts/notes/components/note_form.vue' do
-          element :reply_input
-        end
-
-        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
-          element :discussion_reply
-        end
-
-        view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
-          element :new_diff_line
-        end
-
         def fast_forward_possible?
           !has_text?('Fast-forward merge is not possible')
         end
@@ -186,7 +160,7 @@ module QA
         end
 
         def reply_to_discussion(reply_text)
-          all_elements(:discussion_reply).first.click
+          all_elements(:discussion_reply).last.click
           fill_element :reply_input, reply_text
         end
       end
