@@ -1,0 +1,5 @@
+---
+title: Update gitlab-ui dependency to 1.8.0-hotfix.1 to fix IE11 bug
+merge_request:
+author:
+type: fixed
