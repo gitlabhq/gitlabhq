@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import helmInstallIllustration from '@gitlab-org/gitlab-svgs/dist/illustrations/kubernetes-installation.svg';
+import helmInstallIllustration from '@gitlab/svgs/dist/illustrations/kubernetes-installation.svg';
 import elasticsearchLogo from 'images/cluster_app_logos/elasticsearch.png';
 import gitlabLogo from 'images/cluster_app_logos/gitlab.png';
 import helmLogo from 'images/cluster_app_logos/helm.png';
