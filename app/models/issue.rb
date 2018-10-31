@@ -241,7 +241,7 @@ class Issue < ActiveRecord::Base
           real_path: url_helper.project_issue_path(project, self),
           issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
           toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self),
-          valid_labels_endpoint: url_helper.project_labels_path(project, format: :json, include_ancestor_groups: true)
+          assignable_labels_endpoint: url_helper.project_labels_path(project, format: :json, include_ancestor_groups: true)
         )
       end
 
