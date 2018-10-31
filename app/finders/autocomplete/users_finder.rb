@@ -72,7 +72,6 @@ module Autocomplete
       author_id.present? && current_user
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_users
       if project
         project.authorized_users.union_with_user(author_id)
@@ -84,6 +83,5 @@ module Autocomplete
         User.none
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
