@@ -47,6 +47,21 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
       end
     end
 
+    context 'when passed a TLS address' do
+      it 'strips tls:// prefix before passing it to GRPC::Core::Channel initializer' do
+        address = 'localhost:9876'
+        prefixed_address = "tls://#{address}"
+
+        allow(Gitlab.config.repositories).to receive(:storages).and_return({
+          'default' => { 'gitaly_address' => prefixed_address }
+        })
+
+        expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
+
+        described_class.stub(:commit_service, 'default')
+      end
+    end
+
     context 'when passed a TCP address' do
       it 'strips tcp:// prefix before passing it to GRPC::Core::Channel initializer' do
         address = 'localhost:9876'
