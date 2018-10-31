@@ -53,10 +53,6 @@ module Gitlab
       base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
     end
 
-    def self.creds
-      Gitlab.config.gitaly.tls.credentials
-    end
-
     def self.stub(name, storage)
       MUTEX.synchronize do
         @stubs ||= {}
@@ -72,7 +68,7 @@ module Gitlab
 
     def self.stub_creds(storage)
       if URI(address(storage)).scheme == 'tls'
-        GRPC::Code::ChannelCredentials.new
+        GRPC::Core::ChannelCredentials.new
       else
         :this_channel_is_insecure
       end

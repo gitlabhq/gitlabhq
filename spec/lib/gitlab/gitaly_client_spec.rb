@@ -28,6 +28,24 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
     end
   end
 
+  describe '.stub_creds' do
+    it 'returns :this_channel_is_insecure if tcp' do
+      address = 'tcp://localhost:9876'
+      allow(Gitlab.config.repositories).to receive(:storages).and_return({
+        'default' => { 'gitaly_address' => address }
+      })
+      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+    end
+
+    it 'returns Credentials object if tls' do
+      address = 'tls://localhost:9876'
+      allow(Gitlab.config.repositories).to receive(:storages).and_return({
+        'default' => { 'gitaly_address' => address }
+      })
+      expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
+    end
+  end
+
   describe '.stub' do
     # Notice that this is referring to gRPC "stubs", not rspec stubs
     before do
