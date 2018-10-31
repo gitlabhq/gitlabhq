@@ -356,6 +356,7 @@ export default {
         :has-ci="mr.hasCI"
         :source-branch="mr.targetBranch"
         :source-branch-link="mr.targetBranch"
+        :troubleshooting-docs-path="mr.troubleshootingDocsPath"
       />
       <deployment
         v-for="postMergeDeployment in mr.postMergeDeployments"
