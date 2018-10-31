@@ -93,7 +93,9 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     # - File content from Web Editor (:content)
-    config.filter_parameters += [/token$/, /password/, /secret/]
+    #
+    # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here!
+    config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
