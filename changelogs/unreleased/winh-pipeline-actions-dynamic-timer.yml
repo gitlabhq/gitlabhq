@@ -1,0 +1,5 @@
+---
+title: Add dynamic timer for delayed jobs in pipelines list
+merge_request: 22621
+author:
+type: changed

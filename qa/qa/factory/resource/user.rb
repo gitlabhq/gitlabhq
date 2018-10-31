@@ -5,6 +5,7 @@ module QA
     module Resource
       class User < Factory::Base
         attr_reader :unique_id
+        attr_writer :username, :password
 
         def initialize
           @unique_id = SecureRandom.hex(8)
@@ -29,11 +30,6 @@ module QA
         def credentials_given?
           defined?(@username) && defined?(@password)
         end
-
-        attribute :name
-        attribute :username
-        attribute :email
-        attribute :password
 
         def fabricate!
           # Don't try to log-out if we're not logged-in

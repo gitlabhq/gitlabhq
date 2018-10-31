@@ -50,8 +50,7 @@ module QA
         end
 
         def fabricate!
-          push
-          user
+          populate(:push, :user)
 
           visit_project_with_retry
 

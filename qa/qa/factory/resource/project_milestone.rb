@@ -2,13 +2,12 @@ module QA
   module Factory
     module Resource
       class ProjectMilestone < Factory::Base
+        attr_reader :title
         attr_accessor :description
 
         attribute :project do
           Factory::Resource::Project.fabricate!
         end
-
-        attribute :title
 
         def title=(title)
           @title = "#{title}-#{SecureRandom.hex(4)}"

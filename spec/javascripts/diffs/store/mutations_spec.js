@@ -221,6 +221,7 @@ describe('DiffsStoreMutations', () => {
 
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
       expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].right.discussions).toEqual([]);
 
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
       expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);

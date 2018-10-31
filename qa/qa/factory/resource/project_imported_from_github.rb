@@ -4,13 +4,12 @@ module QA
   module Factory
     module Resource
       class ProjectImportedFromGithub < Resource::Project
+        attr_accessor :name
         attr_writer :personal_access_token, :github_repository_path
 
         attribute :group do
           Factory::Resource::Group.fabricate!
         end
-
-        attribute :name
 
         def fabricate!
           group.visit!

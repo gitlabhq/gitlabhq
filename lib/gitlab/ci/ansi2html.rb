@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ANSI color library
 #
 # Implementation per http://en.wikipedia.org/wiki/ANSI_escape_code
@@ -265,7 +267,7 @@ module Gitlab
         def reset_state
           @offset = 0
           @n_open_tags = 0
-          @out = ''
+          @out = +''
           reset
         end
 

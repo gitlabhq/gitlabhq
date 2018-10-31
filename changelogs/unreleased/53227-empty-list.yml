@@ -1,0 +1,6 @@
+---
+title: Only renders dropdown for review app changes when we have a list of files to
+  show. Otherwise will render the regular review app button
+merge_request:
+author:
+type: other
