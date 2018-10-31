@@ -1880,6 +1880,7 @@ describe Ci::Build do
         { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_NODE_TOTAL', value: '1', public: true },
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
@@ -2341,6 +2342,28 @@ describe Ci::Build do
       end
     end
 
+    context 'when build is parallelized' do
+      let(:total) { 5 }
+      let(:index) { 3 }
+
+      before do
+        build.options[:parallel] = total
+        build.name = "#{build.name} #{index}/#{total}"
+      end
+
+      it 'includes CI_NODE_INDEX' do
+        is_expected.to include(
+          { key: 'CI_NODE_INDEX', value: index.to_s, public: true }
+        )
+      end
+
+      it 'includes correct CI_NODE_TOTAL' do
+        is_expected.to include(
+          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true }
+        )
+      end
+    end
+
     describe 'variables ordering' do
       context 'when variables hierarchy is stubbed' do
         let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
@@ -2444,6 +2467,31 @@ describe Ci::Build do
         it 'should not include deploy token variables' do
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+        end
+      end
+    end
+
+    describe '#node_index' do
+      subject { build.send(:node_index) }
+      let(:index) { 4 }
+
+      context 'when build has only one index' do
+        before do
+          build.name = "#{build.name} #{index}/5"
+        end
+
+        it 'returns the index' do
+          expect(subject).to eq(index.to_s)
+        end
+      end
+
+      context 'when build has more than one one index' do
+        before do
+          build.name = "test_build 1/3 #{index}/5"
+        end
+
+        it 'returns the last index' do
+          expect(subject).to eq(index.to_s)
         end
       end
     end
