@@ -29,15 +29,7 @@ module Gitlab
           # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
-              @config = @config.map do |name, config|
-                total = config[:parallel]
-                if total
-                  Array.new(total) { { name => config } }
-                    .each_with_index { |build, idx| build["#{name} #{idx + 1}/#{total}".to_sym] = build.delete(name) }
-                else
-                  { name => config }
-                end
-              end.flatten.reduce(:merge)
+              @config = Ci::Config::Normalizer.normalize_jobs(@config)
 
               @config.each do |name, config|
                 node = hidden?(name) ? Entry::Hidden : Entry::Job
