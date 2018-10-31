@@ -9,7 +9,7 @@ class JobEntity < Grape::Entity
   expose :started?, as: :started
 
   expose :build_path do |build|
-    build.target_url || path_to(:namespace_project_job, build)
+    build_path(build)
   end
 
   expose :retry_path, if: -> (*) { retryable? } do |build|
@@ -17,7 +17,11 @@ class JobEntity < Grape::Entity
   end
 
   expose :cancel_path, if: -> (*) { cancelable? } do |build|
-    path_to(:cancel_namespace_project_job, build)
+    path_to(
+      :cancel_namespace_project_job,
+      build,
+      { continue: { to: build_path(build) } }
+    )
   end
 
   expose :play_path, if: -> (*) { playable? } do |build|
@@ -60,8 +64,12 @@ class JobEntity < Grape::Entity
     build.detailed_status(request.current_user)
   end
 
-  def path_to(route, build)
-    send("#{route}_path", build.project.namespace, build.project, build) # rubocop:disable GitlabSecurity/PublicSend
+  def path_to(route, build, params = {})
+    send("#{route}_path", build.project.namespace, build.project, build, params) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def build_path(build)
+    build.target_url || path_to(:namespace_project_job, build)
   end
 
   def failed?
