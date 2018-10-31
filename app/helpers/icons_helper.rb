@@ -153,6 +153,6 @@ module IconsHelper
   private
 
   def known_sprites
-    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab-org/gitlab-svgs/dist/icons.json')))['icons']
+    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
   end
 end
