@@ -12,8 +12,6 @@ module QA
                       :milestone,
                       :labels
 
-        attribute :source_branch
-
         attribute :project do
           Factory::Resource::Project.fabricate! do |resource|
             resource.name = 'project-with-merge-request'
@@ -52,8 +50,8 @@ module QA
         end
 
         def fabricate!
-          target
-          source
+          populate(:target, :source)
+
           project.visit!
           Page::Project::Show.perform(&:new_merge_request)
           Page::MergeRequest::New.perform do |page|

@@ -9,7 +9,6 @@ module QA
         attr_reader :path
 
         attribute :id
-        attribute :path
 
         def initialize
           @path = Runtime::Namespace.sandbox_name

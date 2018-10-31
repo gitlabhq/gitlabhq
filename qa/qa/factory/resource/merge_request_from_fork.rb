@@ -18,8 +18,10 @@ module QA
         end
 
         def fabricate!
-          push
+          populate(:push)
+
           fork.visit!
+
           Page::Project::Show.perform(&:new_merge_request)
           Page::MergeRequest::New.perform(&:create_merge_request)
         end
