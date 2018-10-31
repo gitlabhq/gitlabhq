@@ -2,6 +2,7 @@
 
 class Clusters::BaseController < ApplicationController
   include RoutableActions
+  include ProjectUnauthorized
 
   skip_before_action :authenticate_user!
   before_action :require_project_id
@@ -21,7 +22,7 @@ class Clusters::BaseController < ApplicationController
   end
 
   def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]))
+    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), not_found_or_authorized_proc: project_unauthorized_proc)
   end
 
   def repository
