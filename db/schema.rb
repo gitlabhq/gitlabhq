@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.integer "diff_max_patch_bytes", default: 102400, null: false
     t.integer "archive_builds_in_seconds"
     t.string "commit_email_hostname"
+    t.boolean "protected_ci_variables", default: false, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 

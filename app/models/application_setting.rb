@@ -302,7 +302,8 @@ class ApplicationSetting < ActiveRecord::Base
       user_show_add_ssh_key_message: true,
       usage_stats_set_by_user_id: nil,
       diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-      commit_email_hostname: default_commit_email_hostname
+      commit_email_hostname: default_commit_email_hostname,
+      protected_ci_variables: false
     }
   end
 

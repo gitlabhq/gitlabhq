@@ -63,6 +63,44 @@ shared_examples 'variable list' do
     end
   end
 
+  context 'defaults to the application setting' do
+    context 'application setting is true' do
+      before do
+        stub_application_setting(protected_ci_variables: true)
+      end
+
+      it 'defaults to protected' do
+        visit page_path
+
+        page.within('.js-ci-variable-list-section .js-row:last-child') do
+          find('.js-ci-variable-input-key').set('key')
+        end
+
+        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
+
+        expect(values).to eq %w(false true true)
+      end
+    end
+
+    context 'application setting is false' do
+      before do
+        stub_application_setting(protected_ci_variables: false)
+      end
+
+      it 'defaults to unprotected' do
+        visit page_path
+
+        page.within('.js-ci-variable-list-section .js-row:last-child') do
+          find('.js-ci-variable-input-key').set('key')
+        end
+
+        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
+
+        expect(values).to eq %w(false false false)
+      end
+    end
+  end
+
   it 'reveals and hides variables' do
     page.within('.js-ci-variable-list-section') do
       expect(first('.js-ci-variable-input-key').value).to eq(variable.key)

@@ -414,7 +414,13 @@ msgstr ""
 msgid "AdminProjects|Delete project"
 msgstr ""
 
+msgid "AdminSettings|Environment variables are protected by default"
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
 
 msgid "AdminUsers|Block user"
