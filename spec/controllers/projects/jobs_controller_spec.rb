@@ -152,7 +152,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
-          expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
+          expect(json_response['merge_request']['path']).to match(%r{merge_requests/\d+\z})
           expect(json_response['new_issue_path']).to include('/issues/new')
         end
       end
