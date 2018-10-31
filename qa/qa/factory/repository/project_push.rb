@@ -9,8 +9,6 @@ module QA
           end
         end
 
-        attribute :output
-
         def initialize
           @file_name = 'file.txt'
           @file_content = '# This is test project'
