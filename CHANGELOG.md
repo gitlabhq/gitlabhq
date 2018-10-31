@@ -569,6 +569,13 @@ entry.
 - Creates Vue component for artifacts block on job page.
 
 
+## 11.2.8 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
+
+
 ## 11.2.7 (2018-10-27)
 
 - No changes.
