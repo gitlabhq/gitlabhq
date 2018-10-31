@@ -64,6 +64,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Proofreaders needed.
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
+  - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [Crowdin](https://crowdin.com/profile/villaincandle)
 - Portuguese
   - Proofreaders needed.
 - Portuguese, Brazilian
