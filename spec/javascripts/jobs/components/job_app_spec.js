@@ -234,7 +234,7 @@ describe('Job App ', () => {
             );
             done();
           }, 0);
-        })
+        });
       });
 
       it('does not renders stuck block when there are no runners', done => {

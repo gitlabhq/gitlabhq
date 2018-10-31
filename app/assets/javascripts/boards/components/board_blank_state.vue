@@ -32,18 +32,18 @@ export default {
       boardsStore.state.lists = _.sortBy(boardsStore.state.lists, 'position');
 
       // Save the labels
-      gl.boardService.generateDefaultLists()
+      gl.boardService
+        .generateDefaultLists()
         .then(res => res.data)
-        .then((data) => {
-          data.forEach((listObj) => {
+        .then(data => {
+          data.forEach(listObj => {
             const list = boardsStore.findList('title', listObj.title);
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
-            list.getIssues()
-              .catch(() => {
-                // TODO: handle request error
-              });
+            list.getIssues().catch(() => {
+              // TODO: handle request error
+            });
           });
         })
         .catch(() => {
@@ -57,7 +57,6 @@ export default {
     clearBlankState: boardsStore.removeBlankState.bind(boardsStore),
   },
 };
-
 </script>
 
 <template>

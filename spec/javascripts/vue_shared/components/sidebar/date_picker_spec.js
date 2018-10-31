@@ -41,7 +41,7 @@ describe('sidebarDatePicker', () => {
     expect(vm.$el.querySelector('.value-content span').innerText.trim()).toEqual('None');
   });
 
-  it('should render date-picker when editing', (done) => {
+  it('should render date-picker when editing', done => {
     vm.editing = true;
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.pika-label')).toBeDefined();
@@ -50,7 +50,7 @@ describe('sidebarDatePicker', () => {
   });
 
   describe('editable', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.editable = true;
       Vue.nextTick(done);
     });
@@ -59,7 +59,7 @@ describe('sidebarDatePicker', () => {
       expect(vm.$el.querySelector('.title .btn-blank').innerText.trim()).toEqual('Edit');
     });
 
-    it('should enable editing when edit button is clicked', (done) => {
+    it('should enable editing when edit button is clicked', done => {
       vm.isLoading = false;
       Vue.nextTick(() => {
         vm.$el.querySelector('.title .btn-blank').click();
@@ -70,7 +70,7 @@ describe('sidebarDatePicker', () => {
     });
   });
 
-  it('should render date if selectedDate', (done) => {
+  it('should render date if selectedDate', done => {
     vm.selectedDate = new Date('07/07/2017');
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jul 7, 2017');
@@ -79,7 +79,7 @@ describe('sidebarDatePicker', () => {
   });
 
   describe('selectedDate and editable', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.selectedDate = new Date('07/07/2017');
       vm.editable = true;
       Vue.nextTick(done);
@@ -100,7 +100,7 @@ describe('sidebarDatePicker', () => {
   });
 
   describe('showToggleSidebar', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.showToggleSidebar = true;
       Vue.nextTick(done);
     });

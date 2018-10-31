@@ -20,7 +20,7 @@ export default {
   computed: {
     contents() {
       const obj = {
-        title: 'You haven\'t added any issues to your project yet',
+        title: "You haven't added any issues to your project yet",
         content: `
           An issue can be a bug, a todo or a feature request that needs to be
           discussed in a project. Besides, issues are searchable and filterable.
@@ -28,7 +28,7 @@ export default {
       };
 
       if (this.activeTab === 'selected') {
-        obj.title = 'You haven\'t selected any issues yet';
+        obj.title = "You haven't selected any issues yet";
         obj.content = `
           Go back to <strong>Open issues</strong> and select some issues
           to add to your board.

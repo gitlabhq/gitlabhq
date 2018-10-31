@@ -63,10 +63,15 @@ export default {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
     },
     errorText() {
-      return sprintf(__('Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}'), {
-        linkStart: `<a href="${this.troubleshootingDocsPath}">`,
-        linkEnd: '</a>',
-      });
+      return sprintf(
+        __(
+          'Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}',
+        ),
+        {
+          linkStart: `<a href="${this.troubleshootingDocsPath}">`,
+          linkEnd: '</a>',
+        },
+      );
     },
   },
 };
