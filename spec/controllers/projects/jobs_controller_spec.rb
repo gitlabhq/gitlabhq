@@ -157,6 +157,28 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'when job is running' do
+        context 'job is cancelable' do
+          let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+          it 'cancel_path is present with correct redirect' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['cancel_path']).to include(CGI.escape(json_response['build_path']))
+          end
+        end
+
+        context 'with web terminal' do
+          let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+
+          it 'exposes the terminal path' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['terminal_path']).to match(%r{/terminal})
+          end
+        end
+      end
+
       context 'when job has artifacts' do
         context 'with not expiry date' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
@@ -182,16 +204,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
             expect(json_response['artifact']['expired']).to eq(true)
             expect(json_response['artifact']['expire_at']).not_to be_empty
           end
-        end
-      end
-
-      context 'when job has terminal' do
-        let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
-
-        it 'exposes the terminal path' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('job/job_details')
-          expect(json_response['terminal_path']).to match(%r{/terminal})
         end
       end
 
