@@ -82,6 +82,8 @@ Rails.application.routes.draw do
 
     draw :operations
     draw :instance_statistics
+
+    get '/chaos/sleep' => 'chaos#sleep'
   end
 
   draw :api
