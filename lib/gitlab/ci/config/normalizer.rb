@@ -10,8 +10,8 @@ module Gitlab
               if config[:parallel]
                 total = config[:parallel]
                 names = parallelize_job_names(name, total)
-                parallelized_jobs[name] = names
-                Hash[names.collect { |job_name| [job_name.to_sym, config.merge(name: job_name)] }]
+                parallelized_jobs[name] = names.map(&:first)
+                Hash[names.collect { |job_name, index| [job_name.to_sym, config.merge(name: job_name, instance: index)] }]
               else
                 { name => config }
               end
@@ -39,7 +39,7 @@ module Gitlab
             jobs = []
 
             total.times do |idx|
-              jobs << "#{name} #{idx + 1}/#{total}"
+              jobs << ["#{name} #{idx + 1}/#{total}", idx + 1]
             end
 
             jobs

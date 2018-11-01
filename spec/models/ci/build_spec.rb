@@ -2348,6 +2348,7 @@ describe Ci::Build do
 
       before do
         build.options[:parallel] = total
+        build.options[:instance] = index
         build.name = "#{build.name} #{index}/#{total}"
       end
 
@@ -2467,31 +2468,6 @@ describe Ci::Build do
         it 'should not include deploy token variables' do
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
-        end
-      end
-    end
-
-    describe '#node_index' do
-      subject { build.send(:node_index) }
-      let(:index) { 4 }
-
-      context 'when build has only one index' do
-        before do
-          build.name = "#{build.name} #{index}/5"
-        end
-
-        it 'returns the index' do
-          expect(subject).to eq(index.to_s)
-        end
-      end
-
-      context 'when build has more than one one index' do
-        before do
-          build.name = "test_build 1/3 #{index}/5"
-        end
-
-        it 'returns the last index' do
-          expect(subject).to eq(index.to_s)
         end
       end
     end

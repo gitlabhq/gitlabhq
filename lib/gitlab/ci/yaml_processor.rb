@@ -51,6 +51,7 @@ module Gitlab
             environment: job[:environment],
             retry: job[:retry],
             parallel: job[:parallel],
+            instance: job[:instance],
             start_in: job[:start_in]
           }.compact }
       end

@@ -657,9 +657,17 @@ module Gitlab
           it 'returns parallelized jobs' do
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
             builds = config_processor.stage_builds_attributes('test')
+            build_options = builds.map { |build| build[:options] }
 
             expect(builds.size).to eq(5)
-            expect(builds.map { |build| build[:options] }).to all(include(parallel: parallel))
+            expect(build_options).to all(include(:instance, parallel: parallel))
+          end
+
+          it 'does not have the original job' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+
+            expect(builds).not_to include(:rspec)
           end
         end
       end
