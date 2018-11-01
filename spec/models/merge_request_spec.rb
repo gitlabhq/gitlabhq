@@ -13,6 +13,20 @@ describe MergeRequest do
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs) }
+
+    context 'for forks' do
+      let!(:project) { create(:project) }
+      let!(:fork) { fork_project(project) }
+      let!(:merge_request) { create(:merge_request, target_project: project, source_project: fork) }
+
+      it 'does not load another project due to inverse relationship' do
+        expect(project.merge_requests.first.target_project.object_id).to eq(project.object_id)
+      end
+
+      it 'finds the associated merge request' do
+        expect(project.merge_requests.find(merge_request.id)).to eq(merge_request)
+      end
+    end
   end
 
   describe '#squash_in_progress?' do
