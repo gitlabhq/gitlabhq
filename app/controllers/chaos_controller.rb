@@ -13,10 +13,8 @@ class ChaosController < ActionController::Base
 
   def cpuspin
     duration_s = params[:duration_s] ? params[:duration_s].to_i : 30
-    end_time = Time.now + duration_s.seconds;
-    while Time.now < end_time
-      10_000.times { }
-    end
+    end_time = Time.now + duration_s.seconds
+    10_000.times { } while Time.now < end_time
 
     render text: "OK", content_type: 'text/plain'
   end
@@ -41,5 +39,4 @@ class ChaosController < ActionController::Base
       render text: "To experience chaos, please set X-Chaos-Secret header", content_type: 'text/plain', status: 401
     end
   end
-
 end

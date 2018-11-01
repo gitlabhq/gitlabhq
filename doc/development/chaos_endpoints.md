@@ -41,7 +41,7 @@ To simulate a memory leak in your application, use the `/-/chaos/leakmem` endpoi
 For example, if your GitLab instance is listening at `localhost:3000`, you could `curl` the endpoint as follows:
 
 ```shell
-curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024 -H 'X-Chaos-Secret: secret'
+curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024 --header 'X-Chaos-Secret: secret'
 ```
 
 The `memory_mb` parameter tells the application how much memory it should leak.
@@ -53,7 +53,7 @@ Note: the memory is not retained after the request, so once its completed, the R
 This endpoint attempts to fully utilise a single core, at 100%, for the given period.
 
 ```shell
-curl http://localhost:3000/-/chaos/cpuspin?duration_s=60 -H 'X-Chaos-Secret: secret'
+curl http://localhost:3000/-/chaos/cpuspin?duration_s=60 --header 'X-Chaos-Secret: secret'
 ```
 
 The `duration_s` parameter will configure how long the core is utilised.
@@ -65,7 +65,7 @@ Depending on your rack server setup, your request may timeout after a predermine
 This endpoint is similar to the CPU Spin endpoint but simulates off-processor activity, such backend services of IO. It will sleep for a given duration.
 
 ```shell
-curl http://localhost:3000/-/chaos/sleep?duration_s=60 -H 'X-Chaos-Secret: secret'
+curl http://localhost:3000/-/chaos/sleep?duration_s=60 --header 'X-Chaos-Secret: secret'
 ```
 
 The `duration_s` parameter will configure how long the request will sleep for.
@@ -77,7 +77,7 @@ As with the CPU Spin endpoint, this may lead to your request timing out if durat
 This endpoint will simulate the unexpected death of a worker process using a `kill` signal.
 
 ```shell
-curl http://localhost:3000/-/chaos/kill -H 'X-Chaos-Secret: secret'
+curl http://localhost:3000/-/chaos/kill --header 'X-Chaos-Secret: secret'
 ```
 
 Note: since this endpoint uses the `KILL` signal, the worker is not given a chance to cleanup or shutdown.
