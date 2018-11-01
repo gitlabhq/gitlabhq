@@ -173,6 +173,16 @@ module SearchHelper
     opts
   end
 
+  def search_history_storage_prefix
+    if @project.present?
+      @project.full_path
+    elsif @group.present?
+      @group.full_path
+    else
+      root_dashboard_path
+    end
+  end
+
   # Sanitize a HTML field for search display. Most tags are stripped out and the
   # maximum length is set to 200 characters.
   def search_md_sanitize(object, field)

@@ -1,7 +1,6 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
-- full_path = if @project.present? then @project.full_path elsif @group.present? then @group.full_path else request.path end
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 - show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 
@@ -10,7 +9,7 @@
     - if type == :boards
       #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
         = render_if_exists "shared/boards/switcher", board: board
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+    = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
       - if @can_bulk_update
@@ -25,7 +24,7 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
+              .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
