@@ -41,6 +41,7 @@ GitLab provides built-in tools to aid the process of improving performance:
 * [GitLab Performance Monitoring](../administration/monitoring/performance/index.md)
 * [Request Profiling](../administration/monitoring/performance/request_profiling.md)
 * [QueryRecoder](query_recorder.md) for preventing `N+1` regressions
+* [Chaos Endpoints](chaos_endpoints.md) less for performance, more for availability: tools for testing failure scenarios
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
 <https://dashboards.gitlab.net>, this requires you to log in using your
