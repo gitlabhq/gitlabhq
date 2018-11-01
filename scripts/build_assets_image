@@ -15,7 +15,7 @@ ASSETS_IMAGE_PATH=${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}
 mkdir -p assets_container.build/public
 cp -r public/assets assets_container.build/public/
 cp Dockerfile.assets assets_container.build/
-docker build -t ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME} -f assets_container.build/Dockerfile.assets assets_container.build/
+docker build -t ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG} -f assets_container.build/Dockerfile.assets assets_container.build/
 docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
 docker push ${ASSETS_IMAGE_PATH}
 
