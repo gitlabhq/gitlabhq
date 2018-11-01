@@ -38,7 +38,7 @@ module MergeRequests
       # reloading the diff.
       MergeRequestDiff
         .where(merge_request: merge_request)
-        .preload(:merge_request_diff_files, merge_request: :target_project)
+        .preload(merge_request: :target_project)
         .find_each do |merge_request_diff|
         next if merge_request_diff == new_diff
 
