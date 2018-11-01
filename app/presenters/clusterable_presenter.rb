@@ -27,4 +27,24 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
   def clusterable_params
     raise NotImplementedError
   end
+
+  def create_user_clusters_path
+    raise NotImplementedError
+  end
+
+  def create_gcp_clusters_path
+    raise NotImplementedError
+  end
+
+  def cluster_status_cluster_path(cluster, params = {})
+    raise NotImplementedError
+  end
+
+  def install_applications_cluster_path(cluster, application)
+    raise NotImplementedError
+  end
+
+  def cluster_path(cluster, params = {})
+    raise NotImplementedError
+  end
 end

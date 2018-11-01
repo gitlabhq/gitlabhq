@@ -7,6 +7,7 @@ describe ProjectClusterablePresenter do
 
   let(:presenter) { described_class.new(project) }
   let(:project) { create(:project) }
+  let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
   describe '#can_create_cluster?' do
     let(:user) { create(:user) }
@@ -40,6 +41,38 @@ describe ProjectClusterablePresenter do
     subject { presenter.new_path }
 
     it { is_expected.to eq(new_project_cluster_path(project)) }
+  end
+
+  describe '#create_user_clusters_path' do
+    subject { presenter.create_user_clusters_path }
+
+    it { is_expected.to eq(create_user_project_clusters_path(project)) }
+  end
+
+  describe '#create_gcp_clusters_path' do
+    subject { presenter.create_gcp_clusters_path }
+
+    it { is_expected.to eq(create_gcp_project_clusters_path(project)) }
+  end
+
+  describe '#cluster_status_cluster_path' do
+    subject { presenter.cluster_status_cluster_path(cluster) }
+
+    it { is_expected.to eq(cluster_status_project_cluster_path(project, cluster)) }
+  end
+
+  describe '#install_applications_cluster_path' do
+    let(:application) { :helm }
+
+    subject { presenter.install_applications_cluster_path(cluster, application) }
+
+    it { is_expected.to eq(install_applications_project_cluster_path(project, cluster, application)) }
+  end
+
+  describe '#cluster_path' do
+    subject { presenter.cluster_path(cluster) }
+
+    it { is_expected.to eq(project_cluster_path(project, cluster)) }
   end
 
   describe '#clusterable_params' do
