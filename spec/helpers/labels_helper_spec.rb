@@ -226,7 +226,7 @@ describe LabelsHelper do
       expect(helper.labels_filter_path).to eq(group_labels_path(group))
     end
 
-    it 'links to the group labels page' do
+    it 'links to the project labels page' do
       assign(:project, project)
 
       expect(helper.labels_filter_path).to eq(project_labels_path(project))
