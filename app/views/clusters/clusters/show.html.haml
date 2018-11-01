@@ -6,13 +6,13 @@
 
 - expanded = Rails.env.test?
 
-- status_path = status_cluster_path(@cluster.id, clusterable.clusterable_params.merge(format: :json)) if can?(current_user, :admin_cluster, @cluster)
+- status_path = clusterable.cluster_status_cluster_path(@cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: install_applications_cluster_path(@cluster, :helm, clusterable.clusterable_params),
-  install_ingress_path: install_applications_cluster_path(@cluster, :ingress, clusterable.clusterable_params),
-  install_prometheus_path: install_applications_cluster_path(@cluster, :prometheus, clusterable.clusterable_params),
-  install_runner_path: install_applications_cluster_path(@cluster, :runner, clusterable.clusterable_params),
-  install_jupyter_path: install_applications_cluster_path(@cluster, :jupyter, clusterable.clusterable_params),
+  install_helm_path: clusterable.install_applications_cluster_path(@cluster, :helm),
+  install_ingress_path: clusterable.install_applications_cluster_path(@cluster, :ingress),
+  install_prometheus_path: clusterable.install_applications_cluster_path(@cluster, :prometheus),
+  install_runner_path: clusterable.install_applications_cluster_path(@cluster, :runner),
+  install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
@@ -39,9 +39,9 @@
       %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
       - if @cluster.managed?
-        = render 'clusters/gcp/show'
+        = render 'clusters/clusters/gcp/show'
       - else
-        = render 'clusters/user/show'
+        = render 'clusters/clusters/user/show'
 
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header

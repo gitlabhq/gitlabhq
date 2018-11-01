@@ -1,4 +1,4 @@
-= form_for @user_cluster, url: create_user_clusters_path, as: :cluster do |field|
+= form_for @user_cluster, url: clusterable.create_user_clusters_path, as: :cluster do |field|
   = form_errors(@user_cluster)
   = hidden_clusterable_fields
   .form-group

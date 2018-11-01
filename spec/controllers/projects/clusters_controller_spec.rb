@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClustersController do
+describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
@@ -320,11 +320,11 @@ describe ClustersController do
     end
   end
 
-  describe 'GET status' do
+  describe 'GET cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
     def go
-      get :status,
+      get :cluster_status,
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
         id: cluster,

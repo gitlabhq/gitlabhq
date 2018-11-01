@@ -16,7 +16,7 @@
         class: "#{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
         "aria-label": s_("ClusterIntegration|Toggle Kubernetes Cluster"),
         disabled: !cluster.can_toggle_cluster?,
-        data: { endpoint: cluster_path(cluster, clusterable.clusterable_params.merge(format: :json)) } }
+        data: { endpoint: clusterable.cluster_path(cluster, format: :json) } }
         %input.js-project-feature-toggle-input{ type: "hidden", value: cluster.enabled? }
         = icon("spinner spin", class: "loading-icon")
         %span.toggle-icon

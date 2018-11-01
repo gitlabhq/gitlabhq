@@ -74,21 +74,6 @@ Rails.application.routes.draw do
       resources :issues, module: :boards, only: [:index, :update]
     end
 
-    resources :clusters, only: [:update, :destroy] do
-      collection do
-        post :create_user
-        post :create_gcp
-      end
-
-      member do
-        scope :applications do
-          post '/:application', to: 'clusters/applications#create', as: :install_applications
-        end
-
-        get :status, format: :json
-      end
-    end
-
     # UserCallouts
     resources :user_callouts, only: [:create]
 
@@ -100,7 +85,20 @@ Rails.application.routes.draw do
   end
 
   concern :clusterable do
-    resources :clusters, only: [:index, :new, :show], controller: '/clusters'
+    resources :clusters, only: [:index, :new, :show, :update, :destroy] do
+      collection do
+        post :create_user
+        post :create_gcp
+      end
+
+      member do
+        scope :applications do
+          post '/:application', to: 'clusters/applications#create', as: :install_applications
+        end
+
+        get :cluster_status, format: :json
+      end
+    end
   end
 
   draw :api

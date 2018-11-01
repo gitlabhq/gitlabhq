@@ -9,7 +9,7 @@ describe 'User Cluster', :js do
   before do
     project.add_maintainer(user)
     gitlab_sign_in(user)
-    allow(ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
 
   context 'when user does not have a cluster and visits cluster index page' do

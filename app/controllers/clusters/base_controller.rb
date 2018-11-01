@@ -2,31 +2,25 @@
 
 class Clusters::BaseController < ApplicationController
   include RoutableActions
-  include ProjectUnauthorized
 
   skip_before_action :authenticate_user!
-  before_action :require_project_id
-  before_action :project, if: :project_type?
-  before_action :repository, if: :project_type?
   before_action :authorize_read_cluster!
-
-  layout :determine_layout
 
   helper_method :clusterable
 
   private
 
-  # We can extend to `#group_type?` in the future
-  def require_project_id
-    not_found unless project_type?
+  def cluster
+    @cluster ||= clusterable.clusters.find(params[:id])
+                                 .present(current_user: current_user)
   end
 
-  def project
-    @project ||= find_routable!(Project, File.join(params[:namespace_id], params[:project_id]), not_found_or_authorized_proc: project_unauthorized_proc)
+  def authorize_update_cluster!
+    access_denied! unless can?(current_user, :update_cluster, cluster)
   end
 
-  def repository
-    @repository ||= project.repository
+  def authorize_admin_cluster!
+    access_denied! unless can?(current_user, :admin_cluster, cluster)
   end
 
   def authorize_read_cluster!
@@ -37,17 +31,7 @@ class Clusters::BaseController < ApplicationController
     access_denied! unless can?(current_user, :create_cluster, clusterable)
   end
 
-  def determine_layout
-    if project_type?
-      'project'
-    end
-  end
-
   def clusterable
-    @clusterable ||= ClusterablePresenter.fabricate(project, current_user: current_user)
-  end
-
-  def project_type?
-    params[:project_id].present?
+    raise NotImplementedError
   end
 end

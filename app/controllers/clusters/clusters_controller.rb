@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class ClustersController < Clusters::BaseController
+class Clusters::ClustersController < Clusters::BaseController
+  include RoutableActions
+
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :generate_gcp_authorize_url, only: [:new]
   before_action :validate_gcp_token, only: [:new]
@@ -9,7 +11,7 @@ class ClustersController < Clusters::BaseController
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
-  before_action :update_applications_status, only: [:status]
+  before_action :update_applications_status, only: [:cluster_status]
 
   helper_method :token_in_session
 
@@ -23,7 +25,8 @@ class ClustersController < Clusters::BaseController
   def new
   end
 
-  def status
+  # Overridding ActionController::Metal#status is NOT a good idea
+  def cluster_status
     respond_to do |format|
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
@@ -106,11 +109,6 @@ class ClustersController < Clusters::BaseController
   end
 
   private
-
-  def cluster
-    @cluster ||= clusterable.clusters.find(params[:id])
-                                 .present(current_user: current_user)
-  end
 
   def update_params
     if cluster.managed?
@@ -212,14 +210,6 @@ class ClustersController < Clusters::BaseController
     GoogleApi::CloudPlatform::Client.new_session_key_for_redirect_uri do |key|
       session[key] = uri
     end
-  end
-
-  def authorize_update_cluster!
-    access_denied! unless can?(current_user, :update_cluster, cluster)
-  end
-
-  def authorize_admin_cluster!
-    access_denied! unless can?(current_user, :admin_cluster, cluster)
   end
 
   def update_applications_status

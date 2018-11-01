@@ -11,7 +11,7 @@ module ClustersHelper
     return unless show_gcp_signup_offer?
 
     content_tag :section, class: 'no-animate expanded' do
-      render 'clusters/gcp_signup_offer_banner'
+      render 'clusters/clusters/gcp_signup_offer_banner'
     end
   end
 

@@ -12,7 +12,7 @@
 
 %p= link_to('Select a different Google account', @authorize_url)
 
-= form_for @gcp_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: token_in_session } }, url: create_gcp_clusters_path, as: :cluster do |field|
+= form_for @gcp_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: token_in_session } }, url: clusterable.create_gcp_clusters_path, as: :cluster do |field|
   = form_errors(@gcp_cluster)
   = hidden_clusterable_fields
   .form-group
