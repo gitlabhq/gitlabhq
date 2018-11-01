@@ -8,7 +8,6 @@
 
 = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster do |field|
   = form_errors(@cluster)
-  = hidden_clusterable_fields
 
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group

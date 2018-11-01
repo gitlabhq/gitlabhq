@@ -14,10 +14,4 @@ module ClustersHelper
       render 'clusters/clusters/gcp_signup_offer_banner'
     end
   end
-
-  def hidden_clusterable_fields
-    clusterable.clusterable_params.map do |key, value|
-      hidden_field_tag(key, value)
-    end.reduce(&:safe_concat)
-  end
 end

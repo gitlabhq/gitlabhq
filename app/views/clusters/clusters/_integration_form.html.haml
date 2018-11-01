@@ -1,6 +1,5 @@
 = form_for @cluster, url: clusterable.cluster_path(@cluster), as: :cluster do |field|
   = form_errors(@cluster)
-  = hidden_clusterable_fields
   .form-group
     %h5= s_('ClusterIntegration|Integration status')
     %label.append-bottom-0.js-cluster-enable-toggle-area

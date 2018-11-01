@@ -74,10 +74,4 @@ describe ProjectClusterablePresenter do
 
     it { is_expected.to eq(project_cluster_path(project, cluster)) }
   end
-
-  describe '#clusterable_params' do
-    subject { presenter.clusterable_params }
-
-    it { is_expected.to eq({ project_id: project.to_param, namespace_id: project.namespace.to_param }) }
-  end
 end
