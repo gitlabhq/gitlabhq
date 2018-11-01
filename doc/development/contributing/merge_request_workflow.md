@@ -171,7 +171,7 @@ the feature you contribute through all of these steps.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/support etc.)
-1. [Black-box tests or end-to-end tests][e2e-tests] added if required. Please contact [the dev stage quality team][dev-stage-quality-team] with any questions  
+1. [Black-box tests/end-to-end tests][e2e-tests] added if required. Please contact [the quality team][quality-team] with any questions  
 
 If you add a dependency in GitLab (such as an operating system package) please
 consider updating the following and note the applicability of each in your
@@ -188,7 +188,7 @@ merge request:
 [definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
 [testing]: ../testing_guide/index.md
 [e2e-tests]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/testing_guide/testing_levels.md#black-box-tests-or-end-to-end-tests 
-[dev-stage-quality-team]: https://about.gitlab.com/handbook/engineering/quality/dev-stage-team 
+[quality-team]: https://about.gitlab.com/handbook/engineering/quality/#teams 
 
 ---
 
