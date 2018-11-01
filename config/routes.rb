@@ -83,7 +83,10 @@ Rails.application.routes.draw do
     draw :operations
     draw :instance_statistics
 
+    get '/chaos/leakmem' => 'chaos#leakmem'
+    get '/chaos/cpuspin' => 'chaos#cpuspin'
     get '/chaos/sleep' => 'chaos#sleep'
+    get '/chaos/kill' => 'chaos#kill'
   end
 
   draw :api
