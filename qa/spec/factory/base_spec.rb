@@ -81,8 +81,8 @@ describe QA::Factory::Base do
       stub_env('QA_DEBUG', 'true')
       expect(factory).to receive(:fabricate_via_api!).and_return(location)
 
-      expect { subject.fabricate_via_api!(factory: factory, parents: []) }
-        .to output(/==> Built a MyFactory via api with args \[\] in [\d\w\.\-]+/)
+      expect { subject.fabricate_via_api!('something', factory: factory, parents: []) }
+        .to output(/==> Built a MyFactory via api in [\d\.\-e]+ seconds+/)
         .to_stdout
     end
   end
@@ -108,7 +108,7 @@ describe QA::Factory::Base do
       stub_env('QA_DEBUG', 'true')
 
       expect { subject.fabricate_via_browser_ui!('something', factory: factory, parents: []) }
-        .to output(/==> Built a MyFactory via browser_ui with args \["something"\] in [\d\w\.\-]+/)
+        .to output(/==> Built a MyFactory via browser_ui in [\d\.\-e]+ seconds+/)
         .to_stdout
     end
   end

@@ -100,7 +100,7 @@ module QA
         msg = [prefix]
         msg << "Built a #{name}"
         msg << "as a dependency of #{parents.last}" if parents.any?
-        msg << "via #{method} with args #{args}"
+        msg << "via #{method}"
 
         yield.tap do
           msg << "in #{Time.now - start} seconds"
