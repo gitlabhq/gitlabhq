@@ -1,0 +1,5 @@
+---
+title: Add option to make ci variables protected by default
+merge_request: 22744
+author: Alexis Reigel
+type: added
