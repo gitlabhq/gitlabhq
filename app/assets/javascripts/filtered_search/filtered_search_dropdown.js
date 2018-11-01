@@ -85,7 +85,7 @@ export default class FilteredSearchDropdown {
   }
 
   dispatchInputEvent() {
-    // Propogate input change to FilteredSearchDropdownManager
+    // Propagate input change to FilteredSearchDropdownManager
     // so that it can determine which dropdowns to open
     this.input.dispatchEvent(
       new CustomEvent('input', {

@@ -786,7 +786,7 @@ describe Projects::MergeRequestsController do
             merge_request.mark_as_merged!
           end
 
-          it 'returns the enviroment on the source project' do
+          it 'returns the environment on the source project' do
             get_ci_environments_status(environment_target: 'merge_commit')
 
             expect(response).to have_gitlab_http_status(:ok)

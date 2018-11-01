@@ -30,7 +30,7 @@ describe('Environments Folder View', () => {
     component.$destroy();
   });
 
-  describe('successfull request', () => {
+  describe('successful request', () => {
     beforeEach(() => {
       mock.onGet(mockData.endpoint).reply(
         200,

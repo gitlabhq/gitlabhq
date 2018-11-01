@@ -219,7 +219,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
     ##
     # When nodes are specified but not defined, we assume that
-    # configuration is valid, and we asume that entry is simply undefined,
+    # configuration is valid, and we assume that entry is simply undefined,
     # despite the fact, that key is present. See issue #18775 for more
     # details.
     #

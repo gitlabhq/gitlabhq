@@ -24,7 +24,7 @@ describe('Pipelines Empty State', () => {
     expect(component.$el.querySelector('.svg-content svg')).toBeDefined();
   });
 
-  it('should render emtpy state information', () => {
+  it('should render empty state information', () => {
     expect(component.$el.querySelector('h4').textContent).toContain('Build with confidence');
 
     expect(

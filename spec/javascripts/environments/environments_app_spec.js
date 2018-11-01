@@ -31,7 +31,7 @@ describe('Environment', () => {
     mock.restore();
   });
 
-  describe('successfull request', () => {
+  describe('successful request', () => {
     describe('without environments', () => {
       beforeEach(done => {
         mock.onGet(mockData.endpoint).reply(200, { environments: [] });

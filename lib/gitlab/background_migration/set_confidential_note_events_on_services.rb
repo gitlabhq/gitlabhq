@@ -3,8 +3,8 @@
 
 module Gitlab
   module BackgroundMigration
-    # Ensures services which previously recieved all notes events continue
-    # to recieve confidential ones.
+    # Ensures services which previously received all notes events continue
+    # to receive confidential ones.
     class SetConfidentialNoteEventsOnServices
       class Service < ActiveRecord::Base
         self.table_name = 'services'

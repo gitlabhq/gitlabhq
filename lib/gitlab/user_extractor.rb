@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This class extracts all users found in a piece of text by the username or the
-# email adress
+# email address
 
 module Gitlab
   class UserExtractor

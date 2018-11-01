@@ -665,7 +665,7 @@ class Project < ActiveRecord::Base
     remove_import_data
   end
 
-  # This method is overriden in EE::Project model
+  # This method is overridden in EE::Project model
   def remove_import_data
     import_data&.destroy
   end

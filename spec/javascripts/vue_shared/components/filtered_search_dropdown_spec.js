@@ -41,7 +41,7 @@ describe('Filtered search dropdown', () => {
     });
   });
 
-  describe('when visible number is bigger than the items lenght', () => {
+  describe('when visible number is bigger than the items length', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
         items: [{ title: 'One' }, { title: 'Two' }, { title: 'Three' }],

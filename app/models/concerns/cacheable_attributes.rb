@@ -12,12 +12,12 @@ module CacheableAttributes
       "#{name}:#{Gitlab::VERSION}:#{Rails.version}".freeze
     end
 
-    # Can be overriden
+    # Can be overridden
     def current_without_cache
       last
     end
 
-    # Can be overriden
+    # Can be overridden
     def defaults
       {}
     end
