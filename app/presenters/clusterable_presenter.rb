@@ -17,23 +17,19 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def index_path
-    raise NotImplementedError
+    polymorphic_path([clusterable, :clusters])
   end
 
   def new_path
-    raise NotImplementedError
-  end
-
-  def clusterable_params
-    raise NotImplementedError
+    new_polymorphic_path([clusterable, :cluster])
   end
 
   def create_user_clusters_path
-    raise NotImplementedError
+    polymorphic_path([clusterable, :clusters], action: :create_user)
   end
 
   def create_gcp_clusters_path
-    raise NotImplementedError
+    polymorphic_path([clusterable, :clusters], action: :create_gcp)
   end
 
   def cluster_status_cluster_path(cluster, params = {})
