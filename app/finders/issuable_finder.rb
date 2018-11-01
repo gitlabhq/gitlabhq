@@ -240,15 +240,6 @@ class IssuableFinder
     params[:assignee_username].present?
   end
 
-  def filter_by_no_assignee?
-    # Assignee_id takes precedence over assignee_username
-    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
-  end
-
-  def filter_by_any_assignee?
-    params[:assignee_id].to_s.downcase == FILTER_ANY
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def assignee
     return @assignee if defined?(@assignee)
@@ -414,6 +405,15 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def filter_by_no_assignee?
+    # Assignee_id takes precedence over assignee_username
+    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
+  end
+
+  def filter_by_any_assignee?
+    params[:assignee_id].to_s.downcase == FILTER_ANY
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
     if author
@@ -482,10 +482,25 @@ class IssuableFinder
 
   def by_my_reaction_emoji(items)
     if params[:my_reaction_emoji].present? && current_user
-      items = items.awarded(current_user, params[:my_reaction_emoji])
+      items =
+        if filter_by_no_reaction?
+          items.not_awarded(current_user)
+        elsif filter_by_any_reaction?
+          items.awarded(current_user)
+        else
+          items.awarded(current_user, params[:my_reaction_emoji])
+        end
     end
 
     items
+  end
+
+  def filter_by_no_reaction?
+    params[:my_reaction_emoji].to_s.downcase == FILTER_NONE
+  end
+
+  def filter_by_any_reaction?
+    params[:my_reaction_emoji].to_s.downcase == FILTER_ANY
   end
 
   def label_names

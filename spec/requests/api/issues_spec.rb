@@ -196,14 +196,24 @@ describe API::Issues do
         expect_paginated_array_response(size: 3)
       end
 
-      it 'returns issues reacted by the authenticated user by the given emoji' do
+      it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
-        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
 
-        get api('/issues', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+        create(:award_emoji, awardable: issue, user: user2, name: 'thumbsup')
 
-        expect_paginated_array_response(size: 1)
-        expect(first_issue['id']).to eq(issue2.id)
+        get api('/issues', user2), my_reaction_emoji: 'Any', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
+      end
+
+      it 'returns issues not reacted by the authenticated user' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        get api('/issues', user2), my_reaction_emoji: 'None', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
       end
 
       it 'returns issues matching given search string for title' do

@@ -92,7 +92,7 @@ describe 'Dropdown emoji', :js do
       it 'shows the most populated emoji at top of dropdown' do
         send_keys_to_filtered_search('my-reaction:')
 
-        expect(first('#js-dropdown-my-reaction li')).to have_content(award_emoji_star.name)
+        expect(first('#js-dropdown-my-reaction .filter-dropdown li')).to have_content(award_emoji_star.name)
       end
     end
 
@@ -121,13 +121,29 @@ describe 'Dropdown emoji', :js do
         send_keys_to_filtered_search(':')
       end
 
+      it 'selects `None`' do
+        find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'None').click
+
+        expect(page).to have_css(js_dropdown_emoji, visible: false)
+        expect_tokens([reaction_token('none', false)])
+        expect_filtered_search_input_empty
+      end
+
+      it 'selects `Any`' do
+        find('#js-dropdown-my-reaction .filter-dropdown-item', text: 'Any').click
+
+        expect(page).to have_css(js_dropdown_emoji, visible: false)
+        expect_tokens([reaction_token('any', false)])
+        expect_filtered_search_input_empty
+      end
+
       it 'fills in the my-reaction name' do
         click_emoji('thumbsup')
 
         wait_for_requests
 
         expect(page).to have_css(js_dropdown_emoji, visible: false)
-        expect_tokens([emoji_token('thumbsup')])
+        expect_tokens([reaction_token('thumbsup')])
         expect_filtered_search_input_empty
       end
     end
