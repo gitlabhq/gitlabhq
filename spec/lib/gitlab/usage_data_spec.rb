@@ -20,6 +20,7 @@ describe Gitlab::UsageData do
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
       create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
     end
 
     subject { described_class.data }
@@ -81,6 +82,7 @@ describe Gitlab::UsageData do
         clusters_applications_ingress
         clusters_applications_prometheus
         clusters_applications_runner
+        clusters_applications_knative
         in_review_folder
         groups
         issues
@@ -126,6 +128,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_ingress]).to eq(1)
       expect(count_data[:clusters_applications_prometheus]).to eq(1)
       expect(count_data[:clusters_applications_runner]).to eq(1)
+      expect(count_data[:clusters_applications_knative]).to eq(1)
     end
 
     it 'works when queries time out' do

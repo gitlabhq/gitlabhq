@@ -62,6 +62,7 @@ module Gitlab
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.installed),
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.installed),
             clusters_applications_runner: count(::Clusters::Applications::Runner.installed),
+            clusters_applications_knative: count(::Clusters::Applications::Knative.installed),
             in_review_folder: count(::Environment.in_review_folder),
             groups: count(Group),
             issues: count(Issue),
