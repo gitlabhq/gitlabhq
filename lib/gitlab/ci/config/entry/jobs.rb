@@ -29,8 +29,6 @@ module Gitlab
           # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
-              @config = Ci::Config::Normalizer.normalize_jobs(@config)
-
               @config.each do |name, config|
                 node = hidden?(name) ? Entry::Hidden : Entry::Job
 

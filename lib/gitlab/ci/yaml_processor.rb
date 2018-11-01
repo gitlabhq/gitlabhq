@@ -103,7 +103,7 @@ module Gitlab
         ##
         # Jobs
         #
-        @jobs = @ci_config.jobs
+        @jobs = Ci::Config::Normalizer.normalize_jobs(@ci_config.jobs)
 
         @jobs.each do |name, job|
           # logical validation for job

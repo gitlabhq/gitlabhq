@@ -7,11 +7,11 @@ module Gitlab
             parallelized_jobs = {}
 
             parallelized_config = jobs_config.map do |name, config|
-              if config&.[](:parallel)
+              if config[:parallel]
                 total = config[:parallel]
                 names = parallelize_job_names(name, total)
                 parallelized_jobs[name] = names
-                Hash[names.collect { |job_name| [job_name.to_sym, config] }]
+                Hash[names.collect { |job_name| [job_name.to_sym, config.merge(name: job_name)] }]
               else
                 { name => config }
               end
