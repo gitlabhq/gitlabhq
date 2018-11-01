@@ -181,7 +181,7 @@ class Project < ActiveRecord::Base
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
@@ -665,7 +665,7 @@ class Project < ActiveRecord::Base
     remove_import_data
   end
 
-  # This method is overriden in EE::Project model
+  # This method is overridden in EE::Project model
   def remove_import_data
     import_data&.destroy
   end

@@ -28,7 +28,7 @@ export default class GlFieldErrors {
     this.form.on('submit', GlFieldErrors.catchInvalidFormSubmit);
   }
 
-  /* Neccessary to prevent intercept and override invalid form submit
+  /* Necessary to prevent intercept and override invalid form submit
    * because Safari & iOS quietly allow form submission when form is invalid
    * and prevents disabling of invalid submit button by application.js */
 

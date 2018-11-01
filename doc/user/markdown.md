@@ -1,17 +1,8 @@
 # Markdown
 
+This markdown guide is valid for GitLab's system markdown entries and files.
+
 ## GitLab Flavored Markdown (GFM)
-
-> **Note:**
-> Not all of the GitLab-specific extensions to Markdown that are described in
-> this document currently work on our documentation website.
->
-> For the best result, we encourage you to check this document out as rendered
-> by GitLab: [markdown.md]
-
-_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  As of 11.3, wiki pages and Markdown files (`.md`) in the repositories are also processed with CommonMark.  Older content in issues/comments are still processed using the [Redcarpet Ruby library][redcarpet]._
-
-_Where there are significant differences, we will try to call them out in this document._
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
@@ -26,11 +17,28 @@ You can use GFM in the following areas:
 - markdown documents inside the repository
 
 You can also use other rich text files in GitLab. You might have to install a
-dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+dependency to do so. Please see the [`github-markup` gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
+> **Notes:**
+>
+> For the best result, we encourage you to check this document out as rendered
+> by GitLab itself: [markdown.md]
+>
+> As of 11.1, GitLab uses the [CommonMark Ruby Library][commonmarker] for Markdown
+processing of all new issues, merge requests, comments, and other Markdown content
+in the GitLab system. As of 11.3, wiki pages and Markdown files (`.md`) in the
+repositories are also processed with CommonMark. Older content in issues/comments
+are still processed using the [Redcarpet Ruby library][redcarpet].
+>
+> _Where there are significant differences, we will try to call them out in this document._
 
 ### Transitioning to CommonMark
 
-You may have Markdown documents in your repository that were written using some of the nuances of RedCarpet's version of Markdown.  Since CommonMark uses a slightly stricter syntax, these documents may now display a little strangely since we've transitioned to CommonMark.  Numbered lists with nested lists in particular can be displayed incorrectly.
+You may have Markdown documents in your repository that were written using some
+of the nuances of RedCarpet's version of Markdown. Since CommonMark uses a
+slightly stricter syntax, these documents may now display a little strangely
+since we've transitioned to CommonMark. Numbered lists with nested lists in
+particular can be displayed incorrectly.
 
 It is usually quite easy to fix.  In the case of a nested list such as this:
 
@@ -50,11 +58,18 @@ simply add a space to each nested item:
 
 In the documentation below, we try to highlight some of the differences.
 
-If you have a need to view a document using RedCarpet, you can add the token `legacy_render=1` to the end of the url, like this:
+If you have a need to view a document using RedCarpet, you can add the token
+`legacy_render=1` to the end of the url, like this:
 
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md?legacy_render=1
 
-If you have a large volume of Markdown files, it can be tedious to determine if they will be displayed correctly or not.  You can use the [diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark) tool (not an officially supported product) to generate a list of files and differences between how RedCarpet and CommonMark render the files.  It can give you a great idea if anything needs to be changed - many times nothing will need to changed.
+If you have a large volume of Markdown files, it can be tedious to determine
+if they will be displayed correctly or not. You can use the
+[diff_redcarpet_cmark](https://gitlab.com/digitalmoksha/diff_redcarpet_cmark)
+tool (not an officially supported product) to generate a list of files and
+differences between how RedCarpet and CommonMark render the files. It can give
+you a great idea if anything needs to be changed - many times nothing will need
+to changed.
 
 ### Newlines
 
@@ -63,7 +78,8 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newline
 
 GFM honors the markdown specification in how [paragraphs and line breaks are handled][commonmark-spec].
 
-A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
+A paragraph is simply one or more consecutive lines of text, separated by one or
+more blank lines.
 Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
 <!-- (Do *NOT* remove the two ending whitespaces in the following line.) -->
@@ -85,7 +101,9 @@ Sugar is sweet
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiple-underscores-in-words
 
-It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words:
+It is not reasonable to italicize just _part_ of a word, especially when you're
+dealing with code and names that often appear with multiple underscores.
+Therefore, GFM ignores multiple underscores in words:
 
     perform_complicated_task
 
@@ -124,7 +142,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multili
 On top of standard Markdown [blockquotes](#blockquotes), which require prepending `>` to quoted lines,
 GFM supports multiline blockquotes fenced by <code>>>></code>:
 
-```no-highlight
+```
 >>>
 If you paste a message from somewhere else
 
@@ -158,7 +176,7 @@ Blocks of code are either fenced by lines with three back-ticks <code>```</code>
 or are indented with four spaces. Only the fenced code blocks support syntax
 highlighting:
 
-```no-highlight
+```
 Inline `code` has `back-ticks around` it.
 ```
 
@@ -248,21 +266,23 @@ However the wrapping tags cannot be mixed as such:
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 
-	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
+```
+Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
-	:zap: You can use emoji anywhere GFM is supported. :v:
+:zap: You can use emoji anywhere GFM is supported. :v:
 
-	You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
+You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
+If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
 
-	Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 
-	Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
+Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 
-	On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
+On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
 
-	Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
+Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
+```
 
 
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px">. Well we have a gift for you:
@@ -280,7 +300,6 @@ Most emoji are natively supported on macOS, Windows, iOS, Android and will fallb
 On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
 
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
-
 
 ### Special GitLab References
 
@@ -343,7 +362,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#task-li
 
 You can add task lists to issues, merge requests and comments. To create a task list, add a specially-formatted Markdown list, like so:
 
-```no-highlight
+```
 - [x] Completed task
 - [ ] Incomplete task
     - [ ] Sub-task 1
@@ -355,7 +374,7 @@ You can add task lists to issues, merge requests and comments. To create a task 
 
 Tasks formatted as ordered lists are supported as well:
 
-```no-highlight
+```
 1. [x] Completed task
 1. [ ] Incomplete task
     1. [ ] Sub-task 1
@@ -412,7 +431,7 @@ This math is inline ![alt text](img/math_inline_sup_render_gfm.png).
 
 This is on a separate line
 
-<div align="center"><img src="./img/math_inline_sup_render_gfm.png" ></div>
+<img src="./img/math_inline_sup_render_gfm.png" >
 
 _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 
@@ -440,7 +459,7 @@ Examples:
     `HSL(540,70%,50%)`  
     `HSLA(540,70%,50%,0.7)`
 
-Become:
+Becomes:
 
 ![alt color-inline-colorchip-render-gfm](img/color_inline_colorchip_render_gfm.png)
 
@@ -482,7 +501,7 @@ For details see the [Mermaid official page][mermaid].
 
 ### Headers
 
-```no-highlight
+```
 # H1
 ## H2
 ### H3
@@ -540,7 +559,7 @@ Note that the Emoji processing happens before the header IDs are generated, so t
 
 Examples:
 
-```no-highlight
+```
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
 Strong emphasis, aka bold, with **asterisks** or __underscores__.
@@ -550,7 +569,7 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
 
-Become:
+Becomes:
 
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
@@ -564,7 +583,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 Examples:
 
-```no-highlight
+```
 1. First ordered list item
 2. Another item
    * Unordered sub-list.
@@ -577,7 +596,7 @@ Examples:
 + Or pluses
 ```
 
-Become:
+Becomes:
 
 1. First ordered list item
 2. Another item
@@ -595,7 +614,7 @@ each subsequent paragraph should be indented to the same level as the start of t
 
 Example:
 
-```no-highlight
+```
 1. First ordered list item
 
    Second paragraph of first item.
@@ -616,7 +635,7 @@ the paragraph will appear outside the list, instead of properly indented under t
 
 Example:
 
-```no-highlight
+```
 1. First ordered list item
 
   Paragraph of first item.
@@ -676,7 +695,7 @@ Examples:
 
     [logo]: img/markdown_logo.png
 
-Become:
+Becomes:
 
 Here's our logo:
 
@@ -694,7 +713,7 @@ Reference-style:
 
 Examples:
 
-```no-highlight
+```
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
 
@@ -703,7 +722,7 @@ Quote break.
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 ```
 
-Become:
+Becomes:
 
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
@@ -720,7 +739,7 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
 
 Examples:
 
-```no-highlight
+```
 <dl>
   <dt>Definition list</dt>
   <dd>Is something people use sometimes.</dd>
@@ -730,7 +749,7 @@ Examples:
 </dl>
 ```
 
-Become:
+Becomes:
 
 <dl>
   <dt>Definition list</dt>
@@ -788,7 +807,7 @@ ___
 Underscores
 ```
 
-Become:
+Becomes:
 
 Three or more...
 
@@ -826,7 +845,7 @@ This line is *on its own line*, because the previous line ends with two spaces. 
 spaces.
 ```
 
-Become:
+Becomes:
 
 Here's a line for us to start with.
 

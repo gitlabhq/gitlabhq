@@ -52,7 +52,7 @@ describe('Job App ', () => {
     });
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet(`${props.pagePath}/trace.json`).replyOnce(200, {});
     });
@@ -234,7 +234,7 @@ describe('Job App ', () => {
             );
             done();
           }, 0);
-        })
+        });
       });
 
       it('does not renders stuck block when there are no runners', done => {

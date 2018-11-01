@@ -234,7 +234,9 @@ export class SearchAutocomplete {
               icon,
               text: term,
               template,
-              url: `${gon.relative_url_root}/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
+              url: `${
+                gon.relative_url_root
+              }/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
             });
           }
         }

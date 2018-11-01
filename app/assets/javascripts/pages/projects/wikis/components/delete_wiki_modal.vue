@@ -1,8 +1,15 @@
 <script>
 import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
+import { GlModal, GlModalDirective } from '@gitlab-org/gitlab-ui';
 
 export default {
+  components: {
+    GlModal,
+  },
+  directives: {
+    'gl-modal': GlModalDirective,
+  },
   props: {
     deleteWikiUrl: {
       type: String,
@@ -54,7 +61,7 @@ export default {
     >
       {{ __('Delete') }}
     </button>
-    <gl-ui-modal
+    <gl-modal
       :title="title"
       :ok-title="s__('WikiPageConfirmDelete|Delete page')"
       :modal-id="modalId"
@@ -81,6 +88,6 @@ export default {
           name="authenticity_token"
         />
       </form>
-    </gl-ui-modal>
+    </gl-modal>
   </div>
 </template>

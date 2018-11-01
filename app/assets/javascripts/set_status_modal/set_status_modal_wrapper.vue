@@ -5,6 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import GfmAutoComplete from '~/gfm_auto_complete';
 import { __, s__ } from '~/locale';
 import Api from '~/api';
+import { GlModal } from '@gitlab-org/gitlab-ui';
 import eventHub from './event_hub';
 import EmojiMenuInModal from './emoji_menu_in_modal';
 
@@ -13,6 +14,7 @@ const emojiMenuClass = 'js-modal-status-emoji-menu';
 export default {
   components: {
     Icon,
+    GlModal,
   },
   props: {
     currentEmoji: {
@@ -152,7 +154,7 @@ export default {
 </script>
 
 <template>
-  <gl-ui-modal
+  <gl-modal
     :title="s__('SetStatusModal|Set a status')"
     :modal-id="modalId"
     :ok-title="s__('SetStatusModal|Set status')"
@@ -237,5 +239,5 @@ export default {
         </div>
       </div>
     </div>
-  </gl-ui-modal>
+  </gl-modal>
 </template>

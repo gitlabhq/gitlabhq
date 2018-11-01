@@ -88,7 +88,6 @@ class ProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Builds a collection for an anonymous user.
-  # rubocop: disable CodeReuse/ActiveRecord
   def collection_without_user
     if private_only? || owned_projects? || min_access_level?
       Project.none
@@ -96,7 +95,6 @@ class ProjectsFinder < UnionFinder
       Project.public_to_user
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def owned_projects?
     params[:owned].present?

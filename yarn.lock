@@ -621,11 +621,6 @@
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.32.0.tgz#a65ab7724fa7d55be8e5cc9b2dbe3f0757432fd3"
   integrity sha512-L3o8dFUd2nSkVZBwh2hCJWzNzADJ3dTBZxamND8NLosZK9/ohNhccmsQOZGyMCUHaOzm4vifaaXkAXh04UtMKA==
 
-"@gitlab-org/gitlab-svgs@^1.33.0":
-  version "1.33.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.33.0.tgz#068566e8ee00795f6f09f58236f08e1716f9f04a"
-  integrity sha512-8ajtUHk6gQ1xosL/CO5IzHSFM/t18hx5pfzQ3cd0VuQXcyR6QKGuXTLwbYdmJDYOw1Etoo5DqDWxPEClHyZpiA==
-
 "@gitlab-org/gitlab-ui@^1.10.0":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-ui/-/gitlab-ui-1.10.0.tgz#3ac54ecaa25ea558324f0b382c97fcf9e3c4f0a5"
@@ -647,6 +642,11 @@
     eslint-plugin-import "^2.14.0"
     eslint-plugin-promise "^4.0.1"
     eslint-plugin-vue "^5.0.0-beta.3"
+
+"@gitlab/svgs@^1.35.0":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.35.0.tgz#01b6a0948bb3897fbbac9f50ce23c559c514ea0e"
+  integrity sha512-XKrTniSYKG5U8+8ZqDJqoW8ORahuPBfHrfsC1dHBPvo1xA/QGJxlpUdeqSFw2O19h481ut4yW1dF+OFpIa/mrw==
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"

@@ -192,11 +192,6 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
-  def filter_by_no_milestone?
-    milestones? && params[:milestone_title] == Milestone::None.title
-  end
-
-  # rubocop: disable CodeReuse/ActiveRecord
   def milestones
     return @milestones if defined?(@milestones)
 
@@ -217,7 +212,6 @@ class IssuableFinder
         Milestone.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def labels?
     params[:label_name].present?
@@ -227,7 +221,6 @@ class IssuableFinder
     labels? && params[:label_name].include?(Label::None.title)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def labels
     return @labels if defined?(@labels)
 
@@ -238,7 +231,6 @@ class IssuableFinder
         Label.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
     params[:assignee_id].present?
@@ -436,18 +428,6 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def filter_by_upcoming_milestone?
-    params[:milestone_title] == Milestone::Upcoming.name
-  end
-
-  def filter_by_any_milestone?
-    params[:milestone_title] == Milestone::Any.title
-  end
-
-  def filter_by_started_milestone?
-    params[:milestone_title] == Milestone::Started.name
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)
     if milestones?
@@ -468,6 +448,24 @@ class IssuableFinder
     items
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def filter_by_no_milestone?
+    # Accepts `No Milestone` for compatibility
+    params[:milestone_title].to_s.downcase == FILTER_NONE || params[:milestone_title] == Milestone::None.title
+  end
+
+  def filter_by_any_milestone?
+    # Accepts `Any Milestone` for compatibility
+    params[:milestone_title].to_s.downcase == FILTER_ANY || params[:milestone_title] == Milestone::Any.title
+  end
+
+  def filter_by_upcoming_milestone?
+    params[:milestone_title] == Milestone::Upcoming.name
+  end
+
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
+  end
 
   def by_label(items)
     return items unless labels?

@@ -32,32 +32,32 @@ module Trigger
 
     private
 
-    # Must be overriden
+    # Must be overridden
     def downstream_project_path
       raise NotImplementedError
     end
 
-    # Must be overriden
+    # Must be overridden
     def ref
       raise NotImplementedError
     end
 
-    # Must be overriden
+    # Must be overridden
     def trigger_token
       raise NotImplementedError
     end
 
-    # Must be overriden
+    # Must be overridden
     def access_token
       raise NotImplementedError
     end
 
-    # Can be overriden
+    # Can be overridden
     def extra_variables
       {}
     end
 
-    # Can be overriden
+    # Can be overridden
     def version_param_value(version_file)
       File.read(version_file).strip
     end

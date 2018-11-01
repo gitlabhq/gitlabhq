@@ -18,7 +18,7 @@ module Banzai
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
-          next if !can_read_cross_project? && issuable.project != project
+          next if !can_read_cross_project? && cross_reference?(issuable)
 
           if VISIBLE_STATES.include?(issuable.state) && issuable_reference?(node.inner_html, issuable)
             node.content += " (#{issuable.state})"
@@ -31,7 +31,14 @@ module Banzai
       private
 
       def issuable_reference?(text, issuable)
-        text == issuable.reference_link_text(project || group)
+        CGI.unescapeHTML(text) == issuable.reference_link_text(project || group)
+      end
+
+      def cross_reference?(issuable)
+        return true if issuable.project != project
+        return true if issuable.respond_to?(:group) && issuable.group != group
+
+        false
       end
 
       def can_read_cross_project?

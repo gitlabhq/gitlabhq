@@ -236,6 +236,35 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 Find out about [bulk editing merge requests](../../project/bulk_editing.md).
 
+## Troubleshooting
+
+Sometimes things don't go as expected in a merge request, here are some
+troubleshooting steps.
+
+### Merge request cannot retrieve the pipeline status
+
+This can occur for one of two reasons:
+
+* Sidekiq doesn't pick up the changes fast enough
+* Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+
+#### Sidekiq
+
+Sidekiq didn't process the CI state change fast enough. Please wait a few
+seconds and the status will update automatically.
+
+#### Bug
+
+Merge Request pipeline statuses can't be retrieved when the following occurs:
+
+1. A Merge Requst is created
+1. The Merge Request is closed
+1. Changes are made in the project
+1. The Merge Request is reopened
+
+To enable the pipeline status to be properly retrieved, close and reopen the
+Merge Request again.
+
 ## Tips
 
 Here are some tips that will help you be more efficient with merge requests in

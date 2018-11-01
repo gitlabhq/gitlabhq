@@ -8,7 +8,7 @@ describe LfsObject do
       expect(subject.local_store?).to eq true
     end
 
-    it 'returns false whe file_store is equal to LfsObjectUploader::Store::REMOTE' do
+    it 'returns false when file_store is equal to LfsObjectUploader::Store::REMOTE' do
       subject.file_store = LfsObjectUploader::Store::REMOTE
 
       expect(subject.local_store?).to eq false

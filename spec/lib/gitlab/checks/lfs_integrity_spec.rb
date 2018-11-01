@@ -68,7 +68,7 @@ describe Gitlab::Checks::LfsIntegrity do
         expect(subject.objects_missing?).to be_truthy
       end
 
-      it 'is false parent project already conatins LFS objects for the fork' do
+      it 'is false parent project already contains LFS objects for the fork' do
         lfs_object = create(:lfs_object, oid: blob_object.lfs_oid)
         create(:lfs_objects_project, project: parent_project, lfs_object: lfs_object)
 

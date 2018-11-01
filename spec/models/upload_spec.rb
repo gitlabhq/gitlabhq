@@ -91,7 +91,7 @@ describe Upload do
         .to change { upload.checksum }.from(nil).to(expected)
     end
 
-    it 'sets `checksum` to nil for a non-existant file' do
+    it 'sets `checksum` to nil for a non-existent file' do
       expect(upload).to receive(:exist?).and_return(false)
 
       checksum = Digest::SHA256.file(__FILE__).hexdigest

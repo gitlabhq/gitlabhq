@@ -39,8 +39,9 @@ export default class DropdownUser extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e,
-      selected => selected.querySelector('.dropdown-light-content').innerText.trim());
+    super.itemClicked(e, selected =>
+      selected.querySelector('.dropdown-light-content').innerText.trim(),
+    );
   }
 
   renderContent(forceShowList = false) {
@@ -68,7 +69,7 @@ export default class DropdownUser extends FilteredSearchDropdown {
 
     // Removes the first character if it is a quotation so that we can search
     // with multiple words
-    if (value[0] === '"' || value[0] === '\'') {
+    if (value[0] === '"' || value[0] === "'") {
       value = value.slice(1);
     }
 
