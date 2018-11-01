@@ -14,7 +14,8 @@ export default function projectSelect() {
     this.orderBy = $(select).data('orderBy') || 'id';
     this.withIssuesEnabled = $(select).data('withIssuesEnabled');
     this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
-    this.withShared = $(select).data('withShared') === undefined ? true : $(select).data('withShared');
+    this.withShared =
+      $(select).data('withShared') === undefined ? true : $(select).data('withShared');
     this.includeProjectsInSubgroups = $(select).data('includeProjectsInSubgroups') || false;
     this.allowClear = $(select).data('allowClear') || false;
 

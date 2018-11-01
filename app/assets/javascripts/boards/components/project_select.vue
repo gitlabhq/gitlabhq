@@ -48,14 +48,19 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
-        return Api.groupProjects(this.groupId, term, {
-          with_issues_enabled: true,
-          with_shared: false,
-          include_subgroups: true
-        }, projects => {
-          this.loading = false;
-          callback(projects);
-        });
+        return Api.groupProjects(
+          this.groupId,
+          term,
+          {
+            with_issues_enabled: true,
+            with_shared: false,
+            include_subgroups: true,
+          },
+          projects => {
+            this.loading = false;
+            callback(projects);
+          },
+        );
       },
       renderRow(project) {
         return `
