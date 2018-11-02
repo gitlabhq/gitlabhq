@@ -88,11 +88,9 @@ describe('JobContainerItem', () => {
 
       Vue.nextTick()
         .then(() => {
-          expect(
-            vm.$el
-              .querySelector('.js-job-link')
-              .getAttribute('data-original-title'),
-          ).toEqual('delayed job - delayed manual action (00:22:17)');
+          expect(vm.$el.querySelector('.js-job-link').getAttribute('data-original-title')).toEqual(
+            'delayed job - delayed manual action (00:22:17)',
+          );
         })
         .then(done)
         .catch(done.fail);

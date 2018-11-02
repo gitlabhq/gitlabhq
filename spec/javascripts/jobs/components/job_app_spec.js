@@ -422,17 +422,19 @@ describe('Job App ', () => {
         }, 0);
       });
 
-      it('displays remaining time for a delayed job', (done) => {
+      it('displays remaining time for a delayed job', done => {
         const oneHourInMilliseconds = 3600000;
-        spyOn(Date, 'now').and.callFake(() => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds);
-        mock.onGet(props.endpoint).replyOnce(200, { ... delayedJobFixture });
+        spyOn(Date, 'now').and.callFake(
+          () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
+        );
+        mock.onGet(props.endpoint).replyOnce(200, { ...delayedJobFixture });
 
         vm = mountComponentWithStore(Component, {
           props,
           store,
         });
 
-        store.subscribeAction((action) => {
+        store.subscribeAction(action => {
           if (action.type !== 'receiveJobSuccess') {
             return;
           }

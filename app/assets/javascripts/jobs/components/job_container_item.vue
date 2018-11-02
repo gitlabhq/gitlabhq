@@ -31,7 +31,7 @@ export default {
       const text = `${name} - ${status.tooltip}`;
 
       if (this.isDelayedJob) {
-        return sprintf(text, { remainingTime: this.remainingTime })
+        return sprintf(text, { remainingTime: this.remainingTime });
       }
 
       return text;
