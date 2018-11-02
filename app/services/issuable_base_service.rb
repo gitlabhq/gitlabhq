@@ -3,6 +3,14 @@
 class IssuableBaseService < BaseService
   private
 
+  attr_accessor :params, :skip_milestone_email
+
+  def initialize(project, user = nil, params = {})
+    super
+
+    @skip_milestone_email = @params.delete(:skip_milestone_email)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
