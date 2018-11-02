@@ -8,6 +8,15 @@ module API
 
     helpers ::Gitlab::IssuableMetadata
 
+    # EE::API::Issues would override the following helpers
+    helpers do
+      params :issues_params_ee do
+      end
+
+      params :issue_params_ee do
+      end
+    end
+
     helpers do
       # rubocop: disable CodeReuse/ActiveRecord
       def find_issues(args = {})
@@ -46,9 +55,11 @@ module API
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
+
+        use :issues_params_ee
       end
 
-      params :issue_params_ce do
+      params :issue_params do
         optional :description, type: String, desc: 'The description of an issue'
         optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
@@ -57,10 +68,8 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
-      end
 
-      params :issue_params do
-        use :issue_params_ce
+        use :issue_params_ee
       end
     end
 
@@ -284,6 +293,30 @@ module API
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'List merge requests that are related to the issue'  do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ':id/issues/:issue_iid/related_merge_requests' do
+        issue = find_project_issue(params[:issue_iid])
+
+        merge_request_iids = ::Issues::ReferencedMergeRequestsService.new(user_project, current_user)
+          .execute(issue)
+          .flatten
+          .map(&:iid)
+
+        merge_requests =
+          if merge_request_iids.present?
+            MergeRequestsFinder.new(current_user, project_id: user_project.id, iids: merge_request_iids).execute
+          else
+            MergeRequest.none
+          end
+
+        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+      end
 
       desc 'List merge requests closing issue'  do
         success Entities::MergeRequestBasic

@@ -43,7 +43,7 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges', 'isCommitModeActive']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommittedChanges', 'isCommitModeActive']),
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
@@ -63,7 +63,7 @@ export default {
     onBeforeUnload(e = {}) {
       const returnValue = __('Are you sure you want to lose unsaved changes?');
 
-      if (!this.someUncommitedChanges) return undefined;
+      if (!this.someUncommittedChanges) return undefined;
 
       Object.assign(e, {
         returnValue,

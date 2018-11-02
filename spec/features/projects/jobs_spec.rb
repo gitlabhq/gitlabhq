@@ -198,6 +198,24 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when job is running', :js do
+      let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+      let(:job_url) { project_job_path(project, job) }
+
+      before do
+        visit job_url
+        wait_for_requests
+      end
+
+      context 'job is cancelable' do
+        it 'shows cancel button' do
+          click_link 'Cancel'
+
+          expect(page.current_path).to eq(job_url)
+        end
+      end
+    end
+
     context "Job from other project" do
       before do
         visit project_job_path(project, job2)

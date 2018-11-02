@@ -118,7 +118,7 @@ describe Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange, :migrat
       expect(fork_network_members.count).to eq(12)
     end
 
-    it 'knows when not all memberships withing a batch have been created' do
+    it 'knows when not all memberships within a batch have been created' do
       expect(migration.missing_members?(8, 10)).to be_truthy
     end
   end

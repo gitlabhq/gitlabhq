@@ -94,7 +94,7 @@ describe Gitlab::Git::AttributesParser, :seed_helper do
     # It's a bit hard to test for something _not_ being processed. As such we'll
     # just test the number of entries.
     it 'ignores any comments and empty lines' do
-      expect(subject.patterns.length).to eq(10)
+      expect(subject.patterns.length).to eq(12)
     end
   end
 
@@ -126,7 +126,7 @@ describe Gitlab::Git::AttributesParser, :seed_helper do
 
   describe '#each_line' do
     it 'iterates over every line in the attributes file' do
-      args = [String] * 14 # the number of lines in the file
+      args = [String] * 16 # the number of lines in the file
 
       expect { |b| subject.each_line(&b) }.to yield_successive_args(*args)
     end

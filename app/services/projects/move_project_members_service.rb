@@ -3,7 +3,7 @@
 # NOTE: This service cannot be used directly because it is part of a
 # a bigger process. Instead, use the service MoveAccessService which moves
 # project memberships, project group links, authorizations and refreshes
-# the authorizations if neccessary
+# the authorizations if necessary
 module Projects
   class MoveProjectMembersService < BaseMoveRelationsService
     def execute(source_project, remove_remaining_elements: true)

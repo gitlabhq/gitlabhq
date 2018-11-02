@@ -18,8 +18,8 @@ export default {
   },
   data() {
     const treeListStored = localStorage.getItem(treeListStorageKey);
-    const renderTreeList = treeListStored !== null ?
-      convertPermissionToBoolean(treeListStored) : true;
+    const renderTreeList =
+      treeListStored !== null ? convertPermissionToBoolean(treeListStored) : true;
 
     return {
       search: '',

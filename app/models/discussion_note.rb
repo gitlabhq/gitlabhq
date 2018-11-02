@@ -5,9 +5,11 @@
 # A note of this type can be resolvable.
 class DiscussionNote < Note
   # Names of all implementers of `Noteable` that support discussions.
-  NOTEABLE_TYPES = %w(MergeRequest Issue Commit Snippet).freeze
+  def self.noteable_types
+    %w(MergeRequest Issue Commit Snippet)
+  end
 
-  validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
+  validates :noteable_type, inclusion: { in: noteable_types }
 
   def discussion_class(*)
     Discussion

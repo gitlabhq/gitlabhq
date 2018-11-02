@@ -50,7 +50,7 @@ describe('pipeline graph action component', () => {
   });
 
   describe('on click', () => {
-    it('emits `pipelineActionRequestComplete` after a successfull request', done => {
+    it('emits `pipelineActionRequestComplete` after a successful request', done => {
       spyOn(component, '$emit');
 
       component.$el.click();

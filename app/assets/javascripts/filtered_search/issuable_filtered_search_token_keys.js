@@ -68,12 +68,12 @@ export const conditions = [
     value: 'any',
   },
   {
-    url: 'milestone_title=No+Milestone',
+    url: 'milestone_title=None',
     tokenKey: 'milestone',
     value: 'none',
   },
   {
-    url: 'milestone_title=Any+Milestone',
+    url: 'milestone_title=Any',
     tokenKey: 'milestone',
     value: 'any',
   },
@@ -91,6 +91,16 @@ export const conditions = [
     url: 'label_name[]=No+Label',
     tokenKey: 'label',
     value: 'none',
+  },
+  {
+    url: 'my_reaction_emoji=None',
+    tokenKey: 'my-reaction',
+    value: 'none',
+  },
+  {
+    url: 'my_reaction_emoji=Any',
+    tokenKey: 'my-reaction',
+    value: 'any',
   },
 ];
 

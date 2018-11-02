@@ -10,7 +10,7 @@ module Members
     end
 
     def after_execute(args)
-      # overriden in EE::Members modules
+      # overridden in EE::Members modules
     end
 
     private

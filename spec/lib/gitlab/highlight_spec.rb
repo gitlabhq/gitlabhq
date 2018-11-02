@@ -5,44 +5,85 @@ describe Gitlab::Highlight do
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:commit) { project.commit(sample_commit.id) }
 
-  describe 'custom highlighting from .gitattributes' do
-    let(:branch) { 'gitattributes' }
-    let(:blob) { repository.blob_at_branch(branch, path) }
-
+  describe 'language provided' do
     let(:highlighter) do
-      described_class.new(blob.path, blob.data, repository: repository)
+      described_class.new('foo.erb', 'bar', language: 'erb?parent=json')
     end
 
-    before do
-      project.change_head('gitattributes')
-    end
-
-    describe 'basic language selection' do
-      let(:path) { 'custom-highlighting/test.gitlab-custom' }
-      it 'highlights as ruby' do
-        expect(highlighter.lexer.tag).to eq 'ruby'
-      end
-    end
-
-    describe 'cgi options' do
-      let(:path) { 'custom-highlighting/test.gitlab-cgi' }
-
-      it 'highlights as json with erb' do
-        expect(highlighter.lexer.tag).to eq 'erb'
-        expect(highlighter.lexer.parent.tag).to eq 'json'
-      end
+    it 'sets correct lexer' do
+      expect(highlighter.lexer.tag).to eq 'erb'
+      expect(highlighter.lexer.parent.tag).to eq 'json'
     end
   end
 
   describe '#highlight' do
+    let(:file_name) { 'test.lisp' }
+    let(:no_context_content) { ":type \"assem\"))" }
+    let(:content) { "(make-pathname :defaults name\n#{no_context_content}" }
+    let(:multiline_content) do
+      %q(
+      def test(input):
+        """This is line 1 of a multi-line comment.
+        This is line 2.
+        """
+      )
+    end
+
+    it 'highlights' do
+      expected = %Q[<span id="LC1" class="line" lang="common_lisp"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
+<span id="LC2" class="line" lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span>]
+
+      expect(described_class.highlight(file_name, content)).to eq(expected)
+    end
+
+    it 'returns plain version for unknown lexer context' do
+      result = described_class.highlight(file_name, no_context_content)
+
+      expect(result).to eq(%[<span id="LC1" class="line" lang="">:type "assem"))</span>])
+    end
+
+    it 'returns plain version for long content' do
+      stub_const('Gitlab::Highlight::MAXIMUM_TEXT_HIGHLIGHT_SIZE', 1)
+      result = described_class.highlight(file_name, content)
+
+      expect(result).to eq(%[<span id="LC1" class="line" lang="">(make-pathname :defaults name</span>\n<span id="LC2" class="line" lang="">:type "assem"))</span>])
+    end
+
+    it 'highlights multi-line comments' do
+      result = described_class.highlight(file_name, multiline_content)
+      html = Nokogiri::HTML(result)
+      lines = html.search('.s')
+
+      expect(lines.count).to eq(3)
+      expect(lines[0].text).to eq('"""This is line 1 of a multi-line comment.')
+      expect(lines[1].text).to eq('        This is line 2.')
+      expect(lines[2].text).to eq('        """')
+    end
+
+    context 'diff highlighting' do
+      let(:file_name) { 'test.diff' }
+      let(:content) { "+aaa\n+bbb\n- ccc\n ddd\n"}
+      let(:expected) do
+        %q(<span id="LC1" class="line" lang="diff"><span class="gi">+aaa</span></span>
+<span id="LC2" class="line" lang="diff"><span class="gi">+bbb</span></span>
+<span id="LC3" class="line" lang="diff"><span class="gd">- ccc</span></span>
+<span id="LC4" class="line" lang="diff"> ddd</span>)
+      end
+
+      it 'highlights each line properly' do
+        result = described_class.highlight(file_name, content)
+
+        expect(result).to eq(expected)
+      end
+    end
+
     describe 'with CRLF' do
       let(:branch) { 'crlf-diff' }
       let(:path) { 'files/whitespace' }
       let(:blob) { repository.blob_at_branch(branch, path) }
       let(:lines) do
-        described_class.highlight(blob.path, blob.data, repository: repository).lines
+        described_class.highlight(blob.path, blob.data).lines
       end
 
       it 'strips extra LFs' do

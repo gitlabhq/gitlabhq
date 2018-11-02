@@ -88,6 +88,10 @@ describe Project do
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
 
+    it 'has an inverse relationship with merge requests' do
+      expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
+    end
+
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present
@@ -2746,7 +2750,7 @@ describe Project do
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
-    it 'updates the project succesfully' do
+    it 'updates the project successfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
@@ -3314,7 +3318,7 @@ describe Project do
       end
     end
 
-    context 'when explicitely enabled' do
+    context 'when explicitly enabled' do
       context 'when domain is empty' do
         before do
           create(:project_auto_devops, project: project, domain: nil)

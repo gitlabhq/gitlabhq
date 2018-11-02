@@ -68,41 +68,20 @@ describe('Job State actions', () => {
 
   describe('hideSidebar', () => {
     it('should commit HIDE_SIDEBAR mutation', done => {
-      testAction(
-        hideSidebar,
-        null,
-        mockedState,
-        [{ type: types.HIDE_SIDEBAR }],
-        [],
-        done,
-      );
+      testAction(hideSidebar, null, mockedState, [{ type: types.HIDE_SIDEBAR }], [], done);
     });
   });
 
   describe('showSidebar', () => {
     it('should commit HIDE_SIDEBAR mutation', done => {
-      testAction(
-        showSidebar,
-        null,
-        mockedState,
-        [{ type: types.SHOW_SIDEBAR }],
-        [],
-        done,
-      );
+      testAction(showSidebar, null, mockedState, [{ type: types.SHOW_SIDEBAR }], [], done);
     });
   });
 
   describe('toggleSidebar', () => {
     describe('when isSidebarOpen is true', () => {
       it('should dispatch hideSidebar', done => {
-        testAction(
-          toggleSidebar,
-          null,
-          mockedState,
-          [],
-          [{ type: 'hideSidebar' }],
-          done,
-        );
+        testAction(toggleSidebar, null, mockedState, [], [{ type: 'hideSidebar' }], done);
       });
     });
 
@@ -110,14 +89,7 @@ describe('Job State actions', () => {
       it('should dispatch showSidebar', done => {
         mockedState.isSidebarOpen = false;
 
-        testAction(
-          toggleSidebar,
-          null,
-          mockedState,
-          [],
-          [{ type: 'showSidebar' }],
-          done,
-        );
+        testAction(toggleSidebar, null, mockedState, [], [{ type: 'showSidebar' }], done);
       });
     });
   });

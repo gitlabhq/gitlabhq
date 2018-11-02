@@ -14,7 +14,7 @@ module Gitlab
       INTERVAL = 30.seconds.to_i
 
       # The number of seconds to wait (while blocking the thread) before
-      # continueing to the next waiter.
+      # continuing to the next waiter.
       BLOCKING_WAIT_TIME = 5
 
       # The known importer stages and their corresponding Sidekiq workers.

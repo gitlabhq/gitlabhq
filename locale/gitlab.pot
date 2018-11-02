@@ -1986,6 +1986,9 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -3014,7 +3017,13 @@ msgstr ""
 msgid "Group Runners"
 msgstr ""
 
+msgid "Group URL"
+msgstr ""
+
 msgid "Group avatar"
+msgstr ""
+
+msgid "Group description"
 msgstr ""
 
 msgid "Group description (optional)"
@@ -4488,13 +4497,22 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
+msgid "Pipeline|Commit"
+msgstr ""
+
 msgid "Pipeline|Create for"
 msgstr ""
 
 msgid "Pipeline|Create pipeline"
 msgstr ""
 
+msgid "Pipeline|Duration"
+msgstr ""
+
 msgid "Pipeline|Existing branch name or tag"
+msgstr ""
+
+msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
@@ -4504,6 +4522,12 @@ msgid "Pipeline|Search branches"
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default."
+msgstr ""
+
+msgid "Pipeline|Stages"
+msgstr ""
+
+msgid "Pipeline|Status"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
@@ -4542,10 +4566,16 @@ msgstr ""
 msgid "Please accept the Terms of Service before continuing."
 msgstr ""
 
+msgid "Please choose a group URL with no special characters."
+msgstr ""
+
 msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please fill in a descriptive name for your group."
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
@@ -4897,6 +4927,9 @@ msgid "Projects"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
+msgstr ""
+
+msgid "Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group."
 msgstr ""
 
 msgid "ProjectsDropdown|Frequently visited"
@@ -6789,6 +6822,9 @@ msgstr ""
 msgid "View replaced file @ "
 msgstr ""
 
+msgid "View the documentation"
+msgstr ""
+
 msgid "Visibility and access controls"
 msgstr ""
 
@@ -6838,6 +6874,9 @@ msgid "When enabled, users cannot use GitLab until the terms have been accepted.
 msgstr ""
 
 msgid "Who can see this group?"
+msgstr ""
+
+msgid "Who will be able to see this group?"
 msgstr ""
 
 msgid "Wiki"

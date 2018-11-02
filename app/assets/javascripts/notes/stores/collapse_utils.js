@@ -70,7 +70,7 @@ export const collapseSystemNotes = notes => {
       } else if (lastDescriptionSystemNote) {
         const timeDifferenceMinutes = getTimeDifferenceMinutes(lastDescriptionSystemNote, note);
 
-        // are they less than 10 minutes appart?
+        // are they less than 10 minutes apart?
         if (timeDifferenceMinutes > 10) {
           // reset counter
           descriptionChangedTimes = 1;

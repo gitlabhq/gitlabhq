@@ -694,7 +694,10 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-git-2.18-chrome-69.0-node-8.x-yarn-1.2-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
+  services:
+    - docker:stable-dind
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
@@ -703,18 +706,23 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
     - free -m
     - bundle exec rake gitlab:assets:compile
+    - scripts/build_assets_image
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
       - public/assets/
+  tags:
+    - docker
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job

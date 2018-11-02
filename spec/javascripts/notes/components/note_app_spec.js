@@ -97,7 +97,8 @@ describe('note_app', () => {
     });
 
     it('should render list of notes', done => {
-      const note = mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
+      const note =
+        mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
           '/gitlab-org/gitlab-ce/issues/26/discussions.json'
         ][0].notes[0];
 

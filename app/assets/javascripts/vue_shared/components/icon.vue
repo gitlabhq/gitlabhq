@@ -8,7 +8,7 @@ let iconValidator = () => true;
 */
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line global-require
-  const data = require('@gitlab-org/gitlab-svgs/dist/icons.json');
+  const data = require('@gitlab/svgs/dist/icons.json');
   const { icons } = data;
   iconValidator = value => {
     if (icons.includes(value)) {

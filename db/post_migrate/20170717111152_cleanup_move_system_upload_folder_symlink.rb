@@ -13,7 +13,7 @@ class CleanupMoveSystemUploadFolderSymlink < ActiveRecord::Migration
       say "Removing #{old_directory} -> #{new_directory} symlink"
       FileUtils.rm(old_directory)
     else
-      say "Symlink #{old_directory} non existant, nothing to do."
+      say "Symlink #{old_directory} non existent, nothing to do."
     end
   end
 

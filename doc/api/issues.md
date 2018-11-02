@@ -37,11 +37,11 @@ GET /issues?my_reaction_emoji=star
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels                         |
-| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone. `Any+Milestone` lists all issues that have an assigned milestone            |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                                      |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
@@ -151,11 +151,11 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
-| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
@@ -265,11 +265,11 @@ GET /projects/:id/issues?my_reaction_emoji=star
 | `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
-| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. `None` returns unassigned issues. `Any` returns issues with an assignee. _([Introduced][ce-13004] in GitLab 9.5)_ |
-| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
+| `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search project issues against their `title` and `description`                                                                 |
@@ -1111,6 +1111,93 @@ Example response:
   "time_estimate": 7200,
   "total_time_spent": 3600
 }
+```
+
+## List merge requests related to issue
+
+Get all the merge requests that are related to the issue.
+
+```
+GET /projects/:id/issues/:issue_id/related_merge_requests
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```sh
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/11/related_merge_requests
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 29,
+    "iid": 11,
+    "project_id": 1,
+    "title": "Provident eius eos blanditiis consequatur neque odit.",
+    "description": "Ut consequatur ipsa aspernatur quisquam voluptatum fugit. Qui harum corporis quo fuga ut incidunt veritatis. Autem necessitatibus et harum occaecati nihil ea.\r\n\r\ntwitter/flight#8",
+    "state": "opened",
+    "created_at": "2018-09-18T14:36:15.510Z",
+    "updated_at": "2018-09-19T07:45:13.089Z",
+    "target_branch": "v2.x",
+    "source_branch": "so_long_jquery",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 14,
+      "name": "Verna Hills",
+      "username": "lawanda_reinger",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/de68a91aeab1cff563795fb98a0c2cc0?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/lawanda_reinger"
+    },
+    "assignee": {
+      "id": 19,
+      "name": "Jody Baumbach",
+      "username": "felipa.kuvalis",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/6541fc75fc4e87e203529bd275fafd07?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/felipa.kuvalis"
+    },
+    "source_project_id": 1,
+    "target_project_id": 1,
+    "labels": [],
+    "work_in_progress": false,
+    "milestone": {
+      "id": 27,
+      "iid": 2,
+      "project_id": 1,
+      "title": "v1.0",
+      "description": "Et tenetur voluptatem minima doloribus vero dignissimos vitae.",
+      "state": "active",
+      "created_at": "2018-09-18T14:35:44.353Z",
+      "updated_at": "2018-09-18T14:35:44.353Z",
+      "due_date": null,
+      "start_date": null,
+      "web_url": "https://gitlab.example.com/twitter/flight/milestones/2"
+    },
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "cannot_be_merged",
+    "sha": "3b7b528e9353295c1c125dad281ac5b5deae5f12",
+    "merge_commit_sha": null,
+    "user_notes_count": 9,
+    "discussion_locked": null,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": false,
+    "web_url": "https://gitlab.example.com/twitter/flight/merge_requests/4",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    },
+    "squash": false
+  }
+]
 ```
 
 ## List merge requests that will close issue on merge

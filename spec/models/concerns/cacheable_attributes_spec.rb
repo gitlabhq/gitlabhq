@@ -41,7 +41,7 @@ describe CacheableAttributes do
       expect(minimal_test_class.current_without_cache).to eq(minimal_test_class.last)
     end
 
-    it 'can be overriden' do
+    it 'can be overridden' do
       minimal_test_class.define_singleton_method(:current_without_cache) do
         first
       end
@@ -64,7 +64,7 @@ describe CacheableAttributes do
     context 'with defaults defined' do
       include_context 'with defaults'
 
-      it 'can be overriden' do
+      it 'can be overridden' do
         expect(minimal_test_class.defaults).to eq({ foo: 'a', bar: 'b', baz: 'c' })
       end
     end

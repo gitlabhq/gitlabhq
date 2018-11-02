@@ -13,7 +13,7 @@ export default {
   },
   props: {
     /**
-     * Indicates the existance of a tag.
+     * Indicates the existence of a tag.
      * Used to render the correct icon, if true will render `fa-tag` icon,
      * if false will render a svg sprite fork icon
      */

@@ -63,7 +63,7 @@ describe Groups::MilestonesController do
     let(:group_milestone) { create(:milestone, group: group) }
 
     context 'when there is a title parameter' do
-      it 'searchs for a legacy group milestone' do
+      it 'searches for a legacy group milestone' do
         expect(GlobalMilestone).to receive(:build)
         expect(Milestone).not_to receive(:find_by_iid)
 
@@ -72,7 +72,7 @@ describe Groups::MilestonesController do
     end
 
     context 'when there is not a title parameter' do
-      it 'searchs for a group milestone' do
+      it 'searches for a group milestone' do
         expect(GlobalMilestone).not_to receive(:build)
         expect(Milestone).to receive(:find_by_iid)
 

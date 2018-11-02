@@ -12,7 +12,6 @@ class PipelinesFinder
     @params = params
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     unless Ability.allowed?(current_user, :read_pipeline, project)
       return Ci::Pipeline.none
@@ -28,7 +27,6 @@ class PipelinesFinder
     items = by_yaml_errors(items)
     sort_items(items)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

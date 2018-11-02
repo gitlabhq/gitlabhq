@@ -88,44 +88,6 @@ end
 The [`Project` factory](./resource/project.rb) is a good real example of Browser
 UI and API implementations.
 
-### Define attributes
-
-After the resource is fabricated, we would like to access the attributes on
-the resource. We define the attributes with `attribute` method. Suppose
-we want to access the name on the resource, we could change `attr_accessor`
-to `attribute`:
-
-```ruby
-module QA
-  module Factory
-    module Resource
-      class Shirt < Factory::Base
-        attribute :name
-
-        # ... same as before
-      end
-    end
-  end
-end
-```
-
-The difference between `attr_accessor` and `attribute` is that by using
-`attribute` it can also be accessed from the product:
-
-```ruby
-shirt =
-  QA::Factory::Resource::Shirt.fabricate! do |resource|
-    resource.name = "GitLab QA"
-  end
-
-shirt.name # => "GitLab QA"
-```
-
-In the above example, if we use `attr_accessor :name` then `shirt.name` won't
-be available. On the other hand, using `attribute :name` will allow you to use
-`shirt.name`, so most of the time you'll want to use `attribute` instead of
-`attr_accessor` unless we clearly don't need it for the product.
-
 #### Resource attributes
 
 A resource may need another resource to exist first. For instance, a project
@@ -145,7 +107,7 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attribute :name
+        attr_accessor :name
 
         attribute :project do
           Factory::Resource::Project.fabricate! do |resource|
@@ -206,7 +168,7 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attribute :name
+        attr_accessor :name
 
         attribute :project do
           Factory::Resource::Project.fabricate! do |resource|
@@ -287,7 +249,7 @@ module QA
             shirt_new.create_shirt!
           end
 
-          brand # Eagerly construct the data
+          populate(:brand) # Eagerly construct the data
         end
       end
     end
@@ -295,9 +257,12 @@ module QA
 end
 ```
 
-This will make sure we construct the data right after we created the shirt.
-The drawback for this will become we're forced to construct the data even
-if we don't really need to use it.
+The `populate` method will iterate through its arguments and call each
+attribute respectively. Here `populate(:brand)` has the same effect as
+just `brand`. Using the populate method makes the intention clearer.
+
+With this, it will make sure we construct the data right after we create the
+shirt. The drawback is that this will always construct the data when the resource is fabricated even if we don't need to use the data.
 
 Alternatively, we could just make sure we're on the right page before
 constructing the brand data:
@@ -307,7 +272,7 @@ module QA
   module Factory
     module Resource
       class Shirt < Factory::Base
-        attribute :name
+        attr_accessor :name
 
         attribute :project do
           Factory::Resource::Project.fabricate! do |resource|
@@ -385,7 +350,7 @@ end
 
 **Notes on attributes precedence:**
 
-- attributes from the factory have the highest precedence
+- factory instance variables have the highest precedence
 - attributes from the API response take precedence over attributes from the
   block (usually from Browser UI)
 - attributes without a value will raise a `QA::Factory::Base::NoValueError` error

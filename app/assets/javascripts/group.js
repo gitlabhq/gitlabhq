@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { slugifyWithHyphens } from './lib/utils/text_utility';
 
 export default class Group {
   constructor() {
@@ -7,17 +8,18 @@ export default class Group {
     this.updateHandler = this.update.bind(this);
     this.resetHandler = this.reset.bind(this);
     if (this.groupName.val() === '') {
-      this.groupPath.on('keyup', this.updateHandler);
-      this.groupName.on('keydown', this.resetHandler);
+      this.groupName.on('keyup', this.updateHandler);
+      this.groupPath.on('keydown', this.resetHandler);
     }
   }
 
   update() {
-    this.groupName.val(this.groupPath.val());
+    const slug = slugifyWithHyphens(this.groupName.val());
+    this.groupPath.val(slug);
   }
 
   reset() {
-    this.groupPath.off('keyup', this.updateHandler);
-    this.groupName.off('keydown', this.resetHandler);
+    this.groupName.off('keyup', this.updateHandler);
+    this.groupPath.off('keydown', this.resetHandler);
   }
 }

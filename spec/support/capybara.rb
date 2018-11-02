@@ -100,7 +100,7 @@ RSpec.configure do |config|
 
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
     # but `block_and_wait_for_requests_complete` is called before it so by
-    # calling it explicitely here, we prevent any new requests from being fired
+    # calling it explicitly here, we prevent any new requests from being fired
     # See https://github.com/teamcapybara/capybara/blob/ffb41cfad620de1961bb49b1562a9fa9b28c0903/lib/capybara/rspec.rb#L20-L25
     # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
     Capybara.reset_sessions! unless example.exception

@@ -1,7 +1,11 @@
 <script>
+import { GlPagination } from '@gitlab-org/gitlab-ui';
 import { s__ } from '../../locale';
 
 export default {
+  components: {
+    GlPagination,
+  },
   props: {
     change: {
       type: Function,

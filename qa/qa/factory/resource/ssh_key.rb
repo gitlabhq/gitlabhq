@@ -6,11 +6,9 @@ module QA
       class SSHKey < Factory::Base
         extend Forwardable
 
-        def_delegators :key, :private_key, :public_key, :fingerprint
+        attr_accessor :title
 
-        attribute :private_key
-        attribute :title
-        attribute :fingerprint
+        def_delegators :key, :private_key, :public_key, :fingerprint
 
         def key
           @key ||= Runtime::Key::RSA.new

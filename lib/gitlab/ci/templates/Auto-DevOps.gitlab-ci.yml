@@ -823,7 +823,7 @@ rollout 100%:
   function initialize_tiller() {
     echo "Checking Tiller..."
 
-    export HELM_HOST=":44134"
+    export HELM_HOST="localhost:44134"
     tiller -listen ${HELM_HOST} -alsologtostderr > /dev/null 2>&1 &
     echo "Tiller is listening on ${HELM_HOST}"
 
