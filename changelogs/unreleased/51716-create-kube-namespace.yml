@@ -1,0 +1,5 @@
+---
+title: Extend RBAC by having a service account restricted to project's namespace
+merge_request: 22011
+author:
+type: other

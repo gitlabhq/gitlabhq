@@ -10,23 +10,15 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
 
   describe 'namespace uniqueness validation' do
     let(:cluster_project) { create(:cluster_project) }
-
-    let(:kubernetes_namespace) do
-      build(:cluster_kubernetes_namespace,
-            cluster: cluster_project.cluster,
-            project: cluster_project.project,
-            cluster_project: cluster_project)
-    end
+    let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, namespace: 'my-namespace') }
 
     subject  { kubernetes_namespace }
 
     context 'when cluster is using the namespace' do
       before do
         create(:cluster_kubernetes_namespace,
-               cluster: cluster_project.cluster,
-               project: cluster_project.project,
-               cluster_project: cluster_project,
-               namespace: kubernetes_namespace.namespace)
+               cluster: kubernetes_namespace.cluster,
+               namespace: 'my-namespace')
       end
 
       it { is_expected.not_to be_valid }
@@ -37,48 +29,79 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     end
   end
 
-  describe '#set_namespace_and_service_account_to_default' do
-    let(:cluster) { platform.cluster }
-    let(:cluster_project) { create(:cluster_project, cluster: cluster) }
-    let(:kubernetes_namespace) do
-      create(:cluster_kubernetes_namespace,
-            cluster: cluster_project.cluster,
-            project: cluster_project.project,
-            cluster_project: cluster_project)
-    end
+  describe '#configure_predefined_variables' do
+    let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace) }
+    let(:cluster) { kubernetes_namespace.cluster }
+    let(:platform) { kubernetes_namespace.platform_kubernetes }
+
+    subject { kubernetes_namespace.configure_predefined_credentials }
 
     describe 'namespace' do
-      let(:platform) { create(:cluster_platform_kubernetes, namespace: namespace) }
-
-      subject { kubernetes_namespace.namespace }
+      before do
+        platform.update_column(:namespace, namespace)
+      end
 
       context 'when platform has a namespace assigned' do
         let(:namespace) { 'platform-namespace' }
 
         it 'should copy the namespace' do
-          is_expected.to eq('platform-namespace')
+          subject
+
+          expect(kubernetes_namespace.namespace).to eq('platform-namespace')
         end
       end
 
       context 'when platform does not have namespace assigned' do
+        let(:project) { kubernetes_namespace.project }
         let(:namespace) { nil }
+        let(:project_slug) { "#{project.path}-#{project.id}" }
 
-        it 'should set default namespace' do
-          project_slug = "#{cluster_project.project.path}-#{cluster_project.project_id}"
+        it 'should fallback to project namespace' do
+          subject
 
-          is_expected.to eq(project_slug)
+          expect(kubernetes_namespace.namespace).to eq(project_slug)
         end
       end
     end
 
     describe 'service_account_name' do
-      let(:platform) { create(:cluster_platform_kubernetes) }
-
-      subject { kubernetes_namespace.service_account_name }
+      let(:service_account_name) { "#{kubernetes_namespace.namespace}-service-account" }
 
       it 'should set a service account name based on namespace' do
-        is_expected.to eq("#{kubernetes_namespace.namespace}-service-account")
+        subject
+
+        expect(kubernetes_namespace.service_account_name).to eq(service_account_name)
       end
+    end
+  end
+
+  describe '#predefined_variables' do
+    let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, service_account_token: token) }
+    let(:cluster) { create(:cluster, :project, platform_kubernetes: platform) }
+    let(:platform) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
+
+    let(:api_url) { 'https://kube.domain.com' }
+    let(:ca_pem) { 'CA PEM DATA' }
+    let(:token) { 'token' }
+
+    let(:kubeconfig) do
+      config_file = expand_fixture_path('config/kubeconfig.yml')
+      config = YAML.safe_load(File.read(config_file))
+      config.dig('users', 0, 'user')['token'] = token
+      config.dig('contexts', 0, 'context')['namespace'] = kubernetes_namespace.namespace
+      config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
+        Base64.strict_encode64(ca_pem)
+
+      YAML.dump(config)
+    end
+
+    it 'sets the variables' do
+      expect(kubernetes_namespace.predefined_variables).to include(
+        { key: 'KUBE_SERVICE_ACCOUNT', value: kubernetes_namespace.service_account_name, public: true },
+        { key: 'KUBE_NAMESPACE', value: kubernetes_namespace.namespace, public: true },
+        { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false },
+        { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true }
+      )
     end
   end
 end

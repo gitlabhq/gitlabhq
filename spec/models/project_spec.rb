@@ -2405,11 +2405,23 @@ describe Project do
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
-      context 'when user configured kubernetes from CI/CD > Clusters' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace) }
+        let!(:cluster) { kubernetes_namespace.cluster }
+        let(:project) { kubernetes_namespace.project }
+
+        it 'should return token from kubernetes namespace' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
       end
     end
   end

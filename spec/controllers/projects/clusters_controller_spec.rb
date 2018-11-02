@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
+  include KubernetesHelpers
 
   set(:project) { create(:project) }
 
@@ -309,6 +310,11 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      before do
+        allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+        stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
@@ -410,6 +416,11 @@ describe Projects::ClustersController do
                                 id: cluster,
                                 format: format
                                )
+    end
+
+    before do
+      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
     end
 
     context 'when cluster is provided by GCP' do

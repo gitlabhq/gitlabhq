@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Clusters::UpdateService do
+  include KubernetesHelpers
+
   describe '#execute' do
     subject { described_class.new(cluster.user, params).execute(cluster) }
 
@@ -32,6 +34,11 @@ describe Clusters::UpdateService do
               namespace: 'custom-namespace'
             }
           }
+        end
+
+        before do
+          allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+          stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
         end
 
         it 'updates namespace' do
