@@ -1,10 +1,12 @@
 <script>
+import { GlLink } from '@gitlab-org/gitlab-ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
     TimeagoTooltip,
+    GlLink,
   },
   mixins: [timeagoMixin],
   props: {
@@ -53,16 +55,16 @@ export default {
       class="btn-group d-flex"
       role="group"
     >
-      <a
+      <gl-link
         v-if="artifact.keep_path"
         :href="artifact.keep_path"
         class="js-keep-artifacts btn btn-sm btn-default"
         data-method="post"
       >
         {{ s__('Job|Keep') }}
-      </a>
+      </gl-link>
 
-      <a
+      <gl-link
         v-if="artifact.download_path"
         :href="artifact.download_path"
         class="js-download-artifacts btn btn-sm btn-default"
@@ -70,15 +72,15 @@ export default {
         rel="nofollow"
       >
         {{ s__('Job|Download') }}
-      </a>
+      </gl-link>
 
-      <a
+      <gl-link
         v-if="artifact.browse_path"
         :href="artifact.browse_path"
         class="js-browse-artifacts btn btn-sm btn-default"
       >
         {{ s__('Job|Browse') }}
-      </a>
+      </gl-link>
     </div>
   </div>
 </template>
