@@ -6,6 +6,13 @@ module Gitlab
       class Normalizer
         class << self
           def normalize_jobs(jobs_config)
+            parallelized_config, parallelized_jobs = parallelize_jobs(jobs_config)
+            parallelize_dependencies(parallelized_config, parallelized_jobs)
+          end
+
+          private
+
+          def parallelize_jobs(jobs_config)
             parallelized_jobs = {}
 
             parallelized_config = jobs_config.map do |name, config|
@@ -19,29 +26,32 @@ module Gitlab
               end
             end.reduce(:merge)
 
-            parallelized_config.each do |name, config|
-              next unless config[:dependencies]
-
-              deps = config[:dependencies].map do |dep|
-                if parallelized_jobs.keys.include?(dep.to_sym)
-                  config[:dependencies].delete(dep)
-                  parallelized_jobs[dep.to_sym]
-                else
-                  dep
-                end
-              end.flatten
-
-              config[:dependencies] = deps
-            end
+            [parallelized_config, parallelized_jobs]
           end
 
-          private
+          def parallelize_dependencies(jobs_config, parallelized_jobs)
+            jobs_config.map do |name, config|
+              if config[:dependencies]
+                deps = config[:dependencies].map do |dep|
+                  if parallelized_jobs.keys.include?(dep.to_sym)
+                    parallelized_jobs[dep.to_sym]
+                  else
+                    dep
+                  end
+                end.flatten
+
+                { name => config.merge(dependencies: deps) }
+              else
+                { name => config }
+              end
+            end.reduce(:merge)
+          end
 
           def parallelize_job_names(name, total)
             jobs = []
 
-            total.times do |idx|
-              jobs << ["#{name} #{idx + 1}/#{total}", idx + 1]
+            1.upto(total) do |idx|
+              jobs << ["#{name} #{idx}/#{total}", idx]
             end
 
             jobs
