@@ -211,4 +211,29 @@ describe LabelsHelper do
       end
     end
   end
+
+  describe 'labels_filter_path' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project) }
+
+    it 'links to the dashboard labels page' do
+      expect(labels_filter_path).to eq(dashboard_labels_path)
+    end
+
+    it 'links to the group labels page' do
+      assign(:group, group)
+
+      expect(helper.labels_filter_path).to eq(group_labels_path(group))
+    end
+
+    it 'links to the project labels page' do
+      assign(:project, project)
+
+      expect(helper.labels_filter_path).to eq(project_labels_path(project))
+    end
+
+    it 'supports json format' do
+      expect(labels_filter_path(format: :json)).to eq(dashboard_labels_path(format: :json))
+    end
+  end
 end

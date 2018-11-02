@@ -1,0 +1,5 @@
+---
+title: Fix bug when links in tabs of the labels index pages ends with .html
+merge_request: 22716
+author:
+type: fixed
