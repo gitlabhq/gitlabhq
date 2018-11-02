@@ -43,7 +43,7 @@ class Projects::CommitController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
-    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
+    @pipelines = @pipelines.where(ref: params[:ref]).page(params[:page]).per(30) if params[:ref]
 
     respond_to do |format|
       format.html
@@ -53,6 +53,7 @@ class Projects::CommitController < Projects::ApplicationController
         render json: {
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
+            .with_pagination(request, response)
             .represent(@pipelines),
           count: {
             all: @pipelines.count

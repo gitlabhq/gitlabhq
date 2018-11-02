@@ -84,13 +84,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def pipelines
-    @pipelines = @merge_request.all_pipelines
+    @pipelines = @merge_request.all_pipelines.page(params[:page]).per(30)
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
+        .with_pagination(request, response)
         .represent(@pipelines),
       count: {
         all: @pipelines.count
