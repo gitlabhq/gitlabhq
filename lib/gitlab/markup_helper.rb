@@ -59,6 +59,6 @@ module Gitlab
 
     def plain_filename?(filename)
       PLAIN_FILENAMES.include?(filename.downcase)
-    end  
+    end
   end
 end
