@@ -19,9 +19,9 @@
 
     .tab-content.gitlab-tab-content
       .tab-pane{ id: 'create-gcp-cluster-pane', class: active_when(active_tab == 'gcp'), role: 'tabpanel' }
-        = render 'projects/clusters/gcp/header'
+        = render 'clusters/clusters/gcp/header'
         - if @valid_gcp_token
-          = render 'projects/clusters/gcp/form'
+          = render 'clusters/clusters/gcp/form'
         - elsif @authorize_url
           .signin-with-google
             = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px'), @authorize_url)
@@ -32,5 +32,5 @@
           = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }
 
       .tab-pane{ id: 'add-user-cluster-pane', class: active_when(active_tab == 'user'), role: 'tabpanel' }
-        = render 'projects/clusters/user/header'
-        = render 'projects/clusters/user/form'
+        = render 'clusters/clusters/user/header'
+        = render 'clusters/clusters/user/form'
