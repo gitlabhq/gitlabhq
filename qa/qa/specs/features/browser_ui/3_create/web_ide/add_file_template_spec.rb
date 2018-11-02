@@ -13,7 +13,7 @@ module QA
       before(:all) do
         login
 
-        @project = Factory::Resource::Project.fabricate! do |project|
+        @project = Resource::Project.fabricate! do |project|
           project.name = 'file-template-project'
           project.description = 'Add file templates via the Web IDE'
         end

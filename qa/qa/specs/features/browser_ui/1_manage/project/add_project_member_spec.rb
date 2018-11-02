@@ -7,9 +7,9 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        user = Factory::Resource::User.fabricate!
+        user = Resource::User.fabricate!
 
-        project = Factory::Resource::Project.fabricate! do |resource|
+        project = Resource::Project.fabricate! do |resource|
           resource.name = 'add-member-project'
         end
         project.visit!

@@ -7,22 +7,22 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        current_project = Factory::Resource::Project.fabricate! do |project|
+        current_project = Resource::Project.fabricate! do |project|
           project.name = 'project-with-merge-request-and-milestone'
         end
 
-        current_milestone = Factory::Resource::ProjectMilestone.fabricate! do |milestone|
+        current_milestone = Resource::ProjectMilestone.fabricate! do |milestone|
           milestone.title = 'unique-milestone'
           milestone.project = current_project
         end
 
-        new_label = Factory::Resource::Label.fabricate! do |label|
+        new_label = Resource::Label.fabricate! do |label|
           label.project = current_project
           label.title = 'qa-mr-test-label'
           label.description = 'Merge Request label'
         end
 
-        Factory::Resource::MergeRequest.fabricate! do |merge_request|
+        Resource::MergeRequest.fabricate! do |merge_request|
           merge_request.title = 'This is a merge request with a milestone'
           merge_request.description = 'Great feature with milestone'
           merge_request.project = current_project
@@ -49,11 +49,11 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      current_project = Factory::Resource::Project.fabricate! do |project|
+      current_project = Resource::Project.fabricate! do |project|
         project.name = 'project-with-merge-request'
       end
 
-      Factory::Resource::MergeRequest.fabricate! do |merge_request|
+      Resource::MergeRequest.fabricate! do |merge_request|
         merge_request.title = 'This is a merge request'
         merge_request.description = 'Great feature'
         merge_request.project = current_project
