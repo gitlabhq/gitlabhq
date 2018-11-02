@@ -5736,6 +5736,9 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
+msgid "Sorry, your filter produced no results"
+msgstr ""
+
 msgid "Sort by"
 msgstr ""
 
@@ -6607,6 +6610,9 @@ msgid "To this GitLab instance"
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
+msgid "To widen your search, change or remove filters in the filter bar above"
 msgstr ""
 
 msgid "Today"

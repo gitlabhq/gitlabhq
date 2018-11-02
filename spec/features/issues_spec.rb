@@ -17,6 +17,15 @@ describe 'Issues' do
         expect(page).to have_content('The Issue Tracker is the place to add things that need to be improved or solved in a project.')
         expect(page).to have_content('You can register or sign in to create issues for this project.')
       end
+
+      it 'user sees empty state with filters' do
+        create(:issue, author: user, project: project)
+
+        visit project_issues_path(project, milestone_title: "1.0")
+
+        expect(page).to have_content('Sorry, your filter produced no results')
+        expect(page).to have_content('To widen your search, change or remove filters in the filter bar above')
+      end
     end
   end
 
@@ -36,6 +45,15 @@ describe 'Issues' do
         expect(page).to have_content('The Issue Tracker is the place to add things that need to be improved or solved in a project')
         expect(page).to have_content('Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.')
         expect(page).to have_content('New issue')
+      end
+
+      it 'user sees empty state with filters' do
+        create(:issue, author: user, project: project)
+
+        visit project_issues_path(project, milestone_title: "1.0")
+
+        expect(page).to have_content('Sorry, your filter produced no results')
+        expect(page).to have_content('To widen your search, change or remove filters in the filter bar above')
       end
     end
 
