@@ -605,7 +605,7 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default:
         path: /home/git/repositories/
-        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port). TLS connections are also supported using the system certificate pool (eg: tls://host:port).
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings
