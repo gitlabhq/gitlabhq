@@ -150,7 +150,7 @@ module Clusters
       end
 
       def build_kube_client!
-        raise "Incomplete settings" unless api_url && actual_namespace
+        raise "Incomplete settings" unless api_url
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"
