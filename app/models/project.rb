@@ -1829,7 +1829,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables || []
+    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
   end
 
   def auto_devops_variables

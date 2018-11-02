@@ -109,14 +109,20 @@ describe Clusters::Applications::Prometheus do
     end
 
     context 'cluster has kubeclient' do
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
       let(:kubernetes_url) { subject.cluster.platform_kubernetes.api_url }
       let(:kube_client) { subject.cluster.kubeclient.core_client }
 
-      subject { create(:clusters_applications_prometheus) }
+      subject { create(:clusters_applications_prometheus, cluster: cluster) }
 
       before do
         subject.cluster.platform_kubernetes.namespace = 'a-namespace'
-        stub_kubeclient_discover(subject.cluster.platform_kubernetes.api_url)
+        stub_kubeclient_discover(cluster.platform_kubernetes.api_url)
+
+        create(:cluster_kubernetes_namespace,
+               cluster: cluster,
+               cluster_project: cluster.cluster_project,
+               project: cluster.cluster_project.project)
       end
 
       it 'creates proxy prometheus rest client' do

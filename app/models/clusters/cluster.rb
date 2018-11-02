@@ -19,6 +19,7 @@ module Clusters
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'
+    has_one :cluster_project, -> { order(id: :desc) }, class_name: 'Clusters::Project'
 
     has_many :cluster_groups, class_name: 'Clusters::Group'
     has_many :groups, through: :cluster_groups, class_name: '::Group'
@@ -126,6 +127,13 @@ module Clusters
 
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?
+    end
+
+    def find_or_initialize_kubernetes_namespace(cluster_project)
+      kubernetes_namespaces.find_or_initialize_by(
+        project: cluster_project.project,
+        cluster_project: cluster_project
+      )
     end
 
     private
