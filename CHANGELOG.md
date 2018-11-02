@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.4 (2018-10-30)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
+
+
 ## 11.4.3 (2018-10-26)
 
 - No changes.
@@ -248,6 +255,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.9 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
 
 
 ## 11.3.8 (2018-10-27)
@@ -553,6 +567,13 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.8 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
 
 
 ## 11.2.7 (2018-10-27)

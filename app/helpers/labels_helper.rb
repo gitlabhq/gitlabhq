@@ -143,7 +143,7 @@ module LabelsHelper
 
   def labels_filter_path(options = {})
     project = @target_project || @project
-    format = options.delete(:format) || :html
+    format = options.delete(:format)
 
     if project
       project_labels_path(project, format, options)

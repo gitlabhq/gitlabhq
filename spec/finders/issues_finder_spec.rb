@@ -372,6 +372,22 @@ describe IssuesFinder do
       end
 
       context 'filtering by reaction name' do
+        context 'user searches by no reaction' do
+          let(:params) { { my_reaction_emoji: 'None' } }
+
+          it 'returns issues that the user did not react to' do
+            expect(issues).to contain_exactly(issue2, issue4)
+          end
+        end
+
+        context 'user searches by any reaction' do
+          let(:params) { { my_reaction_emoji: 'Any' } }
+
+          it 'returns issues that the user reacted to' do
+            expect(issues).to contain_exactly(issue1, issue3)
+          end
+        end
+
         context 'user searches by "thumbsup" reaction' do
           let(:params) { { my_reaction_emoji: 'thumbsup' } }
 

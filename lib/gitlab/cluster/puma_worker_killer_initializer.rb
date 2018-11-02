@@ -11,7 +11,11 @@ module Gitlab
           # Importantly RAM is for _all_workers (ie, the cluster),
           # not each worker as is the case with GITLAB_UNICORN_MEMORY_MAX
           worker_count = puma_options[:workers] || 1
-          config.ram = worker_count * puma_per_worker_max_memory_mb
+          # The Puma Worker Killer checks the total RAM used by both the master
+          # and worker processes. Bump the limits to N+1 instead of N workers
+          # to account for this:
+          # https://github.com/schneems/puma_worker_killer/blob/v0.1.0/lib/puma_worker_killer/puma_memory.rb#L57
+          config.ram = (worker_count + 1) * puma_per_worker_max_memory_mb
 
           config.frequency = 20 # seconds
 
