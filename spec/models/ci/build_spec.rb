@@ -216,14 +216,6 @@ describe Ci::Build do
       let(:build) { create(:ci_build, :created, :schedulable, project: project) }
 
       it { expect(subject).to be_truthy }
-
-      context 'when feature flag is diabled' do
-        before do
-          stub_feature_flags(ci_enable_scheduled_build: false)
-        end
-
-        it { expect(subject).to be_falsy }
-      end
     end
 
     context 'when build is not schedulable' do
@@ -326,10 +318,6 @@ describe Ci::Build do
 
   describe '#enqueue_scheduled' do
     subject { build.enqueue_scheduled }
-
-    before do
-      stub_feature_flags(ci_enable_scheduled_build: true)
-    end
 
     context 'when build is scheduled and the right time has not come yet' do
       let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }

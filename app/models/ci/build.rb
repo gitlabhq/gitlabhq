@@ -259,8 +259,7 @@ module Ci
     end
 
     def schedulable?
-      Feature.enabled?('ci_enable_scheduled_build', default_enabled: true) &&
-        self.when == 'delayed' && options[:start_in].present?
+      self.when == 'delayed' && options[:start_in].present?
     end
 
     def options_scheduled_at
