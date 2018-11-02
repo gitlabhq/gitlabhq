@@ -1,5 +1,3 @@
-import { __ } from '~/locale';
-
 export default () => ({
   jobEndpoint: null,
   traceEndpoint: null,
@@ -29,7 +27,7 @@ export default () => ({
   // sidebar dropdown & list of jobs
   isLoadingStages: false,
   isLoadingJobs: false,
-  selectedStage: __('More'),
+  selectedStage: '',
   stages: [],
   jobs: [],
 });

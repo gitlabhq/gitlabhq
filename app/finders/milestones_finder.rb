@@ -20,7 +20,6 @@ class MilestonesFinder
     @params = params
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     return Milestone.none if project_ids.empty? && group_ids.empty?
 
@@ -31,7 +30,6 @@ class MilestonesFinder
 
     order(items)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

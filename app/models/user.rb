@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   ignore_column :email_provider
   ignore_column :authentication_token
 
-  add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
 
   default_value_for :admin, false
@@ -463,7 +463,7 @@ class User < ActiveRecord::Base
     def find_by_personal_access_token(token_string)
       return unless token_string
 
-      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user # rubocop: disable CodeReuse/Finder
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
@@ -1138,7 +1138,7 @@ class User < ActiveRecord::Base
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
       .where("created_at > ?", Time.now - 1.year)
-      .uniq
+      .distinct
       .reorder(nil)
 
     Project.where(id: events)
@@ -1461,15 +1461,6 @@ class User < ActiveRecord::Base
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
       regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
       signup_domain =~ regexp
-    end
-  end
-
-  def generate_token(token_field)
-    if token_field == :incoming_email_token
-      # Needs to be all lowercase and alphanumeric because it's gonna be used in an email address.
-      SecureRandom.hex.to_i(16).to_s(36)
-    else
-      super
     end
   end
 

@@ -1,27 +1,27 @@
 <script>
-  import Modal from '~/vue_shared/components/gl_modal.vue';
-  import LoadingButton from '~/vue_shared/components/loading_button.vue';
-  import CodeBlock from '~/vue_shared/components/code_block.vue';
-  import { fieldTypes } from '../constants';
+import Modal from '~/vue_shared/components/gl_modal.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import CodeBlock from '~/vue_shared/components/code_block.vue';
+import { fieldTypes } from '../constants';
 
-  export default {
-    components: {
-      Modal,
-      LoadingButton,
-      CodeBlock,
+export default {
+  components: {
+    Modal,
+    LoadingButton,
+    CodeBlock,
+  },
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      modalData: {
-        type: Object,
-        required: true,
-      },
+    modalData: {
+      type: Object,
+      required: true,
     },
-    fieldTypes,
-  };
+  },
+  fieldTypes,
+};
 </script>
 <template>
   <modal

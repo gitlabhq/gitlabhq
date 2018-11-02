@@ -4,7 +4,10 @@ require 'spec_helper'
 
 describe Clusters::Cluster do
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
+  it { is_expected.to have_many(:cluster_groups) }
+  it { is_expected.to have_many(:groups) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:application_helm) }
@@ -178,6 +181,53 @@ describe Clusters::Cluster do
         it { expect(cluster.update(enabled: false)).to be_truthy }
       end
     end
+
+    describe 'cluster_type validations' do
+      let(:instance_cluster) { create(:cluster, :instance) }
+      let(:group_cluster) { create(:cluster, :group) }
+      let(:project_cluster) { create(:cluster, :project) }
+
+      it 'validates presence' do
+        cluster = build(:cluster, :project, cluster_type: nil)
+
+        expect(cluster).not_to be_valid
+        expect(cluster.errors.full_messages).to include("Cluster type can't be blank")
+      end
+
+      context 'project_type cluster' do
+        it 'does not allow setting group' do
+          project_cluster.groups << build(:group)
+
+          expect(project_cluster).not_to be_valid
+          expect(project_cluster.errors.full_messages).to include('Cluster cannot have groups assigned')
+        end
+      end
+
+      context 'group_type cluster' do
+        it 'does not allow setting project' do
+          group_cluster.projects << build(:project)
+
+          expect(group_cluster).not_to be_valid
+          expect(group_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
+        end
+      end
+
+      context 'instance_type cluster' do
+        it 'does not allow setting group' do
+          instance_cluster.groups << build(:group)
+
+          expect(instance_cluster).not_to be_valid
+          expect(instance_cluster.errors.full_messages).to include('Cluster cannot have groups assigned')
+        end
+
+        it 'does not allow setting project' do
+          instance_cluster.projects << build(:project)
+
+          expect(instance_cluster).not_to be_valid
+          expect(instance_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
+        end
+      end
+    end
   end
 
   describe '#provider' do
@@ -223,6 +273,23 @@ describe Clusters::Cluster do
     end
 
     context 'when cluster does not belong to projects' do
+      let(:cluster) { create(:cluster) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#group' do
+    subject { cluster.group }
+
+    context 'when cluster belongs to a group' do
+      let(:cluster) { create(:cluster, :group) }
+      let(:group) { cluster.groups.first }
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'when cluster does not belong to any group' do
       let(:cluster) { create(:cluster) }
 
       it { is_expected.to be_nil }

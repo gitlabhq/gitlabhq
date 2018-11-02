@@ -83,7 +83,7 @@ class Namespace < ActiveRecord::Base
       find_by('lower(path) = :value', value: path.downcase)
     end
 
-    # Case insensetive search for namespace by path or name
+    # Case insensitive search for namespace by path or name
     def find_by_path_or_name(path)
       find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
     end

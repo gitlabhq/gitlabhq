@@ -172,7 +172,7 @@ describe('Flash', () => {
         flash('test');
 
         expect(document.querySelector('.flash-text').className).toBe(
-          'flash-text container-fluid container-limited',
+          'flash-text container-fluid container-limited limit-container-width',
         );
       });
 
@@ -180,7 +180,7 @@ describe('Flash', () => {
         document.querySelector('.content-wrapper').className = 'js-content-wrapper';
         flash('test');
 
-        expect(document.querySelector('.flash-text').className.trim()).toBe('flash-text');
+        expect(document.querySelector('.flash-text').className.trim()).toContain('flash-text');
       });
 
       it('removes element after clicking', () => {

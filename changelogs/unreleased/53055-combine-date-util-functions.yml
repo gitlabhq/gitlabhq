@@ -1,0 +1,5 @@
+---
+title: Combine all datetime library functions into 'datetime_utility.js'
+merge_request: 22570
+author:
+type: other

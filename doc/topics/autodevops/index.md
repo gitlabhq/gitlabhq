@@ -2,14 +2,15 @@
 
 > [Introduced][ce-37115] in GitLab 10.0. Generally available on GitLab 11.0.
 
-Auto DevOps automatically detects, builds, tests, deploys, and monitors your
-applications.
+Auto DevOps provides pre-defined CI/CD configuration which allows you to automatically detect, build, test,
+deploy, and monitor your applications. Leveraging CI/CD best practices and tools, Auto DevOps aims
+to simplify the setup and execution of a mature & modern software development lifecycle.
 
 ## Overview
 
 NOTE: **Enabled by default:**
-Starting with GitLab 11.3, the Auto DevOps pipeline will be enabled by default for all
-projects. If it's not explicitly enabled for the project, Auto DevOps will be automatically
+Starting with GitLab 11.3, the Auto DevOps pipeline is enabled by default for all
+projects. If it has not been explicitly enabled for the project, Auto DevOps will be automatically
 disabled on the first pipeline failure. Your project will continue to use an alternative
 [CI/CD configuration file](../../ci/yaml/README.md) if one is found. A GitLab
 administrator can [change this setting](../../user/admin_area/settings/continuous_integration.html#auto-devops)
@@ -17,33 +18,38 @@ in the admin area.
 
 With Auto DevOps, the software development process becomes easier to set up
 as every project can have a complete workflow from verification to monitoring
-without needing to configure anything. Just push your code and GitLab takes
+with minimal configuration. Just push your code and GitLab takes
 care of everything else. This makes it easier to start new projects and brings
 consistency to how applications are set up throughout a company.
 
 ## Quick start
 
 If you are using GitLab.com, see the [quick start guide](quick_start_guide.md)
-for using Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
-Engine.
+for how to use Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
+Engine (GKE).
+
+If you are using a self-hosted instance of GitLab, you will need to configure the
+[Google OAuth2 OmniAuth Provider](../../integration/google.md) before
+you can configure a cluster on GKE. Once this is set up, you can follow the steps on the
+[quick start guide](quick_start_guide.md) to get started.
 
 ## Comparison to application platforms and PaaS
 
-Auto DevOps provides functionality described by others as an application
-platform or as a Platform as a Service (PaaS). It takes inspiration from the
+Auto DevOps provides functionality that is often included in an application
+platform or a Platform as a Service (PaaS). It takes inspiration from the
 innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
-in a couple of ways:
+in multiple ways:
 
-1. Auto DevOps works with any Kubernetes cluster, you're not limited to running
-   on GitLab's infrastructure (note that many features also work without Kubernetes).
+1. Auto DevOps works with any Kubernetes cluster; you're not limited to running
+   on GitLab's infrastructure. (Note that many features also work without Kubernetes.)
 1. There is no additional cost (no markup on the infrastructure costs), and you
    can use a self-hosted Kubernetes cluster or Containers as a Service on any
-   public cloud (for example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
+   public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
 1. Auto DevOps has more features including security testing, performance testing,
    and code quality testing.
-1. It offers an incremental graduation path. If you need advanced customizations
+1. Auto DevOps offers an incremental graduation path. If you need advanced customizations,
    you can start modifying the templates without having to start over on a
-   completely different platform.
+   completely different platform. Review the [customizing](#customizing) section for more information.
 
 ## Features
 
@@ -197,35 +203,44 @@ and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
 
-## Enabling Auto DevOps
+## Enabling/Disabling Auto DevOps
 
-If you haven't done already, read the [requirements](#requirements) to make
-full use of Auto DevOps. If this is your fist time, we recommend you follow the
+When first using Auto Devops, review the [requirements](#requirements) to ensure all necessary components to make
+full use of Auto DevOps are available. If this is your fist time, we recommend you follow the
 [quick start guide](quick_start_guide.md).
 
-To enable Auto DevOps to your project:
+GitLab.com users can enable/disable Auto DevOps at the project-level only. Self-managed users
+can enable/disable Auto DevOps at either the project-level or instance-level.
 
-1. Check that your project doesn't have a `.gitlab-ci.yml`, or remove it otherwise
-1. Go to your project's **Settings > CI/CD > Auto DevOps**
-1. Select "Enable Auto DevOps"
-1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
-   that will be used by Kubernetes to [deploy your application](#auto-deploy)
-   and choose the [deployment strategy](#deployment-strategy)
-1. Hit **Save changes** for the changes to take effect
+### Enabling/disabling Auto DevOps at the instance-level (Administrators only)
 
-Once saved, an Auto DevOps pipeline will be triggered on the default branch.
+1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Toggle the checkbox labeled **Default to Auto DevOps pipeline for all projects**.
+1. If enabling, optionally set up the Auto DevOps [base domain](#auto-devops-base-domain) which will be used for Auto Deploy and Auto Review Apps.
+1. Click **Save changes** for the changes to take effect.
+
+NOTE: **Note:**
+Even when disabled at the instance level, project maintainers are still able to enable
+Auto DevOps at the project level.
+
+### Enabling/disabling Auto DevOps at the project-level
+
+If enabling, check that your project doesn't have a `.gitlab-ci.yml`, or if one exists, remove it.
+
+1. Go to your project's **Settings > CI/CD > Auto DevOps**.
+1. Toggle the **Default to Auto DevOps pipeline** checkbox (checked to enable, unchecked to disable)
+1. When enabling, it's optional but recommended to add in the [base domain](#auto-devops-base-domain)
+   that will be used by Auto DevOps to [deploy your application](#auto-deploy)
+   and choose the [deployment strategy](#deployment-strategy).
+1. Click **Save changes** for the changes to take effect.
+
+When the feature has been enabled, an Auto DevOps pipeline is triggered on the default branch.
 
 NOTE: **Note:**
 For GitLab versions 10.0 - 10.2, when enabling Auto DevOps, a pipeline needs to be
 manually triggered either by pushing a new commit to the repository or by visiting
 `https://example.gitlab.com/<username>/<project>/pipelines/new` and creating
 a new pipeline for your default branch, generally `master`.
-
-NOTE: **Note:**
-If you are a GitLab Administrator, you can
-[enable/disable Auto DevOps instance-wide](../../user/admin_area/settings/continuous_integration.md#auto-devops),
-and all projects that haven't explicitly set an option will have Auto DevOps
-enabled/disabled by default.
 
 NOTE: **Note:**
 There is also a feature flag to enable Auto DevOps to a percentage of projects
@@ -299,8 +314,7 @@ static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out.
 
-In GitLab Starter, differences between the source and
-target branches are also
+Any differences between the source and target branches are also
 [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
 
 ### Auto SAST **[ULTIMATE]**
@@ -313,8 +327,11 @@ analysis on the current code and checks for potential security issues. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any security warnings are also
+Any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/sast.html).
+
+NOTE: **Note:**
+The Auto SAST stage will be skipped on licenses other than Ultimate.
 
 ### Auto Dependency Scanning **[ULTIMATE]**
 
@@ -329,6 +346,9 @@ check out.
 Any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/dependency_scanning.html).
 
+NOTE: **Note:**
+The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
+
 ### Auto License Management **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 11.0.
@@ -342,6 +362,9 @@ check out.
 Any licenses are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/license_management.html).
 
+NOTE: **Note:**
+The Auto License Management stage will be skipped on licenses other than Ultimate.
+
 ### Auto Container Scanning
 
 > Introduced in GitLab 10.4.
@@ -352,8 +375,11 @@ Docker image and checks for potential security issues. Once the report is
 created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any security warnings are also
+Any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/container_scanning.html).
+
+NOTE: **Note:**
+The Auto Container Scanning stage will be skipped on licenses other than Ultimate.
 
 ### Auto Review Apps
 
@@ -374,6 +400,9 @@ branch's code so developers, designers, QA, product managers, and other
 reviewers can actually see and interact with code changes as part of the review
 process. Auto Review Apps create a Review App for each branch.
 
+Auto Review Apps will deploy your app to your Kubernetes cluster only. When no cluster
+is available, no deployment will occur.
+
 The Review App will have a unique URL based on the project name, the branch
 name, and a unique number, combined with the Auto DevOps base domain. For
 example, `user-project-branch-1234.example.com`. A link to the Review App shows
@@ -391,8 +420,11 @@ to perform an analysis on the current code and checks for potential security
 issues. Once the report is created, it's uploaded as an artifact which you can
 later download and check out.
 
-In GitLab Ultimate, any security warnings are also
+Any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/dast.html).
+
+NOTE: **Note:**
+The Auto DAST stage will be skipped on licenses other than Ultimate.
 
 ### Auto Browser Performance Testing **[PREMIUM]**
 
@@ -406,8 +438,8 @@ Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://h
 /direction
 ```
 
-In GitLab Premium, performance differences between the source
-and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html).
+Any performance differences between the source and target branches are also
+[shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html).
 
 ### Auto Deploy
 

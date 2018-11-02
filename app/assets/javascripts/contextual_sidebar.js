@@ -20,8 +20,11 @@ export default class ContextualSidebar {
   }
 
   bindEvents() {
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
+    document.addEventListener('click', e => {
+      if (
+        !e.target.closest('.nav-sidebar') &&
+        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
+      ) {
         this.toggleCollapsedSidebar(true);
       }
     });

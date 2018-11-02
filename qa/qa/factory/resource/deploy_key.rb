@@ -4,11 +4,11 @@ module QA
       class DeployKey < Factory::Base
         attr_accessor :title, :key
 
-        product :fingerprint do |resource|
-          Page::Project::Settings::Repository.act do
-            expand_deploy_keys do |key|
-              key_offset = key.key_titles.index do |title|
-                title.text == resource.title
+        attribute :fingerprint do
+          Page::Project::Settings::Repository.perform do |setting|
+            setting.expand_deploy_keys do |key|
+              key_offset = key.key_titles.index do |key_title|
+                key_title.text == title
               end
 
               key.key_fingerprints[key_offset].text
@@ -16,17 +16,17 @@ module QA
           end
         end
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-deploy'
-          project.description = 'project for adding deploy key test'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-to-deploy'
+            resource.description = 'project for adding deploy key test'
+          end
         end
 
         def fabricate!
           project.visit!
 
-          Page::Project::Menu.act do
-            click_repository_settings
-          end
+          Page::Project::Menu.perform(&:click_repository_settings)
 
           Page::Project::Settings::Repository.perform do |setting|
             setting.expand_deploy_keys do |page|

@@ -46,7 +46,7 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
-        return Api.groupProjects(this.groupId, term, {}, projects => {
+        return Api.groupProjects(this.groupId, term, { with_issues_enabled: true }, projects => {
           this.loading = false;
           callback(projects);
         });
@@ -54,7 +54,9 @@ export default {
       renderRow(project) {
         return `
             <li>
-              <a href='#' class='dropdown-menu-link' data-project-id="${project.id}" data-project-name="${project.name}">
+              <a href='#' class='dropdown-menu-link' data-project-id="${
+                project.id
+              }" data-project-name="${project.name}">
                 ${_.escape(project.name)}
               </a>
             </li>

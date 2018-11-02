@@ -166,6 +166,33 @@ describe('init markdown', () => {
         expect(textArea.selectionStart).toEqual(expectedText.lastIndexOf(select));
         expect(textArea.selectionEnd).toEqual(expectedText.lastIndexOf(select) + select.length);
       });
+
+      it('should support selected urls', () => {
+        const expectedUrl = 'http://www.gitlab.com';
+        const expectedSelectionText = 'text';
+        const expectedText = `text [${expectedSelectionText}](${expectedUrl}) text`;
+        const initialValue = `text ${expectedUrl} text`;
+
+        textArea.value = initialValue;
+        const selectedIndex = initialValue.indexOf(expectedUrl);
+        textArea.setSelectionRange(selectedIndex, selectedIndex + expectedUrl.length);
+
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag,
+          blockTag: null,
+          selected: expectedUrl,
+          wrap: false,
+          select,
+        });
+
+        expect(textArea.value).toEqual(expectedText);
+        expect(textArea.selectionStart).toEqual(expectedText.indexOf(expectedSelectionText, 1));
+        expect(textArea.selectionEnd).toEqual(
+          expectedText.indexOf(expectedSelectionText, 1) + expectedSelectionText.length,
+        );
+      });
     });
   });
 });

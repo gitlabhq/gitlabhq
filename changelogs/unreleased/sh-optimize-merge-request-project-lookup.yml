@@ -1,0 +1,5 @@
+---
+title: Reduce SQL queries needed to load open merge requests
+merge_request: 22709
+author:
+type: performance

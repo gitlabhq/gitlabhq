@@ -1194,6 +1194,34 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#gitattribute' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '') }
+
+    after do
+      ensure_seeds
+    end
+
+    it 'returns matching language attribute' do
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-custom", 'gitlab-language')).to eq('ruby')
+    end
+
+    it 'returns matching language attribute with additional options' do
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-cgi", 'gitlab-language')).to eq('erb?parent=json')
+    end
+
+    it 'returns nil if nothing matches' do
+      expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
+    end
+
+    context 'without gitattributes file' do
+      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+
+      it 'returns nil' do
+        expect(repository.gitattribute("README.md", 'gitlab-language')).to eq(nil)
+      end
+    end
+  end
+
   describe '#ref_exists?' do
     it 'returns true for an existing tag' do
       expect(repository.ref_exists?('refs/heads/master')).to eq(true)

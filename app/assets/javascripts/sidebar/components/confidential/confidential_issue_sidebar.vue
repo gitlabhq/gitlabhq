@@ -56,11 +56,7 @@ export default {
         .update('issue', { confidential })
         .then(() => window.location.reload())
         .catch(() => {
-          Flash(
-            __(
-              'Something went wrong trying to change the confidentiality of this issue',
-            ),
-          );
+          Flash(__('Something went wrong trying to change the confidentiality of this issue'));
         });
     },
   },

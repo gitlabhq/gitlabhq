@@ -16,7 +16,7 @@ describe 'Projects > Files > User creates files' do
     sign_in(user)
   end
 
-  context 'without commiting a new file' do
+  context 'without committing a new file' do
     context 'when an user has write access' do
       before do
         visit(project_tree_path_root_ref)
@@ -49,7 +49,7 @@ describe 'Projects > Files > User creates files' do
     end
   end
 
-  context 'with commiting a new file' do
+  context 'with committing a new file' do
     context 'when an user has write access' do
       before do
         visit(project_tree_path_root_ref)
@@ -144,7 +144,7 @@ describe 'Projects > Files > User creates files' do
         fill_in(:branch_name, with: 'new_branch_name', visible: true)
         click_button('Commit changes')
 
-        expect(current_path).to eq(project_new_merge_request_path(project))
+        expect(current_path).to eq(project_new_merge_request_path(project, merge_request_source_branch: "new_branch_name"))
 
         click_link('Changes')
 
@@ -182,7 +182,7 @@ describe 'Projects > Files > User creates files' do
 
         fork = user.fork_of(project2.reload)
 
-        expect(current_path).to eq(project_new_merge_request_path(fork))
+        expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "patch-1"))
         expect(page).to have_content('New commit message')
       end
     end

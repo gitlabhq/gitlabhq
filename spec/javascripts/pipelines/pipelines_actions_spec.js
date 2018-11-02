@@ -62,9 +62,13 @@ describe('Pipelines Actions dropdown', () => {
       );
     };
 
-    beforeEach(() => {
+    beforeEach(done => {
       spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
       vm = mountComponent(Component, { actions: [scheduledJobAction, expiredJobAction] });
+
+      Vue.nextTick()
+        .then(done)
+        .catch(done.fail);
     });
 
     it('emits postAction event after confirming', () => {

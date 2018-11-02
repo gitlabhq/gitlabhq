@@ -52,7 +52,7 @@ describe('Job App ', () => {
     });
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet(`${props.pagePath}/trace.json`).replyOnce(200, {});
     });
@@ -88,7 +88,9 @@ describe('Job App ', () => {
 
       describe('triggered job', () => {
         beforeEach(() => {
-          mock.onGet(props.endpoint).replyOnce(200, Object.assign({}, job, { started: '2017-05-24T10:59:52.000+01:00' }));
+          mock
+            .onGet(props.endpoint)
+            .replyOnce(200, Object.assign({}, job, { started: '2017-05-24T10:59:52.000+01:00' }));
           vm = mountComponentWithStore(Component, { props, store });
         });
 
@@ -133,57 +135,106 @@ describe('Job App ', () => {
     });
 
     describe('stuck block', () => {
-      it('renders stuck block when there are no runners', done => {
-        mock.onGet(props.endpoint).replyOnce(
-          200,
-          Object.assign({}, job, {
-            status: {
-              group: 'pending',
-              icon: 'status_pending',
-              label: 'pending',
-              text: 'pending',
-              details_path: 'path',
-            },
-            runners: {
-              available: false,
-            },
-          }),
-        );
-        vm = mountComponentWithStore(Component, { props, store });
+      describe('without active runners availabl', () => {
+        it('renders stuck block when there are no runners', done => {
+          mock.onGet(props.endpoint).replyOnce(
+            200,
+            Object.assign({}, job, {
+              status: {
+                group: 'pending',
+                icon: 'status_pending',
+                label: 'pending',
+                text: 'pending',
+                details_path: 'path',
+              },
+              stuck: true,
+              runners: {
+                available: false,
+                online: false,
+              },
+              tags: [],
+            }),
+          );
+          vm = mountComponentWithStore(Component, { props, store });
 
-        setTimeout(() => {
-          expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
-
-          done();
-        }, 0);
+          setTimeout(() => {
+            expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
+            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+              "This job is stuck, because you don't have any active runners that can run this job.",
+            );
+            done();
+          }, 0);
+        });
       });
 
-      it('renders tags in stuck block when there are no runners', done => {
-        mock.onGet(props.endpoint).replyOnce(
-          200,
-          Object.assign({}, job, {
-            status: {
-              group: 'pending',
-              icon: 'status_pending',
-              label: 'pending',
-              text: 'pending',
-              details_path: 'path',
-            },
-            runners: {
-              available: false,
-            },
-          }),
-        );
+      describe('when available runners can not run specified tag', () => {
+        it('renders tags in stuck block when there are no runners', done => {
+          mock.onGet(props.endpoint).replyOnce(
+            200,
+            Object.assign({}, job, {
+              status: {
+                group: 'pending',
+                icon: 'status_pending',
+                label: 'pending',
+                text: 'pending',
+                details_path: 'path',
+              },
+              stuck: true,
+              runners: {
+                available: false,
+                online: false,
+              },
+            }),
+          );
 
-        vm = mountComponentWithStore(Component, {
-          props,
-          store,
+          vm = mountComponentWithStore(Component, {
+            props,
+            store,
+          });
+
+          setTimeout(() => {
+            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
+            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+              "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
+            );
+            done();
+          }, 0);
         });
+      });
 
-        setTimeout(() => {
-          expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
-          done();
-        }, 0);
+      describe('when runners are offline and build has tags', () => {
+        it('renders message about job being stuck because of no runners with the specified tags', done => {
+          mock.onGet(props.endpoint).replyOnce(
+            200,
+            Object.assign({}, job, {
+              status: {
+                group: 'pending',
+                icon: 'status_pending',
+                label: 'pending',
+                text: 'pending',
+                details_path: 'path',
+              },
+              stuck: true,
+              runners: {
+                available: true,
+                online: true,
+              },
+            }),
+          );
+
+          vm = mountComponentWithStore(Component, {
+            props,
+            store,
+          });
+
+          setTimeout(() => {
+            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
+            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
+              "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
+            );
+            done();
+          }, 0);
+        });
       });
 
       it('does not renders stuck block when there are no runners', done => {
@@ -418,10 +469,11 @@ describe('Job App ', () => {
         vm.$store.state.trace = 'Update';
 
         setTimeout(() => {
-          expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).not.toContain('Update');
-          expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).toContain(
-            'Different',
+          expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).not.toContain(
+            'Update',
           );
+
+          expect(vm.$el.querySelector('.js-build-trace').textContent.trim()).toContain('Different');
           done();
         }, 0);
       });

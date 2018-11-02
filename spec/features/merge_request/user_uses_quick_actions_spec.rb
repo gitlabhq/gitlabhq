@@ -144,7 +144,7 @@ describe 'Merge request > User uses quick actions', :js do
 
     describe '/target_branch command in merge request' do
       let(:another_project) { create(:project, :public, :repository) }
-      let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
+      let(:new_url_opts) { { merge_request_source_branch: 'feature' } }
 
       before do
         another_project.add_maintainer(user)

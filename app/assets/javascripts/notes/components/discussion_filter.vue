@@ -22,9 +22,7 @@ export default {
     return { currentValue: this.defaultValue };
   },
   computed: {
-    ...mapGetters([
-      'getNotesDataByProp',
-    ]),
+    ...mapGetters(['getNotesDataByProp']),
     currentFilter() {
       if (!this.currentValue) return this.filters[0];
       return this.filters.find(filter => filter.value === this.currentValue);
@@ -51,7 +49,7 @@ export default {
     <button
       id="discussion-filter-dropdown"
       ref="dropdownToggle"
-      class="btn btn-default"
+      class="btn btn-default qa-discussion-filter"
       data-toggle="dropdown"
       aria-expanded="false"
     >
@@ -69,6 +67,7 @@ export default {
           >
             <button
               :class="{ 'is-active': filter.value === currentValue }"
+              class="qa-filter-options"
               type="button"
               @click="selectFilter(filter.value)"
             >

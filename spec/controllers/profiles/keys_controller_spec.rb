@@ -4,7 +4,7 @@ describe Profiles::KeysController do
   let(:user) { create(:user) }
 
   describe "#get_keys" do
-    describe "non existant user" do
+    describe "non existent user" do
       it "does not generally work" do
         get :get_keys, username: 'not-existent'
 

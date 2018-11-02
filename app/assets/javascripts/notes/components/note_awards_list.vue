@@ -95,31 +95,22 @@ export default {
       return awardList.filter(award => award.user.id === this.getUserData.id).length;
     },
     awardTitle(awardsList) {
-      const hasReactionByCurrentUser = this.hasReactionByCurrentUser(
-        awardsList,
-      );
+      const hasReactionByCurrentUser = this.hasReactionByCurrentUser(awardsList);
       const TOOLTIP_NAME_COUNT = hasReactionByCurrentUser ? 9 : 10;
       let awardList = awardsList;
 
       // Filter myself from list if I am awarded.
       if (hasReactionByCurrentUser) {
-        awardList = awardList.filter(
-          award => award.user.id !== this.getUserData.id,
-        );
+        awardList = awardList.filter(award => award.user.id !== this.getUserData.id);
       }
 
       // Get only 9-10 usernames to show in tooltip text.
-      const namesToShow = awardList
-        .slice(0, TOOLTIP_NAME_COUNT)
-        .map(award => award.user.name);
+      const namesToShow = awardList.slice(0, TOOLTIP_NAME_COUNT).map(award => award.user.name);
 
       // Get the remaining list to use in `and x more` text.
-      const remainingAwardList = awardList.slice(
-        TOOLTIP_NAME_COUNT,
-        awardList.length,
-      );
+      const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
 
-      // Add myself to the begining of the list so title will start with You.
+      // Add myself to the beginning of the list so title will start with You.
       if (hasReactionByCurrentUser) {
         namesToShow.unshift('You');
       }
@@ -128,9 +119,7 @@ export default {
 
       // We have 10+ awarded user, join them with comma and add `and x more`.
       if (remainingAwardList.length) {
-        title = `${namesToShow.join(', ')}, and ${
-          remainingAwardList.length
-        } more.`;
+        title = `${namesToShow.join(', ')}, and ${remainingAwardList.length} more.`;
       } else if (namesToShow.length > 1) {
         // Join all names with comma but not the last one, it will be added with and text.
         title = namesToShow.slice(0, namesToShow.length - 1).join(', ');
@@ -170,9 +159,7 @@ export default {
         awardName: parsedName,
       };
 
-      this.toggleAwardRequest(data).catch(() =>
-        Flash('Something went wrong on our end.'),
-      );
+      this.toggleAwardRequest(data).catch(() => Flash('Something went wrong on our end.'));
     },
   },
 };

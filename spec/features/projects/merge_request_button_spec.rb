@@ -22,8 +22,8 @@ describe 'Merge Request button' do
 
       it 'shows Create merge request button' do
         href = project_new_merge_request_path(project,
-                                              merge_request: { source_branch: 'feature',
-                                                               target_branch: 'master' })
+                                              merge_request_source_branch: 'feature',
+                                              merge_request: { target_branch: 'master' })
 
         visit url
 
@@ -77,8 +77,8 @@ describe 'Merge Request button' do
 
         it 'shows Create merge request button' do
           href = project_new_merge_request_path(forked_project,
-                                                merge_request: { source_branch: 'feature',
-                                                                 target_branch: 'master' })
+                                                merge_request_source_branch: 'feature',
+                                                merge_request: { target_branch: 'master' })
 
           visit fork_url
 

@@ -15,7 +15,7 @@ import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 
 /**
- * Envrionment Item Component
+ * Environment Item Component
  *
  * Renders a table row for each environment.
  */
@@ -60,7 +60,7 @@ export default {
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *

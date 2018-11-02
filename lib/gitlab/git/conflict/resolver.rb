@@ -2,6 +2,8 @@ module Gitlab
   module Git
     module Conflict
       class Resolver
+        include Gitlab::Git::WrapsGitalyErrors
+
         ConflictSideMissing = Class.new(StandardError)
         ResolutionError = Class.new(StandardError)
 
@@ -12,7 +14,7 @@ module Gitlab
         end
 
         def conflicts
-          @conflicts ||= @target_repository.wrapped_gitaly_errors do
+          @conflicts ||= wrapped_gitaly_errors do
             gitaly_conflicts_client(@target_repository).list_conflict_files.to_a
           end
         rescue GRPC::FailedPrecondition => e
@@ -22,7 +24,7 @@ module Gitlab
         end
 
         def resolve_conflicts(source_repository, resolution, source_branch:, target_branch:)
-          source_repository.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             gitaly_conflicts_client(source_repository).resolve_conflicts(@target_repository, resolution, source_branch, target_branch)
           end
         end

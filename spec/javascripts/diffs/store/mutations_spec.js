@@ -198,40 +198,33 @@ describe('DiffsStoreMutations', () => {
           },
         ],
       };
-      const discussions = [
-        {
-          id: 1,
-          line_code: 'ABC_1',
-          diff_discussion: true,
-          resolvable: true,
-          original_position: diffPosition,
-          position: diffPosition,
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        resolvable: true,
+        original_position: diffPosition,
+        position: diffPosition,
+        diff_file: {
+          file_hash: state.diffFiles[0].fileHash,
         },
-        {
-          id: 2,
-          line_code: 'ABC_1',
-          diff_discussion: true,
-          resolvable: true,
-          original_position: diffPosition,
-          position: diffPosition,
-        },
-      ];
+      };
 
       const diffPositionByLineCode = {
         ABC_1: diffPosition,
       };
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
-        fileHash: 'ABC',
-        discussions,
+        discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
-      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].right.discussions).toEqual([]);
 
-      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
-      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);
     });
 
     it('should add legacy discussions to the given line', () => {
@@ -272,36 +265,30 @@ describe('DiffsStoreMutations', () => {
           },
         ],
       };
-      const discussions = [
-        {
-          id: 1,
-          line_code: 'ABC_1',
-          diff_discussion: true,
-          active: true,
+      const discussion = {
+        id: 1,
+        line_code: 'ABC_1',
+        diff_discussion: true,
+        active: true,
+        diff_file: {
+          file_hash: state.diffFiles[0].fileHash,
         },
-        {
-          id: 2,
-          line_code: 'ABC_1',
-          diff_discussion: true,
-          active: true,
-        },
-      ];
+      };
 
       const diffPositionByLineCode = {
         ABC_1: diffPosition,
       };
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
-        fileHash: 'ABC',
-        discussions,
+        discussion,
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(2);
-      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions.length).toEqual(1);
+      expect(state.diffFiles[0].parallelDiffLines[0].left.discussions[0].id).toEqual(1);
 
-      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(2);
-      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[1].id).toEqual(2);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].highlightedDiffLines[0].discussions[0].id).toEqual(1);
     });
   });
 

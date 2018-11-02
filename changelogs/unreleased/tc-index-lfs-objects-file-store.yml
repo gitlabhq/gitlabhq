@@ -1,0 +1,5 @@
+---
+title: Enhance performance of counting local LFS objects
+merge_request: 22143
+author:
+type: performance

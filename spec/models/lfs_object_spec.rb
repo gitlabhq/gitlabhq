@@ -2,19 +2,13 @@ require 'spec_helper'
 
 describe LfsObject do
   describe '#local_store?' do
-    it 'returns true when file_store is nil' do
-      subject.file_store = nil
-
-      expect(subject.local_store?).to eq true
-    end
-
     it 'returns true when file_store is equal to LfsObjectUploader::Store::LOCAL' do
       subject.file_store = LfsObjectUploader::Store::LOCAL
 
       expect(subject.local_store?).to eq true
     end
 
-    it 'returns false whe file_store is equal to LfsObjectUploader::Store::REMOTE' do
+    it 'returns false when file_store is equal to LfsObjectUploader::Store::REMOTE' do
       subject.file_store = LfsObjectUploader::Store::REMOTE
 
       expect(subject.local_store?).to eq false
@@ -82,19 +76,6 @@ describe LfsObject do
 
     describe 'file is being stored' do
       let(:lfs_object) { create(:lfs_object, :with_file) }
-
-      context 'when object has nil store' do
-        before do
-          lfs_object.update_column(:file_store, nil)
-          lfs_object.reload
-        end
-
-        it 'is stored locally' do
-          expect(lfs_object.file_store).to be(nil)
-          expect(lfs_object.file).to be_file_storage
-          expect(lfs_object.file.object_store).to eq(ObjectStorage::Store::LOCAL)
-        end
-      end
 
       context 'when existing object has local store' do
         it 'is stored locally' do

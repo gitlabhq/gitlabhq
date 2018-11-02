@@ -11,8 +11,10 @@ export default class PerformanceBarService {
 
   static registerInterceptor(peekUrl, callback) {
     const interceptor = response => {
-      const [fireCallback, requestId, requestUrl] =
-        PerformanceBarService.callbackParams(response, peekUrl);
+      const [fireCallback, requestId, requestUrl] = PerformanceBarService.callbackParams(
+        response,
+        peekUrl,
+      );
 
       if (fireCallback) {
         callback(requestId, requestUrl);
@@ -30,10 +32,7 @@ export default class PerformanceBarService {
 
   static removeInterceptor(interceptor) {
     axios.interceptors.response.eject(interceptor);
-    Vue.http.interceptors = _.without(
-      Vue.http.interceptors,
-      vueResourceInterceptor,
-    );
+    Vue.http.interceptors = _.without(Vue.http.interceptors, vueResourceInterceptor);
   }
 
   static callbackParams(response, peekUrl) {

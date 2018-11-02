@@ -648,6 +648,9 @@ msgstr ""
 msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
+msgid "Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr ""
 
@@ -1992,6 +1995,9 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -2331,6 +2337,12 @@ msgid "DeployTokens|Your New Deploy Token"
 msgstr ""
 
 msgid "DeployTokens|Your new project deploy token has been created."
+msgstr ""
+
+msgid "Deployed to"
+msgstr ""
+
+msgid "Deploying to"
 msgstr ""
 
 msgid "Deprioritize label"
@@ -2759,6 +2771,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to deploy to"
+msgstr ""
+
 msgid "Failed to load emoji list."
 msgstr ""
 
@@ -3011,7 +3026,13 @@ msgstr ""
 msgid "Group Runners"
 msgstr ""
 
+msgid "Group URL"
+msgstr ""
+
 msgid "Group avatar"
+msgstr ""
+
+msgid "Group description"
 msgstr ""
 
 msgid "Group description (optional)"
@@ -3608,6 +3629,9 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List view"
+msgstr ""
+
 msgid "List your Bitbucket Server repositories"
 msgstr ""
 
@@ -4034,9 +4058,6 @@ msgid "New..."
 msgstr ""
 
 msgid "No"
-msgstr ""
-
-msgid "No Assignee"
 msgstr ""
 
 msgid "No Label"
@@ -4485,13 +4506,22 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
+msgid "Pipeline|Commit"
+msgstr ""
+
 msgid "Pipeline|Create for"
 msgstr ""
 
 msgid "Pipeline|Create pipeline"
 msgstr ""
 
+msgid "Pipeline|Duration"
+msgstr ""
+
 msgid "Pipeline|Existing branch name or tag"
+msgstr ""
+
+msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
@@ -4501,6 +4531,12 @@ msgid "Pipeline|Search branches"
 msgstr ""
 
 msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default."
+msgstr ""
+
+msgid "Pipeline|Stages"
+msgstr ""
+
+msgid "Pipeline|Status"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
@@ -4539,10 +4575,16 @@ msgstr ""
 msgid "Please accept the Terms of Service before continuing."
 msgstr ""
 
+msgid "Please choose a group URL with no special characters."
+msgstr ""
+
 msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
 msgstr ""
 
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please fill in a descriptive name for your group."
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
@@ -4894,6 +4936,9 @@ msgid "Projects"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
+msgstr ""
+
+msgid "Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group."
 msgstr ""
 
 msgid "ProjectsDropdown|Frequently visited"
@@ -5613,6 +5658,9 @@ msgstr ""
 msgid "Something went wrong while fetching comments. Please try again."
 msgstr ""
 
+msgid "Something went wrong while fetching the environments for this merge request. Please try again."
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -5788,6 +5836,12 @@ msgid "Starred projects"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start and due date"
+msgstr ""
+
+msgid "Start date"
 msgstr ""
 
 msgid "Start the Runner!"
@@ -6528,6 +6582,9 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
+msgid "Tree view"
+msgstr ""
+
 msgid "Trending"
 msgstr ""
 
@@ -6774,6 +6831,9 @@ msgstr ""
 msgid "View replaced file @ "
 msgstr ""
 
+msgid "View the documentation"
+msgstr ""
+
 msgid "Visibility and access controls"
 msgstr ""
 
@@ -6823,6 +6883,9 @@ msgid "When enabled, users cannot use GitLab until the terms have been accepted.
 msgstr ""
 
 msgid "Who can see this group?"
+msgstr ""
+
+msgid "Who will be able to see this group?"
 msgstr ""
 
 msgid "Wiki"
@@ -6999,9 +7062,6 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
-msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
-msgstr ""
-
 msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
@@ -7021,6 +7081,9 @@ msgid "You can resolve the merge conflict using either the Interactive mode, by 
 msgstr ""
 
 msgid "You can set up jobs to only use Runners with specific tags. Separate tags with commas."
+msgstr ""
+
+msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."

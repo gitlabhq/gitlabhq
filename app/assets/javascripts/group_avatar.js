@@ -7,8 +7,9 @@ export default function groupAvatar() {
   });
   $('.js-group-avatar-input').on('change', function onChangeAvatarInput() {
     const form = $(this).closest('form');
-    // eslint-disable-next-line no-useless-escape
-    const filename = $(this).val().replace(/^.*[\\\/]/, '');
+    const filename = $(this)
+      .val()
+      .replace(/^.*[\\\/]/, ''); // eslint-disable-line no-useless-escape
     return form.find('.js-avatar-filename').text(filename);
   });
 }

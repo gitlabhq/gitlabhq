@@ -566,13 +566,13 @@ describe Gitlab::Diff::Position do
       end
     end
 
-    context "for text positon" do
+    context "for text position" do
       let(:args) { args_for_text }
 
       it_behaves_like "diff position json"
     end
 
-    context "for image positon" do
+    context "for image position" do
       let(:args) { args_for_img }
 
       it_behaves_like "diff position json"
@@ -592,13 +592,13 @@ describe Gitlab::Diff::Position do
       end
     end
 
-    context "for text positon" do
+    context "for text position" do
       let(:args) { args_for_text }
 
       it_behaves_like "diff position json"
     end
 
-    context "for image positon" do
+    context "for image position" do
       let(:args) { args_for_img }
 
       it_behaves_like "diff position json"

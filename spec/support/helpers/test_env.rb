@@ -168,6 +168,8 @@ module TestEnv
       return
     end
 
+    FileUtils.mkdir_p("tmp/tests/second_storage") unless File.exist?("tmp/tests/second_storage")
+
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     Bundler.with_original_env do
       raise "gitaly spawn failed" unless system(spawn_script)

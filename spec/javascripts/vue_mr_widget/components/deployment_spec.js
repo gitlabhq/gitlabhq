@@ -2,54 +2,48 @@ import Vue from 'vue';
 import deploymentComponent from '~/vue_merge_request_widget/components/deployment.vue';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import { getTimeago } from '~/lib/utils/datetime_utility';
-
-const deploymentMockData = {
-  id: 15,
-  name: 'review/diplo',
-  url: '/root/acets-review-apps/environments/15',
-  stop_url: '/root/acets-review-apps/environments/15/stop',
-  metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
-  metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
-  external_url: 'http://diplo.',
-  external_url_formatted: 'diplo.',
-  deployed_at: '2017-03-22T22:44:42.258Z',
-  deployed_at_formatted: 'Mar 22, 2017 10:44pm',
-  changes: [
-    {
-      path: 'index.html',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
-    },
-    {
-      path: 'imgs/gallery.html',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
-    },
-    {
-      path: 'about/',
-      external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
-    },
-  ],
-};
-const createComponent = () => {
-  const Component = Vue.extend(deploymentComponent);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: { deployment: { ...deploymentMockData } },
-  });
-};
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Deployment component', () => {
-  let vm;
+  const Component = Vue.extend(deploymentComponent);
+  const deploymentMockData = {
+    id: 15,
+    name: 'review/diplo',
+    url: '/root/review-apps/environments/15',
+    stop_url: '/root/review-apps/environments/15/stop',
+    metrics_url: '/root/review-apps/environments/15/deployments/1/metrics',
+    metrics_monitoring_url: '/root/review-apps/environments/15/metrics',
+    external_url: 'http://gitlab.com.',
+    external_url_formatted: 'gitlab',
+    deployed_at: '2017-03-22T22:44:42.258Z',
+    deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    changes: [
+      {
+        path: 'index.html',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+      },
+      {
+        path: 'imgs/gallery.html',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+      },
+      {
+        path: 'about/',
+        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+      },
+    ],
+  };
 
-  beforeEach(() => {
-    vm = createComponent();
-  });
+  let vm;
 
   afterEach(() => {
     vm.$destroy();
   });
 
-  describe('computed', () => {
+  describe('', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
+    });
+
     describe('deployTimeago', () => {
       it('return formatted date', () => {
         const readable = getTimeago().format(deploymentMockData.deployed_at);
@@ -111,9 +105,7 @@ describe('Deployment component', () => {
         expect(vm.hasDeploymentMeta).toEqual(false);
       });
     });
-  });
 
-  describe('methods', () => {
     describe('stopEnvironment', () => {
       const url = '/foo/bar';
       const returnPromise = () =>
@@ -152,42 +144,33 @@ describe('Deployment component', () => {
         expect(MRWidgetService.stopEnvironment).not.toHaveBeenCalled();
       });
     });
-  });
-
-  describe('template', () => {
-    let el;
-
-    beforeEach(() => {
-      vm = createComponent(deploymentMockData);
-      el = vm.$el;
-    });
 
     it('renders deployment name', () => {
-      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(
+      expect(vm.$el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(
         deploymentMockData.url,
       );
 
-      expect(el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
+      expect(vm.$el.querySelector('.js-deploy-meta').innerText).toContain(deploymentMockData.name);
     });
 
     it('renders external URL', () => {
-      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(
+      expect(vm.$el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(
         deploymentMockData.external_url,
       );
 
-      expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
+      expect(vm.$el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 
     it('renders stop button', () => {
-      expect(el.querySelector('.btn')).not.toBeNull();
+      expect(vm.$el.querySelector('.btn')).not.toBeNull();
     });
 
     it('renders deployment time', () => {
-      expect(el.querySelector('.js-deploy-time').innerText).toContain(vm.deployTimeago);
+      expect(vm.$el.querySelector('.js-deploy-time').innerText).toContain(vm.deployTimeago);
     });
 
     it('renders metrics component', () => {
-      expect(el.querySelector('.js-mr-memory-usage')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-mr-memory-usage')).not.toBeNull();
     });
   });
 
@@ -196,8 +179,7 @@ describe('Deployment component', () => {
       window.gon = window.gon || {};
       window.gon.features = window.gon.features || {};
       window.gon.features.ciEnvironmentsStatusChanges = true;
-
-      vm = createComponent(deploymentMockData);
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
     });
 
     afterEach(() => {
@@ -216,7 +198,7 @@ describe('Deployment component', () => {
       window.gon.features = window.gon.features || {};
       window.gon.features.ciEnvironmentsStatusChanges = false;
 
-      vm = createComponent(deploymentMockData);
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
     });
 
     afterEach(() => {
@@ -226,6 +208,66 @@ describe('Deployment component', () => {
     it('renders the old link to the review app', () => {
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
       expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+    });
+  });
+
+  describe('without changes', () => {
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      window.gon.features = window.gon.features || {};
+      window.gon.features.ciEnvironmentsStatusChanges = true;
+      delete deploymentMockData.changes;
+
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
+    });
+
+    afterEach(() => {
+      delete window.gon.features.ciEnvironmentsStatusChanges;
+    });
+
+    it('renders the link to the review app without dropdown', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+    });
+  });
+
+  describe('deployment status', () => {
+    describe('running', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          deployment: Object.assign({}, deploymentMockData, { status: 'running' }),
+        });
+      });
+
+      it('renders information about running deployment', () => {
+        expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain('Deploying to');
+      });
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          deployment: Object.assign({}, deploymentMockData, { status: 'success' }),
+        });
+      });
+
+      it('renders information about finished deployment', () => {
+        expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain('Deployed to');
+      });
+    });
+
+    describe('failed', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          deployment: Object.assign({}, deploymentMockData, { status: 'failed' }),
+        });
+      });
+
+      it('renders information about finished deployment', () => {
+        expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain(
+          'Failed to deploy to',
+        );
+      });
     });
   });
 });

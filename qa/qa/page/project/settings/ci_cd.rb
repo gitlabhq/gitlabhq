@@ -25,9 +25,9 @@ module QA # rubocop:disable Naming/FileName
             end
           end
 
-          def expand_secret_variables(&block)
+          def expand_ci_variables(&block)
             expand_section(:variables_settings) do
-              Settings::SecretVariables.perform(&block)
+              Settings::CiVariables.perform(&block)
             end
           end
 

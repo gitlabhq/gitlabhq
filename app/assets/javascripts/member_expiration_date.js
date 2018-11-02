@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 
 // Add datepickers to all `js-access-expiration-date` elements. If those elements are
 // children of an element with the `clearable-input` class, and have a sibling

@@ -33,21 +33,21 @@ class Admin::AppearancesController < Admin::ApplicationController
 
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Logo was succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Logo was successfully removed.'
   end
 
   def header_logos
     @appearance.remove_header_logo!
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Header logo was succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Header logo was successfully removed.'
   end
 
   def favicon
     @appearance.remove_favicon!
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Favicon was succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Favicon was successfully removed.'
   end
 
   private

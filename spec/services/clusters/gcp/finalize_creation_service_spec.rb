@@ -30,7 +30,7 @@ describe Clusters::Gcp::FinalizeCreationService do
       end
     end
 
-    context 'when suceeded to fetch gke cluster info' do
+    context 'when succeeded to fetch gke cluster info' do
       let(:endpoint) { '111.111.111.111' }
       let(:api_url) { 'https://' + endpoint }
       let(:username) { 'sample-username' }

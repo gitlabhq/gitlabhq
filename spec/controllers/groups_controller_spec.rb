@@ -529,7 +529,7 @@ describe GroupsController do
       sign_in(user)
     end
 
-    context 'when transfering to a subgroup goes right' do
+    context 'when transferring to a subgroup goes right' do
       let(:new_parent_group) { create(:group, :public) }
       let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
       let!(:new_parent_group_member) { create(:group_member, :owner, group: new_parent_group, user: user) }

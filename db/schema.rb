@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181013005024) do
+ActiveRecord::Schema.define(version: 20181031190559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -203,6 +203,32 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   add_index "badges", ["group_id"], name: "index_badges_on_group_id", using: :btree
   add_index "badges", ["project_id"], name: "index_badges_on_project_id", using: :btree
+
+  create_table "board_group_recent_visits", id: :bigserial, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "user_id"
+    t.integer "board_id"
+    t.integer "group_id"
+  end
+
+  add_index "board_group_recent_visits", ["board_id"], name: "index_board_group_recent_visits_on_board_id", using: :btree
+  add_index "board_group_recent_visits", ["group_id"], name: "index_board_group_recent_visits_on_group_id", using: :btree
+  add_index "board_group_recent_visits", ["user_id", "group_id", "board_id"], name: "index_board_group_recent_visits_on_user_group_and_board", unique: true, using: :btree
+  add_index "board_group_recent_visits", ["user_id"], name: "index_board_group_recent_visits_on_user_id", using: :btree
+
+  create_table "board_project_recent_visits", id: :bigserial, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "user_id"
+    t.integer "project_id"
+    t.integer "board_id"
+  end
+
+  add_index "board_project_recent_visits", ["board_id"], name: "index_board_project_recent_visits_on_board_id", using: :btree
+  add_index "board_project_recent_visits", ["project_id"], name: "index_board_project_recent_visits_on_project_id", using: :btree
+  add_index "board_project_recent_visits", ["user_id", "project_id", "board_id"], name: "index_board_project_recent_visits_on_user_project_and_board", unique: true, using: :btree
+  add_index "board_project_recent_visits", ["user_id"], name: "index_board_project_recent_visits_on_user_id", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
@@ -573,6 +599,14 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   add_index "ci_variables", ["project_id", "key", "environment_scope"], name: "index_ci_variables_on_project_id_and_key_and_environment_scope", unique: true, using: :btree
 
+  create_table "cluster_groups", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "group_id", null: false
+  end
+
+  add_index "cluster_groups", ["cluster_id", "group_id"], name: "index_cluster_groups_on_cluster_id_and_group_id", unique: true, using: :btree
+  add_index "cluster_groups", ["group_id"], name: "index_cluster_groups_on_group_id", using: :btree
+
   create_table "cluster_platforms_kubernetes", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -628,6 +662,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.boolean "enabled", default: true
     t.string "name", null: false
     t.string "environment_scope", default: "*", null: false
+    t.integer "cluster_type", limit: 2, default: 3, null: false
   end
 
   add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
@@ -893,35 +928,6 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
-  create_table "gcp_clusters", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "user_id"
-    t.integer "service_id"
-    t.integer "status"
-    t.integer "gcp_cluster_size", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.boolean "enabled", default: true
-    t.text "status_reason"
-    t.string "project_namespace"
-    t.string "endpoint"
-    t.text "ca_cert"
-    t.text "encrypted_kubernetes_token"
-    t.string "encrypted_kubernetes_token_iv"
-    t.string "username"
-    t.text "encrypted_password"
-    t.string "encrypted_password_iv"
-    t.string "gcp_project_id", null: false
-    t.string "gcp_cluster_zone", null: false
-    t.string "gcp_cluster_name", null: false
-    t.string "gcp_machine_type"
-    t.string "gcp_operation_id"
-    t.text "encrypted_gcp_token"
-    t.string "encrypted_gcp_token_iv"
-  end
-
-  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
-
   create_table "gpg_key_subkeys", force: :cascade do |t|
     t.integer "gpg_key_id", null: false
     t.binary "keyid"
@@ -1142,6 +1148,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.integer "file_store"
   end
 
+  add_index "lfs_objects", ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: :cascade do |t|
@@ -1523,7 +1530,7 @@ ActiveRecord::Schema.define(version: 20181013005024) do
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "token", null: false
+    t.string "token"
     t.string "name", null: false
     t.boolean "revoked", default: false
     t.date "expires_at"
@@ -1531,9 +1538,11 @@ ActiveRecord::Schema.define(version: 20181013005024) do
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
+    t.string "token_digest"
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
+  add_index "personal_access_tokens", ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
   create_table "programming_languages", force: :cascade do |t|
@@ -2316,6 +2325,12 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "boards", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "board_group_recent_visits", "users", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "boards", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "projects", on_delete: :cascade
+  add_foreign_key "board_project_recent_visits", "users", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
@@ -2350,6 +2365,8 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "ci_triggers", "projects", name: "fk_e3e63f966e", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
+  add_foreign_key "cluster_groups", "clusters", on_delete: :cascade
+  add_foreign_key "cluster_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "cluster_platforms_kubernetes", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
@@ -2377,9 +2394,6 @@ ActiveRecord::Schema.define(version: 20181013005024) do
   add_foreign_key "fork_network_members", "projects", on_delete: :cascade
   add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "services", on_delete: :nullify
-  add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify

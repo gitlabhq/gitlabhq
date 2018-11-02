@@ -8,12 +8,14 @@ class DiffNote < Note
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize
 
-  NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
+  def self.noteable_types
+    %w(MergeRequest Commit)
+  end
 
   validates :original_position, presence: true
   validates :position, presence: true
   validates :line_code, presence: true, line_code: true, if: :on_text?
-  validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
+  validates :noteable_type, inclusion: { in: noteable_types }
   validate :positions_complete
   validate :verify_supported
   validate :diff_refs_match_commit, if: :for_commit?

@@ -4,8 +4,7 @@ describe QA::Factory::Base do
   include Support::StubENV
 
   let(:factory) { spy('factory') }
-  let(:product) { spy('product') }
-  let(:product_location) { 'http://product_location' }
+  let(:location) { 'http://location' }
 
   shared_context 'fabrication context' do
     subject do
@@ -17,9 +16,8 @@ describe QA::Factory::Base do
     end
 
     before do
-      allow(subject).to receive(:current_url).and_return(product_location)
+      allow(subject).to receive(:current_url).and_return(location)
       allow(subject).to receive(:new).and_return(factory)
-      allow(QA::Factory::Product).to receive(:populate!).with(factory, product_location).and_return(product)
     end
   end
 
@@ -28,7 +26,7 @@ describe QA::Factory::Base do
 
     it 'yields factory before calling factory method' do
       expect(factory).to receive(:something!).ordered
-      expect(factory).to receive(fabrication_method_used).ordered.and_return(product_location)
+      expect(factory).to receive(fabrication_method_used).ordered.and_return(location)
 
       subject.public_send(fabrication_method_called, factory: factory) do |factory|
         factory.something!
@@ -37,7 +35,7 @@ describe QA::Factory::Base do
 
     it 'does not log the factory and build method when QA_DEBUG=false' do
       stub_env('QA_DEBUG', 'false')
-      expect(factory).to receive(fabrication_method_used).and_return(product_location)
+      expect(factory).to receive(fabrication_method_used).and_return(location)
 
       expect { subject.public_send(fabrication_method_called, 'something', factory: factory) }
         .not_to output.to_stdout
@@ -71,17 +69,17 @@ describe QA::Factory::Base do
 
     it_behaves_like 'fabrication method', :fabricate_via_api!
 
-    it 'instantiates the factory, calls factory method returns fabrication product' do
-      expect(factory).to receive(:fabricate_via_api!).and_return(product_location)
+    it 'instantiates the factory, calls factory method returns the resource' do
+      expect(factory).to receive(:fabricate_via_api!).and_return(location)
 
       result = subject.fabricate_via_api!(factory: factory, parents: [])
 
-      expect(result).to eq(product)
+      expect(result).to eq(factory)
     end
 
     it 'logs the factory and build method when QA_DEBUG=true' do
       stub_env('QA_DEBUG', 'true')
-      expect(factory).to receive(:fabricate_via_api!).and_return(product_location)
+      expect(factory).to receive(:fabricate_via_api!).and_return(location)
 
       expect { subject.fabricate_via_api!(factory: factory, parents: []) }
         .to output(/==> Built a MyFactory via api with args \[\] in [\d\w\.\-]+/)
@@ -100,10 +98,10 @@ describe QA::Factory::Base do
       expect(factory).to have_received(:fabricate!).with('something')
     end
 
-    it 'returns fabrication product' do
+    it 'returns fabrication resource' do
       result = subject.fabricate_via_browser_ui!('something', factory: factory, parents: [])
 
-      expect(result).to eq(product)
+      expect(result).to eq(factory)
     end
 
     it 'logs the factory and build method when QA_DEBUG=true' do
@@ -115,73 +113,134 @@ describe QA::Factory::Base do
     end
   end
 
-  describe '.dependency' do
-    let(:dependency) { spy('dependency') }
-
-    before do
-      stub_const('Some::MyDependency', dependency)
-    end
-
+  shared_context 'simple factory' do
     subject do
-      Class.new(described_class) do
-        dependency Some::MyDependency, as: :mydep do |factory|
-          factory.something!
+      Class.new(QA::Factory::Base) do
+        attribute :test do
+          'block'
+        end
+
+        attribute :no_block
+
+        def fabricate!
+          'any'
+        end
+
+        def self.current_url
+          'http://stub'
         end
       end
     end
 
-    it 'appends a new dependency and accessors' do
-      expect(subject.dependencies).to be_one
+    let(:factory) { subject.new }
+  end
+
+  describe '.attribute' do
+    include_context 'simple factory'
+
+    it 'appends new attribute' do
+      expect(subject.attributes_names).to eq([:no_block, :test, :web_url])
     end
 
-    it 'defines dependency accessors' do
-      expect(subject.new).to respond_to :mydep, :mydep=
-    end
+    context 'when the attribute is populated via a block' do
+      it 'returns value from the block' do
+        result = subject.fabricate!(factory: factory)
 
-    describe 'dependencies fabrication' do
-      let(:dependency) { double('dependency') }
-      let(:instance) { spy('instance') }
-
-      subject do
-        Class.new(described_class) do
-          dependency Some::MyDependency, as: :mydep
-        end
+        expect(result).to be_a(described_class)
+        expect(result.test).to eq('block')
       end
+    end
+
+    context 'when the attribute is populated via the api' do
+      let(:api_resource) { { no_block: 'api' } }
 
       before do
-        stub_const('Some::MyDependency', dependency)
-
-        allow(subject).to receive(:new).and_return(instance)
-        allow(subject).to receive(:current_url).and_return(product_location)
-        allow(instance).to receive(:mydep).and_return(nil)
-        expect(QA::Factory::Product).to receive(:populate!)
+        expect(factory).to receive(:api_resource).and_return(api_resource)
       end
 
-      it 'builds all dependencies first' do
-        expect(dependency).to receive(:fabricate!).once
+      it 'returns value from api' do
+        result = subject.fabricate!(factory: factory)
 
-        subject.fabricate!
+        expect(result).to be_a(described_class)
+        expect(result.no_block).to eq('api')
+      end
+
+      context 'when the attribute also has a block' do
+        let(:api_resource) { { test: 'api_with_block' } }
+
+        before do
+          allow(QA::Runtime::Logger).to receive(:info)
+        end
+
+        it 'returns value from api and emits an INFO log entry' do
+          result = subject.fabricate!(factory: factory)
+
+          expect(result).to be_a(described_class)
+          expect(result.test).to eq('api_with_block')
+          expect(QA::Runtime::Logger)
+            .to have_received(:info).with(/api_with_block/)
+        end
+      end
+    end
+
+    context 'when the attribute is populated via direct assignment' do
+      before do
+        factory.test = 'value'
+      end
+
+      it 'returns value from the assignment' do
+        result = subject.fabricate!(factory: factory)
+
+        expect(result).to be_a(described_class)
+        expect(result.test).to eq('value')
+      end
+
+      context 'when the api also has such response' do
+        before do
+          allow(factory).to receive(:api_resource).and_return({ test: 'api' })
+        end
+
+        it 'returns value from the assignment' do
+          result = subject.fabricate!(factory: factory)
+
+          expect(result).to be_a(described_class)
+          expect(result.test).to eq('value')
+        end
+      end
+    end
+
+    context 'when the attribute has no value' do
+      it 'raises an error because no values could be found' do
+        result = subject.fabricate!(factory: factory)
+
+        expect { result.no_block }
+          .to raise_error(described_class::NoValueError, "No value was computed for no_block of #{factory.class.name}.")
       end
     end
   end
 
-  describe '.product' do
-    include_context 'fabrication context'
+  describe '#web_url' do
+    include_context 'simple factory'
 
-    subject do
-      Class.new(described_class) do
-        def fabricate!
-          "any"
-        end
+    it 'sets #web_url to #current_url after fabrication' do
+      subject.fabricate!(factory: factory)
 
-        product :token
-      end
+      expect(factory.web_url).to eq(subject.current_url)
+    end
+  end
+
+  describe '#visit!' do
+    include_context 'simple factory'
+
+    before do
+      allow(factory).to receive(:visit)
     end
 
-    it 'appends new product attribute' do
-      expect(subject.attributes).to be_one
-      expect(subject.attributes[0]).to be_a(QA::Factory::Product::Attribute)
-      expect(subject.attributes[0].name).to eq(:token)
+    it 'calls #visit with the underlying #web_url' do
+      factory.web_url = subject.current_url
+      factory.visit!
+
+      expect(factory).to have_received(:visit).with(subject.current_url)
     end
   end
 end

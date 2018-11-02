@@ -45,7 +45,7 @@ module QA
               repository.use_ssh_key(ssh_key)
             else
               repository.uri = repository_http_uri
-              repository.use_default_credentials
+              repository.use_default_credentials unless user
             end
 
             username = 'GitLab QA'

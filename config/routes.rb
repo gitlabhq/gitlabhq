@@ -34,6 +34,8 @@ Rails.application.routes.draw do
     match '*all', via: [:get, :post], to: proc { [404, {}, ['']] }
   end
 
+  draw :oauth
+
   use_doorkeeper_openid_connect
 
   # Autocomplete
@@ -78,6 +80,7 @@ Rails.application.routes.draw do
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
 
+    draw :operations
     draw :instance_statistics
   end
 

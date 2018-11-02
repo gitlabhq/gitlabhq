@@ -379,7 +379,7 @@ let(:mutation) do
   )
 end
 
-it 'returns a successfull response' do
+it 'returns a successful response' do
    post_graphql_mutation(mutation, current_user: user)
 
    expect(response).to have_gitlab_http_status(:success)

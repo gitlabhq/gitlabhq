@@ -24,7 +24,7 @@ describe('AjaxFormVariableList', () => {
     mock = new MockAdapter(axios);
 
     const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');
-    saveButton = ajaxVariableListEl.querySelector('.js-secret-variables-save-button');
+    saveButton = ajaxVariableListEl.querySelector('.js-ci-variables-save-button');
     errorBox = container.querySelector('.js-ci-variable-error-box');
     ajaxVariableList = new AjaxFormVariableList({
       container,
@@ -44,7 +44,7 @@ describe('AjaxFormVariableList', () => {
 
   describe('onSaveClicked', () => {
     it('shows loading spinner while waiting for the request', done => {
-      const loadingIcon = saveButton.querySelector('.js-secret-variables-save-loading-icon');
+      const loadingIcon = saveButton.querySelector('.js-ci-variables-save-loading-icon');
 
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(() => {
         expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(false);
@@ -172,7 +172,7 @@ describe('AjaxFormVariableList', () => {
       container = document.querySelector('.js-ci-variable-list-section');
 
       const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');
-      saveButton = ajaxVariableListEl.querySelector('.js-secret-variables-save-button');
+      saveButton = ajaxVariableListEl.querySelector('.js-ci-variables-save-button');
       errorBox = container.querySelector('.js-ci-variable-error-box');
       ajaxVariableList = new AjaxFormVariableList({
         container,

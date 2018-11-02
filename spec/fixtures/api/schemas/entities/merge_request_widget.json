@@ -46,6 +46,7 @@
     "diff_head_commit_short_id": { "type": ["string", "null"] },
     "merge_commit_message": { "type": ["string", "null"] },
     "pipeline": { "type": ["object", "null"] },
+    "merge_pipeline": { "type": ["object", "null"] },
     "work_in_progress": { "type": "boolean" },
     "source_branch_exists": { "type": "boolean" },
     "mergeable_discussions_state": { "type": "boolean" },

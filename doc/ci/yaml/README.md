@@ -474,6 +474,7 @@ docker build:
     changes:
       - Dockerfile
       - docker/scripts/*
+      - dockerfiles/**/*
 ```
 
 In the scenario above, if you are pushing multiple commits to GitLab to an
@@ -482,6 +483,7 @@ one of the commits contains changes to either:
 
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
+- Any of the files and subfolders inside `dockerfiles` directory.
 
 CAUTION: **Warning:**
 There are some caveats when using this feature with new branches and tags. See
@@ -2031,3 +2033,5 @@ CI with various languages.
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
+[ee]: https://about.gitlab.com/gitlab-ee/
+[gitlab-versions]: https://about.gitlab.com/products/

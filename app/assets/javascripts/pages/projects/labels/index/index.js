@@ -10,20 +10,24 @@ const initLabelIndex = () => {
   initLabels();
 
   const onRequestFinished = ({ labelUrl, successful }) => {
-    const button = document.querySelector(`.js-promote-project-label-button[data-url="${labelUrl}"]`);
+    const button = document.querySelector(
+      `.js-promote-project-label-button[data-url="${labelUrl}"]`,
+    );
 
     if (!successful) {
       button.removeAttribute('disabled');
     }
   };
 
-  const onRequestStarted = (labelUrl) => {
-    const button = document.querySelector(`.js-promote-project-label-button[data-url="${labelUrl}"]`);
+  const onRequestStarted = labelUrl => {
+    const button = document.querySelector(
+      `.js-promote-project-label-button[data-url="${labelUrl}"]`,
+    );
     button.setAttribute('disabled', '');
     eventHub.$once('promoteLabelModal.requestFinished', onRequestFinished);
   };
 
-  const onDeleteButtonClick = (event) => {
+  const onDeleteButtonClick = event => {
     const button = event.currentTarget;
     const modalProps = {
       labelTitle: button.dataset.labelTitle,
@@ -37,12 +41,12 @@ const initLabelIndex = () => {
   };
 
   const promoteLabelButtons = document.querySelectorAll('.js-promote-project-label-button');
-  promoteLabelButtons.forEach((button) => {
+  promoteLabelButtons.forEach(button => {
     button.addEventListener('click', onDeleteButtonClick);
   });
 
   eventHub.$once('promoteLabelModal.mounted', () => {
-    promoteLabelButtons.forEach((button) => {
+    promoteLabelButtons.forEach(button => {
       button.removeAttribute('disabled');
     });
   });

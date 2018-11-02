@@ -50,8 +50,8 @@ module MergeRequests
     end
 
     def url_for_new_merge_request(branch_name)
-      merge_request_params = { source_branch: branch_name }
-      url = Gitlab::Routing.url_helpers.project_new_merge_request_url(project, merge_request: merge_request_params)
+      url = Gitlab::Routing.url_helpers.project_new_merge_request_url(project, branch_name)
+
       { branch_name: branch_name, url: url, new_merge_request: true }
     end
 

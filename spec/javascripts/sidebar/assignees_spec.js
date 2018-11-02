@@ -78,9 +78,7 @@ describe('Assignee component', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000',
-          users: [
-            UsersMock.user,
-          ],
+          users: [UsersMock.user],
           editable: false,
         },
       }).$mount();
@@ -90,7 +88,10 @@ describe('Assignee component', () => {
 
       expect(collapsed.childElementCount).toEqual(1);
       expect(assignee.querySelector('.avatar').getAttribute('src')).toEqual(UsersMock.user.avatar);
-      expect(assignee.querySelector('.avatar').getAttribute('alt')).toEqual(`${UsersMock.user.name}'s avatar`);
+      expect(assignee.querySelector('.avatar').getAttribute('alt')).toEqual(
+        `${UsersMock.user.name}'s avatar`,
+      );
+
       expect(assignee.querySelector('.author').innerText.trim()).toEqual(UsersMock.user.name);
     });
 
@@ -98,34 +99,38 @@ describe('Assignee component', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000/',
-          users: [
-            UsersMock.user,
-          ],
+          users: [UsersMock.user],
           editable: true,
         },
       }).$mount();
 
       expect(component.$el.querySelector('.author-link')).not.toBeNull();
       // The image
-      expect(component.$el.querySelector('.author-link img').getAttribute('src')).toEqual(UsersMock.user.avatar);
+      expect(component.$el.querySelector('.author-link img').getAttribute('src')).toEqual(
+        UsersMock.user.avatar,
+      );
       // Author name
-      expect(component.$el.querySelector('.author-link .author').innerText.trim()).toEqual(UsersMock.user.name);
+      expect(component.$el.querySelector('.author-link .author').innerText.trim()).toEqual(
+        UsersMock.user.name,
+      );
       // Username
-      expect(component.$el.querySelector('.author-link .username').innerText.trim()).toEqual(`@${UsersMock.user.username}`);
+      expect(component.$el.querySelector('.author-link .username').innerText.trim()).toEqual(
+        `@${UsersMock.user.username}`,
+      );
     });
 
     it('has the root url present in the assigneeUrl method', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000/',
-          users: [
-            UsersMock.user,
-          ],
+          users: [UsersMock.user],
           editable: true,
         },
       }).$mount();
 
-      expect(component.assigneeUrl(UsersMock.user).indexOf('http://localhost:3000/')).not.toEqual(-1);
+      expect(component.assigneeUrl(UsersMock.user).indexOf('http://localhost:3000/')).not.toEqual(
+        -1,
+      );
     });
   });
 
@@ -147,13 +152,19 @@ describe('Assignee component', () => {
       const first = collapsed.children[0];
 
       expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
-      expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
+      expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(
+        `${users[0].name}'s avatar`,
+      );
+
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
 
       expect(second.querySelector('.avatar').getAttribute('src')).toEqual(users[1].avatar);
-      expect(second.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[1].name}'s avatar`);
+      expect(second.querySelector('.avatar').getAttribute('alt')).toEqual(
+        `${users[1].name}'s avatar`,
+      );
+
       expect(second.querySelector('.author').innerText.trim()).toEqual(users[1].name);
     });
 
@@ -174,7 +185,10 @@ describe('Assignee component', () => {
       const first = collapsed.children[0];
 
       expect(first.querySelector('.avatar').getAttribute('src')).toEqual(users[0].avatar);
-      expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(`${users[0].name}'s avatar`);
+      expect(first.querySelector('.avatar').getAttribute('alt')).toEqual(
+        `${users[0].name}'s avatar`,
+      );
+
       expect(first.querySelector('.author').innerText.trim()).toEqual(users[0].name);
 
       const second = collapsed.children[1];
@@ -196,7 +210,7 @@ describe('Assignee component', () => {
       expect(component.$el.querySelector('.user-list-more')).toBe(null);
     });
 
-    it('Shows the "show-less" assignees label', (done) => {
+    it('Shows the "show-less" assignees label', done => {
       const users = UsersMockHelper.createNumberRandomUsers(6);
       component = new AssigneeComponent({
         propsData: {
@@ -206,21 +220,26 @@ describe('Assignee component', () => {
         },
       }).$mount();
 
-      expect(component.$el.querySelectorAll('.user-item').length).toEqual(component.defaultRenderCount);
+      expect(component.$el.querySelectorAll('.user-item').length).toEqual(
+        component.defaultRenderCount,
+      );
+
       expect(component.$el.querySelector('.user-list-more')).not.toBe(null);
       const usersLabelExpectation = users.length - component.defaultRenderCount;
 
-      expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
-        .not.toBe(`+${usersLabelExpectation} more`);
+      expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim()).not.toBe(
+        `+${usersLabelExpectation} more`,
+      );
       component.toggleShowLess();
       Vue.nextTick(() => {
-        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
-          .toBe('- show less');
+        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
+          '- show less',
+        );
         done();
       });
     });
 
-    it('Shows the "show-less" when "n+ more " label is clicked', (done) => {
+    it('Shows the "show-less" when "n+ more " label is clicked', done => {
       const users = UsersMockHelper.createNumberRandomUsers(6);
       component = new AssigneeComponent({
         propsData: {
@@ -232,8 +251,9 @@ describe('Assignee component', () => {
 
       component.$el.querySelector('.user-list-more .btn-link').click();
       Vue.nextTick(() => {
-        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
-          .toBe('- show less');
+        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
+          '- show less',
+        );
         done();
       });
     });
@@ -264,16 +284,18 @@ describe('Assignee component', () => {
       });
 
       it('shows "+1 more" label', () => {
-        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
-          .toBe('+ 1 more');
+        expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
+          '+ 1 more',
+        );
       });
 
-      it('shows "show less" label', (done) => {
+      it('shows "show less" label', done => {
         component.toggleShowLess();
 
         Vue.nextTick(() => {
-          expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim())
-            .toBe('- show less');
+          expect(component.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
+            '- show less',
+          );
           done();
         });
       });

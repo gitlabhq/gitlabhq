@@ -64,7 +64,7 @@ describe ContainerRegistry::Blob do
         .to_return(status: 200)
     end
 
-    it 'returns true when blob has been successfuly deleted' do
+    it 'returns true when blob has been successfully deleted' do
       expect(blob.delete).to be_truthy
     end
   end

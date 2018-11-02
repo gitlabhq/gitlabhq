@@ -83,6 +83,9 @@ under which this application will be deployed.
     ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
 
 1. Once ready, click **Create Kubernetes cluster**.
+ 
+NOTE: **Note:**
+Do not select `f1-micro` from the **Machine type** dropdown. `f1-micro` machines cannot support a full GitLab installation.
 
 After a couple of minutes, the cluster will be created. You can also see its
 status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).

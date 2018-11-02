@@ -37,7 +37,8 @@ class SidebarMoveIssue {
       // Keep the dropdown open after selecting an option
       shouldPropagate: false,
       data: (searchTerm, callback) => {
-        this.mediator.fetchAutocompleteProjects(searchTerm)
+        this.mediator
+          .fetchAutocompleteProjects(searchTerm)
           .then(callback)
           .catch(() => new window.Flash('An error occurred while fetching projects autocomplete.'));
       },
@@ -48,7 +49,7 @@ class SidebarMoveIssue {
           </a>
         </li>
       `,
-      clicked: (options) => {
+      clicked: options => {
         const project = options.selectedObj;
         const selectedProjectId = options.isMarking ? project.id : 0;
         this.mediator.setMoveToProjectId(selectedProjectId);
@@ -68,17 +69,12 @@ class SidebarMoveIssue {
 
   onConfirmClicked() {
     if (isValidProjectId(this.mediator.store.moveToProjectId)) {
-      this.$confirmButton
-        .disable()
-        .addClass('is-loading');
+      this.$confirmButton.disable().addClass('is-loading');
 
-      this.mediator.moveIssue()
-        .catch(() => {
-          window.Flash('An error occurred while moving the issue.');
-          this.$confirmButton
-            .enable()
-            .removeClass('is-loading');
-        });
+      this.mediator.moveIssue().catch(() => {
+        window.Flash('An error occurred while moving the issue.');
+        this.$confirmButton.enable().removeClass('is-loading');
+      });
     }
   }
 }

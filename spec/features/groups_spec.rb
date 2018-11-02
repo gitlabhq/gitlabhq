@@ -7,7 +7,7 @@ describe 'Group' do
 
   matcher :have_namespace_error_message do
     match do |page|
-      page.has_content?("Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'.")
+      page.has_content?("Group URL can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'.")
     end
   end
 
@@ -18,7 +18,7 @@ describe 'Group' do
 
     describe 'with space in group path' do
       it 'renders new group form with validation errors' do
-        fill_in 'Group path', with: 'space group'
+        fill_in 'Group URL', with: 'space group'
         click_button 'Create group'
 
         expect(current_path).to eq(groups_path)
@@ -28,7 +28,7 @@ describe 'Group' do
 
     describe 'with .atom at end of group path' do
       it 'renders new group form with validation errors' do
-        fill_in 'Group path', with: 'atom_group.atom'
+        fill_in 'Group URL', with: 'atom_group.atom'
         click_button 'Create group'
 
         expect(current_path).to eq(groups_path)
@@ -38,7 +38,7 @@ describe 'Group' do
 
     describe 'with .git at end of group path' do
       it 'renders new group form with validation errors' do
-        fill_in 'Group path', with: 'git_group.git'
+        fill_in 'Group URL', with: 'git_group.git'
         click_button 'Create group'
 
         expect(current_path).to eq(groups_path)
@@ -94,7 +94,8 @@ describe 'Group' do
       end
 
       it 'creates a nested group' do
-        fill_in 'Group path', with: 'bar'
+        fill_in 'Group name', with: 'bar'
+        fill_in 'Group URL', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))
@@ -112,7 +113,8 @@ describe 'Group' do
 
         visit new_group_path(group, parent_id: group.id)
 
-        fill_in 'Group path', with: 'bar'
+        fill_in 'Group name', with: 'bar'
+        fill_in 'Group URL', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))

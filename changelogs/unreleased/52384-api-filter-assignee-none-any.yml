@@ -1,0 +1,5 @@
+---
+title: Add None/Any option for assignee_id in Issues and Merge Requests API
+merge_request: 22598
+author: Heinrich Lee Yu
+type: added

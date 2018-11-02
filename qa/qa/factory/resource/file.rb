@@ -8,8 +8,10 @@ module QA
                       :content,
                       :commit_message
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-new-file'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-with-new-file'
+          end
         end
 
         def initialize
@@ -21,7 +23,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Project::Show.act { create_new_file! }
+          Page::Project::Show.perform(&:create_new_file!)
 
           Page::File::Form.perform do |page|
             page.add_name(@name)

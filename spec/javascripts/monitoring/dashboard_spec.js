@@ -113,6 +113,22 @@ describe('Dashboard', () => {
       });
     });
 
+    it('hides the dropdown list when there is no environments', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      component.store.storeEnvironmentsData([]);
+
+      setTimeout(() => {
+        const dropdownMenuEnvironments = component.$el.querySelectorAll('.dropdown-menu ul');
+
+        expect(dropdownMenuEnvironments.length).toEqual(0);
+        done();
+      });
+    });
+
     it('renders the dropdown with a single is-active element', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),

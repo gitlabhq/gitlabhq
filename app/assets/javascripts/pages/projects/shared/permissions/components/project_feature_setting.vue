@@ -1,73 +1,71 @@
 <script>
-  import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
+import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
 
-  export default {
-    components: {
-      projectFeatureToggle,
+export default {
+  components: {
+    projectFeatureToggle,
+  },
+
+  model: {
+    prop: 'value',
+    event: 'change',
+  },
+
+  props: {
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    options: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    value: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    disabledInput: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
+  computed: {
+    featureEnabled() {
+      return this.value !== 0;
     },
 
-    model: {
-      prop: 'value',
-      event: 'change',
+    displayOptions() {
+      if (this.featureEnabled) {
+        return this.options;
+      }
+      return [[0, 'Enable feature to choose access level']];
     },
 
-    props: {
-      name: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      options: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      value: {
-        type: Number,
-        required: false,
-        default: 0,
-      },
-      disabledInput: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    displaySelectInput() {
+      return this.disabledInput || !this.featureEnabled || this.displayOptions.length < 2;
+    },
+  },
+
+  methods: {
+    toggleFeature(featureEnabled) {
+      if (featureEnabled === false || this.options.length < 1) {
+        this.$emit('change', 0);
+      } else {
+        const [firstOptionValue] = this.options[this.options.length - 1];
+        this.$emit('change', firstOptionValue);
+      }
     },
 
-    computed: {
-      featureEnabled() {
-        return this.value !== 0;
-      },
-
-      displayOptions() {
-        if (this.featureEnabled) {
-          return this.options;
-        }
-        return [
-          [0, 'Enable feature to choose access level'],
-        ];
-      },
-
-      displaySelectInput() {
-        return this.disabledInput || !this.featureEnabled || this.displayOptions.length < 2;
-      },
+    selectOption(e) {
+      this.$emit('change', Number(e.target.value));
     },
-
-    methods: {
-      toggleFeature(featureEnabled) {
-        if (featureEnabled === false || this.options.length < 1) {
-          this.$emit('change', 0);
-        } else {
-          const [firstOptionValue] = this.options[this.options.length - 1];
-          this.$emit('change', firstOptionValue);
-        }
-      },
-
-      selectOption(e) {
-        this.$emit('change', Number(e.target.value));
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>

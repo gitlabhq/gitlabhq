@@ -36,7 +36,7 @@ describe 'Projects > Files > User uploads files' do
       click_button('Upload file')
 
       expect(page).to have_content('New commit message')
-      expect(current_path).to eq(project_new_merge_request_path(project))
+      expect(current_path).to eq(project_new_merge_request_path(project, merge_request_source_branch: "new_branch_name"))
 
       click_link('Changes')
       find("a[data-action='diffs']", text: 'Changes').click
@@ -92,7 +92,7 @@ describe 'Projects > Files > User uploads files' do
 
       fork = user.fork_of(project2.reload)
 
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "undefined"))
 
       find("a[data-action='diffs']", text: 'Changes').click
 

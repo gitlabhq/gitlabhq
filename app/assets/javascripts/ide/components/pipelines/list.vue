@@ -25,7 +25,7 @@ export default {
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
     ciLintText() {
       return sprintf(
-        __('You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}'),
+        __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
         {
           linkStart: `<a href="${_.escape(this.currentProject.web_url)}/-/ci/lint">`,
           linkEnd: '</a>',

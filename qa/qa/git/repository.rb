@@ -113,21 +113,17 @@ module QA
 
       attr_reader :uri, :username, :password, :known_hosts_file, :private_key_file
 
-      def debug?
-        Runtime::Env.respond_to?(:verbose?) && Runtime::Env.verbose?
-      end
-
       def ssh_key_set?
         !private_key_file.nil?
       end
 
       def run(command_str)
         command = [env_vars, command_str, '2>&1'].compact.join(' ')
-        warn "DEBUG: command=[#{command}]" if debug?
+        Runtime::Logger.debug "Git: command=[#{command}]"
 
         output, _ = Open3.capture2(command)
         output = output.chomp.gsub(/\s+$/, '')
-        warn "DEBUG: output=[#{output}]" if debug?
+        Runtime::Logger.debug "Git: output=[#{output}]"
 
         output
       end

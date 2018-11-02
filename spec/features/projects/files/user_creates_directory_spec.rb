@@ -57,7 +57,7 @@ describe 'Projects > Files > User creates a directory', :js do
       expect(page).to have_content('From new-feature into master')
       expect(page).to have_content('Add new directory')
 
-      expect(current_path).to eq(project_new_merge_request_path(project))
+      expect(current_path).to eq(project_new_merge_request_path(project, merge_request_source_branch: "new-feature"))
     end
   end
 
@@ -80,8 +80,7 @@ describe 'Projects > Files > User creates a directory', :js do
       click_button('Create directory')
 
       fork = user.fork_of(project2.reload)
-
-      expect(current_path).to eq(project_new_merge_request_path(fork))
+      expect(current_path).to eq(project_new_merge_request_path(fork, merge_request_source_branch: "patch-1"))
     end
   end
 end

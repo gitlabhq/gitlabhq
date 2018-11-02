@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { Button } from '@gitlab-org/gitlab-ui';
+import { GlButton } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
@@ -10,7 +10,7 @@ export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
-    'gl-button': Button,
+    GlButton,
   },
   props: {
     groupId: {
@@ -62,7 +62,8 @@ export default {
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
-      return this.list.newIssue(issue)
+      return this.list
+        .newIssue(issue)
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();

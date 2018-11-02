@@ -65,6 +65,8 @@ module API
                          result
                        rescue Gitlab::GitAccess::UnauthorizedError => e
                          break response_with_status(code: 401, success: false, message: e.message)
+                       rescue Gitlab::GitAccess::TimeoutError => e
+                         break response_with_status(code: 503, success: false, message: e.message)
                        rescue Gitlab::GitAccess::NotFoundError => e
                          break response_with_status(code: 404, success: false, message: e.message)
                        end

@@ -168,7 +168,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge
-    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    access_check_result = merge_access_check
+
+    return access_check_result if access_check_result
 
     status = merge!
 
@@ -201,9 +203,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
-    environments = @merge_request.environments_for(current_user).map do |environment|
-      EnvironmentStatus.new(environment, @merge_request)
-    end
+    environments = if ci_environments_status_on_merge_result?
+                     EnvironmentStatus.after_merge_request(@merge_request, current_user)
+                   else
+                     EnvironmentStatus.for_merge_request(@merge_request, current_user)
+                   end
 
     render json: EnvironmentStatusSerializer.new(current_user: current_user).represent(environments)
   end
@@ -241,6 +245,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  def ci_environments_status_on_merge_result?
+    params[:environment_target] == 'merge_commit'
+  end
+
   def target_branch_missing?
     @merge_request.has_no_commits? && !@merge_request.target_branch_exists?
   end
@@ -254,6 +262,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # to wait until CI completes to know
     unless @merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds_active?)
       return :failed
+    end
+
+    merge_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
+
+    unless merge_service.hooks_validation_pass?(@merge_request)
+      return :hook_validation_error
     end
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
@@ -316,6 +330,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .can_push_to_branch?(@merge_request.source_branch)
 
     access_denied! unless access_check
+  end
+
+  def merge_access_check
+    access_denied! unless @merge_request.can_be_merged_by?(current_user)
   end
 
   def whitelist_query_limiting

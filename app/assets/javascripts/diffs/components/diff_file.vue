@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     ...mapState('diffs', ['currentDiffFileId']),
-    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
+    ...mapGetters(['isNotesFetched']),
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -79,7 +79,7 @@ export default {
         .then(() => {
           requestIdleCallback(
             () => {
-              this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+              this.assignDiscussionsToDiff();
             },
             { timeout: 1000 },
           );

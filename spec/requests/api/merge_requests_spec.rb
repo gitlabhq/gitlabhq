@@ -143,6 +143,23 @@ describe API::MergeRequests do
         expect_response_ordered_exactly(merge_request3)
       end
 
+      it 'returns an array of merge requests with no assignee' do
+        merge_request3 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), assignee_id: 'None', scope: :all
+
+        expect_response_ordered_exactly(merge_request3)
+      end
+
+      it 'returns an array of merge requests with any assignee' do
+        # This MR with no assignee should not be returned
+        create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), assignee_id: 'Any', scope: :all
+
+        expect_response_contain_exactly(merge_request, merge_request2, merge_request_closed, merge_request_merged, merge_request_locked)
+      end
+
       it 'returns an array of merge requests assigned to me' do
         merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
 

@@ -1,77 +1,73 @@
 <script>
-  import PipelinesService from '../../pipelines/services/pipelines_service';
-  import PipelineStore from '../../pipelines/stores/pipelines_store';
-  import pipelinesMixin from '../../pipelines/mixins/pipelines';
+import PipelinesService from '../../pipelines/services/pipelines_service';
+import PipelineStore from '../../pipelines/stores/pipelines_store';
+import pipelinesMixin from '../../pipelines/mixins/pipelines';
 
-  export default {
-    mixins: [
-      pipelinesMixin,
-    ],
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      },
-      helpPagePath: {
-        type: String,
-        required: true,
-      },
-      autoDevopsHelpPath: {
-        type: String,
-        required: true,
-      },
-      errorStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      viewType: {
-        type: String,
-        required: false,
-        default: 'child',
-      },
+export default {
+  mixins: [pipelinesMixin],
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
     },
-
-    data() {
-      const store = new PipelineStore();
-
-      return {
-        store,
-        state: store.state,
-      };
+    helpPagePath: {
+      type: String,
+      required: true,
     },
-
-    computed: {
-      shouldRenderTable() {
-        return !this.isLoading &&
-          this.state.pipelines.length > 0 &&
-          !this.hasError;
-      },
-      shouldRenderErrorState() {
-        return this.hasError && !this.isLoading;
-      },
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
     },
-    created() {
-      this.service = new PipelinesService(this.endpoint);
+    errorStateSvgPath: {
+      type: String,
+      required: true,
     },
-    methods: {
-      successCallback(resp) {
-        // depending of the endpoint the response can either bring a `pipelines` key or not.
-        const pipelines = resp.data.pipelines || resp.data;
-        this.setCommonData(pipelines);
-
-        const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
-          detail: {
-            pipelines: resp.data,
-          },
-        });
-
-        // notifiy to update the count in tabs
-        if (this.$el.parentElement) {
-          this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
-        }
-      },
+    viewType: {
+      type: String,
+      required: false,
+      default: 'child',
     },
-  };
+  },
+
+  data() {
+    const store = new PipelineStore();
+
+    return {
+      store,
+      state: store.state,
+    };
+  },
+
+  computed: {
+    shouldRenderTable() {
+      return !this.isLoading && this.state.pipelines.length > 0 && !this.hasError;
+    },
+    shouldRenderErrorState() {
+      return this.hasError && !this.isLoading;
+    },
+  },
+  created() {
+    this.service = new PipelinesService(this.endpoint);
+  },
+  methods: {
+    successCallback(resp) {
+      // depending of the endpoint the response can either bring a `pipelines` key or not.
+      const pipelines = resp.data.pipelines || resp.data;
+      this.setCommonData(pipelines);
+
+      const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
+        detail: {
+          pipelines: resp.data,
+        },
+      });
+
+      // notifiy to update the count in tabs
+      if (this.$el.parentElement) {
+        this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+      }
+    },
+  },
+};
 </script>
 <template>
   <div class="content-list pipelines">

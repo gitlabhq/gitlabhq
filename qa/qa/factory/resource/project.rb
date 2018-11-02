@@ -4,25 +4,24 @@ module QA
   module Factory
     module Resource
       class Project < Factory::Base
-        attr_accessor :description
-        attr_reader :name
+        attribute :name
+        attribute :description
 
-        dependency Factory::Resource::Group, as: :group
+        attribute :group do
+          Factory::Resource::Group.fabricate!
+        end
 
-        product :group
-        product :name
-
-        product :repository_ssh_location do
-          Page::Project::Show.act do
-            choose_repository_clone_ssh
-            repository_location
+        attribute :repository_ssh_location do
+          Page::Project::Show.perform do |page|
+            page.choose_repository_clone_ssh
+            page.repository_location
           end
         end
 
-        product :repository_http_location do
-          Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location
+        attribute :repository_http_location do
+          Page::Project::Show.perform do |page|
+            page.choose_repository_clone_http
+            page.repository_location
           end
         end
 
@@ -37,7 +36,7 @@ module QA
         def fabricate!
           group.visit!
 
-          Page::Group::Show.act { go_to_new_project }
+          Page::Group::Show.perform(&:go_to_new_project)
 
           Page::Project::New.perform do |page|
             page.choose_test_namespace

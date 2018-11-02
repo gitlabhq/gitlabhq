@@ -4,16 +4,17 @@ module QA
   module Factory
     module Resource
       class ProjectImportedFromGithub < Resource::Project
+        attr_accessor :name
         attr_writer :personal_access_token, :github_repository_path
 
-        dependency Factory::Resource::Group, as: :group
-
-        product :name
+        attribute :group do
+          Factory::Resource::Group.fabricate!
+        end
 
         def fabricate!
           group.visit!
 
-          Page::Group::Show.act { go_to_new_project }
+          Page::Group::Show.perform(&:go_to_new_project)
 
           Page::Project::New.perform do |page|
             page.go_to_import_project

@@ -39,8 +39,6 @@ module QA
   module Factory
     autoload :ApiFabricator, 'qa/factory/api_fabricator'
     autoload :Base, 'qa/factory/base'
-    autoload :Dependency, 'qa/factory/dependency'
-    autoload :Product, 'qa/factory/product'
 
     module Resource
       autoload :Sandbox, 'qa/factory/resource/sandbox'
@@ -54,7 +52,7 @@ module QA
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :DeployToken, 'qa/factory/resource/deploy_token'
       autoload :Branch, 'qa/factory/resource/branch'
-      autoload :SecretVariable, 'qa/factory/resource/secret_variable'
+      autoload :CiVariable, 'qa/factory/resource/ci_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
@@ -100,7 +98,8 @@ module QA
 
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
-        autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
+        autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
@@ -183,7 +182,7 @@ module QA
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'
         autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
-        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
+        autoload :CiVariables, 'qa/page/project/settings/ci_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'

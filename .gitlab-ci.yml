@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.5-golang-1.9-git-2.18-chrome-69.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-2.4.4-debian-stretch-with-yarn"
+  key: "ruby-2.4.5-debian-stretch-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -74,11 +74,6 @@ stages:
   services:
     - mysql:5.7
     - redis:alpine
-
-.rails5-variables: &rails5-variables
-  script:
-    - export RAILS5=${RAILS5}
-    - export BUNDLE_GEMFILE=${BUNDLE_GEMFILE}
 
 .rails5: &rails5
   allow_failure: true
@@ -150,7 +145,6 @@ stages:
   <<: *dedicated-runner
   <<: *except-docs-and-qa
   <<: *pull-cache
-  <<: *rails5-variables
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -271,7 +265,7 @@ package-and-qa:
     SCRIPT_NAME: trigger-build-docs
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
-    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
     url: http://$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
@@ -594,7 +588,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.4.4-debian-stretch-with-yarn-and-rubocop"
+    key: "ruby-2.4.5-debian-stretch-with-yarn-and-rubocop"
     paths:
       - vendor/ruby
       - .yarn-cache/
@@ -700,7 +694,10 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-git-2.18-chrome-69.0-node-8.x-yarn-1.2-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
+  services:
+    - docker:stable-dind
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
@@ -709,18 +706,23 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
     - free -m
     - bundle exec rake gitlab:assets:compile
+    - scripts/build_assets_image
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
       - public/assets/
+  tags:
+    - docker
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
@@ -1017,6 +1019,5 @@ schedule:review_apps_cleanup:
       - schedules@gitlab-org/gitlab-ee
     kubernetes: active
   except:
-    - master
     - tags
     - /(^docs[\/-].*|.*-docs$)/

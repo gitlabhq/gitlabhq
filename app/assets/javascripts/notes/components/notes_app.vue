@@ -54,7 +54,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount', 'isLoading']),
+    ...mapGetters([
+      'isNotesFetched',
+      'discussions',
+      'getNotesDataByProp',
+      'discussionCount',
+      'isLoading',
+    ]),
     noteableType() {
       return this.noteableData.noteableType;
     },
