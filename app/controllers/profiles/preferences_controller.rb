@@ -33,12 +33,10 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def preferences_params
-    params.require(:user).permit(
-      :color_scheme_id,
-      :layout,
-      :dashboard,
-      :project_view,
-      :theme_id
-    )
+    params.require(:user).permit(preferences_param_names)
+  end
+
+  def preferences_param_names
+    [:color_scheme_id, :layout, :dashboard, :project_view, :theme_id]
   end
 end
