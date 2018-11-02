@@ -48,7 +48,7 @@ describe MicrosoftTeams::Notifier do
       stub_request(:post, webhook_url).with(body: JSON(body), headers: { 'Content-Type' => 'application/json' }).to_return(status: 200, body: "", headers: {})
     end
 
-    it 'expects to receive successfull answer' do
+    it 'expects to receive successful answer' do
       expect(subject.ping(options)).to be true
     end
   end

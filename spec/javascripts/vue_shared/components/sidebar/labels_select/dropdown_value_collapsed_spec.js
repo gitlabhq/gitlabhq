@@ -49,7 +49,9 @@ describe('DropdownValueCollapsedComponent', () => {
 
         const vmMoreLabels = createComponent(mockMoreLabels);
 
-        expect(vmMoreLabels.labelsList).toBe('Foo Label, Foo Label, Foo Label, Foo Label, Foo Label, and 2 more');
+        expect(vmMoreLabels.labelsList).toBe(
+          'Foo Label, Foo Label, Foo Label, Foo Label, Foo Label, and 2 more',
+        );
         vmMoreLabels.$destroy();
       });
 

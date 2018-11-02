@@ -107,7 +107,7 @@ starting with `sentinel` prefix.
 Assuming that the Redis Sentinel is installed on the same instance as Redis
 master with IP `10.0.0.1` (some settings might overlap with the master):
 
-1. [Install Redis Sentinel](http://redis.io/topics/sentinel)
+1. [Install Redis Sentinel](https://redis.io/topics/sentinel)
 1. Edit `/etc/redis/sentinel.conf`:
 
     ```conf
@@ -363,7 +363,7 @@ production:
       port: 26379 # point to sentinel, not to redis port
 ```
 
-When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel).
+When in doubt, please read [Redis Sentinel documentation](https://redis.io/topics/sentinel).
 
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [downloads]: https://about.gitlab.com/downloads

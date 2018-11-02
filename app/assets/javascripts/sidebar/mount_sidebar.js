@@ -22,14 +22,15 @@ function mountAssigneesComponent(mediator) {
     components: {
       SidebarAssignees,
     },
-    render: createElement => createElement('sidebar-assignees', {
-      props: {
-        mediator,
-        field: el.dataset.field,
-        signedIn: el.hasAttribute('data-signed-in'),
-        issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-assignees', {
+        props: {
+          mediator,
+          field: el.dataset.field,
+          signedIn: el.hasAttribute('data-signed-in'),
+          issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+        },
+      }),
   });
 }
 
@@ -83,11 +84,12 @@ function mountParticipantsComponent(mediator) {
     components: {
       sidebarParticipants,
     },
-    render: createElement => createElement('sidebar-participants', {
-      props: {
-        mediator,
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-participants', {
+        props: {
+          mediator,
+        },
+      }),
   });
 }
 
@@ -102,11 +104,12 @@ function mountSubscriptionsComponent(mediator) {
     components: {
       sidebarSubscriptions,
     },
-    render: createElement => createElement('sidebar-subscriptions', {
-      props: {
-        mediator,
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-subscriptions', {
+        props: {
+          mediator,
+        },
+      }),
   });
 }
 

@@ -1,40 +1,40 @@
 <script>
+import _ from 'underscore';
+import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
-import {
-  WidgetHeader,
-  WidgetMergeHelp,
-  WidgetPipeline,
-  Deployment,
-  WidgetRelatedLinks,
-  MergedState,
-  ClosedState,
-  MergingState,
-  RebaseState,
-  WorkInProgressState,
-  ArchivedState,
-  ConflictsState,
-  NothingToMergeState,
-  MissingBranchState,
-  NotAllowedState,
-  ReadyToMergeState,
-  ShaMismatchState,
-  UnresolvedDiscussionsState,
-  PipelineBlockedState,
-  PipelineFailedState,
-  FailedToMerge,
-  MergeWhenPipelineSucceedsState,
-  AutoMergeFailed,
-  CheckingState,
-  MRWidgetStore,
-  MRWidgetService,
-  eventHub,
-  stateMaps,
-  SquashBeforeMerge,
-  notify,
-  SourceBranchRemovalStatus,
-} from './dependencies';
+import WidgetHeader from './components/mr_widget_header.vue';
+import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
+import WidgetPipeline from './components/mr_widget_pipeline.vue';
+import Deployment from './components/deployment.vue';
+import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
+import MergedState from './components/states/mr_widget_merged.vue';
+import ClosedState from './components/states/mr_widget_closed.vue';
+import MergingState from './components/states/mr_widget_merging.vue';
+import RebaseState from './components/states/mr_widget_rebase.vue';
+import WorkInProgressState from './components/states/work_in_progress.vue';
+import ArchivedState from './components/states/mr_widget_archived.vue';
+import ConflictsState from './components/states/mr_widget_conflicts.vue';
+import NothingToMergeState from './components/states/nothing_to_merge.vue';
+import MissingBranchState from './components/states/mr_widget_missing_branch.vue';
+import NotAllowedState from './components/states/mr_widget_not_allowed.vue';
+import ReadyToMergeState from './components/states/ready_to_merge.vue';
+import ShaMismatchState from './components/states/sha_mismatch.vue';
+import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
+import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked.vue';
+import PipelineFailedState from './components/states/pipeline_failed.vue';
+import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
+import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
+import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
+import CheckingState from './components/states/mr_widget_checking.vue';
+import MRWidgetStore from './stores/ee_switch_mr_widget_store';
+import MRWidgetService from './services/ee_switch_mr_widget_service';
+import eventHub from './event_hub';
+import stateMaps from './stores/ee_switch_state_maps';
+import SquashBeforeMerge from './components/states/squash_before_merge.vue';
+import notify from '~/lib/utils/notify';
+import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 
@@ -82,6 +82,7 @@ export default {
     const service = this.createService(store);
     return {
       mr: store,
+      state: store.state,
       service,
     };
   },
@@ -105,6 +106,17 @@ export default {
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
       );
     },
+    shouldRenderMergedPipeline() {
+      return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
+    },
+  },
+  watch: {
+    state(newVal, oldVal) {
+      if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
+        // init polling
+        this.initPostMergeDeploymentsPolling();
+      }
+    },
   },
   created() {
     this.initPolling();
@@ -114,11 +126,19 @@ export default {
   mounted() {
     this.setFaviconHelper();
     this.initDeploymentsPolling();
+
+    if (this.shouldRenderMergedPipeline) {
+      this.initPostMergeDeploymentsPolling();
+    }
   },
   beforeDestroy() {
     eventHub.$off('mr.discussion.updated', this.checkStatus);
     this.pollingInterval.destroy();
     this.deploymentsInterval.destroy();
+
+    if (this.postMergeDeploymentsInterval) {
+      this.postMergeDeploymentsInterval.destroy();
+    }
   },
   methods: {
     createService(store) {
@@ -148,7 +168,13 @@ export default {
             cb.call(null, data);
           }
         })
-        .catch(() => createFlash('Something went wrong. Please try again.'));
+        .catch(() => createFlash(__('Something went wrong. Please try again.')));
+    },
+    setFaviconHelper() {
+      if (this.mr.ciStatusFaviconPath) {
+        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
+      }
+      return Promise.resolve();
     },
     initPolling() {
       this.pollingInterval = new SmartInterval({
@@ -160,8 +186,14 @@ export default {
       });
     },
     initDeploymentsPolling() {
-      this.deploymentsInterval = new SmartInterval({
-        callback: this.fetchDeployments,
+      this.deploymentsInterval = this.deploymentsPoll(this.fetchPreMergeDeployments);
+    },
+    initPostMergeDeploymentsPolling() {
+      this.postMergeDeploymentsInterval = this.deploymentsPoll(this.fetchPostMergeDeployments);
+    },
+    deploymentsPoll(callback) {
+      return new SmartInterval({
+        callback,
         startingInterval: 30000,
         maxInterval: 120000,
         hiddenInterval: 240000,
@@ -169,26 +201,33 @@ export default {
         immediateExecution: true,
       });
     },
-    setFaviconHelper() {
-      if (this.mr.ciStatusFaviconPath) {
-        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
-      }
-      return Promise.resolve();
+    fetchDeployments(target) {
+      return this.service.fetchDeployments(target);
     },
-    fetchDeployments() {
-      return this.service
-        .fetchDeployments()
-        .then(res => res.data)
-        .then(data => {
+    fetchPreMergeDeployments() {
+      return this.fetchDeployments()
+        .then(({ data }) => {
           if (data.length) {
             this.mr.deployments = data;
           }
         })
-        .catch(() => {
-          createFlash(
-            'Something went wrong while fetching the environments for this merge request. Please try again.',
-          );
-        });
+        .catch(() => this.throwDeploymentsError());
+    },
+    fetchPostMergeDeployments() {
+      return this.fetchDeployments('merge_commit')
+        .then(({ data }) => {
+          if (data.length) {
+            this.mr.postMergeDeployments = data;
+          }
+        })
+        .catch(() => this.throwDeploymentsError());
+    },
+    throwDeploymentsError() {
+      createFlash(
+        __(
+          'Something went wrong while fetching the environments for this merge request. Please try again.',
+        ),
+      );
     },
     fetchActionsContent() {
       this.service
@@ -201,7 +240,7 @@ export default {
             Project.initRefSwitcher();
           }
         })
-        .catch(() => createFlash('Something went wrong. Please try again.'));
+        .catch(() => createFlash(__('Something went wrong. Please try again.')));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
@@ -266,10 +305,12 @@ export default {
       :has-ci="mr.hasCI"
       :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
+      :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
     <deployment
       v-for="deployment in mr.deployments"
-      :key="deployment.id"
+      :key="`pre-merge-deploy-${deployment.id}`"
+      class="js-pre-merge-deploy"
       :deployment="deployment"
     />
     <div class="mr-section-container">
@@ -310,5 +351,23 @@ export default {
         <mr-widget-merge-help />
       </div>
     </div>
+
+    <template v-if="shouldRenderMergedPipeline">
+      <mr-widget-pipeline
+        class="js-post-merge-pipeline prepend-top-default"
+        :pipeline="mr.mergePipeline"
+        :ci-status="mr.ciStatus"
+        :has-ci="mr.hasCI"
+        :source-branch="mr.targetBranch"
+        :source-branch-link="mr.targetBranch"
+        :troubleshooting-docs-path="mr.troubleshootingDocsPath"
+      />
+      <deployment
+        v-for="postMergeDeployment in mr.postMergeDeployments"
+        :key="`post-merge-deploy-${postMergeDeployment.id}`"
+        :deployment="postMergeDeployment"
+        class="js-post-deployment"
+      />
+    </template>
   </div>
 </template>

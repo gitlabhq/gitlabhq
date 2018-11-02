@@ -7,13 +7,13 @@ module QA
       class PersonalAccessToken < Factory::Base
         attr_accessor :name
 
-        product :access_token do
-          Page::Profile::PersonalAccessTokens.act { created_access_token }
+        attribute :access_token do
+          Page::Profile::PersonalAccessTokens.perform(&:created_access_token)
         end
 
         def fabricate!
-          Page::Main::Menu.act { go_to_profile_settings }
-          Page::Profile::Menu.act { click_access_tokens }
+          Page::Main::Menu.perform(&:go_to_profile_settings)
+          Page::Profile::Menu.perform(&:click_access_tokens)
 
           Page::Profile::PersonalAccessTokens.perform do |page|
             page.fill_token_name(name || 'api-test-token')

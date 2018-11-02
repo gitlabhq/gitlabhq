@@ -176,6 +176,9 @@ Clicking on the current board name in the upper left corner will reveal a
 menu from where you can create another Issue Board and rename or delete the
 existing one.
 
+When you're revisiting an issue board in a project or group with multiple boards, 
+GitLab will automatically load the last board you visited.
+
 NOTE: **Note:**
 The Multiple Issue Boards feature is available for
 **projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.

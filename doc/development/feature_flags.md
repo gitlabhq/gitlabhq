@@ -112,3 +112,8 @@ feature flag. You can stub a feature flag as follows:
 ```ruby
 stub_feature_flags(my_feature_flag: false)
 ```
+
+## Enabling a feature flag
+
+Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
+

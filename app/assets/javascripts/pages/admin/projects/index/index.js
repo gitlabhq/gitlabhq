@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   });
 
-  $(document).on('shown.bs.modal', (event) => {
+  $(document).on('shown.bs.modal', event => {
     if (event.relatedTarget.classList.contains('delete-project-button')) {
       const buttonProps = event.relatedTarget.dataset;
       deleteModal.deleteProjectUrl = buttonProps.deleteProjectUrl;

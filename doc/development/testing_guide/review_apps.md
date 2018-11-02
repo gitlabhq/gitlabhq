@@ -1,15 +1,13 @@
 # Review apps
 
-We currently have review apps available as a manual job in EE pipelines. Here is
-[the first implementation](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6259).
-
-That said, [the Quality team is working](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6665)
-on making Review Apps automatically deployed by each pipeline, both in CE and EE.
+Review Apps are automatically deployed by each pipeline, both in 
+[CE](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22010) and
+[EE](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6665).
 
 ## How does it work?
 
-1. On every EE [pipeline][gitlab-pipeline] during the `test` stage, you can
-  start the [`review` job][review-job]
+1. On every [pipeline][gitlab-pipeline] during the `test` stage, the 
+  [`review` job][review-job] is automatically started.
 1. The `review` job [triggers a pipeline][cng-pipeline] in the
   [`CNG-mirror`][cng-mirror] [^1] project
 1. The `CNG-mirror` pipeline creates the Docker images of each component (e.g. `gitlab-rails-ee`,
@@ -39,6 +37,9 @@ on making Review Apps automatically deployed by each pipeline, both in CE and EE
   review app manually, and is also started by GitLab once a branch is deleted
 - [TBD] Review apps are cleaned up regularly using a pipeline schedule that runs
   the [`scripts/review_apps/automated_cleanup.rb`][automated_cleanup.rb] script
+- If you're unable to log in using the `root` username and password, the 
+  deployment may have failed. Stop the Review App via the `stop_review` 
+  manual job and then retry the `review` job to redeploy the Review App.
 
 [^1]: We use the `CNG-mirror` project so that the `CNG`, (**C**loud **N**ative **G**itLab), project's registry is
   not overloaded with a lot of transient Docker images.

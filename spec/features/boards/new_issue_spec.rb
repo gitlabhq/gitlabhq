@@ -94,8 +94,14 @@ describe 'Issue Boards new issue', :js do
       wait_for_requests
     end
 
-    it 'does not display new issue button' do
-      expect(page).to have_selector('.issue-count-badge-add-button', count: 0)
+    it 'displays new issue button in open list' do
+      expect(first('.board')).to have_selector('.issue-count-badge-add-button', count: 1)
+    end
+
+    it 'does not display new issue button in label list' do
+      page.within('.board:nth-child(2)') do
+        expect(page).not_to have_selector('.issue-count-badge-add-button')
+      end
     end
   end
 end

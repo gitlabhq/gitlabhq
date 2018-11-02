@@ -21,6 +21,7 @@
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
 
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
+      window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests', anchor: 'troubleshooting')}';
 
     #js-vue-mr-widget.mr-widget
 
@@ -51,8 +52,10 @@
               = tab_link_for @merge_request, :diffs do
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size
-
-        #js-vue-discussion-counter
+        .d-inline-flex.flex-wrap
+          #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@merge_request),
+            notes_filters: UserPreference.notes_filters.to_json } }
+          #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
       #notes.notes.tab-pane.voting_notes

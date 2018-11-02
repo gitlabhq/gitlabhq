@@ -11,8 +11,8 @@ module Gitlab
       @changes = deserialize_changes(changes)
     end
 
-    def identify(revision)
-      super(identifier, project, revision)
+    def identify
+      super(identifier)
     end
 
     def changes_refs

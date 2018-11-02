@@ -10,11 +10,44 @@ module QA
       include ApiFabricator
       extend Capybara::DSL
 
-      def_delegators :evaluator, :dependency, :dependencies
-      def_delegators :evaluator, :product, :attributes
+      NoValueError = Class.new(RuntimeError)
+
+      def_delegators :evaluator, :attribute
 
       def fabricate!(*_args)
         raise NotImplementedError
+      end
+
+      def visit!
+        visit(web_url)
+      end
+
+      def populate(*attributes)
+        attributes.each(&method(:public_send))
+      end
+
+      private
+
+      def populate_attribute(name, block)
+        value = attribute_value(name, block)
+
+        raise NoValueError, "No value was computed for #{name} of #{self.class.name}." unless value
+
+        value
+      end
+
+      def attribute_value(name, block)
+        api_value = api_resource&.dig(name)
+
+        if api_value && block
+          log_having_both_api_result_and_block(name, api_value)
+        end
+
+        api_value || (block && instance_exec(&block))
+      end
+
+      def log_having_both_api_result_and_block(name, api_value)
+        QA::Runtime::Logger.info "<#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored."
       end
 
       def self.fabricate!(*args, &prepare_block)
@@ -52,13 +85,10 @@ module QA
       def self.do_fabricate!(factory:, prepare_block:, parents: [])
         prepare_block.call(factory) if prepare_block
 
-        dependencies.each do |signature|
-          Factory::Dependency.new(factory, signature).build!(parents: parents + [self])
-        end
-
         resource_web_url = yield
+        factory.web_url = resource_web_url
 
-        Factory::Product.populate!(factory, resource_web_url)
+        factory
       end
       private_class_method :do_fabricate!
 
@@ -85,31 +115,40 @@ module QA
       end
       private_class_method :evaluator
 
-      class DSL
-        attr_reader :dependencies, :attributes
+      def self.dynamic_attributes
+        const_get(:DynamicAttributes)
+      rescue NameError
+        mod = const_set(:DynamicAttributes, Module.new)
 
+        include mod
+
+        mod
+      end
+
+      def self.attributes_names
+        dynamic_attributes.instance_methods(false).sort.grep_v(/=$/)
+      end
+
+      class DSL
         def initialize(base)
           @base = base
-          @dependencies = []
-          @attributes = []
         end
 
-        def dependency(factory, as:, &block)
-          as.tap do |name|
-            @base.class_eval { attr_accessor name }
+        def attribute(name, &block)
+          @base.dynamic_attributes.module_eval do
+            attr_writer(name)
 
-            Dependency::Signature.new(name, factory, block).tap do |signature|
-              @dependencies << signature
+            define_method(name) do
+              instance_variable_get("@#{name}") ||
+                instance_variable_set(
+                  "@#{name}",
+                  populate_attribute(name, block))
             end
           end
         end
-
-        def product(attribute, &block)
-          Product::Attribute.new(attribute, block).tap do |signature|
-            @attributes << signature
-          end
-        end
       end
+
+      attribute :web_url
     end
   end
 end

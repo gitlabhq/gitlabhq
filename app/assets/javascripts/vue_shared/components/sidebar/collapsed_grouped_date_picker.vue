@@ -1,88 +1,87 @@
 <script>
-  import { dateInWords } from '../../../lib/utils/datetime_utility';
-  import toggleSidebar from './toggle_sidebar.vue';
-  import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
+import { __ } from '~/locale';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { dateInWords, timeFor } from '~/lib/utils/datetime_utility';
+import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
 
-  export default {
-    name: 'SidebarCollapsedGroupedDatePicker',
-    components: {
-      toggleSidebar,
-      collapsedCalendarIcon,
+export default {
+  name: 'SidebarCollapsedGroupedDatePicker',
+  components: {
+    collapsedCalendarIcon,
+  },
+  mixins: [timeagoMixin],
+  props: {
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
-    props: {
-      collapsed: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      showToggleSidebar: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      minDate: {
-        type: Date,
-        required: false,
-        default: null,
-      },
-      maxDate: {
-        type: Date,
-        required: false,
-        default: null,
-      },
-      disableClickableIcons: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    minDate: {
+      type: Date,
+      required: false,
+      default: null,
     },
-    computed: {
-      hasMinAndMaxDates() {
-        return this.minDate && this.maxDate;
-      },
-      hasNoMinAndMaxDates() {
-        return !this.minDate && !this.maxDate;
-      },
-      showMinDateBlock() {
-        return this.minDate || this.hasNoMinAndMaxDates;
-      },
-      showFromText() {
-        return !this.maxDate && this.minDate;
-      },
-      iconClass() {
-        const disabledClass = this.disableClickableIcons ? 'disabled' : '';
-        return `block sidebar-collapsed-icon calendar-icon ${disabledClass}`;
-      },
+    maxDate: {
+      type: Date,
+      required: false,
+      default: null,
     },
-    methods: {
-      toggleSidebar() {
-        this.$emit('toggleCollapse');
-      },
-      dateText(dateType = 'min') {
-        const date = this[`${dateType}Date`];
-        const dateWords = dateInWords(date, true);
-        const parsedDateWords = dateWords ? dateWords.replace(',', '') : dateWords;
+    disableClickableIcons: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  computed: {
+    hasMinAndMaxDates() {
+      return this.minDate && this.maxDate;
+    },
+    hasNoMinAndMaxDates() {
+      return !this.minDate && !this.maxDate;
+    },
+    showMinDateBlock() {
+      return this.minDate || this.hasNoMinAndMaxDates;
+    },
+    showFromText() {
+      return !this.maxDate && this.minDate;
+    },
+    iconClass() {
+      const disabledClass = this.disableClickableIcons ? 'disabled' : '';
+      return `sidebar-collapsed-icon calendar-icon ${disabledClass}`;
+    },
+  },
+  methods: {
+    toggleSidebar() {
+      this.$emit('toggleCollapse');
+    },
+    dateText(dateType = 'min') {
+      const date = this[`${dateType}Date`];
+      const dateWords = dateInWords(date, true);
+      const parsedDateWords = dateWords ? dateWords.replace(',', '') : dateWords;
 
-        return date ? parsedDateWords : 'None';
-      },
+      return date ? parsedDateWords : __('None');
     },
-  };
+    tooltipText(dateType = 'min') {
+      const defaultText = dateType === 'min' ? __('Start date') : __('Due date');
+      const date = this[`${dateType}Date`];
+      const timeAgo = dateType === 'min' ? this.timeFormated(date) : timeFor(date);
+      const dateText = date ? [this.dateText(dateType), `(${timeAgo})`].join(' ') : '';
+
+      if (date) {
+        return [defaultText, dateText].join('<br />');
+      }
+      return __('Start and due date');
+    },
+  },
+};
 </script>
 
 <template>
   <div class="block sidebar-grouped-item">
-    <div
-      v-if="showToggleSidebar"
-      class="issuable-sidebar-header"
-    >
-      <toggle-sidebar
-        :collapsed="collapsed"
-        @toggle="toggleSidebar"
-      />
-    </div>
     <collapsed-calendar-icon
       v-if="showMinDateBlock"
       :container-class="iconClass"
+      :tooltip-text="tooltipText('min')"
       @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">
@@ -99,7 +98,7 @@
     <collapsed-calendar-icon
       v-if="maxDate"
       :container-class="iconClass"
-      :show-icon="!minDate"
+      :tooltip-text="tooltipText('max')"
       @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">

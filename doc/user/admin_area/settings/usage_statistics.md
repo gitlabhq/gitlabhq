@@ -42,7 +42,11 @@ not send any project names, usernames, or any other specific data. The
 information from the usage ping is not anonymous, it is linked to the hostname
 of the instance.
 
-You can view the exact JSON payload in the administration panel.
+You can view the exact JSON payload in the administration panel. To view the payload:
+
+1. Go to the **Admin area** (spanner symbol on the top bar).
+1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
+1. Expand **Usage statistics** and click on the **Preview payload** button.
 
 ### Deactivate the usage ping
 

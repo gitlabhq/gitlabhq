@@ -1,63 +1,63 @@
 <script>
-  import _ from 'underscore';
+import _ from 'underscore';
 
-  export default {
-    props: {
-      initialCronInterval: {
-        type: String,
-        required: false,
-        default: '',
-      },
+export default {
+  props: {
+    initialCronInterval: {
+      type: String,
+      required: false,
+      default: '',
     },
-    data() {
-      return {
-        inputNameAttribute: 'schedule[cron]',
-        cronInterval: this.initialCronInterval,
-        cronIntervalPresets: {
-          everyDay: '0 4 * * *',
-          everyWeek: '0 4 * * 0',
-          everyMonth: '0 4 1 * *',
-        },
-        cronSyntaxUrl: 'https://en.wikipedia.org/wiki/Cron',
-        customInputEnabled: false,
-      };
-    },
-    computed: {
-      intervalIsPreset() {
-        return _.contains(this.cronIntervalPresets, this.cronInterval);
+  },
+  data() {
+    return {
+      inputNameAttribute: 'schedule[cron]',
+      cronInterval: this.initialCronInterval,
+      cronIntervalPresets: {
+        everyDay: '0 4 * * *',
+        everyWeek: '0 4 * * 0',
+        everyMonth: '0 4 1 * *',
       },
-      // The text input is editable when there's a custom interval, or when it's
-      // a preset interval and the user clicks the 'custom' radio button
-      isEditable() {
-        return !!(this.customInputEnabled || !this.intervalIsPreset);
-      },
+      cronSyntaxUrl: 'https://en.wikipedia.org/wiki/Cron',
+      customInputEnabled: false,
+    };
+  },
+  computed: {
+    intervalIsPreset() {
+      return _.contains(this.cronIntervalPresets, this.cronInterval);
     },
-    watch: {
-      cronInterval() {
-        // updates field validation state when model changes, as
-        // glFieldError only updates on input.
-        this.$nextTick(() => {
-          gl.pipelineScheduleFieldErrors.updateFormValidityState();
-        });
-      },
+    // The text input is editable when there's a custom interval, or when it's
+    // a preset interval and the user clicks the 'custom' radio button
+    isEditable() {
+      return !!(this.customInputEnabled || !this.intervalIsPreset);
     },
-    created() {
-      if (this.intervalIsPreset) {
-        this.enableCustomInput = false;
+  },
+  watch: {
+    cronInterval() {
+      // updates field validation state when model changes, as
+      // glFieldError only updates on input.
+      this.$nextTick(() => {
+        gl.pipelineScheduleFieldErrors.updateFormValidityState();
+      });
+    },
+  },
+  created() {
+    if (this.intervalIsPreset) {
+      this.enableCustomInput = false;
+    }
+  },
+  methods: {
+    toggleCustomInput(shouldEnable) {
+      this.customInputEnabled = shouldEnable;
+
+      if (shouldEnable) {
+        // We need to change the value so other radios don't remain selected
+        // because the model (cronInterval) hasn't changed. The server trims it.
+        this.cronInterval = `${this.cronInterval} `;
       }
     },
-    methods: {
-      toggleCustomInput(shouldEnable) {
-        this.customInputEnabled = shouldEnable;
-
-        if (shouldEnable) {
-          // We need to change the value so other radios don't remain selected
-          // because the model (cronInterval) hasn't changed. The server trims it.
-          this.cronInterval = `${this.cronInterval} `;
-        }
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>

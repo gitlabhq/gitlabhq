@@ -78,7 +78,7 @@ describe('Notes Store mutations', () => {
   });
 
   describe('COLLAPSE_DISCUSSION', () => {
-    it('should collpase an expanded discussion', () => {
+    it('should collapse an expanded discussion', () => {
       const discussion = Object.assign({}, discussionMock, { expanded: true });
 
       const state = {

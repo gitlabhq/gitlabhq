@@ -44,7 +44,7 @@ describe('User Avatar Link Component', function() {
     expect(this.userAvatarLink.$el.querySelector('img')).not.toBeNull();
   });
 
-  it('should return neccessary props as defined', function() {
+  it('should return necessary props as defined', function() {
     _.each(this.propsData, (val, key) => {
       expect(this.userAvatarLink[key]).toBeDefined();
     });

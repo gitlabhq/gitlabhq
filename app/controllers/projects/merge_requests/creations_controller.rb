@@ -89,6 +89,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    params[:merge_request][:source_branch] ||= params[:merge_request_source_branch].presence
+
     @merge_request = ::MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
   end
 

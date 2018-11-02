@@ -140,10 +140,11 @@ describe('Sidebar details block', () => {
     });
 
     describe('while fetching stages', () => {
-      it('renders dropdown with More label', () => {
+      it('it does not render dropdown', () => {
+        store.dispatch('requestStages');
         vm = mountComponentWithStore(SidebarComponent, { store });
 
-        expect(vm.$el.querySelector('.js-selected-stage').textContent.trim()).toEqual('More');
+        expect(vm.$el.querySelector('.js-selected-stage')).toBeNull();
       });
     });
 

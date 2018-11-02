@@ -321,7 +321,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
     end
 
-    context 'when the project has overriden params in import data' do
+    context 'when the project has overridden params in import data' do
       it 'overwrites the params stored in the JSON' do
         project.create_import_data(data: { override_params: { description: "Overridden" } })
 
@@ -335,7 +335,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         restored_project_json
 
-        expect(project.lfs_enabled).to be_nil
+        expect(project.lfs_enabled).to be_falsey
       end
     end
 

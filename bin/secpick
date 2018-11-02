@@ -15,7 +15,7 @@ parser = OptionParser.new do |opts|
     options[:version] = version&.tr('.', '-')
   end
 
-  opts.on('-b', '--branch security-fix-branch', 'Original branch name') do |branch|
+  opts.on('-b', '--branch security-fix-branch', 'Original branch name (optional, defaults to current)') do |branch|
     options[:branch] = branch
   end
 
@@ -32,15 +32,21 @@ end
 
 parser.parse!
 
+options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
+
 abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.values.include?(nil)
 abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
 
-branch = "#{options[:branch]}-#{options[:version]}"
+ee = File.exist?('./CHANGELOG-EE.md')
+original_branch = options[:branch].strip
+branch = "#{original_branch}-#{options[:version]}"
 branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
 branch = branch.freeze
-stable_branch = "#{BRANCH_PREFIX}-#{options[:version]}".freeze
+stable_branch = "#{BRANCH_PREFIX}-#{options[:version]}".tap do |name|
+  name << "-ee" if ee
+end.freeze
 
-command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch}"
+command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch} && git checkout #{original_branch}"
 
 _stdin, stdout, stderr = Open3.popen3(command)
 

@@ -5,6 +5,7 @@ class BuildDetailsEntity < JobEntity
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace
   expose :stage
+  expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
   expose :pipeline, using: PipelineEntity

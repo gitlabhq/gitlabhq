@@ -124,8 +124,8 @@ describe('Jobs Store Mutations', () => {
       expect(stateCopy.job).toEqual({ id: 1312321 });
     });
 
-    it('sets selectedStage when the selectedStage is More', () => {
-      expect(stateCopy.selectedStage).toEqual('More');
+    it('sets selectedStage when the selectedStage is empty', () => {
+      expect(stateCopy.selectedStage).toEqual('');
       mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
 
       expect(stateCopy.selectedStage).toEqual('deploy');

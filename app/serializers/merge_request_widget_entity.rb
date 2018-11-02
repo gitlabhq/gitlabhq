@@ -55,6 +55,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :merge_commit_message
   expose :actual_head_pipeline, with: PipelineDetailsEntity, as: :pipeline
+  expose :merge_pipeline, with: PipelineDetailsEntity, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project)}
 
   # Booleans
   expose :merge_ongoing?, as: :merge_ongoing

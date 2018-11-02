@@ -226,7 +226,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       let(:ref) {'mark#\'@],+;-._/#@!$&()+down'}
 
       it 'correctly escapes the ref' do
-        # Adressable won't escape the '#', so we do this manually
+        # Addressable won't escape the '#', so we do this manually
         ref_escaped = 'mark%23\'@%5D,+;-._/%23@!$&()+down'
 
         # Stub this method so the branch doesn't actually need to be in the repo

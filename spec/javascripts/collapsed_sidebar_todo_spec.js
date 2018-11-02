@@ -45,8 +45,10 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
     expect(document.querySelector('.js-issuable-todo.sidebar-collapsed-icon')).not.toBeNull();
 
     expect(
-      document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .fa-plus-square'),
-    ).not.toBeNull();
+      document
+        .querySelector('.js-issuable-todo.sidebar-collapsed-icon svg use')
+        .getAttribute('xlink:href'),
+    ).toContain('todo-add');
 
     expect(
       document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .todo-undone'),
@@ -68,8 +70,10 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
       ).not.toBeNull();
 
       expect(
-        document.querySelector('.js-issuable-todo.sidebar-collapsed-icon .fa-check-square'),
-      ).not.toBeNull();
+        document
+          .querySelector('.js-issuable-todo.sidebar-collapsed-icon svg.todo-undone use')
+          .getAttribute('xlink:href'),
+      ).toContain('todo-done');
 
       done();
     });

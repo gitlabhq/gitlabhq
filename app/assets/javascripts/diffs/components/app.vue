@@ -41,6 +41,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      assignedDiscussions: false,
+    };
+  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -58,9 +63,9 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapState('diffs', ['showTreeList']),
+    ...mapState('diffs', ['showTreeList', 'isLoading']),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
+    ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -147,13 +152,10 @@ export default {
       }
     },
     setDiscussions() {
-      if (this.isNotesFetched) {
-        requestIdleCallback(
-          () => {
-            this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
-          },
-          { timeout: 1000 },
-        );
+      if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
+        this.assignedDiscussions = true;
+
+        requestIdleCallback(() => this.assignDiscussionsToDiff(), { timeout: 1000 });
       }
     },
     adjustView() {

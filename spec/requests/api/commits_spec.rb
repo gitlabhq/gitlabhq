@@ -565,7 +565,7 @@ describe API::Commits do
         }
       end
 
-      it 'are commited as one in project repo' do
+      it 'are committed as one in project repo' do
         post api(url, user), valid_mo_params
 
         expect(response).to have_gitlab_http_status(201)

@@ -43,7 +43,6 @@ class SnippetsFinder < UnionFinder
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets_from_project
     if can?(current_user, :read_project_snippet, project)
       if project.team.member?(current_user)
@@ -55,7 +54,6 @@ class SnippetsFinder < UnionFinder
       Snippet.none
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def authorized_snippets

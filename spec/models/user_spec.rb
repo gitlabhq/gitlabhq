@@ -715,11 +715,28 @@ describe User do
     end
   end
 
+  describe 'ensure user preference' do
+    it 'has user preference upon user initialization' do
+      user = build(:user)
+
+      expect(user.user_preference).to be_present
+      expect(user.user_preference).not_to be_persisted
+    end
+  end
+
   describe 'ensure incoming email token' do
     it 'has incoming email token' do
       user = create(:user)
 
       expect(user.incoming_email_token).not_to be_blank
+    end
+
+    it 'uses SecureRandom to generate the incoming email token' do
+      expect(SecureRandom).to receive(:hex).and_return('3b8ca303')
+
+      user = create(:user)
+
+      expect(user.incoming_email_token).to eql('gitlab')
     end
   end
 

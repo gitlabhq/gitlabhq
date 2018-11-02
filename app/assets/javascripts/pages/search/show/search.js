@@ -22,7 +22,7 @@ export default class Search {
         fields: ['full_name'],
       },
       data(term, callback) {
-        return Api.groups(term, {}, (data) => {
+        return Api.groups(term, {}, data => {
           data.unshift({
             full_name: 'Any',
           });
@@ -37,7 +37,7 @@ export default class Search {
         return obj.full_name;
       },
       toggleLabel(obj) {
-        return `${($groupDropdown.data('defaultLabel'))} ${obj.full_name}`;
+        return `${$groupDropdown.data('defaultLabel')} ${obj.full_name}`;
       },
       clicked: () => Search.submitSearch(),
     });
@@ -52,7 +52,7 @@ export default class Search {
       },
       data: (term, callback) => {
         this.getProjectsData(term)
-          .then((data) => {
+          .then(data => {
             data.unshift({
               name_with_namespace: 'Any',
             });
@@ -70,7 +70,7 @@ export default class Search {
         return obj.name_with_namespace;
       },
       toggleLabel(obj) {
-        return `${($projectDropdown.data('defaultLabel'))} ${obj.name_with_namespace}`;
+        return `${$projectDropdown.data('defaultLabel')} ${obj.name_with_namespace}`;
       },
       clicked: () => Search.submitSearch(),
     });
@@ -99,17 +99,24 @@ export default class Search {
   }
 
   clearSearchField() {
-    return $(this.searchInput).val('').trigger('keyup').focus();
+    return $(this.searchInput)
+      .val('')
+      .trigger('keyup')
+      .focus();
   }
 
   getProjectsData(term) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (this.groupId) {
         Api.groupProjects(this.groupId, term, {}, resolve);
       } else {
-        Api.projects(term, {
-          order_by: 'id',
-        }, resolve);
+        Api.projects(
+          term,
+          {
+            order_by: 'id',
+          },
+          resolve,
+        );
       }
     });
   }

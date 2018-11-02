@@ -282,6 +282,21 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
         expect(pipeline_status.status).to eq(status)
         expect(pipeline_status.ref).to eq(ref)
       end
+
+      context 'when status is empty string' do
+        before do
+          Gitlab::Redis::Cache.with do |redis|
+            redis.mapped_hmset(cache_key,
+                               { sha: sha, status: '', ref: ref })
+          end
+        end
+
+        it 'reads the status as nil' do
+          pipeline_status.load_from_cache
+
+          expect(pipeline_status.status).to eq(nil)
+        end
+      end
     end
 
     describe '#has_cache?' do

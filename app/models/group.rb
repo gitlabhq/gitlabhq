@@ -41,6 +41,9 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :cluster_groups, class_name: 'Clusters::Group'
+  has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
+
   has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true
@@ -366,7 +369,7 @@ class Group < Namespace
     }
   end
 
-  def secret_variables_for(ref, project)
+  def ci_variables_for(ref, project)
     list_of_ids = [self] + ancestors
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)

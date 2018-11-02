@@ -171,7 +171,7 @@ There are a few gotchas with it:
       class Base
         def execute
           return unless enabled?
-  
+
           # ...
           # ...
         end
@@ -185,12 +185,12 @@ There are a few gotchas with it:
       class Base
         def execute
           return unless enabled?
-  
+
           do_something
         end
-  
+
         private
-  
+
         def do_something
           # ...
           # ...
@@ -204,14 +204,14 @@ There are a few gotchas with it:
     ```ruby
       module EE::Base
         extend ::Gitlab::Utils::Override
-  
+
         override :do_something
         def do_something
           # Follow the above pattern to call super and extend it
         end
       end
     ```
-  
+
     This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
@@ -331,6 +331,21 @@ full implementation details.
 
 [ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
 [ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
+
+### Code in `config/routes`
+
+When we add `draw :admin` in `config/routes.rb`, the application will try to
+load the file located in `config/routes/admin.rb`, and also try to load the
+file located in `ee/config/routes/admin.rb`.
+
+In EE, it should at least load one file, at most two files. If it cannot find
+any files, an error will be raised. In CE, since we don't know if there will
+be an EE route, it will not raise any errors even if it cannot find anything.
+
+This means if we want to extend a particular CE route file, just add the same
+file located in `ee/config/routes`. If we want to add an EE only route, we
+could still put `draw :ee_only` in both CE and EE, and add
+`ee/config/routes/ee_only.rb` in EE, similar to `render_if_exists`.
 
 ### Code in `app/controllers/`
 

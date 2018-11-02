@@ -13,19 +13,23 @@ function openConfirmDangerModal($form, text) {
   $submit.disable();
   $input.focus();
 
-  $('.js-confirm-danger-input').off('input').on('input', function handleInput() {
-    const confirmText = rstrip($(this).val());
-    if (confirmText === confirmTextMatch) {
-      $submit.enable();
-    } else {
-      $submit.disable();
-    }
-  });
-  $('.js-confirm-danger-submit').off('click').on('click', () => $form.submit());
+  $('.js-confirm-danger-input')
+    .off('input')
+    .on('input', function handleInput() {
+      const confirmText = rstrip($(this).val());
+      if (confirmText === confirmTextMatch) {
+        $submit.enable();
+      } else {
+        $submit.disable();
+      }
+    });
+  $('.js-confirm-danger-submit')
+    .off('click')
+    .on('click', () => $form.submit());
 }
 
 export default function initConfirmDangerModal() {
-  $(document).on('click', '.js-confirm-danger', (e) => {
+  $(document).on('click', '.js-confirm-danger', e => {
     e.preventDefault();
     const $btn = $(e.target);
     const $form = $btn.closest('form');

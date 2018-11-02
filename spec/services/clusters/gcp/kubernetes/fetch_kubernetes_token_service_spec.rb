@@ -11,7 +11,6 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
     let(:kubeclient) do
       Gitlab::Kubernetes::KubeClient.new(
         api_url,
-        ['api', 'apis/rbac.authorization.k8s.io'],
         auth_options: { username: username, password: password }
       )
     end

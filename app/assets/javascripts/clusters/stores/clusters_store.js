@@ -76,12 +76,8 @@ export default class ClusterStore {
     this.state.status = serverState.status;
     this.state.statusReason = serverState.status_reason;
 
-    serverState.applications.forEach((serverAppEntry) => {
-      const {
-        name: appId,
-        status,
-        status_reason: statusReason,
-      } = serverAppEntry;
+    serverState.applications.forEach(serverAppEntry => {
+      const { name: appId, status, status_reason: statusReason } = serverAppEntry;
 
       this.state.applications[appId] = {
         ...(this.state.applications[appId] || {}),

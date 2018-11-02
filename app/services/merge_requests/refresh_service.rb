@@ -85,7 +85,7 @@ module MergeRequests
         .where.not(target_project: @project).to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
-        if merge_request.source_branch == @push.branch_name || @push.force_push?
+        if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
         else
           mr_commit_ids = merge_request.commit_shas
@@ -103,6 +103,11 @@ module MergeRequests
       merge_requests_for_source_branch(reload: true)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def branch_and_project_match?(merge_request)
+      merge_request.source_project == @project &&
+        merge_request.source_branch == @push.branch_name
+    end
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)

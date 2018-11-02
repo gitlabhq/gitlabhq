@@ -593,11 +593,11 @@ module Ci
     def secret_group_variables
       return [] unless project.group
 
-      project.group.secret_variables_for(ref, project)
+      project.group.ci_variables_for(ref, project)
     end
 
     def secret_project_variables(environment: persisted_environment)
-      project.secret_variables_for(ref: ref, environment: environment)
+      project.ci_variables_for(ref: ref, environment: environment)
     end
 
     def steps

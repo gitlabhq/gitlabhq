@@ -1,4 +1,7 @@
-module Gitlab # rubocop:disable Naming/FileName
+# rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+module Gitlab
   module Ci
     module Pipeline
       module Chain

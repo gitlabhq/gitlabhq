@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   ignore_column :email_provider
   ignore_column :authentication_token
 
-  add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
 
   default_value_for :admin, false
@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
-  has_many :keys, -> { where(type: ['Key', nil]) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :gpg_keys
 
@@ -152,6 +152,7 @@ class User < ActiveRecord::Base
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_one :status, class_name: 'UserStatus'
+  has_one :user_preference
 
   #
   # Validations
@@ -224,6 +225,8 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :notes_filter_for, to: :user_preference
+  delegate :set_notes_filter, to: :user_preference
 
   state_machine :state, initial: :active do
     event :block do
@@ -460,7 +463,7 @@ class User < ActiveRecord::Base
     def find_by_personal_access_token(token_string)
       return unless token_string
 
-      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user # rubocop: disable CodeReuse/Finder
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
@@ -938,10 +941,15 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.now
     else
       false
     end
+  end
+
+  def ldap_sync_time
+    # This number resides in this method so it can be redefined in EE.
+    1.hour
   end
 
   def try_obtain_ldap_lease
@@ -1135,7 +1143,7 @@ class User < ActiveRecord::Base
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
       .where("created_at > ?", Time.now - 1.year)
-      .uniq
+      .distinct
       .reorder(nil)
 
     Project.where(id: events)
@@ -1367,6 +1375,11 @@ class User < ActiveRecord::Base
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
   end
 
+  # Avoid migrations only building user preference object when needed.
+  def user_preference
+    super.presence || build_user_preference
+  end
+
   def todos_limited_to(ids)
     todos.where(id: ids)
   end
@@ -1453,15 +1466,6 @@ class User < ActiveRecord::Base
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
       regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
       signup_domain =~ regexp
-    end
-  end
-
-  def generate_token(token_field)
-    if token_field == :incoming_email_token
-      # Needs to be all lowercase and alphanumeric because it's gonna be used in an email address.
-      SecureRandom.hex.to_i(16).to_s(36)
-    else
-      super
     end
   end
 

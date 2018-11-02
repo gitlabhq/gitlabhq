@@ -26,11 +26,7 @@ export default class Profile {
   }
 
   bindEvents() {
-    $('.js-preferences-form').on(
-      'change.preference',
-      'input[type=radio]',
-      this.submitForm,
-    );
+    $('.js-preferences-form').on('change.preference', 'input[type=radio]', this.submitForm);
     $('#user_notification_email').on('change', this.submitForm);
     $('#user_notified_of_own_activity').on('change', this.submitForm);
     this.form.on('submit', this.onSubmitForm);

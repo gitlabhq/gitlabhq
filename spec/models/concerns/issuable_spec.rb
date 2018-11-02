@@ -519,7 +519,7 @@ describe Issuable do
       end
     end
 
-    context 'substracting time' do
+    context 'subtracting time' do
       before do
         spend_time(1800)
       end
@@ -530,7 +530,7 @@ describe Issuable do
         expect(issue.total_time_spent).to eq(900)
       end
 
-      context 'when time to substract exceeds the total time spent' do
+      context 'when time to subtract exceeds the total time spent' do
         it 'raise a validation error' do
           Timecop.travel(1.minute.from_now) do
             expect do

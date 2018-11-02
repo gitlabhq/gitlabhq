@@ -4,25 +4,27 @@ module QA
       class DeployToken < Factory::Base
         attr_accessor :name, :expires_at
 
-        product :username do |resource|
-          Page::Project::Settings::Repository.act do
-            expand_deploy_tokens do |token|
+        attribute :username do
+          Page::Project::Settings::Repository.perform do |page|
+            page.expand_deploy_tokens do |token|
               token.token_username
             end
           end
         end
 
-        product :password do |password|
-          Page::Project::Settings::Repository.act do
-            expand_deploy_tokens do |token|
+        attribute :password do
+          Page::Project::Settings::Repository.perform do |page|
+            page.expand_deploy_tokens do |token|
               token.token_password
             end
           end
         end
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-to-deploy'
-          project.description = 'project for adding deploy token test'
+        attribute :project do
+          Factory::Resource::Project.fabricate! do |resource|
+            resource.name = 'project-to-deploy'
+            resource.description = 'project for adding deploy token test'
+          end
         end
 
         def fabricate!
