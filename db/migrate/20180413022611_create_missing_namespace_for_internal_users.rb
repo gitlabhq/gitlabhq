@@ -45,7 +45,7 @@ class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration
       connection.exec_query(query).present?
     end
 
-    insert_query = "INSERT INTO namespaces(owner_id, path, name) VALUES(#{user_id}, '#{path}', '#{path}')"
+    insert_query = "INSERT INTO namespaces(owner_id, path, name, created_at, updated_at) VALUES(#{user_id}, '#{path}', '#{path}', NOW(), NOW())"
     namespace_id = connection.insert_sql(insert_query)
 
     create_route(namespace_id)
@@ -57,7 +57,7 @@ class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration
     row = connection.exec_query("SELECT id, path FROM namespaces WHERE id=#{namespace_id}").first
     id, path = row.values_at('id', 'path')
 
-    execute("INSERT INTO routes(source_id, source_type, path, name) VALUES(#{id}, 'Namespace', '#{path}', '#{path}')")
+    execute("INSERT INTO routes(source_id, source_type, path, name, created_at, updated_at) VALUES(#{id}, 'Namespace', '#{path}', '#{path}', NOW(), NOW())")
   end
 
   def set_notification_email(user_id)
