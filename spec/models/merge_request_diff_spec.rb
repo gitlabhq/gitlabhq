@@ -52,9 +52,9 @@ describe MergeRequestDiff do
 
     context 'when it was not cleaned by the system' do
       it 'returns persisted diffs' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
-        diff.diffs
+        diff.diffs.diff_files
       end
     end
 
@@ -76,19 +76,19 @@ describe MergeRequestDiff do
       end
 
       it 'returns persisted diffs if cannot compare with diff refs' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
         diff.update!(head_commit_sha: 'invalid-sha')
 
-        diff.diffs
+        diff.diffs.diff_files
       end
 
       it 'returns persisted diffs if diff refs does not exist' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
         diff.update!(start_commit_sha: nil, base_commit_sha: nil)
 
-        diff.diffs
+        diff.diffs.diff_files
       end
     end
   end

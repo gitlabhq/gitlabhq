@@ -552,9 +552,9 @@ describe MergeRequest do
       it 'delegates to the MR diffs' do
         merge_request.save
 
-        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options)).and_call_original
 
-        merge_request.diffs(options)
+        merge_request.diffs(options).diff_files
       end
     end
 

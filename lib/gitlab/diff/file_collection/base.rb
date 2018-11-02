@@ -17,7 +17,6 @@ module Gitlab
 
           @diffable = diffable
           @include_stats = diff_options.delete(:include_stats)
-          @diffs = diffable.raw_diffs(diff_options)
           @project = project
           @diff_options = diff_options
           @diff_refs = diff_refs
@@ -25,8 +24,12 @@ module Gitlab
           @repository = project.repository
         end
 
+        def diffs
+          @diffs ||= diffable.raw_diffs(diff_options)
+        end
+
         def diff_files
-          @diff_files ||= @diffs.decorate! { |diff| decorate_diff!(diff) }
+          @diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
         end
 
         def diff_file_with_old_path(old_path)
