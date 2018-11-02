@@ -52,6 +52,18 @@ No matter how you use GitLab, we have documentation for you.
         Consult our handy guides.
       </td>
     </tr>
+    <tr>
+      <td width="50%">
+        <a href="https://about.gitlab.com/install/"><strong>Install GitLab</strong></a>
+        <br/>
+        Installation options for different platforms.
+      </td>
+      <td width="50%">
+        <a href="#subscribe-to-gitlab"><strong>Subscribe to GitLab</strong></a>
+        <br/>
+        Get access to more features.
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -413,7 +425,7 @@ and teams in the following tiers:
 
 GitLab.com subscriptions grant access
 to the same features available in GitLab self-managed, **except
-[administration](administration/index.md) tools and settings**:
+[administration](administration/index.md) tools and settings**.
 
 TIP: **Tip:**
 To support the open source community and encourage the development of open source projects, GitLab grants access to **Gold** features for all GitLab.com **public** projects, regardless of the subscription.
