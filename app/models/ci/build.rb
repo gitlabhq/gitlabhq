@@ -781,7 +781,7 @@ module Ci
       end
     end
 
-    def predefined_variables
+    def predefined_variables # rubocop:disable Metrics/AbcSize
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI', value: 'true')
         variables.append(key: 'GITLAB_CI', value: 'true')
