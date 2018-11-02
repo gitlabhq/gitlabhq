@@ -588,6 +588,41 @@ on this document. Further explanation is given below.
 - Every method must have a cURL example.
 - Every method must have a response body (in JSON format).
 
+### API topic template
+
+The following can be used as a template to get started:
+
+```md
+## Descriptive title
+
+One or two sentence description of what endpoint does.
+
+```
+METHOD /endpoint
+```
+
+| Attribute   | Type     | Required | Description           |
+|:------------|:---------|:---------|:----------------------|
+| `attribute` | datatype | yes/no   | Detailed description. |
+| `attribute` | datatype | yes/no   | Detailed description. |
+
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/endpoint?parameters'
+```
+
+Example response:
+
+```json
+[
+  {
+  }
+]
+```
+
+```
+
 ### Fake tokens
 
 There may be times where a token is needed to demonstrate an API call using
