@@ -15,44 +15,17 @@ module QA
           end
         end
 
-        def visit_project_with_retry
-          # The user intermittently fails to stay signed in after visiting the
-          # project page. The new user is registered and then signs in and a
-          # screenshot shows that signing in was successful. Then the project
-          # page is visited but a screenshot shows the user is no longer signed
-          # in. It's difficult to reproduce locally but GDK logs don't seem to
-          # show anything unexpected. This method attempts to work around the
-          # problem and capture data to help troubleshoot.
-
-          Capybara::Screenshot.screenshot_and_save_page
-
-          start = Time.now
-
-          while Time.now - start < 20
-            push.project.visit!
-
-            puts "Visited project page"
-            Capybara::Screenshot.screenshot_and_save_page
-
-            return if Page::Main::Menu.act { has_personal_area?(wait: 0) }
-
-            puts "Not signed in. Attempting to sign in again."
-            Capybara::Screenshot.screenshot_and_save_page
-
-            Runtime::Browser.visit(:gitlab, Page::Main::Login)
-
-            Page::Main::Login.perform do |login|
-              login.sign_in_using_credentials(user)
-            end
-          end
-
-          raise "Failed to load project page and stay logged in"
-        end
-
         def fabricate!
           populate(:push, :user)
 
-          visit_project_with_retry
+          # Sign out as admin and sign is as the fork user
+          Page::Main::Menu.perform(&:sign_out)
+          Runtime::Browser.visit(:gitlab, Page::Main::Login)
+          Page::Main::Login.perform do |login|
+            login.sign_in_using_credentials(user)
+          end
+
+          push.project.visit!
 
           Page::Project::Show.perform(&:fork_project)
 
