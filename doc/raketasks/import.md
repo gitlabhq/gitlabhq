@@ -6,6 +6,7 @@
 - The groups will be created as needed, including subgroups
 - The owner of the group will be the first admin
 - Existing projects will be skipped
+- Projects in hashed storage may be skipped (see [Importing bare repositories from hashed storage](#importing-bare-repositories-from-hashed-storage))
 - The existing Git repos will be moved from disk (removed from the original path)
 
 ## How to use
@@ -25,7 +26,6 @@ sudo -u git mkdir /var/opt/gitlab/git-data/repository-import-<date>/new_group
 
 If we copy the repos to `/var/opt/gitlab/git-data/repository-import-<date>`, and repo A needs to be under the groups G1 and G2, it will
 have to be created under those folders: `/var/opt/gitlab/git-data/repository-import-<date>/G1/G2/A.git`.
-
 
 ```
 sudo cp -r /old/git/foo.git /var/opt/gitlab/git-data/repository-import-<date>/new_group/
@@ -70,3 +70,48 @@ Processing /var/opt/gitlab/git-data/repository-import-1/group/xyz.git
  * Skipping repo /var/opt/gitlab/git-data/repository-import-1/@shared/a/b/abcd.git
 [...]
 ```
+
+## Importing bare repositories from hashed storage
+
+### Background
+
+Projects in legacy storage have a directory structure that mirrors their full
+project path in GitLab, including their namespace structure. This information is
+leveraged by the bare repository importer to import projects into their proper
+locations. Each project and its parent namespaces are meaningfully named.
+
+However, the directory structure of projects in hashed storage do not contain
+this information. This is beneficial for a variety of reasons, especially
+improved performance and data integrity. See
+[Repository Storage Types](../administration/repository_storage_types.md) for
+more details.
+
+### Which repositories are importable?
+
+#### v10.3 or earlier
+
+Importing bare repositories from hashed storage is unsupported.
+
+#### v10.4 and later
+
+In order to support this, we began storing the full GitLab project path with
+each repository. However, existing repositories were not migrated to include
+this path.
+
+The following are importable as bare repositories:
+
+- Created in hashed storage in v10.4+
+- Migrated to hashed storage in v10.4+
+- Renamed in v10.4+
+- Transferred to another namespace in v10.4+
+- Ancestor renamed in v10.4+
+- Ancestor transferred to another namespace in v10.4+
+
+The following are **not** importable as bare repositories:
+
+- Created in or migrated to hashed storage in v10.3 or earlier, and was not
+  renamed or transferred in v10.4+, and whose ancestor namespaces were not
+  renamed or transferred in v10.4+.
+
+There is an [open issue to add a migration to make all bare repositories
+importable](https://gitlab.com/gitlab-org/gitlab-ce/issues/41776).
