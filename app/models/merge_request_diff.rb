@@ -140,6 +140,12 @@ class MergeRequestDiff < ActiveRecord::Base
     merge_request_diff_commits.map(&:sha)
   end
 
+  def commits_by_shas(shas)
+    return [] unless shas.present?
+
+    merge_request_diff_commits.where(sha: shas)
+  end
+
   def diff_refs=(new_diff_refs)
     self.base_commit_sha = new_diff_refs&.base_sha
     self.start_commit_sha = new_diff_refs&.start_sha

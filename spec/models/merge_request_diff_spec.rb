@@ -211,4 +211,25 @@ describe MergeRequestDiff do
       expect(diff_with_commits.commits_count).to eq(29)
     end
   end
+
+  describe '#commits_by_shas' do
+    let(:commit_shas) { diff_with_commits.commit_shas }
+
+    it 'returns empty if no SHAs were provided' do
+      expect(diff_with_commits.commits_by_shas([])).to be_empty
+    end
+
+    it 'returns one SHA' do
+      commits = diff_with_commits.commits_by_shas([commit_shas.first, Gitlab::Git::BLANK_SHA])
+
+      expect(commits.count).to eq(1)
+    end
+
+    it 'returns all matching SHAs' do
+      commits = diff_with_commits.commits_by_shas(commit_shas)
+
+      expect(commits.count).to eq(commit_shas.count)
+      expect(commits.map(&:sha)).to match_array(commit_shas)
+    end
+  end
 end
