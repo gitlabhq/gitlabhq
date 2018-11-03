@@ -52,7 +52,7 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
-          hostname: ''
+          hostname: null
         },
       },
     };
@@ -102,7 +102,7 @@ export default class ClusterStore {
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
       } else if (appId === KNATIVE) {
-       this.state.applications.knative.hostname = serverAppEntry.hostname ? serverAppEntry.hostname : '';
+        this.state.applications.knative.hostname = serverAppEntry.hostname ? serverAppEntry.hostname : null;
       }
     });
   }

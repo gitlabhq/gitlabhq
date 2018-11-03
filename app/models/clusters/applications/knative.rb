@@ -18,18 +18,19 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
 
       default_value_for :version, VERSION
-      default_value_for :hostname, ''
+      default_value_for :hostname, nil
+
+      validates :hostname, presence: true
 
       def chart
         'knative/knative'
       end
 
-      def install_command
-        args = []
-        if !hostname.nil? && !hostname.eql?('')
-          args = ["domain=" + hostname]
-        end
+      def values
+        content_values.to_yaml
+      end
 
+      def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
@@ -37,7 +38,6 @@ module Clusters
           chart: chart,
           files: files,
           repository: REPOSITORY,
-          setargs: args,
           script: install_script
         )
       end
@@ -46,8 +46,16 @@ module Clusters
         ['/usr/bin/kubectl', 'apply', '-f', ISTIO_CRDS]
       end
 
-      def client
-        cluster&.platform_kubernetes&.kubeclient&.core_client
+      private
+
+      def content_values
+        YAML.load_file(chart_values_file).deep_merge!(knative_configs)
+      end
+
+      def knative_configs
+        {
+          "domain" => hostname
+        }
       end
     end
   end
