@@ -47,13 +47,16 @@ module Gitlab
           name_flag      = ['--name', name]
           namespace_flag = ['--namespace', Gitlab::Kubernetes::Helm::NAMESPACE]
           value_flag     = ['-f', "/data/helm/#{name}/config/values.yaml"]
+          a = ['--set', 'ingressShim.defaultIssuerName=letsencrypt-prod']
+          b = ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer']
+          c = ['--set', 'rbac.create=false']
 
           name_flag +
             optional_tls_flags +
             optional_version_flag +
             optional_rbac_create_flag +
             namespace_flag +
-            value_flag
+            value_flag + a + b + c
         end
 
         def optional_rbac_create_flag

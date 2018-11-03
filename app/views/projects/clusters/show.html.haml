@@ -9,6 +9,7 @@
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
   install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
+  install_cert_manager_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :cert_manager),
   install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
   install_runner_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :runner),
   install_jupyter_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :jupyter),

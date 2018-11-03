@@ -8,13 +8,26 @@ module Gitlab
         end
 
         def install(command)
-          namespace.ensure_exists!
+          begin
+            namespace.ensure_exists!
 
-          create_service_account(command)
-          create_cluster_role_binding(command)
-          create_config_map(command)
+            create_service_account(command)
+            create_cluster_role_binding(command)
+            Gitlab::AppLogger.info("---CREATING CONFIG MAP-----")
+            Gitlab::AppLogger.info(command)
+            create_config_map(command)
+            Gitlab::AppLogger.info("---CREATING K8s POD-----")
 
-          kubeclient.create_pod(command.pod_resource)
+            kubeclient.create_pod(command.pod_resource)
+          rescue StandardError => e
+            Gitlab::AppLogger.info('install_api_error------------------------------------------------')
+            Gitlab::AppLogger.error(e)
+            Gitlab::AppLogger.error(e.backtrace.join("\n"))
+          rescue Exception => e
+            Gitlab::AppLogger.info('install_api_exception--------------------------------------------------')
+            Gitlab::AppLogger.error(e)
+            Gitlab::AppLogger.error(e.backtrace.join("\n"))
+          end  
         end
 
         def update(command)
@@ -54,6 +67,7 @@ module Gitlab
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
+            Gitlab::AppLogger.info(config_map_resource)
             kubeclient.create_config_map(config_map_resource)
           end
         end

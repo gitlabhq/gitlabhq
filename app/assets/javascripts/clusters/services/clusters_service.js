@@ -6,6 +6,7 @@ export default class ClusterService {
     this.appInstallEndpointMap = {
       helm: this.options.installHelmEndpoint,
       ingress: this.options.installIngressEndpoint,
+      cert_manager: this.options.installCertManagerEndpoint,
       runner: this.options.installRunnerEndpoint,
       prometheus: this.options.installPrometheusEndpoint,
       jupyter: this.options.installJupyterEndpoint,

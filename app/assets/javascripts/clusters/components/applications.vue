@@ -7,6 +7,7 @@ import helmLogo from 'images/cluster_app_logos/helm.png';
 import jeagerLogo from 'images/cluster_app_logos/jeager.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
+import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import { s__, sprintf } from '../../locale';
@@ -53,6 +54,7 @@ export default {
     jeagerLogo,
     jupyterhubLogo,
     kubernetesLogo,
+    certManagerLogo,
     meltanoLogo,
     prometheusLogo,
   }),
@@ -68,6 +70,9 @@ export default {
     },
     ingressInstalled() {
       return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
+    },
+    certManagerInstalled() {
+      return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
     },
     ingressExternalIp() {
       return this.applications.ingress.externalIp;
@@ -273,6 +278,28 @@ export default {
             v-html="ingressDescription"
           >
           </div>
+        </div>
+      </application-row>
+      <application-row
+        id="cert_manager"
+        :logo-url="certManagerLogo"
+        :title="applications.cert_manager.title"
+        :status="applications.cert_manager.status"
+        :status-reason="applications.cert_manager.statusReason"
+        :request-status="applications.cert_manager.requestStatus"
+        :request-reason="applications.cert_manager.requestReason"
+        :disabled="!helmInstalled"
+        class="hide-bottom-border rounded-bottom"
+        title-link="https://cert-manager.readthedocs.io/en/latest/#"
+      >
+        <div slot="description">
+          <p>
+            {{ s__(`ClusterIntegration|Cert-Manager is a native Kubernetes 
+              certificate management controller. It will ensure certificates 
+              are valid and up to date, and attempt to renew certificates at 
+              a configured time before expiry. We use Lets Encrypt as a Certificate 
+              Authority with Cert-Manager.`) }}
+          </p>
         </div>
       </application-row>
       <application-row
