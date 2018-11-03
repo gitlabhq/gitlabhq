@@ -117,6 +117,7 @@ describe JobEntity do
     end
 
     it 'contains scheduled_at' do
+      expect(subject[:scheduled]).to be_truthy
       expect(subject[:scheduled_at]).to eq(job.scheduled_at)
     end
   end

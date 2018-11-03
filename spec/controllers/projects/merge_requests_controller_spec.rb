@@ -563,6 +563,7 @@ describe Projects::MergeRequestsController do
     it 'responds with serialized pipelines' do
       expect(json_response['pipelines']).not_to be_empty
       expect(json_response['count']['all']).to eq 1
+      expect(response).to include_pagination_headers
     end
   end
 

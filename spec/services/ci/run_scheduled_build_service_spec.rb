@@ -7,10 +7,6 @@ describe Ci::RunScheduledBuildService do
 
   subject { described_class.new(project, user).execute(build) }
 
-  before do
-    stub_feature_flags(ci_enable_scheduled_build: true)
-  end
-
   context 'when user can update build' do
     before do
       project.add_developer(user)

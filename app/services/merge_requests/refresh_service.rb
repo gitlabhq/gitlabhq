@@ -87,11 +87,8 @@ module MergeRequests
       filter_merge_requests(merge_requests).each do |merge_request|
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
-        else
-          mr_commit_ids = merge_request.commit_shas
-          push_commit_ids = @commits.map(&:id)
-          matches = mr_commit_ids & push_commit_ids
-          merge_request.reload_diff(current_user) if matches.any?
+        elsif merge_request.includes_any_commits?(push_commit_ids)
+          merge_request.reload_diff(current_user)
         end
 
         merge_request.mark_as_unchecked
@@ -103,6 +100,10 @@ module MergeRequests
       merge_requests_for_source_branch(reload: true)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def push_commit_ids
+      @push_commit_ids ||= @commits.map(&:id)
+    end
 
     def branch_and_project_match?(merge_request)
       merge_request.source_project == @project &&

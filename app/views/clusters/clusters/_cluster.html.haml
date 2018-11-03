@@ -2,7 +2,7 @@
   .table-section.section-30
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
     .table-mobile-content
-      = link_to cluster.name, namespace_project_cluster_path(@project.namespace, @project, cluster)
+      = link_to cluster.name, cluster.show_path
   .table-section.section-30
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment scope")
     .table-mobile-content= cluster.environment_scope
@@ -16,7 +16,7 @@
         class: "#{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
         "aria-label": s_("ClusterIntegration|Toggle Kubernetes Cluster"),
         disabled: !cluster.can_toggle_cluster?,
-        data: { endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }
+        data: { endpoint: clusterable.cluster_path(cluster, format: :json) } }
         %input.js-project-feature-toggle-input{ type: "hidden", value: cluster.enabled? }
         = icon("spinner spin", class: "loading-icon")
         %span.toggle-icon

@@ -28,6 +28,7 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
+- gcp_cluster:cluster_platform_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note

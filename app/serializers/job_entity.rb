@@ -33,6 +33,7 @@ class JobEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
+  expose :scheduled?, as: :scheduled
   expose :scheduled_at, if: -> (*) { scheduled? }
   expose :created_at
   expose :updated_at
