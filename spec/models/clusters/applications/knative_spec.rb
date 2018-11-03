@@ -4,126 +4,15 @@ describe Clusters::Applications::Knative do
   let(:knative) { create(:clusters_applications_knative, hostname: 'example.com') }
 
   include_examples 'cluster application core specs', :clusters_applications_knative
-
-  describe '#status' do
-    let(:cluster) { create(:cluster, :provided_by_gcp) }
-
-    subject { described_class.new(cluster: cluster) }
-
-    it 'sets a default status' do
-      expect(subject.status_name).to be(:not_installable)
-    end
-
-    context 'when application helm is scheduled' do
-      before do
-        create(:clusters_applications_helm, :scheduled, cluster: cluster)
-      end
-
-      it 'defaults to :not_installable' do
-        expect(subject.status_name).to be(:not_installable)
-      end
-    end
-
-    context 'when application is scheduled' do
-      before do
-        create(:clusters_applications_helm, :installed, cluster: cluster)
-      end
-
-      it 'sets a default status' do
-        expect(subject.status_name).to be(:installable)
-      end
-    end
-  end
-
-  describe 'status state machine' do
-    describe '#make_installing' do
-      subject { create(:clusters_applications_knative, :scheduled, hostname: 'example.com') }
-
-      it 'is installing' do
-        subject.make_installing!
-
-        expect(subject).to be_installing
-      end
-    end
-
-    describe '#make_installed' do
-      subject { create(:clusters_applications_knative, :installing, hostname: 'example.com') }
-
-      it 'is installed' do
-        subject.make_installed
-
-        expect(subject).to be_installed
-      end
-    end
-
-    describe '#make_errored' do
-      subject { create(:clusters_applications_knative, :installing, hostname: 'example.com') }
-      let(:reason) { 'some errors' }
-
-      it 'is errored' do
-        subject.make_errored(reason)
-
-        expect(subject).to be_errored
-        expect(subject.status_reason).to eq(reason)
-      end
-    end
-    describe '#make_scheduled' do
-      subject { create(:clusters_applications_knative, :installable, hostname: 'example.com') }
-
-      it 'is scheduled' do
-        subject.make_scheduled
-
-        expect(subject).to be_scheduled
-      end
-
-      describe 'when was errored' do
-        subject { create(:clusters_applications_knative, :errored, hostname: 'example.com') }
-
-        it 'clears #status_reason' do
-          expect(subject.status_reason).not_to be_nil
-
-          subject.make_scheduled!
-
-          expect(subject.status_reason).to be_nil
-        end
-      end
-    end
-  end
-
-  describe '#available?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:trait, :available) do
-      :not_installable  | false
-      :installable      | false
-      :scheduled        | false
-      :installing       | false
-      :installed        | true
-      :updating         | false
-      :updated          | true
-      :errored          | false
-      :update_errored   | false
-      :timeouted        | false
-    end
-
-    with_them do
-      subject { build(:clusters_applications_knative, trait) }
-
-      if params[:available]
-        it { is_expected.to be_available }
-      else
-        it { is_expected.not_to be_available }
-      end
-    end
-  end
+  include_examples 'cluster application status specs', :clusters_applications_knative
 
   describe '.installed' do
     subject { described_class.installed }
 
-    let!(:cluster) { create(:clusters_applications_knative, :installed, hostname: 'example.com') }
+    let!(:cluster) { create(:clusters_applications_knative, :installed) }
 
     before do
-      create(:clusters_applications_knative, :errored, hostname: 'example.com')
+      create(:clusters_applications_knative, :errored)
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -135,7 +24,7 @@ describe Clusters::Applications::Knative do
     end
 
     context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.1.3', hostname: 'example.com') }
+      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.1.3') }
 
       it 'updates the application version' do
         expect(application.reload.version).to eq('0.1.3')
@@ -146,10 +35,10 @@ describe Clusters::Applications::Knative do
   describe '#make_installed' do
     subject { described_class.installed }
 
-    let!(:cluster) { create(:clusters_applications_knative, :installed, hostname: 'example.com') }
+    let!(:cluster) { create(:clusters_applications_knative, :installed) }
 
     before do
-      create(:clusters_applications_knative, :errored, hostname: 'example.com')
+      create(:clusters_applications_knative, :errored)
     end
 
     it { is_expected.to contain_exactly(cluster) }

@@ -709,7 +709,7 @@ ActiveRecord::Schema.define(version: 20181101144347) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "status", null: false
     t.string "version", null: false
-    t.string "hostname", null: false
+    t.string "hostname"
     t.text "status_reason"
   end
 

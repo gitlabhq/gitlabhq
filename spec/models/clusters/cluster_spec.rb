@@ -314,7 +314,7 @@ describe Clusters::Cluster do
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
-      let!(:knative) { create(:clusters_applications_knative, cluster: cluster, hostname: 'example.com') }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
         is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)

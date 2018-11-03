@@ -20,8 +20,6 @@ module Clusters
       default_value_for :version, VERSION
       default_value_for :hostname, nil
 
-      validates :hostname, presence: true
-
       def chart
         'knative/knative'
       end
@@ -31,6 +29,10 @@ module Clusters
       end
 
       def install_command
+        if hostname.nil?
+          raise 'Hostname is required'
+        end
+
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
