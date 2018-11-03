@@ -621,4 +621,53 @@ describe MergeRequests::RefreshService do
       @fork_build_failed_todo.reload
     end
   end
+
+  describe 'updating merge_commit' do
+    let(:service) { described_class.new(project, user) }
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+
+    let(:oldrev) { TestEnv::BRANCH_SHA['merge-commit-analyze-before'] }
+    let(:newrev) { TestEnv::BRANCH_SHA['merge-commit-analyze-after'] } # Pretend branch is now updated
+
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'merge-commit-analyze-after',
+        target_branch: 'merge-commit-analyze-before',
+        target_project: project,
+        merge_user: user
+      )
+    end
+
+    let!(:merge_request_side_branch) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'merge-commit-analyze-side-branch',
+        target_branch: 'merge-commit-analyze-before',
+        target_project: project,
+        merge_user: user
+      )
+    end
+
+    subject { service.execute(oldrev, newrev, 'refs/heads/merge-commit-analyze-before') }
+
+    it "updates merge requests' merge_commits" do
+      expect(Gitlab::BranchPushMergeCommitAnalyzer).to receive(:new).and_wrap_original do |original_method, commits|
+        expect(commits.map(&:id)).to eq(%w{646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5 5f82584f0a907f3b30cfce5bb8df371454a90051 8a994512e8c8f0dfcf22bb16df6e876be7a61036 689600b91aabec706e657e38ea706ece1ee8268f db46a1c5a5e474aa169b6cdb7a522d891bc4c5f9})
+
+        original_method.call(commits)
+      end
+
+      subject
+
+      merge_request.reload
+      merge_request_side_branch.reload
+
+      expect(merge_request.merge_commit.id).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
+      expect(merge_request_side_branch.merge_commit.id).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+    end
+  end
 end

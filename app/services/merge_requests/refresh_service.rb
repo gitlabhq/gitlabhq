@@ -58,13 +58,22 @@ module MergeRequests
         .preload(:latest_merge_request_diff)
         .where(target_branch: @push.branch_name).to_a
         .select(&:diff_head_commit)
+        .select do |merge_request|
+          commit_ids.include?(merge_request.diff_head_sha) &&
+            merge_request.merge_request_diff.state != 'empty'
+        end
+      merge_requests = filter_merge_requests(merge_requests)
 
-      merge_requests = merge_requests.select do |merge_request|
-        commit_ids.include?(merge_request.diff_head_sha) &&
-          merge_request.merge_request_diff.state != 'empty'
-      end
+      return if merge_requests.empty?
 
-      filter_merge_requests(merge_requests).each do |merge_request|
+      analyzer = Gitlab::BranchPushMergeCommitAnalyzer.new(
+        @commits.reverse,
+        relevant_commit_ids: merge_requests.map(&:diff_head_sha)
+      )
+
+      merge_requests.each do |merge_request|
+        merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
+
         MergeRequests::PostMergeService
           .new(merge_request.target_project, @current_user)
           .execute(merge_request)
