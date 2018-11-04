@@ -224,6 +224,14 @@ describe('MergeRequestTabs', function() {
       expect($('.content-wrapper')).not.toContainElement('.container-limited');
     });
 
+    it('does not add container-limited when fluid layout is prefered', function() {
+      $('.content-wrapper .container-fluid').removeClass('container-limited');
+
+      this.class.expandViewContainer(false);
+
+      expect($('.content-wrapper')).not.toContainElement('.container-limited');
+    });
+
     it('does remove container-limited from breadcrumbs', function() {
       $('.container-limited').addClass('breadcrumbs');
       this.class.expandViewContainer();
