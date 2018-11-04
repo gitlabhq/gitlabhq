@@ -1,0 +1,5 @@
+---
+title: "Remove dind from license_management auto-devops job definition"
+merge_request: 22732
+author:
+type: performance
