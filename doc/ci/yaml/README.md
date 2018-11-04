@@ -499,9 +499,9 @@ docker build:
       - more_scripts/*.{rb,py,sh}
 ```
 
-In the scenario above, if you are pushing multiple commits to GitLab to an
-existing branch, GitLab creates and triggers the `docker build` job, provided that
-one of the commits contains changes to either:
+In the scenario above, when pushing multiple commits to GitLab to an existing
+branch, GitLab creates and triggers `docker build` job, provided that one of the
+commits contains changes to either:
 
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
@@ -514,21 +514,20 @@ the section below.
 
 ##### Using `changes` with new branches and tags
 
-If you are pushing a **new** branch or a **new** tag to GitLab, the policy
-always evaluates to true and GitLab will create a job. This feature is not
-connected with merge requests yet, and because GitLab is creating pipelines
-before an user can create a merge request we don't know a target branch at
-this point.
+When pushing a **new** branch or a **new** tag to GitLab, the policy always
+evaluates to true and GitLab will create a job. This feature is not connected
+with merge requests yet and, because GitLab is creating pipelines before a user
+can create a merge request, it is unknown what the target branch is at this point.
 
 ##### Using `changes` with `merge_requests`
 
 With [pipelines for merge requests](../merge_request_pipelines/index.md),
-make it possible to define if a job should be created base on files modified
+it is possible to define a job to be created based on files modified
 in a merge request.
 
 For example:
 
-```
+```yaml
 docker build service one:
   script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
   only:
@@ -539,9 +538,9 @@ docker build service one:
       - service-one/**/*
 ```
 
-In the scenario above, if you create or update a merge request that changes
-either files in `service-one` folder or `Dockerfile`, GitLab creates and triggers
-the `docker build service one` job.
+In the scenario above, if a merge request is created or updated that changes
+either files in `service-one` directory or the `Dockerfile`, GitLab creates
+and triggers the `docker build service one` job.
 
 ### `tags`
 
