@@ -9,7 +9,7 @@ import eventHub from './event_hub';
 import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
-import applications from './components/applications.vue';
+import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
 
 /**
@@ -85,16 +85,13 @@ export default class Clusters {
 
     this.applications = new Vue({
       el,
-      components: {
-        applications,
-      },
       data() {
         return {
           state: store.state,
         };
       },
       render(createElement) {
-        return createElement('applications', {
+        return createElement(Applications, {
           props: {
             applications: this.state.applications,
             helpPath: this.state.helpPath,
