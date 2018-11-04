@@ -33,7 +33,7 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
 
       expect(provider.endpoint).to eq(endpoint)
       expect(platform.api_url).to eq(api_url)
-      expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
+      expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert).strip)
       expect(platform.username).to eq(username)
       expect(platform.password).to eq(password)
       expect(platform.token).to eq(token)
