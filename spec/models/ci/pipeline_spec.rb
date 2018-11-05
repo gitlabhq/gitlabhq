@@ -1043,6 +1043,11 @@ describe Ci::Pipeline, :mailer do
       expect(described_class.newest_first.pluck(:status))
         .to eq(%w[skipped failed success canceled])
     end
+
+    it 'searches limited backlog' do
+      expect(described_class.newest_first(limit: 1).pluck(:status))
+        .to eq(%w[skipped])
+    end
   end
 
   describe '.latest_status' do
