@@ -50,6 +50,42 @@ module QA
             end
           end
         end
+
+        def fabricate_via_api!
+          resource_web_url(api_get)
+        rescue ResourceNotFoundError
+          super
+        end
+
+        def api_get_path
+          "/users/#{fetch_id(username)}"
+        end
+
+        def api_post_path
+          '/users'
+        end
+
+        def api_post_body
+          {
+            email: email,
+            password: password,
+            username: username,
+            name: name,
+            skip_confirmation: true
+          }
+        end
+
+        private
+
+        def fetch_id(username)
+          users = parse_body(api_get_from("/users?username=#{username}"))
+
+          unless users.size == 1 && users.first[:username] == username
+            raise ResourceNotFoundError, "Expected one user with username #{username} but found: `#{users}`."
+          end
+
+          users.first[:id]
+        end
       end
     end
   end

@@ -52,14 +52,18 @@ module QA
       end
 
       def api_get
-        url = Runtime::API::Request.new(api_client, api_get_path).url
+        process_api_response(parse_body(api_get_from(api_get_path)))
+      end
+
+      def api_get_from(get_path)
+        url = Runtime::API::Request.new(api_client, get_path).url
         response = get(url)
 
         unless response.code == HTTP_STATUS_OK
           raise ResourceNotFoundError, "Resource at #{url} could not be found (#{response.code}): `#{response}`."
         end
 
-        process_api_response(parse_body(response))
+        response
       end
 
       def api_post
