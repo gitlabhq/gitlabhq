@@ -33,7 +33,7 @@ describe 'Environment' do
     context 'with deployments' do
       context 'when there is no related deployable' do
         let(:deployment) do
-          create(:deployment, environment: environment, deployable: nil)
+          create(:deployment, :success, environment: environment, deployable: nil)
         end
 
         it 'does show deployment SHA' do
@@ -48,7 +48,7 @@ describe 'Environment' do
         let(:build) { create(:ci_build, pipeline: pipeline) }
 
         let(:deployment) do
-          create(:deployment, environment: environment, deployable: build)
+          create(:deployment, :success, environment: environment, deployable: build)
         end
 
         it 'does show build name' do
@@ -108,7 +108,7 @@ describe 'Environment' do
           context 'with external_url' do
             let(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
             let(:build) { create(:ci_build, pipeline: pipeline) }
-            let(:deployment) { create(:deployment, environment: environment, deployable: build) }
+            let(:deployment) { create(:deployment, :success, environment: environment, deployable: build) }
 
             it 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
@@ -169,7 +169,8 @@ describe 'Environment' do
               end
 
               let(:deployment) do
-                create(:deployment, environment: environment,
+                create(:deployment, :success,
+                                    environment: environment,
                                     deployable: build,
                                     on_stop: 'close_app')
               end

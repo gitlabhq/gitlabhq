@@ -4,8 +4,8 @@ describe EnvironmentStatusEntity do
   let(:user)    { create(:user) }
   let(:request) { double('request') }
 
-  let(:deployment)    { create(:deployment, :review_app) }
-  let(:environment)   { deployment.environment}
+  let(:deployment)    { create(:deployment, :succeed, :review_app) }
+  let(:environment)   { deployment.environment }
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
 

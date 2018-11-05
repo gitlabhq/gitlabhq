@@ -1836,8 +1836,8 @@ describe MergeRequest do
       let(:environments) { create_list(:environment, 3, project: project) }
 
       before do
-        create(:deployment, environment: environments.first, ref: 'master', sha: project.commit('master').id)
-        create(:deployment, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+        create(:deployment, :success, environment: environments.first, ref: 'master', sha: project.commit('master').id)
+        create(:deployment, :success, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
       end
 
       it 'selects deployed environments' do
@@ -1857,7 +1857,7 @@ describe MergeRequest do
       let(:source_environment) { create(:environment, project: source_project) }
 
       before do
-        create(:deployment, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
+        create(:deployment, :success, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
       end
 
       it 'selects deployed environments' do
@@ -1868,7 +1868,7 @@ describe MergeRequest do
         let(:target_environment) { create(:environment, project: project) }
 
         before do
-          create(:deployment, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
+          create(:deployment, :success, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
         end
 
         it 'selects deployed environments' do

@@ -45,7 +45,8 @@ describe 'Merge request > User sees merge widget', :js do
     let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
-      create(:deployment, environment: environment,
+      create(:deployment, :succeed,
+                          environment: environment,
                           ref: merge_request.source_branch,
                           deployable: build,
                           sha: sha)

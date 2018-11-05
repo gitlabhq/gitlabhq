@@ -132,7 +132,8 @@ describe 'Environments page', :js do
       let(:project) { create(:project, :repository) }
 
       let!(:deployment) do
-        create(:deployment, environment: environment,
+        create(:deployment, :success,
+                            environment: environment,
                             sha: project.commit.id)
       end
 
@@ -152,7 +153,8 @@ describe 'Environments page', :js do
         end
 
         let!(:deployment) do
-          create(:deployment, environment: environment,
+          create(:deployment, :success,
+                              environment: environment,
                               deployable: build,
                               sha: project.commit.id)
         end
@@ -196,7 +198,7 @@ describe 'Environments page', :js do
         context 'with external_url' do
           let(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
           let(:build) { create(:ci_build, pipeline: pipeline) }
-          let(:deployment) { create(:deployment, environment: environment, deployable: build) }
+          let(:deployment) { create(:deployment, :success, environment: environment, deployable: build) }
 
           it 'shows an external link button' do
             expect(page).to have_link(nil, href: environment.external_url)
@@ -209,7 +211,8 @@ describe 'Environments page', :js do
           end
 
           let(:deployment) do
-            create(:deployment, environment: environment,
+            create(:deployment, :success,
+                                environment: environment,
                                 deployable: build,
                                 on_stop: 'close_app')
           end

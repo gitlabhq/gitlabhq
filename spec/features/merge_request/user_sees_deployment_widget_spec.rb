@@ -11,7 +11,7 @@ describe 'Merge request > User sees deployment widget', :js do
     let(:sha) { project.commit(ref).id }
     let(:pipeline) { create(:ci_pipeline_without_jobs, sha: sha, project: project, ref: ref) }
     let(:build)    { create(:ci_build, :success, pipeline: pipeline) }
-    let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: ref, deployable: build) }
+    let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: ref, deployable: build) }
     let!(:manual) { }
 
     before do

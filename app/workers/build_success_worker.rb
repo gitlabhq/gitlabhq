@@ -16,7 +16,14 @@ class BuildSuccessWorker
 
   private
 
+  ##
+  # Deprecated:
+  # As of 11.5, we started creating a deployment record when ci_builds record is created.
+  # Therefore we no longer need to create a deployment, after a build succeeded.
+  # We're leaving this code for the transition period, but we can remove this code in 11.6.
   def create_deployment(build)
-    CreateDeploymentService.new(build).execute
+    build.create_deployment.try do |deployment|
+      deployment.succeed
+    end
   end
 end

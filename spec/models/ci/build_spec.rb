@@ -17,8 +17,8 @@ describe Ci::Build do
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
-  it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
@@ -799,17 +799,100 @@ describe Ci::Build do
     end
   end
 
+  describe 'state transition as a deployable' do
+    let!(:build) { create(:ci_build, :start_review_app) }
+    let(:deployment) { build.deployment }
+    let(:environment) { deployment.environment }
+
+    it 'has deployments record with created status' do
+      expect(deployment).to be_created
+      expect(environment.name).to eq('review/master')
+    end
+
+    context 'when transits to running' do
+      before do
+        build.run!
+      end
+
+      it 'transits deployment status to running' do
+        expect(deployment).to be_running
+      end
+    end
+
+    context 'when transits to success' do
+      before do
+        allow(Deployments::SuccessWorker).to receive(:perform_async)
+        build.success!
+      end
+
+      it 'transits deployment status to success' do
+        expect(deployment).to be_success
+      end
+    end
+
+    context 'when transits to failed' do
+      before do
+        build.drop!
+      end
+
+      it 'transits deployment status to failed' do
+        expect(deployment).to be_failed
+      end
+    end
+
+    context 'when transits to skipped' do
+      before do
+        build.skip!
+      end
+
+      it 'transits deployment status to canceled' do
+        expect(deployment).to be_canceled
+      end
+    end
+
+    context 'when transits to canceled' do
+      before do
+        build.cancel!
+      end
+
+      it 'transits deployment status to canceled' do
+        expect(deployment).to be_canceled
+      end
+    end
+  end
+
+  describe '#on_stop' do
+    subject { build.on_stop }
+
+    context 'when a job has a specification that it can be stopped from the other job' do
+      let(:build) { create(:ci_build, :start_review_app) }
+
+      it 'returns the other job name' do
+        is_expected.to eq('stop_review_app')
+      end
+    end
+
+    context 'when a job does not have environment information' do
+      let(:build) { create(:ci_build) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe 'deployment' do
-    describe '#last_deployment' do
-      subject { build.last_deployment }
+    describe '#has_deployment?' do
+      subject { build.has_deployment? }
 
-      context 'when multiple deployments are created' do
-        let!(:deployment1) { create(:deployment, deployable: build) }
-        let!(:deployment2) { create(:deployment, deployable: build) }
+      context 'when build has a deployment' do
+        let!(:deployment) { create(:deployment, deployable: build) }
 
-        it 'returns the latest one' do
-          is_expected.to eq(deployment2)
-        end
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build does not have a deployment' do
+        it { is_expected.to be_falsy }
       end
     end
 
@@ -818,14 +901,14 @@ describe Ci::Build do
 
       context 'when build succeeded' do
         let(:build) { create(:ci_build, :success) }
-        let!(:deployment) { create(:deployment, deployable: build) }
+        let!(:deployment) { create(:deployment, :success, deployable: build) }
 
         context 'current deployment is latest' do
           it { is_expected.to be_falsey }
         end
 
         context 'current deployment is not latest on environment' do
-          let!(:deployment2) { create(:deployment, environment: deployment.environment) }
+          let!(:deployment2) { create(:deployment, :success, environment: deployment.environment) }
 
           it { is_expected.to be_truthy }
         end
@@ -3209,10 +3292,14 @@ describe Ci::Build do
   end
 
   describe '#deployment_status' do
+    before do
+      allow_any_instance_of(described_class).to receive(:create_deployment)
+    end
+
     context 'when build is a last deployment' do
       let(:build) { create(:ci_build, :success, environment: 'production') }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
       it { expect(build.deployment_status).to eq(:last) }
     end
@@ -3220,8 +3307,8 @@ describe Ci::Build do
     context 'when there is a newer build with deployment' do
       let(:build) { create(:ci_build, :success, environment: 'production') }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
-      let!(:last_deployment) { create(:deployment, environment: environment, project: environment.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
+      let!(:last_deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
 
       it { expect(build.deployment_status).to eq(:out_of_date) }
     end
@@ -3229,7 +3316,7 @@ describe Ci::Build do
     context 'when build with deployment has failed' do
       let(:build) { create(:ci_build, :failed, environment: 'production') }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
       it { expect(build.deployment_status).to eq(:failed) }
     end
@@ -3237,14 +3324,7 @@ describe Ci::Build do
     context 'when build with deployment is running' do
       let(:build) { create(:ci_build, environment: 'production') }
       let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
-
-      it { expect(build.deployment_status).to eq(:creating) }
-    end
-
-    context 'when build is successful but deployment is not ready yet' do
-      let(:build) { create(:ci_build, :success, environment: 'production') }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
 
       it { expect(build.deployment_status).to eq(:creating) }
     end
