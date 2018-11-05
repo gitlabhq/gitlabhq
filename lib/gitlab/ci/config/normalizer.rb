@@ -4,54 +4,56 @@ module Gitlab
   module Ci
     class Config
       class Normalizer
-        def initialize(jobs_config)
-          @jobs_config = jobs_config
-        end
+        class << self
+          def normalize_jobs(jobs_config)
+            parallelized_jobs = extract_parallelized_jobs(jobs_config)
+            parallelized_config = parallelize_jobs(jobs_config, parallelized_jobs)
+            parallelize_dependencies(parallelized_config, parallelized_jobs)
+          end
 
-        def normalize_jobs
-          parallelized_jobs = parallelize_jobs
-          parallelize_dependencies(parallelized_jobs)
-        end
+          private
 
-        private
+          def extract_parallelized_jobs(jobs_config)
+            parallelized_jobs = {}
 
-        def parallelize_jobs
-          parallelized_jobs = {}
-
-          @jobs_config = @jobs_config.map do |name, config|
-            if config[:parallel]
-              total = config[:parallel]
-              names = self.class.parallelize_job_names(name, total)
-              parallelized_jobs[name] = names.map(&:first)
-              Hash[names.collect { |job_name, index| [job_name.to_sym, config.merge(name: job_name, instance: index)] }]
-            else
-              { name => config }
+            jobs_config.each do |job_name, config|
+              if config[:parallel]
+                parallelized_jobs[job_name] = parallelize_job_names(job_name, config[:parallel])
+              end
             end
-          end.reduce(:merge)
 
-          parallelized_jobs
-        end
+            parallelized_jobs
+          end
 
-        def parallelize_dependencies(parallelized_jobs)
-          @jobs_config.map do |name, config|
-            if config[:dependencies]
-              deps = config[:dependencies].map do |dep|
-                if parallelized_jobs.keys.include?(dep.to_sym)
-                  parallelized_jobs[dep.to_sym]
-                else
-                  dep
-                end
-              end.flatten
+          def parallelize_jobs(jobs_config, parallelized_jobs)
+            jobs_config.each_with_object({}) do |(job_name, config), hash|
+              if parallelized_jobs.keys.include?(job_name)
+                parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
+              else
+                hash[job_name] = config
+              end
 
-              { name => config.merge(dependencies: deps) }
-            else
-              { name => config }
+              hash
             end
-          end.reduce(:merge)
-        end
+          end
 
-        def self.parallelize_job_names(name, total)
-          Array.new(total) { |index| ["#{name} #{index + 1}/#{total}", index + 1] }
+          def parallelize_dependencies(parallelized_config, parallelized_jobs)
+            parallelized_config.each_with_object({}) do |(job_name, config), hash|
+              intersection = config[:dependencies] & parallelized_jobs.keys.map(&:to_s)
+              if intersection && intersection.any?
+                deps = intersection.map { |dep| parallelized_jobs[dep.to_sym].map(&:first) }.flatten
+                hash[job_name] = config.merge(dependencies: deps)
+              else
+                hash[job_name] = config
+              end
+
+              hash
+            end
+          end
+
+          def parallelize_job_names(name, total)
+            Array.new(total) { |index| ["#{name} #{index + 1}/#{total}", index + 1] }
+          end
         end
       end
     end

@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Normalizer do
   let(:config) { { job_name => job_config } }
 
   describe '.normalize_jobs' do
-    subject { described_class.new(config).normalize_jobs }
+    subject { described_class.normalize_jobs(config) }
 
     it 'does not have original job' do
       is_expected.not_to include(job_name)
@@ -29,6 +29,16 @@ describe Gitlab::Ci::Config::Normalizer do
       configs = subject.values.map { |config| config.except(:name, :instance) }
 
       expect(configs).to all(eq(original_config))
+    end
+
+    context 'when jobs depend on parallelized jobs' do
+      let(:config) { { job_name => job_config, other_job: { script: 'echo 1', dependencies: [job_name.to_s] } } }
+
+      it 'parallelizes dependencies' do
+        job_names = described_class.send(:parallelize_job_names, job_name, 5).map(&:first)
+
+        expect(subject[:other_job][:dependencies]).to include(*job_names)
+      end
     end
   end
 
