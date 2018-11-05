@@ -1,14 +1,11 @@
 .gl-responsive-table-row
-  .table-section.section-30
+  .table-section.section-60
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
     .table-mobile-content
       = link_to cluster.name, cluster.show_path
   .table-section.section-30
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment scope")
     .table-mobile-content= cluster.environment_scope
-  .table-section.section-30
-    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Project namespace")
-    .table-mobile-content= cluster.platform_kubernetes&.actual_namespace
   .table-section.section-10
     .table-mobile-header{ role: "rowheader" }
     .table-mobile-content
