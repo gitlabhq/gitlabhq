@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Trace
@@ -129,8 +131,7 @@ module Gitlab
           debris = ''
 
           until (buf = read_backward(BUFFER_SIZE)).empty?
-            buf += debris
-            debris, *lines = buf.each_line.to_a
+            debris, *lines = (buf + debris).each_line.to_a
             lines.reverse_each do |line|
               yield(line.force_encoding(Encoding.default_external))
             end
