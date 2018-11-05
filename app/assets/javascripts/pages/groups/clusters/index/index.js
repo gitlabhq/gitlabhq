@@ -1,5 +1,5 @@
-import ClustersIndex from '~/clusters/clusters_index';
+import initDismissableCallout from '~/dismissable_callout';
 
 document.addEventListener('DOMContentLoaded', () => {
-  new ClustersIndex(); // eslint-disable-line no-new
+  initDismissableCallout('.gcp-signup-offer');
 });
