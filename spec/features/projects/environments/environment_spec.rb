@@ -53,8 +53,19 @@ describe 'Environment' do
 
         it 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-          expect(page).to have_link('Re-deploy')
+          expect(page).not_to have_link('Re-deploy')
           expect(page).not_to have_terminal_button
+        end
+
+        context 'when user has ability to re-deploy' do
+          let(:permissions) do
+            create(:protected_branch, :developers_can_merge,
+                   name: build.ref, project: project)
+          end
+
+          it 'does show re-deploy' do
+            expect(page).to have_link('Re-deploy')
+          end
         end
 
         context 'with manual action' do

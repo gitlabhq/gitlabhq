@@ -20,12 +20,17 @@ module Ci
       @subject.project.branch_allows_collaboration?(@user, @subject.ref)
     end
 
+    condition(:archived, scope: :subject) do
+      @subject.archived?
+    end
+
     condition(:terminal, scope: :subject) do
       @subject.has_terminal?
     end
 
-    rule { protected_ref }.policy do
+    rule { protected_ref | archived }.policy do
       prevent :update_build
+      prevent :update_commit_status
       prevent :erase_build
     end
 

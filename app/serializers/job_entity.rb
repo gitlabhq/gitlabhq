@@ -7,6 +7,7 @@ class JobEntity < Grape::Entity
   expose :name
 
   expose :started?, as: :started
+  expose :archived?, as: :archived
 
   expose :build_path do |build|
     build_path(build)

@@ -594,4 +594,24 @@ describe ApplicationSetting do
       end
     end
   end
+
+  describe '#archive_builds_older_than' do
+    subject { setting.archive_builds_older_than }
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = 3600
+      end
+
+      it { is_expected.to be_within(1.minute).of(1.hour.ago) }
+    end
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = nil
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

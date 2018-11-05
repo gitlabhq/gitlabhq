@@ -27,6 +27,12 @@ FactoryBot.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :degenerated do
+      commands nil
+      options nil
+      yaml_variables nil
+    end
+
     trait :started do
       started_at 'Di 29. Okt 09:51:28 CET 2013'
     end
