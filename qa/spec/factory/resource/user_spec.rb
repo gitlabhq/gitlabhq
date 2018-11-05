@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe QA::Factory::Resource::User do
+describe QA::Resource::User do
   describe "#fabricate_via_api!" do
     Response = Struct.new(:code, :body)
 
