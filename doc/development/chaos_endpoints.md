@@ -41,12 +41,13 @@ To simulate a memory leak in your application, use the `/-/chaos/leakmem` endpoi
 For example, if your GitLab instance is listening at `localhost:3000`, you could `curl` the endpoint as follows:
 
 ```shell
-curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024 --header 'X-Chaos-Secret: secret'
+curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10 --header 'X-Chaos-Secret: secret'
 ```
 
-The `memory_mb` parameter tells the application how much memory it should leak.
+The `memory_mb` parameter tells the application how much memory it should leak. The `duration_s` parameter will ensure the request retains
+the memory for this duration at a minimum (default 30s).
 
-Note: the memory is not retained after the request, so once its completed, the Ruby garbage collector will attempt to recover the memory.
+Note: the memory is not retained after the request finishes. Once the request has completed, the Ruby garbage collector will attempt to recover the memory.
 
 ### CPU Spin
 
