@@ -19,7 +19,7 @@ class DiscordService < ChatNotificationService
     "This service sends notifications about projects events to Discord channels.<br />
     To set up this service:
     <ol>
-      <li><a href='ADD-DISCORD-LINK-HERE'>Setup a custom Incoming Webhook</a>.</li>
+      <li><a href='https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks'>Setup a custom Incoming Webhook</a>.</li>
       <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
       <li>Select events below to enable notifications.</li>
     </ol>"
@@ -30,9 +30,11 @@ class DiscordService < ChatNotificationService
   end
 
   def event_field(event)
+    # No-op.
   end
 
   def default_channel_placeholder
+    # No-op.
   end
 
   def default_fields
@@ -47,13 +49,9 @@ class DiscordService < ChatNotificationService
 
   def notify(message, opts)
     client = Discordrb::Webhooks::Client.new(url: webhook)
+
     client.execute do |builder|
       builder.content = message.pretext
-      # builder.add_embed do |embed|
-      #   embed.title = 'Embed title'
-      #   embed.description = 'Embed description'
-      #   embed.timestamp = Time.now
-      # end
     end
   end
 
