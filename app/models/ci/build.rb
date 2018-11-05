@@ -893,12 +893,11 @@ module Ci
       options&.dig(:environment, :url) || persisted_environment&.external_url
     end
 
-    # The format of the retry option changed in GitLab 11.5. Before it was an
-    # integer only, after it is a hash. New builds always created have the
-    # correct format, but builds created before GitLab 11.5 and saved in
-    # database still have the old integer only format. This helper method makes
-    # sure that the format is always correct when accessing the retry options,
-    # even on old builds.
+    # The format of the retry option changed in GitLab 11.5: Before it was
+    # integer only, after it is a hash. New builds are created with the new
+    # format, but builds created before GitLab 11.5 and saved in database still
+    # have the old integer only format. This method returns the retry option
+    # normalized as a hash in 11.5+ format.
     def normalized_retry
       value = options&.dig(:retry)
       value.is_a?(Integer) ? { max: value } : value.to_h
