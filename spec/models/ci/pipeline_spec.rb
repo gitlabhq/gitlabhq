@@ -1148,6 +1148,19 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.latest_successful_ids_per_project' do
+    let(:projects) { create_list(:project, 2) }
+    let!(:pipeline1) { create(:ci_pipeline, :success, project: projects[0]) }
+    let!(:pipeline2) { create(:ci_pipeline, :success, project: projects[0]) }
+    let!(:pipeline3) { create(:ci_pipeline, :failed, project: projects[0]) }
+    let!(:pipeline4) { create(:ci_pipeline, :success, project: projects[1]) }
+
+    it 'returns expected pipeline ids' do
+      expect(described_class.latest_successful_ids_per_project)
+        .to contain_exactly(pipeline2, pipeline4)
+    end
+  end
+
   describe '.internal_sources' do
     subject { described_class.internal_sources }
 

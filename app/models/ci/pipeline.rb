@@ -238,6 +238,10 @@ module Ci
       end
     end
 
+    def self.latest_successful_ids_per_project
+      success.group(:project_id).select('max(id) as id')
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
