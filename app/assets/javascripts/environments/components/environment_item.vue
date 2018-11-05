@@ -426,7 +426,7 @@ export default {
 
     displayEnvironmentActions() {
       return (
-        this.hasManualActions ||
+        this.actions.length > 0 ||
         this.externalURL ||
         this.monitoringUrl ||
         this.canStopEnvironment ||
