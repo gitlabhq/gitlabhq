@@ -4,7 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import Tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import EditButton from './edit_button.vue';
@@ -17,7 +17,7 @@ export default {
     FileIcon,
   },
   directives: {
-    Tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     discussionPath: {
@@ -161,23 +161,22 @@ export default {
         />
         <span v-if="diffFile.renamed_file">
           <strong
-            v-tooltip
+            v-gl-tooltip
             :title="diffFile.old_path"
             class="file-title-name"
-            data-container="body"
             v-html="diffFile.old_path_html"
           ></strong>
           →
           <strong
-            v-tooltip
+            v-gl-tooltip
             :title="diffFile.new_path"
             class="file-title-name"
-            data-container="body"
+
             v-html="diffFile.new_path_html"
           ></strong>
         </span>
 
-        <strong v-else v-tooltip :title="filePath" class="file-title-name" data-container="body">
+        <strong v-else v-gl-tooltip :title="filePath" class="file-title-name" data-container="body">
           {{ filePath }}
         </strong>
       </a>
@@ -233,7 +232,7 @@ export default {
 
       <a
         v-if="diffFile.external_url"
-        v-tooltip
+        v-gl-tooltip
         :href="diffFile.external_url"
         :title="`View on ${diffFile.formatted_external_url}`"
         target="_blank"
