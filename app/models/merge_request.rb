@@ -1118,14 +1118,17 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  # rubocop: disable CodeReuse/ServiceClass
   def compare_test_reports
     unless has_test_reports?
       return { status: :error, status_reason: 'This merge request does not have test reports' }
     end
 
-    with_reactive_cache(:compare_test_results) do |data|
-      unless Ci::CompareTestReportsService.new(project)
+    compare_reports(Ci::CompareTestReportsService)
+  end
+
+  def compare_reports(service_class)
+    with_reactive_cache(service_class.name) do |data|
+      unless service_class.new(project)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1133,19 +1136,14 @@ class MergeRequest < ActiveRecord::Base
       data
     end || { status: :parsing }
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
-  # rubocop: disable CodeReuse/ServiceClass
   def calculate_reactive_cache(identifier, *args)
-    case identifier.to_sym
-    when :compare_test_results
-      Ci::CompareTestReportsService.new(project).execute(
-        base_pipeline, actual_head_pipeline)
-    else
-      raise NotImplementedError, "Unknown identifier: #{identifier}"
-    end
+    service_class = identifier.constantize
+
+    raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
+
+    service_class.new(project).execute(base_pipeline, actual_head_pipeline)
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
