@@ -55,7 +55,11 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    @manual_actions ||= deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_manual_actions)
+  end
+
+  def scheduled_actions
+    @scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
   def includes_commit?(commit)

@@ -162,7 +162,7 @@ describe 'Environments page', :js do
         end
 
         it 'shows a play button' do
-          find('.js-dropdown-play-icon-container').click
+          find('.js-environment-actions-dropdown').click
 
           expect(page).to have_content(action.name.humanize)
         end
@@ -170,7 +170,7 @@ describe 'Environments page', :js do
         it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
-          find('.js-dropdown-play-icon-container').click
+          find('.js-environment-actions-dropdown').click
           expect(page).to have_content(action.name.humanize)
 
           expect { find('.js-manual-action-link').click }
@@ -257,6 +257,69 @@ describe 'Environments page', :js do
             let(:project) { cluster.project }
 
             it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          end
+        end
+      end
+
+      context 'when there is a delayed job' do
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let!(:delayed_job) do
+          create(:ci_build, :scheduled,
+                 pipeline: pipeline,
+                 name: 'delayed job',
+                 stage: 'test',
+                 commands: 'test')
+        end
+
+        let!(:deployment) do
+          create(:deployment,
+                 environment: environment,
+                 deployable: build,
+                 sha: project.commit.id)
+        end
+
+        before do
+          visit_environments(project)
+        end
+
+        it 'has a dropdown for actionable jobs' do
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .ic-play')
+        end
+
+        it "has link to the delayed job's action" do
+          find('.js-environment-actions-dropdown').click
+
+          expect(page).to have_button('Delayed job')
+          expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
+        end
+
+        context 'when delayed job is expired already' do
+          let!(:delayed_job) do
+            create(:ci_build, :expired_scheduled,
+                   pipeline: pipeline,
+                   name: 'delayed job',
+                   stage: 'test',
+                   commands: 'test')
+          end
+
+          it "shows 00:00:00 as the remaining time" do
+            find('.js-environment-actions-dropdown').click
+
+            expect(page).to have_content("00:00:00")
+          end
+        end
+
+        context 'when user played a delayed job immediately' do
+          before do
+            find('.js-environment-actions-dropdown').click
+            page.accept_confirm { click_button('Delayed job') }
+            wait_for_requests
+          end
+
+          it 'enqueues the delayed job', :js do
+            expect(delayed_job.reload).to be_pending
           end
         end
       end

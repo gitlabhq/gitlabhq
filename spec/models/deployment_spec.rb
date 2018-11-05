@@ -16,6 +16,22 @@ describe Deployment do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe '#scheduled_actions' do
+    subject { deployment.scheduled_actions }
+
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+    let(:deployment) { create(:deployment, deployable: build) }
+
+    it 'delegates to other_scheduled_actions' do
+      expect_any_instance_of(Ci::Build)
+        .to receive(:other_scheduled_actions)
+
+      subject
+    end
+  end
+
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }

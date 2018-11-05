@@ -245,8 +245,12 @@ module Ci
         .fabricate!
     end
 
-    def other_actions
+    def other_manual_actions
       pipeline.manual_actions.where.not(name: name)
+    end
+
+    def other_scheduled_actions
+      pipeline.scheduled_actions.where.not(name: name)
     end
 
     def pages_generator?
