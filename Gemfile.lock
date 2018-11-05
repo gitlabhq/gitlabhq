@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/blackst0ne/discordrb.git
-  revision: 2de6ec4dda1e2ea2966f1ced063698d7c5fc5225
-  specs:
-    discordrb-webhooks (3.3.0)
-      rest-client (~> 2.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -174,6 +167,8 @@ GEM
       rotp (~> 2.0)
     diff-lcs (1.3)
     diffy (3.1.0)
+    discordrb-webhooks-blackst0ne (3.3.0)
+      rest-client (~> 2.0)
     docile (1.1.5)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
@@ -979,7 +974,7 @@ DEPENDENCIES
   devise (~> 4.4)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
-  discordrb-webhooks (~> 3.3)!
+  discordrb-webhooks-blackst0ne (~> 3.3)
   doorkeeper (~> 4.3)
   doorkeeper-openid_connect (~> 1.5)
   ed25519 (~> 1.2)
