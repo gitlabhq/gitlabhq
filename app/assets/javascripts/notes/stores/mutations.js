@@ -225,4 +225,8 @@ export default {
 
     discussion.truncated_diff_lines = diffLines;
   },
+
+  [types.DISABLE_COMMENTS](state, value) {
+    state.commentsDisabled = value;
+  },
 };
