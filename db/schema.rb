@@ -1589,6 +1589,7 @@ ActiveRecord::Schema.define(version: 20181101144347) do
     t.datetime_with_timezone "created_at", null: false
   end
 
+  add_index "project_deploy_tokens", ["deploy_token_id"], name: "index_project_deploy_tokens_on_deploy_token_id", using: :btree
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|

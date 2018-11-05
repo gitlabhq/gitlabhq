@@ -95,8 +95,7 @@ class Project < ActiveRecord::Base
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
 
-  after_create :set_last_activity_at
-  after_create :set_last_repository_updated_at
+  after_create :set_timestamps_for_create
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
@@ -2103,13 +2102,8 @@ class Project < ActiveRecord::Base
     gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
-  # set last_activity_at to the same as created_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
+  def set_timestamps_for_create
+    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)
