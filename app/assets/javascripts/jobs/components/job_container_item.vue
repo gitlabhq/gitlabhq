@@ -1,15 +1,16 @@
 <script>
+import { GlTooltipDirective, GlLink } from '@gitlab-org/gitlab-ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
   components: {
     CiIcon,
     Icon,
+    GlLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     job: {
@@ -37,11 +38,10 @@ export default {
       active: isActive
     }"
   >
-    <a
-      v-tooltip
+    <gl-link
+      v-gl-tooltip
       :href="job.status.details_path"
       :title="tooltipText"
-      data-container="body"
       data-boundary="viewport"
       class="js-job-link"
     >
@@ -60,6 +60,6 @@ export default {
         name="retry"
         class="js-retry-icon"
       />
-    </a>
+    </gl-link>
   </div>
 </template>

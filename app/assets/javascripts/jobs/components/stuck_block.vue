@@ -1,8 +1,12 @@
 <script>
+import { GlLink } from '@gitlab-org/gitlab-ui';
 /**
  * Renders Stuck Runners block for job's view.
  */
 export default {
+  components: {
+    GlLink,
+  },
   props: {
     hasNoRunnersForProject: {
       type: Boolean,
@@ -52,12 +56,12 @@ export default {
     </p>
 
     {{ __("Go to") }}
-    <a
+    <gl-link
       v-if="runnersPath"
       :href="runnersPath"
       class="js-runners-path"
     >
       {{ __("Runners page") }}
-    </a>
+    </gl-link>
   </div>
 </template>
