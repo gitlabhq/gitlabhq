@@ -55,8 +55,28 @@
     @include build-trace();
   }
 
+  .archived-sticky {
+    top: $header-height;
+    border-radius: 2px 2px 0 0;
+    color: $orange-600;
+    background-color: $orange-100;
+    border: 1px solid $border-gray-normal;
+    border-bottom: 0;
+    padding: 3px 12px;
+    margin: auto;
+    align-items: center;
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
+    }
+  }
+
   .top-bar {
     @include build-trace-top-bar(35px);
+
+    &.has-archived-block {
+      top: $header-height + $performance-bar-height + 28px;
+    }
 
     &.affix {
       top: $header-height;

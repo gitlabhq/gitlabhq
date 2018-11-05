@@ -423,6 +423,40 @@ describe('Job App ', () => {
     });
   });
 
+  describe('archived job', () => {
+    beforeEach(() => {
+      mock.onGet(props.endpoint).reply(200, Object.assign({}, job, { archived: true }), {});
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+    });
+
+    it('renders warning about job being archived', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.js-archived-job ')).not.toBeNull();
+        done();
+      }, 0);
+    });
+  });
+
+  describe('non-archived job', () => {
+    beforeEach(() => {
+      mock.onGet(props.endpoint).reply(200, job, {});
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+    });
+
+    it('does not warning about job being archived', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.js-archived-job ')).toBeNull();
+        done();
+      }, 0);
+    });
+  });
+
   describe('trace output', () => {
     beforeEach(() => {
       mock.onGet(props.endpoint).reply(200, job, {});
