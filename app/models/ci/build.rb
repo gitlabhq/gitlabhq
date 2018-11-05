@@ -900,7 +900,7 @@ module Ci
     # sure that the format is always correct when accessing the retry options,
     # even on old builds.
     def normalized_retry
-      value = options[:retry]
+      value = options&.dig(:retry)
       value.is_a?(Integer) ? { max: value } : value.to_h
     end
 
