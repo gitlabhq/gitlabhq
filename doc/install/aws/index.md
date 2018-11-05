@@ -508,6 +508,14 @@ To add more than one data volumes, follow the same steps.
 
 Read more on [storing Git data in an alternative directory](../../administration/repository_storage_paths.md).
 
+### Setting up Gitaly
+
+Gitaly is a service that provides high-level RPC access to Git repositories.
+It should be enabled and configured in a separate EC2 instance on the
+[private VPC](#subnets) we configured previously.
+
+Follow the [documentation to set it up](../../administration/gitaly/index.md).
+
 ### Using Amazon S3 object storage
 
 The S3 object storage can be used for various GitLab objects:
