@@ -20,45 +20,63 @@ describe Groups::ClustersController do
       get :index, params.reverse_merge(group_id: group)
     end
 
-    describe 'functionality' do
-      context 'when group has one or more clusters' do
-        let(:group) { create(:group) }
-        let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
-        it 'lists available clusters' do
-          go
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index)
-          expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
-        end
-
-        context 'when page is specified' do
-          let(:last_page) { group.clusters.page.total_pages }
-
-          before do
-            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
-          end
-
-          it 'redirects to the page' do
-            go(page: last_page)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(assigns(:clusters).current_page).to eq(last_page)
-          end
-        end
+    context 'when feature flag is not enabled' do
+      before do
+        stub_feature_flags(group_clusters: false)
       end
 
-      context 'when group does not have a cluster' do
-        let(:group) { create(:group) }
+      it 'renders 404' do
+        go
 
-        it 'returns an empty state page' do
-          go
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index, partial: :empty_state)
-          expect(assigns(:clusters)).to eq([])
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(group_clusters: true)
+      end
+
+      describe 'functionality' do
+        context 'when group has one or more clusters' do
+          let(:group) { create(:group) }
+          let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+          let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+          it 'lists available clusters' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:index)
+            expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
+          end
+
+          context 'when page is specified' do
+            let(:last_page) { group.clusters.page.total_pages }
+
+            before do
+              allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
+              create_list(:cluster, 2, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+            end
+
+            it 'redirects to the page' do
+              go(page: last_page)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(assigns(:clusters).current_page).to eq(last_page)
+            end
+          end
+        end
+
+        context 'when group does not have a cluster' do
+          let(:group) { create(:group) }
+
+          it 'returns an empty state page' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:index, partial: :empty_state)
+            expect(assigns(:clusters)).to eq([])
+          end
         end
       end
     end
