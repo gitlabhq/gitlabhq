@@ -2,8 +2,12 @@
 - help_link_start = "<a href=\"%{url}\" target=\"_blank\" rel=\"noopener noreferrer\">".html_safe
 - help_link_end = '</a>'.html_safe
 %h4.prepend-top-0
-  = s_('ClusterIntegration|Kubernetes cluster integration')
-%p
-  = s_('ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
-%p
-  = s_('ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: clusters_help_url }, help_link_end: help_link_end }
+  = s_('ClusterIntegration|Add a Kubernetes cluster integration')
+- if clusterable.is_project?
+  %p
+    = s_('ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
+  %p
+    = s_('ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: clusters_help_url }, help_link_end: help_link_end }
+- else
+  %p
+    = s_('ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster.')

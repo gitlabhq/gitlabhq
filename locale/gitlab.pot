@@ -1364,6 +1364,12 @@ msgstr ""
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Add a Kubernetes cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
+msgstr ""
+
 msgid "ClusterIntegration|Adding an integration to your group will share the cluster across all your projects."
 msgstr ""
 
@@ -1524,9 +1530,6 @@ msgid "ClusterIntegration|Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster details"
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
