@@ -89,7 +89,7 @@ describe Environment do
       context 'when the latest deployment is successful' do
         let!(:deployment) { create(:deployment, :start, :success, environment: environment) }
 
-        it { expect(subject.to_i).to eq(deployment.finished_at.to_i) }
+        it { expect(subject).to be_within(1.second).of(deployment.finished_at) }
       end
 
       context 'when the latest deployment failed' do

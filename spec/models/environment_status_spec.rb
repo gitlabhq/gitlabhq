@@ -109,7 +109,11 @@ describe EnvironmentStatus do
       let(:pipeline) { create(:ci_pipeline, sha: sha, project: forked) }
 
       let(:merge_request) do
-        create(:merge_request, source_project: forked, target_project: project, target_branch: 'master', head_pipeline: pipeline)
+        create(:merge_request,
+               source_project: forked,
+               target_project: project,
+               target_branch: 'master',
+               head_pipeline: pipeline)
       end
 
       it 'returns environment status' do
@@ -126,7 +130,12 @@ describe EnvironmentStatus do
       let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
 
       let(:merge_request) do
-        create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master', head_pipeline: pipeline)
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master',
+               head_pipeline: pipeline)
       end
 
       it 'returns environment status' do
