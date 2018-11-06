@@ -182,15 +182,16 @@ describe UpdateDeploymentService do
         context "if the 'first_deployed_to_production_at' time is already set" do
           it "does not overwrite the older 'first_deployed_to_production_at' time" do
             # Previous deploy
-            time = Time.now
-            Timecop.freeze(time) { service.execute }
+            service.execute
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
+            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(deployment.finished_at)
 
             # Current deploy
-            Timecop.freeze(time + 12.hours) { service.execute }
+            Timecop.travel(12.hours.from_now) do
+              service.execute
 
-            expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
+              expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(deployment.finished_at)
+            end
           end
         end
 
