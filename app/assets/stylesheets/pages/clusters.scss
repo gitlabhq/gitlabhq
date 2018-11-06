@@ -86,6 +86,31 @@
   .top-area .nav-controls > .btn.btn-add-cluster {
     margin-right: 0;
   }
+
+  .clusters-table {
+    background-color: $gray-light;
+    padding: $gl-padding-8;
+  }
+
+  .badge-light {
+    background-color: $white-normal;
+  }
+
+  .gl-responsive-table-row {
+    padding: $gl-padding;
+    border: 0;
+
+    &.table-row-header {
+      background-color: none;
+      border: 0;
+      font-weight: bold;
+      color: $gl-gray-500;
+    }
+  }
+}
+
+.cluster-warning {
+  @include alert-variant(theme-color-level('warning', $alert-bg-level), theme-color-level('warning', $alert-border-level), theme-color-level('warning', $alert-color-level));
 }
 
 .gcp-signup-offer {
