@@ -17,13 +17,6 @@ export default {
       type: String,
       required: true,
     },
-
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: 'top',
-    },
-
     cssClass: {
       type: String,
       required: false,
@@ -37,8 +30,6 @@ export default {
     v-gl-tooltip="{ placement: tooltipPlacement }"
     :class="cssClass"
     :title="tooltipTitle(time)"
-    :data-placement="tooltipPlacement"
-    v-text="timeFormated(time)"
-  >
+    v-text="timeFormated(time)">
   </time>
 </template>
