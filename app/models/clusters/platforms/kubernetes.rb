@@ -38,7 +38,7 @@ module Clusters
 
       validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
 
-      validate :no_namespace, unless: :project_type?
+      validate :no_namespace, unless: :allow_user_defined_namespace?
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
@@ -54,7 +54,7 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
-      delegate :project_type?, to: :cluster, allow_nil: true
+      delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
       delegate :kubernetes_namespace, to: :cluster
 
       alias_method :active?, :enabled?

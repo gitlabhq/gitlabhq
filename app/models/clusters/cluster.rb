@@ -144,6 +144,10 @@ module Clusters
       )
     end
 
+    def allow_user_defined_namespace?
+      project_type?
+    end
+
     private
 
     def restrict_modification
