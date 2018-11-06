@@ -31,7 +31,7 @@ class DirtySubmitForm {
   updateDirtyInput(event) {
     const input = event.target;
 
-    if (!input.dataset.dirtySubmitOriginalValue) return;
+    if (!input.dataset.isDirtySubmitInput) return;
 
     this.updateDirtyInputs(input);
     this.toggleSubmission();
@@ -65,6 +65,7 @@ class DirtySubmitForm {
   }
 
   static initInput(element) {
+    element.dataset.isDirtySubmitInput = true;
     element.dataset.dirtySubmitOriginalValue = DirtySubmitForm.inputCurrentValue(element);
   }
 
