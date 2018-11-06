@@ -44,7 +44,7 @@ describe 'View on environment', :js do
     context 'and an active deployment' do
       let(:sha) { project.commit(branch_name).sha }
       let(:environment) { create(:environment, project: project, name: 'review/feature', external_url: 'http://feature.review.example.com') }
-      let!(:deployment) { create(:deployment, environment: environment, ref: branch_name, sha: sha) }
+      let!(:deployment) { create(:deployment, :success, environment: environment, ref: branch_name, sha: sha) }
 
       context 'when visiting the diff of a merge request for the branch' do
         let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: branch_name) }

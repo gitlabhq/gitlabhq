@@ -8,8 +8,8 @@ class EnvironmentStatus
   delegate :id, to: :environment
   delegate :name, to: :environment
   delegate :project, to: :environment
+  delegate :status, to: :deployment, allow_nil: true
   delegate :deployed_at, to: :deployment, allow_nil: true
-  delegate :status, to: :deployment
 
   def self.for_merge_request(mr, user)
     build_environments_status(mr, user, mr.head_pipeline)
@@ -31,10 +31,6 @@ class EnvironmentStatus
     strong_memoize(:deployment) do
       environment.first_deployment_for(sha)
     end
-  end
-
-  def deployed_at
-    deployment&.created_at
   end
 
   def changes

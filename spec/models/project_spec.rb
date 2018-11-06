@@ -3976,6 +3976,40 @@ describe Project do
     end
   end
 
+  describe '.deployments' do
+    subject { project.deployments }
+
+    let(:project) { create(:project) }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

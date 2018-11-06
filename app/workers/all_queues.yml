@@ -73,6 +73,8 @@
 - pipeline_processing:update_head_pipeline_for_merge_request
 - pipeline_processing:ci_build_schedule
 
+- deployment:deployments_success
+
 - repository_check:repository_check_clear
 - repository_check:repository_check_batch
 - repository_check:repository_check_single_repository

@@ -44,7 +44,7 @@ describe Gitlab::SlashCommands::Command do
       let!(:build) { create(:ci_build, pipeline: pipeline) }
       let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:staging) { create(:environment, name: 'staging', project: project) }
-      let!(:deployment) { create(:deployment, environment: staging, deployable: build) }
+      let!(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
 
       let!(:manual) do
         create(:ci_build, :manual, pipeline: pipeline,
