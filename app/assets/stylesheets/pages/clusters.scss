@@ -79,6 +79,10 @@
     padding: $gl-padding-top $gl-padding;
   }
 
+  .card {
+    margin-bottom: $gl-vert-padding;
+  }
+
   .empty-state .svg-content img {
     width: 145px;
   }
