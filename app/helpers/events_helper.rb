@@ -91,11 +91,11 @@ module EventsHelper
       words << "##{event.target_iid}" if event.target_iid
       words << "in"
     elsif event.merge_request?
-      words << "!#{event.target_iid}:" if event.target_iid
+      words << "#{Issue.reference_prefix}#{event.target_iid}:" if event.target_iid
       words << event.target.title if event.target.respond_to?(:title)
       words << "at"
     elsif event.target
-      words << "##{event.target_iid}:"
+      words << "#{MergeRequest.reference_prefix}#{event.target_iid}:"
       words << event.target.title if event.target.respond_to?(:title)
       words << "at"
     end
