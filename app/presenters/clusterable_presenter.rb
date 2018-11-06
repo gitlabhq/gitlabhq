@@ -43,4 +43,8 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
   def cluster_path(cluster, params = {})
     raise NotImplementedError
   end
+
+  def is_project?
+    raise NotImplementedError
+  end
 end

@@ -12,4 +12,8 @@ class ProjectClusterablePresenter < ClusterablePresenter
   def cluster_path(cluster, params = {})
     project_cluster_path(clusterable, cluster, params)
   end
+
+  def is_project?
+    true
+  end
 end
