@@ -26,7 +26,7 @@ module Clusters
       end
 
       def values
-        { domain: hostname }.to_yaml
+        { "domain" => hostname }.to_yaml
       end
 
       def install_command
