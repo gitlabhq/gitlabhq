@@ -4,41 +4,29 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top 40px;
+  padding: $gl-padding 0 $gl-padding 56px;
   border-bottom: 1px solid $white-normal;
-  color: $gl-text-color;
+  color: $gl-text-color-secondary;
   position: relative;
-
-  &.event-inline {
-    .system-note-image {
-      top: 20px;
-    }
-
-    .user-avatar {
-      top: 14px;
-    }
-
-    .event-title,
-    .event-item-timestamp {
-      line-height: 40px;
-    }
-  }
-
-  a {
-    color: $gl-text-color;
-  }
+  line-height: $gl-line-height;
 
   .system-note-image {
     position: absolute;
     left: 0;
-    top: 14px;
 
     svg {
-      width: 20px;
-      height: 20px;
       fill: $gl-text-color-secondary;
     }
+  }
 
+  .system-note-image-inline {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .system-note-image,
+  .system-note-image-inline {
     &.opened-icon,
     &.created-icon {
       svg {
@@ -53,16 +41,35 @@
     &.accepted-icon svg {
       fill: $blue-300;
     }
+
+    &.commented-on-icon svg {
+      fill: $blue-600;
+    }
+  }
+
+  .event-user-info {
+    margin-bottom: $gl-padding-8;
+
+    .author_name {
+      a {
+        color: $gl-text-color;
+        font-weight: $gl-font-weight-bold;
+      }
+    }
   }
 
   .event-title {
-    @include str-truncated(calc(100% - 174px));
-    font-weight: $gl-font-weight-bold;
-    color: $gl-text-color;
+    .event-type {
+      &::first-letter {
+        text-transform: capitalize;
+      }
+    }
   }
 
   .event-body {
+    margin-top: $gl-padding-8;
     margin-right: 174px;
+    color: $gl-text-color;
 
     .event-note {
       word-wrap: break-word;
@@ -92,7 +99,7 @@
       }
 
       .note-image-attach {
-        margin-top: 4px;
+        margin-top: $gl-padding-4;
         margin-left: 0;
         max-width: 200px;
         float: none;
@@ -107,7 +114,6 @@
       color: $gl-gray-500;
       float: left;
       font-size: $gl-font-size;
-      line-height: 16px;
       margin-right: 5px;
     }
   }
@@ -127,7 +133,9 @@
     }
   }
 
-  &:last-child { border: 0; }
+  &:last-child {
+    border: 0;
+  }
 
   .event_commits {
     li {
@@ -154,7 +162,6 @@
 
   .event-item-timestamp {
     float: right;
-    line-height: 22px;
   }
 }
 
@@ -177,10 +184,8 @@
   .event-item {
     padding-left: 0;
 
-    &.event-inline {
-      .event-title {
-        line-height: 20px;
-      }
+    .event-user-info {
+      margin-bottom: $gl-padding-4;
     }
 
     .event-title {
@@ -194,7 +199,8 @@
     }
 
     .event-body {
-      margin: 0;
+      margin-top: $gl-padding-4;
+      margin-right: 0;
       padding-left: 0;
     }
 
