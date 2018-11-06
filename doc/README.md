@@ -81,7 +81,7 @@ Have a look at some of our most popular documentation resources:
 | [SSH authentication](ssh/README.md)                             | Secure your network communications.                              |
 | [Using Docker images](ci/docker/using_docker_images.md)         | Build and test your applications with Docker.                    |
 
-## Complete DevOps with GitLab
+## The entire DevOps Lifecycle
 
 GitLab is the first single application for software development, security,
 and operations that enables [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/),
@@ -389,7 +389,7 @@ The following sections outline tiers and features within GitLab self-managed and
 
 ### GitLab self-managed
 
-With GitLab self-managed, you deploy your own GitLab instance on-premises or on a private cloud of your choice.
+With GitLab self-managed, you deploy your own GitLab instance on-premises or on a cloud of your choice.
 GitLab self-managed is available for [free and with paid subscriptions](https://about.gitlab.com/pricing/#self-managed) in the following tiers:
 
 | Tier     | Includes                                       |
@@ -399,10 +399,13 @@ GitLab self-managed is available for [free and with paid subscriptions](https://
 | Premium  | Core, Starter, and Premium features.           |
 | Ultimate | Core, Starter, Premium, and Ultimate features. |
 
-To learn more about GitLab:
+The following resources are available for more information on GitLab self-managed:
 
-- Features at each tier, see our [Feature Comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/) for self-managed.
-- Subscriptions and licensing, please refer to the [GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
+- [Feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/), for information on what features are available at each tier.
+- [GitLab pricing page](https://about.gitlab.com/pricing/#self-managed), for subscription information and a free trial.
+- Our [product marketing page](https://about.gitlab.com/handbook/marketing/product-marketing/), for additional information including:
+  - How [different tiers are licensed](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
+  - The different [GitLab distributions](https://about.gitlab.com/handbook/marketing/product-marketing/#distributions).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -430,10 +433,13 @@ to the same features available in GitLab self-managed, **except
 TIP: **Tip:**
 To support the open source community and encourage the development of open source projects, GitLab grants access to **Gold** features for all GitLab.com **public** projects, regardless of the subscription.
 
-To learn more about GitLab:
+The following resources are available for more information on GitLab.com:
 
-- Features at each tier, see our [Feature Comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/) for GitLab.com.
-- Subscriptions and licensing, please refer to the [GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
+- [Feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/), for information on what features are available at each tier.
+- [GitLab pricing page](https://about.gitlab.com/pricing/), for subscription information and a free trial.
+- Our [product marketing page](https://about.gitlab.com/handbook/marketing/product-marketing/), for additional information including:
+  - How [different tiers are licensed](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
+  - The different [GitLab distributions](https://about.gitlab.com/handbook/marketing/product-marketing/#distributions).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
