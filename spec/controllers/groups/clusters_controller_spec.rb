@@ -40,8 +40,15 @@ describe Groups::ClustersController do
       describe 'functionality' do
         context 'when group has one or more clusters' do
           let(:group) { create(:group) }
-          let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
-          let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+
+          let!(:enabled_cluster) do
+            create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
+          end
+
+          let!(:disabled_cluster) do
+            create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+          end
+
           it 'lists available clusters' do
             go
 
@@ -204,10 +211,13 @@ describe Groups::ClustersController do
           expect(ClusterProvisionWorker).to receive(:perform_async)
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Providers::Gcp.count }
-          expect(response).to redirect_to(group_cluster_path(group, group.clusters.first))
-          expect(group.clusters.first).to be_gcp
-          expect(group.clusters.first).to be_kubernetes
-          expect(group.clusters.first.provider_gcp).to be_legacy_abac
+
+          cluster = group.clusters.first
+
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_gcp
+          expect(cluster).to be_kubernetes
+          expect(cluster.provider_gcp).to be_legacy_abac
         end
 
         context 'when legacy_abac param is false' do
@@ -289,10 +299,11 @@ describe Groups::ClustersController do
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
-          expect(response).to redirect_to(group_cluster_path(group, group.clusters.first))
+          cluster = group.clusters.first
 
-          expect(group.clusters.first).to be_user
-          expect(group.clusters.first).to be_kubernetes
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_user
+          expect(cluster).to be_kubernetes
         end
       end
 
@@ -317,11 +328,12 @@ describe Groups::ClustersController do
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
-          expect(response).to redirect_to(group_cluster_path(group, group.clusters.first))
+          cluster = group.clusters.first
 
-          expect(group.clusters.first).to be_user
-          expect(group.clusters.first).to be_kubernetes
-          expect(group.clusters.first).to be_platform_kubernetes_rbac
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_user
+          expect(cluster).to be_kubernetes
+          expect(cluster).to be_platform_kubernetes_rbac
         end
       end
     end
@@ -349,7 +361,7 @@ describe Groups::ClustersController do
     end
 
     describe 'functionality' do
-      it "responds with matching schema" do
+      it 'responds with matching schema' do
         go
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -385,7 +397,7 @@ describe Groups::ClustersController do
     end
 
     describe 'functionality' do
-      it "renders view" do
+      it 'renders view' do
         go
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -428,7 +440,7 @@ describe Groups::ClustersController do
       }
     end
 
-    it "updates and redirects back to show page" do
+    it 'updates and redirects back to show page' do
       go
 
       cluster.reload
@@ -454,7 +466,7 @@ describe Groups::ClustersController do
             }
           end
 
-          it "updates and redirects back to show page" do
+          it 'updates and redirects back to show page' do
             go(format: :json)
 
             cluster.reload
@@ -477,7 +489,7 @@ describe Groups::ClustersController do
             }
           end
 
-          it "rejects changes" do
+          it 'rejects changes' do
             go(format: :json)
 
             expect(response).to have_http_status(:bad_request)
@@ -512,7 +524,7 @@ describe Groups::ClustersController do
     describe 'functionality' do
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
-          it "destroys and redirects back to clusters list" do
+          it 'destroys and redirects back to clusters list' do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
@@ -526,7 +538,7 @@ describe Groups::ClustersController do
         context 'when cluster is being created' do
           let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
-          it "destroys and redirects back to clusters list" do
+          it 'destroys and redirects back to clusters list' do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
@@ -540,7 +552,7 @@ describe Groups::ClustersController do
       context 'when cluster is provided by user' do
         let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, cluster_type: :group_type, groups: [group]) }
 
-        it "destroys and redirects back to clusters list" do
+        it 'destroys and redirects back to clusters list' do
           expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)

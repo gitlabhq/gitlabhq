@@ -72,7 +72,7 @@ describe Clusters::UpdateService do
         }
       end
 
-      it "does not change cluster name" do
+      it 'does not change cluster name' do
         is_expected.to eq(false)
 
         cluster.reload
@@ -82,7 +82,7 @@ describe Clusters::UpdateService do
       context 'when cluster is being created' do
         let(:cluster) { create(:cluster, :providing_by_gcp) }
 
-        it "rejects changes" do
+        it 'rejects changes' do
           is_expected.to eq(false)
 
           expect(cluster.errors.full_messages).to include('cannot modify during creation')
