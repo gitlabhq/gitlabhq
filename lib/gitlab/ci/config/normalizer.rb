@@ -42,8 +42,8 @@ module Gitlab
 
         def parallelize_dependencies(parallelized_config)
           parallelized_config.each_with_object({}) do |(job_name, config), hash|
-            intersection = config[:dependencies] & @parallelized_jobs.keys.map(&:to_s)
-            if intersection && intersection.any?
+            parallelized_job_names = @parallelized_jobs.keys.map(&:to_s)
+            if config[:dependencies] && (intersection = config[:dependencies] & parallelized_job_names).any?
               deps = intersection.map { |dep| @parallelized_jobs[dep.to_sym].map(&:first) }.flatten
               hash[job_name] = config.merge(dependencies: deps)
             else
