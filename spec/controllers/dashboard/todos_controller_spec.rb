@@ -42,6 +42,16 @@ describe Dashboard::TodosController do
       end
     end
 
+    context 'group authorization' do
+      it 'renders 404 when user does not have read access on given group' do
+        unauthorized_group = create(:group, :private)
+
+        get :index, group_id: unauthorized_group.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     context 'when using pagination' do
       let(:last_page) { user.todos.page.total_pages }
       let!(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
