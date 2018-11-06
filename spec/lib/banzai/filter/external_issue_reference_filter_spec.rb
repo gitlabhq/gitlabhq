@@ -101,15 +101,24 @@ describe Banzai::Filter::ExternalIssueReferenceFilter do
 
   context "redmine project" do
     let(:project) { create(:redmine_project) }
-    let(:issue) { ExternalIssue.new("#123", project) }
-    let(:reference) { issue.to_reference }
 
     before do
-      project.issues_enabled = false
-      project.save!
+      project.update!(issues_enabled: false)
     end
 
-    it_behaves_like "external issue tracker"
+    context "with a hash prefix" do
+      let(:issue) { ExternalIssue.new("#123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+
+    context "with a single-letter prefix" do
+      let(:issue) { ExternalIssue.new("T-123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
   end
 
   context "jira project" do
@@ -120,6 +129,15 @@ describe Banzai::Filter::ExternalIssueReferenceFilter do
       let(:issue) { ExternalIssue.new("JIRA-123", project) }
 
       it_behaves_like "external issue tracker"
+    end
+
+    context "with a single-letter prefix" do
+      let(:issue) { ExternalIssue.new("J-123", project) }
+
+      it "ignores reference" do
+        exp = act = "Issue #{reference}"
+        expect(filter(act).to_html).to eq exp
+      end
     end
 
     context "with wrong markdown" do
