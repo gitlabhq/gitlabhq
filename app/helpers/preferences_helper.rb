@@ -43,6 +43,13 @@ module PreferencesHelper
     ]
   end
 
+  def first_day_of_week_choices
+    [
+      ['Sunday', 0],
+      ['Monday', 1]
+    ]
+  end
+
   def user_application_theme
     @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end

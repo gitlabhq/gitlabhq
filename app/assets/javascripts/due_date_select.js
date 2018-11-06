@@ -64,6 +64,7 @@ class DueDateSelect {
           this.saveDueDate(true);
         }
       },
+      firstDay: gon.first_day_of_week,
     });
 
     calendar.setDate(parsePikadayDate($dueDateInput.val()));
@@ -183,6 +184,7 @@ export default class DueDateSelectors {
         onSelect(dateText) {
           $datePicker.val(calendar.toString(dateText));
         },
+        firstDay: gon.first_day_of_week,
       });
 
       calendar.setDate(parsePikadayDate(datePickerVal));

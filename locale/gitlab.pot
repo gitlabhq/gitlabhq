@@ -2507,6 +2507,9 @@ msgstr ""
 msgid "Default Branch"
 msgstr ""
 
+msgid "Default first day of the week"
+msgstr ""
+
 msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
@@ -4297,6 +4300,9 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
+msgid "Localization"
+msgstr ""
+
 msgid "Lock"
 msgstr ""
 
@@ -4613,6 +4619,9 @@ msgid "Modal|Cancel"
 msgstr ""
 
 msgid "Modal|Close"
+msgstr ""
+
+msgid "Monday"
 msgstr ""
 
 msgid "Monitor your errors by integrating with Sentry"
@@ -6926,6 +6935,9 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
+msgid "Sunday"
+msgstr ""
+
 msgid "Support for custom certificates is disabled. Ask your system's administrator to enable it."
 msgstr ""
 
@@ -7975,6 +7987,9 @@ msgid "Various container registry settings."
 msgstr ""
 
 msgid "Various email settings."
+msgstr ""
+
+msgid "Various localization settings."
 msgstr ""
 
 msgid "Various settings that affect GitLab performance."

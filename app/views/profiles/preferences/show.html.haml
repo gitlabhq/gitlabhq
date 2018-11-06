@@ -60,5 +60,23 @@
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .form-text.text-muted
         Choose what content you want to see on a project’s overview page.
+
+  .col-sm-12
+    %hr
+
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      Localization
+    %p
+      Customize language and region related settings.
+      = succeed '.' do
+        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
+  .col-lg-8
+    .form-group
+      = f.label :first_day_of_week, class: 'label-bold' do
+        First day of the week
+      = f.select :first_day_of_week, options_for_select(first_day_of_week_choices, @user.first_day_of_week || Gitlab::CurrentSettings.default_first_day_of_week), {}, class: 'form-control'
+      .form-text.text-muted
+        Choose on what day the week should start.
     .form-group
       = f.submit 'Save changes', class: 'btn btn-success'

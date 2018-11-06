@@ -237,6 +237,7 @@ class ApplicationSetting < ActiveRecord::Base
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
+      default_first_day_of_week: 0,
       default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],

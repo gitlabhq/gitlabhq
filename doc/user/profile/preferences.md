@@ -87,3 +87,11 @@ You can choose between 3 options:
 - Files and Readme (default)
 - Readme
 - Activity
+
+## Localization
+
+This following setting allows you to customize calendar layouts.
+
+### First day of the week
+
+You can choose between **Sunday** and **Monday** for the first day of the week. This will be used for all calendar views and datepickers.

@@ -44,6 +44,7 @@ export default class IssuableForm {
         parse: dateString => parsePikadayDate(dateString),
         toString: date => pikadayToString(date),
         onSelect: dateText => $issuableDueDate.val(calendar.toString(dateText)),
+        firstDay: gon.first_day_of_week,
       });
       calendar.setDate(parsePikadayDate($issuableDueDate.val()));
     }

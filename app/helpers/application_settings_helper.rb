@@ -136,6 +136,7 @@ module ApplicationSettingsHelper
       :container_registry_token_expire_delay,
       :default_artifacts_expire_in,
       :default_branch_protection,
+      :default_first_day_of_week,
       :default_group_visibility,
       :default_project_visibility,
       :default_projects_limit,

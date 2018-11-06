@@ -159,7 +159,7 @@ export default class ActivityCalendar {
       .append('g')
       .attr('transform', (group, i) => {
         _.each(group, (stamp, a) => {
-          if (a === 0 && stamp.day === 0) {
+          if (a === 0 && stamp.day === this.firstDayOfWeek) {
             const month = stamp.date.getMonth();
             const x = this.daySizeWithSpace * i + 1 + this.daySizeWithSpace;
             const lastMonth = _.last(this.months);
@@ -205,6 +205,14 @@ export default class ActivityCalendar {
         y: 29 + this.dayYPos(5),
       },
     ];
+
+    if (this.firstDayOfWeek === 1) {
+      days.push({
+        text: 'S',
+        y: 29 + this.dayYPos(7),
+      });
+    }
+
     this.svg
       .append('g')
       .selectAll('text')
