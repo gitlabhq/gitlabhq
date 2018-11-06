@@ -38,6 +38,8 @@ module Clusters
 
       validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
 
+      validate :no_namespace, unless: :project_type?
+
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
@@ -52,6 +54,7 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
+      delegate :project_type?, to: :cluster, allow_nil: true
       delegate :kubernetes_namespace, to: :cluster
 
       alias_method :active?, :enabled?
@@ -205,6 +208,12 @@ module Clusters
       def enforce_ca_whitespace_trimming
         self.ca_pem = self.ca_pem&.strip
         self.token = self.token&.strip
+      end
+
+      def no_namespace
+        if namespace
+          errors.add(:namespace, 'only allowed for project cluster')
+        end
       end
 
       def prevent_modification

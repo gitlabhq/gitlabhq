@@ -8,6 +8,10 @@ module Clusters
       "https://console.cloud.google.com/kubernetes/clusters/details/#{provider.zone}/#{name}" if gcp?
     end
 
+    def allow_project_namespace?
+      cluster.project_type?
+    end
+
     def can_toggle_cluster?
       can?(current_user, :update_cluster, cluster) && created?
     end

@@ -58,6 +58,18 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it { is_expected.to be_truthy }
       end
+
+      context 'for group cluster' do
+        let(:namespace) { 'namespace-123' }
+        let(:cluster) { build(:cluster, :group, :provided_by_user) }
+        let(:kubernetes) { cluster.platform_kubernetes }
+
+        before do
+          kubernetes.namespace = namespace
+        end
+
+        it { is_expected.to be_falsey }
+      end
     end
 
     context 'when validates api_url' do

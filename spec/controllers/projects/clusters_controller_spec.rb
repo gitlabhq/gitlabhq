@@ -122,7 +122,7 @@ describe Projects::ClustersController do
         it 'has new object' do
           go
 
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
+          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
       end
 
@@ -143,7 +143,7 @@ describe Projects::ClustersController do
       it 'has new object' do
         go
 
-        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 

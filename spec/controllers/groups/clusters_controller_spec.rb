@@ -146,7 +146,7 @@ describe Groups::ClustersController do
         it 'has new object' do
           go
 
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
+          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
       end
 
@@ -167,7 +167,7 @@ describe Groups::ClustersController do
       it 'has new object' do
         go
 
-        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 
@@ -281,7 +281,6 @@ describe Groups::ClustersController do
           platform_kubernetes_attributes: {
             api_url: 'http://my-url',
             token: 'test',
-            namespace: 'aaa'
           }
         }
       }
@@ -315,7 +314,6 @@ describe Groups::ClustersController do
               platform_kubernetes_attributes: {
                 api_url: 'http://my-url',
                 token: 'test',
-                namespace: 'aaa',
                 authorization_type: 'rbac'
               }
             }
@@ -433,9 +431,6 @@ describe Groups::ClustersController do
         cluster: {
           enabled: false,
           name: 'my-new-cluster-name',
-          platform_kubernetes_attributes: {
-            namespace: 'my-namespace'
-          }
         }
       }
     end
@@ -448,7 +443,6 @@ describe Groups::ClustersController do
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
-      expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
     end
 
     context 'when format is json' do
@@ -459,9 +453,6 @@ describe Groups::ClustersController do
               cluster: {
                 enabled: false,
                 name: 'my-new-cluster-name',
-                platform_kubernetes_attributes: {
-                  namespace: 'my-namespace'
-                }
               }
             }
           end
@@ -473,7 +464,6 @@ describe Groups::ClustersController do
             expect(response).to have_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
-            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
           end
         end
 
@@ -482,9 +472,7 @@ describe Groups::ClustersController do
             {
               cluster: {
                 enabled: false,
-                platform_kubernetes_attributes: {
-                  namespace: 'my invalid namespace #@'
-                }
+                name: ''
               }
             }
           end
