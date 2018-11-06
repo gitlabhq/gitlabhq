@@ -24,6 +24,14 @@ describe Deployable do
       end
     end
 
+    context 'when the deployable object will stop an environment' do
+      let!(:job) { create(:ci_build, :stop_review_app) }
+
+      it 'does not create a deployment record' do
+        expect(deployment).to be_nil
+      end
+    end
+
     context 'when the deployable object has already had a deployment' do
       let!(:job) { create(:ci_build, :start_review_app, deployment: race_deployment) }
       let!(:race_deployment) { create(:deployment, :success) }

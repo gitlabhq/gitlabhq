@@ -7,7 +7,7 @@ module Deployable
     after_create :create_deployment
 
     def create_deployment
-      return unless has_environment? && !has_deployment?
+      return unless starts_environment? && !has_deployment?
 
       environment = project.environments.find_or_create_by(
         name: expanded_environment_name
