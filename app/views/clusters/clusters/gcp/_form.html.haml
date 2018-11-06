@@ -64,7 +64,7 @@
     .form-group
       .form-check
         = provider_gcp_field.check_box :legacy_abac, { class: 'form-check-input' }, false, true
-        = provider_gcp_field.label :legacy_abac, s_('ClusterIntegration|RBAC-enabled cluster (experimental)'), class: 'form-check-label label-bold'
+        = provider_gcp_field.label :legacy_abac, s_('ClusterIntegration|RBAC-enabled cluster'), class: 'form-check-label label-bold'
         .form-text.text-muted
           = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
           = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
