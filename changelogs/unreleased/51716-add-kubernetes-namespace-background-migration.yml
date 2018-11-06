@@ -1,0 +1,5 @@
+---
+title: Add background migration to populate Kubernetes namespaces
+merge_request: 22433
+author:
+type: added
