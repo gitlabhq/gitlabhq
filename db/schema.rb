@@ -839,7 +839,7 @@ ActiveRecord::Schema.define(version: 20181106135939) do
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status", using: :btree
   add_index "deployments", ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))", using: :btree
-  add_index "deployments", ["project_id", "action", "status", "finished_at"], name: "index_deployments_on_deployed_for_finished_at", using: :btree
+  add_index "deployments", ["project_id", "action", "status", "finished_at"], name: "index_deployments_on_prj_deployed_for_finished_at", using: :btree
   add_index "deployments", ["project_id", "action", "status", "id"], name: "index_deployments_on_project_id_and_action_and_status_and_id", using: :btree
   add_index "deployments", ["project_id", "action", "status", "iid"], name: "index_deployments_on_project_id_and_action_and_status_and_iid", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
