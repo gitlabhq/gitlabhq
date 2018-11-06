@@ -102,9 +102,8 @@ export default class ClusterStore {
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
       } else if (appId === KNATIVE) {
-        this.state.applications.knative.hostname = serverAppEntry.hostname
-          ? serverAppEntry.hostname
-          : null;
+        this.state.applications.knative.hostname = serverAppEntry.hostname ||
+          this.state.applications.knative.hostname;
       }
     });
   }
