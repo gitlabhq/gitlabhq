@@ -18,21 +18,18 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
 
       default_value_for :version, VERSION
-      default_value_for :hostname, nil
+
+      validates :hostname, presence: true
 
       def chart
         'knative/knative'
       end
 
       def values
-        content_values.to_yaml
+        { domain: hostname }.to_yaml
       end
 
       def install_command
-        if hostname.nil?
-          raise 'Hostname is required'
-        end
-
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
           version: VERSION,
@@ -40,24 +37,59 @@ module Clusters
           chart: chart,
           files: files,
           repository: REPOSITORY,
-          script: install_script
+          preinstall: install_script,
+          postinstall: setup_knative_role
         )
-      end
-
-      def install_script
-        ['/usr/bin/kubectl', 'apply', '-f', ISTIO_CRDS]
       end
 
       private
 
-      def content_values
-        YAML.load_file(chart_values_file).deep_merge!(knative_configs)
+      def install_script
+        ["/usr/bin/kubectl apply -f #{ISTIO_CRDS} >/dev/null"]
       end
 
-      def knative_configs
+      def setup_knative_role
+        if !cluster.kubernetes_namespace.nil?
+          [
+            "echo \'#{create_rolebinding.to_yaml}\' > /tmp/rolebinding.yaml\n",
+            "/usr/bin/kubectl apply -f /tmp/rolebinding.yaml > /dev/null"
+          ]
+        else
+          nil
+        end
+      end
+
+      def create_rolebinding
         {
-          "domain" => hostname
+          "apiVersion" => "rbac.authorization.k8s.io/v1",
+          "kind" => "ClusterRoleBinding",
+          "metadata" => {
+            "name" => create_role_binding_name,
+            "namespace" => namespace
+          },
+          "roleRef" => {
+            "apiGroup" => "rbac.authorization.k8s.io",
+            "kind" => "ClusterRole",
+            "name" => "knative-serving-admin"
+          },
+          "subjects" => role_subject
         }
+      end
+
+      def create_role_binding_name
+        "#{namespace}-knative-binding"
+      end
+
+      def service_account_name
+        cluster.kubernetes_namespace.service_account_name
+      end
+
+      def role_subject
+        [{ "kind" => 'ServiceAccount', "name" => service_account_name, "namespace" => namespace }]
+      end
+
+      def namespace
+        cluster.kubernetes_namespace.namespace
       end
     end
   end

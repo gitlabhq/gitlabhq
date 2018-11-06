@@ -4,16 +4,17 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files, :chart, :version, :repository, :script
+        attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
 
-        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, script: nil)
+        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, preinstall: nil, postinstall: nil)
           @name = name
           @chart = chart
           @version = version
           @rbac = rbac
           @files = files
           @repository = repository
-          @script = script
+          @preinstall = preinstall
+          @postinstall = postinstall
         end
 
         def generate_script
@@ -21,8 +22,9 @@ module Gitlab
             init_command,
             repository_command,
             repository_update_command,
-            script_command,
-            install_command
+            preinstall_command,
+            install_command,
+            postinstall_command
           ].compact.join("\n")
         end
 
@@ -50,9 +52,15 @@ module Gitlab
           command.shelljoin + " >/dev/null\n"
         end
 
-        def script_command
-          unless script.nil?
-            script.shelljoin + " >/dev/null\n"
+        def preinstall_command
+          unless preinstall.nil?
+            preinstall.join("\n")
+          end
+        end
+
+        def postinstall_command
+          unless postinstall.nil?
+            postinstall.join("\n")
           end
         end
 
