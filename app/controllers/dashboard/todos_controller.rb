@@ -4,6 +4,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_action :authorize_read_project!, only: :index
+  before_action :authorize_read_group!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
@@ -57,6 +58,15 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     if project_id.present?
       project = Project.find(project_id)
       render_404 unless can?(current_user, :read_project, project)
+    end
+  end
+
+  def authorize_read_group!
+    group_id = params[:group_id]
+
+    if group_id.present?
+      group = Group.find(group_id)
+      render_404 unless can?(current_user, :read_group, group)
     end
   end
 
