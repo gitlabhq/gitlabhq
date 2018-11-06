@@ -1,7 +1,10 @@
-# Installing GitLab on AWS
+# Installing GitLab on Amazon Web Services (AWS)
 
-GitLab can be installed on Amazon Web Services (AWS) by using the official
-AMIs provided with each release.
+To install GitLab on AWS, you can use the Amazon Machine Images (AMIs) that GitLab
+provides with [each release](https://about.gitlab.com/releases/).
+
+This page offers a walkthrough of a common HA (Highly Available) configuration
+for GitLab on AWS. You should customize it to accommodate your needs.
 
 ## Introduction
 
@@ -27,13 +30,13 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 
 ## Architecture
 
-Below is the diagram of the architecture.
+Below is a diagram of the recommended architecture.
 
-<img src="img/aws_diagram.png" alt="AWS architecture diagram" class="image-noshadow">
+![AWS architecture diagram](img/aws_diagram.png)
 
-## Costs
+## AWS costs
 
-Here's a list of the services we will use, with links to pricing information:
+Here's a list of the AWS services we will use, with links to pricing information:
 
 - **EC2**: GitLab will deployed on shared hardware which means
   [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand)
@@ -47,27 +50,22 @@ Here's a list of the services we will use, with links to pricing information:
 - **ALB**: An Application Load Balancer will be used to route requests to the
   GitLab instance. See the [Amazon ELB pricing](https://aws.amazon.com/elasticloadbalancing/pricing/).
 - **RDS**: An Amazon Relational Database Service using PostgreSQL will be used
-  to provide database High Availability. See the
+  to provide a High Availability database configuration. See the
   [Amazon RDS pricing](https://aws.amazon.com/rds/postgresql/pricing/).
-- **ElastiCache**: An in-memory cache environment will be used to provide Redis
-  High Availability. See the [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
+- **ElastiCache**: An in-memory cache environment will be used to provide a
+  High Availability Redis configuration. See the
+  [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
 
 ## Creating an IAM EC2 instance role and profile
-
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
 role with limited access:
 
 1. Navigate to the IAM dashboard https://console.aws.amazon.com/iam/home and
    click **Create role**.
-1. Create a new role by choosing to **AWS service > EC2**. Once done, click
+1. Create a new role by selecting **AWS service > EC2**, then click
    **Next: Permissions**.
-
-    ![Create role](img/create_iam_role.png)
-
 1. Choose **AmazonEC2FullAccess** and **AmazonS3FullAccess**, then click **Next: Review**.
 1. Give the role the name `GitLabAdmin` and click **Create role**.
-
-    ![Create role](img/create_iam_role_review.png)
 
 ## Configuring the network
 
@@ -82,9 +80,9 @@ We'll now create a VPC, a virtual networking environment that you'll control:
 
 1. Navigate to https://console.aws.amazon.com/vpc/home.
 1. Select **Your VPCs** from the left menu and then click **Create VPC**.
-   At the name tag enter `gitlab-vpc` and at the IPv4 CIDR block enter `10.0.0.0/16`.
-   If you don't require dedicated hardware, you can leave tenancy as default.
-   Click **Yes, Create** when ready.
+   At the "Name tag" enter `gitlab-vpc` and at the "IPv4 CIDR block" enter
+   `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
+   "Tenancy" as default. Click **Yes, Create** when ready.
 
     ![Create VPC](img/create_vpc.png)
 
@@ -329,7 +327,7 @@ On the EC2 dashboard, look for Load Balancer on the left column:
    and create the ELB.
 
 After the Load Balancer is up and running, you can revisit your Security
-Groups to improve access only through the ELB and any other requirement
+Groups to refine the access only through the ELB and any other requirement
 you might have.
 
 ## Deploying GitLab inside an auto scaling group
@@ -355,11 +353,12 @@ Choose the AMI:
 
 ### Choose an instance type
 
-Based on [GitLab's requirements](../requirements.md#hardware-requirements), the
-instance type should be at least `c4.xlarge`, which is enough to accommodate 100 users.
+You should choose an instance type based on your workload. Consult
+[the hardware requirements](../requirements.md#hardware-requirements) to choose
+one that fits your needs (at least `c4.xlarge`, which is enough to accommodate 100 users):
 
-1. Choose the `c4.xlarge` instance.
-1. Click **Next: Configure Instance Details**
+1. Choose the your instance type.
+1. Click **Next: Configure Instance Details**.
 
 ### Configure details
 
@@ -375,9 +374,10 @@ In this step we'll configure some details:
 ### Add storage
 
 The root volume is 8GB by default and should be enough given that we won't store
-any data there. Let's add a new EBS volume that will host the Git data. Its
-size depends on your needs and you can always migrate to a bigger volume.
-You will be able to [set up that volume later](#setting-up-the-ebs-volume).
+any data there. Let's create a new EBS volume that will host the Git data. Its
+size depends on your needs and you can always migrate to a bigger volume later.
+You will be able to [set up that volume](#setting-up-the-ebs-volume)
+after the instance is created.
 
 ### Configure security group
 
@@ -389,7 +389,8 @@ As a last step, configure the security group:
 ### Review and launch
 
 Now is a good time to review all the previous settings. When ready, click
-**Create launch configuration** and select the SSH key pair you have created previously.
+**Create launch configuration** and select the SSH key pair with which you will
+connect to the instance.
 
 ### Create Auto Scaling Group
 
@@ -421,7 +422,7 @@ we intended.
 ## After deployment
 
 After a few minutes, the instances should be up and accessible via the internet.
-Let's connect to it and configure some things before logging in.
+Let's connect to the primary and configure some things before logging in.
 
 ### Configuring GitLab to connect with postgres and Redis
 
@@ -456,7 +457,7 @@ gitlab_rails['db_password'] = "mypassword"
 gitlab_rails['db_host'] = "<rds-endpoint>"
 ```
 
-Next we only need to configure the Redis section by adding the host and
+Next, we need to configure the Redis section by adding the host and
 uncommenting the port:
 
 ```ruby
@@ -468,20 +469,22 @@ gitlab_rails['redis_host'] = "<redis-endpoint>"
 gitlab_rails['redis_port'] = 6379
 ```
 
-The last configuration step is to [change the default file locations ](http://docs.gitlab.com/ee/administration/high_availability/nfs.html)
-to make the EFS integration easier to manage.
+Finally, reconfigure GitLab for the change to take effect:
 
-Finally run reconfigure, you might find it useful to run a check and
-a service status to make sure everything has been setup correctly.
 
 ```sh
 sudo gitlab-ctl reconfigure
+```
+
+You might also find it useful to run a check and a service status to make sure
+everything has been setup correctly:
+
+```sh
 sudo gitlab-rake gitlab:check
 sudo gitlab-ctl status
 ```
 
-If everything looks good, copy the Elastic IP over to your browser and
-test the instance manually.
+If everything looks good, you should be able to reach GitLab in your browser.
 
 ### Setting up the EBS volume
 
@@ -498,15 +501,17 @@ The EBS volume will host the Git repositories data:
     })
     ```
 
+    where `/mnt/gitlab-data` the location where you will store the Git data.
+
 1. Save the file and reconfigure GitLab:
 
     ```sh
     sudo gitlab-ctl reconfigure
     ```
 
-To add more than one data volume, follow the same steps.
-
-You can read more about [storing Git data in an alternative directory](../../administration/repository_storage_paths.md).
+TIP: **Tip:**
+If you wish to add more than one data volumes to store the Git repositories,
+read the [repository storage paths docs](../../administration/repository_storage_paths.md).
 
 ### Setting up Gitaly
 
@@ -514,15 +519,19 @@ Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured in a separate EC2 instance on the
 [private VPC](#subnets) we configured previously.
 
-Follow the [documentation to set it up](../../administration/gitaly/index.md).
+Follow the [documentation to set up Gitaly](../../administration/gitaly/index.md).
 
 ### Using Amazon S3 object storage
 
-The S3 object storage can be used for various GitLab objects:
+GitLab stores many objects outside the Git repository, many of which can be
+uploaded to S3. That way, you can offload the root disk volume of these objects
+which would otherwise take much space.
 
-- [How to store the LFS objects in S3](../../workflow/lfs/lfs_administration.md#s3-for-omnibus-installations) ((Omnibus GitLab installations))
-- [How to store Container Registry images to S3](../../administration/container_registry.md#container-registry-storage-driver) (Omnibus GitLab installations)
-- [How to store GitLab CI job artifacts to S3](../../administration/job_artifacts.md#using-object-storage) (Omnibus GitLab installations)
+In particular, you can store in S3:
+
+- [The Git LFS objects](../../workflow/lfs/lfs_administration.md#s3-for-omnibus-installations) ((Omnibus GitLab installations))
+- [The Container Registry images](../../administration/container_registry.md#container-registry-storage-driver) (Omnibus GitLab installations)
+- [The GitLab CI/CD job artifacts](../../administration/job_artifacts.md#using-object-storage) (Omnibus GitLab installations)
 
 ### Setting up a domain name
 
@@ -564,8 +573,8 @@ that you can ping and get reports.
 
 ## GitLab Runners
 
-If you want to take advantage of GitLab CI/CD, you have to set up at least one
-GitLab Runner.
+If you want to take advantage of [GitLab CI/CD](../../ci/README.md), you have to
+set up at least one [GitLab Runner](https://docs.gitlab.com/runner/).
 
 Read more on configuring an
 [autoscaling GitLab Runner on AWS](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/).
@@ -577,8 +586,8 @@ and restore its Git data, database, attachments, LFS objects, etc.
 
 Some important things to know:
 
-- The backup/restore tool does not store some configuration files, like secrets; you'll
-  need to [handle this yourself](../../raketasks/backup_restore.md#storing-configuration-files).
+- The backup/restore tool **does not** store some configuration files, like secrets; you'll
+  need to [configure this yourself](../../raketasks/backup_restore.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
   [backup GitLab using S3](../../raketasks/backup_restore.md#using-amazon-s3).
 - You can [exclude specific directories form the backup](../../raketasks/backup_restore.md#excluding-specific-directories-from-the-backup).
@@ -623,10 +632,17 @@ After a few minutes, the new version should be up and running.
 
 ## Conclusion
 
-High Availability is a very big area, we went mostly through scaling and some
-redundancy options but it might also imply Geographic replication. There is a
-lot of ground yet to cover so have a read through these other resources and feel
-free to open an issue to request additional material:
+In this guide, we went mostly through scaling and some redundancy options,
+your mileage may vary.
+
+Keep in mind that all Highly Available solutions come with a trade-off between
+cost/complexity and uptime. The more uptime you want, the more complex the solution.
+And the more complex the solution, the more work is involved in setting up and
+maintaining it.
+
+Have a read through these other resources and feel free to
+[open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/new)
+to request additional material:
 
 - [GitLab High Availability](https://docs.gitlab.com/ee/administration/high_availability/):
   GitLab supports several different types of clustering and high-availability.
