@@ -88,7 +88,7 @@ describe Deployment do
           deployment.succeed!
 
           expect(deployment).to be_success
-          expect(deployment.finished_at).to eq(Time.now)
+          expect(deployment.finished_at).to be_like_time(Time.now)
         end
       end
 
@@ -108,7 +108,7 @@ describe Deployment do
           deployment.drop!
 
           expect(deployment).to be_failed
-          expect(deployment.finished_at).to eq(Time.now)
+          expect(deployment.finished_at).to be_like_time(Time.now)
         end
       end
     end
@@ -121,7 +121,7 @@ describe Deployment do
           deployment.cancel!
 
           expect(deployment).to be_canceled
-          expect(deployment.finished_at).to eq(Time.now)
+          expect(deployment.finished_at).to be_like_time(Time.now)
         end
       end
     end
