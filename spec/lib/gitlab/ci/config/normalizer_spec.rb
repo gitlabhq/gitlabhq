@@ -31,6 +31,16 @@ describe Gitlab::Ci::Config::Normalizer do
       expect(configs).to all(eq(original_config))
     end
 
+    context 'when there is a job with a slash in it' do
+      let(:job_name) { :"rspec 35/2" }
+
+      it 'properly parallelizes job names' do
+        job_names = [:"rspec 35/2 1/5", :"rspec 35/2 2/5", :"rspec 35/2 3/5", :"rspec 35/2 4/5", :"rspec 35/2 5/5"]
+
+        is_expected.to include(*job_names)
+      end
+    end
+
     context 'when jobs depend on parallelized jobs' do
       let(:config) { { job_name => job_config, other_job: { script: 'echo 1', dependencies: [job_name.to_s] } } }
 
@@ -38,6 +48,10 @@ describe Gitlab::Ci::Config::Normalizer do
         job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
 
         expect(subject[:other_job][:dependencies]).to include(*job_names)
+      end
+
+      it 'does not include original job name in dependencies' do
+        expect(subject[:other_job][:dependencies]).not_to include(job_name)
       end
     end
   end
