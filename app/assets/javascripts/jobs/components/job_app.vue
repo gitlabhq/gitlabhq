@@ -100,6 +100,14 @@ export default {
       if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
         this.fetchStages();
       }
+
+      if (newVal.archived) {
+        this.$nextTick(() => {
+          if (this.$refs.sticky) {
+            polyfillSticky(this.$refs.sticky);
+          }
+        });
+      }
     },
   },
   created() {
@@ -117,24 +125,13 @@ export default {
     window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.updateScroll);
   },
-
   mounted() {
     this.updateSidebar();
   },
-
-  updated() {
-    this.$nextTick(() => {
-      if (this.$refs.sticky) {
-        polyfillSticky(this.$refs.sticky);
-      }
-    });
-  },
-
   destroyed() {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.updateScroll);
   },
-
   methods: {
     ...mapActions([
       'setJobEndpoint',
