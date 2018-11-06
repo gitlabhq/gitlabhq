@@ -44,7 +44,7 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
-  def is_project?
+  def project?
     raise NotImplementedError
   end
 end

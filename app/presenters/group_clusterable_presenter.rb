@@ -13,7 +13,7 @@ class GroupClusterablePresenter < ClusterablePresenter
     group_cluster_path(clusterable, cluster, params)
   end
 
-  def is_project?
+  def project?
     false
   end
 end

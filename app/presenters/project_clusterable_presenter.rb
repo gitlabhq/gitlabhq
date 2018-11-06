@@ -13,7 +13,7 @@ class ProjectClusterablePresenter < ClusterablePresenter
     project_cluster_path(clusterable, cluster, params)
   end
 
-  def is_project?
+  def project?
     true
   end
 end

@@ -7,7 +7,7 @@
       - link_to_help_page = link_to(_('Learn more about Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
       %p
         = s_('ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
-        - if clusterable.is_project?
+        - if clusterable.project?
           = link_to(s_('ClusterIntegration|Learn more about Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
         - else
           = s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.')

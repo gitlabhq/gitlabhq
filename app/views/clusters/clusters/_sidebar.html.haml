@@ -3,7 +3,7 @@
 - help_link_end = '</a>'.html_safe
 %h4.prepend-top-0
   = s_('ClusterIntegration|Add a Kubernetes cluster integration')
-- if clusterable.is_project?
+- if clusterable.project?
   %p
     = s_('ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
   %p
