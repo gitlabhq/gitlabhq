@@ -3,14 +3,14 @@ import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import { components, componentNames } from '~/reports/components/issue_body';
 
 export default {
-  name: 'ReportIssues',
+  name: 'ReportItem',
   components: {
     IssueStatusIcon,
     ...components,
   },
   props: {
-    issues: {
-      type: Array,
+    issue: {
+      type: Object,
       required: true,
     },
     component: {
@@ -33,27 +33,21 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <ul class="report-block-list">
-      <li
-        v-for="(issue, index) in issues"
-        :key="index"
-        :class="{ 'is-dismissed': issue.isDismissed }"
-        class="report-block-list-issue"
-      >
-        <issue-status-icon
-          :status="issue.status || status"
-          class="append-right-5"
-        />
+  <li
+    :class="{ 'is-dismissed': issue.isDismissed }"
+    class="report-block-list-issue"
+  >
+    <issue-status-icon
+      :status="status"
+      class="append-right-5"
+    />
 
-        <component
-          :is="component"
-          v-if="component"
-          :issue="issue"
-          :status="issue.status || status"
-          :is-new="isNew"
-        />
-      </li>
-    </ul>
-  </div>
+    <component
+      :is="component"
+      v-if="component"
+      :issue="issue"
+      :status="status"
+      :is-new="isNew"
+    />
+  </li>
 </template>
