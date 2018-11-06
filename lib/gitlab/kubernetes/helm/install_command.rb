@@ -53,11 +53,11 @@ module Gitlab
         end
 
         def preinstall_command
-          preinstall.join("\n") unless preinstall.nil?
+          preinstall.join("\n") if preinstall
         end
 
         def postinstall_command
-          postinstall.join("\n") unless postinstall.nil?
+          postinstall.join("\n") if postinstall
         end
 
         def install_command_flags
