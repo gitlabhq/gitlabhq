@@ -5847,6 +5847,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Stop environment"
+msgstr ""
+
 msgid "Stop impersonation"
 msgstr ""
 
@@ -5854,6 +5857,9 @@ msgid "Stop this environment"
 msgstr ""
 
 msgid "Stopped"
+msgstr ""
+
+msgid "Stopping this environment is currently not possible as a deployment is in progress"
 msgstr ""
 
 msgid "Storage"
