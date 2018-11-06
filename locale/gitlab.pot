@@ -4641,9 +4641,6 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
-msgid "Profiles|%{author_name} made a private contribution"
-msgstr ""
-
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -4702,6 +4699,9 @@ msgid "Profiles|Invalid password"
 msgstr ""
 
 msgid "Profiles|Invalid username"
+msgstr ""
+
+msgid "Profiles|Made a private contribution"
 msgstr ""
 
 msgid "Profiles|Main settings"

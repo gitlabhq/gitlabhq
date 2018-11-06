@@ -11,8 +11,8 @@
 
     - if can?(current_user, :read_cross_project)
       .activities-block
-        .content-block
-          %h5.prepend-top-10
+        .border-bottom.prepend-top-16
+          %h5
             = s_('UserProfile|Recent contributions')
           .overview-content-list{ data: { href: user_path } }
             .center.light.loading
@@ -22,7 +22,7 @@
 
   .col-md-12.col-lg-6
     .projects-block
-      .content-block
+      .border-bottom.prepend-top-16
         %h4
           = s_('UserProfile|Personal projects')
         .overview-content-list{ data: { href: user_projects_path } }

@@ -23,7 +23,7 @@ describe "User deletes milestone", :js do
 
       visit(activity_project_path(project))
 
-      expect(page).to have_content("#{user.name} destroyed milestone")
+      expect(page).to have_content("#{user.name} #{user.to_reference} destroyed milestone")
     end
   end
 
