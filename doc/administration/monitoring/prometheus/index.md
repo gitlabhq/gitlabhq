@@ -1,12 +1,12 @@
-# GitLab Prometheus
+# Monitoring GitLab with Prometheus
 
 > **Notes:**
-> - Prometheus and the various exporters listed in this page are bundled in the
+> * Prometheus and the various exporters listed in this page are bundled in the
 >   Omnibus GitLab package. Check each exporter's documentation for the timeline
 >   they got added. For installations from source you will have to install them
 >   yourself. Over subsequent releases additional GitLab metrics will be captured.
-> - Prometheus services are on by default with GitLab 9.0.
-> - Prometheus and its exporters do not authenticate users, and will be available
+> * Prometheus services are on by default with GitLab 9.0.
+> * Prometheus and its exporters do not authenticate users, and will be available
 >  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
@@ -45,7 +45,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
 
-## Changing the port and address Prometheus listens on
+### Changing the port and address Prometheus listens on
 
 >**Note:**
 The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
@@ -77,6 +77,17 @@ To change the address/port that Prometheus listens on:
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
 
+### Using an external Prometheus server
+
+> **Note:** Prometheus and most exporters do not support authentication. We do not recommend exposing them beyond the local network.
+
+For users who are running GitLab across multiple nodes, or want to utilize dedicated monitoring infrastructure, configuring a dedicated Prometheus instance is easy.
+
+1. Disable the bundled Prometheus server by setting `prometheus['enable'] = false`.
+1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example by setting `postgres_exporter['listen_address'] = '0.0.0.0:9187'`
+1. Install and set up the dedicated Prometheus instance.
+1. Add each GitLab node's metric server, and dependencies exporter, to the target list.
+
 ## Viewing performance metrics
 
 You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
@@ -86,7 +97,7 @@ If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS][hsts]. We plan to
 [provide access via GitLab][multi-user-prometheus], but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
-having [Nginx proxy it][nginx-custom-config].
+having [NGINX proxy it][nginx-custom-config].
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -102,26 +113,7 @@ Sample Prometheus queries:
 - **Data transmitted:** `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
 - **Data received:** `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
 
-## Configuring Prometheus to monitor Kubernetes
-
-> Introduced in GitLab 9.0.
-> Pod monitoring introduced in GitLab 9.4.
-
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
-
-To disable the monitoring of Kubernetes:
-
-1. Edit `/etc/gitlab/gitlab.rb`
-1. Add or find and uncomment the following line and set it to `false`:
-
-    ```ruby
-    prometheus['monitor_kubernetes'] = false
-    ```
-
-1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
-
-## GitLab Prometheus metrics
+## GitLab metrics
 
 > Introduced in GitLab 9.3.
 
@@ -129,17 +121,10 @@ GitLab monitors its own internal service metrics, and makes them available at th
 
 [➔ Read more about the GitLab Metrics.](gitlab_metrics.md)
 
-## Prometheus exporters
+## Bundled software metrics
 
-There are a number of libraries and servers which help in exporting existing
-metrics from third-party systems as Prometheus metrics. This is useful for cases
-where it is not feasible to instrument a given system with Prometheus metrics
-directly (for example, HAProxy or Linux system stats). You can read more in the
-[Prometheus exporters and integrations upstream documentation][prom-exporters].
-
-While you can use any exporter you like with your GitLab installation, the
-following ones documented here are bundled in the Omnibus GitLab packages
-making it easy to configure and use.
+Many of the GitLab dependencies bundled in Omnibus GitLab are preconfigured to 
+export Prometheus metrics. 
 
 ### Node exporter
 
@@ -165,6 +150,25 @@ The Postgres exporter allows you to measure various PostgreSQL metrics.
 The GitLab monitor exporter allows you to measure various GitLab metrics, pulled from Redis and the database.
 
 [➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
+
+## Configuring Prometheus to monitor Kubernetes
+
+> Introduced in GitLab 9.0.
+> Pod monitoring introduced in GitLab 9.4.
+
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
+
+To disable the monitoring of Kubernetes:
+
+1. Edit `/etc/gitlab/gitlab.rb`
+1. Add or find and uncomment the following line and set it to `false`:
+
+    ```ruby
+    prometheus['monitor_kubernetes'] = false
+    ```
+
+1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+   take effect
 
 [grafana]: https://grafana.net
 [hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
