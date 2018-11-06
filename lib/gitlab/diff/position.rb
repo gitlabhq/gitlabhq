@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Defines a specific location, identified by paths line numbers and image coordinates,
 # within a specific diff, identified by start, head and base commit ids.
 module Gitlab

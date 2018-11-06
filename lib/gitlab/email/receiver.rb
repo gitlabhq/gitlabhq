@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver

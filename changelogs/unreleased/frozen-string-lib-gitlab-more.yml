@@ -1,0 +1,5 @@
+---
+title: Enable even more frozen string in lib/gitlab/**/*.rb
+merge_request:
+author: gfyoung
+type: performance

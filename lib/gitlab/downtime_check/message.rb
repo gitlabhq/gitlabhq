@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class DowntimeCheck
     class Message
@@ -18,13 +20,13 @@ module Gitlab
       def to_s
         label = offline ? OFFLINE : ONLINE
 
-        message = "[#{label}]: #{path}"
+        message = ["[#{label}]: #{path}"]
 
         if reason?
-          message += ":\n\n#{reason}\n\n"
+          message << ":\n\n#{reason}\n\n"
         end
 
-        message
+        message.join
       end
 
       def reason?
