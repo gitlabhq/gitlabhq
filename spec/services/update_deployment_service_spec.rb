@@ -66,22 +66,6 @@ describe UpdateDeploymentService do
       end
     end
 
-    context 'when stop action is defined' do
-      let(:options) { { name: 'production', action: 'stop' } }
-
-      context 'and environment is available' do
-        before do
-          environment.start
-        end
-
-        it 'makes environment stopped' do
-          subject
-
-          expect(environment.reload).to be_stopped
-        end
-      end
-    end
-
     context 'when variables are used' do
       let(:options) do
         { name: 'review-apps/$CI_COMMIT_REF_NAME',
