@@ -18,8 +18,8 @@ class Clusters::ClustersController < Clusters::BaseController
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    clusters = ClustersFinder.new(clusterable, current_user, :all).execute
-    @clusters = clusters.page(params[:page]).per(20)
+    clusters = ClusterAncestorsFinder.new(clusterable.subject, current_user).execute
+    @clusters = Kaminari.paginate_array(clusters).page(params[:page]).per(20)
   end
 
   def new
