@@ -15,7 +15,7 @@ describe Gitlab::Ci::Config::Normalizer do
     end
 
     it 'has parallelized jobs' do
-      job_names = described_class.send(:parallelize_job_names, job_name, 5).map { |job_name, index| job_name.to_sym }
+      job_names = [:"rspec 1/5", :"rspec 2/5", :"rspec 3/5", :"rspec 4/5", :"rspec 5/5"]
 
       is_expected.to include(*job_names)
     end
@@ -35,18 +35,10 @@ describe Gitlab::Ci::Config::Normalizer do
       let(:config) { { job_name => job_config, other_job: { script: 'echo 1', dependencies: [job_name.to_s] } } }
 
       it 'parallelizes dependencies' do
-        job_names = described_class.send(:parallelize_job_names, job_name, 5).map(&:first)
+        job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
 
         expect(subject[:other_job][:dependencies]).to include(*job_names)
       end
-    end
-  end
-
-  describe '.parallelize_job_names' do
-    subject { described_class.send(:parallelize_job_names, job_name, 5) }
-
-    it 'returns parallelized names' do
-      expect(subject.map(&:first)).to all(match(%r{#{job_name} \d+/\d+}))
     end
   end
 end

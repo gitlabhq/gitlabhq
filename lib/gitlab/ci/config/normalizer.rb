@@ -27,7 +27,7 @@ module Gitlab
 
           def parallelize_jobs(jobs_config, parallelized_jobs)
             jobs_config.each_with_object({}) do |(job_name, config), hash|
-              if parallelized_jobs.keys.include?(job_name)
+              if parallelized_jobs.key?(job_name)
                 parallelized_jobs[job_name].each { |name, index| hash[name.to_sym] = config.merge(name: name, instance: index) }
               else
                 hash[job_name] = config
