@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Normalizer do
   let(:config) { { job_name => job_config } }
 
   describe '.normalize_jobs' do
-    subject { described_class.normalize_jobs(config) }
+    subject { described_class.new(config).normalize_jobs }
 
     it 'does not have original job' do
       is_expected.not_to include(job_name)
