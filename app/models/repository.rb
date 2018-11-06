@@ -912,10 +912,6 @@ class Repository
     async_remove_remote(remote_name) if tmp_remote_name
   end
 
-  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
-    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
-  end
-
   def async_remove_remote(remote_name)
     return unless remote_name
 
