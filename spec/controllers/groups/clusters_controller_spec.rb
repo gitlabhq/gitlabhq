@@ -280,7 +280,7 @@ describe Groups::ClustersController do
           name: 'new-cluster',
           platform_kubernetes_attributes: {
             api_url: 'http://my-url',
-            token: 'test',
+            token: 'test'
           }
         }
       }
@@ -430,7 +430,7 @@ describe Groups::ClustersController do
       {
         cluster: {
           enabled: false,
-          name: 'my-new-cluster-name',
+          name: 'my-new-cluster-name'
         }
       }
     end
@@ -452,7 +452,7 @@ describe Groups::ClustersController do
             {
               cluster: {
                 enabled: false,
-                name: 'my-new-cluster-name',
+                name: 'my-new-cluster-name'
               }
             }
           end
