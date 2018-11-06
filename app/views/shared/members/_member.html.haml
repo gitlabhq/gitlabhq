@@ -14,6 +14,8 @@
         = user_status(user)
         %span.cgray= user.to_reference
 
+        = render_if_exists 'shared/members/ee/sso_badge', member: member
+
         - if user == current_user
           %span.badge.badge-success.prepend-left-5 It's you
 
