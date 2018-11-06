@@ -21,7 +21,7 @@ module Gitlab
         end
 
         def complete?
-          x && y
+          x && y && width && height
         end
 
         def to_h

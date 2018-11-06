@@ -1,10 +1,14 @@
 import Vue from 'vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { createStore } from '~/mr_notes/stores';
-import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
 
 describe('Diffs image diff overlay component', () => {
+  const dimensions = {
+    width: 100,
+    height: 200,
+  };
   let Component;
   let vm;
 
@@ -13,9 +17,10 @@ describe('Diffs image diff overlay component', () => {
 
     extendStore(store);
 
-    vm = mountComponentWithStore(Component, {
-      store,
-      props: { discussions: [...imageDiffDiscussions], fileHash: 'ABC', ...props },
+    vm = createComponentWithStore(Component, store, {
+      discussions: [...imageDiffDiscussions],
+      fileHash: 'ABC',
+      ...props,
     });
   }
 
@@ -29,12 +34,16 @@ describe('Diffs image diff overlay component', () => {
 
   it('renders comment badges', () => {
     createComponent();
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     expect(vm.$el.querySelectorAll('.js-image-badge').length).toBe(2);
   });
 
   it('renders index of discussion in badge', () => {
     createComponent();
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     expect(vm.$el.querySelectorAll('.js-image-badge')[0].textContent.trim()).toBe('1');
     expect(vm.$el.querySelectorAll('.js-image-badge')[1].textContent.trim()).toBe('2');
@@ -42,12 +51,16 @@ describe('Diffs image diff overlay component', () => {
 
   it('renders icon when showCommentIcon is true', () => {
     createComponent({ showCommentIcon: true });
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     expect(vm.$el.querySelector('.js-image-badge svg')).not.toBe(null);
   });
 
   it('sets badge comment positions', () => {
     createComponent();
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     expect(vm.$el.querySelectorAll('.js-image-badge')[0].style.left).toBe('10px');
     expect(vm.$el.querySelectorAll('.js-image-badge')[0].style.top).toBe('10px');
@@ -62,12 +75,16 @@ describe('Diffs image diff overlay component', () => {
         ...imageDiffDiscussions[0],
       },
     });
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     expect(vm.$el.querySelectorAll('.js-image-badge').length).toBe(1);
   });
 
-  it('dispatches openDiffFileCommentForm when clcking overlay', () => {
+  it('dispatches openDiffFileCommentForm when clicking overlay', () => {
     createComponent({ canComment: true });
+    spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+    vm.$mount();
 
     spyOn(vm.$store, 'dispatch').and.stub();
 
@@ -77,18 +94,24 @@ describe('Diffs image diff overlay component', () => {
       fileHash: 'ABC',
       x: 0,
       y: 0,
+      width: 100,
+      height: 200,
     });
   });
 
   describe('toggle discussion', () => {
     it('disables buttons when shouldToggleDiscussion is false', () => {
       createComponent({ shouldToggleDiscussion: false });
+      spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+      vm.$mount();
 
       expect(vm.$el.querySelector('.js-image-badge').hasAttribute('disabled')).toBe(true);
     });
 
     it('dispatches toggleDiscussion when clicking image badge', () => {
       createComponent();
+      spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+      vm.$mount();
 
       spyOn(vm.$store, 'dispatch').and.stub();
 
@@ -107,6 +130,8 @@ describe('Diffs image diff overlay component', () => {
           y: 10,
         });
       });
+      spyOn(vm, 'getImageDimensions').and.returnValue(dimensions);
+      vm.$mount();
     });
 
     it('renders comment form badge', () => {

@@ -50,15 +50,39 @@ export default {
   methods: {
     ...mapActions(['toggleDiscussion']),
     ...mapActions('diffs', ['openDiffFileCommentForm']),
-    getPosition(discussion) {
+    getImageDimensions() {
       return {
-        left: `${discussion.position.x}px`,
-        top: `${discussion.position.y}px`,
+        width: this.$parent.width,
+        height: this.$parent.height,
+      };
+    },
+    getPositionForObject(meta) {
+      const { x, y, width, height } = meta;
+      const imageWidth = this.getImageDimensions().width;
+      const imageHeight = this.getImageDimensions().height;
+      const widthRatio = imageWidth / width;
+      const heightRatio = imageHeight / height;
+
+      return {
+        x: Math.round(x * widthRatio),
+        y: Math.round(y * heightRatio),
+      };
+    },
+    getPosition(discussion) {
+      const { x, y } = this.getPositionForObject(discussion.position);
+
+      return {
+        left: `${x}px`,
+        top: `${y}px`,
       };
     },
     clickedImage(x, y) {
+      const { width, height } = this.getImageDimensions();
+
       this.openDiffFileCommentForm({
         fileHash: this.fileHash,
+        width,
+        height,
         x,
         y,
       });

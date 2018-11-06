@@ -49,6 +49,8 @@ export function getFormData(params) {
     new_line: noteTargetLine ? noteTargetLine.newLine : null,
     x: params.x,
     y: params.y,
+    width: params.width,
+    height: params.height,
   });
 
   const postData = {

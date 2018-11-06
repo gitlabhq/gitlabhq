@@ -57,6 +57,8 @@ export default {
           positionType: IMAGE_DIFF_POSITION_TYPE,
           x: this.diffFileCommentForm.x,
           y: this.diffFileCommentForm.y,
+          width: this.diffFileCommentForm.width,
+          height: this.diffFileCommentForm.height,
         },
       });
     },

@@ -62,7 +62,13 @@ describe('DiffContent', () => {
         vm.diffFile.oldSha = 'ABC';
         vm.diffFile.viewPath = '';
         vm.diffFile.discussions = [{ ...discussionsMockData }];
-        vm.$store.state.diffs.commentForms.push({ fileHash: vm.diffFile.fileHash, x: 10, y: 20 });
+        vm.$store.state.diffs.commentForms.push({
+          fileHash: vm.diffFile.fileHash,
+          x: 10,
+          y: 20,
+          width: 100,
+          height: 200,
+        });
 
         vm.$nextTick(done);
       });
@@ -96,6 +102,8 @@ describe('DiffContent', () => {
               positionType: 'image',
               x: 10,
               y: 20,
+              width: 100,
+              height: 200,
             },
           });
         });

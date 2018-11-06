@@ -499,6 +499,8 @@ export const imageDiffDiscussions = [
     position: {
       x: 10,
       y: 10,
+      width: 100,
+      height: 200,
     },
   },
   {
@@ -506,6 +508,8 @@ export const imageDiffDiscussions = [
     position: {
       x: 5,
       y: 5,
+      width: 100,
+      height: 200,
     },
   },
 ];
