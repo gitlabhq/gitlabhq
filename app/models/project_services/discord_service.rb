@@ -16,7 +16,7 @@ class DiscordService < ChatNotificationService
   end
 
   def help
-    "This service sends notifications about projects events to Discord channels.<br />
+    "This service sends notifications about project events to Discord channels.<br />
     To set up this service:
     <ol>
       <li><a href='https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks'>Setup a custom Incoming Webhook</a>.</li>

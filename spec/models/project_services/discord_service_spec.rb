@@ -43,20 +43,12 @@ describe DiscordService do
       WebMock.stub_request(:post, webhook_url)
     end
 
-    shared_examples "Discord service" do
-      it "calls Discord Webhooks API" do
-        subject.execute(sample_data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).with { |req| req.body =~ /\A{"content":.+}\Z/ }.once
-      end
-    end
-
     context "with push events" do
       let(:sample_data) do
         Gitlab::DataBuilder::Push.build_sample(project, user)
       end
 
-      it_behaves_like "Discord service"
+      it_behaves_like "Interacts with external service", "Discord", content_key: :content
 
       it "specifies the webhook when it is configured" do
         expect(Discordrb::Webhooks::Client).to receive(:new).with(url: webhook_url).and_return(double(:discord_service).as_null_object)
@@ -86,7 +78,7 @@ describe DiscordService do
             subject.notify_only_default_branch = false
           end
 
-          it_behaves_like "Discord service"
+          it_behaves_like "Interacts with external service", "Discord", content_key: :content
         end
       end
     end
@@ -99,7 +91,7 @@ describe DiscordService do
         service.hook_data(issue, "open")
       end
 
-      it_behaves_like "Discord service"
+      it_behaves_like "Interacts with external service", "Discord", content_key: :content
     end
 
     context "with merge events" do
@@ -122,7 +114,7 @@ describe DiscordService do
         project.add_developer(user)
       end
 
-      it_behaves_like "Discord service"
+      it_behaves_like "Interacts with external service", "Discord", content_key: :content
     end
 
     context "with wiki page events" do
@@ -137,7 +129,7 @@ describe DiscordService do
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, "create") }
 
-      it_behaves_like "Discord service"
+      it_behaves_like "Interacts with external service", "Discord", content_key: :content
     end
 
     context "with note events" do
@@ -152,7 +144,7 @@ describe DiscordService do
                  note: "a comment on a commit")
         end
 
-        it_behaves_like "Discord service"
+        it_behaves_like "Interacts with external service", "Discord", content_key: :content
       end
 
       context "with merge request comment" do
@@ -160,7 +152,7 @@ describe DiscordService do
           create(:note_on_merge_request, project: project, note: "merge request note")
         end
 
-        it_behaves_like "Discord service"
+        it_behaves_like "Interacts with external service", "Discord", content_key: :content
       end
 
       context "with issue comment" do
@@ -168,7 +160,7 @@ describe DiscordService do
           create(:note_on_issue, project: project, note: "issue note")
         end
 
-        it_behaves_like "Discord service"
+        it_behaves_like "Interacts with external service", "Discord", content_key: :content
       end
 
       context "with snippet comment" do
@@ -176,7 +168,7 @@ describe DiscordService do
           create(:note_on_project_snippet, project: project, note: "snippet note")
         end
 
-        it_behaves_like "Discord service"
+        it_behaves_like "Interacts with external service", "Discord", content_key: :content
       end
     end
 
@@ -191,7 +183,7 @@ describe DiscordService do
       context "with failed pipeline" do
         let(:status) { "failed" }
 
-        it_behaves_like "Discord service"
+        it_behaves_like "Interacts with external service", "Discord", content_key: :content
       end
 
       context "with succeeded pipeline" do
@@ -210,7 +202,7 @@ describe DiscordService do
             subject.notify_only_broken_pipelines = false
           end
 
-          it_behaves_like "Discord service"
+          it_behaves_like "Interacts with external service", "Discord", content_key: :content
         end
       end
 
@@ -236,7 +228,7 @@ describe DiscordService do
             subject.notify_only_default_branch = false
           end
 
-          it_behaves_like "Discord service"
+          it_behaves_like "Interacts with external service", "Discord", content_key: :content
         end
       end
     end

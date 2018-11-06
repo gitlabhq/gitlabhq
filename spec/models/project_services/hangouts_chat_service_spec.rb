@@ -41,23 +41,12 @@ describe HangoutsChatService do
       WebMock.stub_request(:post, webhook_url)
     end
 
-    shared_examples 'Hangouts Chat service' do
-      it 'calls Hangouts Chat API' do
-        subject.execute(sample_data)
-
-        expect(WebMock)
-          .to have_requested(:post, webhook_url)
-          .with { |req| req.body =~ /\A{"text":.+}\Z/ }
-          .once
-      end
-    end
-
     context 'with push events' do
       let(:sample_data) do
         Gitlab::DataBuilder::Push.build_sample(project, user)
       end
 
-      it_behaves_like 'Hangouts Chat service'
+      it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
 
       it 'specifies the webhook when it is configured' do
         expect(HangoutsChat::Sender).to receive(:new).with(webhook_url).and_return(double(:hangouts_chat_service).as_null_object)
@@ -87,7 +76,7 @@ describe HangoutsChatService do
             subject.notify_only_default_branch = false
           end
 
-          it_behaves_like 'Hangouts Chat service'
+          it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
         end
       end
     end
@@ -100,7 +89,7 @@ describe HangoutsChatService do
         service.hook_data(issue, 'open')
       end
 
-      it_behaves_like 'Hangouts Chat service'
+      it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
     end
 
     context 'with merge events' do
@@ -123,7 +112,7 @@ describe HangoutsChatService do
         project.add_developer(user)
       end
 
-      it_behaves_like 'Hangouts Chat service'
+      it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
     end
 
     context 'with wiki page events' do
@@ -138,7 +127,7 @@ describe HangoutsChatService do
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
-      it_behaves_like 'Hangouts Chat service'
+      it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
     end
 
     context 'with note events' do
@@ -152,7 +141,7 @@ describe HangoutsChatService do
                                   note: 'a comment on a commit')
         end
 
-        it_behaves_like 'Hangouts Chat service'
+        it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
       end
 
       context 'with merge request comment' do
@@ -161,7 +150,7 @@ describe HangoutsChatService do
                                          note: 'merge request note')
         end
 
-        it_behaves_like 'Hangouts Chat service'
+        it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
       end
 
       context 'with issue comment' do
@@ -169,7 +158,7 @@ describe HangoutsChatService do
           create(:note_on_issue, project: project, note: 'issue note')
         end
 
-        it_behaves_like 'Hangouts Chat service'
+        it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
       end
 
       context 'with snippet comment' do
@@ -178,7 +167,7 @@ describe HangoutsChatService do
                                            note: 'snippet note')
         end
 
-        it_behaves_like 'Hangouts Chat service'
+        it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
       end
     end
 
@@ -193,7 +182,7 @@ describe HangoutsChatService do
       context 'with failed pipeline' do
         let(:status) { 'failed' }
 
-        it_behaves_like 'Hangouts Chat service'
+        it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
       end
 
       context 'with succeeded pipeline' do
@@ -212,7 +201,7 @@ describe HangoutsChatService do
             subject.notify_only_broken_pipelines = false
           end
 
-          it_behaves_like 'Hangouts Chat service'
+          it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
         end
       end
 
@@ -238,7 +227,7 @@ describe HangoutsChatService do
             subject.notify_only_default_branch = false
           end
 
-          it_behaves_like 'Hangouts Chat service'
+          it_behaves_like "Interacts with external service", "Hangouts Chat", content_key: :text
         end
       end
     end
