@@ -90,12 +90,15 @@ module EventsHelper
     elsif event.milestone?
       words << "##{event.target_iid}" if event.target_iid
       words << "in"
-    elsif event.merge_request?
-      words << "#{Issue.reference_prefix}#{event.target_iid}:" if event.target_iid
-      words << event.target.title if event.target.respond_to?(:title)
-      words << "at"
     elsif event.target
-      words << "#{MergeRequest.reference_prefix}#{event.target_iid}:"
+      prefix =
+        if event.merge_request?
+          MergeRequest.reference_prefix
+        else
+          Issue.reference_prefix
+        end
+
+      words << "#{prefix}#{event.target_iid}:" if event.target_iid
       words << event.target.title if event.target.respond_to?(:title)
       words << "at"
     end
