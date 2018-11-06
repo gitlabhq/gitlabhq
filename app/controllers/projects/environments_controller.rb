@@ -58,7 +58,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
-    @deployments = environment.deployments.order(id: :desc).page(params[:page])
+    @deployments = environment.deployments.deployed.order(id: :desc).page(params[:page])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

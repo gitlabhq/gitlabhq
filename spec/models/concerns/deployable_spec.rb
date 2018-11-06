@@ -22,13 +22,17 @@ describe Deployable do
         expect(deployment.on_stop).to eq('stop_review_app')
         expect(environment.name).to eq('review/master')
       end
+
+      it 'updates action column to start' do
+        expect(deployment).to be_start
+      end
     end
 
-    context 'when the deployable object will stop an environment' do
+    context 'when the deployable object will stop the review app' do
       let!(:job) { create(:ci_build, :stop_review_app) }
 
-      it 'does not create a deployment record' do
-        expect(deployment).to be_nil
+      it 'updates action column to stop' do
+        expect(deployment).to be_stop
       end
     end
 

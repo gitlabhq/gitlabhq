@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UpdateDeploymentService
+class StartEnvironmentService
   attr_reader :deployment
   attr_reader :deployable
 
@@ -13,6 +13,8 @@ class UpdateDeploymentService
   end
 
   def execute
+    return unless deployment.deployed?
+
     deployment.create_ref
     deployment.invalidate_cache
 
@@ -20,10 +22,9 @@ class UpdateDeploymentService
       environment.external_url = expanded_environment_url if
         expanded_environment_url
 
-      environment.fire_state_event(action)
+      environment.fire_state_event(:start)
 
       break unless environment.save
-      break if environment.stopped?
 
       deployment.tap(&:update_merge_request_metrics!)
     end
@@ -45,9 +46,5 @@ class UpdateDeploymentService
 
   def environment_url
     environment_options[:url]
-  end
-
-  def action
-    environment_options[:action] || 'start'
   end
 end

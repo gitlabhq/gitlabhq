@@ -47,19 +47,6 @@ describe BuildSuccessWorker do
           expect(build.reload).not_to be_has_deployment
         end
       end
-
-      context 'when the build will stop an environment' do
-        let!(:build) { create(:ci_build, :stop_review_app, environment: environment.name, project: environment.project) }
-        let(:environment) { create(:environment, state: :available) }
-
-        it 'stops the environment' do
-          expect(environment).to be_available
-
-          subject
-
-          expect(environment.reload).to be_stopped
-        end
-      end
     end
 
     context 'when build does not exist' do

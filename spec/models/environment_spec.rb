@@ -53,6 +53,65 @@ describe Environment do
     end
   end
 
+  describe '.with_deployment' do
+    subject { described_class.with_deployment(sha) }
+
+    let(:environment) { create(:environment) }
+    let(:sha) { RepoHelpers.sample_commit.id }
+
+    context 'when deployment starts environment' do
+      context 'when deployment has the specified sha' do
+        let!(:deployment) { create(:deployment, :start, environment: environment, sha: sha) }
+
+        it { is_expected.to eq([environment]) }
+      end
+
+      context 'when deployment does not have the specified sha' do
+        let!(:deployment) { create(:deployment, :start, environment: environment, sha: 'abc') }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'when deployment stops environment' do
+      let!(:deployment) { create(:deployment, :stop, environment: environment) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#last_deployed_at' do
+    subject { environment.last_deployed_at }
+
+    let(:environment) { create(:environment) }
+
+    context 'when the latest deployment is for starting an environment' do
+      context 'when the latest deployment is successful' do
+        let!(:deployment) { create(:deployment, :start, :success, environment: environment) }
+
+        it { expect(subject.to_i).to eq(deployment.finished_at.to_i) }
+      end
+
+      context 'when the latest deployment failed' do
+        let!(:deployment) { create(:deployment, :start, :failed, environment: environment) }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when the latest deployment is running' do
+        let!(:deployment) { create(:deployment, :start, :running, environment: environment) }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when the latest deployment is for stopping environment' do
+      let!(:deployment) { create(:deployment, :stop, :success, environment: environment) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#folder_name' do
     context 'when it is inside a folder' do
       subject(:environment) do
@@ -131,26 +190,6 @@ describe Environment do
 
         expect(env.update_merge_request_metrics?).to eq(expected_value)
       end
-    end
-  end
-
-  describe '#first_deployment_for' do
-    let(:project)       { create(:project, :repository) }
-    let!(:deployment)   { create(:deployment, :succeed, environment: environment, ref: commit.parent.id) }
-    let!(:deployment1)  { create(:deployment, :succeed, environment: environment, ref: commit.id) }
-    let(:head_commit)   { project.commit }
-    let(:commit)        { project.commit.parent }
-
-    it 'returns deployment id for the environment' do
-      expect(environment.first_deployment_for(commit.id)).to eq deployment1
-    end
-
-    it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit.id)).to eq nil
-    end
-
-    it 'returns a UTF-8 ref' do
-      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end
 

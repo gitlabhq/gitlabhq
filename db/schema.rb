@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181101144347) do
+ActiveRecord::Schema.define(version: 20181106135939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -827,14 +827,19 @@ ActiveRecord::Schema.define(version: 20181101144347) do
     t.string "on_stop"
     t.integer "status", limit: 2, default: 2, null: false
     t.datetime_with_timezone "finished_at"
+    t.integer "action", limit: 2, default: 1, null: false
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
   add_index "deployments", ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
+  add_index "deployments", ["environment_id", "action", "sha"], name: "index_deployments_on_environment_id_and_action_and_sha", using: :btree
+  add_index "deployments", ["environment_id", "action", "status"], name: "index_deployments_on_environment_id_and_action_and_status", using: :btree
   add_index "deployments", ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status", using: :btree
+  add_index "deployments", ["finished_at"], name: "index_deployments_on_finished_at", using: :btree
   add_index "deployments", ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))", using: :btree
+  add_index "deployments", ["project_id", "action", "status"], name: "index_deployments_on_project_id_and_action_and_status", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
   add_index "deployments", ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
 

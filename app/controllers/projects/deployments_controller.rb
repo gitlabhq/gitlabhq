@@ -6,7 +6,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
-    deployments = environment.deployments.reorder(created_at: :desc)
+    deployments = environment.deployments.deployed.reorder(created_at: :desc)
     deployments = deployments.where('created_at > ?', params[:after].to_time) if params[:after]&.to_time
 
     render json: { deployments: DeploymentSerializer.new(project: project)
@@ -47,7 +47,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def deployment
-    @deployment ||= environment.deployments.find_by(iid: params[:id])
+    @deployment ||= environment.deployments.deployed.find_by(iid: params[:id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -45,14 +45,18 @@ class Gitlab::Seeder::Environments
   end
 
   def create_deployment!(project, name, ref, sha)
-    environment = find_or_create_environment!(project, name)
-    environment.deployments.create!(
-      project: project,
-      ref: ref,
-      sha: sha,
-      tag: false,
-      deployable: find_deployable(project, name)
-    )
+    find_deployable(project, name).try do |deployable|
+      environment = find_or_create_environment!(project, name)
+      environment.deployments.create!(
+        project: project,
+        ref: ref,
+        sha: sha,
+        tag: false,
+        deployable: deployable
+      ).tap do |deployment|
+        deployment.succeed!
+      end
+    end
   end
 
   def find_or_create_environment!(project, name)

@@ -10,7 +10,6 @@ class BuildSuccessWorker
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
       create_deployment(build) if build.has_environment?
-      stop_environment(build) if build.stops_environment?
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -26,11 +25,5 @@ class BuildSuccessWorker
     build.create_deployment.try do |deployment|
       deployment.succeed
     end
-  end
-
-  ##
-  # TODO: This should be processed in DeploymentSuccessWorker once we started storing `action` value in `deployments` records
-  def stop_environment(build)
-    build.persisted_environment.fire_state_event(:stop)
   end
 end

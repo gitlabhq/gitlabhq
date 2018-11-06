@@ -191,6 +191,150 @@ describe Deployment do
     end
   end
 
+  describe '.deployed' do
+    subject { described_class.deployed }
+
+    context 'when deployment starts an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :start, :success) }
+
+        it 'returns the deployment' do
+          is_expected.to eq([deployment])
+        end
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :start, :failed) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'when deployment stops an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :stop, :success) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :stop, :failed) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+    end
+  end
+
+  describe '.stopped' do
+    subject { described_class.stopped }
+
+    context 'when deployment starts an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :start, :success) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :start, :failed) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'when deployment stops an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :stop, :success) }
+
+        it 'returns the deployment' do
+          is_expected.to eq([deployment])
+        end
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :stop, :failed) }
+
+        it 'returns nothing' do
+          is_expected.to be_empty
+        end
+      end
+    end
+  end
+
+  describe '#deployed?' do
+    subject { deployment.deployed? }
+
+    context 'when deployment starts an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :start, :success) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :start, :failed) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when deployment stops an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :stop, :success) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :stop, :failed) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+  end
+
+  describe '#stopped?' do
+    subject { deployment.stopped? }
+
+    context 'when deployment starts an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :start, :success) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :start, :failed) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when deployment stops an environment' do
+      context 'when the action was successful' do
+        let!(:deployment) { create(:deployment, :stop, :success) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the action failed' do
+        let!(:deployment) { create(:deployment, :stop, :failed) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+  end
+
   describe '#deployed_at' do
     subject { deployment.deployed_at }
 

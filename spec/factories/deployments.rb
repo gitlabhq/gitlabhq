@@ -47,5 +47,13 @@ FactoryBot.define do
         deployment.succeed!
       end
     end
+
+    trait :start do
+      action :start
+    end
+
+    trait :stop do
+      action :stop
+    end
   end
 end

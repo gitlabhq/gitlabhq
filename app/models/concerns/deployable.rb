@@ -7,7 +7,7 @@ module Deployable
     after_create :create_deployment
 
     def create_deployment
-      return unless starts_environment? && !has_deployment?
+      return unless has_environment? && !has_deployment?
 
       environment = project.environments.find_or_create_by(
         name: expanded_environment_name
@@ -21,7 +21,8 @@ module Deployable
         sha: sha,
         user: user,
         deployable: self,
-        on_stop: on_stop).tap do |_|
+        on_stop: on_stop,
+        action: environment_action).tap do |_|
         self.reload # Reload relationships
       end
     end

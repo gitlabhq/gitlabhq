@@ -8,9 +8,9 @@ class Environment < ActiveRecord::Base
 
   belongs_to :project, required: true
 
-  has_many :deployments, -> { success }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :last_deployment, -> { deployed.order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -50,6 +50,7 @@ class Environment < ActiveRecord::Base
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :for_project, -> (project) { where(project_id: project) }
+  scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).start.where('deployments.environment_id = environments.id').where(sha: sha)) }
 
   state_machine :state, initial: :available do
     event :start do
@@ -95,20 +96,11 @@ class Environment < ActiveRecord::Base
   end
 
   def last_deployed_at
-    last_deployment.try(:created_at)
+    last_deployment.try(:finished_at)
   end
 
   def update_merge_request_metrics?
     folder_name == "production"
-  end
-
-  def first_deployment_for(commit_sha)
-    ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
-
-    return nil unless ref
-
-    deployment_iid = ref.split('/').last
-    deployments.find_by(iid: deployment_iid)
   end
 
   def ref_path

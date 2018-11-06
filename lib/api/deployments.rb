@@ -24,7 +24,7 @@ module API
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
-        present paginate(user_project.deployments.order(params[:order_by] => params[:sort])), with: Entities::Deployment
+        present paginate(user_project.deployments.deployed.order(params[:order_by] => params[:sort])), with: Entities::Deployment
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -38,7 +38,7 @@ module API
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project
 
-        deployment = user_project.deployments.find(params[:deployment_id])
+        deployment = user_project.deployments.deployed.find(params[:deployment_id])
 
         present deployment, with: Entities::Deployment
       end
