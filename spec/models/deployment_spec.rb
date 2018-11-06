@@ -16,6 +16,22 @@ describe Deployment do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe '#scheduled_actions' do
+    subject { deployment.scheduled_actions }
+
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+    let(:deployment) { create(:deployment, deployable: build) }
+
+    it 'delegates to other_scheduled_actions' do
+      expect_any_instance_of(Ci::Build)
+        .to receive(:other_scheduled_actions)
+
+      subject
+    end
+  end
+
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
@@ -26,16 +42,174 @@ describe Deployment do
     end
   end
 
-  describe 'after_create callbacks' do
-    let(:environment) { create(:environment) }
-    let(:store) { Gitlab::EtagCaching::Store.new }
+  describe '.success' do
+    subject { described_class.success }
 
-    it 'invalidates the environment etag cache' do
-      old_value = store.get(environment.etag_cache_key)
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
 
-      create(:deployment, environment: environment)
+      it { is_expected.to eq([deployment]) }
+    end
 
-      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    context 'when deployment status is created' do
+      let(:deployment) { create(:deployment, :created) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe 'state machine' do
+    context 'when deployment runs' do
+      let(:deployment) { create(:deployment) }
+
+      before do
+        deployment.run!
+      end
+
+      it 'starts running' do
+        Timecop.freeze do
+          expect(deployment).to be_running
+          expect(deployment.finished_at).to be_nil
+        end
+      end
+    end
+
+    context 'when deployment succeeded' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.succeed!
+
+          expect(deployment).to be_success
+          expect(deployment.finished_at).to eq(Time.now)
+        end
+      end
+
+      it 'executes Deployments::SuccessWorker asynchronously' do
+        expect(Deployments::SuccessWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.succeed!
+      end
+    end
+
+    context 'when deployment failed' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.drop!
+
+          expect(deployment).to be_failed
+          expect(deployment.finished_at).to eq(Time.now)
+        end
+      end
+    end
+
+    context 'when deployment was canceled' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it 'has correct status' do
+        Timecop.freeze do
+          deployment.cancel!
+
+          expect(deployment).to be_canceled
+          expect(deployment.finished_at).to eq(Time.now)
+        end
+      end
+    end
+  end
+
+  describe '#success?' do
+    subject { deployment.success? }
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when deployment status is failed' do
+      let(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#status_name' do
+    subject { deployment.status_name }
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(:success) }
+    end
+
+    context 'when deployment status is failed' do
+      let(:deployment) { create(:deployment, :failed) }
+
+      it { is_expected.to eq(:failed) }
+    end
+  end
+
+  describe '#finished_at' do
+    subject { deployment.finished_at }
+
+    context 'when deployment status is created' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success, finished_at: nil) }
+
+      before do
+        deployment.update_column(:finished_at, nil)
+      end
+
+      it { is_expected.to eq(deployment.read_attribute(:created_at)) }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#deployed_at' do
+    subject { deployment.deployed_at }
+
+    context 'when deployment status is created' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when deployment status is success' do
+      let(:deployment) { create(:deployment, :success) }
+
+      it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
+    end
+
+    context 'when deployment status is running' do
+      let(:deployment) { create(:deployment, :running) }
+
+      it { is_expected.to be_nil }
     end
   end
 
@@ -96,7 +270,7 @@ describe Deployment do
   end
 
   describe '#metrics' do
-    let(:deployment) { create(:deployment) }
+    let(:deployment) { create(:deployment, :success) }
     let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
 
     subject { deployment.metrics }
@@ -125,7 +299,7 @@ describe Deployment do
 
   describe '#additional_metrics' do
     let(:project) { create(:project, :repository) }
-    let(:deployment) { create(:deployment, project: project) }
+    let(:deployment) { create(:deployment, :succeed, project: project) }
 
     subject { deployment.additional_metrics }
 

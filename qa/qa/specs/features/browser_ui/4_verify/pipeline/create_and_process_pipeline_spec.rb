@@ -13,18 +13,18 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        project = Factory::Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate! do |project|
           project.name = 'project-with-pipelines'
           project.description = 'Project with CI/CD Pipelines.'
         end
 
-        Factory::Resource::Runner.fabricate! do |runner|
+        Resource::Runner.fabricate! do |runner|
           runner.project = project
           runner.name = executor
           runner.tags = %w[qa test]
         end
 
-        Factory::Repository::ProjectPush.fabricate! do |push|
+        Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.file_name = '.gitlab-ci.yml'
           push.commit_message = 'Add .gitlab-ci.yml'

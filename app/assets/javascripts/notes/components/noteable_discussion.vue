@@ -369,7 +369,7 @@ Please check your network connection and try again.`;
                         role="group">
                         <button
                           type="button"
-                          class="js-vue-discussion-reply btn btn-text-field mr-2"
+                          class="js-vue-discussion-reply btn btn-text-field mr-2 qa-discussion-reply"
                           title="Add a reply"
                           @click="showReplyForm">Reply...</button>
                       </div>

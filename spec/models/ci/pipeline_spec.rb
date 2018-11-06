@@ -1043,6 +1043,11 @@ describe Ci::Pipeline, :mailer do
       expect(described_class.newest_first.pluck(:status))
         .to eq(%w[skipped failed success canceled])
     end
+
+    it 'searches limited backlog' do
+      expect(described_class.newest_first(limit: 1).pluck(:status))
+        .to eq(%w[skipped])
+    end
   end
 
   describe '.latest_status' do
@@ -1145,6 +1150,19 @@ describe Ci::Pipeline, :mailer do
         expect(described_class.latest_status_per_commit(%w[123 456], 'master'))
           .to eq({ '123' => 'manual' })
       end
+    end
+  end
+
+  describe '.latest_successful_ids_per_project' do
+    let(:projects) { create_list(:project, 2) }
+    let!(:pipeline1) { create(:ci_pipeline, :success, project: projects[0]) }
+    let!(:pipeline2) { create(:ci_pipeline, :success, project: projects[0]) }
+    let!(:pipeline3) { create(:ci_pipeline, :failed, project: projects[0]) }
+    let!(:pipeline4) { create(:ci_pipeline, :success, project: projects[1]) }
+
+    it 'returns expected pipeline ids' do
+      expect(described_class.latest_successful_ids_per_project)
+        .to contain_exactly(pipeline2, pipeline4)
     end
   end
 

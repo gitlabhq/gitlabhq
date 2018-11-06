@@ -4,6 +4,7 @@ class DeployToken < ActiveRecord::Base
   include Expirable
   include TokenAuthenticatable
   include PolicyActor
+  include Gitlab::Utils::StrongMemoize
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
@@ -49,7 +50,9 @@ class DeployToken < ActiveRecord::Base
   # to a single project, later we're going to extend
   # that to be for multiple projects and namespaces.
   def project
-    projects.first
+    strong_memoize(:project) do
+      projects.first
+    end
   end
 
   def expires_at

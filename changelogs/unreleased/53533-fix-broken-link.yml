@@ -1,0 +1,5 @@
+---
+title: Render unescaped link for failed pipeline status
+merge_request: 22807
+author:
+type: fixed

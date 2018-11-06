@@ -1,5 +1,10 @@
 <script>
+import { GlLink } from '@gitlab-org/gitlab-ui';
+
 export default {
+  components: {
+    GlLink,
+  },
   props: {
     illustrationPath: {
       type: String,
@@ -62,13 +67,13 @@ export default {
           v-if="action"
           class="text-center"
         >
-          <a
+          <gl-link
             :href="action.path"
             :data-method="action.method"
             class="js-job-empty-state-action btn btn-primary"
           >
             {{ action.button_title }}
-          </a>
+          </gl-link>
         </div>
       </div>
     </div>

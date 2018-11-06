@@ -49,7 +49,7 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
-  KUBERNETES_VERSION: 1.8.6
+  KUBERNETES_VERSION: 1.10.9
   HELM_VERSION: 2.11.0
 
   DOCKER_DRIVER: overlay2
@@ -116,12 +116,9 @@ code_quality:
 
 license_management:
   stage: test
-  image: docker:stable
+  image: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
   allow_failure: true
-  services:
-    - docker:stable-dind
   script:
-    - setup_docker
     - license_management
   artifacts:
     paths: [gl-license-management-report.json]
@@ -525,11 +522,7 @@ rollout 100%:
   }
 
   function license_management() {
-    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
-    LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-
-    docker run --volume "$PWD:/code" \
-                                    "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
+    /run.sh analyze .
   }
 
   function sast() {
@@ -823,7 +816,7 @@ rollout 100%:
   function initialize_tiller() {
     echo "Checking Tiller..."
 
-    export HELM_HOST=":44134"
+    export HELM_HOST="localhost:44134"
     tiller -listen ${HELM_HOST} -alsologtostderr > /dev/null 2>&1 &
     echo "Tiller is listening on ${HELM_HOST}"
 

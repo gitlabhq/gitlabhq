@@ -1,5 +1,5 @@
 - if event.visible_to_user?(current_user)
-  .event-item{ class: event_row_class(event) }
+  .event-item
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 

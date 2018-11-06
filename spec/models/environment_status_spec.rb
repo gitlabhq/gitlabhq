@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EnvironmentStatus do
-  let(:deployment)    { create(:deployment, :review_app) }
+  let(:deployment)    { create(:deployment, :succeed, :review_app) }
   let(:environment)   { deployment.environment}
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
@@ -12,7 +12,7 @@ describe EnvironmentStatus do
   it { is_expected.to delegate_method(:id).to(:environment) }
   it { is_expected.to delegate_method(:name).to(:environment) }
   it { is_expected.to delegate_method(:project).to(:environment) }
-  it { is_expected.to delegate_method(:deployed_at).to(:deployment).as(:created_at) }
+  it { is_expected.to delegate_method(:deployed_at).to(:deployment) }
   it { is_expected.to delegate_method(:status).to(:deployment) }
 
   describe '#project' do

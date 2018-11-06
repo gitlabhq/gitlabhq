@@ -390,7 +390,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     :disabled="isSubmitButtonDisabled"
                     name="button"
                     type="button"
-                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                     data-display="static"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
@@ -422,7 +422,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
                       <button
                         type="button"
-                        class="btn btn-transparent"
+                        class="btn btn-transparent qa-discussion-option"
                         @click.prevent="setNoteType('discussion')">
                         <i
                           aria-hidden="true"

@@ -60,6 +60,7 @@ export default {
       'getNotesDataByProp',
       'discussionCount',
       'isLoading',
+      'commentsDisabled',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -206,6 +207,7 @@ export default {
     </ul>
 
     <comment-form
+      v-if="!commentsDisabled"
       :noteable-type="noteableType"
       :markdown-version="markdownVersion"
     />

@@ -1,0 +1,6 @@
+---
+title: Change to top level controller for clusters so that we can use it for project
+  clusters (now) and group clusters (later)
+merge_request: 22438
+author:
+type: other

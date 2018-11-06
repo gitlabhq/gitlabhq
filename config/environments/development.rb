@@ -45,4 +45,6 @@ Rails.application.configure do
 
   # Do not log asset requests
   config.assets.quiet = true
+
+  config.allow_concurrency = defined?(::Puma)
 end

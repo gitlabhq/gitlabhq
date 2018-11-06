@@ -121,6 +121,13 @@ describe('note_app', () => {
       ).toEqual('Write a comment or drag your files here…');
     });
 
+    it('should not render form when commenting is disabled', () => {
+      store.state.commentsDisabled = true;
+      vm = mountComponent();
+
+      expect(vm.$el.querySelector('.js-main-target-form')).toEqual(null);
+    });
+
     it('should render form comment button as disabled', () => {
       expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
         'disabled',

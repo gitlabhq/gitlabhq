@@ -1,0 +1,5 @@
+---
+title: Add gitlab:gitaly:check task for Gitaly health check
+merge_request: 22063
+author:
+type: other

@@ -94,7 +94,7 @@
     }
 
     .controllers {
-      @include build-controllers(15px, center, false, 0);
+      @include build-controllers(15px, center, false, 0, inline, 0);
     }
   }
 

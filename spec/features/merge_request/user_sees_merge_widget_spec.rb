@@ -45,7 +45,8 @@ describe 'Merge request > User sees merge widget', :js do
     let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
-      create(:deployment, environment: environment,
+      create(:deployment, :succeed,
+                          environment: environment,
                           ref: merge_request.source_branch,
                           deployable: build,
                           sha: sha)
@@ -179,7 +180,7 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_text(%r{Could not retrieve the pipeline status\. For troubleshooting steps, read the <a href=\".+\">documentation\.</a>})
+      expect(page).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
     end
   end
 

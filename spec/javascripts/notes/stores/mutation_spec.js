@@ -427,4 +427,14 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[0].expanded).toBe(true);
     });
   });
+
+  describe('DISABLE_COMMENTS', () => {
+    it('should set comments disabled state', () => {
+      const state = {};
+
+      mutations.DISABLE_COMMENTS(state, true);
+
+      expect(state.commentsDisabled).toEqual(true);
+    });
+  });
 });

@@ -11,7 +11,7 @@ describe 'Merge request > User sees deployment widget', :js do
     let(:sha) { project.commit(ref).id }
     let(:pipeline) { create(:ci_pipeline_without_jobs, sha: sha, project: project, ref: ref) }
     let(:build)    { create(:ci_build, :success, pipeline: pipeline) }
-    let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: ref, deployable: build) }
+    let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: ref, deployable: build) }
     let!(:manual) { }
 
     before do
@@ -38,7 +38,7 @@ describe 'Merge request > User sees deployment widget', :js do
       end
 
       it 'does start build when stop button clicked' do
-        accept_confirm { click_button('Stop environment') }
+        accept_confirm { find('.js-stop-env').click }
 
         expect(page).to have_content('close_app')
       end
@@ -47,7 +47,7 @@ describe 'Merge request > User sees deployment widget', :js do
         let(:role) { :reporter }
 
         it 'does not show stop button' do
-          expect(page).not_to have_button('Stop environment')
+          expect(page).not_to have_selector('.js-stop-env')
         end
       end
     end

@@ -1,0 +1,4 @@
+title: Make Issue Board sidebar show project-specific labels based on selected Issue
+merge_request: 22475
+author:
+type: fixed

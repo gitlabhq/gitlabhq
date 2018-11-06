@@ -102,7 +102,7 @@ export default {
       :line-type="newLineType"
       :is-bottom="isBottom"
       :is-hover="isHover"
-      class="diff-line-num new_line"
+      class="diff-line-num new_line qa-new-diff-line"
     />
     <td
       :class="line.type"

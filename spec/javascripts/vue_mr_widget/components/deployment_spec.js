@@ -242,6 +242,10 @@ describe('Deployment component', () => {
       it('renders information about running deployment', () => {
         expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain('Deploying to');
       });
+
+      it('renders disabled stop button', () => {
+        expect(vm.$el.querySelector('.js-stop-env').getAttribute('disabled')).toBe('disabled');
+      });
     });
 
     describe('success', () => {

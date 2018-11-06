@@ -15,13 +15,13 @@ module QA
 
         @runner_name = "qa-runner-#{Time.now.to_i}"
 
-        @project = Factory::Resource::Project.fabricate! do |resource|
+        @project = Resource::Project.fabricate! do |resource|
           resource.name = 'deploy-key-clone-project'
         end
 
         @repository_location = @project.repository_ssh_location
 
-        Factory::Resource::Runner.fabricate! do |resource|
+        Resource::Runner.fabricate! do |resource|
           resource.project = @project
           resource.name = @runner_name
           resource.tags = %w[qa docker]
@@ -47,7 +47,7 @@ module QA
 
           login
 
-          Factory::Resource::DeployKey.fabricate! do |resource|
+          Resource::DeployKey.fabricate! do |resource|
             resource.project = @project
             resource.title = "deploy key #{key.name}(#{key.bits})"
             resource.key = key.public_key
@@ -55,7 +55,7 @@ module QA
 
           deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
 
-          Factory::Resource::CiVariable.fabricate! do |resource|
+          Resource::CiVariable.fabricate! do |resource|
             resource.project = @project
             resource.key = deploy_key_name
             resource.value = key.private_key
@@ -78,7 +78,7 @@ module QA
               - docker
           YAML
 
-          Factory::Repository::ProjectPush.fabricate! do |resource|
+          Resource::Repository::ProjectPush.fabricate! do |resource|
             resource.project = @project
             resource.file_name = '.gitlab-ci.yml'
             resource.commit_message = 'Add .gitlab-ci.yml'

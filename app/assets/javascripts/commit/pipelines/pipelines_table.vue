@@ -2,9 +2,15 @@
 import PipelinesService from '../../pipelines/services/pipelines_service';
 import PipelineStore from '../../pipelines/stores/pipelines_store';
 import pipelinesMixin from '../../pipelines/mixins/pipelines';
+import TablePagination from '../../vue_shared/components/table_pagination.vue';
+import { getParameterByName } from '../../lib/utils/common_utils';
+import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
 export default {
-  mixins: [pipelinesMixin],
+  components: {
+    TablePagination,
+  },
+  mixins: [pipelinesMixin, CIPaginationMixin],
   props: {
     endpoint: {
       type: String,
@@ -35,6 +41,8 @@ export default {
     return {
       store,
       state: store.state,
+      page: getParameterByName('page') || '1',
+      requestData: {},
     };
   },
 
@@ -48,11 +56,14 @@ export default {
   },
   created() {
     this.service = new PipelinesService(this.endpoint);
+    this.requestData = { page: this.page };
   },
   methods: {
     successCallback(resp) {
       // depending of the endpoint the response can either bring a `pipelines` key or not.
       const pipelines = resp.data.pipelines || resp.data;
+
+      this.store.storePagination(resp.headers);
       this.setCommonData(pipelines);
 
       const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
@@ -97,5 +108,11 @@ export default {
         :view-type="viewType"
       />
     </div>
+
+    <table-pagination
+      v-if="shouldRenderPagination"
+      :change="onChangePage"
+      :page-info="state.pageInfo"
+    />
   </div>
 </template>

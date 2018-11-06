@@ -53,6 +53,32 @@ To get started with the command line, please read through the
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
+### Repository README and index files
+
+When a `README` or `index` file is present in a repository, its contents will be
+automatically pre-rendered by GitLab without opening it.
+
+They can either be plain text or have an extension of a supported markup language:
+
+- Asciidoc: `README.adoc` or `index.adoc`
+- Markdown: `README.md` or `index.md`
+- reStructuredText: `README.rst` or `index.rst`
+- Text: `README.txt` or `index.txt`
+
+Some things to note about precedence:
+
+1. When both a `README` and an `index` file are present, the `README` will always
+   take precedence.
+1. When more than one file is present with different extensions, they are
+   ordered alphabetically, with the exception of a file without an extension
+   which will always be last in precedence. For example, `README.adoc` will take
+   precedence over `README.md`, and `README.rst` will take precedence over
+   `README`.
+
+NOTE: **Note:**
+`index` files without an extension will not automatically pre-render. You'll
+have to explicitly open them to see their contents.
+
 ### Jupyter Notebook files
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
@@ -165,7 +191,7 @@ minutes.
 
 ![Repository Languages bar](img/repository_languages.png)
 
-Not all files are detected, among others; documentation, 
+Not all files are detected, among others; documentation,
 vendored code, and most markup languages are excluded. This behaviour can be
 adjusted by overriding the default. For example, to enable `.proto` files to be
 detected, add the following to `.gitattributes` in the root of your repository.
