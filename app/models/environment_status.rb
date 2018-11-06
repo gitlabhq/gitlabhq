@@ -8,8 +8,8 @@ class EnvironmentStatus
   delegate :id, to: :environment
   delegate :name, to: :environment
   delegate :project, to: :environment
-  delegate :status, to: :deployment
-  delegate :deployed_at, to: :deployment
+  delegate :status, to: :deployment, allow_nil: true
+  delegate :deployed_at, to: :deployment, allow_nil: true
 
   def self.for_merge_request(mr, user)
     build_environments_status(mr, user, mr.head_pipeline)
