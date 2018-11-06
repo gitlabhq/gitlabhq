@@ -54,7 +54,8 @@ module Gitlab
       def unfold_required?
         strong_memoize(:unfold_required) do
           next false unless @diff_file.text?
-          next false if @blob.nil?
+          next false unless @position.unchanged?
+          next false if @diff_file.new_file? || @diff_file.deleted_file?
           next false unless @position.old_line
           # Invalid position (MR import scenario)
           next false if @position.old_line > @blob.lines.size
