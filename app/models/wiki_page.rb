@@ -195,7 +195,7 @@ class WikiPage
     update_attributes(attrs)
 
     save(page_details: title) do
-      wiki.create_page(title, content, format, message)
+      wiki.create_page(title, content, format, attrs[:message])
     end
   end
 
