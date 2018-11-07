@@ -47,3 +47,93 @@ an open-source python library that makes it easy to perform common DevOps tasks 
 Tasks such as plotting Cloudwatch metrics and rolling your ECS/Kubernetes app are simplified 
 down to a couple of lines of code. Check the [Nurtch Documentation](http://docs.nurtch.com/en/latest) 
 for more information.
+
+## Configure an executable runbook with GitLab
+
+Follow this step-by-step guide to configure an executable runbook in GitLab using 
+the components outlined above and the preloaded demo runbook.
+
+### 1. Add a Kubernetes cluster
+
+Follow the steps outlined in [Adding and creating a new GKE cluster via GitLab](https://docs.gitlab.com/ee/user/project/clusters/#adding-and-creating-a-new-gke-cluster-via-gitlab) 
+to add a Kubernetes cluster to your project.
+
+### 2. Install Helm Tiller, Ingress, and JupyterHub
+
+Once the cluster has been provisioned in GKE, click the **"Install"** button next to the "Helm Tiller" app.
+
+![install helm](img/helm-install.png)
+
+Once Tiller has been installed successfully, click the **"Install"** button next to the "Ingress" app.
+
+![install ingress](img/ingress-install)
+
+Once Ingress has been installed successfully, click the **"Install"** button next to the "JupyterHub" app.
+
+![install jupyterhub](img/install-jupyterhub)
+
+### 3. Login to JupyterHub and start the server
+
+Once JupyterHub has been installed successfully, navigate to the "Jupyter Hostname" url presented and click 
+**"Sign in with GitLab"**. Authentication is automatically enabled for any user of GitLab server via OAuth2. This 
+will redirect to GitLab in order to authorize JupyterHub to use your GitLab account. Click **"Authorize"**.
+
+![authorize jupyter](img/authorize-jupyter.png)
+
+Once the application has been authorized you will taken back to the JupyterHub application. Click **"Start My Server"**
+
+![start jupyter](img/jupyter-start.png)
+
+The server will take a couple of seconds to start.
+
+### 4. Configure access
+
+In order for the runbook to access your GitLab project, you will need to enter a [GitLab Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) as well as your Project ID in the "Setup" 
+section of the demo runbook.
+
+Double-click on the "DevOps-Runbook-Demo" folder located on the left panel.
+
+![demo runbook](img/demo-runbook.png)
+
+Double-click on the "Nurtch-DevOps-Demo.ipynb" runbook
+
+![sample runbook](img/sample-runbook.png)
+
+The contents on the runbook will be displayed on the right side of the screen. Under the "Setup" section, you will find 
+entries for both your `PRIVATE_TOKEN` and your `PROJECT_ID`. Enter both these values, conserving the single quotes as follows:
+
+```sql
+PRIVATE_TOKEN = 'abcdef123456'
+PROJECT_ID = '1234567'
+```
+
+Update the `VARIABLE_NAME` on the last line of this section to match the name of the variable you are using for you 
+access token. In this example our variable name is `PRIVATE_TOKEN`.
+
+```sql
+VARIABLE_VALUE = project.variables.get('PRIVATE_TOKEN').value
+```
+
+### 5. Configure an operation
+
+For this example we'll use the "**Run SQL queries in Notebook**" section in the sample runbook to query 
+a postgres database. The first 4 lines of the section define the variables that are required for this query to function. 
+
+```sql
+%env DB_USER={project.variables.get('DB_USER').value}
+%env DB_PASSWORD={project.variables.get('DB_PASSWORD').value}
+%env DB_ENDPOINT={project.variables.get('DB_ENDPOINT').value}
+%env DB_NAME={project.variables.get('DB_NAME').value}
+```
+
+Create the matching variables in your project's **Settings >> CI/CD >> Variables**
+
+![gitlab variables](img/gitlab-variables.png)
+
+Back in Jupyter, click the "Run SQL queries in Notebook" heading and the click the "run" button. The results will be 
+displayed in-line as follows:
+
+![postgres query](img/postgres-query.png)
+
+You can try other operations such as running shell scripts or interacting with a kubernetes cluster. Visit the 
+[Nurtch Documentation](http://docs.nurtch.com/) for more information.
