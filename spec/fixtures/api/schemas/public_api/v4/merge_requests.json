@@ -9,6 +9,32 @@
       "title": { "type": "string" },
       "description": { "type": ["string", "null"] },
       "state": { "type": "string" },
+      "merged_by": {
+        "type": ["object", "null"],
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "id": { "type": "integer" },
+          "state": { "type": "string" },
+          "avatar_url": { "type": "uri" },
+          "web_url": { "type": "uri" }
+        },
+        "additionalProperties": false
+      },
+      "merged_at": { "type": ["date", "null"] },
+      "closed_by": {
+        "type": ["object", "null"],
+        "properties": {
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "id": { "type": "integer" },
+          "state": { "type": "string" },
+          "avatar_url": { "type": "uri" },
+          "web_url": { "type": "uri" }
+        },
+        "additionalProperties": false
+      },
+      "closed_at": { "type": ["date", "null"] },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "target_branch": { "type": "string" },
