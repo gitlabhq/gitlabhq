@@ -70,4 +70,8 @@ describe Clusters::Applications::Knative do
       expect(values).to include('domain')
     end
   end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:hostname) }
+  end
 end
