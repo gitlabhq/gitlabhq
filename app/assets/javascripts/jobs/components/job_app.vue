@@ -26,12 +26,12 @@ export default {
     EmptyState,
     EnvironmentsBlock,
     ErasedBlock,
-    GlLoadingIcon,
     Icon,
     Log,
     LogTopBar,
     StuckBlock,
     Sidebar,
+    GlLoadingIcon,
   },
   props: {
     runnerSettingsUrl: {
