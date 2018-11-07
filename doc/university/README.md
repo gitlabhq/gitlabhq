@@ -104,7 +104,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Due Dates and Milestones for GitLab Issues](https://about.gitlab.com/2016/08/05/feature-highlight-set-dates-for-issues/)
 1. [How to Use GitLab Labels](https://about.gitlab.com/2016/08/17/using-gitlab-labels/)
 1. [Applying GitLab Labels Automatically](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/)
-1. [GitLab Issue Board - Product Page](https://about.gitlab.com/solutions/issueboard/)
+1. [GitLab Issue Board - Product Page](https://about.gitlab.com/product/issueboard/)
 1. [An Overview of GitLab Issue Board](https://about.gitlab.com/2016/08/22/announcing-the-gitlab-issue-board/)
 1. [Designing GitLab Issue Board](https://about.gitlab.com/2016/08/31/designing-issue-boards/)
 1. [From Idea to Production with GitLab - Video](https://www.youtube.com/watch?v=25pHyknRgEo&index=14&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
@@ -125,7 +125,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 1. [IBM: Continuous Delivery vs Continuous Deployment - Video](https://www.youtube.com/watch?v=igwFj8PPSnw)
 1. [Amazon: Transition to Continuous Delivery - Video](https://www.youtube.com/watch?v=esEFaY0FDKc)
-2. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
+1. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
 1. See **[Integrations](#39-integrations)** for integrations with other CI services.
 
 #### 2.4. Workflow
@@ -140,7 +140,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 1. [GitLab Compared to Other Tools](https://about.gitlab.com/comparison/)
 1. [Comparing GitLab Terminology](https://about.gitlab.com/2016/01/27/comparing-terms-gitlab-github-bitbucket/)
-1. [GitLab Compared to Atlassian (Recording 2016-03-03) ](https://youtu.be/Nbzp1t45ERo)
+1. [GitLab Compared to Atlassian (Recording 2016-03-03)](https://youtu.be/Nbzp1t45ERo)
 1. [GitLab Position FAQ](https://about.gitlab.com/handbook/positioning-faq)
 1. [Customer review of GitLab with points on why they prefer GitLab](https://www.enovate.co.uk/web-design-blog/2015/11/25/gitlab-review/)
 
@@ -189,7 +189,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 #### 3.8 Cycle Analytics
 
 1. [GitLab Cycle Analytics Overview](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
-1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/solutions/cycle-analytics/)
+1. [GitLab Cycle Analytics - Product Page](https://about.gitlab.com/product/cycle-analytics/)
 
 #### 3.9. Integrations
 
@@ -213,7 +213,8 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 ### 5. Resources for GitLab Team Members
 
-*Some content can only be accessed by GitLab team members*
+NOTE: **Note:**
+Some content can only be accessed by GitLab team members
 
 1. [Support Path](support/README.md)
 1. [Sales Path (redirect to sales handbook)](https://about.gitlab.com/handbook/sales-onboarding/)
