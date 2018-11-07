@@ -95,8 +95,15 @@ Importing bare repositories from hashed storage is unsupported.
 #### v10.4 and later
 
 In order to support this, we began storing the full GitLab project path with
-each repository. However, existing repositories were not migrated to include
-this path.
+each repository, in a special section of the git repository's config file. This
+section is formatted as follows:
+
+```
+[gitlab]
+	fullpath = gitlab-org/gitlab-ce
+```
+
+However, existing repositories were not migrated to include this path.
 
 The following are importable as bare repositories:
 
