@@ -179,7 +179,7 @@ module SearchHelper
     elsif @group.present?
       @group.full_path
     else
-      root_dashboard_path
+      'dashboard'
     end
   end
 
