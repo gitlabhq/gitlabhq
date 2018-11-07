@@ -49,17 +49,17 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  describe('areAllFilesCollapsed', () => {
+  describe('hasCollapsedFile', () => {
     it('returns true when all files are collapsed', () => {
       localState.diffFiles = [{ collapsed: true }, { collapsed: true }];
 
-      expect(getters.areAllFilesCollapsed(localState)).toEqual(true);
+      expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });
 
-    it('returns false when at least one file is not collapsed', () => {
+    it('returns true when at least one file is collapsed', () => {
       localState.diffFiles = [{ collapsed: false }, { collapsed: true }];
 
-      expect(getters.areAllFilesCollapsed(localState)).toEqual(false);
+      expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });
   });
 
