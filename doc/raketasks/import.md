@@ -115,3 +115,20 @@ The following are **not** importable as bare repositories:
 
 There is an [open issue to add a migration to make all bare repositories
 importable](https://gitlab.com/gitlab-org/gitlab-ce/issues/41776).
+
+Until then, you may wish to manually migrate repositories yourself. You can use
+[Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)
+to do so. In a Rails console session, run the following to migrate a project:
+
+```
+project = Project.find_by_full_path('gitlab-org/gitlab-ce')
+project.write_repository_config
+```
+
+In a Rails console session, run the following to migrate all of a namespace's
+projects (this may take awhile if there are 1000s of projects in a namespace):
+
+```
+namespace = Namespace.find_by_full_path('gitlab-org')
+namespace.send(:write_projects_repository_config)
+```
