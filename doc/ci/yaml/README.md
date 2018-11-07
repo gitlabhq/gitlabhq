@@ -812,7 +812,7 @@ deploy to production:
 >   defined, GitLab will automatically trigger a stop action when the associated
 >   branch is deleted.
 
-Closing (stoping) environments can be achieved with the `on_stop` keyword defined under
+Closing (stopping) environments can be achieved with the `on_stop` keyword defined under
 `environment`. It declares a different job that runs in order to close
 the environment.
 
