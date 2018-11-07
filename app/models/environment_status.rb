@@ -47,6 +47,8 @@ class EnvironmentStatus
   # Since frontend has not supported all statuses yet, BE has to
   # proxy some status to a supported status.
   def status
+    return unless deployment
+
     case deployment.status
     when 'created'
       'running'

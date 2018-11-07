@@ -96,7 +96,7 @@ class Environment < ActiveRecord::Base
   end
 
   def last_deployed_at
-    last_deployment.try(:finished_at)
+    last_deployment.try(:created_at)
   end
 
   def update_merge_request_metrics?

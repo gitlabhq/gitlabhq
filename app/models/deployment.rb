@@ -132,7 +132,7 @@ class Deployment < ActiveRecord::Base
 
   def previous_deployment
     @previous_deployment ||=
-      project.deployments.success.joins(:environment)
+      project.deployments.joins(:environment)
       .where(environments: { name: self.environment.name }, ref: self.ref)
       .where.not(id: self.id)
       .take

@@ -72,30 +72,6 @@ describe Environment do
     end
   end
 
-  describe '#last_deployed_at' do
-    subject { environment.last_deployed_at }
-
-    let(:environment) { create(:environment) }
-
-    context 'when the latest deployment is successful' do
-      let!(:deployment) { create(:deployment, :success, environment: environment) }
-
-      it { expect(subject).to be_within(1.second).of(deployment.finished_at) }
-    end
-
-    context 'when the latest deployment failed' do
-      let!(:deployment) { create(:deployment, :failed, environment: environment) }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when the latest deployment is running' do
-      let!(:deployment) { create(:deployment, :running, environment: environment) }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
   describe '#folder_name' do
     context 'when it is inside a folder' do
       subject(:environment) do
@@ -174,6 +150,26 @@ describe Environment do
 
         expect(env.update_merge_request_metrics?).to eq(expected_value)
       end
+    end
+  end
+
+  describe '#first_deployment_for' do
+    let(:project)       { create(:project, :repository) }
+    let!(:deployment)   { create(:deployment, :succeed, environment: environment, ref: commit.parent.id) }
+    let!(:deployment1)  { create(:deployment, :succeed, environment: environment, ref: commit.id) }
+    let(:head_commit)   { project.commit }
+    let(:commit)        { project.commit.parent }
+
+    it 'returns deployment id for the environment' do
+      expect(environment.first_deployment_for(commit.id)).to eq deployment1
+    end
+
+    it 'return nil when no deployment is found' do
+      expect(environment.first_deployment_for(head_commit.id)).to eq nil
+    end
+
+    it 'returns a UTF-8 ref' do
+      expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end
 
