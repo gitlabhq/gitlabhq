@@ -66,11 +66,11 @@ Once the cluster has been provisioned in GKE, click the **"Install"** button nex
 
 Once Tiller has been installed successfully, click the **"Install"** button next to the "Ingress" app.
 
-![install ingress](img/ingress-install)
+![install ingress](img/ingress-install.png)
 
 Once Ingress has been installed successfully, click the **"Install"** button next to the "JupyterHub" app.
 
-![install jupyterhub](img/install-jupyterhub)
+![install jupyterhub](img/install-jupyterhub.png)
 
 ### 3. Login to JupyterHub and start the server
 
