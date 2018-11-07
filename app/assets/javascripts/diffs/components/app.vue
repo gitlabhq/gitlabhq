@@ -3,6 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -21,6 +22,7 @@ export default {
     HiddenFilesWarning,
     CommitWidget,
     TreeList,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {

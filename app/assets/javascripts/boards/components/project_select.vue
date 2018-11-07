@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../eventhub';
 import Api from '../../api';
 
@@ -9,6 +10,7 @@ export default {
   name: 'BoardProjectSelect',
   components: {
     Icon,
+    GlLoadingIcon,
   },
   props: {
     groupId: {

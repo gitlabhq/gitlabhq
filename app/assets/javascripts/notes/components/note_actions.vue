@@ -9,11 +9,13 @@ import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
 import ellipsisSvg from 'icons/_ellipsis_v.svg';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   name: 'NoteActions',
   components: {
     Icon,
+    GlLoadingIcon,
   },
   directives: {
     tooltip,

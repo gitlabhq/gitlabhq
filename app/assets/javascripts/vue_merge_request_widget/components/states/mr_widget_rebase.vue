@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import simplePoll from '../../../lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 import statusIcon from '../mr_widget_status_icon.vue';
@@ -8,6 +9,7 @@ export default {
   name: 'MRWidgetRebase',
   components: {
     statusIcon,
+    GlLoadingIcon,
   },
   props: {
     mr: {
