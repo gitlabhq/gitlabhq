@@ -25,6 +25,9 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
+    it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
+
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')
@@ -105,6 +108,14 @@ describe ApplicationSetting do
       end
 
       it { expect(setting.repository_storages).to eq(['default']) }
+    end
+
+    context '#commit_email_hostname' do
+      it 'returns configured gitlab hostname if commit_email_hostname is not defined' do
+        setting.update(commit_email_hostname: nil)
+
+        expect(setting.commit_email_hostname).to eq("users.noreply.#{Gitlab.config.gitlab.host}")
+      end
     end
 
     context 'auto_devops_domain setting' do
