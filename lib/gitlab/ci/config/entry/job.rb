@@ -26,16 +26,12 @@ module Gitlab
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
-              validates :retry, numericality: { only_integer: true,
-                                                greater_than_or_equal_to: 0,
-                                                less_than_or_equal_to: 2 }
               validates :parallel, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 2 }
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
                                       'always, manual or delayed' }
-
               validates :dependencies, array_of_strings: true
               validates :extends, type: String
             end
@@ -85,6 +81,9 @@ module Gitlab
 
           entry :coverage, Entry::Coverage,
             description: 'Coverage configuration for this job.'
+
+          entry :retry, Entry::Retry,
+               description: 'Retry configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
@@ -160,7 +159,7 @@ module Gitlab
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
-              retry: retry_defined? ? retry_value.to_i : nil,
+              retry: retry_defined? ? retry_value : nil,
               parallel: parallel_defined? ? parallel_value.to_i : nil,
               artifacts: artifacts_value,
               after_script: after_script_value,

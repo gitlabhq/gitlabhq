@@ -1472,15 +1472,15 @@ describe Ci::Build do
     end
 
     describe '#retries_max' do
-      context 'when max retries value is defined' do
-        subject { create(:ci_build, options: { retry: 1 }) }
+      context 'with retries max config option' do
+        subject { create(:ci_build, options: { retry: { max: 1 } }) }
 
-        it 'returns a number of configured max retries' do
+        it 'returns the number of configured max retries' do
           expect(subject.retries_max).to eq 1
         end
       end
 
-      context 'when max retries value is not defined' do
+      context 'without retries max config option' do
         subject { create(:ci_build) }
 
         it 'returns zero' do
@@ -1493,6 +1493,104 @@ describe Ci::Build do
 
         it 'returns zero' do
           expect(subject.retries_max).to eq 0
+        end
+      end
+
+      context 'with integer only config option' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns the number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
+    end
+
+    describe '#retry_when' do
+      context 'with retries when config option' do
+        subject { create(:ci_build, options: { retry: { when: ['some_reason'] } }) }
+
+        it 'returns the configured when' do
+          expect(subject.retry_when).to eq ['some_reason']
+        end
+      end
+
+      context 'without retries when config option' do
+        subject { create(:ci_build) }
+
+        it 'returns always array' do
+          expect(subject.retry_when).to eq ['always']
+        end
+      end
+
+      context 'with integer only config option' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns always array' do
+          expect(subject.retry_when).to eq ['always']
+        end
+      end
+    end
+
+    describe '#retry_failure?' do
+      subject { create(:ci_build) }
+
+      context 'when retries max is zero' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(0)
+        end
+
+        it 'returns false' do
+          expect(subject.retry_failure?).to eq false
+        end
+      end
+
+      context 'when retries max equals retries count' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(1)
+          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
+        end
+
+        it 'returns false' do
+          expect(subject.retry_failure?).to eq false
+        end
+      end
+
+      context 'when retries max is higher than retries count' do
+        before do
+          expect(subject).to receive(:retries_max).at_least(:once).and_return(2)
+          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
+        end
+
+        context 'and retry when is always' do
+          before do
+            expect(subject).to receive(:retry_when).at_least(:once).and_return(['always'])
+          end
+
+          it 'returns true' do
+            expect(subject.retry_failure?).to eq true
+          end
+        end
+
+        context 'and retry when includes the failure_reason' do
+          before do
+            expect(subject).to receive(:failure_reason).at_least(:once).and_return('some_reason')
+            expect(subject).to receive(:retry_when).at_least(:once).and_return(['some_reason'])
+          end
+
+          it 'returns true' do
+            expect(subject.retry_failure?).to eq true
+          end
+        end
+
+        context 'and retry when does not include failure_reason' do
+          before do
+            expect(subject).to receive(:failure_reason).at_least(:once).and_return('some_reason')
+            expect(subject).to receive(:retry_when).at_least(:once).and_return(['some', 'other failure'])
+          end
+
+          it 'returns false' do
+            expect(subject.retry_failure?).to eq false
+          end
         end
       end
     end
@@ -2887,7 +2985,7 @@ describe Ci::Build do
     end
 
     context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { retry: 3 }, project: project, user: user) }
+      subject { create(:ci_build, :running, options: { retry: { max: 3 } }, project: project, user: user) }
 
       it 'retries build and assigns the same user to it' do
         expect(described_class).to receive(:retry)

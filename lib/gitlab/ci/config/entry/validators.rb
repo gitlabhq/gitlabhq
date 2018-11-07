@@ -7,11 +7,11 @@ module Gitlab
         module Validators
           class AllowedKeysValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
-              unknown_keys = record.config.try(:keys).to_a - options[:in]
+              unknown_keys = value.try(:keys).to_a - options[:in]
 
               if unknown_keys.any?
-                record.errors.add(:config, 'contains unknown keys: ' +
-                                            unknown_keys.join(', '))
+                record.errors.add(attribute, "contains unknown keys: " +
+                                             unknown_keys.join(', '))
               end
             end
           end
@@ -20,6 +20,16 @@ module Gitlab
             def validate_each(record, attribute, value)
               unless options[:in].include?(value.to_s)
                 record.errors.add(attribute, "unknown value: #{value}")
+              end
+            end
+          end
+
+          class AllowedArrayValuesValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unkown_values = value - options[:in]
+              unless unkown_values.empty?
+                record.errors.add(attribute, "contains unknown values: " +
+                                              unkown_values.join(', '))
               end
             end
           end
@@ -64,6 +74,14 @@ module Gitlab
             def validate_each(record, attribute, value)
               unless value.is_a?(Hash) || value.is_a?(String)
                 record.errors.add(attribute, 'should be a hash or a string')
+              end
+            end
+          end
+
+          class HashOrIntegerValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unless value.is_a?(Hash) || value.is_a?(Integer)
+                record.errors.add(attribute, 'should be a hash or an integer')
               end
             end
           end

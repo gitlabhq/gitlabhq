@@ -221,9 +221,7 @@ module Ci
 
         build.deployment&.drop
 
-        next if build.retries_max.zero?
-
-        if build.retries_count < build.retries_max
+        if build.retry_failure?
           begin
             Ci::Build.retry(build, build.user)
           rescue Gitlab::Access::AccessDeniedError => ex
@@ -321,7 +319,17 @@ module Ci
     end
 
     def retries_max
-      self.options.to_h.fetch(:retry, 0).to_i
+      normalized_retry.fetch(:max, 0)
+    end
+
+    def retry_when
+      normalized_retry.fetch(:when, ['always'])
+    end
+
+    def retry_failure?
+      return false if retries_max.zero? || retries_count >= retries_max
+
+      retry_when.include?('always') || retry_when.include?(failure_reason.to_s)
     end
 
     def latest?
@@ -884,6 +892,16 @@ module Ci
 
     def environment_url
       options&.dig(:environment, :url) || persisted_environment&.external_url
+    end
+
+    # The format of the retry option changed in GitLab 11.5: Before it was
+    # integer only, after it is a hash. New builds are created with the new
+    # format, but builds created before GitLab 11.5 and saved in database still
+    # have the old integer only format. This method returns the retry option
+    # normalized as a hash in 11.5+ format.
+    def normalized_retry
+      value = options&.dig(:retry)
+      value.is_a?(Integer) ? { max: value } : value.to_h
     end
 
     def build_attributes_from_config
