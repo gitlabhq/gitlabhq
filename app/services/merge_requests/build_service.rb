@@ -7,7 +7,9 @@ module MergeRequests
     def execute
       @params_issue_iid = params.delete(:issue_iid)
       self.merge_request = MergeRequest.new
-      merge_quick_actions_into_params!(merge_request)
+      # TODO: this should handle all quick actions that don't have side effects
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
+      merge_quick_actions_into_params!(merge_request, only: [:target_branch])
       merge_request.assign_attributes(params)
 
       merge_request.author = current_user
