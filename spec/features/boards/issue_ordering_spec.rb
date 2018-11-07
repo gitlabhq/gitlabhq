@@ -78,7 +78,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'moves from bottom to top' do
-      drag(from_index: 2, to_index: 0)
+      drag(from_index: 2, to_index: 0, duration: 1020)
 
       wait_for_requests
 
@@ -130,7 +130,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'moves to bottom of another list' do
-      drag(list_from_index: 1, list_to_index: 2, to_index: 2)
+      drag(list_from_index: 1, list_to_index: 2, to_index: 2, duration: 1020)
 
       wait_for_requests
 

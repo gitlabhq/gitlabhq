@@ -12,6 +12,7 @@ class IssueBoardEntity < Grape::Entity
   expose :project_id
   expose :relative_position
   expose :weight, if: -> (*) { respond_to?(:weight) }
+  expose :time_estimate
 
   expose :project do |issue|
     API::Entities::Project.represent issue.project, only: [:id, :path]

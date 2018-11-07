@@ -86,8 +86,8 @@ describe('Pipelines Table Row', () => {
 
         expect(
           component.$el
-            .querySelector('.table-section:nth-child(2) img')
-            .getAttribute('data-original-title'),
+            .querySelector('.table-section:nth-child(2) .js-user-avatar-image-toolip')
+            .textContent.trim(),
         ).toEqual(pipeline.user.name);
       });
     });
@@ -112,8 +112,8 @@ describe('Pipelines Table Row', () => {
 
       const commitAuthorLink = commitAuthorElement.getAttribute('href');
       const commitAuthorName = commitAuthorElement
-        .querySelector('img.avatar')
-        .getAttribute('data-original-title');
+        .querySelector('.js-user-avatar-image-toolip')
+        .textContent.trim();
 
       return { commitAuthorElement, commitAuthorLink, commitAuthorName };
     };
