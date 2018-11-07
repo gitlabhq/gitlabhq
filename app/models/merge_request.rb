@@ -409,6 +409,18 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff&.real_size || diffs.real_size
   end
 
+  def modified_paths(past_merge_request_diff: nil)
+    diffs = if past_merge_request_diff
+              past_merge_request_diff
+            elsif compare
+              compare
+            else
+              self.merge_request_diff
+            end
+
+    diffs.modified_paths
+  end
+
   def diff_base_commit
     if persisted?
       merge_request_diff.base_commit

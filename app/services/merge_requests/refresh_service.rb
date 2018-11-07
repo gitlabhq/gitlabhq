@@ -2,18 +2,18 @@
 
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
-    def execute(oldrev, newrev, ref)
-      push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
-      return true unless push.branch_push?
+    attr_reader :push
 
-      refresh_merge_requests!(push)
+    def execute(oldrev, newrev, ref)
+      @push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
+      return true unless @push.branch_push?
+
+      refresh_merge_requests!
     end
 
     private
 
-    def refresh_merge_requests!(push)
-      @push = push
-
+    def refresh_merge_requests!
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge

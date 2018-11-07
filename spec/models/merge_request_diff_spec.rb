@@ -232,4 +232,17 @@ describe MergeRequestDiff do
       expect(commits.map(&:sha)).to match_array(commit_shas)
     end
   end
+
+  describe '#modified_paths' do
+    subject do
+      diff = create(:merge_request_diff)
+      create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+      create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+      diff
+    end
+
+    it 'returns affected file paths' do
+      expect(subject.modified_paths).to eq(%w{foo bar baz})
+    end
+  end
 end

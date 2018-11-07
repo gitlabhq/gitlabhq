@@ -6,6 +6,7 @@ class MergeRequestDiff < ActiveRecord::Base
   include ManualInverseAssociation
   include IgnorableColumn
   include EachBatch
+  include Gitlab::Utils::StrongMemoize
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
@@ -233,6 +234,12 @@ class MergeRequestDiff < ActiveRecord::Base
     CompareService.new(project, head_commit_sha).execute(project, sha, straight: true)
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def modified_paths
+    strong_memoize(:modified_paths) do
+      merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+    end
+  end
 
   private
 
