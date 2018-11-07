@@ -505,7 +505,7 @@ PaaS and managing your applications with the ease of containers.
 [RedHat]: https://www.redhat.com/en "RedHat website"
 [openshift]: https://www.openshift.org "OpenShift Origin website"
 [vm]: https://www.openshift.org/vm/ "OpenShift All-in-one VM"
-[vm-new]: https://atlas.hashicorp.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Atlas"
+[vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
 [template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
 [openshift.com]: https://openshift.com "OpenShift Online"
 [kubernetes]: http://kubernetes.io/ "Kubernetes website"
