@@ -1,4 +1,3 @@
-return unless Shard.connected?
-return if Gitlab::Database.read_only?
-
-Shard.populate!
+if Shard.connected? && !Gitlab::Database.read_only?
+  Shard.populate!
+end
