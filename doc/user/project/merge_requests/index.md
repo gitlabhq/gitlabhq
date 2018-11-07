@@ -141,6 +141,15 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
 
+## Commenting on any file line in merge requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13950) in GitLab 11.5.
+
+GitLab provides a way of leaving comments in any part of the file being changed
+in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
+
+![Comment on any diff file line](img/comment-on-any-diff-line.png)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
