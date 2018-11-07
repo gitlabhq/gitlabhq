@@ -243,6 +243,8 @@
 
 .user-result {
   min-height: 24px;
+  display: flex;
+  align-items: center;
 
   .user-image {
     float: left;
