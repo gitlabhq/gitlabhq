@@ -217,7 +217,8 @@ module ApplicationSettingsHelper
       :user_oauth_applications,
       :version_check_enabled,
       :web_ide_clientside_preview_enabled,
-      :diff_max_patch_bytes
+      :diff_max_patch_bytes,
+      :commit_email_hostname
     ]
   end
 

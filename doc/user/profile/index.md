@@ -31,6 +31,7 @@ From there, you can:
 
 - Update your personal information
 - Set a [custom status](#current-status) for your profile
+- Manage your [commit email](#commit-email) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
@@ -131,6 +132,45 @@ Status messages are restricted to 100 characters of plain text.
 They may however contain emoji codes such as `I'm on vacation :palm_tree:`.
 
 You can also set your current status [using the API](../../api/users.md#user-status).
+
+## Commit email
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21598) in GitLab 11.4.
+
+A commit email, is the email that will be displayed in every Git-related action done through the
+GitLab interface.
+
+You are able to select from the list of your own verified emails which email you want to use as the commit email.
+
+To change it:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Commit email** selection box.
+1. Select any of the verified emails.
+1. Hit **Update profile settings**.
+
+### Private commit email
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22560) in GitLab 11.5.
+
+GitLab provides the user with an automatically generated private commit email option,
+which allows the user to not make their email information public.
+
+To enable this option:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Commit email** selection box.
+1. Select **Use a private email** option.
+1. Hit **Update profile settings**.
+
+Once this option is enabled, every Git-related action will be performed using the private commit email.
+
+In order to stay fully annonymous, you can also copy this private commit email
+and configure it on your local machine using the following command:
+
+```
+git config --global user.email "YOUR_PRIVATE_COMMIT_EMAIL"
+```
 
 ## Troubleshooting
 

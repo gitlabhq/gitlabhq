@@ -183,6 +183,12 @@ describe User do
         expect(found_user.commit_email).to eq(user.email)
       end
 
+      it 'returns the private commit email when commit_email has _private' do
+        user.update_column(:commit_email, Gitlab::PrivateCommitEmail::TOKEN)
+
+        expect(user.commit_email).to eq(user.private_commit_email)
+      end
+
       it 'can be set to a confirmed email' do
         confirmed = create(:email, :confirmed, user: user)
         user.commit_email = confirmed.email
@@ -330,6 +336,40 @@ describe User do
       context 'owns_notification_email' do
         it 'accepts temp_oauth_email emails' do
           user = build(:user, email: "temp-email-for-oauth@example.com")
+          expect(user).to be_valid
+        end
+      end
+
+      context 'set_commit_email' do
+        it 'keeps commit email when private commit email is being used' do
+          user = create(:user, commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+
+          expect(user.read_attribute(:commit_email)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
+        end
+
+        it 'keeps the commit email when nil' do
+          user = create(:user, commit_email: nil)
+
+          expect(user.read_attribute(:commit_email)).to be_nil
+        end
+
+        it 'reverts to nil when email is not verified' do
+          user = create(:user, commit_email: "foo@bar.com")
+
+          expect(user.read_attribute(:commit_email)).to be_nil
+        end
+      end
+
+      context 'owns_commit_email' do
+        it 'accepts private commit email' do
+          user = build(:user, commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+
+          expect(user).to be_valid
+        end
+
+        it 'accepts nil commit email' do
+          user = build(:user, commit_email: nil)
+
           expect(user).to be_valid
         end
       end
@@ -1075,11 +1115,26 @@ describe User do
   end
 
   describe '.find_by_any_email' do
+    it 'finds user through private commit email' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.find_by_any_email(private_email)).to eq(user)
+      expect(described_class.find_by_any_email(private_email, confirmed: true)).to eq(user)
+    end
+
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')
 
       expect(described_class.find_by_any_email(user.email)).to eq user
       expect(described_class.find_by_any_email(user.email, confirmed: true)).to eq user
+    end
+
+    it 'finds by uppercased email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(described_class.find_by_any_email(user.email.upcase)).to eq user
+      expect(described_class.find_by_any_email(user.email.upcase, confirmed: true)).to eq user
     end
 
     it 'finds by secondary email' do
@@ -1457,7 +1512,7 @@ describe User do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
 
-      expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
+      expect(user.verified_emails).to match_array([user.email, user.private_commit_email, email_confirmed.email])
     end
   end
 
@@ -1471,6 +1526,10 @@ describe User do
 
       expect(user.verified_email?(user.email)).to be_truthy
       expect(user.verified_email?(email_confirmed.email.titlecase)).to be_truthy
+    end
+
+    it 'returns true when user is found through private commit email' do
+      expect(user.verified_email?(user.private_commit_email)).to be_truthy
     end
 
     it 'returns false when the email is not verified/confirmed' do
@@ -1665,6 +1724,24 @@ describe User do
       user.toggle_star(project)
 
       expect(user.starred?(project)).to be_falsey
+    end
+  end
+
+  describe '.find_by_private_commit_email' do
+    context 'with email' do
+      set(:user) { create(:user) }
+
+      it 'returns user through private commit email' do
+        expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)
+      end
+
+      it 'returns nil when email other than private_commit_email is used' do
+        expect(described_class.find_by_private_commit_email(user.email)).to be_nil
+      end
+    end
+
+    it 'returns nil when email is nil' do
+      expect(described_class.find_by_private_commit_email(nil)).to be_nil
     end
   end
 

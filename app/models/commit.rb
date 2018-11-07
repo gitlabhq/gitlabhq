@@ -260,7 +260,7 @@ class Commit
   request_cache(:author) { author_email.downcase }
 
   def committer
-    @committer ||= User.find_by_any_email(committer_email.downcase)
+    @committer ||= User.find_by_any_email(committer_email)
   end
 
   def parents

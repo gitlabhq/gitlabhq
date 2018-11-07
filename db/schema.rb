@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.integer "receive_max_input_size"
     t.integer "diff_max_patch_bytes", default: 102400, null: false
     t.integer "archive_builds_in_seconds"
+    t.string "commit_email_hostname"
   end
 
   create_table "audit_events", force: :cascade do |t|
