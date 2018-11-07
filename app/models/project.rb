@@ -1140,6 +1140,11 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
+  # Is overriden in EE
+  def lfs_http_url_to_repo(_)
+    http_url_to_repo
+  end
+
   def forked?
     fork_network && fork_network.root_project != self
   end
