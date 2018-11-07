@@ -207,6 +207,10 @@
     @include btn-with-margin;
   }
 
+  &.btn-icon {
+    color: $gl-gray-700;
+  }
+
   .fa-caret-down,
   .fa-chevron-down {
     margin-left: 5px;
