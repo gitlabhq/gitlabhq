@@ -836,10 +836,12 @@ ActiveRecord::Schema.define(version: 20181107054254) do
   add_index "deployments", ["environment_id", "sha"], name: "index_deployments_on_environment_id_and_sha", using: :btree
   add_index "deployments", ["environment_id", "status", "id"], name: "index_deployments_on_environment_id_and_status_and_id", using: :btree
   add_index "deployments", ["environment_id", "status", "iid"], name: "index_deployments_on_environment_id_and_status_and_iid", using: :btree
+  add_index "deployments", ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status", using: :btree
   add_index "deployments", ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
   add_index "deployments", ["project_id", "status", "id"], name: "index_deployments_on_project_id_and_status_and_id", using: :btree
   add_index "deployments", ["project_id", "status", "iid"], name: "index_deployments_on_project_id_and_status_and_iid", using: :btree
+  add_index "deployments", ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
 
   create_table "emails", force: :cascade do |t|
     t.integer "user_id", null: false
