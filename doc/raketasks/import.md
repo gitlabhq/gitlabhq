@@ -88,15 +88,15 @@ more details.
 
 ### Which repositories are importable?
 
-#### v10.3 or earlier
+#### GitLab 10.3 or earlier
 
 Importing bare repositories from hashed storage is unsupported.
 
-#### v10.4 and later
+#### GitLab 10.4 and later
 
-In order to support this, we began storing the full GitLab project path with
-each repository, in a special section of the git repository's config file. This
-section is formatted as follows:
+To support importing bare repositories from hashed storage, GitLab 10.4 and
+later stores the full project path with each repository, in a special section of
+the git repository's config file. This section is formatted as follows:
 
 ```
 [gitlab]
@@ -105,20 +105,21 @@ section is formatted as follows:
 
 However, existing repositories were not migrated to include this path.
 
-The following are importable as bare repositories:
+Bare repositories are importable if the following events occurred to the
+repository in GitLab 10.4 and later:
 
-- Created in hashed storage in v10.4+
-- Migrated to hashed storage in v10.4+
-- Renamed in v10.4+
-- Transferred to another namespace in v10.4+
-- Ancestor renamed in v10.4+
-- Ancestor transferred to another namespace in v10.4+
+- Created
+- Migrated to hashed storage
+- Renamed
+- Transferred to another namespace
+- Ancestor renamed
+- Ancestor transferred to another namespace
 
-The following are **not** importable as bare repositories:
+Bare repositories are **not** importable by GitLab 10.4 and later when all the following are true about the repository:
 
-- Created in or migrated to hashed storage in v10.3 or earlier, and was not
-  renamed or transferred in v10.4+, and whose ancestor namespaces were not
-  renamed or transferred in v10.4+.
+- It was created in GitLab 10.3 or earlier.
+- It was not renamed, transferred, or migrated to hashed storage in GitLab 10.4 and later.
+- Its ancestor namespaces were not renamed or transferred in GitLab 10.4 and later.
 
 There is an [open issue to add a migration to make all bare repositories
 importable](https://gitlab.com/gitlab-org/gitlab-ce/issues/41776).
@@ -133,7 +134,7 @@ project.write_repository_config
 ```
 
 In a Rails console session, run the following to migrate all of a namespace's
-projects (this may take awhile if there are 1000s of projects in a namespace):
+projects (this may take a while if there are 1000s of projects in a namespace):
 
 ```
 namespace = Namespace.find_by_full_path('gitlab-org')
