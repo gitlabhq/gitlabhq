@@ -264,6 +264,9 @@ msgstr ""
 msgid "A deleted user"
 msgstr ""
 
+msgid "A member of GitLab's abuse team will review your report as soon as possible."
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -1980,6 +1983,9 @@ msgstr ""
 msgid "Copy file path to clipboard"
 msgstr ""
 
+msgid "Copy link"
+msgstr ""
+
 msgid "Copy reference to clipboard"
 msgstr ""
 
@@ -2197,6 +2203,9 @@ msgid "Delete"
 msgstr ""
 
 msgid "Delete Snippet"
+msgstr ""
+
+msgid "Delete comment"
 msgstr ""
 
 msgid "Delete list"
@@ -2733,6 +2742,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Explain the problem. If appropriate, provide a link to the relevant issue or comment."
 msgstr ""
 
 msgid "Explore"
@@ -4599,6 +4611,9 @@ msgstr ""
 msgid "Please try again"
 msgstr ""
 
+msgid "Please use this form to report users to GitLab who create spam issues, comments or behave inappropriately."
+msgstr ""
+
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
@@ -5166,6 +5181,9 @@ msgid "Rename folder"
 msgstr ""
 
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
+msgstr ""
+
+msgid "Report abuse to GitLab"
 msgstr ""
 
 msgid "Reporting"
