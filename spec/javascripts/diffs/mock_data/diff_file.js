@@ -237,4 +237,5 @@ export default {
       },
     },
   ],
+  discussions: [],
 };

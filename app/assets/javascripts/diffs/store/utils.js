@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { diffModes } from '~/ide/constants';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -34,6 +35,7 @@ export function getFormData(params) {
     noteTargetLine,
     diffViewType,
     linePosition,
+    positionType,
   } = params;
 
   const position = JSON.stringify({
@@ -42,9 +44,13 @@ export function getFormData(params) {
     head_sha: diffFile.diffRefs.headSha,
     old_path: diffFile.oldPath,
     new_path: diffFile.newPath,
-    position_type: TEXT_DIFF_POSITION_TYPE,
-    old_line: noteTargetLine.oldLine,
-    new_line: noteTargetLine.newLine,
+    position_type: positionType || TEXT_DIFF_POSITION_TYPE,
+    old_line: noteTargetLine ? noteTargetLine.oldLine : null,
+    new_line: noteTargetLine ? noteTargetLine.newLine : null,
+    x: params.x,
+    y: params.y,
+    width: params.width,
+    height: params.height,
   });
 
   const postData = {
@@ -66,7 +72,7 @@ export function getFormData(params) {
         diffFile.diffRefs.startSha && diffFile.diffRefs.headSha
           ? DIFF_NOTE_TYPE
           : LEGACY_DIFF_NOTE_TYPE,
-      line_code: noteTargetLine.lineCode,
+      line_code: noteTargetLine ? noteTargetLine.lineCode : null,
     },
   };
 
@@ -225,6 +231,7 @@ export function prepareDiffData(diffData) {
     Object.assign(file, {
       renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
       collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+      discussions: [],
     });
   }
 }
@@ -320,3 +327,8 @@ export const generateTreeList = files =>
     },
     { treeEntries: {}, tree: [] },
   );
+
+export const getDiffMode = diffFile => {
+  const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}File`]);
+  return diffModes[diffModeKey] || diffModes.replaced;
+};

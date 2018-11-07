@@ -114,5 +114,8 @@ export const allBlobs = state => Object.values(state.treeEntries).filter(f => f.
 
 export const diffFilesLength = state => state.diffFiles.length;
 
+export const getCommentFormForDiffFile = state => fileHash =>
+  state.commentForms.find(form => form.fileHash === fileHash);
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

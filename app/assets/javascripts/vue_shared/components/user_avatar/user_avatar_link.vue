@@ -99,6 +99,6 @@ export default {
       v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
-    >{{ username }}</span>
+    >{{ username }}</span><slot name="avatar-badge"></slot>
   </gl-link>
 </template>

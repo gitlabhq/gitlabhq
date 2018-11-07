@@ -350,11 +350,18 @@ Please check your network connection and try again.`;
                 <ul class="notes">
                   <component
                     :is="componentName(note)"
-                    v-for="note in discussion.notes"
+                    v-for="(note, index) in discussion.notes"
                     :key="note.id"
                     :note="componentData(note)"
                     @handleDeleteNote="deleteNoteHandler"
-                  />
+                  >
+                    <slot
+                      v-if="index === 0"
+                      slot="avatar-badge"
+                      name="avatar-badge"
+                    >
+                    </slot>
+                  </component>
                 </ul>
                 <div
                   :class="{ 'is-replying': isReplying }"

@@ -336,6 +336,9 @@ msgstr ""
 msgid "Add a table"
 msgstr ""
 
+msgid "Add image comment"
+msgstr ""
+
 msgid "Add license"
 msgstr ""
 
@@ -1718,10 +1721,16 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Comment"
+msgstr ""
+
 msgid "Comment & resolve discussion"
 msgstr ""
 
 msgid "Comment & unresolve discussion"
+msgstr ""
+
+msgid "Comment form position"
 msgstr ""
 
 msgid "Comments"

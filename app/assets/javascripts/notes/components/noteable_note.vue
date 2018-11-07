@@ -182,7 +182,13 @@ export default {
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-        />
+        >
+          <slot
+            slot="avatar-badge"
+            name="avatar-badge"
+          >
+          </slot>
+        </user-avatar-link>
       </div>
       <div class="timeline-content">
         <div class="note-header">
