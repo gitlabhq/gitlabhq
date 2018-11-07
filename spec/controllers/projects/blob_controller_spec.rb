@@ -157,7 +157,7 @@ describe Projects::BlobController do
 
             match_line = JSON.parse(response.body).first
 
-            expect(match_line['type']).to eq('context')
+            expect(match_line['type']).to be_nil
           end
 
           it 'adds bottom match line when "t"o is less than blob size' do
@@ -177,7 +177,7 @@ describe Projects::BlobController do
 
             match_line = JSON.parse(response.body).last
 
-            expect(match_line['type']).to eq('context')
+            expect(match_line['type']).to be_nil
           end
         end
       end
