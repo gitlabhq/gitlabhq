@@ -1389,9 +1389,6 @@ msgstr ""
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
-msgid "Choose which repositories you want to import."
-msgstr ""
-
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -3459,7 +3456,7 @@ msgstr ""
 msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
-msgid "From %{provider_title}"
+msgid "From %{providerTitle}"
 msgstr ""
 
 msgid "From Bitbucket"
@@ -3580,6 +3577,9 @@ msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
+msgid "Go to project"
 msgstr ""
 
 msgid "Google Code import"
@@ -3951,6 +3951,18 @@ msgid "Import repository"
 msgstr ""
 
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
+msgstr ""
+
+msgid "ImportProjects|Importing the project failed"
+msgstr ""
+
+msgid "ImportProjects|Requesting your %{provider} repositories failed"
+msgstr ""
+
+msgid "ImportProjects|Select the projects you want to import"
+msgstr ""
+
+msgid "ImportProjects|Updating the imported projects failed"
 msgstr ""
 
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
@@ -4862,6 +4874,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
 msgid "No activities found"
 msgstr ""
 
@@ -4968,6 +4983,9 @@ msgid "Not enough data"
 msgstr ""
 
 msgid "Not now"
+msgstr ""
+
+msgid "Not started"
 msgstr ""
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
@@ -6320,6 +6338,9 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
+msgid "Running…"
+msgstr ""
+
 msgid "SSH Keys"
 msgstr ""
 
@@ -6360,6 +6381,9 @@ msgid "Scheduled"
 msgstr ""
 
 msgid "Schedules"
+msgstr ""
+
+msgid "Scheduling"
 msgstr ""
 
 msgid "Scheduling Pipelines"
