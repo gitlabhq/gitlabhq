@@ -604,22 +604,39 @@ The following are recommended verbs for specific uses.
 
 ## GitLab versions and tiers
 
-- Every piece of documentation that comes with a new feature should declare the
-  GitLab version that feature got introduced. Right below the heading add a
-  blockquote:
+Tagged and released versions of GitLab documentation are available:
+
+- In the [documentation archives](https://docs.gitlab.com/archives/).
+- At the `/help` URL for any GitLab installation.
+
+Because documentation is intended to describe the current state of the project at a particular point in time,
+it is unnecessary to add specific text to the documentation describing what version a particular feature was introduced.
+The version relevant to a feature can be assumed by the feature's presence in that version of the documentation.
+
+Discussing specific versions in GitLab documentation should be reserved **only** for the following cases:
+
+- A feature was introduced before online versions were available. Currently, that means before 11.2.
+- A specific topic requires information that might be relevant to bridge the gap between specific versions.
+  For example, `If upgrading from a version of GitLab before x.y, follow the additional instructions below.`
+- A feature was introduced in a patch release, so it's important to call out which patch the feature became available in.
+
+#### Text for documentation requiring version text
+
+- For features that need to declare the GitLab version that the feature was introduced. Text similar
+  to the following should be added immediately below the heading as a blockquote:
 
     ```md
     > Introduced in GitLab 8.3.
     ```
 
-- Whenever possible, every feature should have a link to the issue, MR or epic
-  (in that order) that introduced it. The above quote would be then transformed to:
+- Whenever possible, version text should have a link to the issue, merge request, or epic
+  (in order or preference) that introduced the feature. For example:
 
     ```md
     > [Introduced](<link-to-issue>) in GitLab 8.3.
     ```
 
-- If the feature is only available in GitLab Enterprise Edition, don't forget to mention
+- If the feature is only available in GitLab Enterprise Edition, mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
 
