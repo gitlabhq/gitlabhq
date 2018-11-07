@@ -230,6 +230,32 @@ module Gitlab
         response.squash_sha
       end
 
+      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
+        request = Gitaly::UserUpdateSubmoduleRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit_sha: commit_sha,
+          branch: encode_binary(branch),
+          submodule: encode_binary(submodule),
+          commit_message: encode_binary(message)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_update_submodule,
+          request
+        )
+
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
+        elsif response.commit_error.present?
+          raise Gitlab::Git::CommitError, response.commit_error
+        else
+          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+        end
+      end
+
       def user_commit_files(
         user, branch_name, commit_message, actions, author_email, author_name,
         start_branch_name, start_repository)
