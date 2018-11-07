@@ -645,6 +645,33 @@ module Gitlab
         end
       end
 
+      describe 'Parallel' do
+        context 'when job is parallelized' do
+          let(:parallel) { 5 }
+
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec',
+                               parallel: parallel })
+          end
+
+          it 'returns parallelized jobs' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+            build_options = builds.map { |build| build[:options] }
+
+            expect(builds.size).to eq(5)
+            expect(build_options).to all(include(:instance, parallel: parallel))
+          end
+
+          it 'does not have the original job' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+
+            expect(builds).not_to include(:rspec)
+          end
+        end
+      end
+
       describe 'cache' do
         context 'when cache definition has unknown keys' do
           it 'raises relevant validation error' do

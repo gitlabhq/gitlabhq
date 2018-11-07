@@ -65,6 +65,8 @@ future GitLab releases.**
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
+| **CI_NODE_INDEX**               | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
+| **CI_NODE_TOTAL**               | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
 | **CI_JOB_URL**                  | 11.1   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |

@@ -815,7 +815,7 @@ module Ci
       end
     end
 
-    def predefined_variables
+    def predefined_variables # rubocop:disable Metrics/AbcSize
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI', value: 'true')
         variables.append(key: 'GITLAB_CI', value: 'true')
@@ -835,6 +835,8 @@ module Ci
         variables.append(key: "CI_COMMIT_TAG", value: ref) if tag?
         variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
+        variables.append(key: "CI_NODE_INDEX", value: self.options[:instance].to_s) if self.options&.include?(:instance)
+        variables.append(key: "CI_NODE_TOTAL", value: (self.options&.dig(:parallel) || 1).to_s)
         variables.concat(legacy_variables)
       end
     end

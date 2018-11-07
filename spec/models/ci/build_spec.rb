@@ -2015,6 +2015,7 @@ describe Ci::Build do
         { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
+        { key: 'CI_NODE_TOTAL', value: '1', public: true },
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
         { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
@@ -2473,6 +2474,29 @@ describe Ci::Build do
           .not_to include(key: 'MYVAR', value: 'myvar', public: true)
         expect(variables)
           .to include(key: 'MYVAR', value: 'pipeline value', public: false)
+      end
+    end
+
+    context 'when build is parallelized' do
+      let(:total) { 5 }
+      let(:index) { 3 }
+
+      before do
+        build.options[:parallel] = total
+        build.options[:instance] = index
+        build.name = "#{build.name} #{index}/#{total}"
+      end
+
+      it 'includes CI_NODE_INDEX' do
+        is_expected.to include(
+          { key: 'CI_NODE_INDEX', value: index.to_s, public: true }
+        )
+      end
+
+      it 'includes correct CI_NODE_TOTAL' do
+        is_expected.to include(
+          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true }
+        )
       end
     end
 

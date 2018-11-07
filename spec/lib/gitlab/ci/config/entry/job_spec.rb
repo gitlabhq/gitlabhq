@@ -1,5 +1,4 @@
-require 'fast_spec_helper'
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
@@ -134,6 +133,36 @@ describe Gitlab::Ci::Config::Entry::Job do
           it 'returns error about value too high' do
             expect(entry).not_to be_valid
             expect(entry.errors).to include 'job retry must be less than or equal to 2'
+          end
+        end
+      end
+
+      context 'when parallel value is not correct' do
+        context 'when it is not a numeric value' do
+          let(:config) { { parallel: true } }
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job parallel is not a number'
+          end
+        end
+
+        context 'when it is lower than two' do
+          let(:config) { { parallel: 1 } }
+
+          it 'returns error about value too low' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include 'job parallel must be greater than or equal to 2'
+          end
+        end
+
+        context 'when it is not an integer' do
+          let(:config) { { parallel: 1.5 } }
+
+          it 'returns error about wrong value' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job parallel must be an integer'
           end
         end
       end

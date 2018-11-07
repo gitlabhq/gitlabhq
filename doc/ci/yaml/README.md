@@ -75,6 +75,7 @@ A job is defined by a list of parameters that define the job behavior.
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
 | retry         | no       | Define how many times a job can be auto-retried in case of a failure |
+| parallel      | no       | Defines how many instances of a job should be run in parallel |
 
 ### `extends`
 
@@ -1449,6 +1450,26 @@ A simple example:
 test:
   script: rspec
   retry: 2
+```
+
+## `parallel`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22631) in GitLab 11.5.
+
+`parallel` allows you to configure how many instances of a job to run in
+parallel. This value has to be greater than or equal to two (2).
+
+This creates N instances of the same job that run in parallel. They're named
+sequentially from `job_name 1/N` to `job_name N/N`.
+
+For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.html#predefined-variables-environment-variables) are set.
+
+A simple example:
+
+```yaml
+test:
+  script: rspec
+  parallel: 5
 ```
 
 ## `include`
