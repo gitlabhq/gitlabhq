@@ -9,14 +9,16 @@ module Gitlab
         end
 
         def normalize_jobs
-          extract_parallelized_jobs
+          extract_parallelized_jobs!
+          return @jobs_config if @parallelized_jobs.empty?
+
           parallelized_config = parallelize_jobs
           parallelize_dependencies(parallelized_config)
         end
 
         private
 
-        def extract_parallelized_jobs
+        def extract_parallelized_jobs!
           @parallelized_jobs = {}
 
           @jobs_config.each do |job_name, config|
