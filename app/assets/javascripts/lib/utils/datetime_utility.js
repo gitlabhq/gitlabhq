@@ -14,7 +14,7 @@ window.timeago = timeago;
  *
  * @param {Boolean} abbreviated
  */
-const getMonthNames = abbreviated => {
+export const getMonthNames = abbreviated => {
   if (abbreviated) {
     return [
       s__('Jan'),
