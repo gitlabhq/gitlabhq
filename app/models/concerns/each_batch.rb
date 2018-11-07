@@ -39,7 +39,15 @@ module EachBatch
     #
     # of - The number of rows to retrieve per batch.
     # column - The column to use for ordering the batches.
-    def each_batch(of: 1000, column: primary_key)
+    # order_hint - An optional column to append to the `ORDER BY id`
+    #   clause to help the query planner. PostgreSQL might perform badly
+    #   with a LIMIT 1 because the planner is guessing that scanning the
+    #   index in ID order will come across the desired row in less time
+    #   it will take the planner than using another index. The
+    #   order_hint does not affect the search results. For example,
+    #   `ORDER BY id ASC, updated_at ASC` means the same thing as `ORDER
+    #   BY id ASC`.
+    def each_batch(of: 1000, column: primary_key, order_hint: nil)
       unless column
         raise ArgumentError,
           'the column: argument must be set to a column name to use for ordering rows'
@@ -48,7 +56,9 @@ module EachBatch
       start = except(:select)
         .select(column)
         .reorder(column => :asc)
-        .take
+
+      start = start.order(order_hint) if order_hint
+      start = start.take
 
       return unless start
 
@@ -60,6 +70,9 @@ module EachBatch
           .select(column)
           .where(arel_table[column].gteq(start_id))
           .reorder(column => :asc)
+
+        stop = stop.order(order_hint) if order_hint
+        stop = stop
           .offset(of)
           .limit(1)
           .take
