@@ -99,7 +99,7 @@ describe EnvironmentStatus do
     let(:user) { project.owner }
 
     before do
-      build.deployment&.update(sha: sha)
+      build.deployment&.update!(sha: sha)
     end
 
     context 'when environment is created on a forked project' do

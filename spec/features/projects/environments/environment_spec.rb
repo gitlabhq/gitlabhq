@@ -25,7 +25,7 @@ describe 'Environment' do
     end
 
     context 'without deployments' do
-      it 'does show no deployments' do
+      it 'does not show deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
@@ -64,7 +64,7 @@ describe 'Environment' do
           create(:deployment, :running, environment: environment, deployable: build)
         end
 
-        it 'does show no deployments' do
+        it 'does not show deployments' do
           expect(page).to have_content('You don\'t have any deployments right now.')
         end
       end
@@ -77,7 +77,7 @@ describe 'Environment' do
           create(:deployment, :failed, environment: environment, deployable: build)
         end
 
-        it 'does show no deployments' do
+        it 'does not show deployments' do
           expect(page).to have_content('You don\'t have any deployments right now.')
         end
       end
