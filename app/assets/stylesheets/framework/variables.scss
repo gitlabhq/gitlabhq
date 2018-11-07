@@ -195,6 +195,7 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-size-xs: 11px;
 $gl-font-size-small: 12px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
@@ -440,7 +441,7 @@ $ci-skipped-color: #888;
 * Boards
 */
 $issue-boards-font-size: 14px;
-$issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
+$issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
 /*
  The following heights are used in boards.scss and are used for calculation of the board height.
  They probably should be derived in a smarter way.

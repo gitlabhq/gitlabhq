@@ -63,12 +63,15 @@ describe('Pipeline Url Component', () => {
     }).$mount();
 
     const image = component.$el.querySelector('.js-pipeline-url-user img');
+    const tooltip = component.$el.querySelector(
+      '.js-pipeline-url-user .js-user-avatar-image-toolip',
+    );
 
     expect(component.$el.querySelector('.js-pipeline-url-user').getAttribute('href')).toEqual(
       mockData.pipeline.user.web_url,
     );
 
-    expect(image.getAttribute('data-original-title')).toEqual(mockData.pipeline.user.name);
+    expect(tooltip.textContent.trim()).toEqual(mockData.pipeline.user.name);
     expect(image.getAttribute('src')).toEqual(`${mockData.pipeline.user.avatar_url}?width=20`);
   });
 

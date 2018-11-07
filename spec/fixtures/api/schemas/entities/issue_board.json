@@ -8,6 +8,7 @@
     "due_date": { "type": "date" },
     "project_id": { "type": "integer" },
     "relative_position": { "type": ["integer", "null"] },
+    "time_estimate": { "type": "integer" },
     "weight": { "type": "integer" },
     "project": {
       "type": "object",
