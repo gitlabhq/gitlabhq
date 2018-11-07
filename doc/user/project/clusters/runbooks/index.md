@@ -70,7 +70,7 @@ Once Tiller has been installed successfully, click the **"Install"** button next
 
 Once Ingress has been installed successfully, click the **"Install"** button next to the "JupyterHub" app.
 
-![install jupyterhub](img/install-jupyterhub.png)
+![install jupyterhub](img/jupyterhub-install.png)
 
 ### 3. Login to JupyterHub and start the server
 
