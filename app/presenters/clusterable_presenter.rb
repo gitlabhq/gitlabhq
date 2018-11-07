@@ -44,7 +44,11 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
-  def project?
+  def empty_state_help_text
+    nil
+  end
+
+  def learn_more_link
     raise NotImplementedError
   end
 end

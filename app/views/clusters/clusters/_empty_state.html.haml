@@ -6,11 +6,8 @@
       %h4.text-center= s_('ClusterIntegration|Integrate Kubernetes cluster automation')
       %p
         = s_('ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
-        - if clusterable.project?
-          = link_to(s_('ClusterIntegration|Learn more about Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-        - else
-          = s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.')
-          = link_to(s_('ClusterIntegration|Learn more about group Kubernetes clusters'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+        = clusterable.empty_state_help_text
+        = clusterable.learn_more_link
 
       - if clusterable.can_create_cluster?
         .text-center
