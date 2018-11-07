@@ -3,51 +3,34 @@ require 'spec_helper'
 describe Deployments::SuccessWorker do
   subject { described_class.new.perform(deployment&.id) }
 
-  context 'when deployment starts environment' do
-    context 'when deployment was successful' do
-      let(:deployment) { create(:deployment, :start, :success) }
+  context 'when successful deployment' do
+    let(:deployment) { create(:deployment, :success) }
 
-      it 'executes StartEnvironmentService' do
-        expect(StartEnvironmentService)
-          .to receive(:new).with(deployment).and_call_original
+    it 'executes UpdateDeploymentService' do
+      expect(UpdateDeploymentService)
+        .to receive(:new).with(deployment).and_call_original
 
-        subject
-      end
-    end
-
-    context 'when deployment failed' do
-      let(:deployment) { create(:deployment, :start, :failed) }
-
-      it 'does not execute StartEnvironmentService' do
-        expect(StartEnvironmentService)
-          .not_to receive(:new).with(deployment).and_call_original
-
-        subject
-      end
+      subject
     end
   end
 
-  context 'when deployment stops environment' do
-    context 'when deployment was successful' do
-      let(:deployment) { create(:deployment, :stop, :success) }
+  context 'when canceled deployment' do
+    let(:deployment) { create(:deployment, :canceled) }
 
-      it 'executes StopEnvironmentService' do
-        expect(StopEnvironmentService)
-          .to receive(:new).with(deployment).and_call_original
+    it 'does not execute UpdateDeploymentService' do
+      expect(UpdateDeploymentService).not_to receive(:new)
 
-        subject
-      end
+      subject
     end
+  end
 
-    context 'when deployment failed' do
-      let(:deployment) { create(:deployment, :stop, :failed) }
+  context 'when deploy record does not exist' do
+    let(:deployment) { nil }
 
-      it 'does not execute StopEnvironmentService' do
-        expect(StopEnvironmentService)
-          .not_to receive(:new).with(deployment).and_call_original
+    it 'does not execute UpdateDeploymentService' do
+      expect(UpdateDeploymentService).not_to receive(:new)
 
-        subject
-      end
+      subject
     end
   end
 end

@@ -7,7 +7,7 @@ module Gitlab
         end
 
         def value
-          @value ||= @project.deployments.deployed.where("finished_at > ?", @from).count
+          @value ||= @project.deployments.success.where("created_at > ?", @from).count
         end
       end
     end

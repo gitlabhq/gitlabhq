@@ -8,11 +8,9 @@ module Deployments
 
     def perform(deployment_id)
       Deployment.find_by_id(deployment_id).try do |deployment|
-        if deployment.deployed?
-          StartEnvironmentService.new(deployment).execute
-        elsif deployment.stopped?
-          StopEnvironmentService.new(deployment).execute
-        end
+        break unless deployment.success?
+
+        UpdateDeploymentService.new(deployment).execute
       end
     end
   end

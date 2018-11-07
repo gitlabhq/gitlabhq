@@ -59,22 +59,14 @@ describe Environment do
     let(:environment) { create(:environment) }
     let(:sha) { RepoHelpers.sample_commit.id }
 
-    context 'when deployment starts environment' do
-      context 'when deployment has the specified sha' do
-        let!(:deployment) { create(:deployment, :start, environment: environment, sha: sha) }
+    context 'when deployment has the specified sha' do
+      let!(:deployment) { create(:deployment, environment: environment, sha: sha) }
 
-        it { is_expected.to eq([environment]) }
-      end
-
-      context 'when deployment does not have the specified sha' do
-        let!(:deployment) { create(:deployment, :start, environment: environment, sha: 'abc') }
-
-        it { is_expected.to be_empty }
-      end
+      it { is_expected.to eq([environment]) }
     end
 
-    context 'when deployment stops environment' do
-      let!(:deployment) { create(:deployment, :stop, environment: environment) }
+    context 'when deployment does not have the specified sha' do
+      let!(:deployment) { create(:deployment, environment: environment, sha: 'abc') }
 
       it { is_expected.to be_empty }
     end
@@ -85,28 +77,20 @@ describe Environment do
 
     let(:environment) { create(:environment) }
 
-    context 'when the latest deployment is for starting an environment' do
-      context 'when the latest deployment is successful' do
-        let!(:deployment) { create(:deployment, :start, :success, environment: environment) }
+    context 'when the latest deployment is successful' do
+      let!(:deployment) { create(:deployment, :success, environment: environment) }
 
-        it { expect(subject).to be_within(1.second).of(deployment.finished_at) }
-      end
-
-      context 'when the latest deployment failed' do
-        let!(:deployment) { create(:deployment, :start, :failed, environment: environment) }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when the latest deployment is running' do
-        let!(:deployment) { create(:deployment, :start, :running, environment: environment) }
-
-        it { is_expected.to be_nil }
-      end
+      it { expect(subject).to be_within(1.second).of(deployment.finished_at) }
     end
 
-    context 'when the latest deployment is for stopping environment' do
-      let!(:deployment) { create(:deployment, :stop, :success, environment: environment) }
+    context 'when the latest deployment failed' do
+      let!(:deployment) { create(:deployment, :failed, environment: environment) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the latest deployment is running' do
+      let!(:deployment) { create(:deployment, :running, environment: environment) }
 
       it { is_expected.to be_nil }
     end

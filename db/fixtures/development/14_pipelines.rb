@@ -43,14 +43,12 @@ class Gitlab::Seeder::Pipelines
 
     # deploy stage
     { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
-      options: { environment: { name: 'staging', action: 'start', on_stop: 'stop staging' } },
+      options: { environment: { action: 'start', on_stop: 'stop staging' } },
       queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
     { name: 'stop staging', stage: 'deploy', environment: 'staging',
-      when: 'manual', status: :skipped,
-      options: { environment: { name: 'staging', action: 'stop' } } },
+      when: 'manual', status: :skipped },
     { name: 'production', stage: 'deploy', environment: 'production',
-      when: 'manual', status: :skipped,
-      options: { environment: { name: 'production' } } },
+      when: 'manual', status: :skipped },
 
     # notify stage
     { name: 'slack', stage: 'notify', when: 'manual', status: :success },

@@ -18,107 +18,55 @@ describe 'Merge request > User sees deployment widget', :js do
       sign_in(user)
     end
 
-    context 'when deployment is to start an environment' do
-      context 'when deployment succeeded' do
-        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: ref, deployable: build) }
+    context 'when deployment succeeded' do
+      let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: ref, deployable: build) }
 
-        it 'displays that the environment is deployed' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
+      it 'displays that the environment is deployed' do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
 
-          expect(page).to have_content("Deployed to #{environment.name}")
-          expect(find('.js-deploy-time')['data-original-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
-        end
-      end
-
-      context 'when deployment failed' do
-        let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :failed, environment: environment, sha: sha, ref: ref, deployable: build) }
-
-        it 'displays that the deployment failed' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
-
-          expect(page).to have_content("Failed to deploy to #{environment.name}")
-          expect(page).not_to have_css('.js-deploy-time')
-        end
-      end
-
-      context 'when deployment running' do
-        let(:build) { create(:ci_build, :running, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :running, environment: environment, sha: sha, ref: ref, deployable: build) }
-
-        it 'displays that the running deployment' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
-
-          expect(page).to have_content("Deploying to #{environment.name}")
-          expect(page).not_to have_css('.js-deploy-time')
-        end
-      end
-
-      context 'when deployment will happen' do
-        let(:build) { create(:ci_build, :created, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: ref, deployable: build) }
-
-        it 'displays that the environment name' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
-
-          expect(page).to have_content("Deploying to #{environment.name}")
-          expect(page).not_to have_css('.js-deploy-time')
-        end
+        expect(page).to have_content("Deployed to #{environment.name}")
+        expect(find('.js-deploy-time')['data-original-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
       end
     end
 
-    context 'when deployment is to stop an environment' do
-      context 'when the stop action succeeded' do
-        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :succeed, :stop, environment: environment, sha: sha, ref: ref, deployable: build) }
+    context 'when deployment failed' do
+      let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, :failed, environment: environment, sha: sha, ref: ref, deployable: build) }
 
-        it 'does not display deployment info' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
+      it 'displays that the deployment failed' do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
 
-          expect(page).not_to have_css('.deployment-info')
-        end
+        expect(page).to have_content("Failed to deploy to #{environment.name}")
+        expect(page).not_to have_css('.js-deploy-time')
       end
+    end
 
-      context 'when the stop action failed' do
-        let(:build) { create(:ci_build, :failed, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :failed, :stop, environment: environment, sha: sha, ref: ref, deployable: build) }
+    context 'when deployment running' do
+      let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, :running, environment: environment, sha: sha, ref: ref, deployable: build) }
 
-        it 'does not display deployment info' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
+      it 'displays that the running deployment' do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
 
-          expect(page).not_to have_css('.deployment-info')
-        end
+        expect(page).to have_content("Deploying to #{environment.name}")
+        expect(page).not_to have_css('.js-deploy-time')
       end
+    end
 
-      context 'when the stop action is running' do
-        let(:build) { create(:ci_build, :running, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :running, :stop, environment: environment, sha: sha, ref: ref, deployable: build) }
+    context 'when deployment will happen' do
+      let(:build) { create(:ci_build, :created, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: ref, deployable: build) }
 
-        it 'does not display deployment info' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
+      it 'displays that the environment name' do
+        visit project_merge_request_path(project, merge_request)
+        wait_for_requests
 
-          expect(page).not_to have_css('.deployment-info')
-        end
-      end
-
-      context 'when the stop action will happen' do
-        let(:build) { create(:ci_build, :created, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, :stop, environment: environment, sha: sha, ref: ref, deployable: build) }
-
-        it 'does not display deployment info' do
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
-
-          expect(page).not_to have_css('.deployment-info')
-        end
+        expect(page).to have_content("Deploying to #{environment.name}")
+        expect(page).not_to have_css('.js-deploy-time')
       end
     end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StartEnvironmentService do
+describe UpdateDeploymentService do
   let(:user) { create(:user) }
   let(:options) { { name: 'production' } }
 
@@ -84,8 +84,8 @@ describe StartEnvironmentService do
       it 'updates external url' do
         subject
 
-        expect(environment.reload.name).to eq('review-apps/master')
-        expect(environment.reload.external_url).to eq('http://master.review-apps.gitlab.com')
+        expect(subject.environment.name).to eq('review-apps/master')
+        expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
       end
     end
   end

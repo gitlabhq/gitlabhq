@@ -344,23 +344,6 @@ describe 'Environments page', :js do
         expect(page).to have_content('No deployments yet')
       end
     end
-
-    context 'when there is a successful stop action' do
-      let(:project) { create(:project, :repository) }
-
-      let!(:deployment) do
-        create(:deployment, :success,
-                            :stop,
-                            environment: environment,
-                            sha: project.commit.id)
-      end
-
-      it 'does not show deployments' do
-        visit_environments(project)
-
-        expect(page).to have_content('No deployments yet')
-      end
-    end
   end
 
   it 'does have a new environment button' do

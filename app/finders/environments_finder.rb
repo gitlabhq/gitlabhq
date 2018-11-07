@@ -9,7 +9,7 @@ class EnvironmentsFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    deployments = project.deployments.deployed
+    deployments = project.deployments.success
     deployments =
       if ref
         deployments_query = params[:with_tags] ? 'ref = :ref OR tag IS TRUE' : 'ref = :ref'

@@ -82,19 +82,6 @@ describe 'Environment' do
         end
       end
 
-      context 'when there is a successful stop action' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-
-        let(:deployment) do
-          create(:deployment, :success, :stop, environment: environment, deployable: build)
-        end
-
-        it 'does show no deployments' do
-          expect(page).to have_content('You don\'t have any deployments right now.')
-        end
-      end
-
       context 'with related deployable present' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
         let(:build) { create(:ci_build, pipeline: pipeline) }

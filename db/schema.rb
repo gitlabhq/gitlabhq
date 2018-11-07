@@ -827,23 +827,19 @@ ActiveRecord::Schema.define(version: 20181106135939) do
     t.string "on_stop"
     t.integer "status", limit: 2, default: 2, null: false
     t.datetime_with_timezone "finished_at"
-    t.integer "action", limit: 2, default: 1, null: false
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
   add_index "deployments", ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
-  add_index "deployments", ["environment_id", "action", "sha"], name: "index_deployments_on_environment_id_and_action_and_sha", using: :btree
-  add_index "deployments", ["environment_id", "action", "status", "id"], name: "index_deployments_on_env_deployed_for_id", using: :btree
-  add_index "deployments", ["environment_id", "action", "status", "iid"], name: "index_deployments_on_env_deployed_for_iid", using: :btree
   add_index "deployments", ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
-  add_index "deployments", ["environment_id", "status"], name: "index_deployments_on_environment_id_and_status", using: :btree
+  add_index "deployments", ["environment_id", "sha"], name: "index_deployments_on_environment_id_and_sha", using: :btree
+  add_index "deployments", ["environment_id", "status", "id"], name: "index_deployments_on_environment_id_and_status_and_id", using: :btree
+  add_index "deployments", ["environment_id", "status", "iid"], name: "index_deployments_on_environment_id_and_status_and_iid", using: :btree
   add_index "deployments", ["id"], name: "partial_index_deployments_for_legacy_successful_deployments", where: "((finished_at IS NULL) AND (status = 2))", using: :btree
-  add_index "deployments", ["project_id", "action", "status", "finished_at"], name: "index_deployments_on_prj_deployed_for_finished_at", using: :btree
-  add_index "deployments", ["project_id", "action", "status", "id"], name: "index_deployments_on_project_id_and_action_and_status_and_id", using: :btree
-  add_index "deployments", ["project_id", "action", "status", "iid"], name: "index_deployments_on_project_id_and_action_and_status_and_iid", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
-  add_index "deployments", ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
+  add_index "deployments", ["project_id", "status", "id"], name: "index_deployments_on_project_id_and_status_and_id", using: :btree
+  add_index "deployments", ["project_id", "status", "iid"], name: "index_deployments_on_project_id_and_status_and_iid", using: :btree
 
   create_table "emails", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -930,35 +926,6 @@ ActiveRecord::Schema.define(version: 20181106135939) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
-
-  create_table "gcp_clusters", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "user_id"
-    t.integer "service_id"
-    t.integer "status"
-    t.integer "gcp_cluster_size", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.boolean "enabled", default: true
-    t.text "status_reason"
-    t.string "project_namespace"
-    t.string "endpoint"
-    t.text "ca_cert"
-    t.text "encrypted_kubernetes_token"
-    t.string "encrypted_kubernetes_token_iv"
-    t.string "username"
-    t.text "encrypted_password"
-    t.string "encrypted_password_iv"
-    t.string "gcp_project_id", null: false
-    t.string "gcp_cluster_zone", null: false
-    t.string "gcp_cluster_name", null: false
-    t.string "gcp_machine_type"
-    t.string "gcp_operation_id"
-    t.text "encrypted_gcp_token"
-    t.string "encrypted_gcp_token_iv"
-  end
-
-  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
 
   create_table "gpg_key_subkeys", force: :cascade do |t|
     t.integer "gpg_key_id", null: false
@@ -1860,6 +1827,7 @@ ActiveRecord::Schema.define(version: 20181106135939) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2443,9 +2411,6 @@ ActiveRecord::Schema.define(version: 20181106135939) do
   add_foreign_key "fork_network_members", "projects", on_delete: :cascade
   add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
-  add_foreign_key "gcp_clusters", "services", on_delete: :nullify
-  add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
