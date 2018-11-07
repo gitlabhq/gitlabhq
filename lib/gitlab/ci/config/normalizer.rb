@@ -9,14 +9,16 @@ module Gitlab
         end
 
         def normalize_jobs
-          extract_parallelized_jobs
+          extract_parallelized_jobs!
+          return @jobs_config if @parallelized_jobs.empty?
+
           parallelized_config = parallelize_jobs
           parallelize_dependencies(parallelized_config)
         end
 
         private
 
-        def extract_parallelized_jobs
+        def extract_parallelized_jobs!
           @parallelized_jobs = {}
 
           @jobs_config.each do |job_name, config|
@@ -41,8 +43,8 @@ module Gitlab
         end
 
         def parallelize_dependencies(parallelized_config)
+          parallelized_job_names = @parallelized_jobs.keys.map(&:to_s)
           parallelized_config.each_with_object({}) do |(job_name, config), hash|
-            parallelized_job_names = @parallelized_jobs.keys.map(&:to_s)
             if config[:dependencies] && (intersection = config[:dependencies] & parallelized_job_names).any?
               deps = intersection.map { |dep| @parallelized_jobs[dep.to_sym].map(&:first) }.flatten
               hash[job_name] = config.merge(dependencies: deps)
