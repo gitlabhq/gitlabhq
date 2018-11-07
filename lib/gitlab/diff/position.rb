@@ -101,10 +101,6 @@ module Gitlab
         @diff_refs ||= DiffRefs.new(base_sha: base_sha, start_sha: start_sha, head_sha: head_sha)
       end
 
-      def unfolded_diff?(repository)
-        diff_file(repository)&.unfolded?
-      end
-
       def diff_file(repository)
         return @diff_file if defined?(@diff_file)
 
@@ -138,13 +134,7 @@ module Gitlab
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        file = comparison.diffs(diff_options).diff_files.first
-
-        # We need to unfold diff lines according to the position in order
-        # to correctly calculate the line code and trace position changes.
-        file&.unfold_diff_lines(self)
-
-        file
+        comparison.diffs(diff_options).diff_files.first
       end
 
       def get_formatter_class(type)
