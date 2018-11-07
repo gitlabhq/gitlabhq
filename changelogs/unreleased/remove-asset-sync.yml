@@ -1,0 +1,5 @@
+---
+title: Remove asset_sync gem from Gemfile and related code from codebase
+merge_request: 22610
+author:
+type: other
