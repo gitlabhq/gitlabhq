@@ -774,7 +774,7 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 </details>
 </p>
 
-**Note:** Markdown inside these tags is supported, as long as you have a blank link after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
+**Note:** Markdown inside these tags is supported, as long as you have a blank line after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
 
 ```html
 <details>
