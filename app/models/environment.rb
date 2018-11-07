@@ -50,6 +50,7 @@ class Environment < ActiveRecord::Base
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :for_project, -> (project) { where(project_id: project) }
+  scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
 
   state_machine :state, initial: :available do
     event :start do

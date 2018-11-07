@@ -10,7 +10,9 @@ class Deployment < ActiveRecord::Base
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
-  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.deployments&.maximum(:iid) }
+  has_internal_id :iid, scope: :project, init: ->(s) do
+    Deployment.where(project: s.project).maximum(:iid) if s&.project
+  end
 
   validates :sha, presence: true
   validates :ref, presence: true

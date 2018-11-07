@@ -15,6 +15,7 @@ describe EnvironmentStatusEntity do
   subject { entity.as_json }
 
   before do
+    deployment.update(sha: merge_request.diff_head_sha)
     allow(request).to receive(:current_user).and_return(user)
   end
 

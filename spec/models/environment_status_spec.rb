@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe EnvironmentStatus do
+  include ProjectForksHelper
+
   let(:deployment)    { create(:deployment, :succeed, :review_app) }
-  let(:environment)   { deployment.environment}
+  let(:environment)   { deployment.environment }
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
   let(:sha)           { deployment.sha }
@@ -65,9 +67,9 @@ describe EnvironmentStatus do
     let(:admin)    { create(:admin) }
     let(:pipeline) { create(:ci_pipeline, sha: sha) }
 
-    it 'is based on merge_request.head_pipeline' do
-      expect(merge_request).to receive(:head_pipeline).and_return(pipeline)
-      expect(merge_request).not_to receive(:merge_pipeline)
+    it 'is based on merge_request.diff_head_sha' do
+      expect(merge_request).to receive(:diff_head_sha)
+      expect(merge_request).not_to receive(:merge_commit_sha)
 
       described_class.for_merge_request(merge_request, admin)
     end
@@ -81,11 +83,83 @@ describe EnvironmentStatus do
       merge_request.mark_as_merged!
     end
 
-    it 'is based on merge_request.merge_pipeline' do
-      expect(merge_request).to receive(:merge_pipeline).and_return(pipeline)
-      expect(merge_request).not_to receive(:head_pipeline)
+    it 'is based on merge_request.merge_commit_sha' do
+      expect(merge_request).to receive(:merge_commit_sha)
+      expect(merge_request).not_to receive(:diff_head_sha)
 
       described_class.after_merge_request(merge_request, admin)
+    end
+  end
+
+  describe '.build_environments_status' do
+    subject { described_class.send(:build_environments_status, merge_request, user, sha) }
+
+    let!(:build) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
+    let(:environment) { build.deployment.environment }
+    let(:user) { project.owner }
+
+    before do
+      build.deployment&.update!(sha: sha)
+    end
+
+    context 'when environment is created on a forked project' do
+      let(:project) { create(:project, :repository) }
+      let(:forked) { fork_project(project, user, repository: true) }
+      let(:sha) { forked.commit.sha }
+      let(:pipeline) { create(:ci_pipeline, sha: sha, project: forked) }
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: forked,
+               target_project: project,
+               target_branch: 'master',
+               head_pipeline: pipeline)
+      end
+
+      it 'returns environment status' do
+        expect(subject.count).to eq(1)
+        expect(subject[0].environment).to eq(environment)
+        expect(subject[0].merge_request).to eq(merge_request)
+        expect(subject[0].sha).to eq(sha)
+      end
+    end
+
+    context 'when environment is created on a target project' do
+      let(:project) { create(:project, :repository) }
+      let(:sha) { project.commit.sha }
+      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master',
+               head_pipeline: pipeline)
+      end
+
+      it 'returns environment status' do
+        expect(subject.count).to eq(1)
+        expect(subject[0].environment).to eq(environment)
+        expect(subject[0].merge_request).to eq(merge_request)
+        expect(subject[0].sha).to eq(sha)
+      end
+
+      context 'when the build stops an environment' do
+        let!(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+
+        it 'does not return environment status' do
+          expect(subject.count).to eq(0)
+        end
+      end
+
+      context 'when user does not have a permission to see the environment' do
+        let(:user) { create(:user) }
+
+        it 'does not return environment status' do
+          expect(subject.count).to eq(0)
+        end
+      end
     end
   end
 end

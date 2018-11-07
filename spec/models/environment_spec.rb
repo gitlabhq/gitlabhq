@@ -53,6 +53,25 @@ describe Environment do
     end
   end
 
+  describe '.with_deployment' do
+    subject { described_class.with_deployment(sha) }
+
+    let(:environment) { create(:environment) }
+    let(:sha) { RepoHelpers.sample_commit.id }
+
+    context 'when deployment has the specified sha' do
+      let!(:deployment) { create(:deployment, environment: environment, sha: sha) }
+
+      it { is_expected.to eq([environment]) }
+    end
+
+    context 'when deployment does not have the specified sha' do
+      let!(:deployment) { create(:deployment, environment: environment, sha: 'abc') }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '#folder_name' do
     context 'when it is inside a folder' do
       subject(:environment) do

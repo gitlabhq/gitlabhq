@@ -128,7 +128,7 @@ describe 'Environments page', :js do
       end
     end
 
-    context 'when there are deployments' do
+    context 'when there are successful deployments' do
       let(:project) { create(:project, :repository) }
 
       let!(:deployment) do
@@ -326,6 +326,22 @@ describe 'Environments page', :js do
             expect(delayed_job.reload).to be_pending
           end
         end
+      end
+    end
+
+    context 'when there is a failed deployment' do
+      let(:project) { create(:project, :repository) }
+
+      let!(:deployment) do
+        create(:deployment, :failed,
+                            environment: environment,
+                            sha: project.commit.id)
+      end
+
+      it 'does not show deployments' do
+        visit_environments(project)
+
+        expect(page).to have_content('No deployments yet')
       end
     end
   end

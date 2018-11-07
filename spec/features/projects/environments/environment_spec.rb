@@ -25,7 +25,7 @@ describe 'Environment' do
     end
 
     context 'without deployments' do
-      it 'does show no deployments' do
+      it 'does not show deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
@@ -40,6 +40,45 @@ describe 'Environment' do
           expect(page).to have_link(deployment.short_sha)
           expect(page).not_to have_link('Re-deploy')
           expect(page).not_to have_terminal_button
+        end
+      end
+
+      context 'when there is a successful deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :success, environment: environment, deployable: build)
+        end
+
+        it 'does show deployments' do
+          expect(page).to have_link("#{build.name} (##{build.id})")
+        end
+      end
+
+      context 'when there is a running deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :running, environment: environment, deployable: build)
+        end
+
+        it 'does not show deployments' do
+          expect(page).to have_content('You don\'t have any deployments right now.')
+        end
+      end
+
+      context 'when there is a failed deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :failed, environment: environment, deployable: build)
+        end
+
+        it 'does not show deployments' do
+          expect(page).to have_content('You don\'t have any deployments right now.')
         end
       end
 
