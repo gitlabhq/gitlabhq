@@ -211,7 +211,7 @@ added directly to your configured cluster. Those applications are needed for
 [Review Apps](../../../ci/review_apps/index.md) and [deployments](../../../ci/environments.md).
 
 NOTE: **Note:**
-The applications will be installed in a dedicated namespace called
+With the exception of Knative, the applications will be installed in a dedicated namespace called
 `gitlab-managed-apps`. In case you have added an existing Kubernetes cluster
 with Tiller already installed, you should be careful as GitLab cannot
 detect it. By installing it via the applications will result into having it
@@ -224,6 +224,7 @@ twice, which can lead to confusion during deployments.
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
 | [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found at [Nurtch Documentation](http://docs.nurtch.com/en/latest).  **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
+| [Knative](https://cloud.google.com/knative) | 0.1.2 | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as <program_name>.<kubernetes_namespace>.<domain_name>.  **Note**: This will require your kubernetes cluster to have RBAC enabled. | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
 ## Getting the external IP address
 
@@ -231,6 +232,10 @@ NOTE: **Note:**
 You need a load balancer installed in your cluster in order to obtain the
 external IP address with the following procedure. It can be deployed using the
 [**Ingress** application](#installing-applications).
+
+NOTE: **Note:**
+Knative will include its own load balancer in the form of [Istio](https://istio.io).
+At this time, to determine the external IP address, you will need to follow the manual approach.
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
@@ -260,6 +265,12 @@ run the following command:
 
 ```bash
 kubectl get svc --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+```
+
+NOTE: **Note:**
+For Istio/Knative, the command will be different:
+```bash
+kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
 ```
 
 Otherwise, you can list the IP addresses of all load balancers:
