@@ -4,9 +4,9 @@ description: Learn how to contribute to GitLab Documentation.
 
 # GitLab Documentation guidelines
 
-  - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **[Technical Articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
-  - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
+- **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
+- **[Technical Articles](#technical-articles)**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
+- **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
 ## Contributing to docs
 
@@ -41,7 +41,7 @@ how to structure GitLab docs.
 
 ## Markdown and styles
 
-Currently GitLab docs use Redcarpet as [markdown](../../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+Currently GitLab docs use [Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) as the [markdown](../../user/markdown.md) engine.
 
 All the docs follow the [documentation style guidelines](styleguide.md). See [Linting](#linting) for help to follow the guidelines.
 
@@ -61,11 +61,11 @@ in small iterations. Please don't create new docs in these folders.
 ### Documentation files
 
 - When you create a new directory, always start with an `index.md` file.
-Do not use another file name and **do not** create `README.md` files
+  Do not use another file name and **do not** create `README.md` files.
 - **Do not** use special chars and spaces, or capital letters in file names,
-directory names, branch names, and anything that generates a path.
-- Max screenshot size: 100KB
-- We do not support videos (yet)
+  directory names, branch names, and anything that generates a path.
+- Max screenshot size: 100KB.
+- We do not support videos (yet).
 
 ### Location and naming documents
 
@@ -83,16 +83,16 @@ and cross-link between any related content.
 
 The table below shows what kind of documentation goes where.
 
-| Directory | What belongs here |
-| --------- | -------------- |
-| `doc/user/` | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`. |
-| `doc/administration/`  | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`. |
-| `doc/api/` | API related documentation. |
-| `doc/development/` | Documentation related to the development of GitLab. Any styleguides should go here. |
-| `doc/legal/` | Legal documents about contributing to GitLab. |
-| `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
-| `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
-| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+| Directory             | What belongs here                                                                                                                                                                                              |
+|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`.                                                                                                       |
+| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`.                   |
+| `doc/api/`            | API related documentation.                                                                                                                                                                                     |
+| `doc/development/`    | Documentation related to the development of GitLab. Any styleguides should go here.                                                                                                                            |
+| `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                                                                                                  |
+| `doc/install/`        | Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
+| `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
+| `doc/topics/`         | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs)                                                              |
 
 ---
 
@@ -134,13 +134,13 @@ merge request.
 
 Changing a document's location is not to be taken lightly. Remember that the
 documentation is available to all installations under `help/` and not only to
-GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
+GitLab.com or <http://docs.gitlab.com>. Make sure this is discussed with the
 Documentation team beforehand.
 
 If you indeed need to change a document's location, do NOT remove the old
 document, but rather replace all of its contents with a new line:
 
-```
+```md
 This document was moved to [another location](path/to/new_doc.md).
 ```
 
@@ -154,7 +154,7 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
 1. Copy `doc/workflow/lfs/lfs_administration.md` to `doc/administration/lfs.md`
 1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
 
-    ```
+    ```md
     This document was moved to [another location](../../administration/lfs.md).
     ```
 
@@ -162,7 +162,7 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
    A quick way to find them is to use `git grep`. First go to the root directory
    where you cloned the `gitlab-ce` repository and then do:
 
-    ```
+    ```sh
     git grep -n "workflow/lfs/lfs_administration"
     git grep -n "lfs/lfs_administration"
     ```
@@ -226,17 +226,16 @@ even if it's `index.html` or `README.html`.
 ## Linting
 
 To help adhere to the [documentation style guidelines](styleguide.md), and to improve the content
- added to documentation, consider locally installing and running documentation linters. This will
- help you catch common issues before raising merge requests for review of documentation.
+added to documentation, consider locally installing and running documentation linters. This will
+help you catch common issues before raising merge requests for review of documentation.
 
 The following are some suggested linters you can install locally and sample configuration:
 
-- `proselint`
-- `markdownlint`
+- [`proselint`](#proselint)
+- [`markdownlint`](#markdownlint)
 
 NOTE: **Note:**
-This list does not limit what other linters you can add to your local documentation writing
- toolchain.
+This list does not limit what other linters you can add to your local documentation writing toolchain.
 
 ### `proselint`
 
@@ -262,19 +261,20 @@ proselint **/*.md
 
 #### Sample `proselint` configuration
 
-All of the checks are good to use. However, excluding the `typography.symbols` checks might reduce
- noise. The following sample `proselint` configuration disables the `typography.symbols` checks:
+All of the checks are good to use. However, excluding the `typography.symbols` and `misc.phrasal_adjectives` checks will reduce
+noise. The following sample `proselint` configuration disables these checks:
 
 ```json
 {
   "checks": {
-    "typography.symbols": false
+    "typography.symbols": false,
+    "misc.phrasal_adjectives": false
   }
 }
 ```
 
 A file with `proselint` configuration must be placed in a
- [valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
+[valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
 
 ### `markdownlint`
 
@@ -306,6 +306,7 @@ The following sample `markdownlint` configuration modifies the available default
 
 - Adhere to the [style guidelines](styleguide.md).
 - Apply conventions found in the GitLab documentation.
+- Allow the flexibility of using some inline HTML.
 
 ```json
 {
@@ -316,14 +317,31 @@ The following sample `markdownlint` configuration modifies the available default
   "no-trailing-punctuation": false,
   "ol-prefix": { "style": "one" },
   "blanks-around-fences": false,
+  "no-inline-html": {
+    "allowed_elements": [
+      "table",
+      "tbody",
+      "tr",
+      "td",
+      "ul",
+      "ol",
+      "li",
+      "br",
+      "img",
+      "a",
+      "strong",
+      "i",
+      "div"
+    ]
+  },
   "hr-style": { "style": "---" },
   "fenced-code-language": false
 }
 ```
 
 For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
- placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
- example, `~/.markdownlintrc`.
+placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
+example, `~/.markdownlintrc`.
 
 ## Testing
 
@@ -350,8 +368,8 @@ If your contribution contains **only** documentation changes, you can speed up
 the CI process by following some branch naming conventions. You have three
 choices:
 
-| Branch name | Valid example |
-| ----------- | ------------- |
+| Branch name           | Valid example                |
+|:----------------------|:-----------------------------|
 | Starting with `docs/` | `docs/update-api-issues`     |
 | Starting with `docs-` | `docs-update-api-issues`     |
 | Ending in `-docs`     | `123-update-api-issues-docs` |
@@ -400,15 +418,15 @@ Follow this [method for cherry-picking from CE to EE](../automatic_ce_ee_merge.m
 - Create the EE-equivalent branch ending with `-ee`, e.g.,
   `git checkout -b docs-example-ee`
 - Once all the jobs are passing in CE and EE, and you've addressed the
-feedback from your own team, assign the CE MR to a technical writer for review
+  feedback from your own team, assign the CE MR to a technical writer for review
 - When both MRs are ready, the EE merge request will be merged first, and the
-CE-equivalent will be merged next.
+  CE-equivalent will be merged next.
 - Note that the review will occur only in the CE MR, as the EE MR
-contains the same commits as the CE MR.
+  contains the same commits as the CE MR.
 - If you have a few more changes that apply to the EE-version only, you can submit
-a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
-additionally to the CE MR. If there are many EE-only changes though, start a new MR
-to EE only.
+  a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
+  additionally to the CE MR. If there are many EE-only changes though, start a new MR
+  to EE only.
 
 ## Previewing the changes live
 
@@ -418,9 +436,9 @@ To preview your changes to documentation locally, follow this
 
 The live preview is currently enabled for the following projects:
 
-- https://gitlab.com/gitlab-org/gitlab-ce
-- https://gitlab.com/gitlab-org/gitlab-ee
-- https://gitlab.com/gitlab-org/gitlab-runner
+- <https://gitlab.com/gitlab-org/gitlab-ce>
+- <https://gitlab.com/gitlab-org/gitlab-ee>
+- <https://gitlab.com/gitlab-org/gitlab-runner>
 
 If your branch contains only documentation changes, you can use
 [special branch names](#branch-naming) to avoid long running pipelines.
@@ -516,8 +534,8 @@ Every GitLab instance includes the documentation, which is available from `/help
 
 The documentation available online on docs.gitlab.com is continuously
 deployed every hour from the `master` branch of CE, EE, Omnibus, and Runner. Therefore,
-once a merge request gets merged, it will be available online on the same day,
-but they will be shipped (and available on `/help`) within the milestone assigned
+once a merge request gets merged, it will be available online on the same day.
+However, they will be shipped (and available on `/help`) within the milestone assigned
 to the MR.
 
 For instance, let's say your merge request has a milestone set to 11.3, which
@@ -614,7 +632,7 @@ They should be placed in a new directory named `/article-title/index.md` under a
 - **User guides**: technical content to guide regular users from point A to point B
 - **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
 - **Technical Overviews**: technical content describing features, solutions, and third-party integrations
-- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
+- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach specific objectives
 
 #### Understanding guides, tutorials, and technical overviews
 
@@ -645,7 +663,6 @@ with the following information:
 - **Publication date** (ISO format YYYY-MM-DD)
 
 For example:
-
 
 ```yaml
 ---

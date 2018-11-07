@@ -7,16 +7,16 @@ description: Learn the process of shipping documentation for GitLab.
 At GitLab, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
 
 - Product Managers (PMs): in the issue for all new and updated features,
-PMs include specific documentation requirements that the developer who is
-writing or updating the docs must meet, along with feature descriptions
-and use cases. They call out any specific areas where collaborating with
-a technical writer is recommended, and usually act as the first reviewer
-of the docs.
+  PMs include specific documentation requirements that the developer who is
+  writing or updating the docs must meet, along with feature descriptions
+  and use cases. They call out any specific areas where collaborating with
+  a technical writer is recommended, and usually act as the first reviewer
+  of the docs.
 - Developers: author documentation and merge it on time (up to a week after
-the feature freeze).
+  the feature freeze).
 - Technical Writers: review each issue to ensure PM's requirements are complete,
-help developers with any questions throughout the process, and act as the final
-reviewer of all new and updated docs content before it's merged.
+  help developers with any questions throughout the process, and act as the final
+  reviewer of all new and updated docs content before it's merged.
 
 ## Requirements
 
@@ -112,17 +112,17 @@ and the missed-deliverable due date (the 14th of each month) are both respected.
 The developer should add to the feature MR the documentation containing:
 
 - The [documentation blurb](structure.md#documentation-blurb): copy the
-feature name, overview/description, and use cases from the feature issue
+  feature name, overview/description, and use cases from the feature issue
 - Instructions: write how to use the feature, step by step, with no gaps.
 - [Crosslink for discoverability](structure.md#discoverability): link with
-internal docs and external resources (if applicable)
+  internal docs and external resources (if applicable)
 - Index: link the new doc or the new heading from the higher-level index
-for [discoverability](#discoverability)
+  for [discoverability](#discoverability)
 - [Screenshots](styleguide.md#images): when necessary, add screenshots for:
   - Illustrating a step of the process
   - Indicating the location of a navigation menu
 - Label the MR with `Documentation`, `Deliverable`, `docs-P1`, and assign
-the correct milestone
+  the correct milestone
 - Assign the PM for review
 - When done, mention the `@gl\-docsteam` in the MR asking for review
 - **Due date**: feature freeze date and time
@@ -133,10 +133,10 @@ If the docs aren't being shipped within the feature MR:
 
 - Create a new issue mentioning "docs" or "documentation" in the title (use the Documentation issue description template)
 - Label the issue with: `Documentation`, `Deliverable`, `docs-P1`, `<product-label>`
-(product label == CI/CD, Pages, Prometheus, etc)
+  (product label == CI/CD, Pages, Prometheus, etc)
 - Add the correct milestone
 - Create a new MR for shipping the docs changes and follow the same
-process [described above](#documentation-shipped-in-the-feature-mr)
+  process [described above](#documentation-shipped-in-the-feature-mr)
 - Use the MR description template called "Documentation"
 - Add the same labels and milestone as you did for the issue
 - Assign the PM for review
@@ -162,9 +162,9 @@ The **due date** for **merging** `missed-deliverable` MRs is on the
 
 - **Planning**
   - Once an issue contains a Documentation label and the current milestone, a
-technical writer reviews the Product Manager's documentation requirements
+  technical writer reviews the Product Manager's documentation requirements.
   - Once the documentation requirements are approved, the technical writer can
-work with the developer to discuss any documentation questions and plans/outlines, as needed.
+  work with the developer to discuss any documentation questions and plans/outlines, as needed.
 
 - **Review** - A technical writer must review the documentation for:
   - Clarity
@@ -183,4 +183,3 @@ work with the developer to discuss any documentation questions and plans/outline
   - Describe the difference between new features and feature updates
   - Creating a new doc vs updating an existing doc
 -->
-

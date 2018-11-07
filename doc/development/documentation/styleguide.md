@@ -15,10 +15,10 @@ For help adhering to the guidelines, see [Linting](index.md#linting).
 ## Files
 
 - [Directory structure](index.md#location-and-naming-documents): place the docs
-in the correct location.
+  in the correct location.
 - [Documentation files](index.md#documentation-files): name the files accordingly.
 - [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
-documentation.
+  documentation.
 
 NOTE: **Note:**
 **Do not** use capital letters, spaces, or special chars in file names,
@@ -45,10 +45,10 @@ a test that will fail if it spots a new `README.md` file.
 - Capitalize "G" and "L" in GitLab.
 - Use sentence case for titles, headings, labels, menu items, and buttons.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
-[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
-Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
-(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-some features are also objects (e.g. "Merge Requests" and "merge requests").
+  [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+  Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+  (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+  some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
@@ -130,9 +130,9 @@ To indicate the steps of navigation through the UI:
 
 - Use the exact word as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char `>` as separator
-(e.g., `Navigate to your project's **Settings > CI/CD**` ).
+  (e.g., `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-needs to expand the tab to find the settings you're referring to.
+  needs to expand the tab to find the settings you're referring to.
 
 ## Images
 
@@ -147,7 +147,7 @@ needs to expand the tab to find the settings you're referring to.
 - Compress all images with <https://tinypng.com/> or similar tool.
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
-of a process, not to _replace_ it.
+  of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
 - The GitLab docs do not support videos yet.
 
@@ -296,7 +296,7 @@ keyword "only":
 - For GitLab Core: `**[CORE ONLY]**`.
 
 The tier should be ideally added to headers, so that the full badge will be displayed.
-But it can be also mentioned from paragraphs, list items, and table cells. For these cases,
+However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark.
 E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
 
@@ -317,7 +317,7 @@ avoid duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
 read like:
 
-```
+```md
 Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
 ```
@@ -403,19 +403,19 @@ low.
 
 You can use the following fake tokens as examples.
 
-|     **Token type**    |           **Token value**         |
-| --------------------- | --------------------------------- |
-| Private user token    | `9koXpg98eAheJpvBs5tK`            |
-| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| **Token type**        | **Token value**                                                    |
+|:----------------------|:-------------------------------------------------------------------|
+| Private user token    | `9koXpg98eAheJpvBs5tK`                                             |
+| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
-| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
-| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
+| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### API
 
@@ -438,16 +438,16 @@ on this document. Further explanation is given below.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (``` ` ```).
 
-```
+```md
 | Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
+|:----------|:-----|:---------|:------------|
 ```
 
 Rendered example:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user`  | string | yes | The GitLab username |
+| Attribute | Type   | Required | Description         |
+|:----------|:-------|:---------|:--------------------|
+| `user`    | string | yes      | The GitLab username |
 
 #### cURL commands
 
@@ -459,12 +459,12 @@ Rendered example:
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
-| Methods | Description |
-| ------- | ----------- |
+| Methods                                    | Description                                           |
+|:-------------------------------------------|:------------------------------------------------------|
 | `-H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK"` | Use this method as is, whenever authentication needed |
-| `-X POST`   | Use this method when creating new objects |
-| `-X PUT`    | Use this method when updating existing objects |
-| `-X DELETE` | Use this method when removing existing objects |
+| `-X POST`                                  | Use this method when creating new objects             |
+| `-X PUT`                                   | Use this method when updating existing objects        |
+| `-X DELETE`                                | Use this method when removing existing objects        |
 
 #### cURL Examples
 
