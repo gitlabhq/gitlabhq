@@ -18,10 +18,8 @@ module ImportHelper
     "#{namespace}/#{name}"
   end
 
-  def provider_project_link(provider, full_path)
-    url = __send__("#{provider}_project_url", full_path) # rubocop:disable GitlabSecurity/PublicSend
-
-    link_to full_path, url, target: '_blank', rel: 'noopener noreferrer'
+  def provider_project_link_url(provider_url, full_path)
+    Gitlab::Utils.append_path(provider_url, full_path)
   end
 
   def import_will_timeout_message(_ci_cd_only)
@@ -80,23 +78,5 @@ module ImportHelper
 
   def import_all_githubish_repositories_button_label
     _('Import all repositories')
-  end
-
-  private
-
-  def github_project_url(full_path)
-    Gitlab::Utils.append_path(github_root_url, full_path)
-  end
-
-  def github_root_url
-    strong_memoize(:github_url) do
-      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
-
-      provider&.dig('url').presence || 'https://github.com'
-    end
-  end
-
-  def gitea_project_url(full_path)
-    Gitlab::Utils.append_path(@gitea_host_url, full_path)
   end
 end
