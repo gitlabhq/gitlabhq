@@ -17,6 +17,11 @@ export default {
       type: String,
       required: true,
     },
+    tooltipPlacement: {
+      type: String,
+      required: false,
+      default: 'top',
+    },
     cssClass: {
       type: String,
       required: false,
