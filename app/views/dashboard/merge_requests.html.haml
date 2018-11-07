@@ -2,6 +2,8 @@
 - page_title _("Merge Requests")
 - @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
 
+= render_if_exists "shared/gold_trial_callout"
+
 .page-title-holder
   %h1.page-title= _('Merge Requests')
 
