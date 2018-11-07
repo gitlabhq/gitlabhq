@@ -16,6 +16,8 @@ import Log from './job_log.vue';
 import LogTopBar from './job_log_controllers.vue';
 import StuckBlock from './stuck_block.vue';
 import Sidebar from './sidebar.vue';
+import { sprintf } from '~/locale';
+import delayedJobMixin from '../mixins/delayed_job_mixin';
 
 export default {
   name: 'JobPageApp',
@@ -33,6 +35,7 @@ export default {
     Sidebar,
     GlLoadingIcon,
   },
+  mixins: [delayedJobMixin],
   props: {
     runnerSettingsUrl: {
       type: String,
@@ -91,6 +94,17 @@ export default {
 
     shouldRenderContent() {
       return !this.isLoading && !this.hasError;
+    },
+
+    emptyStateTitle() {
+      const { emptyStateIllustration, remainingTime } = this;
+      const { title } = emptyStateIllustration;
+
+      if (this.isDelayedJob) {
+        return sprintf(title, { remainingTime });
+      }
+
+      return title;
     },
   },
   watch: {
@@ -272,7 +286,7 @@ export default {
           class="js-job-empty-state"
           :illustration-path="emptyStateIllustration.image"
           :illustration-size-class="emptyStateIllustration.size"
-          :title="emptyStateIllustration.title"
+          :title="emptyStateTitle"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
         />
