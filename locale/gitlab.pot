@@ -1367,7 +1367,7 @@ msgstr ""
 msgid "ClusterIntegration|Add a Kubernetes cluster integration"
 msgstr ""
 
-msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects."
+msgid "ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Adding an integration to your group will share the cluster across all your projects."
@@ -1550,9 +1550,6 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
@@ -1701,9 +1698,6 @@ msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
-msgstr ""
-
-msgid "ClusterIntegration|Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster."
 msgstr ""
 
 msgid "ClusterIntegration|Validating project billing status"

@@ -48,6 +48,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     nil
   end
 
+  def sidebar_text
+    raise NotImplementedError
+  end
+
   def learn_more_link
     raise NotImplementedError
   end

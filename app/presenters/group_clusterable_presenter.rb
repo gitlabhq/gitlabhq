@@ -24,6 +24,11 @@ class GroupClusterablePresenter < ClusterablePresenter
     s_('ClusterIntegration|Adding an integration to your group will share the cluster across all your projects.')
   end
 
+  override :sidebar_text
+  def sidebar_text
+    s_('ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster.')
+  end
+
   override :learn_more_link
   def learn_more_link
     link_to(s_('ClusterIntegration|Learn more about group Kubernetes clusters'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
