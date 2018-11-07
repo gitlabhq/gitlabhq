@@ -8,6 +8,7 @@ describe Gitlab::UsageData do
     before do
       create(:jira_service, project: projects[0])
       create(:jira_service, project: projects[1])
+      create(:jira_cloud_service, project: projects[2])
       create(:prometheus_service, project: projects[1])
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
@@ -97,6 +98,8 @@ describe Gitlab::UsageData do
         projects
         projects_imported_from_github
         projects_jira_active
+        projects_jira_server_active
+        projects_jira_cloud_active
         projects_slack_notifications_active
         projects_slack_slash_active
         projects_prometheus_active
@@ -116,7 +119,9 @@ describe Gitlab::UsageData do
 
       expect(count_data[:projects]).to eq(3)
       expect(count_data[:projects_prometheus_active]).to eq(1)
-      expect(count_data[:projects_jira_active]).to eq(2)
+      expect(count_data[:projects_jira_active]).to eq(3)
+      expect(count_data[:projects_jira_server_active]).to eq(2)
+      expect(count_data[:projects_jira_cloud_active]).to eq(1)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
 
