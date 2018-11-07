@@ -109,13 +109,13 @@ describe 'Merge request > User selects branches for new MR', :js do
   end
 
   it 'populates source branch button' do
-    visit project_new_merge_request_path(project, change_branches: true, merge_request_source_branch: 'fix', merge_request: { target_branch: 'master' })
+    visit project_new_merge_request_path(project, change_branches: true, merge_request: { target_branch: 'master', source_branch: 'fix' })
 
     expect(find('.js-source-branch')).to have_content('fix')
   end
 
   it 'allows to change the diff view' do
-    visit project_new_merge_request_path(project, merge_request_source_branch: 'fix', merge_request: { target_branch: 'master' })
+    visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
 
     click_link 'Changes'
 
@@ -131,7 +131,7 @@ describe 'Merge request > User selects branches for new MR', :js do
   end
 
   it 'does not allow non-existing branches' do
-    visit project_new_merge_request_path(project, merge_request_source_branch: 'non-exist-source', merge_request: { target_branch: 'non-exist-target' })
+    visit project_new_merge_request_path(project, merge_request: { target_branch: 'non-exist-target', source_branch: 'non-exist-source' })
 
     expect(page).to have_content('The form contains the following errors')
     expect(page).to have_content('Source branch "non-exist-source" does not exist')
@@ -140,7 +140,7 @@ describe 'Merge request > User selects branches for new MR', :js do
 
   context 'when a branch contains commits that both delete and add the same image' do
     it 'renders the diff successfully' do
-      visit project_new_merge_request_path(project, merge_request_source_branch: 'deleted-image-test', merge_request: { target_branch: 'master' })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'deleted-image-test' })
 
       click_link "Changes"
 
@@ -165,8 +165,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     it 'shows pipelines for a new merge request' do
       visit project_new_merge_request_path(
         project,
-        merge_request_source_branch: 'fix',
-        merge_request: { target_branch: 'master' })
+        merge_request: { target_branch: 'master', source_branch: 'fix' })
 
       page.within('.merge-request') do
         click_link 'Pipelines'
