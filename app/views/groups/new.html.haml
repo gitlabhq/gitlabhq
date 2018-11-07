@@ -35,7 +35,7 @@
           %p
             = _('Who will be able to see this group?')
             = link_to _('View the documentation'), help_page_path("public_access/public_access"), target: '_blank'
-          = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
+          = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
           = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
