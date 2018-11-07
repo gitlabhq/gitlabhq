@@ -2073,6 +2073,10 @@ class Project < ActiveRecord::Base
     storage_version != LATEST_STORAGE_VERSION
   end
 
+  def snippets_visible?(user = nil)
+    Ability.allowed?(user, :read_project_snippet, self)
+  end
+
   private
 
   def use_hashed_storage
