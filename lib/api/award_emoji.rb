@@ -14,7 +14,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       AWARDABLES.each do |awardable_params|
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
