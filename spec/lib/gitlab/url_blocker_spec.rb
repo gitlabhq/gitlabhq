@@ -10,8 +10,8 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?(import_url)).to be false
     end
 
-    it 'allows imports from configured SSH host and port' do
-      import_url = "http://#{Gitlab.config.gitlab_shell.ssh_host}:#{Gitlab.config.gitlab_shell.ssh_port}/t.git"
+    it 'allows mirroring from configured SSH host and port' do
+      import_url = "ssh://#{Gitlab.config.gitlab_shell.ssh_host}:#{Gitlab.config.gitlab_shell.ssh_port}/t.git"
       expect(described_class.blocked_url?(import_url)).to be false
     end
 
@@ -27,6 +27,14 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['https'])).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['http'])).to be true
+    end
+
+    it 'returns true for bad protocol on configured web/SSH host and ports' do
+      web_url = "javascript://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git%0aalert(1)"
+      expect(described_class.blocked_url?(web_url)).to be true
+
+      ssh_url = "javascript://#{Gitlab.config.gitlab_shell.ssh_host}:#{Gitlab.config.gitlab_shell.ssh_port}/t.git%0aalert(1)"
+      expect(described_class.blocked_url?(ssh_url)).to be true
     end
 
     it 'returns true for localhost IPs' do
