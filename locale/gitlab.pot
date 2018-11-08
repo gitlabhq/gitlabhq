@@ -6194,9 +6194,6 @@ msgstr ""
 msgid "There are no labels yet"
 msgstr ""
 
-msgid "There are no merge requests to show"
-msgstr ""
-
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
