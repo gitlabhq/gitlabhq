@@ -27,6 +27,11 @@ module QA
 
           expect(show_page).to have_content("made the issue confidential")
           expect(show_page).to have_content("My own comment")
+
+          show_page.select_history_only_filter
+
+          expect(show_page).to have_content("made the issue confidential")
+          expect(show_page).not_to have_content("My own comment")
         end
       end
     end
