@@ -173,7 +173,7 @@ export default {
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note timeline-entry"
+    class="note timeline-entry note-wrapper"
   >
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
@@ -196,6 +196,7 @@ export default {
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
+            action-text="commented"
           />
           <note-actions
             :author-id="author.id"

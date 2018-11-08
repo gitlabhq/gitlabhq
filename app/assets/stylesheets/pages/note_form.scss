@@ -239,6 +239,7 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+    border-radius: 0 0 $border-radius-default $border-radius-default;
 
     &.is-replying {
       padding-bottom: $gl-padding;
@@ -247,10 +248,15 @@
 }
 
 .discussion-with-resolve-btn {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
+
+
   .discussion-actions {
     display: table;
 
-    .btn-default path {
+    svg {
       fill: $gray-darkest;
     }
 
@@ -269,6 +275,12 @@
 
   .btn {
     width: 100%;
+  }
+
+  .btn-text-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
+    }
   }
 }
 

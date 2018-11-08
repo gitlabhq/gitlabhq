@@ -45,6 +45,9 @@ export default {
     noteTimestampLink() {
       return `#note_${this.noteId}`;
     },
+    hasAuthor() {
+      return this.author && Object.keys(this.author).length;
+    },
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
@@ -76,7 +79,7 @@ export default {
       </button>
     </div>
     <a
-      v-if="Object.keys(author).length"
+      v-if="hasAuthor"
       :href="author.path"
     >
       <span class="note-header-author-name">{{ author.name }}</span>
@@ -92,9 +95,6 @@ export default {
     </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
-        <template v-if="actionText">
-          {{ actionText }}
-        </template>
         <span class="system-note-message">
           <slot></slot>
         </span>
@@ -102,7 +102,9 @@ export default {
           v-if="createdAt"
         >
           <span class="system-note-separator">
-            &middot;
+            <template v-if="actionText">
+              {{ actionText }}
+            </template>
           </span>
           <a
             :href="noteTimestampLink"
