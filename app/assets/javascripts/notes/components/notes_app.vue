@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      isFetching: false,
       currentFilter: null,
     };
   },
@@ -141,6 +142,10 @@ export default {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
+      if (this.isFetching) return null;
+
+      this.isFetching = true;
+
       return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
           this.initPolling();
@@ -149,6 +154,7 @@ export default {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
+          this.isFetching = false;
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
