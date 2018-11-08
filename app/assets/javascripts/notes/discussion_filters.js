@@ -6,7 +6,7 @@ export default store => {
 
   if (discussionFilterEl) {
     const { defaultFilter, notesFilters } = discussionFilterEl.dataset;
-    const defaultValue = defaultFilter ? parseInt(defaultFilter, 10) : null;
+    const selectedValue = defaultFilter ? parseInt(defaultFilter, 10) : null;
     const filterValues = notesFilters ? JSON.parse(notesFilters) : {};
     const filters = Object.keys(filterValues).map(entry => ({
       title: entry,
@@ -24,7 +24,7 @@ export default store => {
         return createElement('discussion-filter', {
           props: {
             filters,
-            defaultValue,
+            selectedValue,
           },
         });
       },

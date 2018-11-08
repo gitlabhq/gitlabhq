@@ -1,0 +1,5 @@
+---
+title: Expose {closed,merged}_{at,by} in merge requests API index
+merge_request:
+author:
+type: changed

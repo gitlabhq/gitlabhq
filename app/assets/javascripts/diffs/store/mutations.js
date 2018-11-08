@@ -65,7 +65,13 @@ export default {
     const { highlightedDiffLines, parallelDiffLines } = diffFile;
 
     removeMatchLine(diffFile, lineNumbers, bottom);
-    const lines = addLineReferences(contextLines, lineNumbers, bottom);
+
+    const lines = addLineReferences(contextLines, lineNumbers, bottom).map(line => ({
+      ...line,
+      lineCode: line.lineCode || `${fileHash}_${line.oldLine}_${line.newLine}`,
+      discussions: line.discussions || [],
+    }));
+
     addContextLines({
       inlineLines: highlightedDiffLines,
       parallelLines: parallelDiffLines,
@@ -153,20 +159,22 @@ export default {
     });
   },
 
-  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
+  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode, id }) {
     const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
     if (selectedFile) {
-      const targetLine = selectedFile.parallelDiffLines.find(
-        line =>
-          (line.left && line.left.lineCode === lineCode) ||
-          (line.right && line.right.lineCode === lineCode),
-      );
-      if (targetLine) {
-        const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
+      if (selectedFile.parallelDiffLines) {
+        const targetLine = selectedFile.parallelDiffLines.find(
+          line =>
+            (line.left && line.left.lineCode === lineCode) ||
+            (line.right && line.right.lineCode === lineCode),
+        );
+        if (targetLine) {
+          const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
 
-        Object.assign(targetLine[side], {
-          discussions: [],
-        });
+          Object.assign(targetLine[side], {
+            discussions: [],
+          });
+        }
       }
 
       if (selectedFile.highlightedDiffLines) {
@@ -180,6 +188,12 @@ export default {
           });
         }
       }
+
+      if (selectedFile.discussions && selectedFile.discussions.length) {
+        selectedFile.discussions = selectedFile.discussions.filter(
+          discussion => discussion.id !== id,
+        );
+      }
     }
   },
   [types.TOGGLE_FOLDER_OPEN](state, path) {
@@ -190,5 +204,26 @@ export default {
   },
   [types.UPDATE_CURRENT_DIFF_FILE_ID](state, fileId) {
     state.currentDiffFileId = fileId;
+  },
+  [types.OPEN_DIFF_FILE_COMMENT_FORM](state, formData) {
+    state.commentForms.push({
+      ...formData,
+    });
+  },
+  [types.UPDATE_DIFF_FILE_COMMENT_FORM](state, formData) {
+    const { fileHash } = formData;
+
+    state.commentForms = state.commentForms.map(form => {
+      if (form.fileHash === fileHash) {
+        return {
+          ...formData,
+        };
+      }
+
+      return form;
+    });
+  },
+  [types.CLOSE_DIFF_FILE_COMMENT_FORM](state, fileHash) {
+    state.commentForms = state.commentForms.filter(form => form.fileHash !== fileHash);
   },
 };

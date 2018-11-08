@@ -14,7 +14,7 @@ window.timeago = timeago;
  *
  * @param {Boolean} abbreviated
  */
-const getMonthNames = abbreviated => {
+export const getMonthNames = abbreviated => {
   if (abbreviated) {
     return [
       s__('Jan'),
@@ -454,12 +454,20 @@ export const parseSeconds = (seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {})
 /**
  * Accepts a timeObject (see parseSeconds) and returns a condensed string representation of it
  * (e.g. '1w 2d 3h 1m' or '1h 30m'). Zero value units are not included.
+ * If the 'fullNameFormat' param is passed it returns a non condensed string eg '1 week 3 days'
  */
-export const stringifyTime = timeObject => {
+export const stringifyTime = (timeObject, fullNameFormat = false) => {
   const reducedTime = _.reduce(
     timeObject,
     (memo, unitValue, unitName) => {
       const isNonZero = !!unitValue;
+
+      if (fullNameFormat && isNonZero) {
+        // Remove traling 's' if unit value is singular
+        const formatedUnitName = unitValue > 1 ? unitName : unitName.replace(/s$/, '');
+        return `${memo} ${unitValue} ${formatedUnitName}`;
+      }
+
       return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
     },
     '',

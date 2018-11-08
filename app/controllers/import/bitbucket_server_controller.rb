@@ -54,14 +54,14 @@ class Import::BitbucketServerController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def status
-    repos = bitbucket_client.repos
+    @collection = bitbucket_client.repos(page_offset: page_offset, limit: limit_per_page)
+    @repos, @incompatible_repos = @collection.partition { |repo| repo.valid? }
 
-    @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
-
-    @already_added_projects = find_already_added_projects('bitbucket_server')
+    # Use the import URL to filter beyond what BaseService#find_already_added_projects
+    @already_added_projects = filter_added_projects('bitbucket_server', @repos.map(&:browse_url))
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
-    @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
+    @repos.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
   rescue BitbucketServer::Connection::ConnectionError, BitbucketServer::Client::ServerError => e
     flash[:alert] = "Unable to connect to server: #{e}"
     clear_session_data
@@ -74,6 +74,12 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   private
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def filter_added_projects(import_type, import_sources)
+    current_user.created_projects.where(import_type: import_type, import_source: import_sources).includes(:import_state)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def bitbucket_client
     @bitbucket_client ||= BitbucketServer::Client.new(credentials)
@@ -129,5 +135,13 @@ class Import::BitbucketServerController < Import::BaseController
       user: session[bitbucket_server_username_key],
       password: session[personal_access_token_key]
     }
+  end
+
+  def page_offset
+    [0, params[:page].to_i].max
+  end
+
+  def limit_per_page
+    BitbucketServer::Paginator::PAGE_LENGTH
   end
 end

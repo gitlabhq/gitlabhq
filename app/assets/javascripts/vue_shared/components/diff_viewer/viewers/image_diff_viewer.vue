@@ -8,9 +8,6 @@ import { diffModes, imageViewMode } from '../constants';
 export default {
   components: {
     ImageViewer,
-    TwoUpViewer,
-    SwipeViewer,
-    OnionSkinViewer,
   },
   props: {
     diffMode: {
@@ -25,16 +22,31 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
       mode: imageViewMode.twoup,
     };
+  },
+  computed: {
+    imageViewComponent() {
+      switch (this.mode) {
+        case imageViewMode.twoup:
+          return TwoUpViewer;
+        case imageViewMode.swipe:
+          return SwipeViewer;
+        case imageViewMode.onion:
+          return OnionSkinViewer;
+        default:
+          return undefined;
+      }
+    },
+    isNew() {
+      return this.diffMode === diffModes.new;
+    },
+    imagePath() {
+      return this.isNew ? this.newPath : this.oldPath;
+    },
   },
   methods: {
     changeMode(newMode) {
@@ -52,15 +64,16 @@ export default {
       v-if="diffMode === $options.diffModes.replaced"
       class="diff-viewer">
       <div class="image js-replaced-image">
-        <two-up-viewer
-          v-if="mode === $options.imageViewMode.twoup"
-          v-bind="$props"/>
-        <swipe-viewer
-          v-else-if="mode === $options.imageViewMode.swipe"
-          v-bind="$props"/>
-        <onion-skin-viewer
-          v-else-if="mode === $options.imageViewMode.onion"
-          v-bind="$props"/>
+        <component
+          :is="imageViewComponent"
+          v-bind="$props"
+        >
+          <slot
+            slot="image-overlay"
+            name="image-overlay"
+          >
+          </slot>
+        </component>
       </div>
       <div class="view-modes">
         <ul class="view-modes-menu">
@@ -87,23 +100,27 @@ export default {
           </li>
         </ul>
       </div>
-      <div class="note-container"></div>
-    </div>
-    <div
-      v-else-if="diffMode === $options.diffModes.new"
-      class="diff-viewer added">
-      <image-viewer
-        :path="newPath"
-        :project-path="projectPath"
-      />
     </div>
     <div
       v-else
-      class="diff-viewer deleted">
-      <image-viewer
-        :path="oldPath"
-        :project-path="projectPath"
-      />
+      class="diff-viewer"
+    >
+      <div class="image">
+        <image-viewer
+          :path="imagePath"
+          :inner-css-classes="['frame', {
+            'added': isNew,
+            'deleted': diffMode === $options.diffModes.deleted
+          }]"
+        >
+          <slot
+            v-if="isNew"
+            slot="image-overlay"
+            name="image-overlay"
+          >
+          </slot>
+        </image-viewer>
+      </div>
     </div>
   </div>
 </template>

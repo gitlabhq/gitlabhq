@@ -32,7 +32,7 @@ module QA
 
         def do_create_personal_access_token
           Page::Main::Login.act { sign_in_using_credentials }
-          Factory::Resource::PersonalAccessToken.fabricate!.access_token
+          Resource::PersonalAccessToken.fabricate!.access_token
         end
       end
     end

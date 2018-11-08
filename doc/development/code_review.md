@@ -23,6 +23,9 @@ one of the [Merge request coaches][team].
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
 
+For approvals, we use the approval functionality found in the merge request 
+widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
+
    1. If your merge request includes backend changes [^1], it must be
       **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
    1. If your merge request includes frontend changes [^1], it must be
@@ -96,6 +99,9 @@ experts, in favor of focusing on their primary responsibilities.
 If a developer who happens to also be a maintainer was involved in a merge request
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
+
+Maintainers should check before merging if the merge request is approved by the 
+required approvers.
 
 ## Best practices
 

@@ -51,7 +51,7 @@ describe('Pipeline details header', () => {
         .querySelector('.header-main-content')
         .textContent.replace(/\s+/g, ' ')
         .trim(),
-    ).toEqual('failed Pipeline #123 triggered 3 weeks ago by Foo');
+    ).toContain('failed Pipeline #123 triggered 3 weeks ago by Foo');
   });
 
   describe('action buttons', () => {

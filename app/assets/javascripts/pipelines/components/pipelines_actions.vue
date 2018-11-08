@@ -4,6 +4,7 @@ import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   directives: {
@@ -12,6 +13,7 @@ export default {
   components: {
     Icon,
     GlCountdown,
+    GlLoadingIcon,
   },
   props: {
     actions: {
@@ -29,7 +31,7 @@ export default {
       if (action.scheduled_at) {
         const confirmationMessage = sprintf(
           s__(
-            "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes.",
+            "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes.",
           ),
           { jobName: action.name },
         );

@@ -416,7 +416,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.123.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'
@@ -431,6 +431,3 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
-
-# Asset synchronization
-gem 'asset_sync', '~> 2.4'

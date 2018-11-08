@@ -50,7 +50,7 @@ describe Boards::IssuesController do
 
           parsed_response = JSON.parse(response.body)
 
-          expect(response).to match_response_schema('issues')
+          expect(response).to match_response_schema('entities/issue_boards')
           expect(parsed_response['issues'].length).to eq 2
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
@@ -121,7 +121,7 @@ describe Boards::IssuesController do
 
         parsed_response = JSON.parse(response.body)
 
-        expect(response).to match_response_schema('issues')
+        expect(response).to match_response_schema('entities/issue_boards')
         expect(parsed_response['issues'].length).to eq 2
       end
     end
@@ -168,7 +168,7 @@ describe Boards::IssuesController do
       it 'returns the created issue' do
         create_issue user: user, board: board, list: list1, title: 'New issue'
 
-        expect(response).to match_response_schema('issue')
+        expect(response).to match_response_schema('entities/issue_board')
       end
     end
 

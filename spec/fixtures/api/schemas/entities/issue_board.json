@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "title": { "type": "string" },
+    "confidential": { "type": "boolean" },
+    "due_date": { "type": "date" },
+    "project_id": { "type": "integer" },
+    "relative_position": { "type": ["integer", "null"] },
+    "time_estimate": { "type": "integer" },
+    "weight": { "type": "integer" },
+    "project": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "path": { "type": "string" }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" }
+      }
+    },
+    "assignees": { "type": ["array", "null"] },
+    "labels": {
+      "type": "array",
+      "items": { "$ref": "label.json" }
+    },
+    "reference_path": { "type": "string" },
+    "real_path": { "type": "string" },
+    "issue_sidebar_endpoint": { "type": "string" },
+    "toggle_subscription_endpoint": { "type": "string" },
+    "assignable_labels_endpoint": { "type": "string" }
+  },
+  "additionalProperties": false
+}

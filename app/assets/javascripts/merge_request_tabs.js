@@ -11,7 +11,6 @@ import bp from './breakpoints';
 import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
-import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
@@ -207,8 +206,6 @@ export default class MergeRequestTabs {
         }
         this.resetViewContainer();
         this.destroyPipelinesView();
-
-        initDiscussionTab();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);

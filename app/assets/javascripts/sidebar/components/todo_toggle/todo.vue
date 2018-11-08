@@ -1,6 +1,7 @@
 <script>
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -13,6 +14,7 @@ export default {
   },
   components: {
     Icon,
+    GlLoadingIcon,
   },
   props: {
     issuableId: {

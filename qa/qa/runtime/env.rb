@@ -7,6 +7,16 @@ module QA
 
       attr_writer :personal_access_token
 
+      # The environment variables used to indicate if the environment under test
+      # supports the given feature
+      SUPPORTED_FEATURES = {
+        git_protocol_v2: 'QA_CAN_TEST_GIT_PROTOCOL_V2'
+      }.freeze
+
+      def supported_features
+        SUPPORTED_FEATURES
+      end
+
       def debug?
         enabled?(ENV['QA_DEBUG'], default: false)
       end
@@ -102,6 +112,15 @@ module QA
         return unless github_access_token.empty?
 
         raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+      end
+
+      # Returns true if there is an environment variable that indicates that
+      # the feature is supported in the environment under test.
+      # All features are supported by default.
+      def can_test?(feature)
+        raise ArgumentError, %Q(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
+
+        enabled?(ENV[SUPPORTED_FEATURES[feature]], default: true)
       end
 
       private

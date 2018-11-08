@@ -299,6 +299,7 @@ project:
 - ci_cd_settings
 - import_export_upload
 - repository_languages
+- pool_repository
 award_emoji:
 - awardable
 - user

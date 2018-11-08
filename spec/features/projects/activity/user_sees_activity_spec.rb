@@ -19,13 +19,13 @@ describe 'Projects > Activity > User sees activity' do
   it 'shows the last push in the activity page', :js do
     visit activity_project_path(project)
 
-    expect(page).to have_content "#{user.name} pushed new branch fix"
+    expect(page).to have_content "#{user.name} #{user.to_reference} pushed new branch fix"
   end
 
   it 'allows to filter event with the "event_filter=issue" URL param', :js do
     visit activity_project_path(project, event_filter: 'issue')
 
-    expect(page).not_to have_content "#{user.name} pushed new branch fix"
-    expect(page).to have_content "#{user.name} opened issue #{issue.to_reference}"
+    expect(page).not_to have_content "#{user.name} #{user.to_reference} pushed new branch fix"
+    expect(page).to have_content "#{user.name} #{user.to_reference} opened issue #{issue.to_reference}"
   end
 end

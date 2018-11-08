@@ -218,6 +218,7 @@ describe('DiffsStoreActions', () => {
         ],
       };
       const singleDiscussion = {
+        id: '1',
         fileHash: 'ABC',
         line_code: 'ABC_1_1',
       };
@@ -230,6 +231,7 @@ describe('DiffsStoreActions', () => {
           {
             type: types.REMOVE_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
+              id: '1',
               fileHash: 'ABC',
               lineCode: 'ABC_1_1',
             },

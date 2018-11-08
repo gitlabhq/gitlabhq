@@ -8,6 +8,7 @@ describe Gitlab::UsageData do
     before do
       create(:jira_service, project: projects[0])
       create(:jira_service, project: projects[1])
+      create(:jira_cloud_service, project: projects[2])
       create(:prometheus_service, project: projects[1])
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
@@ -20,6 +21,7 @@ describe Gitlab::UsageData do
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
       create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
     end
 
     subject { described_class.data }
@@ -81,6 +83,7 @@ describe Gitlab::UsageData do
         clusters_applications_ingress
         clusters_applications_prometheus
         clusters_applications_runner
+        clusters_applications_knative
         in_review_folder
         groups
         issues
@@ -95,6 +98,8 @@ describe Gitlab::UsageData do
         projects
         projects_imported_from_github
         projects_jira_active
+        projects_jira_server_active
+        projects_jira_cloud_active
         projects_slack_notifications_active
         projects_slack_slash_active
         projects_prometheus_active
@@ -114,7 +119,9 @@ describe Gitlab::UsageData do
 
       expect(count_data[:projects]).to eq(3)
       expect(count_data[:projects_prometheus_active]).to eq(1)
-      expect(count_data[:projects_jira_active]).to eq(2)
+      expect(count_data[:projects_jira_active]).to eq(3)
+      expect(count_data[:projects_jira_server_active]).to eq(2)
+      expect(count_data[:projects_jira_cloud_active]).to eq(1)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
 
@@ -126,6 +133,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_ingress]).to eq(1)
       expect(count_data[:clusters_applications_prometheus]).to eq(1)
       expect(count_data[:clusters_applications_runner]).to eq(1)
+      expect(count_data[:clusters_applications_knative]).to eq(1)
     end
 
     it 'works when queries time out' do

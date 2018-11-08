@@ -336,6 +336,12 @@ describe('prettyTime methods', () => {
 
       expect(timeString).toBe('0m');
     });
+
+    it('should return non-condensed representation of time object', () => {
+      const timeObject = { weeks: 1, days: 0, hours: 1, minutes: 0 };
+
+      expect(datetimeUtility.stringifyTime(timeObject, true)).toEqual('1 week 1 hour');
+    });
   });
 
   describe('abbreviateTime', () => {

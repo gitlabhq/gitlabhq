@@ -91,7 +91,14 @@ module EventsHelper
       words << "##{event.target_iid}" if event.target_iid
       words << "in"
     elsif event.target
-      words << "##{event.target_iid}:"
+      prefix =
+        if event.merge_request?
+          MergeRequest.reference_prefix
+        else
+          Issue.reference_prefix
+        end
+
+      words << "#{prefix}#{event.target_iid}:" if event.target_iid
       words << event.target.title if event.target.respond_to?(:title)
       words << "at"
     end
@@ -163,14 +170,10 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      text = raw("#{event.note_target_type} ") +
-        if event.commit_note?
-          content_tag(:span, event.note_target_reference, class: 'commit-sha')
-        else
-          event.note_target_reference
-        end
-
-      link_to(text, event_note_target_url(event), title: event.target_title, class: 'has-tooltip')
+      capture do
+        concat content_tag(:span, event.note_target_type, class: "event-target-type append-right-4")
+        concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link append-right-4')
+      end
     else
       content_tag(:strong, '(deleted)')
     end
@@ -183,17 +186,9 @@ module EventsHelper
     "--broken encoding"
   end
 
-  def event_row_class(event)
-    if event.body?
-      "event-block"
-    else
-      "event-inline"
-    end
-  end
-
-  def icon_for_event(note)
+  def icon_for_event(note, size: 24)
     icon_name = ICON_NAMES_BY_EVENT_TYPE[note]
-    sprite_icon(icon_name) if icon_name
+    sprite_icon(icon_name, size: size) if icon_name
   end
 
   def icon_for_profile_event(event)
@@ -203,8 +198,24 @@ module EventsHelper
       end
     else
       content_tag :div, class: 'system-note-image user-avatar' do
-        author_avatar(event, size: 32)
+        author_avatar(event, size: 40)
       end
+    end
+  end
+
+  def inline_event_icon(event)
+    unless current_path?('users#show')
+      content_tag :span, class: "system-note-image-inline d-none d-sm-flex append-right-4 #{event.action_name.parameterize}-icon align-self-center" do
+        icon_for_event(event.action_name, size: 14)
+      end
+    end
+  end
+
+  def event_user_info(event)
+    content_tag(:div, class: "event-user-info") do
+      concat content_tag(:span, link_to_author(event), class: "author_name")
+      concat "&nbsp;".html_safe
+      concat content_tag(:span, event.author.to_reference, class: "username")
     end
   end
 end

@@ -13,6 +13,7 @@
  */
 
 import $ from 'jquery';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
@@ -26,6 +27,7 @@ export default {
   components: {
     Icon,
     JobItem,
+    GlLoadingIcon,
   },
 
   directives: {

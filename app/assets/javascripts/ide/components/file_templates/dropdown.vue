@@ -2,10 +2,12 @@
 import $ from 'jquery';
 import { mapActions, mapState } from 'vuex';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     DropdownButton,
+    GlLoadingIcon,
   },
   props: {
     data: {

@@ -1,0 +1,5 @@
+---
+title: Allow to configure when to retry failed CI jobs
+merge_request: 21758
+author: Markus Doits
+type: added

@@ -74,6 +74,8 @@
                   %span
                     = boards_link_text
 
+            = render_if_exists 'layouts/nav/issues_analytics_link'
+
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do

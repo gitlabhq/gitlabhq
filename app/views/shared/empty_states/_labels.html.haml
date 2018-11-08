@@ -6,6 +6,9 @@
     .text-content
       %h4= _("Labels can be applied to issues and merge requests to categorize them.")
       %p= _("You can also star a label to make it a priority label.")
-      - if can?(current_user, :admin_label, @project)
-        = link_to _('New label'), new_project_label_path(@project), class: 'btn btn-success', title: _('New label'), id: 'new_label_link'
-        = link_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, class: 'btn btn-success btn-inverted', title: _('Generate a default set of labels'), id: 'generate_labels_link'
+      .text-center
+        - if can?(current_user, :admin_label, @project)
+          = link_to _('New label'), new_project_label_path(@project), class: 'btn btn-success qa-label-create-new', title: _('New label'), id: 'new_label_link'
+          = link_to _('Generate a default set of labels'), generate_project_labels_path(@project), method: :post, class: 'btn btn-success btn-inverted', title: _('Generate a default set of labels'), id: 'generate_labels_link'
+        - if can?(current_user, :admin_label, @group)
+          = link_to _('New label'), new_group_label_path(@group), class: 'btn btn-success', title: _('New label'), id: 'new_label_link'

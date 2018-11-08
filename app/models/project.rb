@@ -95,8 +95,7 @@ class Project < ActiveRecord::Base
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
 
-  after_create :set_last_activity_at
-  after_create :set_last_repository_updated_at
+  after_create :set_timestamps_for_create
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
@@ -124,6 +123,7 @@ class Project < ActiveRecord::Base
   alias_attribute :title, :name
 
   # Relations
+  belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
@@ -254,7 +254,7 @@ class Project < ActiveRecord::Base
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
-  has_many :deployments
+  has_many :deployments, -> { success }
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
@@ -1829,7 +1829,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables || []
+    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
   end
 
   def auto_devops_variables
@@ -2073,6 +2073,10 @@ class Project < ActiveRecord::Base
     storage_version != LATEST_STORAGE_VERSION
   end
 
+  def snippets_visible?(user = nil)
+    Ability.allowed?(user, :read_project_snippet, self)
+  end
+
   private
 
   def use_hashed_storage
@@ -2102,13 +2106,8 @@ class Project < ActiveRecord::Base
     gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
-  # set last_activity_at to the same as created_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
+  def set_timestamps_for_create
+    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)

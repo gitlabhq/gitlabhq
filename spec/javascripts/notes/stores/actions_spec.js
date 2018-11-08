@@ -509,4 +509,17 @@ describe('Actions Notes Store', () => {
       expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
     });
   });
+
+  describe('setCommentsDisabled', () => {
+    it('should set comments disabled state', done => {
+      testAction(
+        actions.setCommentsDisabled,
+        true,
+        null,
+        [{ type: 'DISABLE_COMMENTS', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
 });

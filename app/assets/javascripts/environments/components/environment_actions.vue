@@ -1,7 +1,10 @@
 <script>
+import { s__, sprintf } from '~/locale';
+import { formatTime } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 import tooltip from '../../vue_shared/directives/tooltip';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   directives: {
@@ -9,6 +12,7 @@ export default {
   },
   components: {
     Icon,
+    GlLoadingIcon,
   },
   props: {
     actions: {
@@ -28,10 +32,24 @@ export default {
     },
   },
   methods: {
-    onClickAction(endpoint) {
+    onClickAction(action) {
+      if (action.scheduledAt) {
+        const confirmationMessage = sprintf(
+          s__(
+            "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes.",
+          ),
+          { jobName: action.name },
+        );
+        // https://gitlab.com/gitlab-org/gitlab-ce/issues/52156
+        // eslint-disable-next-line no-alert
+        if (!window.confirm(confirmationMessage)) {
+          return;
+        }
+      }
+
       this.isLoading = true;
 
-      eventHub.$emit('postAction', { endpoint });
+      eventHub.$emit('postAction', { endpoint: action.playPath });
     },
 
     isActionDisabled(action) {
@@ -40,6 +58,11 @@ export default {
       }
 
       return !action.playable;
+    },
+
+    remainingTime(action) {
+      const remainingMilliseconds = new Date(action.scheduledAt).getTime() - Date.now();
+      return formatTime(Math.max(0, remainingMilliseconds));
     },
   },
 };
@@ -54,7 +77,7 @@ export default {
       :aria-label="title"
       :disabled="isLoading"
       type="button"
-      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
+      class="dropdown btn btn-default dropdown-new js-environment-actions-dropdown"
       data-container="body"
       data-toggle="dropdown"
     >
@@ -75,11 +98,18 @@ export default {
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           type="button"
-          class="js-manual-action-link no-btn btn"
-          @click="onClickAction(action.play_path)"
+          class="js-manual-action-link no-btn btn d-flex align-items-center"
+          @click="onClickAction(action)"
         >
-          <span>
+          <span class="flex-fill">
             {{ action.name }}
+          </span>
+          <span
+            v-if="action.scheduledAt"
+            class="text-secondary"
+          >
+            <icon name="clock" />
+            {{ remainingTime(action) }}
           </span>
         </button>
       </li>

@@ -55,11 +55,6 @@ export default {
       required: false,
       default: false,
     },
-    isContextLine: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isHover: {
       type: Boolean,
       required: false,
@@ -81,7 +76,6 @@ export default {
         this.showCommentButton &&
         this.isHover &&
         !this.isMatchLine &&
-        !this.isContextLine &&
         !this.isMetaLine &&
         !this.hasDiscussions
       );
@@ -167,7 +161,7 @@ export default {
       <button
         v-if="shouldShowCommentButton"
         type="button"
-        class="add-diff-note js-add-diff-note-button"
+        class="add-diff-note js-add-diff-note-button qa-diff-comment"
         title="Add a comment to this line"
         @click="handleCommentButton"
       >

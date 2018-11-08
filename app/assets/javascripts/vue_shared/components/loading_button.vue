@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 /* eslint-disable vue/require-default-prop */
 /* This is a re-usable vue component for rendering a button
     that will probably be sending off ajax requests and need
@@ -18,6 +19,9 @@
   */
 
 export default {
+  components: {
+    GlLoadingIcon,
+  },
   props: {
     loading: {
       type: Boolean,

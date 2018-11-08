@@ -4,7 +4,7 @@ module Milestones
   class DestroyService < Milestones::BaseService
     def execute(milestone)
       Milestone.transaction do
-        update_params = { milestone: nil }
+        update_params = { milestone: nil, skip_milestone_email: true }
 
         milestone.issues.each do |issue|
           Issues::UpdateService.new(parent, current_user, update_params).execute(issue)

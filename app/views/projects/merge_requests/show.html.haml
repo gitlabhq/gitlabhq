@@ -34,7 +34,7 @@
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
           %ul.merge-request-tabs.nav-tabs.nav.nav-links.scrolling-tabs
-            %li.notes-tab
+            %li.notes-tab.qa-notes-tab
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
                 Discussion
                 %span.badge.badge-pill= @merge_request.related_notes.user.count
@@ -48,7 +48,7 @@
                 = tab_link_for @merge_request, :pipelines do
                   Pipelines
                   %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
-            %li.diffs-tab
+            %li.diffs-tab.qa-diffs-tab
               = tab_link_for @merge_request, :diffs do
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size
