@@ -1,14 +1,30 @@
-# Merge conflict resolution
+# Merge request conflict resolution
 
-> [Introduced][ce-5479] in GitLab 8.11.
+Merge conflicts occur when two branches have different changes that cannot be
+merged automatically.
 
-When a merge request has conflicts, GitLab may provide the option to resolve
-those conflicts in the GitLab UI. (See
-[conflicts available for resolution](#conflicts-available-for-resolution) for
-more information on when this is available.) If this is an option, you will see
-a **resolve these conflicts** link in the merge request widget:
+Git is able to automatically merge changes between branches in most cases, but
+there are situations where Git will require your assistance to resolve the
+conflicts manually. Typically, this is necessary when people change the same
+parts of the same files.
+
+GitLab will prevent merge requests from being merged until all conflicts are
+resolved. Conflicts can be resolved locally, or in many cases within GitLab
+(see [conflicts available for resolution](#conflicts-available-for-resolution)
+for information on when this is available).
 
 ![Merge request widget](img/merge_request_widget.png)
+
+NOTE: **Note:**
+GitLab resolves conflicts by creating a merge commit in the source branch that
+is not automatically merged into the target branch. This allows the merge
+commit to be reviewed and tested before the changes are merged, preventing
+unintended changes entering the target branch without review or breaking the
+build.
+
+## Resolve conflicts: interactive mode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5479) in GitLab 8.11.
 
 Clicking this will show a list of files with conflicts, with conflict sections
 highlighted:
@@ -21,9 +37,9 @@ request into the source branch, resolving the conflicts using the options
 chosen. If the source branch is `feature` and the target branch is `master`,
 this is similar to performing `git checkout feature; git merge master` locally.
 
-## Merge conflict editor
+## Resolve conflicts: inline editor
 
-> Introduced in GitLab 8.13.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6374) in GitLab 8.13.
 
 The merge conflict resolution editor allows for more complex merge conflicts,
 which require the user to manually modify a file in order to resolve a conflict,
@@ -50,5 +66,3 @@ Additionally, GitLab does not detect conflicts in renames away from a path. For
 example, this will not create a conflict: on branch `a`, doing `git mv file1
 file2`; on branch `b`, doing `git mv file1 file3`. Instead, both files will be
 present in the branch after the merge request is merged.
-
-[ce-5479]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5479
