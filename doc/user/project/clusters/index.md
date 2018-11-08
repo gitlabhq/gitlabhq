@@ -132,59 +132,62 @@ functionalities needed to successfully build and deploy a containerized
 application. Bare in mind that the same credentials are used for all the
 applications running on the cluster.
 
-When GitLab creates the cluster, it enables and uses the legacy
-[Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/).
-The newer [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
-authorization is [experimental](#role-based-access-control-rbac).
+## Access controls
 
-### Role-based access control (RBAC) **[CORE ONLY]**
+When creating a cluster in GitLab, you will be asked if you would like to create an
+[Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster, or
+a [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) one.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21401) in GitLab 11.4.
+Whether ABAC or RBAC is enabled, GitLab will create the necessary
+service accounts and privileges in order to install and run
+[GitLab managed applications](#installing-applications):
 
-CAUTION: **Warning:**
-The RBAC authorization is experimental.
+- A `gitlab` service account with `cluster-admin` privileges will be created in the
+  `default` namespace, which will be used by GitLab to manage the newly created cluster.
 
-Once RBAC is enabled for a cluster, GitLab will create the necessary service accounts
-and privileges in order to install and run [GitLab managed applications](#installing-applications).
+- A project service account with `edit` privileges will be created in
+  the project namespace (also created by GitLab), which will be used in
+  [deployment jobs](#deployment-variables).
 
-If you are creating a [new GKE cluster via
-GitLab](#adding-and-creating-a-new-gke-cluster-via-gitlab), you will be
-asked if you would like to create an RBAC-enabled cluster. Enabling this
-setting will create a `gitlab` service account which will be used by
-GitLab to manage the newly created cluster. To enable this, this service
-account will have the `cluster-admin` privilege.
+  NOTE: **Note:**
+  Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
 
-If you are [adding an existing Kubernetes
-cluster](#adding-an-existing-kubernetes-cluster), you will be asked if
-the cluster you are adding is a RBAC-enabled cluster. Ensure the
-token of the account has administrator privileges for the cluster.
+- When you install Helm Tiller into your cluster, the `tiller` service account
+  will be created with `cluster-admin` privileges in the `gitlab-managed-apps`
+  namespace. This service account will be added to the installed Helm Tiller and will
+  be used by Helm to install and run [GitLab managed applications](#installing-applications).
+  Helm Tiller will also create additional service accounts and other resources for each
+  installed application. Consult the documentation of the Helm charts for each application
+  for details.
 
-In both cases above, when you install Helm Tiller into your cluster, an
-RBAC-enabled cluster will create a `tiller` service account, with `cluster-admin`
-privileges in the `gitlab-managed-apps` namespace. This service account will be
-added to the installed Helm Tiller and will be used by Helm to install and run
-[GitLab managed applications](#installing-applications).
+If you are [adding an existing Kubernetes cluster](#adding-an-existing-kubernetes-cluster),
+ensure the token of the account has administrator privileges for the cluster.
 
-The table below summarizes which resources will be created in a
-RBAC-enabled cluster :
+The following sections summarize which resources will be created on ABAC/RBAC clusters.
 
-| Name           | Kind                 | Details                           | Created when               |
-| ---            | ---                  | ---                               | ---                        |
-| `gitlab`       | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster |
-| `gitlab-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef           | Creating a new GKE Cluster |
-| `gitlab-token` | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster |
-| `tiller`       | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller     |
-| `tiller-admin` | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller     |
+### Attribute-based access control (ABAC)
 
+| Name              | Kind                 | Details                           | Created when                      |
+| ---               | ---                  | ---                               | ---                               |
+| `gitlab`          | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster        |
+| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster        |
+| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller            |
+| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller            |
+| Project namespace | `ServiceAccount`     | Uses namespace of Project         | Creating/Adding a new GKE Cluster |
+| Project namespace | `Secret`             | Token for project ServiceAccount  | Creating/Adding a new GKE Cluster |
 
-Helm Tiller will also create additional service accounts and other RBAC
-resources for each installed application. Consult the documentation for the
-Helm charts for each application for details.
+### Role-based access control (RBAC)
 
-NOTE: **Note:**
-Auto DevOps will not successfully complete in a cluster that only has RBAC
-authorization enabled. RBAC support for Auto DevOps is planned in a
-[future release](https://gitlab.com/gitlab-org/gitlab-ce/issues/44597).
+| Name                | Kind                 | Details                           | Created when                      |
+| ---                 | ---                  | ---                               | ---                               |
+| `gitlab`            | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster        |
+| `gitlab-admin`      | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef           | Creating a new GKE Cluster |
+| `gitlab-token`      | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster        |
+| `tiller`            | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller            |
+| `tiller-admin`      | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller            |
+| Project namespace   | `ServiceAccount`     | Uses namespace of Project         | Creating/Adding a new GKE Cluster |
+| Project namespace   | `Secret`             | Token for project ServiceAccount  | Creating/Adding a new GKE Cluster |
+| Project namespace   | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef                  | Creating/Adding a new GKE Cluster |
 
 ### Security of GitLab Runners
 
@@ -387,11 +390,15 @@ GitLab CI/CD build environment.
 | Variable | Description |
 | -------- | ----------- |
 | `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token. |
+| `KUBE_TOKEN` | The Kubernetes token of the [project service account](#access-controls). |
 | `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
-| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
-| `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
+| `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
+| `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+
+NOTE: **NOTE:**
+Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
+service account of the cluster integration.
 
 ## Enabling or disabling the Kubernetes cluster integration
 
