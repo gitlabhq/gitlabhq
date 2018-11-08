@@ -27,7 +27,8 @@ module Gitlab
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
               validates :parallel, numericality: { only_integer: true,
-                                                   greater_than_or_equal_to: 2 }
+                                                   greater_than_or_equal_to: 2,
+                                                   less_than_or_equal_to: 50 }
               validates :when,
                 inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
