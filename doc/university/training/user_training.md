@@ -385,7 +385,7 @@ Thank you for your hard work!
 
 - GitLab Documentation: <http://docs.gitlab.com/>.
 - GUI Clients: <http://git-scm.com/downloads/guis>.
-- Pro git book: <http://git-scm.com/book>.
+- Pro Git book: <http://git-scm.com/book>.
 - Platzi Course: <https://courses.platzi.com/courses/git-gitlab/>.
 - Code School tutorial: <http://try.github.io/>.
 - Contact us at `subscribers@gitlab.com`.

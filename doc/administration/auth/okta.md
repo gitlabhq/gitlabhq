@@ -11,7 +11,7 @@ The following documentation enables Okta as a SAML provider.
 1. When the app screen comes up you see another button to **Create an App** and
    choose SAML 2.0 on the next screen.
 1. Now, very important, add a logo
-   (you can choose it from https://about.gitlab.com/press/). You'll have to
+   (you can choose it from <https://about.gitlab.com/press/>). You'll have to
    crop and resize it.
 1. Next, you'll need the to fill in the SAML general config. Here's an example
    image.
