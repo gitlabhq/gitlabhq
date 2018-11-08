@@ -43,8 +43,13 @@ module PreferencesHelper
     ]
   end
 
+  def default_first_day_of_week
+    Date::DAYNAMES[Gitlab::CurrentSettings.default_first_day_of_week]
+  end
+
   def first_day_of_week_choices
     [
+      ["System Default (#{default_first_day_of_week})", nil],
       ['Sunday', 0],
       ['Monday', 1]
     ]

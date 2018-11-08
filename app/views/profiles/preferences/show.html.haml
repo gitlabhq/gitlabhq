@@ -75,7 +75,7 @@
     .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
         First day of the week
-      = f.select :first_day_of_week, options_for_select(first_day_of_week_choices, @user.first_day_of_week || Gitlab::CurrentSettings.default_first_day_of_week), {}, class: 'form-control'
+      = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
       .form-text.text-muted
         Choose on what day the week should start.
     .form-group
