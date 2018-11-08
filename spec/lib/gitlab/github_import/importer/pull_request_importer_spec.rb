@@ -240,7 +240,12 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .and_return(user.id)
       end
 
-      it 'returns the existing merge request' do
+      # TODO: remove rails5-only after removing rails4 tests
+      # rails 4 can not handle multiple indexes on the same column set if
+      # index was added by 't.index' - t.index is used by default in schema.rb in
+      # rails 5. Let's run this test only in rails 5 env:
+      # see https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21492#note_113602758
+      it 'returns the existing merge request', :rails5 do
         mr1, exists1 = importer.create_merge_request
         mr2, exists2 = importer.create_merge_request
 
