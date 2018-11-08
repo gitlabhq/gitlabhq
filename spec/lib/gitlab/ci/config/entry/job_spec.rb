@@ -118,6 +118,16 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
 
+        context 'when it is bigger than 50' do
+          let(:config) { { parallel: 51 } }
+
+          it 'returns error about value too high' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include 'job parallel must be less than or equal to 50'
+          end
+        end
+
         context 'when it is not an integer' do
           let(:config) { { parallel: 1.5 } }
 
