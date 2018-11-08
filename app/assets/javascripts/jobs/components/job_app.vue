@@ -240,16 +240,16 @@ export default {
           :erased-at="job.erased_at"
         />
 
-        <div 
+        <div
           v-if="job.archived"
           ref="sticky"
           class="js-archived-job prepend-top-default archived-sticky sticky-top"
         >
-          <icon 
+          <icon
             name="lock"
             class="align-text-bottom"
           />
-                
+
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!--job log -->
