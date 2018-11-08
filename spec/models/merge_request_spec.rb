@@ -1782,7 +1782,7 @@ describe MergeRequest do
           allow(subject).to receive(:head_pipeline) { nil }
         end
 
-        it { expect(subject.mergeable_ci_state?).to be_truthy }
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
     end
 
