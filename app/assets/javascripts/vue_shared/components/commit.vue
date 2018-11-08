@@ -1,11 +1,11 @@
 <script>
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
-import tooltip from '../directives/tooltip';
 import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     UserAvatarLink,
@@ -124,11 +124,10 @@ export default {
       </div>
 
       <a
-        v-tooltip
+        v-gl-tooltip
         :href="commitRef.ref_url"
         :title="commitRef.name"
         class="ref-name"
-        data-container="body"
       >
         {{ commitRef.name }}
       </a>

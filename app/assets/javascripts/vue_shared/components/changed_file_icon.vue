@@ -1,5 +1,5 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
@@ -10,7 +10,7 @@ export default {
     Icon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     file: {
@@ -79,10 +79,8 @@ export default {
 
 <template>
   <span
-    v-tooltip
+    v-gl-tooltip.right
     :title="tooltipTitle"
-    data-container="body"
-    data-placement="right"
     class="file-changed-icon ml-auto"
   >
     <icon
