@@ -1,0 +1,5 @@
+---
+title: Relocate JSONWebToken::HMACToken from EE
+merge_request: 22906
+author:
+type: changed
