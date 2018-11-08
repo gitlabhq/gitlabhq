@@ -11,6 +11,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @impersonation_token = finder.build(impersonation_token_params)
 
     if @impersonation_token.save
+      PersonalAccessToken.redis_store!(current_user.id, @impersonation_token.token)
       redirect_to admin_user_impersonation_tokens_path, notice: "A new impersonation token has been created."
     else
       set_index_vars
@@ -53,6 +54,8 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @impersonation_token ||= finder.build
     @inactive_impersonation_tokens = finder(state: 'inactive').execute
     @active_impersonation_tokens = finder(state: 'active').execute.order(:expires_at)
+
+    @new_impersonation_token = PersonalAccessToken.redis_getdel(current_user.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -2018,11 +2018,11 @@ describe API::Users do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'returns a personal access token' do
+    it 'returns an impersonation token' do
       get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response['token']).to be_present
+      expect(json_response['token']).not_to be_present
       expect(json_response['impersonation']).to be_truthy
     end
   end

@@ -8,7 +8,7 @@ module QA
           element :scopes_api_radios, "label :scopes" # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/profiles/personal_access_tokens/index.html.haml' do
+        view 'app/views/shared/_personal_access_tokens_created_container.html.haml' do
           element :create_token_field, "text_field_tag 'created-personal-access-token'" # rubocop:disable QA/ElementWithPattern
         end
 

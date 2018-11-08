@@ -43,10 +43,12 @@ describe 'Profile > Personal Access Tokens', :js do
       check "read_user"
 
       click_on "Create personal access token"
+
       expect(active_personal_access_tokens).to have_text(name)
       expect(active_personal_access_tokens).to have_text('In')
       expect(active_personal_access_tokens).to have_text('api')
       expect(active_personal_access_tokens).to have_text('read_user')
+      expect(created_personal_access_token).not_to be_empty
     end
 
     context "when creation fails" do
@@ -57,6 +59,7 @@ describe 'Profile > Personal Access Tokens', :js do
 
         expect { click_on "Create personal access token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
+        expect(page).not_to have_selector("#created-personal-access-token")
       end
     end
   end

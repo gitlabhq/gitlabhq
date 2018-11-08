@@ -5,6 +5,11 @@
 
 .row.prepend-top-default
   .col-lg-12
+    - if @new_impersonation_token
+      = render "shared/personal_access_tokens_created_container", new_token_value: @new_impersonation_token,
+                                                                 container_title: 'Your New Impersonation Token',
+                                                                 clipboard_button_title: 'Copy impersonation token to clipboard'
+
     = render "shared/personal_access_tokens_form", path: admin_user_impersonation_tokens_path, impersonation: true, token: @impersonation_token, scopes: @scopes
 
     = render "shared/personal_access_tokens_table", impersonation: true, active_tokens: @active_impersonation_tokens, inactive_tokens: @inactive_impersonation_tokens

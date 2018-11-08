@@ -12,6 +12,10 @@ describe 'Admin > Users > Impersonation Tokens', :js do
     find(".settings-message")
   end
 
+  def created_impersonation_token
+    find("#created-personal-access-token").value
+  end
+
   before do
     sign_in(admin)
   end
@@ -39,6 +43,7 @@ describe 'Admin > Users > Impersonation Tokens', :js do
       expect(active_impersonation_tokens).to have_text('api')
       expect(active_impersonation_tokens).to have_text('read_user')
       expect(PersonalAccessTokensFinder.new(impersonation: true).execute.count).to equal(1)
+      expect(created_impersonation_token).not_to be_empty
     end
   end
 

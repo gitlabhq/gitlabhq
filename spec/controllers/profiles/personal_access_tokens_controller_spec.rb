@@ -39,8 +39,10 @@ describe Profiles::PersonalAccessTokensController do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:inactive_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
     let!(:impersonation_personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
+    let(:token_value) { 's3cr3t' }
 
     before do
+      PersonalAccessToken.redis_store!(user.id, token_value)
       get :index
     end
 
@@ -55,6 +57,10 @@ describe Profiles::PersonalAccessTokensController do
     it "does not retrieve impersonation personal access tokens" do
       expect(assigns(:active_personal_access_tokens)).not_to include(impersonation_personal_access_token)
       expect(assigns(:inactive_personal_access_tokens)).not_to include(impersonation_personal_access_token)
+    end
+
+    it "retrieves newly created personal access token value" do
+      expect(assigns(:new_personal_access_token)).to eql(token_value)
     end
   end
 end
