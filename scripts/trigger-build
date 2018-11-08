@@ -107,7 +107,8 @@ module Trigger
       {
         'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
         'ALTERNATIVE_SOURCES' => 'true',
-        'ee' => Trigger.ee? ? 'true' : 'false'
+        'ee' => Trigger.ee? ? 'true' : 'false',
+        'QA_BRANCH' => ENV['QA_BRANCH'] || 'master'
       }
     end
   end
