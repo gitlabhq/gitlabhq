@@ -59,6 +59,7 @@
       margin: 0;
       padding: 0;
       table-layout: fixed;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       .diff-line-num {
         width: 50px;
@@ -859,7 +860,7 @@
 }
 
 .diff-file .note-container > .new-note,
-.note-container .discussion-notes {
+.note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }

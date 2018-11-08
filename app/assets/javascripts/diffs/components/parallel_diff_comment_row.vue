@@ -76,8 +76,9 @@ export default {
     :class="className"
     class="notes_holder"
   >
-    <td class="notes_line old"></td>
-    <td class="notes_content parallel old">
+    <td
+      class="notes_content parallel old"
+      colspan="2">
       <div
         v-if="shouldRenderDiscussionsOnLeft"
         class="content"
@@ -95,8 +96,9 @@ export default {
         line-position="left"
       />
     </td>
-    <td class="notes_line new"></td>
-    <td class="notes_content parallel new">
+    <td
+      class="notes_content parallel new"
+      colspan="2">
       <div
         v-if="shouldRenderDiscussionsOnRight"
         class="content"

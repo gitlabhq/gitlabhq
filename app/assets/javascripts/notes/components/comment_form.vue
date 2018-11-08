@@ -321,10 +321,10 @@ Please check your network connection and try again.`;
       v-else-if="!canCreateNote"
       :issuable-type="issuableTypeTitle"
     />
-    <ul
+    <div
       v-else-if="canCreateNote"
       class="notes notes-form timeline">
-      <li class="timeline-entry">
+      <div class="timeline-entry note-form">
         <div class="timeline-entry-inner">
           <div class="flash-container error-alert timeline-content"></div>
           <div class="timeline-icon d-none d-sm-none d-md-block">
@@ -462,7 +462,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
             </form>
           </div>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>

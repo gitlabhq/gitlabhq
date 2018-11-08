@@ -150,17 +150,25 @@ shared_examples 'discussion comments' do |resource_name|
         end
 
         if resource_name == 'merge request'
-          let(:note_id) { find("#{comments_selector} .note", match: :first)['data-note-id'] }
+          let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
+          let(:reply_id) { find("#{comments_selector} .note:last-child", match: :first)['data-note-id'] }
 
           it 'shows resolved discussion when toggled' do
+            find("#{comments_selector} .js-vue-discussion-reply").click
+            find("#{comments_selector} .note-textarea").send_keys('a')
+
+            click_button "Comment"
+            wait_for_requests
+
             click_button "Resolve discussion"
+            wait_for_requests
 
             expect(page).to have_selector(".note-row-#{note_id}", visible: true)
 
             refresh
-            click_button "Toggle discussion"
+            click_button "1 reply"
 
-            expect(page).to have_selector(".note-row-#{note_id}", visible: true)
+            expect(page).to have_selector(".note-row-#{reply_id}", visible: true)
           end
         end
       end
