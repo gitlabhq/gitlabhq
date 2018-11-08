@@ -77,7 +77,7 @@ stages:
 
 .rails4: &rails4
   allow_failure: false
-  only:
+  except:
     variables:
       - $CI_COMMIT_REF_NAME =~ /norails4/
       - $RAILS5_DISABLED
