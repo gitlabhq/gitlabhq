@@ -31,6 +31,7 @@ module QA
           create_issue
 
           Page::Project::Issue::Show.perform do |show|
+            show.select_all_activities_filter
             show.comment('See attached banana for scale', attachment: file_to_attach)
 
             show.refresh
