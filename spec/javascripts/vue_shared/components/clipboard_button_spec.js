@@ -27,8 +27,6 @@ describe('clipboard button', () => {
 
     it('should have a tooltip with default values', () => {
       expect(vm.$el.getAttribute('data-original-title')).toEqual('Copy this value into Clipboard!');
-      expect(vm.$el.getAttribute('data-placement')).toEqual('top');
-      expect(vm.$el.getAttribute('data-container')).toEqual(null);
     });
 
     it('should render provided classname', () => {
