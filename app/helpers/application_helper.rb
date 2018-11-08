@@ -181,7 +181,8 @@ module ApplicationHelper
       author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name],
-      my_reaction_emoji: params[:my_reaction_emoji]
+      my_reaction_emoji: params[:my_reaction_emoji],
+      wip: params[:wip]
     }
 
     options = exist_opts.merge(options)
