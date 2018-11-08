@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import DiffLineGutterContent from './diff_line_gutter_content.vue';
 import {
   MATCH_LINE_TYPE,
+  CONTEXT_LINE_TYPE,
   EMPTY_CELL_TYPE,
   OLD_LINE_TYPE,
   OLD_NO_NEW_LINE_TYPE,
@@ -70,6 +71,9 @@ export default {
     isMatchLine() {
       return this.line.type === MATCH_LINE_TYPE;
     },
+    isContextLine() {
+      return this.line.type === CONTEXT_LINE_TYPE;
+    },
     isMetaLine() {
       const { type } = this.line;
 
@@ -84,7 +88,11 @@ export default {
         [type]: type,
         [LINE_UNFOLD_CLASS_NAME]: this.isMatchLine,
         [LINE_HOVER_CLASS_NAME]:
-          this.isLoggedIn && this.isHover && !this.isMatchLine && !this.isMetaLine,
+          this.isLoggedIn &&
+          this.isHover &&
+          !this.isMatchLine &&
+          !this.isContextLine &&
+          !this.isMetaLine,
       };
     },
     lineNumber() {
