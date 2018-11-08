@@ -1,7 +1,7 @@
 <script>
 import Timeago from 'timeago.js';
 import _ from 'underscore';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { humanize } from '~/lib/utils/text_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -36,7 +36,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -455,7 +455,7 @@ export default {
     class="gl-responsive-table-row"
     role="row">
     <div
-      v-tooltip
+      v-gl-tooltip
       :title="model.name"
       class="table-section section-wrap section-15 text-truncate"
       role="gridcell"
