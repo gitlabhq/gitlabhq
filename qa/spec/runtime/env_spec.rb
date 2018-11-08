@@ -3,49 +3,62 @@
 describe QA::Runtime::Env do
   include Support::StubENV
 
-  shared_examples 'boolean method' do |method, env_key, default|
+  shared_examples 'boolean method' do |**kwargs|
+    it_behaves_like 'boolean method with parameter', kwargs
+  end
+
+  shared_examples 'boolean method with parameter' do |method:, param: nil, env_key:, default:|
     context 'when there is an env variable set' do
       it 'returns false when falsey values specified' do
         stub_env(env_key, 'false')
-        expect(described_class.public_send(method)).to be_falsey
+        expect(described_class.public_send(method, *param)).to be_falsey
 
         stub_env(env_key, 'no')
-        expect(described_class.public_send(method)).to be_falsey
+        expect(described_class.public_send(method, *param)).to be_falsey
 
         stub_env(env_key, '0')
-        expect(described_class.public_send(method)).to be_falsey
+        expect(described_class.public_send(method, *param)).to be_falsey
       end
 
       it 'returns true when anything else specified' do
         stub_env(env_key, 'true')
-        expect(described_class.public_send(method)).to be_truthy
+        expect(described_class.public_send(method, *param)).to be_truthy
 
         stub_env(env_key, '1')
-        expect(described_class.public_send(method)).to be_truthy
+        expect(described_class.public_send(method, *param)).to be_truthy
 
         stub_env(env_key, 'anything')
-        expect(described_class.public_send(method)).to be_truthy
+        expect(described_class.public_send(method, *param)).to be_truthy
       end
     end
 
     context 'when there is no env variable set' do
       it "returns the default, #{default}" do
         stub_env(env_key, nil)
-        expect(described_class.public_send(method)).to be(default)
+        expect(described_class.public_send(method, *param)).to be(default)
       end
     end
   end
 
   describe '.signup_disabled?' do
-    it_behaves_like 'boolean method', :signup_disabled?, 'SIGNUP_DISABLED', false
+    it_behaves_like 'boolean method',
+      method: :signup_disabled?,
+      env_key: 'SIGNUP_DISABLED',
+      default: false
   end
 
   describe '.debug?' do
-    it_behaves_like 'boolean method', :debug?, 'QA_DEBUG', false
+    it_behaves_like 'boolean method',
+      method: :debug?,
+      env_key: 'QA_DEBUG',
+      default: false
   end
 
   describe '.chrome_headless?' do
-    it_behaves_like 'boolean method', :chrome_headless?, 'CHROME_HEADLESS', true
+    it_behaves_like 'boolean method',
+      method: :chrome_headless?,
+      env_key: 'CHROME_HEADLESS',
+      default: true
   end
 
   describe '.running_in_ci?' do
@@ -180,6 +193,18 @@ describe QA::Runtime::Env do
       stub_env('QA_LOG_PATH', 'path/to_file')
 
       expect(described_class.log_destination).to eq('path/to_file')
+    end
+  end
+
+  describe '.can_test?' do
+    it_behaves_like 'boolean method with parameter',
+      method: :can_test?,
+      param: :git_protocol_v2,
+      env_key: 'QA_CAN_TEST_GIT_PROTOCOL_V2',
+      default: true
+
+    it 'raises ArgumentError if feature is unknown' do
+      expect { described_class.can_test? :foo }.to raise_error(ArgumentError, 'Unknown feature "foo"')
     end
   end
 end
