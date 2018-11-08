@@ -109,12 +109,14 @@ module Gitlab
       end
 
       def internal_web?(uri)
-        uri.hostname == config.gitlab.host &&
+        uri.scheme == config.gitlab.protocol &&
+          uri.hostname == config.gitlab.host &&
           (uri.port.blank? || uri.port == config.gitlab.port)
       end
 
       def internal_shell?(uri)
-        uri.hostname == config.gitlab_shell.ssh_host &&
+        uri.scheme == 'ssh' &&
+          uri.hostname == config.gitlab_shell.ssh_host &&
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
       end
 
