@@ -25,10 +25,6 @@ class DiscordService < ChatNotificationService
     </ol>"
   end
 
-  def webhook_placeholder
-    "https://discordapp.com/api/webhooks/..."
-  end
-
   def event_field(event)
     # No-op.
   end
@@ -39,7 +35,7 @@ class DiscordService < ChatNotificationService
 
   def default_fields
     [
-      { type: "text", name: "webhook", placeholder: "e.g. #{webhook_placeholder}" },
+      { type: "text", name: "webhook", placeholder: "e.g. https://discordapp.com/api/webhooks/…" },
       { type: "checkbox", name: "notify_only_broken_pipelines" },
       { type: "checkbox", name: "notify_only_default_branch" }
     ]
