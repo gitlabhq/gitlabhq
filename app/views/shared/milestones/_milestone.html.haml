@@ -35,8 +35,8 @@
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
         - if @project
-          - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
-            - if @project.group
+          - if can_admin_project_milestones? and milestone.active?
+            - if can_admin_group_milestones?
               %button.js-promote-project-milestone-button.btn.btn-blank.btn-sm.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
                 disabled: true,
                 type: 'button',

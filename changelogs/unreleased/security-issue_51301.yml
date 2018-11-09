@@ -1,0 +1,5 @@
+---
+title: Fix milestone promotion authorization check
+merge_request:
+author:
+type: security
