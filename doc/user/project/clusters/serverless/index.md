@@ -70,3 +70,36 @@ Simply click on the "**Install**" button for the GitLab Runner. It is important 
 With all the pieces in place, you can simply create a new CI pipeline to deploy the Knative application. Navigate to 
 **CI/CD >> Pipelines** and click on the "**Run Pipeline"** button on the upper right hand side of the screen. On the 
 Pipelines page now click "**Create pipeline**".
+
+## Obtain the URL for the Knative deployment
+
+Once all the stages of the pipeline finish, click on the "deploy" stage
+
+![deploy stage](img/deploy-stage.png)
+
+The output will look like this:
+
+```bash
+Running with gitlab-runner 11.5.0~beta.844.g96d88322 (96d88322)
+  on docker-auto-scale 72989761
+Using Docker executor with image gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
+Pulling docker image gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
+Using docker image sha256:6b3f6590a9b30bd7aafb9573f047d930c70066e43955b4beb18a1eee175f6de1 for gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5 ...
+Running on runner-72989761-project-4342902-concurrent-0 via runner-72989761-stg-srm-1541795796-27929c96...
+Cloning repository...
+Cloning into '/builds/danielgruesso/knative'...
+Checking out 8671ad20 as master...
+Skipping Git submodules setup
+$ echo "$CI_REGISTRY_IMAGE"
+registry.staging.gitlab.com/danielgruesso/knative
+$ tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
+Deployment started. Run "tm -n knative-4342902 describe service knative" to see the details
+Waiting for ready state.......
+Service domain: knative.knative-4342902.knative.info
+Job succeeded
+```
+
+The second to last line, labeled "**Service domain**" contains the URL for the deployment. Copy and paste the domain into your 
+browser to see the app live.
+
+![knative app](img/knative-app.png)
