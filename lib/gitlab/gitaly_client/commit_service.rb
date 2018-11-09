@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class CommitService
@@ -93,7 +95,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request, timeout: GitalyClient.medium_timeout)
 
         entry = nil
-        data = ''
+        data = []
         response.each do |msg|
           if entry.nil?
             entry = msg
@@ -103,7 +105,7 @@ module Gitlab
 
           data << msg.data
         end
-        entry.data = data
+        entry.data = data.join
 
         entry unless entry.oid.blank?
       end
@@ -254,7 +256,7 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
-        response.reduce("") { |memo, msg| memo << msg.data }
+        response.reduce([]) { |memo, msg| memo << msg.data }.join
       end
 
       def find_commit(revision)
@@ -345,8 +347,8 @@ module Gitlab
         request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
         response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
 
-        signature = ''.b
-        signed_text = ''.b
+        signature = +''.b
+        signed_text = +''.b
 
         response.each do |message|
           signature << message.signature
@@ -364,7 +366,7 @@ module Gitlab
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
         response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
-        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
         current_commit_id = nil
 
         response.each do |message|
@@ -383,7 +385,7 @@ module Gitlab
         request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
         response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request, timeout: GitalyClient.fast_timeout)
 
-        messages = Hash.new { |h, k| h[k] = ''.b }
+        messages = Hash.new { |h, k| h[k] = +''.b }
         current_commit_id = nil
 
         response.each do |rpc_message|

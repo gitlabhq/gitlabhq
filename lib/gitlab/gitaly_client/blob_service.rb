@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class BlobService
@@ -15,7 +17,7 @@ module Gitlab
         )
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request, timeout: GitalyClient.fast_timeout)
 
-        data = ''
+        data = []
         blob = nil
         response.each do |msg|
           if blob.nil?
@@ -26,6 +28,8 @@ module Gitlab
         end
 
         return nil if blob.oid.blank?
+
+        data = data.join
 
         Gitlab::Git::Blob.new(
           id: blob.oid,

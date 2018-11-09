@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 module Gitlab
@@ -139,7 +141,7 @@ module Gitlab
           next unless message.name.present? || wiki_file
 
           if wiki_file
-            wiki_file.raw_data << message.raw_data
+            wiki_file.raw_data = "#{wiki_file.raw_data}#{message.raw_data}"
           else
             wiki_file = GitalyClient::WikiFile.new(message.to_h)
             # All gRPC strings in a response are frozen, so we get
@@ -160,7 +162,7 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_formatted_data, request)
-        response.reduce("") { |memo, msg| memo << msg.data }
+        response.reduce([]) { |memo, msg| memo << msg.data }.join
       end
 
       private

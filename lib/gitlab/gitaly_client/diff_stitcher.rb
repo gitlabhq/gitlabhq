@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class DiffStitcher
@@ -20,7 +22,7 @@ module Gitlab
 
             current_diff = GitalyClient::Diff.new(diff_params)
           else
-            current_diff.patch += diff_msg.raw_patch_data
+            current_diff.patch = "#{current_diff.patch}#{diff_msg.raw_patch_data}"
           end
 
           if diff_msg.end_of_patch

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitlabImport
     class Importer
@@ -22,22 +24,22 @@ module Gitlab
           issues = client.issues(project_identifier)
 
           issues.each do |issue|
-            body = @formatter.author_line(issue["author"]["name"])
-            body += issue["description"]
+            body = [@formatter.author_line(issue["author"]["name"])]
+            body << issue["description"]
 
             comments = client.issue_comments(project_identifier, issue["iid"])
 
             if comments.any?
-              body += @formatter.comments_header
+              body << @formatter.comments_header
             end
 
             comments.each do |comment|
-              body += @formatter.comment(comment["author"]["name"], comment["created_at"], comment["body"])
+              body << @formatter.comment(comment["author"]["name"], comment["created_at"], comment["body"])
             end
 
             project.issues.create!(
               iid: issue["iid"],
-              description: body,
+              description: body.join,
               title: issue["title"],
               state: issue["state"],
               updated_at: issue["updated_at"],

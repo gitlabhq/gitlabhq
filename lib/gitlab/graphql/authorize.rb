@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Graphql
     # Allow fields to declare permissions their objects must have. The field

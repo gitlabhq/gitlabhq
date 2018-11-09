@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Git
     # Class for parsing Git attribute files and extracting the attributes for

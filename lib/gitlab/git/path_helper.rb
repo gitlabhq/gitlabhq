@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: JV: no RPC's here.
 
 module Gitlab

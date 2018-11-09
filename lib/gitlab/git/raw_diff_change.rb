@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Git
     # This class behaves like a struct with fields :blob_id, :blob_size, :operation, :old_path, :new_path

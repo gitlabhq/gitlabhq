@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class ConflictFilesStitcher
@@ -17,7 +19,7 @@ module Gitlab
 
               current_file = file_from_gitaly_header(gitaly_file.header)
             else
-              current_file.raw_content << gitaly_file.content
+              current_file.raw_content = "#{current_file.raw_content}#{gitaly_file.content}"
             end
           end
         end

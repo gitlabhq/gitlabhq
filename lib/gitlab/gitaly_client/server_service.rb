@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     # Meant for extraction of server data, and later maybe to perform misc task

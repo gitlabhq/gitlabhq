@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitlab::Git::Commit is a wrapper around Gitaly::GitCommit
 module Gitlab
   module Git
