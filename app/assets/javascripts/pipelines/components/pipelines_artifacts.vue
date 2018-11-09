@@ -1,13 +1,15 @@
 <script>
-import tooltip from '../../vue_shared/directives/tooltip';
-import Icon from '../../vue_shared/components/icon.vue';
+import { GlLink, GlButton, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     Icon,
+    GlLink,
+    GlButton,
   },
   props: {
     artifacts: {
@@ -22,11 +24,10 @@ export default {
     class="btn-group"
     role="group"
   >
-    <button
-      v-tooltip
-      class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
+    <gl-button
+      v-gl-tooltip
+      class="dropdown-toggle build-artifacts js-pipeline-dropdown-download"
       title="Artifacts"
-      data-placement="top"
       data-toggle="dropdown"
       aria-label="Artifacts"
     >
@@ -36,18 +37,19 @@ export default {
         aria-hidden="true"
       >
       </i>
-    </button>
+    </gl-button>
     <ul class="dropdown-menu dropdown-menu-right">
       <li
         v-for="(artifact, i) in artifacts"
-        :key="i">
-        <a
+        :key="i"
+      >
+        <gl-link
           :href="artifact.path"
           rel="nofollow"
           download
         >
           Download {{ artifact.name }} artifacts
-        </a>
+        </gl-link>
       </li>
     </ul>
   </div>
