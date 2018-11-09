@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # When provided a diff for a specific file, maps old line numbers to new line
 # numbers and back, to find out where a specific line in a file was moved by the
 # changes.

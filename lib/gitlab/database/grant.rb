@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Database
     # Model that can be used for querying permissions of a SQL user.
