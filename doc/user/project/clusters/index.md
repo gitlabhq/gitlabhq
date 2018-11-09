@@ -271,7 +271,8 @@ kubectl get svc --namespace=gitlab-managed-apps ingress-nginx-ingress-controller
 ```
 
 NOTE: **Note:**
-For Istio/Knative, the command will be different:
+For Istio/Knative, use the following command:
+
 ```bash
 kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
 ```
@@ -485,7 +486,13 @@ the deployment variables above, ensuring any pods you create are labelled with
 
 ## Read more
 
-- [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
+### Integrating Amazon EKS cluster with GitLab
+
+- Learn how to [connect and deploy to an Amazon EKS cluster.](eks_and_gitlab/index.md)
+
+### Serverless
+
+- [Run serverless workloads on Kubernetes with Knative.](serverless/index.md)
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/pricing/
