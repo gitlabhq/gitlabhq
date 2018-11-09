@@ -27,10 +27,10 @@ export default {
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
     leftLineCode() {
-      return this.line.left && this.line.left.lineCode;
+      return this.line.left && this.line.left.line_code;
     },
     rightLineCode() {
-      return this.line.right && this.line.right.lineCode;
+      return this.line.right && this.line.right.line_code;
     },
     hasExpandedDiscussionOnLeft() {
       return this.line.left && this.line.left.discussions

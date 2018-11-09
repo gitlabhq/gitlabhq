@@ -120,11 +120,11 @@ export default {
         class="diff-line-num old_line"
       />
       <td
-        :id="line.left.lineCode"
+        :id="line.left.line_code"
         :class="parallelViewLeftLineType"
         class="line_content parallel left-side"
         @mousedown.native="handleParallelLineMouseDown"
-        v-html="line.left.richText"
+        v-html="line.left.rich_text"
       >
       </td>
     </template>
@@ -146,11 +146,11 @@ export default {
         class="diff-line-num new_line"
       />
       <td
-        :id="line.right.lineCode"
+        :id="line.right.line_code"
         :class="line.right.type"
         class="line_content parallel right-side"
         @mousedown.native="handleParallelLineMouseDown"
-        v-html="line.right.richText"
+        v-html="line.right.rich_text"
       >
       </td>
     </template>

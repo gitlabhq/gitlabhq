@@ -195,12 +195,12 @@ describe('Diffs Module Getters', () => {
       discussionMock.expanded = true;
 
       line.left = {
-        lineCode: 'ABC',
+        line_code: 'ABC',
         discussions: [discussionMock],
       };
 
       line.right = {
-        lineCode: 'DEF',
+        line_code: 'DEF',
         discussions: [discussionMock1],
       };
     });
@@ -259,7 +259,7 @@ describe('Diffs Module Getters', () => {
 
   describe('getDiffFileDiscussions', () => {
     it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
-      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
+      discussionMock.diff_file.file_hash = diffFileMock.file_hash;
 
       expect(
         getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [discussionMock] })(
@@ -279,10 +279,10 @@ describe('Diffs Module Getters', () => {
   describe('getDiffFileByHash', () => {
     it('returns file by hash', () => {
       const fileA = {
-        fileHash: '123',
+        file_hash: '123',
       };
       const fileB = {
-        fileHash: '456',
+        file_hash: '456',
       };
       localState.diffFiles = [fileA, fileB];
 

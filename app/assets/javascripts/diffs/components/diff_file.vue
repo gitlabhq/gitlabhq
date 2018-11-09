@@ -40,7 +40,7 @@ export default {
       return sprintf(
         __('You can %{linkStart}view the blob%{linkEnd} instead.'),
         {
-          linkStart: `<a href="${_.escape(this.file.viewPath)}">`,
+          linkStart: `<a href="${_.escape(this.file.view_path)}">`,
           linkEnd: '</a>',
         },
         false,
@@ -49,9 +49,9 @@ export default {
     showExpandMessage() {
       return (
         this.isCollapsed ||
-        (!this.file.highlightedDiffLines &&
+        (!this.file.highlighted_diff_lines &&
           !this.isLoadingCollapsedDiff &&
-          !this.file.tooLarge &&
+          !this.file.too_large &&
           this.file.text)
       );
     },
@@ -59,9 +59,11 @@ export default {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
     hasDiffLines() {
-      const { highlightedDiffLines, parallelDiffLines } = this.file;
-
-      return highlightedDiffLines && parallelDiffLines && parallelDiffLines.length > 0;
+      return (
+        this.file.highlighted_diff_lines &&
+        this.file.parallel_diff_lines &&
+        this.file.parallel_diff_lines.length > 0
+      );
     },
   },
   watch: {
@@ -115,9 +117,9 @@ export default {
 
 <template>
   <div
-    :id="file.fileHash"
+    :id="file.file_hash"
     :class="{
-      'is-active': currentDiffFileId === file.fileHash
+      'is-active': currentDiffFileId === file.file_hash
     }"
     class="diff-file file-holder"
   >
@@ -141,7 +143,7 @@ export default {
         make your changes there, and submit a merge request.
       </span>
       <a
-        :href="file.forkPath"
+        :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
       >
         Fork
@@ -157,7 +159,7 @@ export default {
 
     <diff-content
       v-if="!isCollapsed && file.renderIt"
-      :class="{ hidden: isCollapsed || file.tooLarge }"
+      :class="{ hidden: isCollapsed || file.too_large }"
       :diff-file="file"
     />
     <gl-loading-icon
@@ -178,7 +180,7 @@ export default {
       </a>
     </div>
     <div
-      v-if="file.tooLarge"
+      v-if="file.too_large"
       class="nothing-here-block diff-collapsed js-too-large-diff"
     >
       {{ __('This source diff could not be displayed because it is too large.') }}

@@ -341,7 +341,7 @@ export const scrollToNoteIfNeeded = (context, el) => {
 };
 
 export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
-  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+  axios.get(discussion.truncated_diff_lines_path).then(({ data }) => {
     commit(types.SET_DISCUSSION_DIFF_LINES, {
       discussionId: discussion.id,
       diffLines: data.truncated_diff_lines,

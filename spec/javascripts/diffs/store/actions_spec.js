@@ -97,46 +97,46 @@ describe('DiffsStoreActions', () => {
       const state = {
         diffFiles: [
           {
-            fileHash: 'ABC',
-            parallelDiffLines: [
+            file_hash: 'ABC',
+            parallel_diff_lines: [
               {
                 left: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
                 right: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
               },
             ],
-            highlightedDiffLines: [
+            highlighted_diff_lines: [
               {
-                lineCode: 'ABC_1_1',
+                line_code: 'ABC_1_1',
                 discussions: [],
-                oldLine: 5,
-                newLine: null,
+                old_line: 5,
+                new_line: null,
               },
             ],
-            diffRefs: {
-              baseSha: 'abc',
-              headSha: 'def',
-              startSha: 'ghi',
+            diff_refs: {
+              base_sha: 'abc',
+              head_sha: 'def',
+              start_sha: 'ghi',
             },
-            newPath: 'file1',
-            oldPath: 'file2',
+            new_path: 'file1',
+            old_path: 'file2',
           },
         ],
       };
 
       const diffPosition = {
-        baseSha: 'abc',
-        headSha: 'def',
-        startSha: 'ghi',
-        newLine: null,
-        newPath: 'file1',
-        oldLine: 5,
-        oldPath: 'file2',
+        base_sha: 'abc',
+        head_sha: 'def',
+        start_sha: 'ghi',
+        new_line: null,
+        new_path: 'file1',
+        old_line: 5,
+        old_path: 'file2',
       };
 
       const singleDiscussion = {
@@ -145,7 +145,7 @@ describe('DiffsStoreActions', () => {
         diff_file: {
           file_hash: 'ABC',
         },
-        fileHash: 'ABC',
+        file_hash: 'ABC',
         resolvable: true,
         position: diffPosition,
         original_position: diffPosition,
@@ -164,24 +164,22 @@ describe('DiffsStoreActions', () => {
               discussion: singleDiscussion,
               diffPositionByLineCode: {
                 ABC_1_1: {
-                  baseSha: 'abc',
-                  headSha: 'def',
-                  startSha: 'ghi',
-                  newLine: null,
-                  newPath: 'file1',
-                  oldLine: 5,
-                  oldPath: 'file2',
-                  lineCode: 'ABC_1_1',
-                  positionType: 'text',
+                  base_sha: 'abc',
+                  head_sha: 'def',
+                  start_sha: 'ghi',
+                  new_line: null,
+                  new_path: 'file1',
+                  old_line: 5,
+                  old_path: 'file2',
+                  line_code: 'ABC_1_1',
+                  position_type: 'text',
                 },
               },
             },
           },
         ],
         [],
-        () => {
-          done();
-        },
+        done,
       );
     });
   });
@@ -191,11 +189,11 @@ describe('DiffsStoreActions', () => {
       const state = {
         diffFiles: [
           {
-            fileHash: 'ABC',
-            parallelDiffLines: [
+            file_hash: 'ABC',
+            parallel_diff_lines: [
               {
                 left: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [
                     {
                       id: 1,
@@ -203,14 +201,14 @@ describe('DiffsStoreActions', () => {
                   ],
                 },
                 right: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
               },
             ],
-            highlightedDiffLines: [
+            highlighted_diff_lines: [
               {
-                lineCode: 'ABC_1_1',
+                line_code: 'ABC_1_1',
                 discussions: [],
               },
             ],
@@ -219,7 +217,7 @@ describe('DiffsStoreActions', () => {
       };
       const singleDiscussion = {
         id: '1',
-        fileHash: 'ABC',
+        file_hash: 'ABC',
         line_code: 'ABC_1_1',
       };
 
@@ -238,9 +236,7 @@ describe('DiffsStoreActions', () => {
           },
         ],
         [],
-        () => {
-          done();
-        },
+        done,
       );
     });
   });
