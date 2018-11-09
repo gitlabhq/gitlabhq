@@ -194,11 +194,13 @@ module API
           branch_name: params[:branch]
         }
 
-        result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
+        result = ::Commits::CherryPickService
+          .new(user_project, current_user, commit_params)
+          .execute
 
         if result[:status] == :success
-          branch = find_branch!(params[:branch])
-          present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
+          present user_project.repository.commit(result[:result]),
+            with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
         end
