@@ -36,6 +36,7 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
   BoardLimitExceeded = Class.new(StandardError)
+  AmbiguousRef = Class.new(StandardError)
 
   STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
   NUMBER_OF_PERMITTED_BOARDS = 1
@@ -1160,6 +1161,21 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def resolve_ref(ref)
+    tag_exists = repository.tag_exists?(ref)
+    branch_exists = repository.branch_exists?(ref)
+
+    if tag_exists && branch_exists
+      raise AmbiguousRef
+    elsif tag_exists
+      Gitlab::Git::TAG_REF_PREFIX + ref
+    elsif branch_exists
+      Gitlab::Git::BRANCH_REF_PREFIX + ref
+    else
+      ref
+    end
+  end
+
   def root_ref?(branch)
     repository.root_ref == branch
   end
@@ -1737,10 +1753,13 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    if repository.branch_exists?(ref)
-      ProtectedBranch.protected?(self, ref)
-    elsif repository.tag_exists?(ref)
-      ProtectedTag.protected?(self, ref)
+    full_ref = resolve_ref(ref)
+    ref_name = Gitlab::Git.ref_name(full_ref)
+
+    if Gitlab::Git.branch_ref?(full_ref)
+      ProtectedBranch.protected?(self, ref_name)
+    elsif Gitlab::Git.tag_ref?(full_ref)
+      ProtectedTag.protected?(self, ref_name)
     end
   end
 

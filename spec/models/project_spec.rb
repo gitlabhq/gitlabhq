@@ -2520,6 +2520,10 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(false)
+      end
+
       it 'contains only the CI variables' do
         is_expected.to contain_exactly(ci_variable)
       end
@@ -2563,7 +2567,13 @@ describe Project do
 
     subject { project.protected_for?('ref') }
 
+    before do
+      allow(project).to receive(:resolve_ref).and_return(ref)
+    end
+
     context 'when the ref is not protected' do
+      let(:ref) { 'refs/heads/ref' }
+
       before do
         stub_application_setting(
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -2575,9 +2585,9 @@ describe Project do
     end
 
     context 'when the ref is a protected branch' do
+      let(:ref) { 'refs/heads/ref' }
+
       before do
-        allow(project).to receive(:repository).and_call_original
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
         create(:protected_branch, name: 'ref', project: project)
       end
 
@@ -2587,9 +2597,9 @@ describe Project do
     end
 
     context 'when the ref is a protected tag' do
+      let(:ref) { 'refs/tags/ref' }
+
       before do
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
-        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
         create(:protected_tag, name: 'ref', project: project)
       end
 
@@ -2774,6 +2784,56 @@ describe Project do
         let(:project_name) { 'Project' }
 
         it { is_expected.to eq(expected_url) }
+      end
+    end
+  end
+
+  describe '#resolve_ref' do
+    let(:project) { create(:project) }
+
+    subject { project.resolve_ref(ref) }
+
+    context 'when ref is full ref' do
+      let(:ref) { 'refs/heads/master' }
+
+      it 'returns the unchanged ref' do
+        is_expected.to eq(ref)
+      end
+    end
+
+    context 'when ref is a tag or branch name' do
+      let(:ref) { 'ref' }
+
+      before do
+        allow(project.repository).to receive(:tag_exists?).and_return(tag_exists)
+        allow(project.repository).to receive(:branch_exists?).and_return(branch_exists)
+      end
+
+      context 'when ref is ambiguous' do
+        let(:tag_exists) { true }
+        let(:branch_exists) { true }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(described_class::AmbiguousRef)
+        end
+      end
+
+      context 'when ref is tag name' do
+        let(:tag_exists) { true }
+        let(:branch_exists) { false }
+
+        it 'returns full tag ref path' do
+          is_expected.to eq('refs/tags/ref')
+        end
+      end
+
+      context 'when ref is branch name' do
+        let(:tag_exists) { false }
+        let(:branch_exists) { true }
+
+        it 'returns full branch ref path' do
+          is_expected.to eq('refs/heads/ref')
+        end
       end
     end
   end
