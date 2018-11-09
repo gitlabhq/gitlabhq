@@ -4,17 +4,6 @@ class DashboardController < Dashboard::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  FILTER_PARAMS = [
-    # author_id and assignee_id are kept so old RSS links still work
-    :author_id,
-    :assignee_id,
-    :author_username,
-    :assignee_username,
-    :milestone_title,
-    :label_name,
-    :my_reaction_emoji
-  ].freeze
-
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests]
@@ -55,9 +44,12 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def check_filters_presence!
-    @no_filters_set = FILTER_PARAMS.none? { |k| params.key?(k) }
+    @no_filters_set = finder_type.scalar_params.none? { |k| params.key?(k) }
 
     return unless @no_filters_set
+
+    # Call to set selected `state` and `sort` options in view
+    finder_options
 
     respond_to do |format|
       format.html { render }

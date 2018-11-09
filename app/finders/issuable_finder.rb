@@ -14,7 +14,9 @@
 #     project_id: integer
 #     milestone_title: string
 #     author_id: integer
+#     author_username: string
 #     assignee_id: integer or 'None' or 'Any'
+#     assignee_username: string
 #     search: string
 #     label_name: string
 #     sort: string
@@ -49,25 +51,15 @@ class IssuableFinder
       assignee_username
       author_id
       author_username
-      authorized_only
-      group_id
-      iids
       label_name
       milestone_title
       my_reaction_emoji
-      non_archived
-      project_id
-      scope
       search
-      sort
-      state
-      include_subgroups
-      use_cte_for_search
     ]
   end
 
   def self.array_params
-    @array_params ||= { label_name: [], iids: [], assignee_username: [] }
+    @array_params ||= { label_name: [], assignee_username: [] }
   end
 
   def self.valid_params
