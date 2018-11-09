@@ -29,6 +29,7 @@ module Banzai
       end
 
       def absolute_link_attr(uri)
+        # Here we really want to expand relative path to absolute path
         URI.join(Gitlab.config.gitlab.url, uri).to_s
       end
     end

@@ -39,11 +39,9 @@ class DroneCiService < CiService
   end
 
   def commit_status_path(sha, ref)
-    url = [drone_url,
-           "gitlab/#{project.full_path}/commits/#{sha}",
-           "?branch=#{URI.encode(ref.to_s)}&access_token=#{token}"]
-
-    URI.join(*url).to_s
+    Gitlab::Utils.append_path(
+      drone_url,
+      "gitlab/#{project.full_path}/commits/#{sha}?branch=#{URI.encode(ref.to_s)}&access_token=#{token}")
   end
 
   def commit_status(sha, ref)
@@ -74,11 +72,9 @@ class DroneCiService < CiService
   end
 
   def build_page(sha, ref)
-    url = [drone_url,
-           "gitlab/#{project.full_path}/redirect/commits/#{sha}",
-           "?branch=#{URI.encode(ref.to_s)}"]
-
-    URI.join(*url).to_s
+    Gitlab::Utils.append_path(
+      drone_url,
+      "gitlab/#{project.full_path}/redirect/commits/#{sha}?branch=#{URI.encode(ref.to_s)}")
   end
 
   def title
