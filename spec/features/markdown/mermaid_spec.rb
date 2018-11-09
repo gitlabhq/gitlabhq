@@ -18,7 +18,7 @@ describe 'Mermaid rendering', :js do
     visit project_issue_path(project, issue)
 
     %w[A B C D].each do |label|
-      expect(page).to have_selector('svg foreignObject', text: label)
+      expect(page).to have_selector('svg text', text: label)
     end
   end
 end
