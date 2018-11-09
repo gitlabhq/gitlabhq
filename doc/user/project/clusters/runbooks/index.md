@@ -60,22 +60,22 @@ to add a Kubernetes cluster to your project.
 
 ### 2. Install Helm Tiller, Ingress, and JupyterHub
 
-Once the cluster has been provisioned in GKE, click the **"Install"** button next to the "Helm Tiller" app.
+Once the cluster has been provisioned in GKE, click the **Install** button next to the **Helm Tiller** app.
 
 ![install helm](img/helm-install.png)
 
-Once Tiller has been installed successfully, click the **"Install"** button next to the "Ingress" app.
+Once Tiller has been installed successfully, click the **Install** button next to the **Ingress** app.
 
 ![install ingress](img/ingress-install.png)
 
-Once Ingress has been installed successfully, click the **"Install"** button next to the "JupyterHub" app.
+Once Ingress has been installed successfully, click the **Install** button next to the **JupyterHub** app.
 
 ![install jupyterhub](img/jupyterhub-install.png)
 
 ### 3. Login to JupyterHub and start the server
 
 Once JupyterHub has been installed successfully, navigate to the displayed **Jupyter Hostname** URL and click 
-**"Sign in with GitLab"**. Authentication is automatically enabled for any user of GitLab server via OAuth2. This 
+**Sign in with GitLab**. Authentication is automatically enabled for any user of GitLab server via OAuth2. This 
 will redirect to GitLab in order to authorize JupyterHub to use your GitLab account. Click **Authorize**.
 
 ![authorize jupyter](img/authorize-jupyter.png)
@@ -88,8 +88,9 @@ The server will take a couple of seconds to start.
 
 ### 4. Configure access
 
-In order for the runbook to access your GitLab project, you will need to enter a [GitLab Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) as well as your Project ID in the "Setup" 
-section of the demo runbook.
+In order for the runbook to access your GitLab project, you will need to enter a
+[GitLab Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+as well as your Project ID in the **Setup** section of the demo runbook.
 
 Double-click the **DevOps-Runbook-Demo** folder located on the left panel.
 
