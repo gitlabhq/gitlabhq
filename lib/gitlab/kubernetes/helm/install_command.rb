@@ -35,7 +35,7 @@ module Gitlab
         private
 
         def init_command
-          'helm init --client-only >/dev/null'
+          'helm init --client-only'
         end
 
         def repository_command
@@ -43,13 +43,13 @@ module Gitlab
         end
 
         def repository_update_command
-          'helm repo update >/dev/null' if repository
+          'helm repo update' if repository
         end
 
         def install_command
           command = ['helm', 'install', chart] + install_command_flags
 
-          command.shelljoin + " >/dev/null\n"
+          command.shelljoin
         end
 
         def preinstall_command

@@ -36,7 +36,7 @@ module Gitlab
         private
 
         def init_command
-          'helm init --client-only >/dev/null'
+          'helm init --client-only'
         end
 
         def repository_command
@@ -50,7 +50,7 @@ module Gitlab
             " --namespace #{::Gitlab::Kubernetes::Helm::NAMESPACE}" \
             " -f /data/helm/#{name}/config/values.yaml"
 
-          "helm upgrade #{name} #{chart}#{upgrade_flags} >/dev/null\n"
+          "helm upgrade #{name} #{chart}#{upgrade_flags}"
         end
 
         def optional_version_flag
