@@ -145,9 +145,10 @@ service accounts and privileges in order to install and run
 - A `gitlab` service account with `cluster-admin` privileges will be created in the
   `default` namespace, which will be used by GitLab to manage the newly created cluster.
 
-- A project service account with `edit` privileges will be created in
-  the project namespace (also created by GitLab), which will be used in
-  [deployment jobs](#deployment-variables).
+- A project service account with [`edit`
+  privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+  will be created in the project namespace (also created by GitLab), which will
+  be used in [deployment jobs](#deployment-variables).
 
   NOTE: **Note:**
   Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
