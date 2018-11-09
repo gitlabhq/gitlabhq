@@ -595,7 +595,6 @@ $note-form-margin-left: 70px;
 
 .discussion-actions {
   float: right;
-  margin-left: 10px;
   color: $gray-darkest;
 
   @include media-breakpoint-down(xs) {
