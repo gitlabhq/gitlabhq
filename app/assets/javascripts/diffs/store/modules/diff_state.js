@@ -17,7 +17,6 @@ export default () => ({
   diffFiles: [],
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
-  diffLineCommentForms: {},
   diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,
   tree: [],
   treeEntries: {},
