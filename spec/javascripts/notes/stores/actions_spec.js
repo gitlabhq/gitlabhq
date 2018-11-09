@@ -396,6 +396,9 @@ describe('Actions Notes Store', () => {
             {
               type: 'updateMergeRequestWidget',
             },
+            {
+              type: 'startTaskList',
+            },
           ],
           done,
         );
