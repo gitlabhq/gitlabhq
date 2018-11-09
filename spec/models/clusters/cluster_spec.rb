@@ -16,6 +16,7 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:kubernetes_namespace) }
+  it { is_expected.to have_one(:cluster_project) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
@@ -313,9 +314,10 @@ describe Clusters::Cluster do
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)
       end
     end
   end

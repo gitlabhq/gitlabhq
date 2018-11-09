@@ -44,15 +44,15 @@ describe Gitlab::CycleAnalytics::StageSummary do
 
   describe "#deploys" do
     it "finds the number of deploys made created after the 'from date'" do
-      Timecop.freeze(5.days.ago) { create(:deployment, project: project) }
-      Timecop.freeze(5.days.from_now) { create(:deployment, project: project) }
+      Timecop.freeze(5.days.ago) { create(:deployment, :success, project: project) }
+      Timecop.freeze(5.days.from_now) { create(:deployment, :success, project: project) }
 
       expect(subject.third[:value]).to eq(1)
     end
 
     it "doesn't find commits from other projects" do
       Timecop.freeze(5.days.from_now) do
-        create(:deployment, project: create(:project, :repository))
+        create(:deployment, :success, project: create(:project, :repository))
       end
 
       expect(subject.third[:value]).to eq(0)

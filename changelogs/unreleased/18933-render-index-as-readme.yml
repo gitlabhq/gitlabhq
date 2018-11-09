@@ -1,0 +1,5 @@
+---
+title: Make index.* render like README.* when it's present in a repository
+merge_request: 22639
+author: Jakub Jirutka
+type: added

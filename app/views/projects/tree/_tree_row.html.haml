@@ -1,6 +1,27 @@
-- if tree_row.type == :tree
-  = render partial: 'projects/tree/tree_item', object: tree_row, as: 'tree_item', locals: { type: 'folder' }
-- elsif tree_row.type == :blob
-  = render partial: 'projects/tree/blob_item', object: tree_row, as: 'blob_item', locals: { type: 'file' }
-- elsif tree_row.type == :commit
-  = render partial: 'projects/tree/submodule_item', object: tree_row, as: 'submodule_item'
+- tree_row_name = tree_row.name
+- tree_row_type = tree_row.type
+
+%tr{ class: "tree-item file_#{hexdigest(tree_row_name)}" }
+  %td.tree-item-file-name
+    - if tree_row_type == :tree
+      = tree_icon('folder', tree_row.mode, tree_row.name)
+      - path = flatten_tree(@path, tree_row)
+      %a.str-truncated{ href: fast_project_tree_path(@project, tree_join(@id || @commit.id, path)), title: path }
+        %span= path
+
+    - elsif tree_row_type == :blob
+      = tree_icon('file', tree_row.mode, tree_row_name)
+      %a.str-truncated{ href: fast_project_blob_path(@project, tree_join(@id || @commit.id, tree_row_name)), title: tree_row_name }
+        %span= tree_row_name
+      - if @lfs_blob_ids.include?(tree_row.id)
+        %span.badge.label-lfs.prepend-left-5 LFS
+
+    - elsif tree_row_type == :commit
+      = tree_icon('archive', tree_row.mode, tree_row.name)
+      = submodule_link(tree_row, @ref)
+
+  %td.d-none.d-sm-table-cell.tree-commit
+  %td.tree-time-ago.text-right
+    %span.log_loading.hide
+      %i.fa.fa-spinner.fa-spin
+      Loading commit data...

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issuable::BulkUpdateService do
   let(:user)    { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   def bulk_update(issuables, extra_params = {})
     bulk_update_params = extra_params

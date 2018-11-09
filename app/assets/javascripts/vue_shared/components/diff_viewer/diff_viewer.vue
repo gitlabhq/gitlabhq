@@ -69,6 +69,13 @@ export default {
       :new-path="fullNewPath"
       :old-path="fullOldPath"
       :project-path="projectPath"
-    />
+    >
+      <slot
+        slot="image-overlay"
+        name="image-overlay"
+      >
+      </slot>
+    </component>
+    <slot></slot>
   </div>
 </template>

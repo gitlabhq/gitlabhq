@@ -41,5 +41,13 @@
         The default unit is in seconds, but you can define an alternative. For example:
         <code>4 mins 2 sec</code>, <code>2h42min</code>.
         = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+    .form-group
+      = f.label :archive_builds_in_human_readable, 'Archive builds in', class: 'label-bold'
+      = f.text_field :archive_builds_in_human_readable, class: 'form-control', placeholder: 'never'
+      .form-text.text-muted
+        Set the duration when build gonna be considered old. Archived builds cannot be retried.
+        Make it empty to never expire builds. It has to be larger than 1 day.
+        The default unit is in seconds, but you can define an alternative. For example:
+        <code>4 mins 2 sec</code>, <code>2h42min</code>.
 
   = f.submit 'Save changes', class: "btn btn-success"

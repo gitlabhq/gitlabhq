@@ -9,7 +9,8 @@
     "playable",
     "created_at",
     "updated_at",
-    "status"
+    "status",
+    "archived"
   ],
   "properties": {
     "id": { "type": "integer" },
@@ -27,7 +28,8 @@
     "updated_at": { "type": "string" },
     "status": { "$ref": "../status/ci_detailed_status.json" },
     "callout_message": { "type": "string" },
-    "recoverable": { "type": "boolean" }
+    "recoverable": { "type": "boolean" },
+    "archived": { "type": "boolean" }
   },
   "additionalProperties": true
 }

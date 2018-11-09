@@ -6,6 +6,7 @@ describe('pipeline graph job item', () => {
   const JobComponent = Vue.extend(JobItem);
   let component;
 
+  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const mockJob = {
     id: 4256,
     name: 'test',
@@ -165,6 +166,32 @@ describe('pipeline graph job item', () => {
       });
 
       expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+    });
+  });
+
+  describe('for delayed job', () => {
+    beforeEach(() => {
+      const fifteenMinutesInMilliseconds = 900000;
+      spyOn(Date, 'now').and.callFake(
+        () => new Date(delayedJobFixture.scheduled_at).getTime() - fifteenMinutesInMilliseconds,
+      );
+    });
+
+    it('displays remaining time in tooltip', done => {
+      component = mountComponent(JobComponent, {
+        job: delayedJobFixture,
+      });
+
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el
+              .querySelector('.js-pipeline-graph-job-link')
+              .getAttribute('data-original-title'),
+          ).toEqual('delayed job - delayed manual action (00:15:00)');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

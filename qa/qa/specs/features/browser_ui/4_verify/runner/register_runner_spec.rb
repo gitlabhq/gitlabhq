@@ -13,7 +13,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Runner.fabricate! do |runner|
+        Resource::Runner.fabricate! do |runner|
           runner.name = executor
         end
 

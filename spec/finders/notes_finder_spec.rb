@@ -13,12 +13,20 @@ describe NotesFinder do
       let!(:comment) { create(:note_on_issue, project: project) }
       let!(:system_note) { create(:note_on_issue, project: project, system: true) }
 
-      it 'filters system notes' do
+      it 'returns only user notes when using only_comments filter' do
         finder = described_class.new(project, user, notes_filter: UserPreference::NOTES_FILTERS[:only_comments])
 
         notes = finder.execute
 
         expect(notes).to match_array(comment)
+      end
+
+      it 'returns only system notes when using only_activity filters' do
+        finder = described_class.new(project, user, notes_filter: UserPreference::NOTES_FILTERS[:only_activity])
+
+        notes = finder.execute
+
+        expect(notes).to match_array(system_note)
       end
 
       it 'gets all notes' do

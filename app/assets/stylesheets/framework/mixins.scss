@@ -291,7 +291,7 @@
 /*
 * Mixin that handles the position of the controls placed on the top bar
 */
-@mixin build-controllers($control-font-size, $flex-direction, $with-grow, $flex-grow-size) {
+@mixin build-controllers($control-font-size, $flex-direction, $with-grow, $flex-grow-size, $svg-display: 'block', $svg-top: '2px') {
   display: flex;
   font-size: $control-font-size;
   justify-content: $flex-direction;
@@ -304,8 +304,9 @@
   svg {
     width: 15px;
     height: 15px;
-    display: block;
+    display: $svg-display;
     fill: $gl-text-color;
+    top: $svg-top;
   }
 
   .controllers-buttons {

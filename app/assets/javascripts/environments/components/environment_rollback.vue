@@ -9,10 +9,12 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Icon,
+    GlLoadingIcon,
   },
 
   directives: {

@@ -1,6 +1,35 @@
 require 'rails_helper'
 
 describe ProfilesHelper do
+  describe '#commit_email_select_options' do
+    it 'returns an array with private commit email along with all the verified emails' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      verified_emails = user.verified_emails - [private_email]
+      emails = [
+        ["Use a private email - #{private_email}", Gitlab::PrivateCommitEmail::TOKEN],
+        verified_emails
+      ]
+
+      expect(helper.commit_email_select_options(user)).to match_array(emails)
+    end
+  end
+
+  describe '#selected_commit_email' do
+    let(:user) { create(:user) }
+
+    it 'returns main email when commit email attribute is nil' do
+      expect(helper.selected_commit_email(user)).to eq(user.email)
+    end
+
+    it 'returns DB stored commit_email' do
+      user.update(commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+
+      expect(helper.selected_commit_email(user)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
+    end
+  end
+
   describe '#email_provider_label' do
     it "returns nil for users without external email" do
       user = create(:user)

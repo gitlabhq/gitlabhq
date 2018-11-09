@@ -53,11 +53,11 @@ module Gitlab
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do
-              YAML.dump(rspec: { script: 'rspec', retry: 1 })
+              YAML.dump(rspec: { script: 'rspec', retry: { max: 1 } })
             end
 
             it 'includes retry count in build options attribute' do
-              expect(subject[:options]).to include(retry: 1)
+              expect(subject[:options]).to include(retry: { max: 1 })
             end
           end
 
@@ -641,6 +641,33 @@ module Gitlab
 
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
+          end
+        end
+      end
+
+      describe 'Parallel' do
+        context 'when job is parallelized' do
+          let(:parallel) { 5 }
+
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec',
+                               parallel: parallel })
+          end
+
+          it 'returns parallelized jobs' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+            build_options = builds.map { |build| build[:options] }
+
+            expect(builds.size).to eq(5)
+            expect(build_options).to all(include(:instance, parallel: parallel))
+          end
+
+          it 'does not have the original job' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+
+            expect(builds).not_to include(:rspec)
           end
         end
       end

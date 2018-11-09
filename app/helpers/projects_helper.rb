@@ -540,4 +540,13 @@ module ProjectsHelper
       network
     ]
   end
+
+  def sidebar_operations_paths
+    %w[
+      environments
+      clusters
+      user
+      gcp
+    ]
+  end
 end

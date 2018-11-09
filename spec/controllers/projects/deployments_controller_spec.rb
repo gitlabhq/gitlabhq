@@ -15,9 +15,9 @@ describe Projects::DeploymentsController do
 
   describe 'GET #index' do
     it 'returns list of deployments from last 8 hours' do
-      create(:deployment, environment: environment, created_at: 9.hours.ago)
-      create(:deployment, environment: environment, created_at: 7.hours.ago)
-      create(:deployment, environment: environment)
+      create(:deployment, :success, environment: environment, created_at: 9.hours.ago)
+      create(:deployment, :success, environment: environment, created_at: 7.hours.ago)
+      create(:deployment, :success, environment: environment)
 
       get :index, deployment_params(after: 8.hours.ago)
 
@@ -27,7 +27,7 @@ describe Projects::DeploymentsController do
     end
 
     it 'returns a list with deployments information' do
-      create(:deployment, environment: environment)
+      create(:deployment, :success, environment: environment)
 
       get :index, deployment_params
 
@@ -37,7 +37,7 @@ describe Projects::DeploymentsController do
   end
 
   describe 'GET #metrics' do
-    let(:deployment) { create(:deployment, project: project, environment: environment) }
+    let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
 
     before do
       allow(controller).to receive(:deployment).and_return(deployment)
@@ -110,7 +110,7 @@ describe Projects::DeploymentsController do
   end
 
   describe 'GET #additional_metrics' do
-    let(:deployment) { create(:deployment, project: project, environment: environment) }
+    let(:deployment) { create(:deployment, :success, project: project, environment: environment) }
 
     before do
       allow(controller).to receive(:deployment).and_return(deployment)

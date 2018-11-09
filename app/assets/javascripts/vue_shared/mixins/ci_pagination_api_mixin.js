@@ -14,7 +14,14 @@ export default {
 
     onChangePage(page) {
       /* URLS parameters are strings, we need to parse to match types */
-      this.updateContent({ scope: this.scope, page: Number(page).toString() });
+      const params = {
+        page: Number(page).toString(),
+      };
+
+      if (this.scope) {
+        params.scope = this.scope;
+      }
+      this.updateContent(params);
     },
 
     updateInternalState(parameters) {

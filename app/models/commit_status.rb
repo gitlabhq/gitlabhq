@@ -51,7 +51,8 @@ class CommitStatus < ActiveRecord::Base
     missing_dependency_failure: 5,
     runner_unsupported: 6,
     stale_schedule: 7,
-    job_execution_timeout: 8
+    job_execution_timeout: 8,
+    archived_failure: 9
   }
 
   ##
@@ -167,13 +168,15 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  # To be overridden when inherrited from
   def retryable?
     false
   end
 
-  # To be overridden when inherrited from
   def cancelable?
+    false
+  end
+
+  def archived?
     false
   end
 

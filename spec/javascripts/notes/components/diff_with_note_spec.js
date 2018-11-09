@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import createStore from '~/notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import { mountComponentWithStore } from 'spec/helpers';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';

@@ -24,6 +24,6 @@ describe "User creates milestone", :js do
 
     visit(activity_project_path(project))
 
-    expect(page).to have_content("#{user.name} opened milestone")
+    expect(page).to have_content("#{user.name} #{user.to_reference} opened milestone")
   end
 end

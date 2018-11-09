@@ -5,7 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import GfmAutoComplete from '~/gfm_auto_complete';
 import { __, s__ } from '~/locale';
 import Api from '~/api';
-import { GlModal } from '@gitlab-org/gitlab-ui';
+import { GlModal, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import eventHub from './event_hub';
 import EmojiMenuInModal from './emoji_menu_in_modal';
 
@@ -15,6 +15,9 @@ export default {
   components: {
     Icon,
     GlModal,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     currentEmoji: {

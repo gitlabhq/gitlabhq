@@ -4,8 +4,8 @@ describe EnvironmentStatusEntity do
   let(:user)    { create(:user) }
   let(:request) { double('request') }
 
-  let(:deployment)    { create(:deployment, :review_app) }
-  let(:environment)   { deployment.environment}
+  let(:deployment)    { create(:deployment, :succeed, :review_app) }
+  let(:environment)   { deployment.environment }
   let(:project)       { deployment.project }
   let(:merge_request) { create(:merge_request, :deployed_review_app, deployment: deployment) }
 
@@ -15,6 +15,7 @@ describe EnvironmentStatusEntity do
   subject { entity.as_json }
 
   before do
+    deployment.update(sha: merge_request.diff_head_sha)
     allow(request).to receive(:current_user).and_return(user)
   end
 

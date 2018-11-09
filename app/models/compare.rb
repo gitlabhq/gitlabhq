@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 class Compare
   include Gitlab::Utils::StrongMemoize
 
@@ -76,5 +78,14 @@ class Compare
       start_sha: start_commit_sha,
       head_sha: head_commit_sha
     )
+  end
+
+  def modified_paths
+    paths = Set.new
+    diffs.diff_files.each do |diff|
+      paths.add diff.old_path
+      paths.add diff.new_path
+    end
+    paths.to_a
   end
 end

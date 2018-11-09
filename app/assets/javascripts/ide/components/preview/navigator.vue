@@ -1,10 +1,12 @@
 <script>
 import { listen } from 'codesandbox-api';
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 
 export default {
   components: {
     Icon,
+    GlLoadingIcon,
   },
   props: {
     manager: {

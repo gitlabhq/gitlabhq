@@ -1213,6 +1213,15 @@ describe QuickActions::InterpretService do
         end
       end
     end
+
+    it 'limits to commands passed ' do
+      content = "/shrug\n/close"
+
+      text, commands = service.execute(content, issue, only: [:shrug])
+
+      expect(commands).to be_empty
+      expect(text).to eq("#{described_class::SHRUG}\n/close")
+    end
   end
 
   describe '#explain' do

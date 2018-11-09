@@ -25,7 +25,7 @@ module Gitlab
         def container_specification
           {
             name: 'helm',
-            image: 'alpine:3.6',
+            image: "registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/#{Gitlab::Kubernetes::Helm::HELM_VERSION}-kube-#{Gitlab::Kubernetes::Helm::KUBECTL_VERSION}",
             env: generate_pod_env(command),
             command: %w(/bin/sh),
             args: %w(-c $(COMMAND_SCRIPT))

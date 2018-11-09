@@ -5,7 +5,7 @@ export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW
 
 export const isInlineView = state => state.diffViewType === INLINE_DIFF_VIEW_TYPE;
 
-export const areAllFilesCollapsed = state => state.diffFiles.every(file => file.collapsed);
+export const hasCollapsedFile = state => state.diffFiles.some(file => file.collapsed);
 
 export const commitId = state => (state.commit && state.commit.id ? state.commit.id : null);
 
@@ -113,6 +113,9 @@ export const getDiffFileByHash = state => fileHash =>
 export const allBlobs = state => Object.values(state.treeEntries).filter(f => f.type === 'blob');
 
 export const diffFilesLength = state => state.diffFiles.length;
+
+export const getCommentFormForDiffFile = state => fileHash =>
+  state.commentForms.find(form => form.fileHash === fileHash);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

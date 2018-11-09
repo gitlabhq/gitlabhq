@@ -1,6 +1,11 @@
 <script>
+import { GlLink } from '@gitlab-org/gitlab-ui';
+
 export default {
   name: 'SidebarDetailRow',
+  components: {
+    GlLink,
+  },
   props: {
     title: {
       type: String,
@@ -41,7 +46,7 @@ export default {
       v-if="hasHelpURL"
       class="help-button float-right"
     >
-      <a
+      <gl-link
         :href="helpUrl"
         target="_blank"
         rel="noopener noreferrer nofollow"
@@ -50,7 +55,7 @@ export default {
           class="fa fa-question-circle"
           aria-hidden="true"
         ></i>
-      </a>
+      </gl-link>
     </span>
   </p>
 </template>

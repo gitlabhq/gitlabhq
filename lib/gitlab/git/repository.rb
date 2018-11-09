@@ -571,6 +571,20 @@ module Gitlab
         end
       end
 
+      def update_submodule(user:, submodule:, commit_sha:, message:, branch:)
+        args = {
+          user: user,
+          submodule: submodule,
+          commit_sha: commit_sha,
+          branch: branch,
+          message: message
+        }
+
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_update_submodule(args)
+        end
+      end
+
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
         wrapped_gitaly_errors do
@@ -717,6 +731,26 @@ module Gitlab
       def fetch_repository_as_mirror(repository)
         wrapped_gitaly_errors do
           gitaly_remote_client.fetch_internal_remote(repository)
+        end
+      end
+
+      # Fetch remote for repository
+      #
+      # remote - remote name
+      # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
+      # forced - should we use --force flag?
+      # no_tags - should we use --no-tags flag?
+      # prune - should we use --prune flag?
+      def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fetch_remote(
+            remote,
+            ssh_auth: ssh_auth,
+            forced: forced,
+            no_tags: no_tags,
+            prune: prune,
+            timeout: GITLAB_PROJECTS_TIMEOUT
+          )
         end
       end
 

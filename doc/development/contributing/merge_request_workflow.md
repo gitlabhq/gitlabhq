@@ -171,6 +171,7 @@ the feature you contribute through all of these steps.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/support etc.)
+1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-or-end-to-end-tests) added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams) with any questions  
 
 If you add a dependency in GitLab (such as an operating system package) please
 consider updating the following and note the applicability of each in your
@@ -185,7 +186,7 @@ merge request:
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
 
 [definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
-[testing]: ../testing_guide/index.md
+[testing]: ../testing_guide/index.md  
 
 ---
 

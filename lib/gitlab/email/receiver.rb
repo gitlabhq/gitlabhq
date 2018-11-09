@@ -18,6 +18,7 @@ module Gitlab
     InvalidIssueError = Class.new(InvalidRecordError)
     InvalidMergeRequestError = Class.new(InvalidRecordError)
     UnknownIncomingEmail = Class.new(ProcessingError)
+    InvalidAttachment = Class.new(ProcessingError)
 
     class Receiver
       def initialize(raw)

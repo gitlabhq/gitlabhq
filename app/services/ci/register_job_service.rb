@@ -82,6 +82,11 @@ module Ci
         return false
       end
 
+      if build.archived?
+        build.drop!(:archived_failure)
+        return false
+      end
+
       build.run!
       true
     end

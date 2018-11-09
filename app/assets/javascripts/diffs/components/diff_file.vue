@@ -3,6 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 
@@ -10,6 +11,7 @@ export default {
   components: {
     DiffFileHeader,
     DiffContent,
+    GlLoadingIcon,
   },
   props: {
     file: {

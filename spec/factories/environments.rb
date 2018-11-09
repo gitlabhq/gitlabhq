@@ -22,6 +22,7 @@ FactoryBot.define do
                                        pipeline: pipeline)
 
         deployment = create(:deployment,
+                            :success,
                             environment: environment,
                             project: environment.project,
                             deployable: deployable,
