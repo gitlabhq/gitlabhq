@@ -44,7 +44,7 @@ module Clusters
       private
 
       def install_script
-        ["/usr/bin/kubectl apply -f #{ISTIO_CRDS} >/dev/null"]
+        ["/usr/bin/kubectl apply -f #{ISTIO_CRDS}"]
       end
     end
   end

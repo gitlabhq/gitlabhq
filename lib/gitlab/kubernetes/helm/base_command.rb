@@ -10,7 +10,7 @@ module Gitlab
 
         def generate_script
           <<~HEREDOC
-            set -eo pipefail
+            set -xeo pipefail
           HEREDOC
         end
 
