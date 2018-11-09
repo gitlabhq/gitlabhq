@@ -24,9 +24,19 @@ The following files require a review from the Documentation team:
 
 * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-To make sure these changes are reviewed, mention `@gl-docsteam` in a separate
-comment, and explain what needs to be reviewed by the team. Please don't mention
-the team until your changes are ready for review.
+To make sure these changes are reviewed, mention a technical writer in a separate
+comment, and explain what needs to be reviewed. Please don't mention them
+until your changes are ready for review.
+
+Who to ping [based on DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages):
+
+- `@axil`: ~Distribution ~Packaging ~Monitoring ~Secure ~Gitaly ~Gitter
+- `@eread`: ~Manage ~Geo ~Verify ~Configure
+- `@marcia`: ~Create ~Release
+- `@mikelewis`: ~Plan
+
+If you don't know who to ping, or your change doesn't fall under one of the above
+categories, you can mention the whole team with `@gl-docsteam`.
   MARKDOWN
 
   unless gitlab.mr_labels.include?('Documentation')
