@@ -22,9 +22,10 @@
             %button.js-show-cluster-token.btn-blank{ type: 'button' }
               = s_('ClusterIntegration|Show')
 
-    .form-group
-      = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)'), class: 'label-bold'
-      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
+    - if @cluster.allow_user_defined_namespace?
+      .form-group
+        = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)'), class: 'label-bold'
+        = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
 
     .form-group
       .form-check

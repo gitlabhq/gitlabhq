@@ -33,9 +33,10 @@
             = s_('ClusterIntegration|Show')
           = clipboard_button(text: @cluster.platform_kubernetes.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-default')
 
-    .form-group
-      = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
-      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
+    - if @cluster.allow_user_defined_namespace?
+      .form-group
+        = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
+        = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
 
     .form-group
       .form-check

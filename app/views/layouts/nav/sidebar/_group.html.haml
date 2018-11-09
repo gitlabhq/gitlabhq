@@ -116,6 +116,19 @@
                 %strong.fly-out-top-item-name
                   = _('Members')
 
+      - if group_sidebar_link?(:kubernetes)
+        = nav_link(controller: [:clusters]) do
+          = link_to group_clusters_path(@group) do
+            .nav-icon-container
+              = sprite_icon('cloud-gear')
+            %span.nav-item-name
+              = _('Kubernetes')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: [:clusters], html_options: { class: "fly-out-top-item" } ) do
+              = link_to group_clusters_path(@group), title: _('Kubernetes'), class: 'shortcuts-kubernetes' do
+                %strong.fly-out-top-item-name
+                  = _('Kubernetes')
+
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_nav_link_paths) do
           = link_to edit_group_path(@group) do

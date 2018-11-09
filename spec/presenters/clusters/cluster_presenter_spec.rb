@@ -82,5 +82,12 @@ describe Clusters::ClusterPresenter do
 
       it { is_expected.to eq(project_cluster_path(project, cluster)) }
     end
+
+    context 'group_type cluster' do
+      let(:group) { cluster.group }
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to eq(group_cluster_path(group, cluster)) }
+    end
   end
 end

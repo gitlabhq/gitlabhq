@@ -21,9 +21,10 @@
       = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token'), class: 'label-bold'
       = platform_kubernetes_field.text_field :token, class: 'form-control', placeholder: s_('ClusterIntegration|Service token'), autocomplete: 'off'
 
-    .form-group
-      = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)'), class: 'label-bold'
-      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
+    - if @user_cluster.allow_user_defined_namespace?
+      .form-group
+        = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)'), class: 'label-bold'
+        = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
 
     .form-group
       .form-check

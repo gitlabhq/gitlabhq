@@ -2,77 +2,101 @@
 
 require 'spec_helper'
 
-describe Projects::ClustersController do
+describe Groups::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
-  include KubernetesHelpers
 
-  set(:project) { create(:project) }
+  set(:group) { create(:group) }
 
   let(:user) { create(:user) }
 
   before do
-    project.add_maintainer(user)
+    group.add_maintainer(user)
     sign_in(user)
   end
 
   describe 'GET index' do
     def go(params = {})
-      get :index, params.reverse_merge(namespace_id: project.namespace.to_param, project_id: project)
+      get :index, params.reverse_merge(group_id: group)
     end
 
-    describe 'functionality' do
-      context 'when project has one or more clusters' do
-        let(:project) { create(:project) }
-        let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, :production_environment, projects: [project]) }
-        it 'lists available clusters' do
-          go
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index)
-          expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
-        end
-
-        context 'when page is specified' do
-          let(:last_page) { project.clusters.page.total_pages }
-
-          before do
-            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create_list(:cluster, 2, :provided_by_gcp, :production_environment, projects: [project])
-          end
-
-          it 'redirects to the page' do
-            go(page: last_page)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(assigns(:clusters).current_page).to eq(last_page)
-          end
-        end
+    context 'when feature flag is not enabled' do
+      before do
+        stub_feature_flags(group_clusters: false)
       end
 
-      context 'when project does not have a cluster' do
-        let(:project) { create(:project) }
+      it 'renders 404' do
+        go
 
-        it 'returns an empty state page' do
-          go
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index, partial: :empty_state)
-          expect(assigns(:clusters)).to eq([])
+    context 'when feature flag is enabled' do
+      before do
+        stub_feature_flags(group_clusters: true)
+      end
+
+      describe 'functionality' do
+        context 'when group has one or more clusters' do
+          let(:group) { create(:group) }
+
+          let!(:enabled_cluster) do
+            create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
+          end
+
+          let!(:disabled_cluster) do
+            create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+          end
+
+          it 'lists available clusters' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:index)
+            expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
+          end
+
+          context 'when page is specified' do
+            let(:last_page) { group.clusters.page.total_pages }
+
+            before do
+              allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
+              create_list(:cluster, 2, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+            end
+
+            it 'redirects to the page' do
+              go(page: last_page)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(assigns(:clusters).current_page).to eq(last_page)
+            end
+          end
+        end
+
+        context 'when group does not have a cluster' do
+          let(:group) { create(:group) }
+
+          it 'returns an empty state page' do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:index, partial: :empty_state)
+            expect(assigns(:clusters)).to eq([])
+          end
         end
       end
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
@@ -80,7 +104,7 @@ describe Projects::ClustersController do
 
   describe 'GET new' do
     def go
-      get :new, namespace_id: project.namespace, project_id: project
+      get :new, group_id: group
     end
 
     describe 'functionality for new cluster' do
@@ -98,7 +122,7 @@ describe Projects::ClustersController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
+          expect(session[session_key_for_redirect_uri]).to eq(new_group_cluster_path(group))
         end
       end
 
@@ -149,11 +173,11 @@ describe Projects::ClustersController do
 
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
@@ -174,7 +198,7 @@ describe Projects::ClustersController do
     end
 
     def go
-      post :create_gcp, params.merge(namespace_id: project.namespace, project_id: project)
+      post :create_gcp, params.merge(group_id: group)
     end
 
     describe 'functionality' do
@@ -187,10 +211,13 @@ describe Projects::ClustersController do
           expect(ClusterProvisionWorker).to receive(:perform_async)
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Providers::Gcp.count }
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-          expect(project.clusters.first).to be_gcp
-          expect(project.clusters.first).to be_kubernetes
-          expect(project.clusters.first.provider_gcp).to be_legacy_abac
+
+          cluster = group.clusters.first
+
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_gcp
+          expect(cluster).to be_kubernetes
+          expect(cluster.provider_gcp).to be_legacy_abac
         end
 
         context 'when legacy_abac param is false' do
@@ -200,7 +227,7 @@ describe Projects::ClustersController do
             expect(ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
-            expect(project.clusters.first.provider_gcp).not_to be_legacy_abac
+            expect(group.clusters.first.provider_gcp).not_to be_legacy_abac
           end
         end
       end
@@ -236,11 +263,11 @@ describe Projects::ClustersController do
       end
 
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
@@ -253,15 +280,14 @@ describe Projects::ClustersController do
           name: 'new-cluster',
           platform_kubernetes_attributes: {
             api_url: 'http://my-url',
-            token: 'test',
-            namespace: 'aaa'
+            token: 'test'
           }
         }
       }
     end
 
     def go
-      post :create_user, params.merge(namespace_id: project.namespace, project_id: project)
+      post :create_user, params.merge(group_id: group)
     end
 
     describe 'functionality' do
@@ -272,10 +298,11 @@ describe Projects::ClustersController do
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          cluster = group.clusters.first
 
-          expect(project.clusters.first).to be_user
-          expect(project.clusters.first).to be_kubernetes
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_user
+          expect(cluster).to be_kubernetes
         end
       end
 
@@ -287,7 +314,6 @@ describe Projects::ClustersController do
               platform_kubernetes_attributes: {
                 api_url: 'http://my-url',
                 token: 'test',
-                namespace: 'aaa',
                 authorization_type: 'rbac'
               }
             }
@@ -300,45 +326,40 @@ describe Projects::ClustersController do
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
-          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          cluster = group.clusters.first
 
-          expect(project.clusters.first).to be_user
-          expect(project.clusters.first).to be_kubernetes
-          expect(project.clusters.first).to be_platform_kubernetes_rbac
+          expect(response).to redirect_to(group_cluster_path(group, cluster))
+          expect(cluster).to be_user
+          expect(cluster).to be_kubernetes
+          expect(cluster).to be_platform_kubernetes_rbac
         end
       end
     end
 
     describe 'security' do
-      before do
-        allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
-        stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
-      end
-
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET cluster_status' do
-    let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+    let(:cluster) { create(:cluster, :providing_by_gcp, cluster_type: :group_type, groups: [group]) }
 
     def go
       get :cluster_status,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        group_id: group.to_param,
         id: cluster,
         format: :json
     end
 
     describe 'functionality' do
-      it "responds with matching schema" do
+      it 'responds with matching schema' do
         go
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -354,28 +375,27 @@ describe Projects::ClustersController do
 
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET show' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+    let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
 
     def go
       get :show,
-        namespace_id: project.namespace,
-        project_id: project,
+        group_id: group,
         id: cluster
     end
 
     describe 'functionality' do
-      it "renders view" do
+      it 'renders view' do
         go
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -385,11 +405,11 @@ describe Projects::ClustersController do
 
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
@@ -397,41 +417,32 @@ describe Projects::ClustersController do
 
   describe 'PUT update' do
     def go(format: :html)
-      put :update, params.merge(namespace_id: project.namespace.to_param,
-                                project_id: project.to_param,
-                                id: cluster,
-                                format: format
-                               )
+      put :update, params.merge(
+        group_id: group.to_param,
+        id: cluster,
+        format: format
+      )
     end
 
-    before do
-      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
-      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
-    end
-
-    let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+    let(:cluster) { create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [group]) }
 
     let(:params) do
       {
         cluster: {
           enabled: false,
-          name: 'my-new-cluster-name',
-          platform_kubernetes_attributes: {
-            namespace: 'my-namespace'
-          }
+          name: 'my-new-cluster-name'
         }
       }
     end
 
-    it "updates and redirects back to show page" do
+    it 'updates and redirects back to show page' do
       go
 
       cluster.reload
-      expect(response).to redirect_to(project_cluster_path(project, cluster))
+      expect(response).to redirect_to(group_cluster_path(group, cluster))
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
-      expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
     end
 
     context 'when format is json' do
@@ -441,22 +452,18 @@ describe Projects::ClustersController do
             {
               cluster: {
                 enabled: false,
-                name: 'my-new-cluster-name',
-                platform_kubernetes_attributes: {
-                  namespace: 'my-namespace'
-                }
+                name: 'my-new-cluster-name'
               }
             }
           end
 
-          it "updates and redirects back to show page" do
+          it 'updates and redirects back to show page' do
             go(format: :json)
 
             cluster.reload
             expect(response).to have_http_status(:no_content)
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
-            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
           end
         end
 
@@ -465,14 +472,12 @@ describe Projects::ClustersController do
             {
               cluster: {
                 enabled: false,
-                platform_kubernetes_attributes: {
-                  namespace: 'my invalid namespace #@'
-                }
+                name: ''
               }
             }
           end
 
-          it "rejects changes" do
+          it 'rejects changes' do
             go(format: :json)
 
             expect(response).to have_http_status(:bad_request)
@@ -482,88 +487,87 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
   end
 
   describe 'DELETE destroy' do
-    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
+    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
     def go
       delete :destroy,
-        namespace_id: project.namespace,
-        project_id: project,
+        group_id: group,
         id: cluster
     end
 
     describe 'functionality' do
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
-          it "destroys and redirects back to clusters list" do
+          it 'destroys and redirects back to clusters list' do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-            expect(response).to redirect_to(project_clusters_path(project))
+            expect(response).to redirect_to(group_clusters_path(group))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, projects: [project]) }
+          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
-          it "destroys and redirects back to clusters list" do
+          it 'destroys and redirects back to clusters list' do
             expect { go }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-            expect(response).to redirect_to(project_clusters_path(project))
+            expect(response).to redirect_to(group_clusters_path(group))
             expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
           end
         end
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, cluster_type: :group_type, groups: [group]) }
 
-        it "destroys and redirects back to clusters list" do
+        it 'destroys and redirects back to clusters list' do
           expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
             .and change { Clusters::Providers::Gcp.count }.by(0)
 
-          expect(response).to redirect_to(project_clusters_path(project))
+          expect(response).to redirect_to(group_clusters_path(group))
           expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')
         end
       end
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
     end
   end
 
-  context 'no project_id param' do
-    it 'does not respond to any action without project_id param' do
+  context 'no group_id param' do
+    it 'does not respond to any action without group_id param' do
       expect { get :index }.to raise_error(ActionController::UrlGenerationError)
     end
   end

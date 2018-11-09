@@ -62,5 +62,32 @@ describe Clusters::UpdateService do
         expect(cluster.errors[:"platform_kubernetes.namespace"]).to be_present
       end
     end
+
+    context 'when cluster is provided by GCP' do
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+
+      let(:params) do
+        {
+          name: 'my-new-name'
+        }
+      end
+
+      it 'does not change cluster name' do
+        is_expected.to eq(false)
+
+        cluster.reload
+        expect(cluster.name).to eq('test-cluster')
+      end
+
+      context 'when cluster is being created' do
+        let(:cluster) { create(:cluster, :providing_by_gcp) }
+
+        it 'rejects changes' do
+          is_expected.to eq(false)
+
+          expect(cluster.errors.full_messages).to include('cannot modify during creation')
+        end
+      end
+    end
   end
 end

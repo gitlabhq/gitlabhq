@@ -343,4 +343,26 @@ describe Clusters::Cluster do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#allow_user_defined_namespace?' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { cluster.allow_user_defined_namespace? }
+
+    context 'project type cluster' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'group type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'instance type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

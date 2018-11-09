@@ -13,7 +13,7 @@ import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import { APPLICATION_STATUS, INGRESS } from '../constants';
+import { CLUSTER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 
 export default {
   components: {
@@ -21,6 +21,11 @@ export default {
     clipboardButton,
   },
   props: {
+    type: {
+      type: String,
+      required: false,
+      default: CLUSTER_TYPE.PROJECT,
+    },
     applications: {
       type: Object,
       required: false,
@@ -59,6 +64,9 @@ export default {
     prometheusLogo,
   }),
   computed: {
+    isProjectCluster() {
+      return this.type === CLUSTER_TYPE.PROJECT;
+    },
     helmInstalled() {
       return (
         this.applications.helm.status === APPLICATION_STATUS.INSTALLED ||
@@ -281,6 +289,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="prometheus"
         :logo-url="prometheusLogo"
         :title="applications.prometheus.title"
@@ -299,6 +308,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="runner"
         :logo-url="gitlabLogo"
         :title="applications.runner.title"
@@ -317,6 +327,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="jupyter"
         :logo-url="jupyterhubLogo"
         :title="applications.jupyter.title"

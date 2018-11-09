@@ -10,7 +10,7 @@ FactoryBot.define do
       username 'xxxxxx'
       password 'xxxxxx'
 
-      after(:create) do |platform_kubernetes, evaluator|
+      before(:create) do |platform_kubernetes, evaluator|
         pem_file = File.expand_path(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
         platform_kubernetes.ca_cert = File.read(pem_file)
       end

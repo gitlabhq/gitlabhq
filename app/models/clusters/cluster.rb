@@ -29,7 +29,7 @@ module Clusters
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
 
-    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true
+    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', inverse_of: :cluster, autosave: true
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
@@ -142,6 +142,10 @@ module Clusters
         project: cluster_project.project,
         cluster_project: cluster_project
       )
+    end
+
+    def allow_user_defined_namespace?
+      project_type?
     end
 
     private

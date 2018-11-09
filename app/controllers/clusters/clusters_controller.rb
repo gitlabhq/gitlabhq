@@ -183,13 +183,13 @@ class Clusters::ClustersController < Clusters::BaseController
   def gcp_cluster
     @gcp_cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_provider_gcp
-    end
+    end.present(current_user: current_user)
   end
 
   def user_cluster
     @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_platform_kubernetes
-    end
+    end.present(current_user: current_user)
   end
 
   def validate_gcp_token
