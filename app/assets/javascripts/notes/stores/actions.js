@@ -66,7 +66,7 @@ export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
     .then(res => res.json())
     .then(res => {
       commit(types.UPDATE_NOTE, res);
-      Vue.nextTick(() => dispatch('startTaskList'));
+      dispatch('startTaskList');
     });
 
 export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
@@ -265,7 +265,7 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
       }
     });
 
-    Vue.nextTick(() => dispatch('startTaskList'));
+    dispatch('startTaskList');
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
@@ -375,12 +375,15 @@ export const setCommentsDisabled = ({ commit }, data) => {
 };
 
 export const startTaskList = ({ dispatch }) =>
-  new TaskList({
-    dataType: 'note',
-    fieldName: 'note',
-    selector: '.notes .is-editable',
-    onSuccess: () => Vue.nextTick(() => dispatch('startTaskList')),
-  });
+  Vue.nextTick(
+    () =>
+      new TaskList({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '.notes .is-editable',
+        onSuccess: () => dispatch('startTaskList'),
+      }),
+  );
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
