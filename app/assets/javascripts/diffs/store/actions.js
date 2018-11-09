@@ -190,6 +190,7 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.fileHash))
+    .then(() => dispatch('startTaskList', null, { root: true }))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 

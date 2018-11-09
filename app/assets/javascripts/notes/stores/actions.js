@@ -88,6 +88,7 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
         commit(types.ADD_NEW_NOTE, res);
 
         dispatch('updateMergeRequestWidget');
+        dispatch('startTaskList');
       }
       return res;
     });
