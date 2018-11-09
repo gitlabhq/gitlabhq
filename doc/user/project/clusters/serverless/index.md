@@ -57,7 +57,7 @@ You may download the sample [Knative Ruby App](https://gitlab.com/knative-exampl
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS 
     name in the request. To support this, a wildcard DNS A record should be created for the desired domain name.
 
-    ![dns entry](img/dns-entry)
+    ![dns entry](img/dns-entry.png)
 
 ## Deploying the GitLab Runner (optional)
 
