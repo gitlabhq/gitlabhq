@@ -1,0 +1,5 @@
+---
+title: Switch kubernetes:active with checking in Auto-DevOps.gitlab-ci.yml
+merge_request: 22929
+author:
+type: fixed

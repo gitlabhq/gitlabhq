@@ -147,7 +147,8 @@ performance:
   only:
     refs:
       - branches
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
   except:
     variables:
       - $PERFORMANCE_DISABLED
@@ -225,7 +226,8 @@ dast:
   only:
     refs:
       - branches
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
   except:
@@ -254,7 +256,8 @@ review:
   only:
     refs:
       - branches
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
   except:
     refs:
       - master
@@ -277,7 +280,8 @@ stop_review:
   only:
     refs:
       - branches
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
   except:
     refs:
       - master
@@ -306,7 +310,8 @@ staging:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $STAGING_ENABLED
 
@@ -331,7 +336,8 @@ canary:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $CANARY_ENABLED
 
@@ -359,7 +365,8 @@ production:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
   except:
     variables:
       - $STAGING_ENABLED
@@ -374,7 +381,8 @@ production_manual:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $STAGING_ENABLED
       - $CANARY_ENABLED
@@ -411,7 +419,8 @@ production_manual:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
       - $INCREMENTAL_ROLLOUT_ENABLED
@@ -426,7 +435,8 @@ production_manual:
   only:
     refs:
       - master
-    kubernetes: active
+    variables:
+      - $KUBECONFIG
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
 
