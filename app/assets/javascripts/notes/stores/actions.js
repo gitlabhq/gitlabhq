@@ -60,12 +60,13 @@ export const deleteNote = ({ commit, dispatch }, note) =>
     dispatch('updateMergeRequestWidget');
   });
 
-export const updateNote = ({ commit }, { endpoint, note }) =>
+export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
   service
     .updateNote(endpoint, note)
     .then(res => res.json())
     .then(res => {
       commit(types.UPDATE_NOTE, res);
+      Vue.nextTick(() => dispatch('startTaskList'));
     });
 
 export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
@@ -262,6 +263,8 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         commit(types.ADD_NEW_NOTE, note);
       }
     });
+
+    Vue.nextTick(() => dispatch('startTaskList'));
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
@@ -375,7 +378,7 @@ export const startTaskList = ({ dispatch }) =>
     dataType: 'note',
     fieldName: 'note',
     selector: '.notes .is-editable',
-    onSuccess: () => Vue.$nextTick(() => dispatch('startTaskList')),
+    onSuccess: () => Vue.nextTick(() => dispatch('startTaskList')),
   });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

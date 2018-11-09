@@ -6,7 +6,6 @@ import Autosize from 'autosize';
 import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
-import TaskList from '../../task_list';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -146,7 +145,6 @@ export default {
     });
 
     this.initAutoSave();
-    this.initTaskList();
   },
   methods: {
     ...mapActions([
@@ -297,13 +295,6 @@ Please check your network connection and try again.`;
           this.getNoteableData.id,
         ]);
       }
-    },
-    initTaskList() {
-      return new TaskList({
-        dataType: 'note',
-        fieldName: 'note',
-        selector: '.notes',
-      });
     },
     resizeTextarea() {
       this.$nextTick(() => {
