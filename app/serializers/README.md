@@ -180,7 +180,7 @@ def index
     render json: MyResourceSerializer
       .new(current_user: @current_user)
       .represent_details(@project.resources)
-  end
+  nd
 end
 ```
 
@@ -196,7 +196,7 @@ def index
         .represent_details(@project.resources),
       count: @project.resources.count
     }
-  end
+  nd
 end
 ```
 

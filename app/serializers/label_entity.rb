@@ -12,8 +12,4 @@ class LabelEntity < Grape::Entity
   expose :text_color
   expose :created_at
   expose :updated_at
-
-  expose :priority, if: -> (*) { options.key?(:project) } do |label|
-    label.priority(options[:project])
-  end
 end
