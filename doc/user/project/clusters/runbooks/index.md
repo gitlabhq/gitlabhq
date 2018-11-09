@@ -10,8 +10,8 @@ Historically, runbooks took the form of a decision tree or a detailed
 step-by-step guide depending on the condition or system. 
 
 Modern implementations have introduced the concept of an "executable 
-runbooks", where along with a well define process, operators can execute 
-code blocks or database queries against a given environment.
+runbooks", where, along with a well-defined process, operators can execute 
+pre-written code blocks or database queries against a given environment.
 
 ## Nurtch Executable Runbooks
 
@@ -45,7 +45,7 @@ To create an executable runbook, you will need:
 Nurtch is the company behind the [Rubix library](https://github.com/Nurtch/rubix). Rubix is 
 an open-source python library that makes it easy to perform common DevOps tasks inside Jupyter Notebooks. 
 Tasks such as plotting Cloudwatch metrics and rolling your ECS/Kubernetes app are simplified 
-down to a couple of lines of code. Check the [Nurtch Documentation](http://docs.nurtch.com/en/latest) 
+down to a couple of lines of code. See the [Nurtch Documentation](http://docs.nurtch.com/en/latest) 
 for more information.
 
 ## Configure an executable runbook with GitLab
@@ -74,13 +74,13 @@ Once Ingress has been installed successfully, click the **"Install"** button nex
 
 ### 3. Login to JupyterHub and start the server
 
-Once JupyterHub has been installed successfully, navigate to the "Jupyter Hostname" url presented and click 
+Once JupyterHub has been installed successfully, navigate to the displayed **Jupyter Hostname** URL and click 
 **"Sign in with GitLab"**. Authentication is automatically enabled for any user of GitLab server via OAuth2. This 
-will redirect to GitLab in order to authorize JupyterHub to use your GitLab account. Click **"Authorize"**.
+will redirect to GitLab in order to authorize JupyterHub to use your GitLab account. Click **Authorize**.
 
 ![authorize jupyter](img/authorize-jupyter.png)
 
-Once the application has been authorized you will taken back to the JupyterHub application. Click **"Start My Server"**
+Once the application has been authorized you will taken back to the JupyterHub application. Click **Start My Server**
 
 ![start jupyter](img/jupyter-start.png)
 
@@ -91,11 +91,11 @@ The server will take a couple of seconds to start.
 In order for the runbook to access your GitLab project, you will need to enter a [GitLab Access Token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) as well as your Project ID in the "Setup" 
 section of the demo runbook.
 
-Double-click on the "DevOps-Runbook-Demo" folder located on the left panel.
+Double-click the **DevOps-Runbook-Demo** folder located on the left panel.
 
 ![demo runbook](img/demo-runbook.png)
 
-Double-click on the "Nurtch-DevOps-Demo.ipynb" runbook
+Double-click the "Nurtch-DevOps-Demo.ipynb" runbook.
 
 ![sample runbook](img/sample-runbook.png)
 
@@ -107,7 +107,7 @@ PRIVATE_TOKEN = 'abcdef123456'
 PROJECT_ID = '1234567'
 ```
 
-Update the `VARIABLE_NAME` on the last line of this section to match the name of the variable you are using for you 
+Update the `VARIABLE_NAME` on the last line of this section to match the name of the variable you are using for your 
 access token. In this example our variable name is `PRIVATE_TOKEN`.
 
 ```sql
@@ -130,10 +130,10 @@ Create the matching variables in your project's **Settings >> CI/CD >> Variables
 
 ![gitlab variables](img/gitlab-variables.png)
 
-Back in Jupyter, click the "Run SQL queries in Notebook" heading and the click the "run" button. The results will be 
+Back in Jupyter, click the "Run SQL queries in Notebook" heading and the click *Run*. The results will be 
 displayed in-line as follows:
 
 ![postgres query](img/postgres-query.png)
 
-You can try other operations such as running shell scripts or interacting with a kubernetes cluster. Visit the 
+You can try other operations such as running shell scripts or interacting with a Kubernetes cluster. Visit the 
 [Nurtch Documentation](http://docs.nurtch.com/) for more information.
