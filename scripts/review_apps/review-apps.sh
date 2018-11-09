@@ -126,6 +126,9 @@ function deploy() {
     delete
     cleanup
   fi
+
+  create_secret
+
   helm repo add gitlab https://charts.gitlab.io/
   helm dep update .
 
