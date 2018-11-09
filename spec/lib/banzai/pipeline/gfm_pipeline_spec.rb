@@ -104,5 +104,17 @@ describe Banzai::Pipeline::GfmPipeline do
 
       expect(output).to include("src=\"test%20image.png\"")
     end
+
+    it 'sanitizes the fixed link' do
+      markdown_xss = "[xss](javascript: alert%28document.domain%29)"
+      output = described_class.to_html(markdown_xss, project: project)
+
+      expect(output).not_to include("javascript")
+
+      markdown_xss = "<invalidtag>\n[xss](javascript:alert%28document.domain%29)"
+      output = described_class.to_html(markdown_xss, project: project)
+
+      expect(output).not_to include("javascript")
+    end
   end
 end
