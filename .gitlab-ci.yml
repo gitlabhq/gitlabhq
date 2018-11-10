@@ -318,6 +318,7 @@ review-docs-cleanup:
 cloud-native-image:
   image: ruby:2.4-alpine
   before_script: []
+  dependencies: []
   stage: test
   allow_failure: true
   variables:
@@ -632,6 +633,7 @@ rails5_gemfile_lock_check:
 
 ee_compat_check:
   <<: *rake-exec
+  dependencies: []
   except:
     - master
     - tags
@@ -860,9 +862,7 @@ coverage:
 lint:javascript:report:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   stage: post-test
-  dependencies:
-    - compile-assets
-    - setup-test-env
+  dependencies: []
   before_script: []
   script:
     - date
@@ -916,6 +916,7 @@ gitlab_git_test:
   variables:
     SETUP_DB: "false"
   before_script: []
+  dependencies: []
   cache: {}
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
@@ -926,6 +927,7 @@ no_ee_check:
   variables:
     SETUP_DB: "false"
   before_script: []
+  dependencies: []
   cache: {}
   script:
     - scripts/no-ee-check
