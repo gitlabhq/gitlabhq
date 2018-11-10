@@ -16,6 +16,12 @@ module Gitlab
               unless @command.sha
                 return error('Commit not found')
               end
+
+              begin
+                @command.project.resolve_ref(@command.origin_ref)
+              rescue Project::AmbiguousRef
+                return error('Ref is ambiguous')
+              end
             end
 
             def break?

@@ -19,6 +19,11 @@ module Gitlab
             @command.seeds_block&.call(pipeline)
 
             ##
+            # Populate pipeline protected status
+            #
+            pipeline.protected = @command.project.protected_for?(@command.origin_ref)
+
+            ##
             # Populate pipeline with all stages, and stages with builds.
             #
             pipeline.stage_seeds.each do |stage|
