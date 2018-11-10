@@ -54,7 +54,7 @@ module Gitlab
 
           def protected_ref?
             strong_memoize(:protected_ref) do
-              project.protected_for?(ref)
+              project.protected_for?(origin_ref)
             end
           end
         end
