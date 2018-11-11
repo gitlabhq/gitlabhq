@@ -409,7 +409,7 @@ You can use the following fake tokens as examples.
 | Personal access token | `n671WNGecHugsdEDPsyo`                                             |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
 | Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
 | Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
 | Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
