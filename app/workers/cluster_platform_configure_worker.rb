@@ -17,6 +17,6 @@ class ClusterPlatformConfigureWorker
     end
 
   rescue ::Kubeclient::HttpError => err
-    Rails.logger.error "Failed to create/update Kubernetes Namespace. id: #{kubernetes_namespace.id} message: #{err.message}"
+    Rails.logger.error "Failed to create/update Kubernetes namespace for cluster_id: #{cluster_id} with error: #{err.message}"
   end
 end
