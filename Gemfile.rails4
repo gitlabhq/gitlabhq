@@ -1,4 +1,4 @@
-# BUNDLE_GEMFILE=Gemfile.rails5 bundle install
+# BUNDLE_GEMFILE=Gemfile.rails4 bundle install
 
 ENV["RAILS5"] = "false"
 
