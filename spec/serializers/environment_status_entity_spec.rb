@@ -33,14 +33,6 @@ describe EnvironmentStatusEntity do
   it { is_expected.not_to include(:metrics_url) }
   it { is_expected.not_to include(:metrics_monitoring_url) }
 
-  context 'when :ci_environments_status_changes feature flag is disabled' do
-    before do
-      stub_feature_flags(ci_environments_status_changes: false)
-    end
-
-    it { is_expected.not_to include(:changes) }
-  end
-
   context 'when the user is project maintainer' do
     before do
       project.add_maintainer(user)

@@ -458,10 +458,6 @@ describe('mrWidgetOptions', () => {
     };
 
     beforeEach(done => {
-      window.gon = window.gon || {};
-      window.gon.features = window.gon.features || {};
-      window.gon.features.ciEnvironmentsStatusChanges = true;
-
       vm.mr.deployments.push(
         {
           ...deploymentMockData,
