@@ -1,6 +1,6 @@
 $system-note-icon-size: 32px;
 $system-note-svg-size: 16px;
-$note-form-margin-left: 70px;
+$note-form-margin-left: 72px;
 
 @mixin vertical-line($left) {
   &::before {
@@ -54,7 +54,7 @@ $note-form-margin-left: 70px;
 }
 
 .main-notes-list {
-  @include vertical-line(39px);
+  @include vertical-line(36px);
 }
 
 .notes {
@@ -268,7 +268,7 @@ $note-form-margin-left: 70px;
   }
 
   .system-note {
-    padding: 6px $gl-padding-24;
+    padding: 6px 20px;
     margin: $gl-padding-24 0;
     background-color: transparent;
 
