@@ -41,9 +41,11 @@ how to structure GitLab docs.
 
 ## Markdown and styles
 
-Currently GitLab docs use [Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) as the [markdown](../../user/markdown.md) engine.
+[GitLab docs](https://gitlab.com/gitlab-com/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
+as markdown engine. Check the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
+for a complete Kramdown reference.
 
-All the docs follow the [documentation style guidelines](styleguide.md). See [Linting](#linting) for help to follow the guidelines.
+Follow the [documentation style guidelines](styleguide.md) strictly.
 
 ## Documentation directory structure
 
@@ -198,6 +200,11 @@ redirect_to: '../path/to/file/README.md'
 
 It supports both full and relative URLs, e.g. `https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`. Note that any `*.md` paths will be compiled to `*.html`.
 
+NOTE: **Note:**
+This redirection method will not provide a redirect fallback on GitLab `/help`. When using
+it, make sure to add a link to the new page on the doc, otherwise it's a dead end for users that
+land on the doc via `/help`.
+
 ### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has any Disqus comments,
@@ -223,145 +230,6 @@ redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
 Note: it is necessary to include the file name in the `redirect_from` URL,
 even if it's `index.html` or `README.html`.
 
-## Linting
-
-To help adhere to the [documentation style guidelines](styleguide.md), and to improve the content
-added to documentation, consider locally installing and running documentation linters. This will
-help you catch common issues before raising merge requests for review of documentation.
-
-The following are some suggested linters you can install locally and sample configuration:
-
-- [`proselint`](#proselint)
-- [`markdownlint`](#markdownlint)
-
-NOTE: **Note:**
-This list does not limit what other linters you can add to your local documentation writing toolchain.
-
-### `proselint`
-
-`proselint` checks for common problems with English prose. It provides a
- [plethora of checks](http://proselint.com/checks/) that are helpful for technical writing.
-
-`proselint` can be used [on the command line](http://proselint.com/utility/), either on a single
- Markdown file or on all Markdown files in a project. For example, to run `proselint` on all
- documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce), run the
- following commands from within the `gitlab-ce` project:
-
-```sh
-cd doc
-proselint **/*.md
-```
-
-`proselint` can also be run from within editors using plugins. For example, the following plugins
- are available:
-
-- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-proselint)
-- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=PatrykPeszko.vscode-proselint)
-- [Others](https://github.com/amperser/proselint#plugins-for-other-software)
-
-#### Sample `proselint` configuration
-
-All of the checks are good to use. However, excluding the `typography.symbols` and `misc.phrasal_adjectives` checks will reduce
-noise. The following sample `proselint` configuration disables these checks:
-
-```json
-{
-  "checks": {
-    "typography.symbols": false,
-    "misc.phrasal_adjectives": false
-  }
-}
-```
-
-A file with `proselint` configuration must be placed in a
-[valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
-
-### `markdownlint`
-
-`markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
- are followed for Markdown syntax. Our [style guidelines](styleguide.md) elaborate on which choices
- must be made when selecting Markdown syntax for GitLab documentation and this tool helps
- catch deviations from those guidelines.
-
-`markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
- either on a single Markdown file or on all Markdown files in a project. For example, to run
- `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
- run the following commands from within the `gitlab-ce` project:
-
-```sh
-cd doc
-markdownlint **/*.md
-```
-
-`markdownlint` can also be run from within editors using plugins. For example, the following plugins
- are available:
-
-- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
-- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Others](https://github.com/DavidAnson/markdownlint#related)
-
-#### Sample `markdownlint` configuration
-
-The following sample `markdownlint` configuration modifies the available default rules to:
-
-- Adhere to the [style guidelines](styleguide.md).
-- Apply conventions found in the GitLab documentation.
-- Allow the flexibility of using some inline HTML.
-
-```json
-{
-  "default": true,
-  "header-style": { "style": "atx" },
-  "ul-style": { "style": "dash" },
-  "line-length": false,
-  "no-trailing-punctuation": false,
-  "ol-prefix": { "style": "one" },
-  "blanks-around-fences": false,
-  "no-inline-html": {
-    "allowed_elements": [
-      "table",
-      "tbody",
-      "tr",
-      "td",
-      "ul",
-      "ol",
-      "li",
-      "br",
-      "img",
-      "a",
-      "strong",
-      "i",
-      "div"
-    ]
-  },
-  "hr-style": { "style": "---" },
-  "fenced-code-language": false
-}
-```
-
-For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
-placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
-example, `~/.markdownlintrc`.
-
-## Testing
-
-We treat documentation as code, thus have implemented some testing.
-Currently, the following tests are in place:
-
-1. `docs lint`: Check that all internal (relative) links work correctly and
-   that all cURL examples in API docs use the full switches. It's recommended
-   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
-   `bundle exec nanoc check internal_links` on your local
-   [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
-1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
-    When you submit a merge request to GitLab Community Edition (CE),
-    there is this additional job that runs against Enterprise Edition (EE)
-    and checks if your changes can apply cleanly to the EE codebase.
-    If that job fails, read the instructions in the job log for what to do next.
-    As CE is merged into EE once a day, it's important to avoid merge conflicts.
-    Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
-    essential to avoid them.
-
 ## Branch naming
 
 If your contribution contains **only** documentation changes, you can speed up
@@ -376,15 +244,6 @@ choices:
 
 If your branch name matches any of the above, it will run only the docs
 tests. If it doesn't, the whole test suite will run (including docs).
-
-## Danger bot
-
-GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
-code review. For docs changes in merge requests, the following actions are taken:
-
-1. Whenever a change under `/doc` is made, the bot leaves a comment for the
-   author to mention `@gl-docsteam`, so that the docs can be properly
-   reviewed.
 
 ## Merge requests for GitLab documentation
 
@@ -427,105 +286,6 @@ Follow this [method for cherry-picking from CE to EE](../automatic_ce_ee_merge.m
   a couple more commits to the EE branch, but ask the reviewer to review the EE merge request
   additionally to the CE MR. If there are many EE-only changes though, start a new MR
   to EE only.
-
-## Previewing the changes live
-
-NOTE: **Note:**
-To preview your changes to documentation locally, follow this
-[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
-
-The live preview is currently enabled for the following projects:
-
-- <https://gitlab.com/gitlab-org/gitlab-ce>
-- <https://gitlab.com/gitlab-org/gitlab-ee>
-- <https://gitlab.com/gitlab-org/gitlab-runner>
-
-If your branch contains only documentation changes, you can use
-[special branch names](#branch-naming) to avoid long running pipelines.
-
-For [docs-only changes](#branch-naming), the review app is run automatically.
-For all other branches, you can use the manual `review-docs-deploy-manual` job
-in your merge request. You will need at least Maintainer permissions to be able
-to run it. In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
-reveal the `review-docs-deploy-manual` job. Hit the play button for the job to start.
-
-![Manual trigger a docs build](img/manual_build_docs.png)
-
-NOTE: **Note:**
-You will need to push a branch to those repositories, it doesn't work for forks.
-
-The `review-docs-deploy*` job will:
-
-1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
-   project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
-   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
-   CE, etc.
-1. Trigger a cross project pipeline and build the docs site with your changes
-
-After a few minutes, the Review App will be deployed and you will be able to
-preview the changes. The docs URL can be found in two places:
-
-- In the merge request widget
-- In the output of the `review-docs-deploy*` job, which also includes the
-  triggered pipeline so that you can investigate whether something went wrong
-
-TIP: **Tip:**
-Someone that has no merge rights to the CE/EE projects (think of forks from
-contributors) will not be able to run the manual job. In that case, you can
-ask someone from the GitLab team who has the permissions to do that for you.
-
-NOTE: **Note:**
-Make sure that you always delete the branch of the merge request you were
-working on. If you don't, the remote docs branch won't be removed either,
-and the server where the Review Apps are hosted will eventually be out of
-disk space.
-
-### Troubleshooting review apps
-
-In case the review app URL returns 404, follow these steps to debug:
-
-1. **Did you follow the URL from the merge request widget?** If yes, then check if
-   the link is the same as the one in the job output.
-1. **Did you follow the URL from the job output?** If yes, then it means that
-   either the site is not yet deployed or something went wrong with the remote
-   pipeline. Give it a few minutes and it should appear online, otherwise you
-   can check the status of the remote pipeline from the link in the job output.
-   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
-
-### Technical aspects
-
-If you want to know the hot details, here's what's really happening:
-
-1. You manually run the `review-docs-deploy` job in a CE/EE merge request.
-1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
-   script with the `deploy` flag, which in turn:
-   1. Takes your branch name and applies the following:
-      - The slug of the branch name is used to avoid special characters since
-        ultimately this will be used by NGINX.
-      - The `preview-` prefix is added to avoid conflicts if there's a remote branch
-        with the same name that you created in the merge request.
-      - The final branch name is truncated to 42 characters to avoid filesystem
-        limitations with long branch names (> 63 chars).
-   1. The remote branch is then created if it doesn't exist (meaning you can
-      re-run the manual job as many times as you want and this step will be skipped).
-   1. A new cross-project pipeline is triggered in the docs project.
-   1. The preview URL is shown both at the job output and in the merge request
-      widget. You also get the link to the remote pipeline.
-1. In the docs project, the pipeline is created and it
-   [skips the test jobs](https://gitlab.com/gitlab-com/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
-   to lower the build time.
-1. Once the docs site is built, the HTML files are uploaded as artifacts.
-1. A specific Runner tied only to the docs project, runs the Review App job
-   that downloads the artifacts and uses `rsync` to transfer the files over
-   to a location where NGINX serves them.
-
-The following GitLab features are used among others:
-
-- [Manual actions](../../ci/yaml/README.md#manual-actions)
-- [Multi project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
-- [Review Apps](../../ci/review_apps/index.md)
-- [Artifacts](../../ci/yaml/README.md#artifacts)
-- [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
 
 ## GitLab `/help`
 
@@ -677,6 +437,251 @@ date: 2017-02-01
 #### Technical Articles - Writing Method
 
 Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
+
+## Previewing the changes live
+
+NOTE: **Note:**
+To preview your changes to documentation locally, follow this
+[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development-when-contributing-to-gitlab-documentation) or [these instructions for GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/gitlab_docs.md).
+
+The live preview is currently enabled for the following projects:
+
+- <https://gitlab.com/gitlab-org/gitlab-ce>
+- <https://gitlab.com/gitlab-org/gitlab-ee>
+- <https://gitlab.com/gitlab-org/gitlab-runner>
+
+If your branch contains only documentation changes, you can use
+[special branch names](#branch-naming) to avoid long running pipelines.
+
+For [docs-only changes](#branch-naming), the review app is run automatically.
+For all other branches, you can use the manual `review-docs-deploy-manual` job
+in your merge request. You will need at least Maintainer permissions to be able
+to run it. In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
+reveal the `review-docs-deploy-manual` job. Hit the play button for the job to start.
+
+![Manual trigger a docs build](img/manual_build_docs.png)
+
+NOTE: **Note:**
+You will need to push a branch to those repositories, it doesn't work for forks.
+
+The `review-docs-deploy*` job will:
+
+1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
+   project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
+   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
+   CE, etc.
+1. Trigger a cross project pipeline and build the docs site with your changes
+
+After a few minutes, the Review App will be deployed and you will be able to
+preview the changes. The docs URL can be found in two places:
+
+- In the merge request widget
+- In the output of the `review-docs-deploy*` job, which also includes the
+  triggered pipeline so that you can investigate whether something went wrong
+
+TIP: **Tip:**
+Someone that has no merge rights to the CE/EE projects (think of forks from
+contributors) will not be able to run the manual job. In that case, you can
+ask someone from the GitLab team who has the permissions to do that for you.
+
+NOTE: **Note:**
+Make sure that you always delete the branch of the merge request you were
+working on. If you don't, the remote docs branch won't be removed either,
+and the server where the Review Apps are hosted will eventually be out of
+disk space.
+
+### Troubleshooting review apps
+
+In case the review app URL returns 404, follow these steps to debug:
+
+1. **Did you follow the URL from the merge request widget?** If yes, then check if
+   the link is the same as the one in the job output.
+1. **Did you follow the URL from the job output?** If yes, then it means that
+   either the site is not yet deployed or something went wrong with the remote
+   pipeline. Give it a few minutes and it should appear online, otherwise you
+   can check the status of the remote pipeline from the link in the job output.
+   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
+
+### Technical aspects
+
+If you want to know the in-depth details, here's what's really happening:
+
+1. You manually run the `review-docs-deploy` job in a CE/EE merge request.
+1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
+   script with the `deploy` flag, which in turn:
+   1. Takes your branch name and applies the following:
+      - The slug of the branch name is used to avoid special characters since
+        ultimately this will be used by NGINX.
+      - The `preview-` prefix is added to avoid conflicts if there's a remote branch
+        with the same name that you created in the merge request.
+      - The final branch name is truncated to 42 characters to avoid filesystem
+        limitations with long branch names (> 63 chars).
+   1. The remote branch is then created if it doesn't exist (meaning you can
+      re-run the manual job as many times as you want and this step will be skipped).
+   1. A new cross-project pipeline is triggered in the docs project.
+   1. The preview URL is shown both at the job output and in the merge request
+      widget. You also get the link to the remote pipeline.
+1. In the docs project, the pipeline is created and it
+   [skips the test jobs](https://gitlab.com/gitlab-com/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
+   to lower the build time.
+1. Once the docs site is built, the HTML files are uploaded as artifacts.
+1. A specific Runner tied only to the docs project, runs the Review App job
+   that downloads the artifacts and uses `rsync` to transfer the files over
+   to a location where NGINX serves them.
+
+The following GitLab features are used among others:
+
+- [Manual actions](../../ci/yaml/README.md#manual-actions)
+- [Multi project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
+- [Review Apps](../../ci/review_apps/index.md)
+- [Artifacts](../../ci/yaml/README.md#artifacts)
+- [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+
+## Testing
+
+We treat documentation as code, thus have implemented some testing.
+Currently, the following tests are in place:
+
+1. `docs lint`: Check that all internal (relative) links work correctly and
+   that all cURL examples in API docs use the full switches. It's recommended
+   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
+   `bundle exec nanoc check internal_links` on your local
+   [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
+1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
+    When you submit a merge request to GitLab Community Edition (CE),
+    there is this additional job that runs against Enterprise Edition (EE)
+    and checks if your changes can apply cleanly to the EE codebase.
+    If that job fails, read the instructions in the job log for what to do next.
+    As CE is merged into EE once a day, it's important to avoid merge conflicts.
+    Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
+    essential to avoid them.
+
+### Linting
+
+To help adhere to the [documentation style guidelines](styleguide.md), and to improve the content
+added to documentation, consider locally installing and running documentation linters. This will
+help you catch common issues before raising merge requests for review of documentation.
+
+The following are some suggested linters you can install locally and sample configuration:
+
+- [`proselint`](#proselint)
+- [`markdownlint`](#markdownlint)
+
+NOTE: **Note:**
+This list does not limit what other linters you can add to your local documentation writing toolchain.
+
+#### `proselint`
+
+`proselint` checks for common problems with English prose. It provides a
+ [plethora of checks](http://proselint.com/checks/) that are helpful for technical writing.
+
+`proselint` can be used [on the command line](http://proselint.com/utility/), either on a single
+ Markdown file or on all Markdown files in a project. For example, to run `proselint` on all
+ documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce), run the
+ following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+proselint **/*.md
+```
+
+`proselint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-proselint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=PatrykPeszko.vscode-proselint)
+- [Others](https://github.com/amperser/proselint#plugins-for-other-software)
+
+##### Sample `proselint` configuration
+
+All of the checks are good to use. However, excluding the `typography.symbols` and `misc.phrasal_adjectives` checks will reduce
+noise. The following sample `proselint` configuration disables these checks:
+
+```json
+{
+  "checks": {
+    "typography.symbols": false,
+    "misc.phrasal_adjectives": false
+  }
+}
+```
+
+A file with `proselint` configuration must be placed in a
+[valid location](https://github.com/amperser/proselint#checks). For example, `~/.config/proselint/config`.
+
+#### `markdownlint`
+
+`markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
+ are followed for Markdown syntax. Our [style guidelines](styleguide.md) elaborate on which choices
+ must be made when selecting Markdown syntax for GitLab documentation and this tool helps
+ catch deviations from those guidelines.
+
+`markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
+ either on a single Markdown file or on all Markdown files in a project. For example, to run
+ `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
+ run the following commands from within the `gitlab-ce` project:
+
+```sh
+cd doc
+markdownlint **/*.md
+```
+
+`markdownlint` can also be run from within editors using plugins. For example, the following plugins
+ are available:
+
+- [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+- [Others](https://github.com/DavidAnson/markdownlint#related)
+
+##### Sample `markdownlint` configuration
+
+The following sample `markdownlint` configuration modifies the available default rules to:
+
+- Adhere to the [style guidelines](styleguide.md).
+- Apply conventions found in the GitLab documentation.
+- Allow the flexibility of using some inline HTML.
+
+```json
+{
+  "default": true,
+  "header-style": { "style": "atx" },
+  "ul-style": { "style": "dash" },
+  "line-length": false,
+  "no-trailing-punctuation": false,
+  "ol-prefix": { "style": "one" },
+  "blanks-around-fences": false,
+  "no-inline-html": {
+    "allowed_elements": [
+      "table",
+      "tbody",
+      "tr",
+      "td",
+      "ul",
+      "ol",
+      "li",
+      "br",
+      "img",
+      "a",
+      "strong",
+      "i",
+      "div"
+    ]
+  },
+  "hr-style": { "style": "---" },
+  "fenced-code-language": false
+}
+```
+
+For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
+placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
+example, `~/.markdownlintrc`.
+
+## Danger bot
+
+GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
+code review. For docs changes in merge requests, whenever a change under `/doc`
+is made, the bot leaves a comment for the author to mention `@gl-docsteam`, so
+that the docs can be properly reviewed.
 
 [gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
