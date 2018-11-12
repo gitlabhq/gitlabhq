@@ -93,6 +93,23 @@ Example of response
 }
 ```
 
+## Delete a pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22988) in GitLab 11.6
+
+```
+DELETE /projects/:id/pipelines/:pipeline_id
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+```
+
 ## Create a new pipeline
 
 > [Introduced][ce-7209] in GitLab 8.14
