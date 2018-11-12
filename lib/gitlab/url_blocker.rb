@@ -1,4 +1,5 @@
 require 'resolv'
+require 'ipaddress'
 
 module Gitlab
   class UrlBlocker
@@ -24,7 +25,9 @@ module Gitlab
         validate_hostname!(uri.hostname)
 
         begin
-          addrs_info = Addrinfo.getaddrinfo(uri.hostname, port, nil, :STREAM)
+          addrs_info = Addrinfo.getaddrinfo(uri.hostname, port, nil, :STREAM).map do |addr|
+            addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
+          end
         rescue SocketError
           return true
         end
@@ -71,13 +74,14 @@ module Gitlab
 
       def validate_hostname!(value)
         return if value.blank?
+        return if IPAddress.valid?(value)
         return if value =~ /\A\p{Alnum}/
 
-        raise BlockedUrlError, "Hostname needs to start with an alphanumeric character"
+        raise BlockedUrlError, "Hostname or IP address invalid"
       end
 
       def validate_localhost!(addrs_info)
-        local_ips = ["127.0.0.1", "::1", "0.0.0.0"]
+        local_ips = ["::", "0.0.0.0"]
         local_ips.concat(Socket.ip_address_list.map(&:ip_address))
 
         return if (local_ips & addrs_info.map(&:ip_address)).empty?
@@ -92,7 +96,7 @@ module Gitlab
       end
 
       def validate_local_network!(addrs_info)
-        return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? }
+        return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? || addr.ipv6_unique_local? }
 
         raise BlockedUrlError, "Requests to the local network are not allowed"
       end
