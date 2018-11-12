@@ -27,24 +27,26 @@ The following files require a review from the Documentation team:
 When your content is ready for review, mention a technical writer in a separate
 comment and explain what needs to be reviewed.
 
-You are welcome to mention them sooner if you have questions about writing or updating 
+You are welcome to mention them sooner if you have questions about writing or updating
 the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.
 
 Who to ping [based on DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages):
 
-| ~Create | @`marcia` |
-| ~Configure | `@eread |
-| ~Distribution | `@axil` |
-| ~Geo | `@eread |
-| ~Gitaly | `@axil` |
-| ~Gitter | `@axil` |
-| ~Manage | `@eread |
-| ~Monitoring | `@axil` |
-| ~Packaging | `@axil` |
-| ~Plan | `@mikelewis |
-| ~Release | `marcia` |
-| ~Secure | `@axil` |
-| ~Verify | `@eread |
+| Stage         | Tech writer |
+| ------------- | ----------- |
+| ~Create       | `@marcia`   |
+| ~Configure    | `@eread`    |
+| ~Distribution | `@axil`     |
+| ~Geo          | `@eread`    |
+| ~Gitaly       | `@axil`     |
+| ~Gitter       | `@axil`     |
+| ~Manage       | `@eread`    |
+| ~Monitoring   | `@axil`     |
+| ~Packaging    | `@axil`     |
+| ~Plan         | `@mikelewis`|
+| ~Release      | `marcia`    |
+| ~Secure       | `@axil`     |
+| ~Verify       | `@eread`    |
 
 If you are not sure which category the change falls within, or the change is not
 part of one of these categories, you can mention the whole team with `@gl-docsteam`.
