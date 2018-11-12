@@ -22,15 +22,45 @@ To run Knative on Gitlab, you will need:
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](https://docs.gitlab.com/ee/user/project/clusters/#adding-and-creating-a-new-gke-cluster-via-gitlab). 
     GitLab recommends 
 1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install 
-    all the other applications. It is installed in its own pod inside the cluster which 
-    can run the helm CLI in a safe environment.
+    all the other applications.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an 
     external IP address for all the applications served by Knative. You will be prompted to enter a 
     wildcard domain where your applications will be served. Configure your DNS server to use the 
     external IP address for that domain.
-1. **Serverless `gitlab-ci.yml` Template:** GitLab uses the [TriggerMesh CLI](https://github.com/triggermesh/tm), 
-    a serverless resource management utilty to work with knative objects. The `gitlab-ci.yml` template uses it 
-    to build and deploy knative services and functions. [Access the template here](serverless_ci_yml_template.yml).
+1. **Serverless `gitlab-ci.yml` Template:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko) 
+    to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm), to simplify the 
+    deployment of knative services and functions.
+
+    Add the following `.gitlab-ci.yml` to the root of your repository (you may skip this step if using the sample 
+    [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned below).
+
+    ```yaml
+    stages:
+    - build
+    - deploy
+
+    build:
+    stage: build
+    image:
+        name: gcr.io/kaniko-project/executor:debug
+        entrypoint: [""]
+    only:
+        - master
+    script:
+        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
+
+    deploy:
+    stage: deploy
+    image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
+    only:
+        - master
+    environment: production
+    script:
+        - echo "$CI_REGISTRY_IMAGE"
+        - tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
+    ```
+
 1. **Docker File:** Knative requires a docker file in order to build your application. It should be included 
     at the root of your project's repo.
 
@@ -54,16 +84,18 @@ You may download the sample [Knative Ruby App](https://gitlab.com/knative-exampl
     kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
     ```
 
+    Output:
+
+    ```bash
+    35.161.143.124 my-machine-name:~ my-user$
+    ```
+
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS 
-    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name.
+    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example, 
+    if your Knative base domain is `knative.example.com` then you need to create an A record with domain `*.knative.example.com` 
+    pointing the ip address of the ingress.
 
     ![dns entry](img/dns-entry.png)
-
-## Deploying the GitLab Runner (optional)
-
-If the project is on GitLab.com, free shared runners are available and you do not have to deploy one. If a project specific runner is desired, or there are no shared runners, it is easy to deploy one.
-
-Simply click on the "**Install**" button for the GitLab Runner. It is important to note that the runner deployed is set as privileged, which means it essentially has root access to the underlying machine. This is required to build docker images, and so is on by default.
 
 ## Deploy the application with Knative
 
