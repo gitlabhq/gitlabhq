@@ -800,7 +800,7 @@ describe Ci::Build do
   end
 
   describe 'state transition as a deployable' do
-    let!(:build) { create(:ci_build, :start_review_app) }
+    let!(:build) { create(:ci_build, :start_review_app).reload }
     let(:deployment) { build.deployment }
     let(:environment) { deployment.environment }
 

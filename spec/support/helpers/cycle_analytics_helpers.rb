@@ -115,7 +115,7 @@ module CycleAnalyticsHelpers
       name: 'dummy',
       stage: 'dummy',
       pipeline: dummy_pipeline(project),
-      protected: false)
+      protected: false).reload
   end
 
   def mock_gitaly_multi_action_dates(repository, commit_time)
