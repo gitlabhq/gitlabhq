@@ -144,6 +144,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+    enable :destroy_pipeline
 
     enable :set_issue_iid
     enable :set_issue_created_at

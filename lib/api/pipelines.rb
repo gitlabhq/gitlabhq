@@ -89,11 +89,11 @@ module API
         requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
       end
       delete ':id/pipelines/:pipeline_id' do
-        authorize! :admin_pipeline, user_project
+        authorize! :destroy_pipeline, user_project
 
-        AuditEventService.new(current_user, user_project).security_event
-
-        destroy_conditionally!(pipeline)
+        destroy_conditionally!(pipeline) do
+          ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+        end
       end
 
       desc 'Retry builds in the pipeline' do
