@@ -1,6 +1,11 @@
-# Markdown
+# GitLab Markdown
 
-This markdown guide is valid for GitLab's system markdown entries and files.
+This markdown guide is **valid for GitLab's system markdown entries and files**.
+It is not valid for the [GitLab documentation website](https://docs.gitlab.com)
+nor [GitLab's main website](https://about.gitlab.com), as they both use
+[Kramdown](https://kramdown.gettalong.org) as their markdown engine.
+The documentation website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
+Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference._
 
 ## GitLab Flavored Markdown (GFM)
 
@@ -8,27 +13,30 @@ GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specifi
 
 You can use GFM in the following areas:
 
-- comments
-- issues
-- merge requests
-- milestones
-- snippets (the snippet must be named with a `.md` extension)
-- wiki pages
-- markdown documents inside the repository
+- Comments
+- Issues
+- Merge requests
+- Milestones
+- Snippets (the snippet must be named with a `.md` extension)
+- Wiki pages
+- Markdown documents inside repositories
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [`github-markup` gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 > **Notes:**
 >
-> For the best result, we encourage you to check this document out as rendered
-> by GitLab itself: [markdown.md]
+> For the best result, we encourage you to check this document out as [rendered
+> by GitLab itself](markdown.md).
 >
 > As of 11.1, GitLab uses the [CommonMark Ruby Library][commonmarker] for Markdown
 processing of all new issues, merge requests, comments, and other Markdown content
 in the GitLab system. As of 11.3, wiki pages and Markdown files (`.md`) in the
 repositories are also processed with CommonMark. Older content in issues/comments
 are still processed using the [Redcarpet Ruby library][redcarpet].
+>
+> The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
+in October 2018.
 >
 > _Where there are significant differences, we will try to call them out in this document._
 
