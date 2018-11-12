@@ -403,6 +403,8 @@ describe Ci::CreatePipelineService do
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
         expect(result.builds.first.tag_list).to contain_exactly('hello')
+        expect(result.builds.first.deployment).to be_persisted
+        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
     end
 

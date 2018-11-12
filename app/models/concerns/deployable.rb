@@ -13,14 +13,13 @@ module Deployable
         name: expanded_environment_name
       )
 
-      environment.deployments.create!(
+      create_deployment!(
         project_id: environment.project_id,
         environment: environment,
         ref: ref,
         tag: tag,
         sha: sha,
         user: user,
-        deployable: self,
         on_stop: on_stop)
     end
   end
