@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181107054254) do
+ActiveRecord::Schema.define(version: 20181112103239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -836,7 +836,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
-    t.integer "status", limit: 2, default: 2, null: false
+    t.integer "status", limit: 2, null: false
     t.datetime_with_timezone "finished_at"
   end
 
@@ -1865,6 +1865,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
