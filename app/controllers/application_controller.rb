@@ -181,11 +181,11 @@ class ApplicationController < ActionController::Base
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!(message = nil)
+  def access_denied!(message = nil, status = nil)
     # If we display a custom access denied message to the user, we don't want to
     # hide existence of the resource, rather tell them they cannot access it using
     # the provided message
-    status = message.present? ? :forbidden : :not_found
+    status ||= message.present? ? :forbidden : :not_found
 
     respond_to do |format|
       format.any { head status }

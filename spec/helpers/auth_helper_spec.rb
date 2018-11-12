@@ -42,6 +42,16 @@ describe AuthHelper do
     end
   end
 
+  describe 'form_based_auth_provider_has_active_class?' do
+    it 'selects main LDAP server' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :ldapprimary, :ldapsecondary, :kerberos] }
+      expect(helper.form_based_auth_provider_has_active_class?(:twitter)).to be(false)
+      expect(helper.form_based_auth_provider_has_active_class?(:ldapprimary)).to be(true)
+      expect(helper.form_based_auth_provider_has_active_class?(:ldapsecondary)).to be(false)
+      expect(helper.form_based_auth_provider_has_active_class?(:kerberos)).to be(false)
+    end
+  end
+
   describe 'enabled_button_based_providers' do
     before do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }
