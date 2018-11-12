@@ -16,8 +16,6 @@ module Clusters
           configure_kubernetes_token
 
           kubernetes_namespace.save!
-        rescue ::Kubeclient::HttpError => err
-          raise err unless err.error_code = 404
         end
 
         private
