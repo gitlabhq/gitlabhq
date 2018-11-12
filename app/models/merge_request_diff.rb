@@ -142,7 +142,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def commits_by_shas(shas)
-    return [] unless shas.present?
+    return MergeRequestDiffCommit.none unless shas.present?
 
     merge_request_diff_commits.where(sha: shas)
   end
