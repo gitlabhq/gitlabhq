@@ -4,9 +4,9 @@
 
 To enable Mattermost integration you must create an incoming webhook integration:
 
-1. Sign in to your Mattermost instance
-1. Visit incoming webhooks, that will be something like: https://mattermost.example/your_team_name/integrations/incoming_webhooks/add
-1. Choose a display name, description and channel, those can be overridden on GitLab
+1. Sign in to your Mattermost instance.
+1. Visit incoming webhooks, that will be something like: `https://mattermost.example.com/your_team_name/integrations/incoming_webhooks/add`.
+1. Choose a display name, description and channel, those can be overridden on GitLab.
 1. Save it, copy the **Webhook URL**, we'll need this later for GitLab.
 
 There might be some cases that Incoming Webhooks are blocked by admin, ask your mattermost admin to enable
