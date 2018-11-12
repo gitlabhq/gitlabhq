@@ -10,7 +10,7 @@ describe UpdateDeploymentService do
       tag: false,
       environment: 'production',
       options: { environment: options },
-      project: project).reload
+      project: project)
   end
 
   let(:project) { create(:project, :repository) }
@@ -99,7 +99,7 @@ describe UpdateDeploymentService do
                ref: 'master',
                environment: 'production',
                project: project,
-               options: { environment: { name: 'production', url: 'http://review/$CI_COMMIT_REF_NAME' } }).reload
+               options: { environment: { name: 'production', url: 'http://review/$CI_COMMIT_REF_NAME' } })
       end
 
       it { is_expected.to eq('http://review/master') }
@@ -111,7 +111,7 @@ describe UpdateDeploymentService do
                ref: 'master',
                environment: 'prod-slug',
                project: project,
-               options: { environment: { name: 'prod-slug', url: 'http://review/$CI_ENVIRONMENT_SLUG' } }).reload
+               options: { environment: { name: 'prod-slug', url: 'http://review/$CI_ENVIRONMENT_SLUG' } })
       end
 
       it { is_expected.to eq('http://review/prod-slug') }
@@ -123,14 +123,14 @@ describe UpdateDeploymentService do
                yaml_variables: [{ key: :APP_HOST, value: 'host' }],
                environment: 'production',
                project: project,
-               options: { environment: { name: 'production', url: 'http://review/$APP_HOST' } }).reload
+               options: { environment: { name: 'production', url: 'http://review/$APP_HOST' } })
       end
 
       it { is_expected.to eq('http://review/host') }
     end
 
     context 'when yaml environment does not have url' do
-      let(:job) { create(:ci_build, environment: 'staging', project: project).reload }
+      let(:job) { create(:ci_build, environment: 'staging', project: project) }
 
       it 'returns the external_url from persisted environment' do
         is_expected.to be_nil
@@ -160,7 +160,7 @@ describe UpdateDeploymentService do
               tag: false,
               environment: 'staging',
               options: { environment: { name: 'staging' } },
-              project: project).reload
+              project: project)
           end
 
           it "doesn't set the time if the deploy's environment is not 'production'" do
