@@ -128,6 +128,7 @@ export default {
     eventHub.$once('fetchedNotesData', this.setDiscussions);
   },
   methods: {
+    ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'setBaseConfig',
       'fetchDiffFiles',
@@ -157,7 +158,13 @@ export default {
       if (this.isNotesFetched && !this.assignedDiscussions && !this.isLoading) {
         this.assignedDiscussions = true;
 
-        requestIdleCallback(() => this.assignDiscussionsToDiff(), { timeout: 1000 });
+        requestIdleCallback(
+          () =>
+            this.assignDiscussionsToDiff()
+              .then(this.$nextTick)
+              .then(this.startTaskList),
+          { timeout: 1000 },
+        );
       }
     },
     adjustView() {
