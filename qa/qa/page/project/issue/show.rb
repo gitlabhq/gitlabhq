@@ -37,6 +37,11 @@ module QA
 
           def select_comments_only_filter
             click_element :discussion_filter
+            all_elements(:filter_options)[1].click
+          end
+
+          def select_history_only_filter
+            click_element :discussion_filter
             all_elements(:filter_options).last.click
           end
 

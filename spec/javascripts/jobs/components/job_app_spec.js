@@ -8,6 +8,7 @@ import { resetStore } from '../store/helpers';
 import job from '../mock_data';
 
 describe('Job App ', () => {
+  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const Component = Vue.extend(jobApp);
   let store;
   let vm;
@@ -52,7 +53,7 @@ describe('Job App ', () => {
     });
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet(`${props.pagePath}/trace.json`).replyOnce(200, {});
     });
@@ -101,7 +102,7 @@ describe('Job App ', () => {
                 .querySelector('.header-main-content')
                 .textContent.replace(/\s+/g, ' ')
                 .trim(),
-            ).toEqual('passed Job #4757 triggered 1 year ago by Root');
+            ).toContain('passed Job #4757 triggered 1 year ago by Root');
             done();
           }, 0);
         });
@@ -127,7 +128,7 @@ describe('Job App ', () => {
                 .querySelector('.header-main-content')
                 .textContent.replace(/\s+/g, ' ')
                 .trim(),
-            ).toEqual('passed Job #4757 created 3 weeks ago by Root');
+            ).toContain('passed Job #4757 created 3 weeks ago by Root');
             done();
           }, 0);
         });
@@ -234,7 +235,7 @@ describe('Job App ', () => {
             );
             done();
           }, 0);
-        })
+        });
       });
 
       it('does not renders stuck block when there are no runners', done => {
@@ -420,6 +421,70 @@ describe('Job App ', () => {
           done();
         }, 0);
       });
+
+      it('displays remaining time for a delayed job', done => {
+        const oneHourInMilliseconds = 3600000;
+        spyOn(Date, 'now').and.callFake(
+          () => new Date(delayedJobFixture.scheduled_at).getTime() - oneHourInMilliseconds,
+        );
+        mock.onGet(props.endpoint).replyOnce(200, { ...delayedJobFixture });
+
+        vm = mountComponentWithStore(Component, {
+          props,
+          store,
+        });
+
+        store.subscribeAction(action => {
+          if (action.type !== 'receiveJobSuccess') {
+            return;
+          }
+
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.$el.querySelector('.js-job-empty-state')).not.toBeNull();
+
+              const title = vm.$el.querySelector('.js-job-empty-state-title');
+
+              expect(title).toContainText('01:00:00');
+              done();
+            })
+            .catch(done.fail);
+        });
+      });
+    });
+  });
+
+  describe('archived job', () => {
+    beforeEach(() => {
+      mock.onGet(props.endpoint).reply(200, Object.assign({}, job, { archived: true }), {});
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+    });
+
+    it('renders warning about job being archived', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.js-archived-job ')).not.toBeNull();
+        done();
+      }, 0);
+    });
+  });
+
+  describe('non-archived job', () => {
+    beforeEach(() => {
+      mock.onGet(props.endpoint).reply(200, job, {});
+      vm = mountComponentWithStore(Component, {
+        props,
+        store,
+      });
+    });
+
+    it('does not warning about job being archived', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.js-archived-job ')).toBeNull();
+        done();
+      }, 0);
     });
   });
 

@@ -1,11 +1,11 @@
 <script>
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
-import tooltip from '../directives/tooltip';
 import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     UserAvatarLink,
@@ -13,7 +13,7 @@ export default {
   },
   props: {
     /**
-     * Indicates the existance of a tag.
+     * Indicates the existence of a tag.
      * Used to render the correct icon, if true will render `fa-tag` icon,
      * if false will render a svg sprite fork icon
      */
@@ -124,11 +124,10 @@ export default {
       </div>
 
       <a
-        v-tooltip
+        v-gl-tooltip
         :href="commitRef.ref_url"
         :title="commitRef.name"
         class="ref-name"
-        data-container="body"
       >
         {{ commitRef.name }}
       </a>

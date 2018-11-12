@@ -43,10 +43,14 @@ module TokenAuthenticatableStrategies
       set_token(instance, new_token)
     end
 
+    def unique
+      @options.fetch(:unique, true)
+    end
+
     def generate_available_token
       loop do
         token = generate_token
-        break token unless find_token_authenticatable(token, true)
+        break token unless unique && find_token_authenticatable(token, true)
       end
     end
 

@@ -52,9 +52,9 @@ describe MergeRequestDiff do
 
     context 'when it was not cleaned by the system' do
       it 'returns persisted diffs' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
-        diff.diffs
+        diff.diffs.diff_files
       end
     end
 
@@ -76,19 +76,19 @@ describe MergeRequestDiff do
       end
 
       it 'returns persisted diffs if cannot compare with diff refs' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
         diff.update!(head_commit_sha: 'invalid-sha')
 
-        diff.diffs
+        diff.diffs.diff_files
       end
 
       it 'returns persisted diffs if diff refs does not exist' do
-        expect(diff).to receive(:load_diffs)
+        expect(diff).to receive(:load_diffs).and_call_original
 
         diff.update!(start_commit_sha: nil, base_commit_sha: nil)
 
-        diff.diffs
+        diff.diffs.diff_files
       end
     end
   end
@@ -209,6 +209,40 @@ describe MergeRequestDiff do
   describe '#commits_count' do
     it 'returns number of commits using serialized commits' do
       expect(diff_with_commits.commits_count).to eq(29)
+    end
+  end
+
+  describe '#commits_by_shas' do
+    let(:commit_shas) { diff_with_commits.commit_shas }
+
+    it 'returns empty if no SHAs were provided' do
+      expect(diff_with_commits.commits_by_shas([])).to be_empty
+    end
+
+    it 'returns one SHA' do
+      commits = diff_with_commits.commits_by_shas([commit_shas.first, Gitlab::Git::BLANK_SHA])
+
+      expect(commits.count).to eq(1)
+    end
+
+    it 'returns all matching SHAs' do
+      commits = diff_with_commits.commits_by_shas(commit_shas)
+
+      expect(commits.count).to eq(commit_shas.count)
+      expect(commits.map(&:sha)).to match_array(commit_shas)
+    end
+  end
+
+  describe '#modified_paths' do
+    subject do
+      diff = create(:merge_request_diff)
+      create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+      create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+      diff
+    end
+
+    it 'returns affected file paths' do
+      expect(subject.modified_paths).to eq(%w{foo bar baz})
     end
   end
 end

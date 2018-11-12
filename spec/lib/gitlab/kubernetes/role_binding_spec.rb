@@ -20,7 +20,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
   let(:role_ref) do
     {
       apiGroup: 'rbac.authorization.k8s.io',
-      kind: 'Role',
+      kind: 'ClusterRole',
       name: role_name
     }
   end
@@ -35,6 +35,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
 
   subject do
     described_class.new(
+      name: "gitlab-#{namespace}",
       role_name: role_name,
       namespace: namespace,
       service_account_name: service_account_name

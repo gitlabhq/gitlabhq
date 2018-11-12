@@ -83,7 +83,7 @@ class Namespace < ActiveRecord::Base
       find_by('lower(path) = :value', value: path.downcase)
     end
 
-    # Case insensetive search for namespace by path or name
+    # Case insensitive search for namespace by path or name
     def find_by_path_or_name(path)
       find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
     end
@@ -230,6 +230,12 @@ class Namespace < ActiveRecord::Base
   # that belongs to this namespace
   def all_projects
     Project.inside_path(full_path)
+  end
+
+  # Includes pipelines from this namespace and pipelines from all subgroups
+  # that belongs to this namespace
+  def all_pipelines
+    Ci::Pipeline.where(project: all_projects)
   end
 
   def has_parent?

@@ -1,0 +1,5 @@
+---
+title: Improves performance of stuck import jobs detection
+merge_request: 22879
+author:
+type: performance

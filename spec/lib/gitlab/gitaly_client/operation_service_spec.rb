@@ -335,4 +335,37 @@ describe Gitlab::GitalyClient::OperationService do
       end
     end
   end
+
+  describe '#user_commit_patches' do
+    let(:patches_folder) { Rails.root.join('spec/fixtures/patchfiles') }
+    let(:patch_content) do
+      patch_names.map { |name| File.read(File.join(patches_folder, name)) }.join("\n")
+    end
+    let(:patch_names) { %w(0001-This-does-not-apply-to-the-feature-branch.patch) }
+    let(:branch_name) { 'branch-with-patches' }
+
+    subject(:commit_patches) do
+      client.user_commit_patches(user, branch_name, patch_content)
+    end
+
+    it 'applies the patch correctly' do
+      branch_update = commit_patches
+
+      expect(branch_update).to be_branch_created
+
+      commit = repository.commit(branch_update.newrev)
+      expect(commit.author_email).to eq('patchuser@gitlab.org')
+      expect(commit.committer_email).to eq(user.email)
+      expect(commit.message.chomp).to eq('This does not apply to the `feature` branch')
+    end
+
+    context 'when the patch could not be applied' do
+      let(:patch_names) { %w(0001-This-does-not-apply-to-the-feature-branch.patch) }
+      let(:branch_name) { 'feature' }
+
+      it 'raises the correct error' do
+        expect { commit_patches }.to raise_error(GRPC::FailedPrecondition)
+      end
+    end
+  end
 end

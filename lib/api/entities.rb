@@ -607,6 +607,22 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.merged_by
+      end
+
+      expose :merged_at do |merge_request, _options|
+        merge_request.metrics&.merged_at
+      end
+
+      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.latest_closed_by
+      end
+
+      expose :closed_at do |merge_request, _options|
+        merge_request.metrics&.latest_closed_at
+      end
+
       expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :title)
       end
@@ -674,22 +690,6 @@ module API
 
       expose :changes_count do |merge_request, _options|
         merge_request.merge_request_diff.real_size
-      end
-
-      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
-        merge_request.metrics&.merged_by
-      end
-
-      expose :merged_at do |merge_request, _options|
-        merge_request.metrics&.merged_at
-      end
-
-      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
-        merge_request.metrics&.latest_closed_by
-      end
-
-      expose :closed_at do |merge_request, _options|
-        merge_request.metrics&.latest_closed_at
       end
 
       expose :latest_build_started_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|

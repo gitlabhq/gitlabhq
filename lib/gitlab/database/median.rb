@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # https://www.periscopedata.com/blog/medians-in-sql.html
 module Gitlab
   module Database

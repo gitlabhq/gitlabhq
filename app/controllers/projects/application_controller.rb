@@ -3,6 +3,7 @@
 class Projects::ApplicationController < ApplicationController
   include CookiesHelper
   include RoutableActions
+  include ProjectUnauthorized
   include ChecksCollaboration
 
   skip_before_action :authenticate_user!
@@ -21,7 +22,7 @@ class Projects::ApplicationController < ApplicationController
     path = File.join(params[:namespace_id], params[:project_id] || params[:id])
     auth_proc = ->(project) { !project.pending_delete? }
 
-    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
+    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc, not_found_or_authorized_proc: project_unauthorized_proc)
   end
 
   def build_canonical_path(project)

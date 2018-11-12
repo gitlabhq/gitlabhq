@@ -1,7 +1,7 @@
 <script>
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 
@@ -15,7 +15,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -67,7 +67,7 @@ export default {
       >
         Stopping
         <span
-          v-tooltip
+          v-gl-tooltip
           :title="environment.name"
           class="text-truncate ml-1 mr-1 flex-fill"
         >{{ environment.name }}</span>

@@ -43,7 +43,7 @@ All these operations will put all files into a `build` folder, which is ready to
 
 You have multiple options: rsync, scp, sftp and so on. For now, we will use scp.
 
-To make this work, you need to add a GitLab Secret Variable (accessible on _gitlab.example/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
+To make this work, you need to add a GitLab CI/CD Variable (accessible on _gitlab.example/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
 
 ### Security tip
 

@@ -26,7 +26,7 @@ describe Clusters::Gcp::ProvisionService do
       end
     end
 
-    context 'when suceeded to request provision' do
+    context 'when succeeded to request provision' do
       before do
         stub_cloud_platform_create_cluster(gcp_project_id, zone)
       end

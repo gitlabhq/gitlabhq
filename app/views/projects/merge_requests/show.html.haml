@@ -21,6 +21,7 @@
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
 
       window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
+      window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests', anchor: 'troubleshooting')}';
 
     #js-vue-mr-widget.mr-widget
 
@@ -33,7 +34,7 @@
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
           %ul.merge-request-tabs.nav-tabs.nav.nav-links.scrolling-tabs
-            %li.notes-tab
+            %li.notes-tab.qa-notes-tab
               = tab_link_for @merge_request, :show, force_link: @commit.present? do
                 Discussion
                 %span.badge.badge-pill= @merge_request.related_notes.user.count
@@ -47,7 +48,7 @@
                 = tab_link_for @merge_request, :pipelines do
                   Pipelines
                   %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
-            %li.diffs-tab
+            %li.diffs-tab.qa-diffs-tab
               = tab_link_for @merge_request, :diffs do
                 Changes
                 %span.badge.badge-pill= @merge_request.diff_size

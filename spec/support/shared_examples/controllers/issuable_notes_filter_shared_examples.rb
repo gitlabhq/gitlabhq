@@ -34,12 +34,24 @@ shared_examples 'issuable notes filter' do
     expect(user.reload.notes_filter_for(issuable)).to eq(0)
   end
 
-  it 'returns no system note' do
+  it 'returns only user comments' do
     user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issuable)
 
     get :discussions, namespace_id: project.namespace, project_id: project, id: issuable.iid
+    discussions = JSON.parse(response.body)
 
-    expect(JSON.parse(response.body).count).to eq(1)
+    expect(discussions.count).to eq(1)
+    expect(discussions.first["notes"].first["system"]).to be(false)
+  end
+
+  it 'returns only activity notes' do
+    user.set_notes_filter(UserPreference::NOTES_FILTERS[:only_activity], issuable)
+
+    get :discussions, namespace_id: project.namespace, project_id: project, id: issuable.iid
+    discussions = JSON.parse(response.body)
+
+    expect(discussions.count).to eq(1)
+    expect(discussions.first["notes"].first["system"]).to be(true)
   end
 
   context 'when filter is set to "only_comments"' do

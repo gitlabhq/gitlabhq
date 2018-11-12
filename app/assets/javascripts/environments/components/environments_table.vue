@@ -2,11 +2,13 @@
 /**
  * Render environments table.
  */
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import environmentItem from './environment_item.vue';
 
 export default {
   components: {
     environmentItem,
+    GlLoadingIcon,
   },
 
   props: {

@@ -1,16 +1,16 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
-import nextDiscussionsSvg from 'icons/_next_discussion.svg';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
-import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import { s__ } from '~/locale';
+import systemNote from '~/vue_shared/components/notes/system_note.vue';
+import icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteableNote from './noteable_note.vue';
 import noteHeader from './note_header.vue';
+import toggleRepliesWidget from './toggle_replies_widget.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import noteEditedText from './note_edited_text.vue';
 import noteForm from './note_form.vue';
@@ -26,6 +26,7 @@ import tooltip from '../../vue_shared/directives/tooltip';
 export default {
   name: 'NoteableDiscussion',
   components: {
+    icon,
     noteableNote,
     diffWithNote,
     userAvatarLink,
@@ -33,6 +34,7 @@ export default {
     noteSignedOutWidget,
     noteEditedText,
     noteForm,
+    toggleRepliesWidget,
     placeholderNote,
     placeholderSystemNote,
     systemNote,
@@ -45,11 +47,6 @@ export default {
     discussion: {
       type: Object,
       required: true,
-    },
-    renderHeader: {
-      type: Boolean,
-      required: false,
-      default: true,
     },
     renderDiffFile: {
       type: Boolean,
@@ -72,6 +69,7 @@ export default {
       isReplying: false,
       isResolving: false,
       resolveAsThread: true,
+      isRepliesCollapsed: (!this.discussion.diff_discussion && this.discussion.resolved) || false,
     };
   },
   computed: {
@@ -112,6 +110,15 @@ export default {
     newNotePath() {
       return this.getNoteableData.create_note_path;
     },
+    hasReplies() {
+      return this.discussion.notes.length > 1;
+    },
+    initialDiscussion() {
+      return this.discussion.notes.slice(0, 1)[0];
+    },
+    replies() {
+      return this.discussion.notes.slice(1);
+    },
     lastUpdatedBy() {
       const { notes } = this.discussion;
 
@@ -147,6 +154,12 @@ export default {
 
       return diffDiscussion && diffFile && this.renderDiffFile;
     },
+    shouldGroupReplies() {
+      return !this.shouldRenderDiffs && !this.transformedDiscussion.diffDiscussion;
+    },
+    shouldRenderHeader() {
+      return this.shouldRenderDiffs;
+    },
     wrapperComponent() {
       return this.shouldRenderDiffs ? diffWithNote : 'div';
     },
@@ -160,6 +173,22 @@ export default {
     wrapperClass() {
       return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
     },
+    componentClassName() {
+      if (this.shouldRenderDiffs) {
+        if (!this.lastUpdatedAt && !this.discussion.resolved) {
+          return 'unresolved';
+        }
+      }
+
+      return '';
+    },
+    shouldShowDiscussions() {
+      const isExpanded = this.discussion.expanded;
+      const { diffDiscussion, resolved } = this.transformedDiscussion;
+      const isResolvedNonDiffDiscussion = !diffDiscussion && resolved;
+
+      return isExpanded || this.alwaysExpanded || isResolvedNonDiffDiscussion;
+    },
   },
   watch: {
     isReplying() {
@@ -172,10 +201,6 @@ export default {
         this.disposeAutoSave();
       }
     },
-  },
-  created() {
-    this.resolveDiscussionsSvg = resolveDiscussionsSvg;
-    this.nextDiscussionsSvg = nextDiscussionsSvg;
   },
   methods: {
     ...mapActions([
@@ -206,6 +231,9 @@ export default {
     },
     toggleDiscussionHandler() {
       this.toggleDiscussion({ discussionId: this.discussion.id });
+    },
+    toggleReplies() {
+      this.isRepliesCollapsed = !this.isRepliesCollapsed;
     },
     showReplyForm() {
       this.isReplying = true;
@@ -274,26 +302,29 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li class="note note-discussion timeline-entry">
+  <li
+    class="note note-discussion timeline-entry"
+    :class="componentClassName"
+  >
     <div class="timeline-entry-inner">
-      <div class="timeline-icon">
-        <user-avatar-link
-          v-if="author"
-          :link-href="author.path"
-          :img-src="author.avatar_url"
-          :img-alt="author.name"
-          :img-size="40"
-        />
-      </div>
       <div class="timeline-content">
         <div
           :data-discussion-id="transformedDiscussion.discussion_id"
           class="discussion js-discussion-container"
         >
           <div
-            v-if="renderHeader"
-            class="discussion-header"
+            v-if="shouldRenderHeader"
+            class="discussion-header note-wrapper"
           >
+            <div class="timeline-icon">
+              <user-avatar-link
+                v-if="author"
+                :link-href="author.path"
+                :img-src="author.avatar_url"
+                :img-alt="author.name"
+                :img-size="40"
+              />
+            </div>
             <note-header
               :author="author"
               :created-at="transformedDiscussion.created_at"
@@ -339,7 +370,7 @@ Please check your network connection and try again.`;
             />
           </div>
           <div
-            v-if="discussion.expanded || alwaysExpanded"
+            v-if="shouldShowDiscussions"
             class="discussion-body">
             <component
               :is="wrapperComponent"
@@ -348,38 +379,70 @@ Please check your network connection and try again.`;
             >
               <div class="discussion-notes">
                 <ul class="notes">
-                  <component
-                    :is="componentName(note)"
-                    v-for="note in discussion.notes"
-                    :key="note.id"
-                    :note="componentData(note)"
-                    @handleDeleteNote="deleteNoteHandler"
-                  />
+                  <template v-if="shouldGroupReplies">
+                    <component
+                      :is="componentName(initialDiscussion)"
+                      :note="componentData(initialDiscussion)"
+                      @handleDeleteNote="deleteNoteHandler"
+                    >
+                      <slot
+                        slot="avatar-badge"
+                        name="avatar-badge"
+                      >
+                      </slot>
+                    </component>
+                    <toggle-replies-widget
+                      v-if="hasReplies"
+                      :collapsed="isRepliesCollapsed"
+                      :replies="replies"
+                      @toggle="toggleReplies"
+                    />
+                    <template v-if="!isRepliesCollapsed">
+                      <component
+                        :is="componentName(note)"
+                        v-for="note in replies"
+                        :key="note.id"
+                        :note="componentData(note)"
+                        @handleDeleteNote="deleteNoteHandler"
+                      />
+                    </template>
+                  </template>
+                  <template v-else>
+                    <component
+                      :is="componentName(note)"
+                      v-for="(note, index) in discussion.notes"
+                      :key="note.id"
+                      :note="componentData(note)"
+                      @handleDeleteNote="deleteNoteHandler"
+                    >
+                      <slot
+                        v-if="index === 0"
+                        slot="avatar-badge"
+                        name="avatar-badge"
+                      >
+                      </slot>
+                    </component>
+                  </template>
                 </ul>
                 <div
+                  v-if="!isRepliesCollapsed"
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder"
                 >
                   <template v-if="!isReplying && canReply">
-                    <div
-                      class="btn-group d-flex discussion-with-resolve-btn"
-                      role="group">
-                      <div
-                        class="btn-group w-100"
-                        role="group">
+                    <div class="discussion-with-resolve-btn">
+                      <button
+                        type="button"
+                        class="js-vue-discussion-reply btn btn-text-field mr-sm-2 qa-discussion-reply"
+                        title="Add a reply"
+                        @click="showReplyForm"
+                      >
+                        Reply...
+                      </button>
+                      <div v-if="discussion.resolvable">
                         <button
                           type="button"
-                          class="js-vue-discussion-reply btn btn-text-field mr-2"
-                          title="Add a reply"
-                          @click="showReplyForm">Reply...</button>
-                      </div>
-                      <div
-                        v-if="discussion.resolvable"
-                        class="btn-group"
-                        role="group">
-                        <button
-                          type="button"
-                          class="btn btn-default"
+                          class="btn btn-default mr-sm-2"
                           @click="resolveHandler()"
                         >
                           <i
@@ -392,7 +455,7 @@ Please check your network connection and try again.`;
                       </div>
                       <div
                         v-if="discussion.resolvable"
-                        class="btn-group discussion-actions"
+                        class="btn-group discussion-actions ml-sm-2"
                         role="group"
                       >
                         <div
@@ -407,7 +470,7 @@ Please check your network connection and try again.`;
                               btn-default discussion-create-issue-btn"
                             data-container="body"
                           >
-                            <span v-html="resolveDiscussionsSvg"></span>
+                            <icon name="issue-new" />
                           </a>
                         </div>
                         <div
@@ -421,7 +484,7 @@ Please check your network connection and try again.`;
                             data-container="body"
                             @click="jumpToNextDiscussion"
                           >
-                            <span v-html="nextDiscussionsSvg"></span>
+                            <icon name="comment-next" />
                           </button>
                         </div>
                       </div>

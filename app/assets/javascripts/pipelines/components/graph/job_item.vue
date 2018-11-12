@@ -2,6 +2,8 @@
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
+import { sprintf } from '~/locale';
+import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -36,6 +38,7 @@ export default {
   directives: {
     tooltip,
   },
+  mixins: [delayedJobMixin],
   props: {
     job: {
       type: Object,
@@ -52,6 +55,7 @@ export default {
       default: Infinity,
     },
   },
+
   computed: {
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -59,17 +63,23 @@ export default {
 
     tooltipText() {
       const textBuilder = [];
+      const { name: jobName } = this.job;
 
-      if (this.job.name) {
-        textBuilder.push(this.job.name);
+      if (jobName) {
+        textBuilder.push(jobName);
       }
 
-      if (this.job.name && this.status.tooltip) {
+      const { tooltip: statusTooltip } = this.status;
+      if (jobName && statusTooltip) {
         textBuilder.push('-');
       }
 
-      if (this.status.tooltip) {
-        textBuilder.push(this.job.status.tooltip);
+      if (statusTooltip) {
+        if (this.isDelayedJob) {
+          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
+        } else {
+          textBuilder.push(statusTooltip);
+        }
       }
 
       return textBuilder.join(' ');
@@ -88,6 +98,7 @@ export default {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
   },
+
   methods: {
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');

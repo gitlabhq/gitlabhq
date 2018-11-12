@@ -1,0 +1,117 @@
+# Generating chaos in a test GitLab instance
+
+As [Werner Vogels](https://twitter.com/Werner), the CTO at Amazon Web Services, famously put it, **Everything fails, all the time**.
+
+As a developer, it's as important to consider the failure modes in which your software will operate as much as normal operation. Doing so can mean the difference between a minor hiccup leading to a scattering of `500` errors experienced by a tiny fraction of users and a full site outage that affects all users for an extended period.
+
+To paraphrase [Tolstoy](https://en.wikipedia.org/wiki/Anna_Karenina_principle), _all happy servers are alike, but all failing servers are failing in their own way_. Luckily, there are ways we can attempt to simulate these failure modes, and the chaos endpoints are tools for assisting in this process.
+
+Currently, there are four endpoints for simulating the following conditions:
+
+- Slow requests.
+- CPU-bound requests.
+- Memory leaks.
+- Unexpected process crashes.
+
+## Enabling chaos endpoints
+
+For obvious reasons, these endpoints are not enabled by default. They can be enabled by setting the `GITLAB_ENABLE_CHAOS_ENDPOINTS` environment variable to `1`.
+
+For example, if you're using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) this can be done with the following command:
+
+```bash
+GITLAB_ENABLE_CHAOS_ENDPOINTS=1 gdk run
+```
+
+## Securing the chaos endpoints
+
+DANGER: **Danger:**
+It is highly recommended that you secure access to the chaos endpoints using a secret token. This is recommended when enabling these endpoints locally and essential when running in a staging or other shared environment. You should not enable them in production unless you absolutely know what you're doing.
+
+A secret token can be set through the `GITLAB_CHAOS_SECRET` environment variable. For example, when using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit) this can be done with the following command:
+
+```bash
+GITLAB_ENABLE_CHAOS_ENDPOINTS=1 GITLAB_CHAOS_SECRET=secret gdk run
+```
+
+Replace `secret` with your own secret token.
+
+## Invoking chaos
+
+Once you have enabled the chaos endpoints and restarted the application, you can start testing using the endpoints.
+
+## Memory leaks
+
+To simulate a memory leak in your application, use the `/-/chaos/leakmem` endpoint.
+
+NOTE: **Note:**
+The memory is not retained after the request finishes. Once the request has completed, the Ruby garbage collector will attempt to recover the memory.
+
+```
+GET /-/chaos/leakmem
+GET /-/chaos/leakmem?memory_mb=1024
+GET /-/chaos/leakmem?memory_mb=1024&duration_s=50
+```
+
+| Attribute    | Type    | Required | Description                                                                        |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------------------- |
+| `memory_mb`  | integer | no       | How much memory, in MB, should be leaked. Defaults to 100MB.                       |
+| `duration_s` | integer | no       | Minimum duration, in seconds, that the memory should be retained. Defaults to 30s. |
+
+```bash
+curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10 --header 'X-Chaos-Secret: secret'
+```
+
+## CPU spin
+
+This endpoint attempts to fully utilise a single core, at 100%, for the given period.
+
+Depending on your rack server setup, your request may timeout after a predermined period (normally 60 seconds).
+If you're using Unicorn, this is done by killing the worker process.
+
+```
+GET /-/chaos/cpuspin
+GET /-/chaos/cpuspin?duration_s=50
+```
+
+| Attribute    | Type    | Required | Description                                                           |
+| ------------ | ------- | -------- | --------------------------------------------------------------------- |
+| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilised. Defaults to 30s |
+
+```bash
+curl http://localhost:3000/-/chaos/cpuspin?duration_s=60 --header 'X-Chaos-Secret: secret'
+```
+
+## Sleep
+
+This endpoint is similar to the CPU Spin endpoint but simulates off-processor activity, such as network calls to backend services. It will sleep for a given duration.
+
+As with the CPU Spin endpoint, this may lead to your request timing out if duration exceeds the configured limit.
+
+```
+GET /-/chaos/sleep
+GET /-/chaos/sleep?duration_s=50
+```
+
+| Attribute    | Type    | Required | Description                                                            |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------- |
+| `duration_s` | integer | no       | Duration, in seconds, that the request will sleep for. Defaults to 30s |
+
+```bash
+curl http://localhost:3000/-/chaos/sleep?duration_s=60 --header 'X-Chaos-Secret: secret'
+```
+
+## Kill
+
+This endpoint will simulate the unexpected death of a worker process using a `kill` signal.
+
+NOTE: **Note:**
+Since this endpoint uses the `KILL` signal, the worker is not given a chance to cleanup or shutdown.
+
+```
+GET /-/chaos/kill
+```
+
+```bash
+curl http://localhost:3000/-/chaos/kill --header 'X-Chaos-Secret: secret'
+```

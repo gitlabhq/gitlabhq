@@ -4,6 +4,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import job from '../mock_data';
 
 describe('JobContainerItem', () => {
+  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const Component = Vue.extend(JobContainerItem);
   let vm;
 
@@ -68,6 +69,31 @@ describe('JobContainerItem', () => {
 
     it('displays an icon', () => {
       expect(vm.$el).toHaveSpriteIcon('retry');
+    });
+  });
+
+  describe('for delayed job', () => {
+    beforeEach(() => {
+      const remainingMilliseconds = 1337000;
+      spyOn(Date, 'now').and.callFake(
+        () => new Date(delayedJobFixture.scheduled_at).getTime() - remainingMilliseconds,
+      );
+    });
+
+    it('displays remaining time in tooltip', done => {
+      vm = mountComponent(Component, {
+        job: delayedJobFixture,
+        isActive: false,
+      });
+
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.querySelector('.js-job-link').getAttribute('data-original-title')).toEqual(
+            'delayed job - delayed manual action (00:22:17)',
+          );
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

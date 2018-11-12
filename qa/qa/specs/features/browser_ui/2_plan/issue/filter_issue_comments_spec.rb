@@ -9,7 +9,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Issue.fabricate! do |issue|
+        Resource::Issue.fabricate! do |issue|
           issue.title = issue_title
         end
 
@@ -27,6 +27,11 @@ module QA
 
           expect(show_page).to have_content("made the issue confidential")
           expect(show_page).to have_content("My own comment")
+
+          show_page.select_history_only_filter
+
+          expect(show_page).to have_content("made the issue confidential")
+          expect(show_page).not_to have_content("My own comment")
         end
       end
     end

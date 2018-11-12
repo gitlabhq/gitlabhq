@@ -59,6 +59,7 @@
       margin: 0;
       padding: 0;
       table-layout: fixed;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       .diff-line-num {
         width: 50px;
@@ -421,21 +422,13 @@
 
   .diff-file-container {
     .frame.deleted {
-      border: 0;
+      border: 1px solid $deleted;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $deleted;
-      }
     }
 
     .frame.added {
-      border: 0;
+      border: 1px solid $added;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $added;
-      }
     }
 
     .swipe.view,
@@ -480,6 +473,11 @@
     .onion-skin.view .controls {
       bottom: -25px;
     }
+  }
+
+  .discussion-notes .discussion-notes {
+    margin-left: 0;
+    border-left: 0;
   }
 }
 
@@ -804,7 +802,7 @@
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
-  .discussion-notes + .discussion-form::before {
+  .diff-file-discussions + .discussion-form::before {
     content: '';
     position: relative;
     display: block;
@@ -844,6 +842,13 @@
     background-repeat: repeat;
   }
 
+  .diff-file-discussions + .discussion-form::before {
+    width: auto;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: 16px;
+  }
+
   .notes {
     position: relative;
   }
@@ -855,7 +860,7 @@
 }
 
 .diff-file .note-container > .new-note,
-.note-container .discussion-notes {
+.note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }
@@ -870,11 +875,13 @@
   }
 }
 
-.files:not([data-can-create-note]) .frame {
+.files:not([data-can-create-note="true"]) .frame {
   cursor: auto;
 }
 
-.frame.click-to-comment {
+.frame,
+.frame.click-to-comment,
+.btn-transparent.image-diff-overlay-add-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
       $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
@@ -910,6 +917,7 @@
 
 .frame .badge.badge-pill,
 .image-diff-avatar-link .badge.badge-pill,
+.user-avatar-link .badge.badge-pill,
 .notes > .badge.badge-pill {
   position: absolute;
   background-color: $blue-400;
@@ -944,7 +952,8 @@
   }
 }
 
-.image-diff-avatar-link {
+.image-diff-avatar-link,
+.user-avatar-link {
   position: relative;
 
   .badge.badge-pill,
@@ -1071,5 +1080,16 @@
 .tree-list-view-toggle {
   svg {
     top: 0;
+  }
+}
+
+.image-diff-overlay,
+.image-diff-overlay-add-comment {
+  top: 0;
+  left: 0;
+
+  &:active,
+  &:focus {
+    outline: 0;
   }
 }

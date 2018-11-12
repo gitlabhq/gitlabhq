@@ -4,22 +4,27 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files, :chart, :version, :repository
+        attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
 
-        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil)
+        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, preinstall: nil, postinstall: nil)
           @name = name
           @chart = chart
           @version = version
           @rbac = rbac
           @files = files
           @repository = repository
+          @preinstall = preinstall
+          @postinstall = postinstall
         end
 
         def generate_script
           super + [
             init_command,
             repository_command,
-            script_command
+            repository_update_command,
+            preinstall_command,
+            install_command,
+            postinstall_command
           ].compact.join("\n")
         end
 
@@ -30,17 +35,29 @@ module Gitlab
         private
 
         def init_command
-          'helm init --client-only >/dev/null'
+          'helm init --client-only'
         end
 
         def repository_command
           ['helm', 'repo', 'add', name, repository].shelljoin if repository
         end
 
-        def script_command
+        def repository_update_command
+          'helm repo update' if repository
+        end
+
+        def install_command
           command = ['helm', 'install', chart] + install_command_flags
 
-          command.shelljoin + " >/dev/null\n"
+          command.shelljoin
+        end
+
+        def preinstall_command
+          preinstall.join("\n") if preinstall
+        end
+
+        def postinstall_command
+          postinstall.join("\n") if postinstall
         end
 
         def install_command_flags

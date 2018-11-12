@@ -22,6 +22,7 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockData.pipeline,
           ciStatus: 'success',
           hasCi: true,
+          troubleshootingDocsPath: 'help',
         });
 
         expect(vm.hasPipeline).toEqual(true);
@@ -30,6 +31,7 @@ describe('MRWidgetPipeline', () => {
       it('should return false when there is no pipeline', () => {
         vm = mountComponent(Component, {
           pipeline: {},
+          troubleshootingDocsPath: 'help',
         });
 
         expect(vm.hasPipeline).toEqual(false);
@@ -42,6 +44,7 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockData.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
         });
 
         expect(vm.hasCIError).toEqual(false);
@@ -52,6 +55,7 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockData.pipeline,
           hasCi: true,
           ciStatus: null,
+          troubleshootingDocsPath: 'help',
         });
 
         expect(vm.hasCIError).toEqual(true);
@@ -65,11 +69,12 @@ describe('MRWidgetPipeline', () => {
         pipeline: mockData.pipeline,
         hasCi: true,
         ciStatus: null,
+        troubleshootingDocsPath: 'help',
       });
 
-      expect(
-        vm.$el.querySelector('.media-body').textContent.trim(),
-      ).toEqual('Could not connect to the CI server. Please check your settings and try again');
+      expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
+        'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.',
+      );
     });
 
     describe('with a pipeline', () => {
@@ -78,38 +83,41 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockData.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
         });
       });
 
       it('should render pipeline ID', () => {
-        expect(
-          vm.$el.querySelector('.pipeline-id').textContent.trim(),
-        ).toEqual(`#${mockData.pipeline.id}`);
+        expect(vm.$el.querySelector('.pipeline-id').textContent.trim()).toEqual(
+          `#${mockData.pipeline.id}`,
+        );
       });
 
       it('should render pipeline status and commit id', () => {
-        expect(
-          vm.$el.querySelector('.media-body').textContent.trim(),
-        ).toContain(mockData.pipeline.details.status.label);
+        expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
+          mockData.pipeline.details.status.label,
+        );
 
-        expect(
-          vm.$el.querySelector('.js-commit-link').textContent.trim(),
-        ).toEqual(mockData.pipeline.commit.short_id);
+        expect(vm.$el.querySelector('.js-commit-link').textContent.trim()).toEqual(
+          mockData.pipeline.commit.short_id,
+        );
 
-        expect(
-          vm.$el.querySelector('.js-commit-link').getAttribute('href'),
-        ).toEqual(mockData.pipeline.commit.commit_path);
+        expect(vm.$el.querySelector('.js-commit-link').getAttribute('href')).toEqual(
+          mockData.pipeline.commit.commit_path,
+        );
       });
 
       it('should render pipeline graph', () => {
         expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(mockData.pipeline.details.stages.length);
+        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(
+          mockData.pipeline.details.stages.length,
+        );
       });
 
       it('should render coverage information', () => {
-        expect(
-          vm.$el.querySelector('.media-body').textContent,
-        ).toContain(`Coverage ${mockData.pipeline.coverage}`);
+        expect(vm.$el.querySelector('.media-body').textContent).toContain(
+          `Coverage ${mockData.pipeline.coverage}`,
+        );
       });
     });
 
@@ -122,34 +130,35 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockCopy.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
         });
       });
 
       it('should render pipeline ID', () => {
-        expect(
-          vm.$el.querySelector('.pipeline-id').textContent.trim(),
-        ).toEqual(`#${mockData.pipeline.id}`);
+        expect(vm.$el.querySelector('.pipeline-id').textContent.trim()).toEqual(
+          `#${mockData.pipeline.id}`,
+        );
       });
 
       it('should render pipeline status', () => {
-        expect(
-          vm.$el.querySelector('.media-body').textContent.trim(),
-        ).toContain(mockData.pipeline.details.status.label);
+        expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
+          mockData.pipeline.details.status.label,
+        );
 
-        expect(
-          vm.$el.querySelector('.js-commit-link'),
-        ).toBeNull();
+        expect(vm.$el.querySelector('.js-commit-link')).toBeNull();
       });
 
       it('should render pipeline graph', () => {
         expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
-        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(mockData.pipeline.details.stages.length);
+        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(
+          mockData.pipeline.details.stages.length,
+        );
       });
 
       it('should render coverage information', () => {
-        expect(
-          vm.$el.querySelector('.media-body').textContent,
-        ).toContain(`Coverage ${mockData.pipeline.coverage}`);
+        expect(vm.$el.querySelector('.media-body').textContent).toContain(
+          `Coverage ${mockData.pipeline.coverage}`,
+        );
       });
     });
 
@@ -162,11 +171,10 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockCopy.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
         });
 
-        expect(
-          vm.$el.querySelector('.media-body').textContent,
-        ).not.toContain('Coverage');
+        expect(vm.$el.querySelector('.media-body').textContent).not.toContain('Coverage');
       });
     });
 
@@ -179,6 +187,7 @@ describe('MRWidgetPipeline', () => {
           pipeline: mockCopy.pipeline,
           hasCi: true,
           ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
         });
 
         expect(vm.$el.querySelector('.js-mini-pipeline-graph')).toEqual(null);

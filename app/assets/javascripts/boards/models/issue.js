@@ -9,7 +9,7 @@ import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
 
 class ListIssue {
-  constructor (obj, defaultAvatar) {
+  constructor(obj, defaultAvatar) {
     this.id = obj.id;
     this.iid = obj.iid;
     this.title = obj.title;
@@ -30,6 +30,8 @@ class ListIssue {
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
+    this.timeEstimate = obj.time_estimate;
+    this.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);
@@ -39,54 +41,54 @@ class ListIssue {
       this.milestone = new ListMilestone(obj.milestone);
     }
 
-    obj.labels.forEach((label) => {
+    obj.labels.forEach(label => {
       this.labels.push(new ListLabel(label));
     });
 
     this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
   }
 
-  addLabel (label) {
+  addLabel(label) {
     if (!this.findLabel(label)) {
       this.labels.push(new ListLabel(label));
     }
   }
 
-  findLabel (findLabel) {
+  findLabel(findLabel) {
     return this.labels.filter(label => label.title === findLabel.title)[0];
   }
 
-  removeLabel (removeLabel) {
+  removeLabel(removeLabel) {
     if (removeLabel) {
       this.labels = this.labels.filter(label => removeLabel.title !== label.title);
     }
   }
 
-  removeLabels (labels) {
+  removeLabels(labels) {
     labels.forEach(this.removeLabel.bind(this));
   }
 
-  addAssignee (assignee) {
+  addAssignee(assignee) {
     if (!this.findAssignee(assignee)) {
       this.assignees.push(new ListAssignee(assignee));
     }
   }
 
-  findAssignee (findAssignee) {
+  findAssignee(findAssignee) {
     return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
   }
 
-  removeAssignee (removeAssignee) {
+  removeAssignee(removeAssignee) {
     if (removeAssignee) {
       this.assignees = this.assignees.filter(assignee => assignee.id !== removeAssignee.id);
     }
   }
 
-  removeAllAssignees () {
+  removeAllAssignees() {
     this.assignees = [];
   }
 
-  getLists () {
+  getLists() {
     return boardsStore.state.lists.filter(list => list.findIssue(this.id));
   }
 
@@ -102,14 +104,14 @@ class ListIssue {
     this.isLoading[key] = value;
   }
 
-  update () {
+  update() {
     const data = {
       issue: {
         milestone_id: this.milestone ? this.milestone.id : null,
         due_date: this.dueDate,
-        assignee_ids: this.assignees.length > 0 ? this.assignees.map((u) => u.id) : [0],
-        label_ids: this.labels.map((label) => label.id)
-      }
+        assignee_ids: this.assignees.length > 0 ? this.assignees.map(u => u.id) : [0],
+        label_ids: this.labels.map(label => label.id),
+      },
     };
 
     if (!data.issue.label_ids.length) {

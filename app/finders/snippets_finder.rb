@@ -1,140 +1,149 @@
 # frozen_string_literal: true
 
-# Snippets Finder
+# Finder for retrieving snippets that a user can see, optionally scoped to a
+# project or snippets author.
 #
-# Used to filter Snippets collections by a set of params
+# Basic usage:
 #
-# Arguments.
+#     user = User.find(1)
 #
-# current_user - The current user, nil also can be used.
-# params:
-#   visibility (integer) - Individual snippet visibility: Public(20), internal(10) or private(0).
-#   project (Project) - Project related.
-#   author (User) - Author related.
+#     SnippetsFinder.new(user).execute
 #
-# params are optional
+# To limit the snippets to a specific project, supply the `project:` option:
+#
+#     user = User.find(1)
+#     project = Project.find(1)
+#
+#     SnippetsFinder.new(user, project: project).execute
+#
+# Limiting snippets to an author can be done by supplying the `author:` option:
+#
+#     user = User.find(1)
+#     project = Project.find(1)
+#
+#     SnippetsFinder.new(user, author: user).execute
+#
+# To filter snippets using a specific visibility level, you can provide the
+# `scope:` option:
+#
+#     user = User.find(1)
+#     project = Project.find(1)
+#
+#     SnippetsFinder.new(user, author: user, scope: :are_public).execute
+#
+# Valid `scope:` values are:
+#
+# * `:are_private`
+# * `:are_internal`
+# * `:are_public`
+#
+# Any other value will be ignored.
 class SnippetsFinder < UnionFinder
-  include Gitlab::Allowable
   include FinderMethods
 
-  attr_accessor :current_user, :project, :params
+  attr_accessor :current_user, :project, :author, :scope
 
-  def initialize(current_user, params = {})
+  def initialize(current_user = nil, params = {})
     @current_user = current_user
-    @params = params
     @project = params[:project]
+    @author = params[:author]
+    @scope = params[:scope].to_s
+
+    if project && author
+      raise(
+        ArgumentError,
+        'Filtering by both an author and a project is not supported, ' \
+          'as this finder is not optimised for this use case'
+      )
+    end
   end
 
   def execute
-    items = init_collection
-    items = by_author(items)
-    items = by_visibility(items)
-
-    items.fresh
-  end
-
-  private
-
-  def init_collection
-    if project.present?
-      authorized_snippets_from_project
-    else
-      authorized_snippets
-    end
-  end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def authorized_snippets_from_project
-    if can?(current_user, :read_project_snippet, project)
-      if project.team.member?(current_user)
-        project.snippets
+    base =
+      if project
+        snippets_for_a_single_project
       else
-        project.snippets.public_to_user(current_user)
+        snippets_for_multiple_projects
       end
+
+    base.with_optional_visibility(visibility_from_scope).fresh
+  end
+
+  # Produces a query that retrieves snippets from multiple projects.
+  #
+  # The resulting query will, depending on the user's permissions, include the
+  # following collections of snippets:
+  #
+  # 1. Snippets that don't belong to any project.
+  # 2. Snippets of projects that are visible to the current user (e.g. snippets
+  #    in public projects).
+  # 3. Snippets of projects that the current user is a member of.
+  #
+  # Each collection is constructed in isolation, allowing for greater control
+  # over the resulting SQL query.
+  def snippets_for_multiple_projects
+    queries = [global_snippets]
+
+    if Ability.allowed?(current_user, :read_cross_project)
+      queries << snippets_of_visible_projects
+      queries << snippets_of_authorized_projects if current_user
+    end
+
+    find_union(queries, Snippet)
+  end
+
+  def snippets_for_a_single_project
+    Snippet.for_project_with_user(project, current_user)
+  end
+
+  def global_snippets
+    snippets_for_author_or_visible_to_user.only_global_snippets
+  end
+
+  # Returns the snippets that the current user (logged in or not) can view.
+  def snippets_of_visible_projects
+    snippets_for_author_or_visible_to_user
+      .only_include_projects_visible_to(current_user)
+      .only_include_projects_with_snippets_enabled
+  end
+
+  # Returns the snippets that the currently logged in user has access to by
+  # being a member of the project the snippets belong to.
+  #
+  # This method requires that `current_user` returns a `User` instead of `nil`,
+  # and is optimised for this specific scenario.
+  def snippets_of_authorized_projects
+    base = author ? snippets_for_author : Snippet.all
+
+    base
+      .only_include_projects_with_snippets_enabled(include_private: true)
+      .only_include_authorized_projects(current_user)
+  end
+
+  def snippets_for_author_or_visible_to_user
+    if author
+      snippets_for_author
+    elsif current_user
+      Snippet.visible_to_or_authored_by(current_user)
     else
-      Snippet.none
+      Snippet.public_to_user
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def authorized_snippets
-    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
-    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
-    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
-    Snippet.where("#{feature_available_projects} OR #{not_project_related}")
-      .public_or_visible_to_user(current_user)
+  def snippets_for_author
+    base = author.snippets
+
+    if author == current_user
+      # If the current user is also the author of all snippets, then we can
+      # include private snippets.
+      base
+    else
+      base.public_to_user(current_user)
+    end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # Returns a collection of projects that is either public or visible to the
-  # logged in user.
-  #
-  # A caller must pass in a block to modify individual parts of
-  # the query, e.g. to apply .with_feature_available_for_user on top of it.
-  # This is useful for performance as we can stick those additional filters
-  # at the bottom of e.g. the UNION.
-  # rubocop: disable CodeReuse/ActiveRecord
-  def projects_for_user
-    return yield(Project.public_to_user) unless current_user
-
-    # If the current_user is allowed to see all projects,
-    # we can shortcut and just return.
-    return yield(Project.all) if current_user.full_private_access?
-
-    authorized_projects = yield(Project.where('EXISTS (?)', current_user.authorizations_for_projects))
-
-    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
-    visible_projects = yield(Project.where(visibility_level: levels))
-
-    # We use a UNION here instead of OR clauses since this results in better
-    # performance.
-    Project.from_union([authorized_projects, visible_projects])
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  def feature_available_projects
-    # Don't return any project related snippets if the user cannot read cross project
-    return table[:id].eq(nil).to_sql unless Ability.allowed?(current_user, :read_cross_project)
-
-    projects = projects_for_user do |part|
-      part.with_feature_available_for_user(:snippets, current_user)
-    end.select(:id)
-
-    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
-    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
-    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
-    "snippets.project_id IN (#{projects.to_sql})"
-  end
-
-  def not_project_related
-    table[:project_id].eq(nil).to_sql
-  end
-
-  def table
-    Snippet.arel_table
-  end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_visibility(items)
-    visibility = params[:visibility] || visibility_from_scope
-
-    return items unless visibility
-
-    items.where(visibility_level: visibility)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_author(items)
-    return items unless params[:author]
-
-    items.where(author_id: params[:author].id)
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def visibility_from_scope
-    case params[:scope].to_s
+    case scope
     when 'are_private'
       Snippet::PRIVATE
     when 'are_internal'

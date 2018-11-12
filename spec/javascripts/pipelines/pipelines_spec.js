@@ -372,7 +372,7 @@ describe('Pipelines', () => {
     });
   });
 
-  describe('successfull request', () => {
+  describe('successful request', () => {
     describe('with pipelines', () => {
       beforeEach(() => {
         mock.onGet('twitter/flight/pipelines.json').reply(200, pipelines);
@@ -667,7 +667,7 @@ describe('Pipelines', () => {
         });
       });
 
-      it('returns false when state is emtpy state', done => {
+      it('returns false when state is empty state', done => {
         vm.isLoading = false;
         vm.hasMadeRequest = true;
         vm.hasGitlabCi = false;

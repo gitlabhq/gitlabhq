@@ -15,11 +15,6 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
@@ -120,7 +115,6 @@ export default {
           key="onionOldImg"
           :render-info="false"
           :path="oldPath"
-          :project-path="projectPath"
           @imgLoaded="onionOldImgLoaded"
         />
       </div>
@@ -136,9 +130,14 @@ export default {
           key="onionNewImg"
           :render-info="false"
           :path="newPath"
-          :project-path="projectPath"
           @imgLoaded="onionNewImgLoaded"
-        />
+        >
+          <slot
+            slot="image-overlay"
+            name="image-overlay"
+          >
+          </slot>
+        </image-viewer>
       </div>
       <div class="controls">
         <div class="transparent"></div>

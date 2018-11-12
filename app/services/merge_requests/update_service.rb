@@ -58,6 +58,8 @@ module MergeRequests
         merge_request.mark_as_unchecked
       end
 
+      handle_milestone_change(merge_request)
+
       added_labels = merge_request.labels - old_labels
       if added_labels.present?
         notification_service.async.relabeled_merge_request(
@@ -104,6 +106,18 @@ module MergeRequests
     end
 
     private
+
+    def handle_milestone_change(merge_request)
+      return if skip_milestone_email
+
+      return unless merge_request.previous_changes.include?('milestone_id')
+
+      if merge_request.milestone.nil?
+        notification_service.async.removed_milestone_merge_request(merge_request, current_user)
+      else
+        notification_service.async.changed_milestone_merge_request(merge_request, merge_request.milestone, current_user)
+      end
+    end
 
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
       SystemNoteService.change_branch(

@@ -1,13 +1,14 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
-import emojiSmile from 'icons/_emoji_smile.svg';
-import emojiSmiley from 'icons/_emoji_smiley.svg';
+import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import { glEmojiTag } from '../../emoji';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
+  components: {
+    Icon,
+  },
   directives: {
     tooltip,
   },
@@ -72,11 +73,6 @@ export default {
       return this.noteAuthorId === this.getUserData.id;
     },
   },
-  created() {
-    this.emojiSmiling = emojiSmiling;
-    this.emojiSmile = emojiSmile;
-    this.emojiSmiley = emojiSmiley;
-  },
   methods: {
     ...mapActions(['toggleAwardRequest']),
     getAwardHTML(name) {
@@ -110,7 +106,7 @@ export default {
       // Get the remaining list to use in `and x more` text.
       const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
 
-      // Add myself to the begining of the list so title will start with You.
+      // Add myself to the beginning of the list so title will start with You.
       if (hasReactionByCurrentUser) {
         namesToShow.unshift('You');
       }
@@ -196,17 +192,14 @@ export default {
           data-boundary="viewport"
           data-placement="bottom"
           type="button">
-          <span
-            class="award-control-icon award-control-icon-neutral"
-            v-html="emojiSmiling">
+          <span class="award-control-icon award-control-icon-neutral">
+            <icon name="emoji_slightly_smiling_face" />
           </span>
-          <span
-            class="award-control-icon award-control-icon-positive"
-            v-html="emojiSmiley">
+          <span class="award-control-icon award-control-icon-positive">
+            <icon name="emoji_smiley" />
           </span>
-          <span
-            class="award-control-icon award-control-icon-super-positive"
-            v-html="emojiSmile">
+          <span class="award-control-icon award-control-icon-super-positive">
+            <icon name="emoji_smiley" />
           </span>
           <i
             aria-hidden="true"

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SendFileUpload
-  def send_upload(file_upload, send_params: {}, redirect_params: {}, attachment: nil, disposition: 'attachment')
+  def send_upload(file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false, disposition: 'attachment')
     if attachment
       # Response-Content-Type will not override an existing Content-Type in
       # Google Cloud Storage, so the metadata needs to be cleared on GCS for
@@ -17,7 +17,7 @@ module SendFileUpload
 
     if file_upload.file_storage?
       send_file file_upload.path, send_params
-    elsif file_upload.class.proxy_download_enabled?
+    elsif file_upload.class.proxy_download_enabled? || proxy
       headers.store(*Gitlab::Workhorse.send_url(file_upload.url(**redirect_params)))
       head :ok
     else

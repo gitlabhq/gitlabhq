@@ -199,11 +199,11 @@ describe('datefix', () => {
       expect(datetimeUtility.pad(2)).toEqual('02');
     });
 
-    it('should not add a zero when lenght matches the default', () => {
+    it('should not add a zero when length matches the default', () => {
       expect(datetimeUtility.pad(12)).toEqual('12');
     });
 
-    it('should add a 0 when lenght is smaller than the provided', () => {
+    it('should add a 0 when length is smaller than the provided', () => {
       expect(datetimeUtility.pad(12, 3)).toEqual('012');
     });
   });
@@ -335,6 +335,12 @@ describe('prettyTime methods', () => {
       const timeString = datetimeUtility.stringifyTime(timeObject);
 
       expect(timeString).toBe('0m');
+    });
+
+    it('should return non-condensed representation of time object', () => {
+      const timeObject = { weeks: 1, days: 0, hours: 1, minutes: 0 };
+
+      expect(datetimeUtility.stringifyTime(timeObject, true)).toEqual('1 week 1 hour');
     });
   });
 

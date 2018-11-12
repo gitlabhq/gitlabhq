@@ -9,12 +9,12 @@ class IssueTrackerService < Service
   # Override this method on services that uses different patterns
   # This pattern does not support cross-project references
   # The other code assumes that this pattern is a superset of all
-  # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
+  # overridden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
   def self.reference_pattern(only_long: false)
     if only_long
-      /(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-)(?<issue>\d+)/
     else
-      /(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)/
+      /(\b[A-Z][A-Z0-9_]*-|#{Issue.reference_prefix})(?<issue>\d+)/
     end
   end
 

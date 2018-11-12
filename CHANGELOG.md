@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.5 (2018-11-04)
+
+### Fixed (4 changes, 1 of them is from the community)
+
+- fix link to enable usage ping from convdev index. !22545 (Anand Capur)
+- Update gitlab-ui dependency to 1.8.0-hotfix.1 to fix IE11 bug.
+- Remove duplicate escape in job sidebar.
+- Fixed merge request fill tree toggling not respecting fluid width preference.
+
+### Other (1 change)
+
+- Fix stage dropdown not rendering in different languages.
+
+
+## 11.4.4 (2018-10-30)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
+
+
 ## 11.4.3 (2018-10-26)
 
 - No changes.
@@ -248,6 +269,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.9 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
 
 
 ## 11.3.8 (2018-10-27)
@@ -553,6 +581,13 @@ entry.
 - Creates vue component for commit block in job log page.
 - Creates vue components for stage dropdowns and job list container for job log view.
 - Creates Vue component for artifacts block on job page.
+
+
+## 11.2.8 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
 
 
 ## 11.2.7 (2018-10-27)

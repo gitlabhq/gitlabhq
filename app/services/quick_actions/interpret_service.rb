@@ -23,13 +23,13 @@ module QuickActions
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
-    def execute(content, issuable)
+    def execute(content, issuable, only: nil)
       return [content, {}] unless current_user.can?(:use_quick_actions)
 
       @issuable = issuable
       @updates = {}
 
-      content, commands = extractor.extract_commands(content)
+      content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
       [content, @updates]
@@ -433,14 +433,14 @@ module QuickActions
       end
     end
 
-    desc 'Add or substract spent time'
+    desc 'Add or subtract spent time'
     explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
           value = time_spent
         else
-          verb = 'Substracts'
+          verb = 'Subtracts'
           value = -time_spent
         end
 

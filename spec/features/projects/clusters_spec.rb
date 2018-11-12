@@ -35,37 +35,6 @@ describe 'Clusters', :js do
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
     end
 
-    context 'inline update of cluster' do
-      it 'user can update cluster' do
-        expect(page).to have_selector('.js-project-feature-toggle')
-      end
-
-      context 'with sucessfull request' do
-        it 'user sees updated cluster' do
-          expect do
-            page.find('.js-project-feature-toggle').click
-            wait_for_requests
-          end.to change { cluster.reload.enabled }
-
-          expect(page).not_to have_selector('.is-checked')
-          expect(cluster.reload).not_to be_enabled
-        end
-      end
-
-      context 'with failed request' do
-        it 'user sees not update cluster and error message' do
-          expect_any_instance_of(Clusters::UpdateService).to receive(:execute).and_call_original
-          allow_any_instance_of(Clusters::Cluster).to receive(:valid?) { false }
-
-          page.find('.js-project-feature-toggle').click
-
-          expect(page).to have_content('Something went wrong on our end.')
-          expect(page).to have_selector('.is-checked')
-          expect(cluster.reload).to be_enabled
-        end
-      end
-    end
-
     context 'when user clicks on a cluster' do
       before do
         click_link cluster.name

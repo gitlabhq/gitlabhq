@@ -1,164 +1,188 @@
 <script>
-  import _ from 'underscore';
-  import { mapGetters, mapState, mapActions } from 'vuex';
-  import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
-  import bp from '~/breakpoints';
-  import CiHeader from '~/vue_shared/components/header_ci_component.vue';
-  import Callout from '~/vue_shared/components/callout.vue';
-  import createStore from '../store';
-  import EmptyState from './empty_state.vue';
-  import EnvironmentsBlock from './environments_block.vue';
-  import ErasedBlock from './erased_block.vue';
-  import Log from './job_log.vue';
-  import LogTopBar from './job_log_controllers.vue';
-  import StuckBlock from './stuck_block.vue';
-  import Sidebar from './sidebar.vue';
+import _ from 'underscore';
+import { mapGetters, mapState, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+import { polyfillSticky } from '~/lib/utils/sticky';
+import bp from '~/breakpoints';
+import CiHeader from '~/vue_shared/components/header_ci_component.vue';
+import Callout from '~/vue_shared/components/callout.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import createStore from '../store';
+import EmptyState from './empty_state.vue';
+import EnvironmentsBlock from './environments_block.vue';
+import ErasedBlock from './erased_block.vue';
+import Log from './job_log.vue';
+import LogTopBar from './job_log_controllers.vue';
+import StuckBlock from './stuck_block.vue';
+import Sidebar from './sidebar.vue';
+import { sprintf } from '~/locale';
+import delayedJobMixin from '../mixins/delayed_job_mixin';
 
-  export default {
-    name: 'JobPageApp',
-    store: createStore(),
-    components: {
-      CiHeader,
-      Callout,
-      EmptyState,
-      EnvironmentsBlock,
-      ErasedBlock,
-      Log,
-      LogTopBar,
-      StuckBlock,
-      Sidebar,
+export default {
+  name: 'JobPageApp',
+  store: createStore(),
+  components: {
+    CiHeader,
+    Callout,
+    EmptyState,
+    EnvironmentsBlock,
+    ErasedBlock,
+    Icon,
+    Log,
+    LogTopBar,
+    StuckBlock,
+    Sidebar,
+    GlLoadingIcon,
+  },
+  mixins: [delayedJobMixin],
+  props: {
+    runnerSettingsUrl: {
+      type: String,
+      required: false,
+      default: null,
     },
-    props: {
-      runnerSettingsUrl: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      runnerHelpUrl: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      endpoint: {
-        type: String,
-        required: true,
-      },
-      terminalPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-      pagePath: {
-        type: String,
-        required: true,
-      },
-      logState: {
-        type: String,
-        required: true,
-      },
+    runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: null,
     },
-    computed: {
-      ...mapState([
-        'isLoading',
-        'job',
-        'isSidebarOpen',
-        'trace',
-        'isTraceComplete',
-        'traceSize',
-        'isTraceSizeVisible',
-        'isScrollBottomDisabled',
-        'isScrollTopDisabled',
-        'isScrolledToBottomBeforeReceivingTrace',
-        'hasError',
-      ]),
-      ...mapGetters([
-        'headerActions',
-        'headerTime',
-        'shouldRenderCalloutMessage',
-        'shouldRenderTriggeredLabel',
-        'hasEnvironment',
-        'hasTrace',
-        'emptyStateIllustration',
-        'isScrollingDown',
-        'emptyStateAction',
-        'hasRunnersForProject',
-      ]),
+    endpoint: {
+      type: String,
+      required: true,
+    },
+    terminalPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    pagePath: {
+      type: String,
+      required: true,
+    },
+    logState: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapState([
+      'isLoading',
+      'job',
+      'isSidebarOpen',
+      'trace',
+      'isTraceComplete',
+      'traceSize',
+      'isTraceSizeVisible',
+      'isScrollBottomDisabled',
+      'isScrollTopDisabled',
+      'isScrolledToBottomBeforeReceivingTrace',
+      'hasError',
+    ]),
+    ...mapGetters([
+      'headerActions',
+      'headerTime',
+      'shouldRenderCalloutMessage',
+      'shouldRenderTriggeredLabel',
+      'hasEnvironment',
+      'hasTrace',
+      'emptyStateIllustration',
+      'isScrollingDown',
+      'emptyStateAction',
+      'hasRunnersForProject',
+    ]),
 
-      shouldRenderContent() {
-        return !this.isLoading && !this.hasError;
+    shouldRenderContent() {
+      return !this.isLoading && !this.hasError;
+    },
+
+    emptyStateTitle() {
+      const { emptyStateIllustration, remainingTime } = this;
+      const { title } = emptyStateIllustration;
+
+      if (this.isDelayedJob) {
+        return sprintf(title, { remainingTime });
+      }
+
+      return title;
+    },
+  },
+  watch: {
+    // Once the job log is loaded,
+    // fetch the stages for the dropdown on the sidebar
+    job(newVal, oldVal) {
+      if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
+        this.fetchStages();
+      }
+
+      if (newVal.archived) {
+        this.$nextTick(() => {
+          if (this.$refs.sticky) {
+            polyfillSticky(this.$refs.sticky);
+          }
+        });
       }
     },
-    watch: {
-      // Once the job log is loaded,
-      // fetch the stages for the dropdown on the sidebar
-      job(newVal, oldVal) {
-        if (_.isEmpty(oldVal) && !_.isEmpty(newVal.pipeline)) {
-          this.fetchStages();
-        }
-      },
-    },
-    created() {
-      this.throttled = _.throttle(this.toggleScrollButtons, 100);
+  },
+  created() {
+    this.throttled = _.throttle(this.toggleScrollButtons, 100);
 
-      this.setJobEndpoint(this.endpoint);
-      this.setTraceOptions({
-        logState: this.logState,
-        pagePath: this.pagePath,
-      });
+    this.setJobEndpoint(this.endpoint);
+    this.setTraceOptions({
+      logState: this.logState,
+      pagePath: this.pagePath,
+    });
 
-      this.fetchJob();
-      this.fetchTrace();
+    this.fetchJob();
+    this.fetchTrace();
 
-      window.addEventListener('resize', this.onResize);
-      window.addEventListener('scroll', this.updateScroll);
-    },
-
-    mounted() {
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('scroll', this.updateScroll);
+  },
+  mounted() {
+    this.updateSidebar();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('scroll', this.updateScroll);
+  },
+  methods: {
+    ...mapActions([
+      'setJobEndpoint',
+      'setTraceOptions',
+      'fetchJob',
+      'fetchStages',
+      'hideSidebar',
+      'showSidebar',
+      'toggleSidebar',
+      'fetchTrace',
+      'scrollBottom',
+      'scrollTop',
+      'toggleScrollButtons',
+      'toggleScrollAnimation',
+    ]),
+    onResize() {
       this.updateSidebar();
+      this.updateScroll();
     },
-
-    destroyed() {
-      window.removeEventListener('resize', this.onResize);
-      window.removeEventListener('scroll', this.updateScroll);
+    updateSidebar() {
+      if (bp.getBreakpointSize() === 'xs') {
+        this.hideSidebar();
+      } else if (!this.isSidebarOpen) {
+        this.showSidebar();
+      }
     },
+    updateScroll() {
+      if (!isScrolledToBottom()) {
+        this.toggleScrollAnimation(false);
+      } else if (this.isScrollingDown) {
+        this.toggleScrollAnimation(true);
+      }
 
-    methods: {
-      ...mapActions([
-        'setJobEndpoint',
-        'setTraceOptions',
-        'fetchJob',
-        'fetchStages',
-        'hideSidebar',
-        'showSidebar',
-        'toggleSidebar',
-        'fetchTrace',
-        'scrollBottom',
-        'scrollTop',
-        'toggleScrollButtons',
-        'toggleScrollAnimation',
-      ]),
-      onResize() {
-        this.updateSidebar();
-        this.updateScroll();
-      },
-      updateSidebar() {
-        if (bp.getBreakpointSize() === 'xs') {
-          this.hideSidebar();
-        } else if (!this.isSidebarOpen) {
-          this.showSidebar();
-        }
-      },
-      updateScroll() {
-        if (!isScrolledToBottom()) {
-          this.toggleScrollAnimation(false);
-        } else if (this.isScrollingDown) {
-          this.toggleScrollAnimation(true);
-        }
-
-        this.throttled();
-      },
+      this.throttled();
     },
-  };
+  },
+};
 </script>
 <template>
   <div>
@@ -216,14 +240,28 @@
           :erased-at="job.erased_at"
         />
 
+        <div
+          v-if="job.archived"
+          ref="sticky"
+          class="js-archived-job prepend-top-default archived-sticky sticky-top"
+        >
+          <icon
+            name="lock"
+            class="align-text-bottom"
+          />
+
+          {{ __('This job is archived. Only the complete pipeline can be retried.') }}
+        </div>
         <!--job log -->
         <div
           v-if="hasTrace"
-          class="build-trace-container prepend-top-default">
+          class="build-trace-container"
+        >
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,
-              'sidebar-collapsed': !isSidebarOpen
+              'sidebar-collapsed': !isSidebarOpen,
+              'has-archived-block': job.archived
             }"
             :erase-path="job.erase_path"
             :size="traceSize"
@@ -248,7 +286,7 @@
           class="js-job-empty-state"
           :illustration-path="emptyStateIllustration.image"
           :illustration-size-class="emptyStateIllustration.size"
-          :title="emptyStateIllustration.title"
+          :title="emptyStateTitle"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
         />

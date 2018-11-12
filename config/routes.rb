@@ -82,6 +82,30 @@ Rails.application.routes.draw do
 
     draw :operations
     draw :instance_statistics
+
+    if ENV['GITLAB_ENABLE_CHAOS_ENDPOINTS']
+      get '/chaos/leakmem' => 'chaos#leakmem'
+      get '/chaos/cpuspin' => 'chaos#cpuspin'
+      get '/chaos/sleep' => 'chaos#sleep'
+      get '/chaos/kill' => 'chaos#kill'
+    end
+  end
+
+  concern :clusterable do
+    resources :clusters, only: [:index, :new, :show, :update, :destroy] do
+      collection do
+        post :create_user
+        post :create_gcp
+      end
+
+      member do
+        scope :applications do
+          post '/:application', to: 'clusters/applications#create', as: :install_applications
+        end
+
+        get :cluster_status, format: :json
+      end
+    end
   end
 
   draw :api

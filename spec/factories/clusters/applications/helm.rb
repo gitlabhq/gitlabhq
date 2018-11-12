@@ -57,6 +57,11 @@ FactoryBot.define do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 
+    factory :clusters_applications_knative, class: Clusters::Applications::Knative do
+      hostname 'example.com'
+      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+    end
+
     factory :clusters_applications_jupyter, class: Clusters::Applications::Jupyter do
       oauth_application factory: :oauth_application
       cluster factory: %i(cluster with_installed_helm provided_by_gcp project)

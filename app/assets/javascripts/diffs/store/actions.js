@@ -50,8 +50,8 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { fileHash, line_code } = removeDiscussion;
-  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code });
+  const { fileHash, line_code, id } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code, id });
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
@@ -189,6 +189,7 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
+    .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.fileHash))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 
@@ -208,6 +209,20 @@ export const scrollToFile = ({ state, commit }, path) => {
 export const toggleShowTreeList = ({ commit, state }) => {
   commit(types.TOGGLE_SHOW_TREE_LIST);
   localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+};
+
+export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
+  const form = getters.getCommentFormForDiffFile(formData.fileHash);
+
+  if (form) {
+    commit(types.UPDATE_DIFF_FILE_COMMENT_FORM, formData);
+  } else {
+    commit(types.OPEN_DIFF_FILE_COMMENT_FORM, formData);
+  }
+};
+
+export const closeDiffFileCommentForm = ({ commit }, fileHash) => {
+  commit(types.CLOSE_DIFF_FILE_COMMENT_FORM, fileHash);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

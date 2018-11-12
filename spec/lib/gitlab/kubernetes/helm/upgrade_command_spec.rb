@@ -21,8 +21,8 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
   it_behaves_like 'helm commands' do
     let(:commands) do
       <<~EOS
-         helm init --client-only >/dev/null
-         helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm init --client-only
+         helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
       EOS
     end
   end
@@ -33,8 +33,8 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --client-only >/dev/null
-         helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm init --client-only
+         helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
         EOS
       end
     end
@@ -56,9 +56,9 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-           helm init --client-only >/dev/null
+           helm init --client-only
            helm repo add #{application.name} #{application.repository}
-           helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+           helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
         EOS
       end
     end
@@ -70,8 +70,8 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --client-only >/dev/null
-         helm upgrade #{application.name} #{application.chart} --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm init --client-only
+         helm upgrade #{application.name} #{application.chart} --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
         EOS
       end
     end

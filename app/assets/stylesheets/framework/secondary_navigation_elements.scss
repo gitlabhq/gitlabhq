@@ -1,6 +1,6 @@
 // For tabbed navigation links, scrolling tabs, etc. For all top/main navigation,
 // please check nav.scss
-.nav-links {
+.nav-links:not(.quick-links) {
   display: flex;
   padding: 0;
   margin: 0;
@@ -106,7 +106,7 @@
     display: inline-block;
     float: right;
     text-align: right;
-    padding: 11px 0;
+    padding: $gl-padding-8 0;
     margin-bottom: 0;
 
     > .btn,

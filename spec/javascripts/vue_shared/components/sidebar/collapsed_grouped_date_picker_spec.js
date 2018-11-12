@@ -12,7 +12,7 @@ describe('collapsedGroupedDatePicker', () => {
   });
 
   describe('toggleCollapse events', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       spyOn(vm, 'toggleSidebar');
       vm.minDate = new Date('07/17/2016');
       Vue.nextTick(done);
@@ -26,7 +26,7 @@ describe('collapsedGroupedDatePicker', () => {
   });
 
   describe('minDate and maxDate', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.minDate = new Date('07/17/2016');
       vm.maxDate = new Date('07/17/2017');
       Vue.nextTick(done);
@@ -42,7 +42,7 @@ describe('collapsedGroupedDatePicker', () => {
   });
 
   describe('minDate', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.minDate = new Date('07/17/2016');
       Vue.nextTick(done);
     });
@@ -56,7 +56,7 @@ describe('collapsedGroupedDatePicker', () => {
   });
 
   describe('maxDate', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.maxDate = new Date('07/17/2017');
       Vue.nextTick(done);
     });

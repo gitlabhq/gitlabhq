@@ -153,7 +153,7 @@ describe 'Contributions Calendar', :js do
         include_context 'visit user page'
 
         it 'displays calendar activity log' do
-          expect(find('.tab-pane#activity .content_list .event-note')).to have_content issue_title
+          expect(find('.tab-pane#activity .content_list .event-target-title')).to have_content issue_title
         end
       end
     end

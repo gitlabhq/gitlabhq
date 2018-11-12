@@ -1,10 +1,11 @@
-.event-inline.event-item
+.event-item
   .event-item-timestamp
     = time_ago_with_tooltip(event.created_at)
 
-  .system-note-image= sprite_icon('eye-slash', size: 16, css_class: 'icon')
+  .system-note-image= sprite_icon('eye-slash', size: 24, css_class: 'icon')
 
-  .event-title
-    - author_name = capture do
-      %span.author_name= link_to_author(event)
-    = s_('Profiles|%{author_name} made a private contribution').html_safe % { author_name: author_name }
+  = event_user_info(event)
+
+  .event-title.d-flex.flex-wrap
+    = inline_event_icon(event)
+    = s_('Profiles|Made a private contribution')

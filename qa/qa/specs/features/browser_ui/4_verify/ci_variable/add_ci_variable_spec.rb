@@ -7,7 +7,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::CiVariable.fabricate! do |resource|
+        Resource::CiVariable.fabricate! do |resource|
           resource.key = 'VARIABLE_KEY'
           resource.value = 'some CI variable'
         end

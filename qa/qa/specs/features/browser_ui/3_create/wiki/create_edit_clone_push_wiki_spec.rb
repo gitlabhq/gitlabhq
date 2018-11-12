@@ -18,7 +18,7 @@ module QA
       end
 
       it 'user creates, edits, clones, and pushes to the wiki' do
-        wiki = Factory::Resource::Wiki.fabricate! do |resource|
+        wiki = Resource::Wiki.fabricate! do |resource|
           resource.title = 'Home'
           resource.content = '# My First Wiki Content'
           resource.message = 'Update home'
@@ -34,7 +34,7 @@ module QA
 
         validate_content('My Second Wiki Content')
 
-        Factory::Repository::WikiPush.fabricate! do |push|
+        Resource::Repository::WikiPush.fabricate! do |push|
           push.wiki = wiki
           push.file_name = 'Home.md'
           push.file_content = '# My Third Wiki Content'

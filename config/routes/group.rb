@@ -53,6 +53,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resource :avatar, only: [:destroy]
 
+    concerns :clusterable
+
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
       delete :leave, on: :collection

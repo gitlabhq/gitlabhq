@@ -3,6 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
 import { createPathWithExt } from '../../utils';
@@ -10,6 +11,7 @@ import { createPathWithExt } from '../../utils';
 export default {
   components: {
     Navigator,
+    GlLoadingIcon,
   },
   data() {
     return {

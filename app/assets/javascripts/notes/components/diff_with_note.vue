@@ -1,15 +1,18 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
-import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
+import { trimFirstCharOfLineContent, getDiffMode } from '~/diffs/store/utils';
 
 export default {
   components: {
     DiffFileHeader,
     GlSkeletonLoading,
+    DiffViewer,
+    ImageDiffOverlay,
   },
   props: {
     discussion: {
@@ -25,7 +28,11 @@ export default {
   computed: {
     ...mapState({
       noteableData: state => state.notes.noteableData,
+      projectPath: state => state.diffs.projectPath,
     }),
+    diffMode() {
+      return getDiffMode(this.diffFile);
+    },
     hasTruncatedDiffLines() {
       return this.discussion.truncatedDiffLines && this.discussion.truncatedDiffLines.length !== 0;
     },
@@ -62,11 +69,7 @@ export default {
     },
   },
   mounted() {
-    if (this.isImageDiff) {
-      const canCreateNote = false;
-      const renderCommentBadge = true;
-      imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
-    } else if (!this.hasTruncatedDiffLines) {
+    if (!this.hasTruncatedDiffLines) {
       this.fetchDiff();
     }
   },
@@ -160,7 +163,24 @@ export default {
     <div
       v-else
     >
-      <div v-html="imageDiffHtml"></div>
+      <diff-viewer
+        :diff-mode="diffMode"
+        :new-path="diffFile.newPath"
+        :new-sha="diffFile.diffRefs.headSha"
+        :old-path="diffFile.oldPath"
+        :old-sha="diffFile.diffRefs.baseSha"
+        :file-hash="diffFile.fileHash"
+        :project-path="projectPath"
+      >
+        <image-diff-overlay
+          slot="image-overlay"
+          :discussions="discussion"
+          :file-hash="diffFile.fileHash"
+          :show-comment-icon="true"
+          :should-toggle-discussion="false"
+          badge-class="image-comment-badge"
+        />
+      </diff-viewer>
       <slot></slot>
     </div>
   </div>

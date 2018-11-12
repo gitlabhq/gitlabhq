@@ -151,12 +151,6 @@ class WikiPage
     last_version&.sha
   end
 
-  # Returns the Date that this latest version was
-  # created on.
-  def created_at
-    @page.version.date
-  end
-
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
@@ -195,7 +189,7 @@ class WikiPage
     update_attributes(attrs)
 
     save(page_details: title) do
-      wiki.create_page(title, content, format, message)
+      wiki.create_page(title, content, format, attrs[:message])
     end
   end
 

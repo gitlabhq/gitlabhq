@@ -1,6 +1,7 @@
 <script>
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
+import { GlLink, GlButton } from '@gitlab-org/gitlab-ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -21,6 +22,8 @@ export default {
     TriggerBlock,
     StagesDropdown,
     JobsContainer,
+    GlLink,
+    GlButton,
   },
   mixins: [timeagoMixin],
   props: {
@@ -115,7 +118,7 @@ export default {
           <strong class="inline prepend-top-8">
             {{ job.name }}
           </strong>
-          <a
+          <gl-link
             v-if="job.retry_path"
             :class="retryButtonClass"
             :href="job.retry_path"
@@ -123,8 +126,8 @@ export default {
             rel="nofollow"
           >
             {{ __('Retry') }}
-          </a>
-          <a
+          </gl-link>
+          <gl-link
             v-if="job.terminal_path"
             :href="job.terminal_path"
             class="js-terminal-link pull-right btn btn-primary
@@ -133,8 +136,8 @@ export default {
           >
             {{ __('Debug') }}
             <icon name="external-link" />
-          </a>
-          <button
+          </gl-link>
+          <gl-button
             :aria-label="__('Toggle Sidebar')"
             type="button"
             class="btn btn-blank gutter-toggle
@@ -146,20 +149,20 @@ export default {
               data-hidden="true"
               class="fa fa-angle-double-right"
             ></i>
-          </button>
+          </gl-button>
         </div>
         <div
           v-if="job.retry_path || job.new_issue_path"
           class="block retry-link"
         >
-          <a
+          <gl-link
             v-if="job.new_issue_path"
             :href="job.new_issue_path"
             class="js-new-issue btn btn-success btn-inverted"
           >
             {{ __('New issue') }}
-          </a>
-          <a
+          </gl-link>
+          <gl-link
             v-if="job.retry_path"
             :href="job.retry_path"
             class="js-retry-job btn btn-inverted-secondary"
@@ -167,7 +170,7 @@ export default {
             rel="nofollow"
           >
             {{ __('Retry') }}
-          </a>
+          </gl-link>
         </div>
         <div :class="{ block : renderBlock }">
           <p
@@ -177,9 +180,9 @@ export default {
             <span class="build-light-text">
               {{ __('Merge Request:') }}
             </span>
-            <a :href="job.merge_request.path">
+            <gl-link :href="job.merge_request.path">
               !{{ job.merge_request.iid }}
-            </a>
+            </gl-link>
           </p>
 
           <detail-row
@@ -244,14 +247,14 @@ export default {
             v-if="job.cancel_path"
             class="btn-group prepend-top-5"
             role="group">
-            <a
+            <gl-link
               :href="job.cancel_path"
               class="js-cancel-job btn btn-sm btn-default"
               data-method="post"
               rel="nofollow"
             >
               {{ __('Cancel') }}
-            </a>
+            </gl-link>
           </div>
         </div>
 

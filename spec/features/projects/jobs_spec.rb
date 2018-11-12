@@ -198,6 +198,24 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'when job is running', :js do
+      let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+      let(:job_url) { project_job_path(project, job) }
+
+      before do
+        visit job_url
+        wait_for_requests
+      end
+
+      context 'job is cancelable' do
+        it 'shows cancel button' do
+          click_link 'Cancel'
+
+          expect(page.current_path).to eq(job_url)
+        end
+      end
+    end
+
     context "Job from other project" do
       before do
         visit project_job_path(project, job2)
@@ -378,8 +396,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'job is successful and has deployment' do
-        let(:build) { create(:ci_build, :success, :trace_live, environment: environment.name, pipeline: pipeline) }
-        let!(:deployment) { create(:deployment, environment: environment, project: environment.project, deployable: build) }
+        let(:build) { create(:ci_build, :success, :trace_live, environment: environment.name, pipeline: pipeline, deployment: deployment) }
+        let(:deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
 
         it 'shows a link for the job' do
           expect(page).to have_link environment.name
@@ -401,7 +419,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       context 'deployment still not finished' do
-        let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:build) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
           expect(page).to have_link environment.name
@@ -438,6 +456,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     describe 'environment info in job view', :js do
       before do
+        allow_any_instance_of(Ci::Build).to receive(:create_deployment)
+
         visit project_job_path(project, job)
         wait_for_requests
       end
@@ -446,8 +466,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         let(:job) { create(:ci_build, :success, :trace_artifact, environment: 'staging', pipeline: pipeline) }
         let(:second_build) { create(:ci_build, :success, :trace_artifact, environment: 'staging', pipeline: pipeline) }
         let(:environment) { create(:environment, name: 'staging', project: project) }
-        let!(:first_deployment) { create(:deployment, environment: environment, deployable: job) }
-        let!(:second_deployment) { create(:deployment, environment: environment, deployable: second_build) }
+        let!(:first_deployment) { create(:deployment, :success, environment: environment, deployable: job) }
+        let!(:second_deployment) { create(:deployment, :success, environment: environment, deployable: second_build) }
 
         it 'shows deployment message' do
           expected_text = 'This job is an out-of-date deployment ' \
@@ -487,7 +507,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           end
 
           context 'when it has deployment' do
-            let!(:deployment) { create(:deployment, environment: environment) }
+            let!(:deployment) { create(:deployment, :success, environment: environment) }
 
             it 'shows that deployment will be overwritten' do
               expected_text = 'This job is creating a deployment to staging'
@@ -575,7 +595,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'shows delayed job', :js do
-        expect(page).to have_content('This is a delayed to run in')
+        expect(page).to have_content('This is a delayed job to run in')
         expect(page).to have_content("This job will automatically run after it's timer finishes.")
         expect(page).to have_link('Unschedule job')
       end

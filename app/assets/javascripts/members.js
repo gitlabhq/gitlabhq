@@ -7,8 +7,12 @@ export default class Members {
   }
 
   addListeners() {
-    $('.js-member-update-control').off('change').on('change', this.formSubmit.bind(this));
-    $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
+    $('.js-member-update-control')
+      .off('change')
+      .on('change', this.formSubmit.bind(this));
+    $('.js-edit-member-form')
+      .off('ajax:success')
+      .on('ajax:success', this.formSuccess.bind(this));
     gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
   }
 
@@ -28,7 +32,7 @@ export default class Members {
         toggleLabel(selected, $el) {
           return $el.text();
         },
-        clicked: (options) => {
+        clicked: options => {
           this.formSubmit(null, options.$el);
         },
       });

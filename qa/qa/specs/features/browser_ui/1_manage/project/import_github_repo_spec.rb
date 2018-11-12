@@ -4,7 +4,7 @@ module QA
   context 'Manage', :orchestrated, :github do
     describe 'Project import from GitHub' do
       let(:imported_project) do
-        Factory::Resource::ProjectImportedFromGithub.fabricate! do |project|
+        Resource::ProjectImportedFromGithub.fabricate! do |project|
           project.name = 'imported-project'
           project.personal_access_token = Runtime::Env.github_access_token
           project.github_repository_path = 'gitlab-qa/test-project'

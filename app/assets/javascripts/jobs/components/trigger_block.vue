@@ -1,5 +1,10 @@
 <script>
+import { GlButton } from '@gitlab-org/gitlab-ui';
+
 export default {
+  components: {
+    GlButton,
+  },
   props: {
     trigger: {
       type: Object,
@@ -41,15 +46,14 @@ export default {
     </p>
 
     <p v-if="hasVariables">
-      <button
+      <gl-button
         v-if="!areVariablesVisible"
         type="button"
         class="btn btn-default group js-reveal-variables"
         @click="revealVariables"
       >
         {{ __('Reveal Variables') }}
-      </button>
-
+      </gl-button>
     </p>
 
     <dl

@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Clusters::ClusterPresenter do
-  let(:cluster) { create(:cluster, :provided_by_gcp) }
+  include Gitlab::Routing.url_helpers
+
+  let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
 
   subject(:presenter) do
     described_class.new(cluster)
@@ -69,6 +71,23 @@ describe Clusters::ClusterPresenter do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#show_path' do
+    subject { described_class.new(cluster).show_path }
+
+    context 'project_type cluster' do
+      let(:project) { cluster.project }
+
+      it { is_expected.to eq(project_cluster_path(project, cluster)) }
+    end
+
+    context 'group_type cluster' do
+      let(:group) { cluster.group }
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to eq(group_cluster_path(group, cluster)) }
     end
   end
 end

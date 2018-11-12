@@ -38,9 +38,10 @@ describe Projects::BoardsController do
       end
 
       it 'renders template if visited board is not found' do
-        visited = double
+        temporary_board = create(:board, project: project)
+        visited = create(:board_project_recent_visit, project: temporary_board.project, board: temporary_board, user: user)
+        temporary_board.delete
 
-        allow(visited).to receive(:board_id).and_return(12)
         allow_any_instance_of(Boards::Visits::LatestService).to receive(:execute).and_return(visited)
 
         list_boards

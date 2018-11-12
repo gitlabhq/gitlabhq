@@ -22,7 +22,7 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    user = User.find_by_any_email(email.try(:downcase))
+    user = User.find_by_any_email(email)
     if user
       avatar_icon_for_user(user, size, scale, only_path: only_path)
     else

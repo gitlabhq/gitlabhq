@@ -1,7 +1,5 @@
 .pages-domain-list {
   &-item {
-    position: relative;
-    display: flex;
     align-items: center;
 
     .domain-status {
@@ -44,8 +42,9 @@
   }
 
   :first-child {
-    border-bottom-left-radius: $border-radius-default;
-    border-top-left-radius: $border-radius-default;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    line-height: $gl-line-height;
   }
 
   :not(:first-child) {

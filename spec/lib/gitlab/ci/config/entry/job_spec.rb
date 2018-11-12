@@ -1,5 +1,4 @@
-require 'fast_spec_helper'
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
@@ -11,7 +10,7 @@ describe Gitlab::Ci::Config::Entry::Job do
       let(:result) do
         %i[before_script script stage type after_script cache
            image services only except variables artifacts
-           environment coverage]
+           environment coverage retry]
       end
 
       it { is_expected.to match_array result }
@@ -99,41 +98,42 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
 
-      context 'when retry value is not correct' do
+      context 'when parallel value is not correct' do
         context 'when it is not a numeric value' do
-          let(:config) { { retry: true } }
+          let(:config) { { parallel: true } }
 
           it 'returns error about invalid type' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job retry is not a number'
+            expect(entry.errors).to include 'job parallel is not a number'
           end
         end
 
-        context 'when it is lower than zero' do
-          let(:config) { { retry: -1 } }
+        context 'when it is lower than two' do
+          let(:config) { { parallel: 1 } }
 
           it 'returns error about value too low' do
             expect(entry).not_to be_valid
             expect(entry.errors)
-              .to include 'job retry must be greater than or equal to 0'
+              .to include 'job parallel must be greater than or equal to 2'
+          end
+        end
+
+        context 'when it is bigger than 50' do
+          let(:config) { { parallel: 51 } }
+
+          it 'returns error about value too high' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include 'job parallel must be less than or equal to 50'
           end
         end
 
         context 'when it is not an integer' do
-          let(:config) { { retry: 1.5 } }
+          let(:config) { { parallel: 1.5 } }
 
           it 'returns error about wrong value' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job retry must be an integer'
-          end
-        end
-
-        context 'when the value is too high' do
-          let(:config) { { retry: 10 } }
-
-          it 'returns error about value too high' do
-            expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job retry must be less than or equal to 2'
+            expect(entry.errors).to include 'job parallel must be an integer'
           end
         end
       end

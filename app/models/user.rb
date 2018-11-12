@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
-  has_many :keys, -> { where(type: ['Key', nil]) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :gpg_keys
 
@@ -347,7 +347,11 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email, confirmed: false)
-      by_any_email(email, confirmed: confirmed).take
+      return unless email
+
+      downcased = email.downcase
+
+      find_by_private_commit_email(downcased) || by_any_email(downcased, confirmed: confirmed).take
     end
 
     # Returns a relation containing all the users for the given Email address
@@ -359,6 +363,12 @@ class User < ActiveRecord::Base
       emails = emails.confirmed if confirmed
 
       from_union([users, emails])
+    end
+
+    def find_by_private_commit_email(email)
+      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(email)
+
+      find_by(id: user_id)
     end
 
     def filter(filter_name)
@@ -458,12 +468,6 @@ class User < ActiveRecord::Base
 
     def find_by_username!(username)
       by_username(username).take!
-    end
-
-    def find_by_personal_access_token(token_string)
-      return unless token_string
-
-      PersonalAccessTokensFinder.new(state: 'active').find_by_token(token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
@@ -639,6 +643,10 @@ class User < ActiveRecord::Base
   def commit_email
     return self.email unless has_attribute?(:commit_email)
 
+    if super == Gitlab::PrivateCommitEmail::TOKEN
+      return private_commit_email
+    end
+
     # The commit email is the same as the primary email if undefined
     super.presence || self.email
   end
@@ -649,6 +657,10 @@ class User < ActiveRecord::Base
 
   def commit_email_changed?
     has_attribute?(:commit_email) && super
+  end
+
+  def private_commit_email
+    Gitlab::PrivateCommitEmail.for_user(self)
   end
 
   # see if the new email is already a verified secondary email
@@ -941,10 +953,15 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.now
     else
       false
     end
+  end
+
+  def ldap_sync_time
+    # This number resides in this method so it can be redefined in EE.
+    1.hour
   end
 
   def try_obtain_ldap_lease
@@ -1021,13 +1038,21 @@ class User < ActiveRecord::Base
   def verified_emails
     verified_emails = []
     verified_emails << email if primary_email_verified?
+    verified_emails << private_commit_email
     verified_emails.concat(emails.confirmed.pluck(:email))
     verified_emails
   end
 
   def verified_email?(check_email)
     downcased = check_email.downcase
-    email == downcased ? primary_email_verified? : emails.confirmed.where(email: downcased).exists?
+
+    if email == downcased
+      primary_email_verified?
+    else
+      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+
+      user_id == id || emails.confirmed.where(email: downcased).exists?
+    end
   end
 
   def hook_attrs

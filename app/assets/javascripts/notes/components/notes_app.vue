@@ -50,11 +50,19 @@ export default {
   },
   data() {
     return {
+      isFetching: false,
       currentFilter: null,
     };
   },
   computed: {
-    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount', 'isLoading']),
+    ...mapGetters([
+      'isNotesFetched',
+      'discussions',
+      'getNotesDataByProp',
+      'discussionCount',
+      'isLoading',
+      'commentsDisabled',
+    ]),
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -134,6 +142,10 @@ export default {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
+      if (this.isFetching) return null;
+
+      this.isFetching = true;
+
       return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
           this.initPolling();
@@ -142,6 +154,7 @@ export default {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
+          this.isFetching = false;
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
@@ -200,6 +213,7 @@ export default {
     </ul>
 
     <comment-form
+      v-if="!commentsDisabled"
       :noteable-type="noteableType"
       :markdown-version="markdownVersion"
     />

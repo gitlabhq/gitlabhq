@@ -68,6 +68,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.issue_status_changed_email(user.id, issue.id, 'closed', user.id).message
   end
 
+  def removed_milestone_issue_email
+    Notify.removed_milestone_issue_email(user.id, issue.id, user.id)
+  end
+
+  def changed_milestone_issue_email
+    Notify.changed_milestone_issue_email(user.id, issue.id, milestone, user.id)
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, issue.id, user.id).message
   end
@@ -78,6 +86,14 @@ class NotifyPreview < ActionMailer::Preview
 
   def merged_merge_request_email
     Notify.merged_merge_request_email(user.id, merge_request.id, user.id).message
+  end
+
+  def removed_milestone_merge_request_email
+    Notify.removed_milestone_merge_request_email(user.id, merge_request.id, user.id)
+  end
+
+  def changed_milestone_merge_request_email
+    Notify.changed_milestone_merge_request_email(user.id, merge_request.id, milestone, user.id)
   end
 
   def member_access_denied_email
@@ -141,6 +157,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def merge_request
     @merge_request ||= project.merge_requests.first
+  end
+
+  def milestone
+    @milestone ||= issue.milestone
   end
 
   def pipeline

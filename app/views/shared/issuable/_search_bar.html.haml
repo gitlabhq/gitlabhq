@@ -3,6 +3,7 @@
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
 - full_path = @project.present? ? @project.full_path : @group.full_path
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
+- show_sorting_dropdown = local_assigns.fetch(:show_sorting_dropdown, true)
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -105,6 +106,14 @@
                     %span.label-title.js-data-value
                       {{title}}
             #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link{ type: 'button' }
@@ -132,5 +141,5 @@
               - if @project
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
             #js-toggle-focus-btn
-          - elsif type != :boards_modal
+          - elsif show_sorting_dropdown
             = render 'shared/sort_dropdown'

@@ -6,8 +6,12 @@ module MergeRequests
 
     def execute
       @params_issue_iid = params.delete(:issue_iid)
+      self.merge_request = MergeRequest.new
+      # TODO: this should handle all quick actions that don't have side effects
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
+      merge_quick_actions_into_params!(merge_request, only: [:target_branch])
+      merge_request.assign_attributes(params)
 
-      self.merge_request = MergeRequest.new(params)
       merge_request.author = current_user
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
