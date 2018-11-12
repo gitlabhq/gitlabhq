@@ -65,7 +65,13 @@ export default {
     const { highlightedDiffLines, parallelDiffLines } = diffFile;
 
     removeMatchLine(diffFile, lineNumbers, bottom);
-    const lines = addLineReferences(contextLines, lineNumbers, bottom);
+
+    const lines = addLineReferences(contextLines, lineNumbers, bottom).map(line => ({
+      ...line,
+      lineCode: line.lineCode || `${fileHash}_${line.oldLine}_${line.newLine}`,
+      discussions: line.discussions || [],
+    }));
+
     addContextLines({
       inlineLines: highlightedDiffLines,
       parallelLines: parallelDiffLines,
