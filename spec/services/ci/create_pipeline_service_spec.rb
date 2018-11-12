@@ -387,7 +387,7 @@ describe Ci::CreatePipelineService do
 
     context 'with environment' do
       before do
-        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls' })
+        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls'})
         stub_ci_pipeline_yaml_file(config)
       end
 
@@ -396,6 +396,18 @@ describe Ci::CreatePipelineService do
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
+      end
+
+      it 'also has tags' do
+        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls', tags: ['hello'] })
+        stub_ci_pipeline_yaml_file(config)
+        result = execute_service
+
+        config = YAML.dump(deploy: { tags: ['hello'], script: ['ls'] })
+        stub_ci_pipeline_yaml_file(config)
+        result = execute_service
+
+        expect(Ci::Build.with_any_tags.count).to eq(2)
       end
     end
 
