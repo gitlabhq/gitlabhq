@@ -75,15 +75,12 @@ Once Ingress has been installed successfully, click the **Install** button next 
 ### 3. Login to JupyterHub and start the server
 
 Once JupyterHub has been installed successfully, navigate to the displayed **Jupyter Hostname** URL and click 
-**Sign in with GitLab**. Authentication is automatically enabled for any user of GitLab server via OAuth2. This 
+**Sign in with GitLab**. Authentication is automatically enabled for any user of the GitLab instance via OAuth2. This 
 will redirect to GitLab in order to authorize JupyterHub to use your GitLab account. Click **Authorize**.
 
 ![authorize jupyter](img/authorize-jupyter.png)
 
-Once the application has been authorized you will taken back to the JupyterHub application. Click **Start My Server**
-
-![start jupyter](img/jupyter-start.png)
-
+Once the application has been authorized you will taken back to the JupyterHub application. Click **Start My Server**. 
 The server will take a couple of seconds to start.
 
 ### 4. Configure access
@@ -104,7 +101,7 @@ The contents on the runbook will be displayed on the right side of the screen. U
 entries for both your `PRIVATE_TOKEN` and your `PROJECT_ID`. Enter both these values, conserving the single quotes as follows:
 
 ```sql
-PRIVATE_TOKEN = 'abcdef123456'
+PRIVATE_TOKEN = 'n671WNGecHugsdEDPsyo'
 PROJECT_ID = '1234567'
 ```
 
