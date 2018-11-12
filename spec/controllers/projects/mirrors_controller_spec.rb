@@ -15,6 +15,31 @@ describe Projects::MirrorsController do
         end.to change { RemoteMirror.count }.to(1)
       end
     end
+
+    context 'setting up SSH public-key authentication' do
+      let(:ssh_mirror_attributes) do
+        {
+          'auth_method' => 'ssh_public_key',
+          'url' => 'ssh://git@example.com',
+          'ssh_known_hosts' => 'test'
+        }
+      end
+
+      it 'processes a successful update' do
+        sign_in(project.owner)
+        do_put(project, remote_mirrors_attributes: { '0' => ssh_mirror_attributes })
+
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
+
+        expect(RemoteMirror.count).to eq(1)
+        expect(RemoteMirror.first).to have_attributes(
+          auth_method: 'ssh_public_key',
+          url: 'ssh://git@example.com',
+          ssh_public_key: match(/\Assh-rsa /),
+          ssh_known_hosts: 'test'
+        )
+      end
+    end
   end
 
   describe '#update' do

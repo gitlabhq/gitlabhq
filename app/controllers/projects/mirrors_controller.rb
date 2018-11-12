@@ -77,6 +77,10 @@ class Projects::MirrorsController < Projects::ApplicationController
         id
         enabled
         only_protected_branches
+        auth_method
+        password
+        ssh_known_hosts
+        regenerate_ssh_private_key
       ]
     ]
   end

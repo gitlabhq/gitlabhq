@@ -3,10 +3,12 @@ import _ from 'underscore';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
+import SSHMirror from './ssh_mirror';
 
 export default class MirrorRepos {
   constructor(container) {
     this.$container = $(container);
+    this.$password = null;
     this.$form = $('.js-mirror-form', this.$container);
     this.$urlInput = $('.js-mirror-url', this.$form);
     this.$protectedBranchesInput = $('.js-mirror-protected', this.$form);
@@ -26,6 +28,18 @@ export default class MirrorRepos {
 
     this.$authMethod.on('change', () => this.togglePassword());
     this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
+
+    this.initMirrorSSH();
+  }
+
+  initMirrorSSH() {
+    if (this.$password) {
+      this.$password.off('input.updateUrl');
+    }
+    this.$password = undefined;
+
+    this.sshMirror = new SSHMirror('.js-mirror-form');
+    this.sshMirror.init();
   }
 
   updateUrl() {

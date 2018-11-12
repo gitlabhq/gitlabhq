@@ -483,6 +483,9 @@ msgstr ""
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
+msgid "An SSH key will be automatically generated when the form is submitted. For more information, please refer to the documentation."
+msgstr ""
+
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
@@ -529,6 +532,9 @@ msgid "An error occurred previewing the blob"
 msgstr ""
 
 msgid "An error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "An error occurred while detecting host keys"
 msgstr ""
 
 msgid "An error occurred while dismissing the alert. Refresh the page and try again."
@@ -643,6 +649,9 @@ msgid "Are you sure you want to erase this build?"
 msgstr ""
 
 msgid "Are you sure you want to lose unsaved changes?"
+msgstr ""
+
+msgid "Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again."
 msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
@@ -1992,6 +2001,12 @@ msgstr ""
 msgid "Copy SSH clone URL"
 msgstr ""
 
+msgid "Copy SSH public key"
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
+
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -2391,6 +2406,9 @@ msgid "Destroy"
 msgstr ""
 
 msgid "Details"
+msgstr ""
+
+msgid "Detect host keys"
 msgstr ""
 
 msgid "Diff content limits"
@@ -2870,6 +2888,9 @@ msgstr ""
 msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
 msgstr ""
 
+msgid "Fingerprints"
+msgstr ""
+
 msgid "Finished"
 msgstr ""
 
@@ -3215,6 +3236,12 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
+msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
+msgstr ""
+
+msgid "Hide host keys manual input"
+msgstr ""
+
 msgid "Hide payload"
 msgstr ""
 
@@ -3377,6 +3404,9 @@ msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
 
 msgid "Inline"
+msgstr ""
+
+msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
@@ -5150,6 +5180,9 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Regenerate key"
+msgstr ""
+
 msgid "Regex pattern"
 msgstr ""
 
@@ -5399,6 +5432,12 @@ msgid "Running"
 msgstr ""
 
 msgid "SSH Keys"
+msgstr ""
+
+msgid "SSH host keys"
+msgstr ""
+
+msgid "SSH public key"
 msgstr ""
 
 msgid "SSL Verification"
@@ -7279,6 +7318,9 @@ msgid "Your name"
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "a deleted user"
 msgstr ""
 
 msgid "ago"

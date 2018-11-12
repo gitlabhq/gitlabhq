@@ -1,5 +1,5 @@
 import initForm from '../form';
-import MirrorRepos from './mirror_repos';
+import MirrorRepos from '~/mirrors/mirror_repos';
 
 document.addEventListener('DOMContentLoaded', () => {
   initForm();
