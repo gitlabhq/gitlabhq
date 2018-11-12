@@ -1,8 +1,8 @@
 <script>
 import $ from 'jquery';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobItem from './job_item.vue';
-import tooltip from '../../../vue_shared/directives/tooltip';
 
 /**
  * Renders the dropdown for the pipeline graph.
@@ -12,32 +12,27 @@ import tooltip from '../../../vue_shared/directives/tooltip';
  */
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
-
   components: {
     JobItem,
     CiIcon,
   },
-
   props: {
     group: {
       type: Object,
       required: true,
     },
   },
-
   computed: {
     tooltipText() {
       const { name, status } = this.group;
       return `${name} - ${status.label}`;
     },
   },
-
   mounted() {
     this.stopDropdownClickPropagation();
   },
-
   methods: {
     /**
      * When the user right clicks or cmd/ctrl + click in the group name or the action icon
@@ -65,12 +60,10 @@ export default {
 <template>
   <div class="ci-job-dropdown-container dropdown dropright">
     <button
-      v-tooltip
+      v-gl-tooltip.hover="{ boundary: 'viewport' }"
       :title="tooltipText"
       type="button"
       data-toggle="dropdown"
-      data-container="body"
-      data-boundary="viewport"
       data-display="static"
       class="dropdown-menu-toggle build-content"
     >

@@ -140,14 +140,12 @@ describe('pipeline graph job item', () => {
   });
 
   describe('tooltip placement', () => {
-    const tooltipBoundary = 'a[data-boundary="viewport"]';
-
     it('does not set tooltip boundary by default', () => {
       component = mountComponent(JobComponent, {
         job: mockJob,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+      expect(component.tooltipBoundary).toBeNull();
     });
 
     it('sets tooltip boundary to viewport for small dropdowns', () => {
@@ -156,7 +154,7 @@ describe('pipeline graph job item', () => {
         dropdownLength: 1,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).not.toBeNull();
+      expect(component.tooltipBoundary).toEqual('viewport');
     });
 
     it('does not set tooltip boundary for large lists', () => {
@@ -165,7 +163,7 @@ describe('pipeline graph job item', () => {
         dropdownLength: 7,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+      expect(component.tooltipBoundary).toBeNull();
     });
   });
 
