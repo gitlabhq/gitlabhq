@@ -174,55 +174,11 @@ describe('Deployment component', () => {
     });
   });
 
-  describe('with `features.ciEnvironmentsStatusChanges` enabled', () => {
-    beforeEach(() => {
-      window.gon = window.gon || {};
-      window.gon.features = window.gon.features || {};
-      window.gon.features.ciEnvironmentsStatusChanges = true;
-      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
-    });
-
-    afterEach(() => {
-      window.gon.features = {};
-    });
-
-    it('renders dropdown with changes', () => {
-      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).not.toBeNull();
-      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).toBeNull();
-    });
-  });
-
-  describe('with `features.ciEnvironmentsStatusChanges` disabled', () => {
-    beforeEach(() => {
-      window.gon = window.gon || {};
-      window.gon.features = window.gon.features || {};
-      window.gon.features.ciEnvironmentsStatusChanges = false;
-
-      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
-    });
-
-    afterEach(() => {
-      delete window.gon.features.ciEnvironmentsStatusChanges;
-    });
-
-    it('renders the old link to the review app', () => {
-      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
-      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
-    });
-  });
-
   describe('without changes', () => {
     beforeEach(() => {
-      window.gon = window.gon || {};
-      window.gon.features = window.gon.features || {};
-      window.gon.features.ciEnvironmentsStatusChanges = true;
       delete deploymentMockData.changes;
 
       vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
-    });
-
-    afterEach(() => {
-      delete window.gon.features.ciEnvironmentsStatusChanges;
     });
 
     it('renders the link to the review app without dropdown', () => {

@@ -37,7 +37,7 @@ class EnvironmentStatusEntity < Grape::Entity
     es.deployment.try(:formatted_deployment_time)
   end
 
-  expose :changes, if: ->(*) { Feature.enabled?(:ci_environments_status_changes, project) }
+  expose :changes
 
   private
 
