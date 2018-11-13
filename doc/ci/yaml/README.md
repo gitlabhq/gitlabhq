@@ -103,7 +103,7 @@ rspec:
       - $RSPEC
 ```
 
-In the example above, the `rspec` job inherits from the `.tests` template job. 
+In the example above, the `rspec` job inherits from the `.tests` template job.
 GitLab will perform a reverse deep merge based on the keys. GitLab will:
 
 - Merge the `rspec` contents into `.tests` recursively.
@@ -1336,6 +1336,81 @@ multiple test report paths within a single job and they will be automatically
 concatenated into a single file. Use a filename pattern (`junit: rspec-*.xml`),
 an array of filenames (`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`), or a
 combination thereof (`junit: [rspec.xml, test-results/TEST-*.xml]`).
+
+#### `artifacts:reports:codequality` **[STARTER]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `codequality` report collects [CodeQuality issues](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html)
+as artifacts.
+
+The collected Code Quality report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests.
+
+#### `artifacts:reports:sast` **[ULTIMATE]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `sast` report collects [SAST vulnerabilities](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html)
+as artifacts.
+
+The collected SAST report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
+
+#### `artifacts:reports:dependency_scanning` **[ULTIMATE]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html)
+as artifacts.
+
+The collected Dependency Scanning report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
+
+#### `artifacts:reports:container_scanning` **[ULTIMATE]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `container_scanning` report collects [Container Scanning vulnerabilities](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html)
+as artifacts.
+
+The collected Container Scanning report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
+
+#### `artifacts:reports:dast` **[ULTIMATE]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `dast` report collects [DAST vulnerabilities](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html)
+as artifacts.
+
+The collected DAST report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
+
+#### `artifacts:reports:license_management` **[ULTIMATE]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `license_management` report collects [Licenses](https://docs.gitlab.com/ee/user/project/merge_requests/license_management.html)
+as artifacts.
+
+The collected License Management report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests, pipeline view and provide data for security
+dashboards.
+
+#### `artifacts:reports:performance` **[PREMIUM]**
+
+> Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
+
+The `performance` report collects [Performance metrics](https://docs.gitlab.com/ee//user/project/merge_requests/browser_performance_testing.html)
+as artifacts.
+
+The collected Performance report will be uploaded to GitLab as an artifact and will
+be automatically shown in merge requests.
 
 ## `dependencies`
 
