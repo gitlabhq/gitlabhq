@@ -14,9 +14,7 @@ module Gitlab
           spec[:volumes] = volumes_specification
           spec[:containers][0][:volumeMounts] = volume_mounts_specification
           spec[:serviceAccountName] = service_account_name if service_account_name
-          Gitlab::AppLogger.info('--- Generating Installation POD ----')
-          Gitlab::AppLogger.info(metadata)
-          Gitlab::AppLogger.info(spec)
+
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
         end
 
@@ -50,14 +48,10 @@ module Gitlab
         end
 
         def generate_pod_env(command)
-          sc = command.generate_script
-          Gitlab::AppLogger.info('--- generate_pod_env and command is---*******----')
-          Gitlab::AppLogger.info(sc)
-          Gitlab::AppLogger.info('--------------------------------------------------------')
           {
             HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
             TILLER_NAMESPACE: namespace_name,
-            COMMAND_SCRIPT: sc
+            COMMAND_SCRIPT: command.generate_script
           }.map { |key, value| { name: key, value: value } }
         end
 
