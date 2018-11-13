@@ -13,7 +13,7 @@ FactoryBot.define do
     end
 
     trait :with_token do
-      service_account_token { Faker::Lorem.characters(10) }
+      service_account_token { FFaker::Lorem.characters(10) }
     end
   end
 end

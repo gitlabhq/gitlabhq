@@ -83,7 +83,7 @@ module Clusters
               .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
           end
 
-          if kubernetes_namespace = cluster.kubernetes_namespaces.find_by(project: project)
+          if kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
             variables.concat(kubernetes_namespace.predefined_variables)
           else
             # From 11.5, every Clusters::Project should have at least one
