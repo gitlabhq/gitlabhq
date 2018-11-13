@@ -16,6 +16,10 @@ module Ci
       enable :update_pipeline
     end
 
+    rule { can?(:owner_access) }.policy do
+      enable :destroy_pipeline
+    end
+
     def ref_protected?(user, project, tag, ref)
       access = ::Gitlab::UserAccess.new(user, project: project)
 

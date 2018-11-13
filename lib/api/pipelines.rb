@@ -89,7 +89,7 @@ module API
         requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
       end
       delete ':id/pipelines/:pipeline_id' do
-        authorize! :destroy_pipeline, user_project
+        authorize! :destroy_pipeline, pipeline
 
         destroy_conditionally!(pipeline) do
           ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)

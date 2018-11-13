@@ -3,11 +3,11 @@
 module Ci
   class DestroyPipelineService < BaseService
     def execute(pipeline)
-      return false unless can?(current_user, :destroy_pipeline, project)
+      return false unless can?(current_user, :destroy_pipeline, pipeline)
 
       AuditEventService.new(current_user, pipeline).security_event
 
-      pipeline.destroy
+      pipeline.destroy!
     end
   end
 end
