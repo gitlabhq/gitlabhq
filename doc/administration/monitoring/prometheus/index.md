@@ -1,12 +1,12 @@
 # Monitoring GitLab with Prometheus
 
 > **Notes:**
-> * Prometheus and the various exporters listed in this page are bundled in the
+> - Prometheus and the various exporters listed in this page are bundled in the
 >   Omnibus GitLab package. Check each exporter's documentation for the timeline
 >   they got added. For installations from source you will have to install them
 >   yourself. Over subsequent releases additional GitLab metrics will be captured.
-> * Prometheus services are on by default with GitLab 9.0.
-> * Prometheus and its exporters do not authenticate users, and will be available
+> - Prometheus services are on by default with GitLab 9.0.
+> - Prometheus and its exporters do not authenticate users, and will be available
 >  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
@@ -43,7 +43,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
+   take effect.
 
 ### Changing the port and address Prometheus listens on
 
@@ -79,9 +79,12 @@ To change the address/port that Prometheus listens on:
 
 ### Using an external Prometheus server
 
-> **Note:** Prometheus and most exporters do not support authentication. We do not recommend exposing them outside the local network.
+NOTE: **Note:**
+Prometheus and most exporters do not support authentication. We do not recommend exposing them outside the local network.
 
 A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for highly available deployments of GitLab with multiple nodes.
+
+To use an external Prometheus server:
 
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Disable the bundled Prometheus:
@@ -102,17 +105,17 @@ A few configuration changes are required to allow GitLab to be monitored by an e
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-1. Add the Prometheus server IP address to the [monitoring IP whitelist](https://docs.gitlab.com/ce/administration/monitoring/ip_whitelist.html). For example:
+1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.html). For example:
 
   ```ruby
   gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
   ```
 
-1. Reconfigure GitLab to apply the changes
+1. [Reconfigure GitLab][reconfigure] to apply the changes
 1. Edit the Prometheus server's configuration file.
 1. Add each node's exporters to the Prometheus server's [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E). For example, a sample snippet using `static_configs`:
 
-  ```ruby
+  ```yaml
   scrape_configs:
   - job_name: 'gitlab_exporters'
     static_configs:
@@ -193,11 +196,11 @@ The GitLab monitor exporter allows you to measure various GitLab metrics, pulled
 > Introduced in GitLab 9.0.
 > Pod monitoring introduced in GitLab 9.4.
 
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes and [annotated Pods](https://prometheus.io/docs/operating/configuration/#kubernetes_sd_config) in the cluster, including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][prometheus integration] to monitor them.
 
 To disable the monitoring of Kubernetes:
 
-1. Edit `/etc/gitlab/gitlab.rb`
+1. Edit `/etc/gitlab/gitlab.rb`.
 1. Add or find and uncomment the following line and set it to `false`:
 
     ```ruby
@@ -205,7 +208,7 @@ To disable the monitoring of Kubernetes:
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
-   take effect
+   take effect.
 
 [grafana]: https://grafana.net
 [hsts]: https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
