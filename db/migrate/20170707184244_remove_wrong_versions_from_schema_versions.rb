@@ -1,4 +1,4 @@
-class RemoveWrongVersionsFromSchemaVersions < ActiveRecord::Migration
+class RemoveWrongVersionsFromSchemaVersions < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

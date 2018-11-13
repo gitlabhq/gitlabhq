@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddScheduledAtToCiBuilds < ActiveRecord::Migration
+class AddScheduledAtToCiBuilds < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

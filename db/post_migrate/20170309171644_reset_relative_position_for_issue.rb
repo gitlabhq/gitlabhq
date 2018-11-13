@@ -1,6 +1,6 @@
 # rubocop:disable Migration/UpdateLargeTable
 # rubocop:disable Migration/UpdateColumnInBatches
-class ResetRelativePositionForIssue < ActiveRecord::Migration
+class ResetRelativePositionForIssue < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

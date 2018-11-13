@@ -1,4 +1,4 @@
-class FixDevTimezoneSchema < ActiveRecord::Migration
+class FixDevTimezoneSchema < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # The this migrations tries to help solve unwanted changes to `schema.rb`

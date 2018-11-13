@@ -1,4 +1,4 @@
-class MigrateOldArtifacts < ActiveRecord::Migration
+class MigrateOldArtifacts < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

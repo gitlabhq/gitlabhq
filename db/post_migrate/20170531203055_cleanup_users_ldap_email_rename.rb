@@ -1,4 +1,4 @@
-class CleanupUsersLdapEmailRename < ActiveRecord::Migration
+class CleanupUsersLdapEmailRename < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

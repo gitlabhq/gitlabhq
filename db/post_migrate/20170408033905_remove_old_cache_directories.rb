@@ -4,7 +4,7 @@
 # Remove all files from old custom carrierwave's cache directories.
 # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9466
 
-class RemoveOldCacheDirectories < ActiveRecord::Migration
+class RemoveOldCacheDirectories < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

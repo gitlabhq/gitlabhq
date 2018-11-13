@@ -1,5 +1,5 @@
 # rubocop:disable RemoveIndex
-class AddUniqueIndexToSubscriptions < ActiveRecord::Migration
+class AddUniqueIndexToSubscriptions < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

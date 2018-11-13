@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateUserPreferences < ActiveRecord::Migration
+class CreateUserPreferences < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   class UserPreference < ActiveRecord::Base

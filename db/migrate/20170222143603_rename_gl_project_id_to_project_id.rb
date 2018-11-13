@@ -1,4 +1,4 @@
-class RenameGlProjectIdToProjectId < ActiveRecord::Migration
+class RenameGlProjectIdToProjectId < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

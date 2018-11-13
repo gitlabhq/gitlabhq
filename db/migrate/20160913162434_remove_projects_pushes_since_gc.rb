@@ -3,7 +3,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/UpdateLargeTable
-class RemoveProjectsPushesSinceGc < ActiveRecord::Migration
+class RemoveProjectsPushesSinceGc < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateWebHookLogs < ActiveRecord::Migration
+class CreateWebHookLogs < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

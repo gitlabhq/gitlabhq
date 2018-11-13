@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DropFkGcpClustersTable < ActiveRecord::Migration
+class DropFkGcpClustersTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

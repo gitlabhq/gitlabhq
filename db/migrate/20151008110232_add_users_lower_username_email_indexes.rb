@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddUsersLowerUsernameEmailIndexes < ActiveRecord::Migration
+class AddUsersLowerUsernameEmailIndexes < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddStatusToDeployments < ActiveRecord::Migration
+class AddStatusToDeployments < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DEPLOYMENT_STATUS_SUCCESS = 2 # Equivalent to Deployment.state_machine.states['success'].value

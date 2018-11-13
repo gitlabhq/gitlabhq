@@ -1,4 +1,4 @@
-class MigrateStagesStatuses < ActiveRecord::Migration
+class MigrateStagesStatuses < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

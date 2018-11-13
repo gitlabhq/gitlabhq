@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class DropDuplicateProtectedTags < ActiveRecord::Migration
+class DropDuplicateProtectedTags < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   disable_ddl_transaction!

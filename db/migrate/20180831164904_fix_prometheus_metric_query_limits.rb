@@ -4,7 +4,7 @@
 # for more information on how to write migrations for GitLab.
 require Rails.root.join('db/migrate/prometheus_metrics_limits_to_mysql')
 
-class FixPrometheusMetricQueryLimits < ActiveRecord::Migration
+class FixPrometheusMetricQueryLimits < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,4 +1,4 @@
-class FillPagesDomainVerificationCode < ActiveRecord::Migration
+class FillPagesDomainVerificationCode < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   class PagesDomain < ActiveRecord::Base

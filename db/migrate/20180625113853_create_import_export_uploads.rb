@@ -1,4 +1,4 @@
-class CreateImportExportUploads < ActiveRecord::Migration
+class CreateImportExportUploads < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
