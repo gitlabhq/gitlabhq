@@ -53,14 +53,8 @@ describe ::Ci::DestroyPipelineService do
   context 'user is not owner' do
     let(:user) { create(:user) }
 
-    it 'returns false' do
-      is_expected.to eq(false)
-    end
-
-    it 'does not destroy the pipeline' do
-      subject
-
-      expect { pipeline.reload }.not_to raise_error
+    it 'raises an exception' do
+      expect { subject }.to raise_error(Gitlab::Access::AccessDeniedError)
     end
   end
 end
