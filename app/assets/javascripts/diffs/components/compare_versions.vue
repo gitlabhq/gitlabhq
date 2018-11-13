@@ -75,7 +75,7 @@ export default {
   <div class="mr-version-controls">
     <div class="mr-version-menus-container content-block">
       <button
-        v-gl-tooltip.hover
+        v-gl-tooltip
         type="button"
         class="btn btn-default append-right-8 js-toggle-tree-list"
         :class="{
