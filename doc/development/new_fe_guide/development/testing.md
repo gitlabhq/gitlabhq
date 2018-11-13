@@ -54,7 +54,7 @@ Unit tests are on the lowest abstraction level and typically test functionality 
 
 <details>
   <summary>Vue components</summary>
-  Computed properties, methods, and lifecycle hooks can be considered an implementation detail of components and need not be tested.
+  Computed properties, methods, and lifecycle hooks can be considered an implementation detail of components and don't need to be tested.
   They are implicitly covered by component tests.
   The <a href="https://vue-test-utils.vuejs.org/guides/#getting-started">official guidelines</a> suggest the same.
 </details>
