@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+          @parallelizable.with_indifferent_access
+
 module TokenAuthenticatableStrategies
   class Encrypted < Base
     def find_token_authenticatable(token, unscoped = false)
@@ -16,25 +18,23 @@ module TokenAuthenticatableStrategies
     end
 
     def get_token(instance)
-      token = instance.cleartext_tokens.to_h[@token_field]
+      raw_token = instance.read_attribute(token_field_name)
+      token = Gitlab::CryptoHelper.aes256_gcm_decrypt(raw_token)
       token ||= fallback_strategy.get_token(instance) if @options[:fallback]
-
-      token
     end
 
     def set_token(instance, token)
-      return unless token
+      raise ArgumentError unless token
 
-      instance.cleartext_tokens ||= {}
-      instance.cleartext_tokens[@token_field] = token
       instance[token_field_name] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-      instance[@token_field] = nil if @options[:fallback] # TODO this seems wrong
+      # instance[@token_field] = nil if @options[:fallback] # TODO this seems wrong
     end
 
     protected
 
     def fallback_strategy
-      @fallback_strategy ||= TokenAuthenticatableStrategies::Insecure.new(@klass, @token_field, @options)
+      @fallback_strategy ||= TokenAuthenticatableStrategies::Insecure
+        .new(@klass, @token_field, @options)
     end
 
     def token_set?(instance)
