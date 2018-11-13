@@ -71,10 +71,6 @@ $note-form-margin-left: 72px;
 
     li.note {
       border-bottom: 1px solid $border-color;
-
-      &:first-child {
-        border-radius: $border-radius-default $border-radius-default 0 0;
-      }
     }
   }
 
@@ -387,6 +383,7 @@ $note-form-margin-left: 72px;
     line-height: 42px;
     padding: 0 $gl-padding;
     border-top: 1px solid $border-color;
+    border-radius: 0;
 
     &:hover {
       background-color: $gray-light;
