@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import { GlTooltipDirective, GlButton } from '@gitlab-org/gitlab-ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
@@ -58,8 +57,7 @@ export default {
      *
      */
     onClickAction() {
-      $(this.$el).tooltip('hide');
-
+      this.$root.$emit('bv::hide::tooltip', `js-ci-action-${this.link}`);
       this.isDisabled = true;
 
       axios
@@ -79,7 +77,8 @@ export default {
 </script>
 <template>
   <gl-button
-    v-gl-tooltip.hover="{ boundary: 'viewport' }"
+    :id="`js-ci-action-${link}`"
+    v-gl-tooltip="{ boundary: 'viewport' }"
     :title="tooltipText"
     :class="cssClass"
     :disabled="isDisabled"
