@@ -41,9 +41,9 @@ module KubernetesHelpers
       .to_return(kube_response(kube_v1_secret_body(options)))
   end
 
-  def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default')
+  def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default', status: 404)
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{name}")
-      .to_return(status: [404, "Internal Server Error"])
+      .to_return(status: [status, "Internal Server Error"])
   end
 
   def stub_kubeclient_create_service_account(api_url, namespace: 'default')

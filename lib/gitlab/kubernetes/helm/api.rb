@@ -89,22 +89,14 @@ module Gitlab
         end
 
         def service_account_exists?(resource)
-          resource_exists? do
-            kubeclient.get_service_account(resource.metadata.name, resource.metadata.namespace)
-          end
+          kubeclient.get_service_account(resource.metadata.name, resource.metadata.namespace)
+        rescue ::Kubeclient::ResourceNotFoundError
+          false
         end
 
         def cluster_role_binding_exists?(resource)
-          resource_exists? do
-            kubeclient.get_cluster_role_binding(resource.metadata.name)
-          end
-        end
-
-        def resource_exists?
-          yield
-        rescue ::Kubeclient::HttpError => e
-          raise e unless e.error_code == 404
-
+          kubeclient.get_cluster_role_binding(resource.metadata.name)
+        rescue ::Kubeclient::ResourceNotFoundError
           false
         end
       end

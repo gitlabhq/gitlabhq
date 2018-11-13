@@ -13,8 +13,8 @@ module Clusters
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
         rescue Kubeclient::HttpError => e
-          Rails.logger.error "Kubernetes error: #{e.class.name} #{e.message}"
-          app.make_errored!("Kubernetes error.")
+          Rails.logger.error("Kubernetes error: #{e.error_code} #{e.message}")
+          app.make_errored!("Kubernetes error: #{e.error_code}")
         rescue StandardError => e
           Rails.logger.error "Can't start installation process: #{e.class.name} #{e.message}"
           app.make_errored!("Can't start installation process.")
