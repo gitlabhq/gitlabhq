@@ -19,6 +19,6 @@ singleuser:
         command: ["sh", "-c", "git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true"]
 
 ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
+ enabled: true
+ annotations:
+   kubernetes.io/ingress.class: "nginx"

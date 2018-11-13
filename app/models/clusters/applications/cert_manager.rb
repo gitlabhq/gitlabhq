@@ -33,8 +33,15 @@ module Clusters
             rbac: cluster.platform_kubernetes_rbac?,
             chart: chart,
             files: files.merge!(cluster_issuer_file),
-            postinstall: post_install_script
+            postinstall: post_install_script,
+            application_flags: install_command_flags
           )
+        end
+
+        def install_command_flags
+          ['--set', 'ingressShim.defaultIssuerName=letsencrypt-prod'] +
+            ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer'] +
+            ['--set', 'rbac.create=false']
         end
 
         private
@@ -45,9 +52,15 @@ module Clusters
 
         def cluster_issuer_file
           {
-            'cluster_issuer.yaml': File.read(cluster_issuer_file_path)
+            'cluster_issuer.yaml': cluster_issuer_yaml_content
           }
         end
+
+        def cluster_issuer_yaml_content
+          data = YAML.load_file(cluster_issuer_file_path)
+          data["spec"]["acme"]["email"] = self.email
+          YAML.dump(data)
+        end  
 
         def cluster_issuer_file_path
           "#{Rails.root}/vendor/cert_manager/cluster_issuer.yaml"

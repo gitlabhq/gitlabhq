@@ -81,9 +81,6 @@ export default {
     ingressInstalled() {
       return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
     },
-    certManagerInstalled() {
-      return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
-    },
     ingressExternalIp() {
       return this.applications.ingress.externalIp;
     },

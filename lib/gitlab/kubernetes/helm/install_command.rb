@@ -4,9 +4,9 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
+        attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall, :application_flags
 
-        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, preinstall: nil, postinstall: nil)
+        def initialize(name:, chart:, files:, rbac:, version: nil, repository: nil, preinstall: nil, postinstall: nil, application_flags: [])
           @name = name
           @chart = chart
           @version = version
@@ -15,6 +15,7 @@ module Gitlab
           @repository = repository
           @preinstall = preinstall
           @postinstall = postinstall
+          @application_flags = application_flags
         end
 
         def generate_script
@@ -64,16 +65,14 @@ module Gitlab
           name_flag      = ['--name', name]
           namespace_flag = ['--namespace', Gitlab::Kubernetes::Helm::NAMESPACE]
           value_flag     = ['-f', "/data/helm/#{name}/config/values.yaml"]
-          a = ['--set', 'ingressShim.defaultIssuerName=letsencrypt-prod']
-          b = ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer']
-          c = ['--set', 'rbac.create=false']
 
           name_flag +
             optional_tls_flags +
             optional_version_flag +
             optional_rbac_create_flag +
             namespace_flag +
-            value_flag + a + b + c
+            value_flag +
+            application_flags
         end
 
         def optional_rbac_create_flag
