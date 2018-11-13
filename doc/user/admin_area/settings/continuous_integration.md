@@ -50,19 +50,18 @@ This setting is set per job and can be overridden in
 [`.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts-expire_in).
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
-## Archive jobs in **[CORE ONLY]**
+## Archive jobs **[CORE ONLY]**
 
-Set this setting to enable when job gonna be considered old.
-The purpose of that feature is to reduce the CI footprint on system
-removing some of the capabilities of the jobs (metadata needed to run the build),
-but persisting the traces and artifacts to retain for auditing purposes.
+Archiving jobs is useful for reducing the CI/CD footprint on the system by
+removing some of the capabilities of the jobs (metadata needed to run the job),
+but persisting the traces and artifacts for auditing purposes.
 
-The archived jobs cannot be retried. Making this field empty does never expire jobs.
-The value has to be no less than 1 day. The example:
-`15 days`, `1 month`, `2 years`.
+To set the duration for which the jobs will be considered as old and expired:
 
-To change it:
-
-1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
-1. Change the value of archive jobs in.
+1. Go to **Admin area > Settings > CI/CD > Continuous Integration and Deployment**.
+1. Change the value of "Archive jobs".
 1. Hit **Save changes** for the changes to take effect.
+
+Once that time passes, the jobs will be archived and no longer able to be
+retried. Make it empty to never expire jobs. It has to be no less than 1 day,
+for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
