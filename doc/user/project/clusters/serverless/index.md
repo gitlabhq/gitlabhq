@@ -6,7 +6,7 @@ Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/
 
 ## Overview
 
-Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, and container-based applications. Knative brings some significant benefits out of the box through its main components:
+Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, container-based applications. Knative brings some significant benefits out of the box through its main components:
 
 - [Build:](https://github.com/knative/build) Source-to-container build orchestration
 - [Eventing:](https://github.com/knative/eventing) Management and delivery of events
