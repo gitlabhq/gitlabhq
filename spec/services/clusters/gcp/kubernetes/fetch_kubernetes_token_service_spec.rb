@@ -19,13 +19,16 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
 
     subject { described_class.new(kubeclient, service_account_token_name, namespace).execute }
 
+    before do
+      stub_kubeclient_discover(api_url)
+    end
+
     context 'when params correct' do
       let(:decoded_token) { 'xxx.token.xxx' }
       let(:token) { Base64.encode64(decoded_token) }
 
       context 'when gitlab-token exists' do
         before do
-          stub_kubeclient_discover(api_url)
           stub_kubeclient_get_secret(
             api_url,
             {
@@ -39,9 +42,17 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
         it { is_expected.to eq(decoded_token) }
       end
 
+      context 'when there is a 500 error' do
+        before do
+          stub_kubeclient_get_secret_error(api_url, service_account_token_name, namespace: namespace, status: 500)
+        end
+
+        it { expect { subject }.to raise_error(Kubeclient::HttpError) }
+      end
+
       context 'when gitlab-token does not exist' do
         before do
-          allow(kubeclient).to receive(:get_secret).and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
+          stub_kubeclient_get_secret_error(api_url, service_account_token_name, namespace: namespace, status: 404)
         end
 
         it { is_expected.to be_nil }

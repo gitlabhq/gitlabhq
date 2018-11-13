@@ -88,8 +88,8 @@ describe Gitlab::Kubernetes::Helm::Api do
 
         context 'service account and cluster role binding does not exist' do
           before do
-            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
-            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
+            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
           end
 
           it 'creates a service account, followed the cluster role binding on kubeclient' do
@@ -103,7 +103,7 @@ describe Gitlab::Kubernetes::Helm::Api do
         context 'service account already exists' do
           before do
             expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_return(service_account_resource)
-            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
+            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
           end
 
           it 'updates the service account, followed by creating the cluster role binding' do
