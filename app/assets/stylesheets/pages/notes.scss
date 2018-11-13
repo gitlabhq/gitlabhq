@@ -407,6 +407,12 @@ $note-form-margin-left: 72px;
   }
 }
 
+.tab-pane.notes {
+  .system-note {
+    margin: 0;
+  }
+}
+
 .diff-file {
   .is-over {
     .add-diff-note {
@@ -426,7 +432,7 @@ $note-form-margin-left: 72px;
     }
 
     .system-note {
-      margin: 0;
+      background-color: $white-light;
       padding: $gl-padding;
     }
   }
