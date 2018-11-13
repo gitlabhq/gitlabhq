@@ -16,8 +16,8 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
   context 'redirects' do
     it 'does not follow redirects' do
       redirect_to = 'https://redirected.example.com'
-      redirect_req_stub = stub_prometheus_request(prometheus_query_url('1'), status: 302, headers: {location: redirect_to})
-      redirected_req_stub = stub_prometheus_request(redirect_to, body: {'status': 'success'})
+      redirect_req_stub = stub_prometheus_request(prometheus_query_url('1'), status: 302, headers: { location: redirect_to })
+      redirected_req_stub = stub_prometheus_request(redirect_to, body: { 'status': 'success' })
 
       result = service.test
 
