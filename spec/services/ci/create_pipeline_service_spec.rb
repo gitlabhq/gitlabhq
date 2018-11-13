@@ -387,15 +387,24 @@ describe Ci::CreatePipelineService do
 
     context 'with environment' do
       before do
-        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls' })
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME" },
+            script: 'ls',
+            tags: ['hello']
+          })
+
         stub_ci_pipeline_yaml_file(config)
       end
 
-      it 'creates the environment' do
+      it 'creates the environment with tags' do
         result = execute_service
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
+        expect(result.builds.first.tag_list).to contain_exactly('hello')
+        expect(result.builds.first.deployment).to be_persisted
+        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
     end
 
