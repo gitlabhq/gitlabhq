@@ -53,7 +53,7 @@ it's not recommended to change the port Prometheus listens
 on as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
 
-In order to access Prometheus from outside the GitLab server you will need to 
+In order to access Prometheus from outside the GitLab server you will need to
 set a FQDN or IP in `prometheus['listen_address']`.
 To change the address/port that Prometheus listens on:
 
@@ -79,14 +79,51 @@ To change the address/port that Prometheus listens on:
 
 ### Using an external Prometheus server
 
-> **Note:** Prometheus and most exporters do not support authentication. We do not recommend exposing them beyond the local network.
+> **Note:** Prometheus and most exporters do not support authentication. We do not recommend exposing them outside the local network.
 
-For users who are running GitLab across multiple nodes, or want to utilize dedicated monitoring infrastructure, configuring a dedicated Prometheus instance is easy.
+A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for highly available deployments of GitLab with multiple nodes.
 
-1. Disable the bundled Prometheus server by setting `prometheus['enable'] = false`.
-1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example by setting `postgres_exporter['listen_address'] = '0.0.0.0:9187'`
-1. Install and set up the dedicated Prometheus instance.
-1. Add each GitLab node's metric server, and dependencies exporter, to the target list.
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Disable the bundled Prometheus:
+
+  ```ruby
+  prometheus['enable'] = false
+  ```
+
+1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
+
+   ```ruby
+   gitlab_monitor['listen_address'] = '0.0.0.0'
+   gitlab_monitor['listen_port'] = '9168'
+   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+   node_exporter['listen_address'] = '0.0.0.0:9100'
+   redis_exporter['listen_address'] = '0.0.0.0:9121'
+   postgres_exporter['listen_address'] = '0.0.0.0:9187'
+   ```
+
+1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
+1. Add the Prometheus server IP address to the [monitoring IP whitelist](https://docs.gitlab.com/ce/administration/monitoring/ip_whitelist.html). For example:
+
+  ```ruby
+  gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
+  ```
+
+1. Reconfigure GitLab to apply the changes
+1. Edit the Prometheus server's configuration file.
+1. Add each node's exporters to the Prometheus server's [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E). For example, a sample snippet using `static_configs`:
+
+  ```ruby
+  scrape_configs:
+  - job_name: 'gitlab_exporters'
+    static_configs:
+    - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
+
+  - job_name: 'gitlab_metrics'
+    metrics_path: /-/metrics
+    static_configs:
+    - targets: ['1.1.1.1:443']
+  ```
+1. Restart the Prometheus server.
 
 ## Viewing performance metrics
 
@@ -123,8 +160,8 @@ GitLab monitors its own internal service metrics, and makes them available at th
 
 ## Bundled software metrics
 
-Many of the GitLab dependencies bundled in Omnibus GitLab are preconfigured to 
-export Prometheus metrics. 
+Many of the GitLab dependencies bundled in Omnibus GitLab are preconfigured to
+export Prometheus metrics.
 
 ### Node exporter
 
