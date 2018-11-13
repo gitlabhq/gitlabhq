@@ -328,8 +328,8 @@ troubleshooting steps.
 
 This can occur for one of two reasons:
 
-* Sidekiq doesn't pick up the changes fast enough
-* Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+- Sidekiq doesn't pick up the changes fast enough
+- Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
 
 #### Sidekiq
 

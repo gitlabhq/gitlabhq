@@ -6,9 +6,9 @@
 
 Add the `InputSetter` object to the plugins array of a `DropLab.prototype.init` or `DropLab.prototype.addHook` call.
 
-* `InputSetter` requires a config value for `input` and `valueAttribute`.
-* `input` should be the DOM element that you want to manipulate.
-* `valueAttribute` should be a string that is the name of an attribute on your list items that is used to get the value
+- `InputSetter` requires a config value for `input` and `valueAttribute`.
+- `input` should be the DOM element that you want to manipulate.
+- `valueAttribute` should be a string that is the name of an attribute on your list items that is used to get the value
 to update the `input` element with.
 
 You can also set the `InputSetter` config to an array of objects, which will allow you to update multiple elements.

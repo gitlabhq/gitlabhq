@@ -97,28 +97,28 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 This [documentation](issue_workflow.md) outlines the current issue process.
 
-* [Type labels](issue_workflow.md#type-labels)
-* [Subject labels](issue_workflow.md#subject-labels)
-* [Team labels](issue_workflow.md#team-labels)
-* [Release Scoping labels](issue_workflow.md#release-scoping-labels)
-* [Priority labels](issue_workflow.md#priority-labels)
-* [Severity labels](issue_workflow.md#severity-labels)
-* [Label for community contributors](issue_workflow.md#label-for-community-contributors)
-* [Issue triaging](issue_workflow.md#issue-triaging)
-* [Feature proposals](issue_workflow.md#feature-proposals)
-* [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
-* [Issue weight](issue_workflow.md#issue-weight)
-* [Regression issues](issue_workflow.md#regression-issues)
-* [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
-* [Stewardship](issue_workflow.md#stewardship)
+- [Type labels](issue_workflow.md#type-labels)
+- [Subject labels](issue_workflow.md#subject-labels)
+- [Team labels](issue_workflow.md#team-labels)
+- [Release Scoping labels](issue_workflow.md#release-scoping-labels)
+- [Priority labels](issue_workflow.md#priority-labels)
+- [Severity labels](issue_workflow.md#severity-labels)
+- [Label for community contributors](issue_workflow.md#label-for-community-contributors)
+- [Issue triaging](issue_workflow.md#issue-triaging)
+- [Feature proposals](issue_workflow.md#feature-proposals)
+- [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
+- [Issue weight](issue_workflow.md#issue-weight)
+- [Regression issues](issue_workflow.md#regression-issues)
+- [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
+- [Stewardship](issue_workflow.md#stewardship)
 
 ## Merge requests
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 
-* [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
-* [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
-* [Definition of done](merge_request_workflow.md#definition-of-done)
+- [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
+- [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
+- [Definition of done](merge_request_workflow.md#definition-of-done)
 
 ## Style guides
 

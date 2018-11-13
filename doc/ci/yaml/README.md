@@ -332,10 +332,10 @@ jobs are created:
 
 There are a few rules that apply to the usage of job policy:
 
-* `only` and `except` are inclusive. If both `only` and `except` are defined
+- `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
-* `only` and `except` allow the use of regular expressions (using [Ruby regexp syntax](https://ruby-doc.org/core/Regexp.html)).
-* `only` and `except` allow to specify a repository path to filter jobs for
+- `only` and `except` allow the use of regular expressions (using [Ruby regexp syntax](https://ruby-doc.org/core/Regexp.html)).
+- `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
 In addition, `only` and `except` allow the use of special keywords:

@@ -45,10 +45,10 @@ this filepath should be **relative** to the root.
 
 Here are some valid examples:
 
-> * .gitlab-ci.yml
-> * .my-custom-file.yml
-> * my/path/.gitlab-ci.yml
-> * my/path/.my-custom-file.yml
+- `.gitlab-ci.yml`
+- `.my-custom-file.yml`
+- `my/path/.gitlab-ci.yml`
+- `my/path/.my-custom-file.yml`
 
 ## Test coverage parsing
 

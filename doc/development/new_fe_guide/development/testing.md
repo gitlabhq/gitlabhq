@@ -20,8 +20,8 @@ These have been removed from our codebase in May 2018 ([#23036](https://gitlab.c
 
 See also:
 
-- [old testing guide](../../testing_guide/frontend_testing.html)
-- [notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components)
+- [Old testing guide](../../testing_guide/frontend_testing.html).
+- [Notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components).
 
 [#53757]: https://gitlab.com/gitlab-org/gitlab-ce/issues/53757
 
@@ -302,8 +302,8 @@ Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts
 
 To make mounting a Vue component easier and more readable, we have a few helpers available in `spec/helpers/vue_mount_component_helper`.
 
-* `createComponentWithStore`
-* `mountComponentWithStore`
+- `createComponentWithStore`
+- `mountComponentWithStore`
 
 Examples of usage:
 

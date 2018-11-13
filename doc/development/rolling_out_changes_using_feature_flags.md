@@ -10,12 +10,12 @@ disable those changes, without having to revert an entire release.
 Starting with GitLab 11.4, developers are required to use feature flags for
 non-trivial changes. Such changes include:
 
-* New features (e.g. a new merge request widget, epics, etc).
-* Complex performance improvements that may require additional testing in
+- New features (e.g. a new merge request widget, epics, etc).
+- Complex performance improvements that may require additional testing in
   production, such as rewriting complex queries.
-* Invasive changes to the user interface, such as a new navigation bar or the
+- Invasive changes to the user interface, such as a new navigation bar or the
   removal of a sidebar.
-* Adding support for importing projects from a third-party service.
+- Adding support for importing projects from a third-party service.
 
 In all cases, those working on the changes can best decide if a feature flag is
 necessary. For example, changing the color of a button doesn't need a feature
