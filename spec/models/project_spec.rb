@@ -2415,7 +2415,7 @@ describe Project do
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace) }
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token) }
         let!(:cluster) { kubernetes_namespace.cluster }
         let(:project) { kubernetes_namespace.project }
 
