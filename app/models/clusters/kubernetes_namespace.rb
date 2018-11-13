@@ -22,6 +22,8 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_truncated,
         algorithm: 'aes-256-cbc'
 
+    scope :has_service_account_token, -> { where.not(encrypted_service_account_token: nil) }
+
     def token_name
       "#{namespace}-token"
     end
