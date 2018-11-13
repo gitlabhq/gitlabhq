@@ -54,6 +54,7 @@ you to use.
 
     ```
     Account: Email, Read
+    Projects: Read
     Repositories: Read
     Pull Requests: Read
     Issues: Read
