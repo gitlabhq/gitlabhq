@@ -253,6 +253,7 @@ class Service < ActiveRecord::Base
       bugzilla
       campfire
       custom_issue_tracker
+      discord
       drone_ci
       emails_on_push
       external_wiki

@@ -210,6 +210,19 @@ describe Gitlab::QuickActions::CommandDefinition do
       end
     end
 
+    context 'when warning is set' do
+      before do
+        subject.explanation = 'Explanation'
+        subject.warning = 'dangerous!'
+      end
+
+      it 'returns this static string' do
+        result = subject.explain({}, nil)
+
+        expect(result).to eq 'Explanation (dangerous!)'
+      end
+    end
+
     context 'when the explanation is dynamic' do
       before do
         subject.explanation = proc { |arg| "Dynamic #{arg}" }

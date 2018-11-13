@@ -10,7 +10,7 @@ Asana - Teamwork without email
 
 Set Asana service for a project.
 
-> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it.  You can also close a task with a message containing: `fix #123456`.  You can find your Api Keys here: https://asana.com/developers/documentation/getting-started/auth#api-key
+> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your Api Keys here: <https://asana.com/developers/documentation/getting-started/auth#api-key>.
 
 ```
 PUT /projects/:id/services/asana
@@ -92,7 +92,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `bamboo_url` | string | true | Bamboo root URL like https://bamboo.example.com |
+| `bamboo_url` | string | true | Bamboo root URL. For example, `https://bamboo.example.com`. |
 | `build_key` | string | true | Bamboo build plan key like KEY |
 | `username` | string | true | A user with API access, if applicable |
 | `password` | string | true | Password of the user |
@@ -117,7 +117,7 @@ GET /projects/:id/services/bamboo
 
 Bugzilla Issue Tracker
 
-### Create/Edit Buildkite service
+### Create/Edit Bugzilla service
 
 Set Bugzilla service for a project.
 
@@ -168,7 +168,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Buildkite project GitLab token |
-| `project_url` | string | true | https://buildkite.com/example/project |
+| `project_url` | string | true | `https://buildkite.com/example/project` |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification |
 
 ### Delete Buildkite service
@@ -278,7 +278,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | true | Drone CI project specific token |
-| `drone_url` | string | true | http://drone.example.com |
+| `drone_url` | string | true | `http://drone.example.com` |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification |
 
 ### Delete Drone CI service
@@ -421,7 +421,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces... |
+| `webhook` | string | true | The Hangouts Chat webhook. For example, `https://chat.googleapis.com/v1/spaces...`. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
 | `push_events` | boolean | false | Enable notifications for push events |
@@ -470,7 +470,7 @@ Parameters:
 | `notify` | boolean | false | Enable notifications |
 | `room` | string | false |Room name or ID |
 | `api_version` | string | false | Leave blank for default (v2) |
-| `server` | string | false | Leave blank for default. https://hipchat.example.com |
+| `server` | string | false | Leave blank for default. For example, `https://hipchat.example.com`. |
 
 ### Delete HipChat service
 
@@ -496,7 +496,7 @@ Send IRC messages, on update, to a list of recipients through an Irker gateway.
 
 Set Irker (IRC gateway) service for a project.
 
->  NOTE: Irker does NOT have built-in authentication, which makes it vulnerable to spamming IRC channels if it is hosted outside of a  firewall. Please make sure you run the daemon within a secured network  to prevent abuse. For more details, read: http://www.catb.org/~esr/irker/security.html.
+> NOTE: Irker does NOT have built-in authentication, which makes it vulnerable to spamming IRC channels if it is hosted outside of a  firewall. Please make sure you run the daemon within a secured network  to prevent abuse. For more details, read: <http://www.catb.org/~esr/irker/security.html>.
 
 ```
 PUT /projects/:id/services/irker
@@ -546,7 +546,7 @@ Set JIRA service for a project.
 
 > **Notes:**
 > - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
->   `project_url` are replaced by `project_key`, `url`.  If you are using an
+>   `project_url` are replaced by `project_key`, `url`. If you are using an
 >   older version, [follow this documentation][old-jira-api].
 
 ```
@@ -557,7 +557,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
+| `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project. For example, `https://jira.example.com`. |
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
@@ -589,7 +589,7 @@ PUT /projects/:id/services/kubernetes
 Parameters:
 
 - `namespace` (**required**) - The Kubernetes namespace to use
-- `api_url` (**required**) - The URL to the Kubernetes cluster API, e.g., https://kubernetes.example.com
+- `api_url` (**required**) - The URL to the Kubernetes cluster API. For example, `https://kubernetes.example.com`
 - `token` (**required**) - The service token to authenticate against the Kubernetes cluster with
 - `ca_pem` (optional) - A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)
 
@@ -657,7 +657,6 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Slack token |
-
 
 ### Delete Slack slash command service
 
@@ -823,7 +822,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_url` | string | true | Prometheus API Base URL, like http://prometheus.example.com/ |
+| `api_url` | string | true | Prometheus API Base URL. For example, `http://prometheus.example.com/`. |
 
 ### Delete Prometheus service
 
@@ -934,7 +933,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | https://hooks.slack.com/services/... |
+| `webhook` | string | true | `https://hooks.slack.com/services/...` |
 | `username` | string | false | username |
 | `channel` | string | false | Default channel to use if others are not configured |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
@@ -988,7 +987,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/... |
+| `webhook` | string | true | The Microsoft Teams webhook. For example, `https://outlook.office.com/webhook/...` |
 
 ### Delete Microsoft Teams service
 
@@ -1024,7 +1023,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Mattermost webhook. e.g. http://mattermost_host/hooks/... |
+| `webhook` | string | true | The Mattermost webhook. For example, `http://mattermost_host/hooks/...` |
 | `username` | string | false | username |
 | `channel` | string | false | Default channel to use if others are not configured |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
@@ -1080,7 +1079,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `teamcity_url` | string | true | TeamCity root URL like https://teamcity.example.com |
+| `teamcity_url` | string | true | TeamCity root URL. For example, `https://teamcity.example.com` |
 | `build_type` | string | true | Build configuration ID |
 | `username` | string | true | A user with permissions to trigger a manual build |
 | `password` | string | true | The password of the user |
@@ -1104,7 +1103,6 @@ GET /projects/:id/services/teamcity
 [jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
 
-
 ## MockCI
 
 Mock an external CI. See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock service.
@@ -1123,7 +1121,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `mock_service_url` | string | true | http://localhost:4004 |
+| `mock_service_url` | string | true | `http://localhost:4004` |
 
 ### Delete MockCI service
 

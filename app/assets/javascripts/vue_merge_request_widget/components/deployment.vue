@@ -40,10 +40,8 @@ export default {
     failed: __('Failed to deploy to'),
   },
   data() {
-    const features = window.gon.features || {};
     return {
       isStopping: false,
-      enableCiEnvironmentsStatusChanges: features.ciEnvironmentsStatusChanges,
     };
   },
   computed: {
@@ -74,10 +72,7 @@ export default {
         : '';
     },
     shouldRenderDropdown() {
-      return (
-        this.enableCiEnvironmentsStatusChanges &&
-        (this.deployment.changes && this.deployment.changes.length > 0)
-      );
+      return this.deployment.changes && this.deployment.changes.length > 0;
     },
   },
   methods: {

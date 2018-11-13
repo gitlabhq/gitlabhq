@@ -63,7 +63,7 @@ module Gitlab
       end
 
       def repository_url(name)
-        URI.join(remote, name).to_s
+        Gitlab::Utils.append_path(remote, name)
       end
 
       def remote

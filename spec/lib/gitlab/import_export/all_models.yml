@@ -198,6 +198,7 @@ project:
 - last_event
 - services
 - campfire_service
+- discord_service
 - drone_ci_service
 - emails_on_push_service
 - pipelines_email_service

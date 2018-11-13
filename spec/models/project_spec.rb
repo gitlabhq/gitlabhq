@@ -33,6 +33,7 @@ describe Project do
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:discord_service) }
     it { is_expected.to have_one(:drone_ci_service) }
     it { is_expected.to have_one(:emails_on_push_service) }
     it { is_expected.to have_one(:pipelines_email_service) }
@@ -2414,7 +2415,7 @@ describe Project do
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace) }
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token) }
         let!(:cluster) { kubernetes_namespace.cluster }
         let(:project) { kubernetes_namespace.project }
 

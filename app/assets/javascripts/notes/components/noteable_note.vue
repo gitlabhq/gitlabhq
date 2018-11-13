@@ -46,6 +46,7 @@ export default {
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
         target: this.isTarget,
+        'is-editable': this.note.current_user.can_edit,
       };
     },
     canResolve() {

@@ -122,6 +122,7 @@ export default {
       setTargetNoteHash: 'setTargetNoteHash',
       toggleDiscussion: 'toggleDiscussion',
       setNotesFetchedState: 'setNotesFetchedState',
+      startTaskList: 'startTaskList',
     }),
     getComponentName(discussion) {
       if (discussion.isSkeletonNote) {
@@ -157,6 +158,7 @@ export default {
           this.isFetching = false;
         })
         .then(() => this.$nextTick())
+        .then(() => this.startTaskList())
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.setLoadingState(false);

@@ -122,7 +122,7 @@ class Projects::BlobController < Projects::ApplicationController
     @lines.map! do |line|
       # These are marked as context lines but are loaded from blobs.
       # We also have context lines loaded from diffs in other places.
-      diff_line = Gitlab::Diff::Line.new(line, 'context', nil, nil, nil)
+      diff_line = Gitlab::Diff::Line.new(line, expanded_diff_line_type, nil, nil, nil)
       diff_line.rich_text = line
       diff_line
     end
@@ -130,6 +130,11 @@ class Projects::BlobController < Projects::ApplicationController
     add_match_line
 
     render json: DiffLineSerializer.new.represent(@lines)
+  end
+
+  def expanded_diff_line_type
+    # Context lines can't receive comments.
+    Feature.enabled?(:comment_in_any_diff_line, @project) ? nil : 'context'
   end
 
   def add_match_line

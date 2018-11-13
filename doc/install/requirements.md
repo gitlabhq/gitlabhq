@@ -36,7 +36,7 @@ Please consider using a virtual machine to run GitLab.
 GitLab requires Ruby (MRI) 2.3. Support for Ruby versions below 2.3 (2.1, 2.2) will stop with GitLab 8.13.
 
 You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab
+We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com) but GitLab
 needs several Gems that have native extensions.
 
 ## Hardware requirements

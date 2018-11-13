@@ -1,6 +1,6 @@
 # Migrating from ClearCase
 
-[ClearCase](https://www-03.ibm.com/software/products/en/clearcase/) is a set of
+[ClearCase](https://www.ibm.com/us-en/marketplace/rational-clearcase) is a set of
 tools developed by IBM which also include a centralized version control system
 similar to Git.
 
