@@ -10,7 +10,7 @@ Rack Attack offers IP whitelisting, blacklisting, Fail2ban style filtering and
 tracking.
 
 **Note:** Starting with 11.2, Rack Attack is disabled by default. To continue
-using this feature, please enable it in your `gitlab.rb` by setting 
+using this feature, please enable it in your `gitlab.rb` by setting
 `gitlab_rails['rack_attack_git_basic_auth'] = true`.
 
 By default, user sign-in, user sign-up (if enabled), and user password reset is
@@ -41,7 +41,7 @@ For more information on how to use these options check out
     }
     ```
 
-3. Reconfigure GitLab:
+1. Reconfigure GitLab:
 
     ```
     sudo gitlab-ctl reconfigure
@@ -98,26 +98,26 @@ In case you want to remove a blocked IP, follow these steps:
     grep "Rack_Attack" /var/log/gitlab/gitlab-rails/production.log
     ```
 
-2. Since the blacklist is stored in Redis, you need to open up `redis-cli`:
+1. Since the blacklist is stored in Redis, you need to open up `redis-cli`:
 
     ```sh
     /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
     ```
 
-3. You can remove the block using the following syntax, replacing `<ip>` with
+1. You can remove the block using the following syntax, replacing `<ip>` with
    the actual IP that is blacklisted:
 
     ```
     del cache:gitlab:rack::attack:allow2ban:ban:<ip>
     ```
 
-4. Confirm that the key with the IP no longer shows up:
+1. Confirm that the key with the IP no longer shows up:
 
     ```
     keys *rack::attack*
     ```
 
-5. Optionally, add the IP to the whitelist to prevent it from being blacklisted
+1. Optionally, add the IP to the whitelist to prevent it from being blacklisted
    again (see [settings](#settings)).
 
 ## Troubleshooting
@@ -129,11 +129,11 @@ the load balancer. In that case, you will need to:
 
 1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-gitlab-trusted_proxies-and-the-nginx-real_ip-module).
    This will keep users' IPs from being listed as the load balancer IPs.
-2. Whitelist the load balancer's IP address(es) in the Rack Attack [settings](#settings).
-3. Reconfigure GitLab:
+1. Whitelist the load balancer's IP address(es) in the Rack Attack [settings](#settings).
+1. Reconfigure GitLab:
 
     ```
     sudo gitlab-ctl reconfigure
     ```
 
-4. [Remove the block via Redis.](#remove-blocked-ips-from-rack-attack-via-redis)
+1. [Remove the block via Redis.](#remove-blocked-ips-from-rack-attack-via-redis)

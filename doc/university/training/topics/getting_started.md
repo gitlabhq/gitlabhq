@@ -35,11 +35,10 @@ comments: false
 
 ## Instantiate workflow with clone
 
-1. Create a project in your user namespace
-   - Choose to import from 'Any Repo by URL' and use
-     https://gitlab.com/gitlab-org/training-examples.git
-2. Create a '`Workspace`' directory in your home directory.
-3. Clone the '`training-examples`' project
+1. Create a project in your user namespace.
+  - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>.
+1. Create a '`Workspace`' directory in your home directory.
+1. Clone the '`training-examples`' project.
 
 ----------
 

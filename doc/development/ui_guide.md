@@ -54,12 +54,12 @@ information from database or file system
 
 When exporting SVGs, be sure to follow the following guidelines:
 
-1. Convert all strokes to outlines.
-2. Use pathfinder tools to combine overlapping paths and create compound paths.
-3. SVGs that are limited to one color should be exported without a fill color so the color can be set using CSS.
-4. Ensure that exported SVGs have been run through an [SVG cleaner](https://github.com/RazrFalcon/SVGCleaner) to remove unused elements and attributes.
+- Convert all strokes to outlines.
+- Use pathfinder tools to combine overlapping paths and create compound paths.
+- SVGs that are limited to one color should be exported without a fill color so the color can be set using CSS.
+- Ensure that exported SVGs have been run through an [SVG cleaner](https://github.com/RazrFalcon/SVGCleaner) to remove unused elements and attributes.
 
-You can open your svg in a text editor to ensure that it is clean. 
+You can open your svg in a text editor to ensure that it is clean.
 Incorrect files will look like this:
 
 ```xml

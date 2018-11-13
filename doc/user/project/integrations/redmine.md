@@ -18,15 +18,16 @@ in the table below.
 
     ![Redmine configuration](img/redmine_configuration.png)
 
-2. To disable the internal issue tracking system in a project, navigate to the General page, expand [Permissions](../settings/index.md#sharing-and-permissions), and slide the Issues switch invalid.
+1. To disable the internal issue tracking system in a project, navigate to the General page, expand [Permissions](../settings/index.md#sharing-and-permissions), and slide the Issues switch invalid.
 
     ![Issue configuration](img/issue_configuration.png)
 
 ## Referencing issues in Redmine
 
 Issues in Redmine can be referenced in two alternative ways:
-1. `#<ID>` where `<ID>` is a number (example `#143`)
-2. `<PROJECT>-<ID>` where `<PROJECT>` starts with a capital letter which is
+
+- `#<ID>` where `<ID>` is a number (example `#143`).
+- `<PROJECT>-<ID>` where `<PROJECT>` starts with a capital letter which is
   then followed by capital letters, numbers or underscores, and `<ID>` is
   a number (example `API_32-143`).
 

@@ -46,18 +46,18 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
       --description "My Runner"
     ```
 
-2. Install Docker Engine on server.
+1. Install Docker Engine on server.
 
     For more information how to install Docker Engine on different systems
     checkout the [Supported installations](https://docs.docker.com/engine/installation/).
 
-3. Add `gitlab-runner` user to `docker` group:
+1. Add `gitlab-runner` user to `docker` group:
 
     ```bash
     sudo usermod -aG docker gitlab-runner
     ```
 
-4. Verify that `gitlab-runner` has access to Docker:
+1. Verify that `gitlab-runner` has access to Docker:
 
     ```bash
     sudo -u gitlab-runner -H docker info
@@ -75,7 +75,7 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
         - docker run my-docker-image /script/to/run/tests
     ```
 
-5. You can now use `docker` command and install `docker-compose` if needed.
+1. You can now use `docker` command and install `docker-compose` if needed.
 
 NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.

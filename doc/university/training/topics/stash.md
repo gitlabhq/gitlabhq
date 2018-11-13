@@ -66,12 +66,12 @@ stashes.
 ## Git Stash
 
 1. Modify a file
-2. Stage file
-3. Stash it
-4. View our stash list
-5. Confirm no pending changes through status
-5. Apply with pop
-6. View list to confirm changes
+1. Stage file
+1. Stash it
+1. View our stash list
+1. Confirm no pending changes through status
+1. Apply with pop
+1. View list to confirm changes
 
 ----------
 

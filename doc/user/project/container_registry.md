@@ -139,12 +139,12 @@ docker login registry.example.com -u <username> -p <token>
 1. Check to make sure that the system clock on your Docker client and GitLab server have
    been synchronized (e.g. via NTP).
 
-2. If you are using an S3-backed Registry, double check that the IAM
+1. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See [the
    sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
-3. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
+1. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 

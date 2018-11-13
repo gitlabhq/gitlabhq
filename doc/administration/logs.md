@@ -29,9 +29,9 @@ Each line contains a JSON line that can be ingested by Elasticsearch, Splunk, et
 In this example, you can see this was a GET request for a specific issue. Notice each line also contains performance data:
 
 1. `duration`: the total time taken to retrieve the request
-2. `view`: total time taken inside the Rails views
-3. `db`: total time to retrieve data from the database
-4. `gitaly_calls`: total number of calls made to Gitaly
+1. `view`: total time taken inside the Rails views
+1. `db`: total time to retrieve data from the database
+1. `gitaly_calls`: total number of calls made to Gitaly
 
 User clone/fetch activity using http transport appears in this log as `action: git_upload_pack`.
 
@@ -119,7 +119,7 @@ This file lives in `/var/log/gitlab/gitlab-rails/integrations_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/integrations_json.log` for
 installations from source.
 
-It contains information about [integrations](../user/project/integrations/project_services.md) activities such as JIRA, Asana and Irker services. It uses JSON format like the example below:  
+It contains information about [integrations](../user/project/integrations/project_services.md) activities such as JIRA, Asana and Irker services. It uses JSON format like the example below:
 
 ``` json
 {"severity":"ERROR","time":"2018-09-06T14:56:20.439Z","service_class":"JiraService","project_id":8,"project_path":"h5bp/html5-boilerplate","message":"Error sending message","client_url":"http://jira.gitlap.com:8080","error":"execution expired"}
@@ -257,8 +257,8 @@ importer. Future importers may use this file.
 
 ## Reconfigure Logs
 
-Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab 
-packages. Installations from source don't have reconfigure logs. A reconfigure log 
+Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab
+packages. Installations from source don't have reconfigure logs. A reconfigure log
 is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an upgrade.
 
 Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
