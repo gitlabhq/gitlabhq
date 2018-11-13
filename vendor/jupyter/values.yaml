@@ -20,9 +20,5 @@ singleuser:
 
 ingress:
   enabled: true
-  tls:
-  - hosts:
-    secretName: test-app-tls-2
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    kubernetes.io/tls-acme: "true"
