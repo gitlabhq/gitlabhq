@@ -665,7 +665,7 @@ cache, queues, and shared_state. To make this work with Sentinel:
     **Note**: Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_MASTER_NAME`
 
     1. PASSWORD is the plaintext password for the Redis instance
-    2. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
+    1. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
 1. Include an array of hashes with host/port combinations, such as the following:
 
     ```ruby
