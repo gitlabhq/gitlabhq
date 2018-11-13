@@ -4,8 +4,8 @@
   %fieldset
     .form-group
       = f.label :default_first_day_of_week, _('Default first day of the week'), class: 'label-bold'
-      = f.select :default_first_day_of_week, options_for_select({_('Sunday') => 0, _('Monday') => 1}, @application_setting.default_first_day_of_week), {}, class: 'form-control'
+      = f.select :default_first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
       .form-text.text-muted
-        Default first day of the week in calendars and date pickers.
+        = _('Default first day of the week in calendars and date pickers.')
 
-  = f.submit 'Save changes', class: "btn btn-success"
+  = f.submit _('Save changes'), class: "btn btn-success"

@@ -66,17 +66,17 @@
 
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Localization
+      = _('Localization')
     %p
-      Customize language and region related settings.
+      = _('Customize language and region related settings.')
       = succeed '.' do
-        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
   .col-lg-8
     .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
-        First day of the week
-      = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
+        = _('First day of the week')
+      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'form-control'
       .form-text.text-muted
-        Choose on what day the week should start.
+        = _('Choose on what day the week should start.')
     .form-group
-      = f.submit 'Save changes', class: 'btn btn-success'
+      = f.submit _('Save changes'), class: 'btn btn-success'

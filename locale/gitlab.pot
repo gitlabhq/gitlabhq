@@ -1413,6 +1413,9 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
+msgid "Choose on what day the week should start."
+msgstr ""
+
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
@@ -2444,6 +2447,9 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize language and region related settings."
+msgstr ""
+
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
 msgstr ""
 
@@ -2508,6 +2514,9 @@ msgid "Default Branch"
 msgstr ""
 
 msgid "Default first day of the week"
+msgstr ""
+
+msgid "Default first day of the week in calendars and date pickers."
 msgstr ""
 
 msgid "Default: Directly import the Google Code email address or username"
@@ -3356,6 +3365,9 @@ msgid "Finish editing this message first!"
 msgstr ""
 
 msgid "Finished"
+msgstr ""
+
+msgid "First day of the week"
 msgstr ""
 
 msgid "FirstPushedBy|First"
@@ -6942,6 +6954,9 @@ msgid "Support for custom certificates is disabled. Ask your system's administra
 msgstr ""
 
 msgid "Switch branch/tag"
+msgstr ""
+
+msgid "System Default (%{default})"
 msgstr ""
 
 msgid "System Hooks"

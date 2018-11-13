@@ -94,5 +94,5 @@ This following setting allows you to customize calendar layouts.
 
 ### First day of the week
 
-You can choose between **Default**, **Sunday** and **Monday** for the first day of the week. If you select **Default**, the system-wide default setting will be used.
+You can choose between **System Default**, **Sunday** and **Monday** for the first day of the week. If you select **System Default**, the system-wide default setting will be used.
 This preference will be used for all calendar views and datepickers.
