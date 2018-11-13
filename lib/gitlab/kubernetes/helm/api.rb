@@ -9,8 +9,6 @@ module Gitlab
 
         def install(command)
           begin
-            Gitlab::AppLogger.info("---INSTALLING---------")
-            Gitlab::AppLogger.info(command)
             namespace.ensure_exists!
 
             create_service_account(command)

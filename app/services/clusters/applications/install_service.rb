@@ -4,11 +4,9 @@ module Clusters
   module Applications
     class InstallService < BaseHelmService
       def execute
-        Gitlab::AppLogger.info('---- IN execute installing ----')
         return unless app.scheduled?
 
         begin
-          
           app.make_installing!
           helm_api.install(install_command)
 

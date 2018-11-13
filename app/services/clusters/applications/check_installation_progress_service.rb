@@ -28,11 +28,9 @@ module Clusters
       end
 
       def on_failed
-        Gitlab::AppLogger.info("Installation FAILED!!")
         app.make_errored!('Installation failed')
       ensure
-        Gitlab::AppLogger.info("SKIP CLEARING POD!")
-        # remove_installation_pod
+        remove_installation_pod
       end
 
       def check_timeout

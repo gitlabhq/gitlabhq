@@ -27,32 +27,14 @@ module Clusters
         end
 
         def install_command
-          Gitlab::AppLogger.info '----- INSTALLING CLUSTER ISSUER-v2 ----'
-          begin
-            Gitlab::Kubernetes::Helm::InstallCommand.new(
-              name: 'certmanager',
-              version: VERSION,
-              rbac: cluster.platform_kubernetes_rbac?,
-              chart: chart,
-              files: files.merge!(cluster_issuer_file),
-              postinstall: post_install_script
-            )
-            #res = YAML.load_file(Rails.root.join('config', 'cert_manager', 'cluster_issuer.yaml'))
-            #Gitlab::AppLogger.info(res)
-            #Gitlab::Kubernetes::ClusterIssuer(res).generate()
-          rescue StandardError => e
-            Gitlab::AppLogger.info('install_command_eror------------------------------------------------')
-            Gitlab::AppLogger.error(e)
-            Gitlab::AppLogger.error(e.backtrace.join("\n"))
-          rescue Exception => e
-            Gitlab::AppLogger.info('install_command_exception--------------------------------------------------')
-            Gitlab::AppLogger.error(e)
-            Gitlab::AppLogger.error(e.backtrace.join("\n"))
-          end    
-        end
-
-        def cluster_issuer_resource_definition
-          YAML.load_file(Rails.root.join('config', 'cert_manager', 'cluster_issuer.yaml'))
+          Gitlab::Kubernetes::Helm::InstallCommand.new(
+            name: 'certmanager',
+            version: VERSION,
+            rbac: cluster.platform_kubernetes_rbac?,
+            chart: chart,
+            files: files.merge!(cluster_issuer_file),
+            postinstall: post_install_script
+          )
         end
 
         private

@@ -317,6 +317,7 @@ export default {
       </application-row>
       <application-row
         id="prometheus"
+        v-if="isProjectCluster"
         :logo-url="prometheusLogo"
         :title="applications.prometheus.title"
         :manage-link="managePrometheusPath"
