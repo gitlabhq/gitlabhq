@@ -45,7 +45,6 @@ namespace :gitlab do
       start_checking "GitLab Shell"
 
       check_gitlab_shell
-      check_repos_hooks_directory_is_link
       check_gitlab_shell_self_test
 
       finished_checking "GitLab Shell"
@@ -53,42 +52,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-    def check_repos_hooks_directory_is_link
-      print "hooks directories in repos are links: ... "
-
-      gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
-
-      unless Project.count > 0
-        puts "can't check, you have no projects".color(:magenta)
-        return
-      end
-
-      puts ""
-
-      Project.find_each(batch_size: 100) do |project|
-        print sanitized_message(project)
-        project_hook_directory = File.join(project.repository.path_to_repo, "hooks")
-
-        if project.empty_repo?
-          puts "repository is empty".color(:magenta)
-        elsif File.directory?(project_hook_directory) && File.directory?(gitlab_shell_hooks_path) &&
-            (File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path))
-          puts 'ok'.color(:green)
-        else
-          puts "wrong or missing hooks".color(:red)
-          try_fixing_it(
-            sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')} #{repository_storage_paths_args.join(' ')}"),
-            'Check the hooks_path in config/gitlab.yml',
-            'Check your gitlab-shell installation'
-          )
-          for_more_information(
-            see_installation_guide_section "GitLab Shell"
-          )
-          fix_and_rerun
-        end
-      end
-    end
 
     def check_gitlab_shell_self_test
       gitlab_shell_repo_base = gitlab_shell_path
