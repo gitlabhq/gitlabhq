@@ -82,7 +82,7 @@ to >= 2.9 (see [Broken pipe when pushing to Git repository][Broken-Pipe]).
 
 If pulling/pushing from/to your repository ends up taking more than 50 seconds,
 a timeout will be issued with a log of the number of operations performed 
-and their respective timings like the example below:
+and their respective timings, like the example below:
 
 ```
 remote: Running checks for branch: master
