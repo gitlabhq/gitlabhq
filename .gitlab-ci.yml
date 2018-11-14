@@ -32,6 +32,7 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
+  BUILD_ASSETS_IMAGE: "false"
 
 before_script:
   - bundle --version
