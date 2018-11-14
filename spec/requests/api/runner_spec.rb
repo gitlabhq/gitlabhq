@@ -441,9 +441,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'picks a job' do
             request_job info: { platform: :darwin }
 
+            runner.reload
+
             expect(response).to have_gitlab_http_status(201)
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-            expect(runner.reload.platform).to eq('darwin')
+            expect(runner.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
@@ -537,8 +539,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
               expect(json_response['dependencies']).to include(
-                { 'id' => job.id, 'name' => job.name, 'token' => job.token },
-                { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+                { 'id' => job.id, 'name' => job.name, 'token' => test_job.token },
+                { 'id' => job2.id, 'name' => job2.name, 'token' => test_job.token })
             end
           end
 
@@ -557,7 +559,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
-                { 'id' => job.id, 'name' => job.name, 'token' => job.token,
+                { 'id' => job.id, 'name' => job.name, 'token' => test_job.token,
                   'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106365 } })
             end
           end
@@ -582,7 +584,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
-              expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
+              expect(json_response['dependencies'][0]).to include(
+                'id' => job2.id, 'name' => job2.name, 'token' => test_job.token)
             end
           end
 
@@ -983,7 +986,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 patch_the_trace
               end
 
-              it 'returns Forbidden ' do
+              it 'returns Forbidden' do
                 expect(response.status).to eq(403)
               end
             end
@@ -1024,11 +1027,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
         context 'when the job is canceled' do
           before do
-            job.cancel
+            job.cancel!
             patch_the_trace
           end
 
-          it 'receives status in header' do
+          it 'responds with forbidden and status in header' do
+            expect(response).to have_gitlab_http_status(403)
             expect(response.header['Job-Status']).to eq 'canceled'
           end
         end
@@ -1199,7 +1203,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'fails to authorize artifacts posting' do
             authorize_artifacts(token: job.project.runners_token)
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -1212,10 +1216,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'authorization token is invalid' do
-          it 'responds with forbidden' do
+          it 'responds with not found' do
             authorize_artifacts(token: 'invalid', filesize: 100 )
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -1248,9 +1252,21 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
 
             it 'responds with forbidden' do
-              upload_artifacts(file_upload, headers_with_token)
-
               expect(response).to have_gitlab_http_status(403)
+            end
+          end
+
+          context 'when job has been canceled' do
+            let(:job) { create(:ci_build) }
+
+            before do
+              job.cancel!
+              upload_artifacts(file_upload, headers_with_token)
+            end
+
+            it 'responds with forbidden' do
+              expect(response).to have_gitlab_http_status(403)
+              expect(response.header['Job-Status']).to eq('canceled')
             end
           end
 
@@ -1303,10 +1319,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
 
             context 'when using runners token' do
-              it 'responds with forbidden' do
+              it 'responds with not found' do
                 upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
 
-                expect(response).to have_gitlab_http_status(403)
+                expect(response).to have_gitlab_http_status(404)
               end
             end
           end
@@ -1526,10 +1542,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       end
 
       describe 'GET /api/v4/jobs/:id/artifacts' do
-        let(:token) { job.token }
+        let(:project) { create(:project) }
+        let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+        let(:running_job) { create(:ci_build, :running, pipeline: pipeline) }
+        let(:token) { running_job.token }
 
         context 'when job has artifacts' do
-          let(:job) { create(:ci_build) }
+          let(:job) { create(:ci_build, pipeline: pipeline) }
           let(:store) { JobArtifactUploader::Store::LOCAL }
 
           before do
@@ -1555,7 +1574,6 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
             context 'when artifacts are stored remotely' do
               let(:store) { JobArtifactUploader::Store::REMOTE }
-              let!(:job) { create(:ci_build) }
 
               context 'when proxy download is being used' do
                 before do
@@ -1582,6 +1600,30 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
+          context 'when using running token from another pipeline' do
+            let(:running_job) { create(:ci_build, :running, project: project) }
+
+            before do
+              download_artifact
+            end
+
+            it 'responds with not found' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+
+          context 'when using running token from another project' do
+            let(:running_job) { create(:ci_build, :running) }
+
+            before do
+              download_artifact
+            end
+
+            it 'responds with not found' do
+              expect(response).to have_gitlab_http_status(404)
+            end
+          end
+
           context 'when using runnners token' do
             let(:token) { job.project.runners_token }
 
@@ -1589,8 +1631,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               download_artifact
             end
 
-            it 'responds with forbidden' do
-              expect(response).to have_gitlab_http_status(403)
+            it 'responds with not found' do
+              expect(response).to have_gitlab_http_status(404)
             end
           end
         end
