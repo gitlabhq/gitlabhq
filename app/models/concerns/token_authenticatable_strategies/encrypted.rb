@@ -20,7 +20,8 @@ module TokenAuthenticatableStrategies
     def get_token(instance)
       raw_token = instance.read_attribute(encrypted_field)
       token = Gitlab::CryptoHelper.aes256_gcm_decrypt(raw_token)
-      token ||= fallback_strategy.get_token(instance) if fallback?
+
+      token || (fallback_strategy.get_token(instance) if fallback?)
     end
 
     def set_token(instance, token)
