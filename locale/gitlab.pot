@@ -1073,6 +1073,9 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
+msgid "CI / CD Charts"
+msgstr ""
+
 msgid "CI / CD Settings"
 msgstr ""
 
@@ -1951,6 +1954,9 @@ msgid "Contribute to GitLab"
 msgstr ""
 
 msgid "Contribution"
+msgstr ""
+
+msgid "Contribution Charts"
 msgstr ""
 
 msgid "Contribution guide"
