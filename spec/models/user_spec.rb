@@ -1174,6 +1174,22 @@ describe User do
 
       expect(described_class.by_any_email(user.email, confirmed: true)).to eq([user])
     end
+
+    it 'finds user through a private commit email' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.by_any_email(private_email)).to eq([user])
+      expect(described_class.by_any_email(private_email, confirmed: true)).to eq([user])
+    end
+
+    it 'finds user through a private commit email in an array' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.by_any_email([private_email])).to eq([user])
+      expect(described_class.by_any_email([private_email], confirmed: true)).to eq([user])
+    end
   end
 
   describe '.search' do
@@ -1501,7 +1517,12 @@ describe User do
       email_unconfirmed = create :email, user: user
       user.reload
 
-      expect(user.all_emails).to match_array([user.email, email_unconfirmed.email, email_confirmed.email])
+      expect(user.all_emails).to contain_exactly(
+        user.email,
+        user.private_commit_email,
+        email_unconfirmed.email,
+        email_confirmed.email
+      )
     end
   end
 
@@ -1512,7 +1533,11 @@ describe User do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
 
-      expect(user.verified_emails).to match_array([user.email, user.private_commit_email, email_confirmed.email])
+      expect(user.verified_emails).to contain_exactly(
+        user.email,
+        user.private_commit_email,
+        email_confirmed.email
+      )
     end
   end
 
@@ -1530,6 +1555,14 @@ describe User do
 
     it 'returns true when user is found through private commit email' do
       expect(user.verified_email?(user.private_commit_email)).to be_truthy
+    end
+
+    it 'returns true for an outdated private commit email' do
+      old_email = user.private_commit_email
+
+      user.update!(username: 'changed-username')
+
+      expect(user.verified_email?(old_email)).to be_truthy
     end
 
     it 'returns false when the email is not verified/confirmed' do
