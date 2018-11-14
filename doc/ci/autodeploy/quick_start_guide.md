@@ -23,9 +23,9 @@ You need to have the Google Cloud SDK installed. e.g.
 On OSX, install [homebrew](https://brew.sh):
 
 1. Install Brew Caskroom: `brew install caskroom/cask/brew-cask`
-2. Install Google Cloud SDK: `brew cask install google-cloud-sdk`
-3. Add `kubectl`: `gcloud components install kubectl`
-4. Log in: `gcloud auth login`
+1. Install Google Cloud SDK: `brew cask install google-cloud-sdk`
+1. Add `kubectl`: `gcloud components install kubectl`
+1. Log in: `gcloud auth login`
 
 Now go back to the Google interface, find your cluster, and follow the instructions under `Connect to the cluster` and open the Kubernetes Dashboard. It will look something like `gcloud container clusters get-credentials ruby-autodeploy \ --zone europe-west2-c --project api-project-XXXXXXX` and then `kubectl proxy`.
 

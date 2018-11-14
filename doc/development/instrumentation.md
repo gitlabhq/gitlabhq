@@ -117,11 +117,11 @@ The block is executed and the execution time is stored as a set of fields in the
 currently running transaction. If no transaction is present the block is yielded
 without measuring anything.
 
-3 values are measured for a block:
+Three values are measured for a block:
 
-1. The real time elapsed, stored in NAME_real_time.
-2. The CPU time elapsed, stored in NAME_cpu_time.
-3. The call count, stored in NAME_call_count.
+- The real time elapsed, stored in NAME_real_time.
+- The CPU time elapsed, stored in NAME_cpu_time.
+- The call count, stored in NAME_call_count.
 
 Both the real and CPU timings are measured in milliseconds.
 

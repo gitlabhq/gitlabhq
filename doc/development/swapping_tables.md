@@ -8,8 +8,8 @@ Let's say you want to swap the table "events" with "events_for_migration". In
 this case you need to follow 3 steps:
 
 1. Rename "events" to "events_temporary"
-2. Rename "events_for_migration" to "events"
-3. Rename "events_temporary" to "events_for_migration"
+1. Rename "events_for_migration" to "events"
+1. Rename "events_temporary" to "events_for_migration"
 
 Rails allows you to do this using the `rename_table` method:
 

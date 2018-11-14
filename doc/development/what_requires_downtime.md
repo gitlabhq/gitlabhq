@@ -300,7 +300,7 @@ The same applies to `rename_column_using_background_migration`:
 
 1. Create a migration using the helper, which will schedule background
    migrations to spread the writes over a longer period of time.
-2. In the next monthly release, create a clean-up migration to steal from the
+1. In the next monthly release, create a clean-up migration to steal from the
    Sidekiq queues, migrate any missing rows, and cleanup the rename. This
    migration should skip the steps after stealing from the Sidekiq queues if the
    column has already been renamed.

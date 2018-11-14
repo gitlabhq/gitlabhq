@@ -1,8 +1,9 @@
 <script>
+import { GlTooltipDirective, GlLink, GlButton } from '@gitlab-org/gitlab-ui';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
-import tooltip from '../directives/tooltip';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -16,9 +17,12 @@ export default {
     CiIconBadge,
     TimeagoTooltip,
     UserAvatarImage,
+    GlLink,
+    GlButton,
+    LoadingButton,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     status: {
@@ -98,8 +102,8 @@ export default {
       by
 
       <template v-if="user">
-        <a
-          v-tooltip
+        <gl-link
+          v-gl-tooltip
           :href="user.path"
           :title="user.email"
           class="js-user-link commit-committer-link"
@@ -113,7 +117,7 @@ export default {
           />
 
           {{ user.name }}
-        </a>
+        </gl-link>
         <span
           v-if="user.status_tooltip_html"
           v-html="user.status_tooltip_html"></span>
@@ -127,16 +131,16 @@ export default {
       <template
         v-for="(action, i) in actions"
       >
-        <a
+        <gl-link
           v-if="action.type === 'link'"
           :key="i"
           :href="action.path"
           :class="action.cssClass"
         >
           {{ action.label }}
-        </a>
+        </gl-link>
 
-        <a
+        <gl-link
           v-else-if="action.type === 'ujs-link'"
           :key="i"
           :href="action.path"
@@ -145,31 +149,24 @@ export default {
           rel="nofollow"
         >
           {{ action.label }}
-        </a>
+        </gl-link>
 
-        <button
+        <loading-button
           v-else-if="action.type === 'button'"
           :key="i"
+          :loading="action.isLoading"
           :disabled="action.isLoading"
           :class="action.cssClass"
-          type="button"
+          container-class="d-inline"
+          :label="action.label"
           @click="onClickAction(action)"
-        >
-          {{ action.label }}
-          <i
-            v-show="action.isLoading"
-            class="fa fa-spin fa-spinner"
-            aria-hidden="true"
-          >
-          </i>
-        </button>
+        />
       </template>
     </section>
-    <button
+    <gl-button
       v-if="hasSidebarButton"
       id="toggleSidebar"
-      type="button"
-      class="btn btn-default d-block d-sm-none
+      class="d-block d-sm-none
 sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
       @click="onClickSidebarButton"
     >
@@ -179,6 +176,6 @@ sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
         aria-labelledby="toggleSidebar"
       >
       </i>
-    </button>
+    </gl-button>
   </header>
 </template>

@@ -173,9 +173,7 @@ module Clusters
         kubeclient = build_kube_client!
 
         kubeclient.get_pods(namespace: actual_namespace).as_json
-      rescue Kubeclient::HttpError => err
-        raise err unless err.error_code == 404
-
+      rescue Kubeclient::ResourceNotFoundError
         []
       end
 

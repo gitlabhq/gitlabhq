@@ -138,9 +138,9 @@ project without requiring your authorization, so use it with caution.
 An admin can enable/disable a specific Runner for projects:
 
 1. Navigate to **Admin > Runners**
-2. Find the Runner you wish to enable/disable
-3. Click edit on the Runner
-4. Click **Enable** or **Disable** on the project
+1. Find the Runner you wish to enable/disable
+1. Click edit on the Runner
+1. Click **Enable** or **Disable** on the project
 
 ## Protected Runners
 

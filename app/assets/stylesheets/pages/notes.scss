@@ -13,12 +13,32 @@ $note-form-margin-left: 72px;
   }
 }
 
-.note-wrapper {
-  padding: $gl-padding;
+@mixin outline-comment() {
+  margin: $gl-padding;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
 }
 
-.issuable-discussion {
-  .notes.timeline > .timeline-entry {
+.note-wrapper {
+  padding: $gl-padding;
+
+  &.outlined {
+    @include outline-comment();
+  }
+}
+
+.main-notes-list {
+  @include vertical-line(39px);
+}
+
+.notes {
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  &.timeline > .timeline-entry {
     border: 1px solid $border-color;
     border-radius: $border-radius-default;
     margin: $gl-padding 0;
@@ -51,18 +71,6 @@ $note-form-margin-left: 72px;
       border-top: 1px solid $border-color;
     }
   }
-}
-
-.main-notes-list {
-  @include vertical-line(36px);
-}
-
-.notes {
-  display: block;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
 
   > .note-discussion {
     .card {
@@ -71,10 +79,6 @@ $note-form-margin-left: 72px;
 
     li.note {
       border-bottom: 1px solid $border-color;
-
-      &:first-child {
-        border-radius: $border-radius-default $border-radius-default 0 0;
-      }
     }
   }
 
@@ -387,6 +391,7 @@ $note-form-margin-left: 72px;
     line-height: 42px;
     padding: 0 $gl-padding;
     border-top: 1px solid $border-color;
+    border-radius: 0;
 
     &:hover {
       background-color: $gray-light;
@@ -479,15 +484,23 @@ $note-form-margin-left: 72px;
   }
 
   .note-wrapper {
-    margin: $gl-padding;
-    border: 1px solid $border-color;
-    border-radius: $border-radius-default;
+    @include outline-comment();
   }
 
   .discussion-reply-holder {
     border-radius: 0 0 $border-radius-default $border-radius-default;
     border-top: 1px solid $border-color;
     position: relative;
+  }
+}
+
+.commit-diff {
+  .notes {
+    @include vertical-line(52px);
+  }
+
+  .discussion-reply-holder {
+    border-top: 1px solid $border-color;
   }
 }
 

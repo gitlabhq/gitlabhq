@@ -4,12 +4,13 @@ While developing a new feature or modifying an existing one, it is helpful if an
 installable package (or a docker image) containing those changes is available
 for testing. For this very purpose, a manual job is provided in the GitLab CI/CD
 pipeline that can be used to trigger a pipeline in the omnibus-gitlab repository
-that will create
-1. A deb package for Ubuntu 16.04, available as a build artifact, and
-2. A docker image, which is pushed to [Omnibus GitLab's container 
-registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry)
-(images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
-commit which triggered the pipeline).
+that will create:
+
+- A deb package for Ubuntu 16.04, available as a build artifact, and
+- A docker image, which is pushed to [Omnibus GitLab's container
+  registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry)
+  (images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
+  commit which triggered the pipeline).
 
 When you push a commit to either the gitlab-ce or gitlab-ee project, the
 pipeline for that commit will have a `build-package` manual action you can
