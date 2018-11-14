@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'airborne'
 require 'active_support/core_ext/object/deep_dup'
 require 'capybara/dsl'
 
 module QA
   module Resource
     module ApiFabricator
-      include Airborne
       include Capybara::DSL
 
       HTTP_STATUS_OK = 200
@@ -95,6 +93,25 @@ module QA
 
       def transform_api_resource(api_resource)
         api_resource
+      end
+
+      def post(url, payload)
+        RestClient::Request.execute(
+            method: :post,
+            url: url,
+            payload: payload,
+            verify_ssl: false)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
+      def get(url)
+        RestClient::Request.execute(
+            method: :get,
+            url: url,
+            verify_ssl: false)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
       end
     end
   end
