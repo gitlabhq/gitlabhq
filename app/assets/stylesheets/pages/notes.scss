@@ -499,6 +499,10 @@ $note-form-margin-left: 72px;
     @include vertical-line(52px);
   }
 
+  .notes_content {
+    background-color: $white-light;
+  }
+
   .discussion-reply-holder {
     border-top: 1px solid $border-color;
   }
