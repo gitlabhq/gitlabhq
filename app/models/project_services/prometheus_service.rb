@@ -71,7 +71,7 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_client
-    RestClient::Resource.new(api_url) if api_url && manual_configuration? && active?
+    RestClient::Resource.new(api_url, max_redirects: 0) if api_url && manual_configuration? && active?
   end
 
   def prometheus_available?
