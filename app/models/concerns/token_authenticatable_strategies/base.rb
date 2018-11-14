@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module TokenAuthenticatableStrategies
+  attr_reader :klass, :token_field, :options
+
   class Base
     def initialize(klass, token_field, options)
       @klass = klass
@@ -34,6 +36,10 @@ module TokenAuthenticatableStrategies
     def reset_token!(instance)
       write_new_token(instance)
       instance.save! if Gitlab::Database.read_write?
+    end
+
+    def fallback?
+      options[:fallback] == true
     end
 
     protected
