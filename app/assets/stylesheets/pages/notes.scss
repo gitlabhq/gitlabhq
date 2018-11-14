@@ -413,6 +413,18 @@ $note-form-margin-left: 72px;
   }
 }
 
+.tab-pane.diffs {
+  .system-note {
+    padding: 0 $gl-padding;
+    margin-left: 20px;
+  }
+
+  .notes > .note-discussion li.note.system-note {
+    border-bottom: 0;
+    padding: 0 $gl-padding;
+  }
+}
+
 .diff-file {
   .is-over {
     .add-diff-note {
@@ -491,6 +503,11 @@ $note-form-margin-left: 72px;
 
   .note-wrapper {
     @include outline-comment();
+
+    &.system-note {
+      border: 0;
+      margin-left: 20px;
+    }
   }
 
   .discussion-reply-holder {
