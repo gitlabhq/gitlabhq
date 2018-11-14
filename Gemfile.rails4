@@ -1,0 +1,7 @@
+# BUNDLE_GEMFILE=Gemfile.rails4 bundle install
+
+ENV["RAILS5"] = "false"
+
+gemfile = File.expand_path("../Gemfile", __FILE__)
+
+eval(File.read(gemfile), nil, gemfile)
