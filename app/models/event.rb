@@ -87,7 +87,7 @@ class Event < ActiveRecord::Base
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
-    includes(:author, :project, project: :namespace)
+    includes(:author, :project, project: [:project_feature, :import_data, :namespace])
       .preload(:target, :push_event_payload)
   end
 
