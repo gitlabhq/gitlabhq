@@ -23,6 +23,10 @@ describe Gitlab::FileDetector do
       end
     end
 
+    it 'returns nil for a README.rb file' do
+      expect(described_class.type_of('README.rb')).to be_nil
+    end
+
     it 'returns nil for a README file in a directory' do
       expect(described_class.type_of('foo/README.md')).to be_nil
     end
