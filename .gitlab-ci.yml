@@ -842,6 +842,39 @@ qa:selectors:
     - bundle install
     - bundle exec bin/qa Test::Sanity::Selectors
 
+.qa-frontend-node: &qa-frontend-node
+  stage: test
+  variables:
+    NODE_OPTIONS: --max_old_space_size=3584
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - .yarn-cache/
+  dependencies: []
+  before_script: []
+  script:
+    - date
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
+    - yarn run webpack-prod
+
+qa-frontend-node:6:
+  <<: *qa-frontend-node
+  image: node:6-alpine
+
+qa-frontend-node:8:
+  <<: *qa-frontend-node
+  image: node:8-alpine
+
+qa-frontend-node:10:
+  <<: *qa-frontend-node
+  image: node:10-alpine
+
+qa-frontend-node:latest:
+  <<: *qa-frontend-node
+  image: node:alpine
+  allow_failure: true
+
 coverage:
   # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
   # download artifacts from all the rspec jobs instead of from setup-test-env only
