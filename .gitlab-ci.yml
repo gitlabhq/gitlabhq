@@ -79,6 +79,8 @@ stages:
   allow_failure: false
   except:
     variables:
+      - $CI_COMMIT_REF_NAME =~ /(^docs[\/-].*|.*-docs$)/
+      - $CI_COMMIT_REF_NAME =~ /(^qa[\/-].*|.*-qa$)/
       - $CI_COMMIT_REF_NAME =~ /norails4/
       - $RAILS5_DISABLED
   variables:
