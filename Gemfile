@@ -364,7 +364,7 @@ group :development, :test do
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 5.4', require: false
-  gem 'knapsack', '~> 1.16'
+  gem 'knapsack', '~> 1.17'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 
