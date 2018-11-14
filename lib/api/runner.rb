@@ -146,7 +146,6 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
-        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -174,7 +173,6 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
@@ -217,8 +215,7 @@ module API
         require_gitlab_workhorse!
         Gitlab::Workhorse.verify_api_request!(headers)
 
-        job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        authenticate_job!
 
         if params[:filesize]
           file_size = params[:filesize].to_i
@@ -261,7 +258,6 @@ module API
         require_gitlab_workhorse!
 
         job = authenticate_job!
-        forbidden!('Job is not running!') unless job.running?
 
         artifacts = UploadedFile.from_params(params, :file, JobArtifactUploader.workhorse_local_upload_path)
         metadata = UploadedFile.from_params(params, :metadata, JobArtifactUploader.workhorse_local_upload_path)
@@ -308,7 +304,7 @@ module API
         optional :direct_download, default: false, type: Boolean, desc: %q(Perform direct download from remote storage instead of proxying artifacts)
       end
       get '/:id/artifacts' do
-        job = authenticate_job!
+        job = authenticate_pipeline_job!
 
         present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
       end
