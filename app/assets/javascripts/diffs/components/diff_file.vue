@@ -32,6 +32,7 @@ export default {
   computed: {
     ...mapState('diffs', ['currentDiffFileId']),
     ...mapGetters(['isNotesFetched']),
+    ...mapGetters('diffs', ['getDiffFileDiscussions']),
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -57,12 +58,23 @@ export default {
     showLoadingIcon() {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
+    hasDiffLines() {
+      const { highlightedDiffLines, parallelDiffLines } = this.file;
+
+      return highlightedDiffLines && parallelDiffLines && parallelDiffLines.length > 0;
+    },
+  },
+  watch: {
+    'file.collapsed': function fileCollapsedWatch(newVal, oldVal) {
+      if (!newVal && oldVal && !this.hasDiffLines) {
+        this.handleLoadCollapsedDiff();
+      }
+    },
   },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),
     handleToggle() {
-      const { highlightedDiffLines, parallelDiffLines } = this.file;
-      if (!highlightedDiffLines && parallelDiffLines !== undefined && !parallelDiffLines.length) {
+      if (!this.hasDiffLines) {
         this.handleLoadCollapsedDiff();
       } else {
         this.file.collapsed = !this.file.collapsed;
@@ -81,7 +93,7 @@ export default {
         .then(() => {
           requestIdleCallback(
             () => {
-              this.assignDiscussionsToDiff();
+              this.assignDiscussionsToDiff(this.getDiffFileDiscussions(this.file));
             },
             { timeout: 1000 },
           );
