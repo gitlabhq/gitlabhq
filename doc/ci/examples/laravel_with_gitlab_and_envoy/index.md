@@ -444,9 +444,7 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to [enable Container Registry](../../../user/project/container_registry.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Sharing and permissions**.
-
-![container registry checkbox](img/container_registry_checkbox.png)
+You may need to [enable Container Registry](../../../user/project/container_registry.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Permissions**.
 
 To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password:
 
