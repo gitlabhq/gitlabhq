@@ -7,7 +7,7 @@ module Gitlab
     end
 
     def self.context(current_user = nil)
-      return unless self.enabled?
+      return unless enabled?
 
       Raven.tags_context(locale: I18n.locale)
 
@@ -29,14 +29,22 @@ module Gitlab
     #
     # Provide an issue URL for follow up.
     def self.track_exception(exception, issue_url: nil, extra: {})
+      track_acceptable_exception(exception, issue_url: issue_url, extra: extra)
+
+      raise exception if should_raise?
+    end
+
+    # This should be used when you do not want to raise an exception in
+    # development and test. If you need development and test to behave
+    # just the same as production you can use this instead of
+    # track_exception.
+    def self.track_acceptable_exception(exception, issue_url: nil, extra: {})
       if enabled?
         extra[:issue_url] = issue_url if issue_url
         context # Make sure we've set everything we know in the context
 
         Raven.capture_exception(exception, extra: extra)
       end
-
-      raise exception if should_raise?
     end
 
     def self.program_context
