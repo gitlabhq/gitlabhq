@@ -914,3 +914,23 @@ $note-form-margin-left: 72px;
     }
   }
 }
+
+//This needs to be deleted when Snippet/Commit comments are convered to Vue
+// See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
+.unstyled-comments {
+
+  .discussion-header {
+    padding: $gl-padding;
+    border-bottom: 1px solid $border-color;
+  }
+
+  .note-wrapper.outlined {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .discussion-form-container {
+    padding: $gl-padding;
+  }
+}
