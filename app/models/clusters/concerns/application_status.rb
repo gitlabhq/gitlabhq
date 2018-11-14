@@ -64,6 +64,10 @@ module Clusters
             status_reason = transition.args.first
             app_status.status_reason = status_reason if status_reason
           end
+
+          before_transition any => [:installed, :updated] do |app_status, _|
+            app_status.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+          end
         end
       end
 
