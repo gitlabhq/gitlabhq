@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module TokenAuthenticatableStrategies
-  attr_reader :klass, :token_field, :options
-
   class Base
+    attr_reader :klass, :token_field, :options
+
     def initialize(klass, token_field, options)
       @klass = klass
       @token_field = token_field
