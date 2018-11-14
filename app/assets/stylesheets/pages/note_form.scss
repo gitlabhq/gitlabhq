@@ -236,15 +236,20 @@ table {
   }
 }
 
-.discussion-body,
-.diff-file {
+.discussion-body {
   .discussion-reply-holder {
     background-color: $white-light;
-    padding: 10px 16px;
     border-radius: 0 0 3px 3px;
+    padding: 0 $gl-padding 10px;
 
     &.is-replying {
       padding-bottom: $gl-padding;
+    }
+  }
+
+  .diff-file {
+    .discussion-reply-holder {
+      padding: 10px 16px;
     }
   }
 }
