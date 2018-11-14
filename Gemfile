@@ -315,7 +315,7 @@ group :development do
 
   # Better errors handler
   gem 'better_errors', '~> 2.1.0'
-  gem 'binding_of_caller', '~> 0.7.2'
+  gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
