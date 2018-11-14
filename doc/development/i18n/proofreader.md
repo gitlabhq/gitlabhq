@@ -41,6 +41,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
 - Spanish
+  - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
 - Ukrainian
   - Volodymyr Sobotovych - [GitLab](https://gitlab.com/wheleph), [Crowdin](https://crowdin.com/profile/wheleph)
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
