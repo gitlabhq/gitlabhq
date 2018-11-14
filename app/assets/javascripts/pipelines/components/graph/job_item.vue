@@ -1,7 +1,7 @@
 <script>
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
-import tooltip from '../../../vue_shared/directives/tooltip';
+import { GlTooltipDirective, GlLink } from '@gitlab-org/gitlab-ui';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
@@ -34,9 +34,10 @@ export default {
   components: {
     ActionComponent,
     JobNameComponent,
+    GlLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [delayedJobMixin],
   props: {
@@ -55,7 +56,6 @@ export default {
       default: Infinity,
     },
   },
-
   computed: {
     status() {
       return this.job && this.job.status ? this.job.status : {};
@@ -88,7 +88,6 @@ export default {
     tooltipBoundary() {
       return this.dropdownLength < 5 ? 'viewport' : null;
     },
-
     /**
      * Verifies if the provided job has an action path
      *
@@ -98,7 +97,6 @@ export default {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
   },
-
   methods: {
     pipelineActionRequestComplete() {
       this.$emit('pipelineActionRequestComplete');
@@ -108,30 +106,26 @@ export default {
 </script>
 <template>
   <div class="ci-job-component">
-    <a
+    <gl-link
       v-if="status.has_details"
-      v-tooltip
+      v-gl-tooltip="{ boundary: tooltipBoundary }"
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      :data-boundary="tooltipBoundary"
-      data-container="body"
       class="js-pipeline-graph-job-link"
     >
-
       <job-name-component
         :name="job.name"
         :status="job.status"
       />
-    </a>
+    </gl-link>
 
     <div
       v-else
-      v-tooltip
+      v-gl-tooltip
       :title="tooltipText"
       :class="cssClassJobName"
       class="js-job-component-tooltip non-details-job-component"
-      data-container="body"
     >
 
       <job-name-component

@@ -13,14 +13,13 @@
  */
 
 import $ from 'jquery';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
 import JobItem from './graph/job_item.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
 import { PIPELINES_TABLE } from '../constants';
 
 export default {
@@ -31,7 +30,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -159,11 +158,10 @@ export default {
     <button
       id="stageDropdown"
       ref="dropdown"
-      v-tooltip
+      v-gl-tooltip.hover
       :class="triggerButtonClass"
       :title="stage.title"
       class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
-      data-placement="top"
       data-toggle="dropdown"
       data-display="static"
       type="button"
