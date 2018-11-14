@@ -49,11 +49,11 @@ module PrometheusHelpers
     "https://prometheus.example.com/api/v1/series?#{query}"
   end
 
-  def stub_prometheus_request(url, body: {}, status: 200)
+  def stub_prometheus_request(url, body: {}, status: 200, headers: {})
     WebMock.stub_request(:get, url)
       .to_return({
         status: status,
-        headers: { 'Content-Type' => 'application/json' },
+        headers: { 'Content-Type' => 'application/json' }.merge(headers),
         body: body.to_json
       })
   end
