@@ -107,4 +107,26 @@ describe('DiffFile', () => {
       });
     });
   });
+
+  describe('watch collapsed', () => {
+    it('calls handleLoadCollapsedDiff if collapsed changed & file has no lines', done => {
+      spyOn(vm, 'handleLoadCollapsedDiff');
+
+      vm.file.highlightedDiffLines = undefined;
+      vm.file.parallelDiffLines = [];
+      vm.file.collapsed = true;
+
+      vm.$nextTick()
+        .then(() => {
+          vm.file.collapsed = false;
+
+          return vm.$nextTick();
+        })
+        .then(() => {
+          expect(vm.handleLoadCollapsedDiff).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });
