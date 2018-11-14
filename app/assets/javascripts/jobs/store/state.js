@@ -34,7 +34,7 @@ export default () => ({
   // sidebar dropdown
   isLoadingStages: false,
   isLoadingJobs: false,
-  selectedStage: null,
+  selectedStage: '',
   stages: [],
   jobs: [],
 });

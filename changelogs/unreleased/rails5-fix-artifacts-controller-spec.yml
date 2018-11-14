@@ -1,6 +1,0 @@
----
-title: 'Rails5: fix artifacts controller download spec Rails5 has params[:file_type]
-  as '''' if file_type is included as nil in the request'
-merge_request: 22123
-author: Jasper Maes
-type: other

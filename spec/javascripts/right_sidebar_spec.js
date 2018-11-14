@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-return-assign, vars-on-top, jasmine/no-unsafe-spy, max-len */
+/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-return-assign, vars-on-top, max-len */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
@@ -90,34 +90,6 @@ import Sidebar from '~/right_sidebar';
         [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
           expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();
         });
-      });
-    });
-
-    describe('sidebarToggleClicked', () => {
-      const event = jasmine.createSpyObj('event', ['preventDefault']);
-
-      beforeEach(() => {
-        spyOn($.fn, 'hasClass').and.returnValue(false);
-      });
-
-      afterEach(() => {
-        gl.lazyLoader = undefined;
-      });
-
-      it('calls loadCheck if lazyLoader is set', () => {
-        gl.lazyLoader = jasmine.createSpyObj('lazyLoader', ['loadCheck']);
-
-        Sidebar.prototype.sidebarToggleClicked(event);
-
-        expect(gl.lazyLoader.loadCheck).toHaveBeenCalled();
-      });
-
-      it('does not throw if lazyLoader is not defined', () => {
-        gl.lazyLoader = undefined;
-
-        const toggle = Sidebar.prototype.sidebarToggleClicked.bind(null, event);
-
-        expect(toggle).not.toThrow();
       });
     });
   });

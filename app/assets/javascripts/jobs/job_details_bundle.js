@@ -9,9 +9,6 @@ import createStore from './store';
 export default () => {
   const { dataset } = document.getElementById('js-job-details-vue');
 
-  // eslint-disable-next-line no-new
-  new Job();
-
   const store = createStore();
   store.dispatch('setJobEndpoint', dataset.endpoint);
 
@@ -71,4 +68,7 @@ export default () => {
       });
     },
   });
+
+  // eslint-disable-next-line no-new
+  new Job();
 };

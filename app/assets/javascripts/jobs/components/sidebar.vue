@@ -36,7 +36,7 @@
       },
     },
     computed: {
-      ...mapState(['job', 'isLoading', 'stages', 'jobs']),
+      ...mapState(['job', 'isLoading', 'stages', 'jobs', 'selectedStage', 'isLoadingStages']),
       coverage() {
         return `${this.job.coverage}%`;
       },
@@ -110,7 +110,7 @@
 </script>
 <template>
   <aside
-    class="right-sidebar right-sidebar-expanded build-sidebar"
+    class="js-build-sidebar right-sidebar right-sidebar-expanded build-sidebar"
     data-offset-top="101"
     data-spy="affix"
   >
@@ -274,8 +274,10 @@
           />
 
           <stages-dropdown
+            v-if="!isLoadingStages"
             :stages="stages"
             :pipeline="job.pipeline"
+            :selected-stage="selectedStage"
             @requestSidebarStageDropdown="fetchJobsForStage"
           />
 

@@ -1,5 +1,0 @@
----
-title: Dont create license_management build when not included in license
-merge_request: 21958
-author:
-type: performance

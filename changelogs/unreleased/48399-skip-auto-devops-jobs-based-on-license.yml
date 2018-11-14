@@ -1,6 +1,0 @@
----
-title: Skip creating auto devops jobs for sast, container_scanning, dast, dependency_scanning
-  when not licensed
-merge_request: 21959
-author:
-type: performance

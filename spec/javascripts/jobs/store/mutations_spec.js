@@ -108,20 +108,32 @@ describe('Jobs Store Mutations', () => {
   });
 
   describe('RECEIVE_JOB_SUCCESS', () => {
-    beforeEach(() => {
-      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
-    });
-
     it('sets is loading to false', () => {
+      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
       expect(stateCopy.isLoading).toEqual(false);
     });
 
     it('sets hasError to false', () => {
+      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
       expect(stateCopy.hasError).toEqual(false);
     });
 
     it('sets job data', () => {
+      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321 });
       expect(stateCopy.job).toEqual({ id: 1312321 });
+    });
+
+    it('sets selectedStage when the selectedStage is empty', () => {
+      expect(stateCopy.selectedStage).toEqual('');
+      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+      expect(stateCopy.selectedStage).toEqual('deploy');
+    });
+
+    it('does not set selectedStage when the selectedStage is not More', () => {
+      stateCopy.selectedStage = 'notify';
+      expect(stateCopy.selectedStage).toEqual('notify');
+      mutations[types.RECEIVE_JOB_SUCCESS](stateCopy, { id: 1312321, stage: 'deploy' });
+      expect(stateCopy.selectedStage).toEqual('notify');
     });
   });
 
@@ -200,8 +212,13 @@ describe('Jobs Store Mutations', () => {
 
   describe('REQUEST_JOBS_FOR_STAGE', () => {
     it('sets isLoadingStages to true', () => {
-      mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy);
+      mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
       expect(stateCopy.isLoadingJobs).toEqual(true);
+    });
+
+    it('sets selectedStage', () => {
+      mutations[types.REQUEST_JOBS_FOR_STAGE](stateCopy, { name: 'deploy' });
+      expect(stateCopy.selectedStage).toEqual('deploy');
     });
   });
 

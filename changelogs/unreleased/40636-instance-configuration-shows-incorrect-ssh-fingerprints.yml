@@ -1,5 +1,0 @@
----
-title: Instance Configuration page now displays correct SSH fingerprints
-merge_request: 22081
-author:
-type: fixed

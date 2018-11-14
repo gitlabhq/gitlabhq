@@ -1,5 +1,0 @@
----
-title: Fix link handling for issue cards to avoid too sensitive drag events.
-merge_request: 21910
-author: Johann Hubert Sonntagbauer
-type: fixed

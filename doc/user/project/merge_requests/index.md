@@ -205,9 +205,9 @@ have been marked as a **Work In Progress**.
 
 ## Merge request diff file navigation
 
-The diff view has a persistent dropdown for file navigation. As you scroll through
-diffs with a large number of files and/or many changes in those files, you can
-easily jump to any changed file through the dropdown navigation.
+The diff view has a file tree for file navigation. As you scroll through
+diffs with a large number of files, you can easily jump to any changed file
+using the file tree.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
