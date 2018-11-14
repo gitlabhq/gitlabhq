@@ -10,8 +10,8 @@ module Gitlab
       def initialize(project, user, newrev, oldrev)
         @project = project
         @user = user
-        @newrev = user
-        @oldrev = user
+        @newrev = newrev
+        @oldrev = oldrev
         @file_paths = []
       end
 
