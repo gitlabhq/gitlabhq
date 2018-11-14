@@ -207,7 +207,7 @@ module API
       end
 
       desc 'Revert a commit in a branch' do
-        detail 'This feature was introduced in GitLab 11.6'
+        detail 'This feature was introduced in GitLab 11.5'
         success Entities::Commit
       end
       params do

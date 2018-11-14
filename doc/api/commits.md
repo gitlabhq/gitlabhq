@@ -290,7 +290,7 @@ Example response:
 
 ## Revert a commit
 
-> [Introduced][ce-22919] in GitLab 11.6.
+> [Introduced][ce-22919] in GitLab 11.5.
 
 Reverts a commit in a given branch.
 
