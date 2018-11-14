@@ -56,7 +56,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
                 .execute
-                .includes(:route, :creator, namespace: [:route, :owner])
+                .includes(:route, :creator, :group, namespace: [:route, :owner])
                 .page(finder_params[:page])
 
     prepare_projects_for_rendering(projects)
