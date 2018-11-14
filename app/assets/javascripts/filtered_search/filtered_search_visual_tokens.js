@@ -135,10 +135,6 @@ export default class FilteredSearchVisualTokens {
   }
 
   static updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {
-    if (tokenValue === 'none') {
-      return Promise.resolve();
-    }
-
     const username = tokenValue.replace(/^@/, '');
     return (
       UsersCache.retrieve(username)
@@ -184,7 +180,12 @@ export default class FilteredSearchVisualTokens {
     const tokenValueElement = tokenValueContainer.querySelector('.value');
     tokenValueElement.innerText = tokenValue;
 
+    if (tokenValue === 'none' || tokenValue === 'any') {
+      return;
+    }
+
     const tokenType = tokenName.toLowerCase();
+
     if (tokenType === 'label') {
       FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue);
     } else if (tokenType === 'author' || tokenType === 'assignee') {

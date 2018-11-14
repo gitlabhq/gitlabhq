@@ -754,6 +754,50 @@ describe('Filtered Search Visual Tokens', () => {
       expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
+
+    it('does not update user token appearance for `none` filter', () => {
+      const { tokenNameElement } = findElements(authorToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'none';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update user token appearance for `any` filter', () => {
+      const { tokenNameElement } = findElements(authorToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'any';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update label token color for `none` filter', () => {
+      const { tokenNameElement } = findElements(bugLabelToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'none';
+
+      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
+
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update label token color for `any` filter', () => {
+      const { tokenNameElement } = findElements(bugLabelToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'any';
+
+      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
+
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+    });
   });
 
   describe('updateUserTokenAppearance', () => {
@@ -761,19 +805,6 @@ describe('Filtered Search Visual Tokens', () => {
 
     beforeEach(() => {
       spyOn(UsersCache, 'retrieve').and.callFake(username => usersCacheSpy(username));
-    });
-
-    it('ignores special value "none"', done => {
-      usersCacheSpy = username => {
-        expect(username).toBe('none');
-        done.fail('Should not resolve "none"!');
-      };
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-
-      subject
-        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, 'none')
-        .then(done)
-        .catch(done.fail);
     });
 
     it('ignores error if UsersCache throws', done => {
