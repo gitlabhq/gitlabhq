@@ -24,7 +24,7 @@ dashboard tool like [Grafana].
 
 ## Configuring Prometheus
 
->**Note:**
+NOTE: **Note:**
 For installations from source you'll have to install and configure it yourself.
 
 Prometheus and it's exporters are on by default, starting with GitLab 9.0.
@@ -47,7 +47,7 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 
 ### Changing the port and address Prometheus listens on
 
->**Note:**
+NOTE: **Note:**
 The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
 it's not recommended to change the port Prometheus listens
 on as this might affect or conflict with other services running on the GitLab
@@ -89,43 +89,46 @@ To use an external Prometheus server:
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Disable the bundled Prometheus:
 
-  ```ruby
-  prometheus['enable'] = false
-  ```
+    ```ruby
+    prometheus['enable'] = false
+    ```
 
 1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
 
-   ```ruby
-   gitlab_monitor['listen_address'] = '0.0.0.0'
-   gitlab_monitor['listen_port'] = '9168'
-   gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
-   node_exporter['listen_address'] = '0.0.0.0:9100'
-   redis_exporter['listen_address'] = '0.0.0.0:9121'
-   postgres_exporter['listen_address'] = '0.0.0.0:9187'
-   ```
+     ```ruby
+     gitlab_monitor['listen_address'] = '0.0.0.0'
+     gitlab_monitor['listen_port'] = '9168'
+     gitaly['prometheus_listen_addr'] = "0.0.0.0:9236"
+     node_exporter['listen_address'] = '0.0.0.0:9100'
+     redis_exporter['listen_address'] = '0.0.0.0:9121'
+     postgres_exporter['listen_address'] = '0.0.0.0:9187'
+     ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
 1. Add the Prometheus server IP address to the [monitoring IP whitelist](../ip_whitelist.html). For example:
 
-  ```ruby
-  gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
-  ```
+    ```ruby
+    gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
+    ```
 
 1. [Reconfigure GitLab][reconfigure] to apply the changes
 1. Edit the Prometheus server's configuration file.
-1. Add each node's exporters to the Prometheus server's [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E). For example, a sample snippet using `static_configs`:
+1. Add each node's exporters to the Prometheus server's
+   [scrape target configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Cscrape_config%3E).
+   For example, a sample snippet using `static_configs`:
 
-  ```yaml
-  scrape_configs:
-  - job_name: 'gitlab_exporters'
-    static_configs:
-    - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
+    ```yaml
+    scrape_configs:
+    - job_name: 'gitlab_exporters'
+      static_configs:
+      - targets: ['1.1.1.1:9168', '1.1.1.1:9236', '1.1.1.1:9236', '1.1.1.1:9100', '1.1.1.1:9121', '1.1.1.1:9187']
 
-  - job_name: 'gitlab_metrics'
-    metrics_path: /-/metrics
-    static_configs:
-    - targets: ['1.1.1.1:443']
-  ```
+    - job_name: 'gitlab_metrics'
+      metrics_path: /-/metrics
+      static_configs:
+      - targets: ['1.1.1.1:443']
+    ```
+
 1. Restart the Prometheus server.
 
 ## Viewing performance metrics
