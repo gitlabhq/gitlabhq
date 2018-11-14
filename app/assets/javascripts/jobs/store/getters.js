@@ -42,7 +42,7 @@ export const emptyStateIllustration = state =>
   (state.job && state.job.status && state.job.status.illustration) || {};
 
 export const emptyStateAction = state =>
-  (state.job && state.job.status && state.job.status.action) || {};
+  (state.job && state.job.status && state.job.status.action) || null;
 
 export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceComplete;
 
