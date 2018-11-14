@@ -36,26 +36,32 @@ module API
       def validate_job!(job)
         not_found! unless job
 
-        yield if block_given?
-
         project = job.project
-        forbidden!('Project has been deleted!') if project.nil? || project.pending_delete?
-        forbidden!('Job has been erased!') if job.erased?
+        job_forbidden!(job, 'Project has been deleted!') if project.nil? || project.pending_delete?
+        job_forbidden!(job, 'Job has been erased!') if job.erased?
+        job_forbidden!(job, 'Not running!') unless job.running?
       end
 
-      def authenticate_job!
-        job = Ci::Build.find_by_id(params[:id])
-
-        validate_job!(job) do
-          forbidden! unless job_token_valid?(job)
-        end
-
-        job
-      end
-
-      def job_token_valid?(job)
+      def authenticate_job_by_token!
         token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
-        token && job.valid_token?(token)
+
+        Ci::Build.find_by_token(token).tap do |job|
+          validate_job!(job)
+        end
+      end
+
+      # we look for a job that has ID and token matching
+      def authenticate_job!
+        authenticate_job_by_token!.tap do |job|
+          job_forbidden!(job, 'Invalid Job ID!') unless job.id == params[:id]
+        end
+      end
+
+      # we look for a job that has been shared via pipeline using the ID
+      def authenticate_pipeline_job!
+        job = authenticate_job_by_token!
+
+        job.pipeline.builds.find(params[:id])
       end
 
       def max_artifacts_size
