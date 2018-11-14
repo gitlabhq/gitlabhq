@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-          @parallelizable.with_indifferent_access
-
 module TokenAuthenticatableStrategies
   class Encrypted < Base
     def find_token_authenticatable(token, unscoped = false)
