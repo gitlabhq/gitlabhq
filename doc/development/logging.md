@@ -65,7 +65,7 @@ if your log message might belong with one of the existing log files.
 1. If there isn't a good place, consider creating a new filename, but
 check with a maintainer if it makes sense to do so. A log file should
 make it easy for people to search pertinent logs in one place. For
-example,`geo.log` contains all logs pertaining to GitLab Geo.
+example, `geo.log` contains all logs pertaining to GitLab Geo.
 To create a new file:
     1. Choose a filename (e.g. `importer_json.log`).
     1. Create a new subclass of `Gitlab::JsonLogger`:
