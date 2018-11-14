@@ -38,10 +38,10 @@ module TokenAuthenticatableStrategies
     end
 
     def token_set?(instance)
-      token_digest = instance.read_attribute(token_field_name)
-      token_digest ||= instance.read_attribute(@token_field) if @options[:fallback]
+      raw_token = instance.read_attribute(token_field_name)
+      raw_token ||= instance.read_attribute(@token_field) if @options[:fallback]
 
-      token_digest.present?
+      raw_token.present?
     end
 
     def token_field_name

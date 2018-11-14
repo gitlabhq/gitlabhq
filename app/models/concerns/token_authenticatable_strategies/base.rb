@@ -65,9 +65,5 @@ module TokenAuthenticatableStrategies
     def token_set?(instance)
       raise NotImplementedError
     end
-
-    def token_field_name
-      @token_field
-    end
   end
 end
