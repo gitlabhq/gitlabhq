@@ -160,4 +160,26 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
       end
     end
   end
+
+  describe '#protected_ref?' do
+    let(:command) { described_class.new(project: project, origin_ref: 'my-branch') }
+
+    subject { command.protected_ref? }
+
+    context 'when a ref is protected' do
+      before do
+        expect_any_instance_of(Project).to receive(:protected_for?).with('my-branch').and_return(true)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when a ref is unprotected' do
+      before do
+        expect_any_instance_of(Project).to receive(:protected_for?).with('my-branch').and_return(false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

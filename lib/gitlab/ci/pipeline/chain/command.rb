@@ -51,6 +51,12 @@ module Gitlab
           def before_sha
             self[:before_sha] || checkout_sha || Gitlab::Git::BLANK_SHA
           end
+
+          def protected_ref?
+            strong_memoize(:protected_ref) do
+              project.protected_for?(origin_ref)
+            end
+          end
         end
       end
     end

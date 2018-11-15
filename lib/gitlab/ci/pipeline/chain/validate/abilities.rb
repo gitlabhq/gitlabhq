@@ -31,7 +31,7 @@ module Gitlab
               if current_user
                 allowed_to_create?
               else # legacy triggers don't have a corresponding user
-                !@command.project.protected_for?(@command.origin_ref)
+                !@command.protected_ref?
               end
             end
 
