@@ -94,7 +94,7 @@ export default {
       return __('Show latest version');
     },
     canCurrentUserFork() {
-      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+      return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
     showCompareVersions() {
       return this.mergeRequestDiffs && this.mergeRequestDiff;

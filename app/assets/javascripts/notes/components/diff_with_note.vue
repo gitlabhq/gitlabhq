@@ -1,6 +1,5 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
@@ -34,7 +33,9 @@ export default {
       return getDiffMode(this.diffFile);
     },
     hasTruncatedDiffLines() {
-      return this.discussion.truncatedDiffLines && this.discussion.truncatedDiffLines.length !== 0;
+      return (
+        this.discussion.truncated_diff_lines && this.discussion.truncated_diff_lines.length !== 0
+      );
     },
     isDiscussionsExpanded() {
       return true; // TODO: @fatihacet - Fix this.
@@ -50,19 +51,17 @@ export default {
       return text ? 'text-file' : 'js-image-file';
     },
     diffFile() {
-      return convertObjectPropsToCamelCase(this.discussion.diffFile, { deep: true });
+      return this.discussion.diff_file;
     },
     imageDiffHtml() {
-      return this.discussion.imageDiffHtml;
+      return this.discussion.image_diff_html;
     },
     userColorScheme() {
       return window.gon.user_color_scheme;
     },
     normalizedDiffLines() {
-      if (this.discussion.truncatedDiffLines) {
-        return this.discussion.truncatedDiffLines.map(line =>
-          trimFirstCharOfLineContent(convertObjectPropsToCamelCase(line)),
-        );
+      if (this.discussion.truncated_diff_lines) {
+        return this.discussion.truncated_diff_lines.map(line => trimFirstCharOfLineContent(line));
       }
 
       return [];
@@ -97,7 +96,7 @@ export default {
     class="diff-file file-holder"
   >
     <diff-file-header
-      :discussion-path="discussion.discussionPath"
+      :discussion-path="discussion.discussion_path"
       :diff-file="diffFile"
       :can-current-user-fork="false"
       :discussions-expanded="isDiscussionsExpanded"
@@ -111,15 +110,15 @@ export default {
       <table>
         <tr
           v-for="line in normalizedDiffLines"
-          :key="line.lineCode"
+          :key="line.line_code"
           class="line_holder"
         >
-          <td class="diff-line-num old_line">{{ line.oldLine }}</td>
-          <td class="diff-line-num new_line">{{ line.newLine }}</td>
+          <td class="diff-line-num old_line">{{ line.old_line }}</td>
+          <td class="diff-line-num new_line">{{ line.new_line }}</td>
           <td
             :class="line.type"
             class="line_content"
-            v-html="line.richText"
+            v-html="line.rich_text"
           >
           </td>
         </tr>
@@ -165,17 +164,17 @@ export default {
     >
       <diff-viewer
         :diff-mode="diffMode"
-        :new-path="diffFile.newPath"
-        :new-sha="diffFile.diffRefs.headSha"
-        :old-path="diffFile.oldPath"
-        :old-sha="diffFile.diffRefs.baseSha"
-        :file-hash="diffFile.fileHash"
+        :new-path="diffFile.new_path"
+        :new-sha="diffFile.diff_refs.head_sha"
+        :old-path="diffFile.old_path"
+        :old-sha="diffFile.diff_refs.base_sha"
+        :file-hash="diffFile.file_hash"
         :project-path="projectPath"
       >
         <image-diff-overlay
           slot="image-overlay"
           :discussions="discussion"
-          :file-hash="diffFile.fileHash"
+          :file-hash="diffFile.file_hash"
           :show-comment-icon="true"
           :should-toggle-discussion="false"
           badge-class="image-comment-badge"

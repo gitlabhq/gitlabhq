@@ -50,8 +50,8 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { fileHash, line_code, id } = removeDiscussion;
-  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code, id });
+  const { file_hash, line_code, id } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash: file_hash, lineCode: line_code, id });
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
@@ -189,7 +189,7 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
-    .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.fileHash))
+    .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
     .then(() => dispatch('startTaskList', null, { root: true }))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };

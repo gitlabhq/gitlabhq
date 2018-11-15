@@ -11,16 +11,16 @@ describe('DiffLineGutterContent', () => {
     const cmp = Vue.extend(DiffLineGutterContent);
     const props = Object.assign({}, options);
     props.line = {
-      lineCode: 'LC_42',
+      line_code: 'LC_42',
       type: 'new',
-      oldLine: null,
-      newLine: 1,
-      discussions: [],
+      old_line: null,
+      new_line: 1,
+      discussions: [{ ...discussionsMockData }],
       text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
-      richText: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
-      metaData: null,
+      rich_text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
+      meta_data: null,
     };
-    props.fileHash = getDiffFileMock().fileHash;
+    props.fileHash = getDiffFileMock().file_hash;
     props.contextLinesPath = '/context/lines/path';
 
     return createComponentWithStore(cmp, store, props).$mount();
@@ -37,7 +37,7 @@ describe('DiffLineGutterContent', () => {
 
       it('should return # if there is no lineCode', () => {
         const component = createComponent();
-        component.line.lineCode = '';
+        component.line.line_code = '';
 
         expect(component.lineHref).toEqual('#');
       });
@@ -46,6 +46,7 @@ describe('DiffLineGutterContent', () => {
     describe('discussions, hasDiscussions, shouldShowAvatarsOnGutter', () => {
       it('should return empty array when there is no discussion', () => {
         const component = createComponent();
+        component.line.discussions = [];
 
         expect(component.hasDiscussions).toEqual(false);
         expect(component.shouldShowAvatarsOnGutter).toEqual(false);
@@ -54,8 +55,8 @@ describe('DiffLineGutterContent', () => {
       it('should return discussions for the given lineCode', () => {
         const cmp = Vue.extend(DiffLineGutterContent);
         const props = {
-          line: getDiffFileMock().highlightedDiffLines[1],
-          fileHash: getDiffFileMock().fileHash,
+          line: getDiffFileMock().highlighted_diff_lines[1],
+          fileHash: getDiffFileMock().file_hash,
           showCommentButton: true,
           contextLinesPath: '/context/lines/path',
         };
@@ -104,10 +105,10 @@ describe('DiffLineGutterContent', () => {
     it('should render user avatars', () => {
       const component = createComponent({
         showCommentButton: true,
-        lineCode: getDiffFileMock().highlightedDiffLines[1].lineCode,
+        lineCode: getDiffFileMock().highlighted_diff_lines[1].line_code,
       });
 
-      expect(component.$el.querySelector('.diff-comment-avatar-holders')).toBeDefined();
+      expect(component.$el.querySelector('.diff-comment-avatar-holders')).not.toBe(null);
     });
   });
 });

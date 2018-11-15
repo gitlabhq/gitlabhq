@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 
 export const isParallelView = state => state.diffViewType === PARALLEL_DIFF_VIEW_TYPE;
@@ -68,8 +67,7 @@ export const diffHasDiscussions = (state, getters) => diff =>
  */
 export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) => diff =>
   rootGetters.discussions.filter(
-    discussion =>
-      discussion.diff_discussion && _.isEqual(discussion.diff_file.file_hash, diff.fileHash),
+    discussion => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,
   ) || [];
 
 export const shouldRenderParallelCommentRow = state => line => {
@@ -90,14 +88,14 @@ export const shouldRenderParallelCommentRow = state => line => {
     return true;
   }
 
-  const hasCommentFormOnLeft = line.left && state.diffLineCommentForms[line.left.lineCode];
-  const hasCommentFormOnRight = line.right && state.diffLineCommentForms[line.right.lineCode];
+  const hasCommentFormOnLeft = line.left && state.diffLineCommentForms[line.left.line_code];
+  const hasCommentFormOnRight = line.right && state.diffLineCommentForms[line.right.line_code];
 
   return hasCommentFormOnLeft || hasCommentFormOnRight;
 };
 
 export const shouldRenderInlineCommentRow = state => line => {
-  if (state.diffLineCommentForms[line.lineCode]) return true;
+  if (state.diffLineCommentForms[line.line_code]) return true;
 
   if (!line.discussions || line.discussions.length === 0) {
     return false;
@@ -108,7 +106,7 @@ export const shouldRenderInlineCommentRow = state => line => {
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
 export const getDiffFileByHash = state => fileHash =>
-  state.diffFiles.find(file => file.fileHash === fileHash);
+  state.diffFiles.find(file => file.file_hash === fileHash);
 
 export const allBlobs = state => Object.values(state.treeEntries).filter(f => f.type === 'blob');
 

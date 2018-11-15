@@ -43,16 +43,16 @@ export default {
         v-for="(line, index) in diffLines"
       >
         <inline-diff-table-row
-          :key="line.lineCode"
-          :file-hash="diffFile.fileHash"
-          :context-lines-path="diffFile.contextLinesPath"
+          :key="line.line_code"
+          :file-hash="diffFile.file_hash"
+          :context-lines-path="diffFile.context_lines_path"
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"
         />
         <inline-diff-comment-row
           v-if="shouldRenderInlineCommentRow(line)"
           :key="index"
-          :diff-file-hash="diffFile.fileHash"
+          :diff-file-hash="diffFile.file_hash"
           :line="line"
           :line-index="index"
         />

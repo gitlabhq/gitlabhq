@@ -13,10 +13,10 @@ describe('DiffLineNoteForm', () => {
 
   beforeEach(() => {
     diffFile = getDiffFileMock();
-    diffLines = diffFile.highlightedDiffLines;
+    diffLines = diffFile.highlighted_diff_lines;
 
     component = createComponentWithStore(Vue.extend(DiffLineNoteForm), store, {
-      diffFileHash: diffFile.fileHash,
+      diffFileHash: diffFile.file_hash,
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],
@@ -61,7 +61,7 @@ describe('DiffLineNoteForm', () => {
         expect(window.confirm).not.toHaveBeenCalled();
         component.$nextTick(() => {
           expect(component.cancelCommentForm).toHaveBeenCalledWith({
-            lineCode: diffLines[0].lineCode,
+            lineCode: diffLines[0].line_code,
           });
 
           expect(component.resetAutoSave).toHaveBeenCalled();

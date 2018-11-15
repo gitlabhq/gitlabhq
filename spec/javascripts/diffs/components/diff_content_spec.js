@@ -56,14 +56,14 @@ describe('DiffContent', () => {
 
     describe('image diff', () => {
       beforeEach(done => {
-        vm.diffFile.newPath = GREEN_BOX_IMAGE_URL;
-        vm.diffFile.newSha = 'DEF';
-        vm.diffFile.oldPath = RED_BOX_IMAGE_URL;
-        vm.diffFile.oldSha = 'ABC';
-        vm.diffFile.viewPath = '';
+        vm.diffFile.new_path = GREEN_BOX_IMAGE_URL;
+        vm.diffFile.new_sha = 'DEF';
+        vm.diffFile.old_path = RED_BOX_IMAGE_URL;
+        vm.diffFile.old_sha = 'ABC';
+        vm.diffFile.view_path = '';
         vm.diffFile.discussions = [{ ...discussionsMockData }];
         vm.$store.state.diffs.commentForms.push({
-          fileHash: vm.diffFile.fileHash,
+          fileHash: vm.diffFile.file_hash,
           x: 10,
           y: 20,
           width: 100,
@@ -113,10 +113,10 @@ describe('DiffContent', () => {
     describe('file diff', () => {
       it('should have download buttons in place', done => {
         const el = vm.$el;
-        vm.diffFile.newPath = 'test.abc';
-        vm.diffFile.newSha = 'DEF';
-        vm.diffFile.oldPath = 'test.abc';
-        vm.diffFile.oldSha = 'ABC';
+        vm.diffFile.new_path = 'test.abc';
+        vm.diffFile.new_sha = 'DEF';
+        vm.diffFile.old_path = 'test.abc';
+        vm.diffFile.old_sha = 'ABC';
 
         vm.$nextTick(() => {
           expect(el.querySelectorAll('.js-diff-inline-view').length).toEqual(0);
