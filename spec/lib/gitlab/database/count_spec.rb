@@ -86,7 +86,7 @@ describe Gitlab::Database::Count do
   describe Gitlab::Database::Count::ReltuplesCountStrategy do
     subject { described_class.new(models).count }
 
-    describe '#count' do
+    describe '#count', :postgresql do
       context 'when reltuples is up to date' do
         before do
           ActiveRecord::Base.connection.execute('ANALYZE projects')
@@ -128,7 +128,7 @@ describe Gitlab::Database::Count do
     subject { strategy.count }
     let(:strategy) { described_class.new(models) }
 
-    describe '#count' do
+    describe '#count', :postgresql do
       let(:estimates) { { Project => threshold + 1, Identity => threshold - 1 } }
       let(:threshold) { Gitlab::Database::Count::TablesampleCountStrategy::EXACT_COUNT_THRESHOLD }
 
