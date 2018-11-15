@@ -49,5 +49,26 @@ describe Deployable do
         expect(environment).to be_nil
       end
     end
+
+    context 'when environment scope contains invalid character' do
+      let(:job) do
+        create(
+          :ci_build,
+          name: 'job:deploy-to-test-site',
+          environment: '$CI_JOB_NAME',
+          options: {
+            environment: {
+              name: '$CI_JOB_NAME',
+              url: 'http://staging.example.com/$CI_JOB_NAME',
+              on_stop: 'stop_review_app'
+            }
+          })
+      end
+
+      it 'does not create a deployment and environment record' do
+        expect(deployment).to be_nil
+        expect(environment).to be_nil
+      end
+    end
   end
 end

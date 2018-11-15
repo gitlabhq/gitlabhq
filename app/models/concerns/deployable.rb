@@ -13,6 +13,10 @@ module Deployable
         name: expanded_environment_name
       )
 
+      # If we failed to persist envirionment record by validation error, such as name with invalid character,
+      # the job will fall back to a non-environment job.
+      return unless environment.persisted?
+
       create_deployment!(
         project_id: environment.project_id,
         environment: environment,
