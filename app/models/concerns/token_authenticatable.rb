@@ -9,21 +9,18 @@ module TokenAuthenticatable
     private # rubocop:disable Lint/UselessAccessModifier
 
     def add_authentication_token_field(token_field, options = {})
-      @token_fields ||= []
-      unique = options.fetch(:unique, true)
-
-      if @token_fields.include?(token_field)
+      if token_authenticatable_fields.include?(token_field)
         raise ArgumentError.new("#{token_field} already configured via add_authentication_token_field")
       end
 
-      @token_fields << token_field
+      token_authenticatable_fields.push(token_field)
 
       attr_accessor :cleartext_tokens
 
       strategy = TokenAuthenticatableStrategies::Base
         .fabricate(self, token_field, options)
 
-      if unique
+      if options.fetch(:unique, true)
         define_singleton_method("find_by_#{token_field}") do |token|
           strategy.find_token_authenticatable(token)
         end
@@ -50,6 +47,10 @@ module TokenAuthenticatable
       define_method("reset_#{token_field}!") do
         strategy.reset_token!(self)
       end
+    end
+
+    def token_authenticatable_fields
+      @token_authenticatable_fields ||= []
     end
   end
 end
