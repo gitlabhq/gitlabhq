@@ -30,6 +30,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Backend guides
 
 - [GitLab utilities](utilities.md)
+- [Logging](logging.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [GraphQL API styleguide](api_graphql_styleguide.md) Use this
