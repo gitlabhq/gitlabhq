@@ -150,13 +150,12 @@ stages:
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[-2]}
-    - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - TEST_TOOL=${JOB_NAME[0]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export FLAKY_RSPEC_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -461,129 +460,21 @@ danger-review:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
-rspec-pg 0 30: *rspec-metadata-pg
-rspec-pg 1 30: *rspec-metadata-pg
-rspec-pg 2 30: *rspec-metadata-pg
-rspec-pg 3 30: *rspec-metadata-pg
-rspec-pg 4 30: *rspec-metadata-pg
-rspec-pg 5 30: *rspec-metadata-pg
-rspec-pg 6 30: *rspec-metadata-pg
-rspec-pg 7 30: *rspec-metadata-pg
-rspec-pg 8 30: *rspec-metadata-pg
-rspec-pg 9 30: *rspec-metadata-pg
-rspec-pg 10 30: *rspec-metadata-pg
-rspec-pg 11 30: *rspec-metadata-pg
-rspec-pg 12 30: *rspec-metadata-pg
-rspec-pg 13 30: *rspec-metadata-pg
-rspec-pg 14 30: *rspec-metadata-pg
-rspec-pg 15 30: *rspec-metadata-pg
-rspec-pg 16 30: *rspec-metadata-pg
-rspec-pg 17 30: *rspec-metadata-pg
-rspec-pg 18 30: *rspec-metadata-pg
-rspec-pg 19 30: *rspec-metadata-pg
-rspec-pg 20 30: *rspec-metadata-pg
-rspec-pg 21 30: *rspec-metadata-pg
-rspec-pg 22 30: *rspec-metadata-pg
-rspec-pg 23 30: *rspec-metadata-pg
-rspec-pg 24 30: *rspec-metadata-pg
-rspec-pg 25 30: *rspec-metadata-pg
-rspec-pg 26 30: *rspec-metadata-pg
-rspec-pg 27 30: *rspec-metadata-pg
-rspec-pg 28 30: *rspec-metadata-pg
-rspec-pg 29 30: *rspec-metadata-pg
+rspec-pg:
+  <<: *rspec-metadata-pg
+  parallel: 30
 
-rspec-mysql 0 30: *rspec-metadata-mysql
-rspec-mysql 1 30: *rspec-metadata-mysql
-rspec-mysql 2 30: *rspec-metadata-mysql
-rspec-mysql 3 30: *rspec-metadata-mysql
-rspec-mysql 4 30: *rspec-metadata-mysql
-rspec-mysql 5 30: *rspec-metadata-mysql
-rspec-mysql 6 30: *rspec-metadata-mysql
-rspec-mysql 7 30: *rspec-metadata-mysql
-rspec-mysql 8 30: *rspec-metadata-mysql
-rspec-mysql 9 30: *rspec-metadata-mysql
-rspec-mysql 10 30: *rspec-metadata-mysql
-rspec-mysql 11 30: *rspec-metadata-mysql
-rspec-mysql 12 30: *rspec-metadata-mysql
-rspec-mysql 13 30: *rspec-metadata-mysql
-rspec-mysql 14 30: *rspec-metadata-mysql
-rspec-mysql 15 30: *rspec-metadata-mysql
-rspec-mysql 16 30: *rspec-metadata-mysql
-rspec-mysql 17 30: *rspec-metadata-mysql
-rspec-mysql 18 30: *rspec-metadata-mysql
-rspec-mysql 19 30: *rspec-metadata-mysql
-rspec-mysql 20 30: *rspec-metadata-mysql
-rspec-mysql 21 30: *rspec-metadata-mysql
-rspec-mysql 22 30: *rspec-metadata-mysql
-rspec-mysql 23 30: *rspec-metadata-mysql
-rspec-mysql 24 30: *rspec-metadata-mysql
-rspec-mysql 25 30: *rspec-metadata-mysql
-rspec-mysql 26 30: *rspec-metadata-mysql
-rspec-mysql 27 30: *rspec-metadata-mysql
-rspec-mysql 28 30: *rspec-metadata-mysql
-rspec-mysql 29 30: *rspec-metadata-mysql
+rspec-mysql:
+  <<: *rspec-metadata-mysql
+  parallel: 30
 
-rspec-pg-rails4 0 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 1 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 2 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 3 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 4 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 5 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 6 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 7 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 8 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 9 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 10 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 11 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 12 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 13 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 14 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 15 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 16 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 17 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 18 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 19 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 20 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 21 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 22 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 23 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 24 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 25 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 26 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 27 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 28 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 29 30: *rspec-metadata-pg-rails4
+rspec-pg-rails4:
+  <<: *rspec-metadata-pg-rails4
+  parallel: 30
 
-rspec-mysql-rails4 0 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 1 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 2 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 3 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 4 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 5 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 6 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 7 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 8 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 9 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 10 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 11 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 12 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 13 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 14 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 15 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 16 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 17 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 18 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 19 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 20 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 21 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 22 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 23 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 24 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 25 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 26 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 27 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 28 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 29 30: *rspec-metadata-mysql-rails4
+rspec-mysql-rails4:
+  <<: *rspec-metadata-mysql-rails4
+  parallel: 30
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
