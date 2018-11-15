@@ -2571,6 +2571,14 @@ describe Project do
       allow(project).to receive(:resolve_ref).and_return(ref)
     end
 
+    context 'when ref is ambiguous' do
+      let(:ref) { nil }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
     context 'when the ref is not protected' do
       let(:ref) { project.repository.find_branch('master') }
 
@@ -2820,8 +2828,8 @@ describe Project do
           project.repository.add_branch(project.creator, ref, 'master')
         end
 
-        it 'raises an error' do
-          expect { subject }.to raise_error(described_class::AmbiguousRef)
+        it 'returns nil' do
+          is_expected.to eq(nil)
         end
       end
 
