@@ -1,12 +1,12 @@
 - expanded = discussion.expanded?
-%li.note.note-discussion.timeline-entry
+%li.note.note-discussion.timeline-entry.unstyled-comments
   .timeline-entry-inner
-    .timeline-icon
-      = link_to user_path(discussion.author) do
-        = image_tag avatar_icon_for_user(discussion.author), class: "avatar s40"
     .timeline-content
       .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header
+          .timeline-icon
+            = link_to user_path(discussion.author) do
+              = image_tag avatar_icon_for_user(discussion.author), class: "avatar s40"
           .discussion-actions
             %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button", class: ("js-toggle-lazy-diff" unless expanded) }
               - if expanded

@@ -4,12 +4,17 @@ describe ProfilesHelper do
   describe '#commit_email_select_options' do
     it 'returns an array with private commit email along with all the verified emails' do
       user = create(:user)
+      create(:email, user: user)
+      confirmed_email1 = create(:email, :confirmed, user: user)
+      confirmed_email2 = create(:email, :confirmed, user: user)
+
       private_email = user.private_commit_email
 
-      verified_emails = user.verified_emails - [private_email]
       emails = [
         ["Use a private email - #{private_email}", Gitlab::PrivateCommitEmail::TOKEN],
-        verified_emails
+        user.email,
+        confirmed_email1.email,
+        confirmed_email2.email
       ]
 
       expect(helper.commit_email_select_options(user)).to match_array(emails)

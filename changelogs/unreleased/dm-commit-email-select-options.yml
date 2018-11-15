@@ -1,0 +1,5 @@
+---
+title: Fix bug causing not all emails to show up in commit email selectbox
+merge_request:
+author:
+type: fixed
