@@ -68,7 +68,7 @@ describe Gitlab::Git::Tag, :seed_helper do
       context 'message_size less than threshold' do
         let(:message_size) { 123 }
 
-        it 'fetches tag message seperately' do
+        it 'fetches tag message separately' do
           expect(described_class).to receive(:get_message).with(repository, gitaly_tag.id)
 
           tag.message

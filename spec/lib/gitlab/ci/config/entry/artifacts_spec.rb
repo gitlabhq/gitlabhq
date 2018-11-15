@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
       let(:config) { { paths: %w[public/] } }
 
       describe '#value' do
-        it 'returns artifacs configuration' do
+        it 'returns artifacts configuration' do
           expect(entry.value).to eq config
         end
       end

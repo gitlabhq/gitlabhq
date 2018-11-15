@@ -16,7 +16,7 @@ describe Gitlab::Ci::Build::Policy::Refs do
       end
     end
 
-    context 'when maching tags' do
+    context 'when matching tags' do
       context 'when pipeline runs for a tag' do
         let(:pipeline) do
           build_stubbed(:ci_pipeline, ref: 'feature', tag: true)
@@ -56,10 +56,10 @@ describe Gitlab::Ci::Build::Policy::Refs do
       end
     end
 
-    context 'when maching a source' do
+    context 'when matching a source' do
       let(:pipeline) { build_stubbed(:ci_pipeline, source: :push) }
 
-      it 'is satisifed when provided source keyword matches' do
+      it 'is satisfied when provided source keyword matches' do
         expect(described_class.new(%w[pushes]))
           .to be_satisfied_by(pipeline)
       end

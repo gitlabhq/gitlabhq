@@ -11,8 +11,8 @@ module Gitlab
 
         attr_reader :subject
 
-        def can?(user, action, overriden_subject = nil)
-          super(user, action, overriden_subject || subject)
+        def can?(user, action, overridden_subject = nil)
+          super(user, action, overridden_subject || subject)
         end
 
         # delegate all #can? queries to the subject

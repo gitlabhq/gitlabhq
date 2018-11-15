@@ -2334,12 +2334,12 @@ Boards::Lists::MoveService
         keeps position of lists when list type is closed
         when list type is set to label
           keeps position of lists when new position is nil
-          keeps position of lists when new positon is equal to old position
-          keeps position of lists when new positon is negative
-          keeps position of lists when new positon is equal to number of labels lists
-          keeps position of lists when new positon is greater than number of labels lists
-          increments position of intermediate lists when new positon is equal to first position
-          decrements position of intermediate lists when new positon is equal to last position
+          keeps position of lists when new position is equal to old position
+          keeps position of lists when new position is negative
+          keeps position of lists when new position is equal to number of labels lists
+          keeps position of lists when new position is greater than number of labels lists
+          increments position of intermediate lists when new position is equal to first position
+          decrements position of intermediate lists when new position is equal to last position
           decrements position of intermediate lists when new position is greater than old position
           increments position of intermediate lists when new position is lower than old position
     when board parent is a group
@@ -2347,12 +2347,12 @@ Boards::Lists::MoveService
         keeps position of lists when list type is closed
         when list type is set to label
           keeps position of lists when new position is nil
-          keeps position of lists when new positon is equal to old position
-          keeps position of lists when new positon is negative
-          keeps position of lists when new positon is equal to number of labels lists
-          keeps position of lists when new positon is greater than number of labels lists
-          increments position of intermediate lists when new positon is equal to first position
-          decrements position of intermediate lists when new positon is equal to last position
+          keeps position of lists when new position is equal to old position
+          keeps position of lists when new position is negative
+          keeps position of lists when new position is equal to number of labels lists
+          keeps position of lists when new position is greater than number of labels lists
+          increments position of intermediate lists when new position is equal to first position
+          decrements position of intermediate lists when new position is equal to last position
           decrements position of intermediate lists when new position is greater than old position
           increments position of intermediate lists when new position is lower than old position
 

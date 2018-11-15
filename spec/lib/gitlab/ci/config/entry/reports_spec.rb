@@ -19,7 +19,7 @@ describe Gitlab::Ci::Config::Entry::Reports do
 
       shared_examples 'a valid entry' do |keyword, file|
         describe '#value' do
-          it 'returns artifacs configuration' do
+          it 'returns artifacts configuration' do
             expect(entry.value).to eq({ "#{keyword}": [file] } )
           end
         end
