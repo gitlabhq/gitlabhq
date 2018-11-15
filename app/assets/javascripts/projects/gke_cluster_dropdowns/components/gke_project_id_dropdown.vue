@@ -93,7 +93,7 @@ export default {
       }
 
       return sprintf(
-        s__('ClusterIntegration|An error occured while trying to fetch your projects: %{error}'),
+        s__('ClusterIntegration|An error occurred while trying to fetch your projects: %{error}'),
         { error: this.gapiError },
       );
     },
