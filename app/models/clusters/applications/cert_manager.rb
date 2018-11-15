@@ -33,14 +33,8 @@ module Clusters
             rbac: cluster.platform_kubernetes_rbac?,
             chart: chart,
             files: files.merge!(cluster_issuer_file),
-            postinstall: post_install_script,
-            application_flags: install_command_flags
+            postinstall: post_install_script
           )
-        end
-
-        def install_command_flags
-          ['--set', 'ingressShim.defaultIssuerName=letsencrypt-prod'] +
-            ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer']
         end
 
         private
