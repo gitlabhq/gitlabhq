@@ -1168,11 +1168,11 @@ class Project < ActiveRecord::Base
     if tag_exists && branch_exists
       raise AmbiguousRef
     elsif tag_exists
-      Gitlab::Git::TAG_REF_PREFIX + ref
+      repository.find_tag(ref)
     elsif branch_exists
-      Gitlab::Git::BRANCH_REF_PREFIX + ref
+      repository.find_branch(ref)
     else
-      ref
+      repository.find_ref(ref)
     end
   end
 
@@ -1753,8 +1753,9 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    full_ref = resolve_ref(ref)
-    ref_name = Gitlab::Git.ref_name(full_ref)
+    resolved_ref = resolve_ref(ref)
+    full_ref = resolved_ref.full_ref
+    ref_name = resolved_ref.name
 
     if Gitlab::Git.branch_ref?(full_ref)
       ProtectedBranch.protected?(self, ref_name)

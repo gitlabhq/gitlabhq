@@ -39,6 +39,10 @@ module Gitlab
                     nil
                   end
       end
+
+      def full_ref
+        raise NotImplementedError
+      end
     end
   end
 end

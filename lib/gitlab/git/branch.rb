@@ -28,6 +28,10 @@ module Gitlab
       def state
         active? ? :active : :stale
       end
+
+      def full_ref
+        Gitlab::Git::BRANCH_REF_PREFIX + name
+      end
     end
   end
 end

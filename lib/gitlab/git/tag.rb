@@ -62,6 +62,10 @@ module Gitlab
         encode! @message
       end
 
+      def full_ref
+        Gitlab::Git::TAG_REF_PREFIX + name
+      end
+
       private
 
       def message_from_gitaly_tag

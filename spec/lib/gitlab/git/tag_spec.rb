@@ -69,4 +69,17 @@ describe Gitlab::Git::Tag, :seed_helper do
       end
     end
   end
+
+  describe '#full_ref' do
+    subject do
+      described_class.new(repository, { name: 'master',
+                                        target: repository.commit.sha,
+                                        target_commit: repository.commit })
+        .full_ref
+    end
+
+    it 'returns the full ref' do
+      is_expected.to eq('refs/tags/master')
+    end
+  end
 end

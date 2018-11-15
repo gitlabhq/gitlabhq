@@ -1699,6 +1699,34 @@ describe Repository do
     end
   end
 
+  describe '#find_ref' do
+    subject { repository.find_ref(ref) }
+
+    context 'when ref is a tag' do
+      let(:ref) { 'refs/tags/v1.0.0' }
+
+      it 'returns the tag' do
+        is_expected.to be_a(Gitlab::Git::Tag)
+      end
+    end
+
+    context 'when ref is a branch' do
+      let(:ref) { 'refs/heads/master' }
+
+      it 'returns the branch' do
+        is_expected.to be_a(Gitlab::Git::Branch)
+      end
+    end
+
+    context 'when ref is invalid' do
+      let(:ref) { 'refs/notvalid/ref' }
+
+      it 'returns nil' do
+        is_expected.to eq(nil)
+      end
+    end
+  end
+
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)

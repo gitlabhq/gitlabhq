@@ -2563,7 +2563,7 @@ describe Project do
   end
 
   describe '#protected_for?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     subject { project.protected_for?('ref') }
 
@@ -2572,7 +2572,7 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
-      let(:ref) { 'refs/heads/ref' }
+      let(:ref) { project.repository.find_branch('master') }
 
       before do
         stub_application_setting(
@@ -2585,10 +2585,10 @@ describe Project do
     end
 
     context 'when the ref is a protected branch' do
-      let(:ref) { 'refs/heads/ref' }
+      let(:ref) { project.repository.find_branch('master') }
 
       before do
-        create(:protected_branch, name: 'ref', project: project)
+        create(:protected_branch, name: 'master', project: project)
       end
 
       it 'returns true' do
@@ -2597,10 +2597,10 @@ describe Project do
     end
 
     context 'when the ref is a protected tag' do
-      let(:ref) { 'refs/tags/ref' }
+      let(:ref) { project.repository.find_tag('v1.0.0') }
 
       before do
-        create(:protected_tag, name: 'ref', project: project)
+        create(:protected_tag, name: 'v1.0.0', project: project)
       end
 
       it 'returns true' do
@@ -2789,29 +2789,36 @@ describe Project do
   end
 
   describe '#resolve_ref' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     subject { project.resolve_ref(ref) }
 
     context 'when ref is full ref' do
-      let(:ref) { 'refs/heads/master' }
+      context 'when ref exists' do
+        let(:ref) { 'refs/heads/master' }
 
-      it 'returns the unchanged ref' do
-        is_expected.to eq(ref)
+        it 'returns the ref' do
+          is_expected.to be_a(Gitlab::Git::Ref)
+        end
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'refs/tags/doesnotexist' }
+
+        it 'returns nil' do
+          is_expected.to eq(nil)
+        end
       end
     end
 
     context 'when ref is a tag or branch name' do
       let(:ref) { 'ref' }
 
-      before do
-        allow(project.repository).to receive(:tag_exists?).and_return(tag_exists)
-        allow(project.repository).to receive(:branch_exists?).and_return(branch_exists)
-      end
-
       context 'when ref is ambiguous' do
-        let(:tag_exists) { true }
-        let(:branch_exists) { true }
+        before do
+          project.repository.add_tag(project.creator, ref, 'master')
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
 
         it 'raises an error' do
           expect { subject }.to raise_error(described_class::AmbiguousRef)
@@ -2819,20 +2826,22 @@ describe Project do
       end
 
       context 'when ref is tag name' do
-        let(:tag_exists) { true }
-        let(:branch_exists) { false }
+        before do
+          project.repository.add_tag(project.creator, ref, 'master')
+        end
 
         it 'returns full tag ref path' do
-          is_expected.to eq('refs/tags/ref')
+          is_expected.to be_a(Gitlab::Git::Tag)
         end
       end
 
       context 'when ref is branch name' do
-        let(:tag_exists) { false }
-        let(:branch_exists) { true }
+        before do
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
 
         it 'returns full branch ref path' do
-          is_expected.to eq('refs/heads/ref')
+          is_expected.to be_a(Gitlab::Git::Branch)
         end
       end
     end
