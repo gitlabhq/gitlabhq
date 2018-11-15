@@ -44,9 +44,9 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
 
   context 'when ref is ambiguous' do
     let(:project) do
-      p = create(:project, :repository)
-      p.repository.add_tag(user, 'master', 'master')
-      p
+      create(:project, :repository).tap do |proj|
+        proj.repository.add_tag(user, 'master', 'master')
+      end
     end
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(
