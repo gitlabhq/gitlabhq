@@ -22,7 +22,7 @@ export default {
     },
     output: {
       type: Object,
-      requred: true,
+      required: true,
       default: () => ({}),
     },
   },
