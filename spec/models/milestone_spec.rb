@@ -240,7 +240,22 @@ describe Milestone do
     end
   end
 
-  describe '.upcoming_ids_by_projects' do
+  describe '.upcoming_ids' do
+    let(:group_1) { create(:group) }
+    let(:group_2) { create(:group) }
+    let(:group_3) { create(:group) }
+    let(:groups) { [group_1, group_2, group_3] }
+
+    let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now - 1.day) }
+    let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now + 1.day) }
+    let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.now + 2.days) }
+
+    let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.now - 1.day) }
+    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.now + 1.day) }
+    let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.now + 2.days) }
+
+    let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.now - 1.day) }
+
     let(:project_1) { create(:project) }
     let(:project_2) { create(:project) }
     let(:project_3) { create(:project) }
@@ -258,14 +273,20 @@ describe Milestone do
 
     # The call to `#try` is because this returns a relation with a Postgres DB,
     # and an array of IDs with a MySQL DB.
-    let(:milestone_ids) { described_class.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
+    let(:milestone_ids) { described_class.upcoming_ids(projects, groups).map { |id| id.try(:id) || id } }
 
-    it 'returns the next upcoming open milestone ID for each project' do
-      expect(milestone_ids).to contain_exactly(current_milestone_project_1.id, current_milestone_project_2.id)
+    it 'returns the next upcoming open milestone ID for each project and group' do
+      expect(milestone_ids).to contain_exactly(
+        current_milestone_project_1.id,
+        current_milestone_project_2.id,
+        current_milestone_group_1.id,
+        current_milestone_group_2.id
+      )
     end
 
-    context 'when the projects have no open upcoming milestones' do
+    context 'when the projects and groups have no open upcoming milestones' do
       let(:projects) { [project_3] }
+      let(:groups) { [group_3] }
 
       it 'returns no results' do
         expect(milestone_ids).to be_empty
