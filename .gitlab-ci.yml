@@ -780,7 +780,8 @@ code_quality:
         --volume /var/run/docker.sock:/var/run/docker.sock
         "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
-    paths: [gl-code-quality-report.json]
+    reports:
+      codequality: gl-code-quality-report.json
     expire_in: 1 week
 
 sast:
@@ -804,7 +805,8 @@ sast:
         --volume /var/run/docker.sock:/var/run/docker.sock
         "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
   artifacts:
-    paths: [gl-sast-report.json]
+    reports:
+      sast: gl-sast-report.json
 
 dependency_scanning:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -826,7 +828,8 @@ dependency_scanning:
         --volume /var/run/docker.sock:/var/run/docker.sock
         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
   artifacts:
-    paths: [gl-dependency-scanning-report.json]
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
 
 qa:internal:
   <<: *dedicated-no-docs-no-db-pull-cache-job
