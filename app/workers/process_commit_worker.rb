@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Worker for processing individiual commit messages pushed to a repository.
+# Worker for processing individual commit messages pushed to a repository.
 #
 # Jobs for this worker are scheduled for every commit that is being pushed. As a
 # result of this the workload of this worker should be kept to a bare minimum.

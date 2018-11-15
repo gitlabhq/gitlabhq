@@ -13,7 +13,7 @@ class BuildFinishedWorker
       BuildTraceSectionsWorker.new.perform(build.id)
       BuildCoverageWorker.new.perform(build.id)
 
-      # We execute that async as this are two indepentent operations that can be executed after TraceSections and Coverage
+      # We execute that async as this are two independent operations that can be executed after TraceSections and Coverage
       BuildHooksWorker.perform_async(build.id)
       ArchiveTraceWorker.perform_async(build.id)
     end
