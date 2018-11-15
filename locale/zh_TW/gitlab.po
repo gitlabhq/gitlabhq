@@ -2743,7 +2743,7 @@ msgstr "編輯 %{user_name} 的身份"
 msgid "Elasticsearch"
 msgstr "Elasticsearch"
 
-msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr "Elasticsearch 整合。 Elasticsearch AWS IAM。"
 
 msgid "Email"
