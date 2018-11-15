@@ -5,6 +5,7 @@ module Gitlab
     module Helm
       class UpgradeCommand
         include BaseCommand
+        include ClientCommand
 
         attr_reader :name, :chart, :version, :repository, :files
 
@@ -20,10 +21,7 @@ module Gitlab
         def generate_script
           super + [
             init_command,
-            # Sleep is necessary to give Tiller time to restart after upgrade.
-            # Ideally we'd be able to use --wait but cannot because of
-            # https://github.com/helm/helm/issues/4855
-            sleep_command,
+            wait_for_tiller_command,
             repository_command,
             script_command
           ].compact.join("\n")
@@ -38,18 +36,6 @@ module Gitlab
         end
 
         private
-
-        def init_command
-          'helm init --upgrade --tiller-namespace gitlab-managed-apps'
-        end
-
-        def sleep_command
-          'sleep 30'
-        end
-
-        def repository_command
-          "helm repo add #{name} #{repository}" if repository
-        end
 
         def script_command
           upgrade_flags = "#{optional_version_flag}#{optional_tls_flags}" \

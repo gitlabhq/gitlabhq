@@ -66,6 +66,9 @@ module Clusters
           end
 
           before_transition any => [:installed, :updated] do |app_status, _|
+            # When installing any application we are also performing an update
+            # of tiller (see Gitlab::Kubernetes::Helm::ClientCommand) so
+            # therefore we need to reflect that in the database.
             app_status.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
           end
         end
