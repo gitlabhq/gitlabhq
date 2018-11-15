@@ -20,8 +20,9 @@ describe Gitlab::FileDetector do
 
       filenames.each do |filename|
         expect(described_class.type_of(filename)).to eq(:readme)
+
         extensions.each do |extname|
-          expect(described_class.type_of(filename + extname)).to eq(:readme)
+          expect(described_class.type_of("#{filename}.#{extname}")).to eq(:readme)
         end
       end
     end
