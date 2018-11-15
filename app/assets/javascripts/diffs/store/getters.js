@@ -23,7 +23,7 @@ export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
 };
 
 /**
- * Checks if the diff has all discussions collpased
+ * Checks if the diff has all discussions collapsed
  * @param {Object} diff
  * @returns {Boolean}
  */

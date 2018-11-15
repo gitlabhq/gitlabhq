@@ -112,7 +112,7 @@ const JumpToDiscussion = Vue.extend({
 
       if (!hasDiscussionsToJumpTo) {
         // If there are no discussions to jump to on the current page,
-        // switch to the notes tab and jump to the first disucssion there.
+        // switch to the notes tab and jump to the first discussion there.
         window.mrTabs.activateTab('show');
         activeTab = 'show';
         jumpToFirstDiscussion = true;

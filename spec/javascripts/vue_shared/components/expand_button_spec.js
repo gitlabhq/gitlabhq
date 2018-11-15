@@ -18,7 +18,7 @@ describe('expand button', () => {
     vm.$destroy();
   });
 
-  it('renders a collpased button', () => {
+  it('renders a collapsed button', () => {
     expect(vm.$children[0].iconTestClass).toEqual('ic-ellipsis_h');
   });
 
