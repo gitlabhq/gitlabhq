@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Exit early if we don't want to build the image
+if [[ "${BUILD_ASSETS_IMAGE}" != "true" ]]
+then
+    exit 0
+fi
+
 # Generate the image name based on the project this is being run in
 ASSETS_IMAGE_NAME=$(echo ${CI_PROJECT_NAME} |
    awk '{
