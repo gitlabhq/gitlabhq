@@ -8,7 +8,7 @@ describe Users::BuildService do
 
     context 'with an admin user' do
       let(:admin_user) { create(:admin) }
-      let(:service) { described_class.new(admin_user, params) }
+      let(:service) { described_class.new(admin_user, ActionController::Parameters.new(params).permit!) }
 
       it 'returns a valid user' do
         expect(service.execute).to be_valid
