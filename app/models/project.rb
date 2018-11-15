@@ -1903,10 +1903,6 @@ class Project < ActiveRecord::Base
     false
   end
 
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
-  end
-
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end
