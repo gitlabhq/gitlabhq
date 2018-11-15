@@ -416,7 +416,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(true),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
       };
 
       const dispatch = jasmine.createSpy('dispatch');
@@ -434,7 +434,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(true),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(true),
       };
 
       const dispatch = jasmine.createSpy();
@@ -452,7 +452,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ expanded: false, id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
       };
 
       const dispatch = jasmine.createSpy();

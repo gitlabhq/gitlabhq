@@ -27,7 +27,7 @@ export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasAllCollpasedDiscussions = (state, getters) => diff => {
+export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
   return (

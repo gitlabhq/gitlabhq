@@ -106,13 +106,13 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  describe('diffHasAllCollpasedDiscussions', () => {
+  describe('diffHasAllCollapsedDiscussions', () => {
     it('returns true when all discussions are collapsed', () => {
       discussionMock.diff_file.file_hash = diffFileMock.fileHash;
       discussionMock.expanded = false;
 
       expect(
-        getters.diffHasAllCollpasedDiscussions(localState, {
+        getters.diffHasAllCollapsedDiscussions(localState, {
           getDiffFileDiscussions: () => [discussionMock],
         })(diffFileMock),
       ).toEqual(true);
@@ -120,7 +120,7 @@ describe('Diffs Module Getters', () => {
 
     it('returns false when there are no discussions', () => {
       expect(
-        getters.diffHasAllCollpasedDiscussions(localState, {
+        getters.diffHasAllCollapsedDiscussions(localState, {
           getDiffFileDiscussions: () => [],
         })(diffFileMock),
       ).toEqual(false);
@@ -130,7 +130,7 @@ describe('Diffs Module Getters', () => {
       discussionMock1.expanded = false;
 
       expect(
-        getters.diffHasAllCollpasedDiscussions(localState, {
+        getters.diffHasAllCollapsedDiscussions(localState, {
           getDiffFileDiscussions: () => [discussionMock, discussionMock1],
         })(diffFileMock),
       ).toEqual(false);
