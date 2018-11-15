@@ -78,7 +78,7 @@ describe 'Database schema' do
           let(:column_names) { columns.map(&:name) }
           let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
           let(:foreign_keys_columns) { foreign_keys.map(&:column) }
-          let(:ignored_columns) { IGNORED_FK_COLUMNS[table] || [] }
+          let(:ignored_columns) { ignored_fk_columns(table) }
 
           it 'do have the foreign keys' do
             expect(column_names_with_id - ignored_columns).to contain_exactly(*foreign_keys_columns)
@@ -86,5 +86,11 @@ describe 'Database schema' do
         end
       end
     end
+  end
+
+  private
+
+  def ignored_fk_columns(column)
+    IGNORED_FK_COLUMNS.fetch(column, [])
   end
 end
