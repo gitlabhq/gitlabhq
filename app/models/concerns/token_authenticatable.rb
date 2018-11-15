@@ -20,13 +20,8 @@ module TokenAuthenticatable
 
       attr_accessor :cleartext_tokens
 
-      strategy = if options[:digest]
-                   TokenAuthenticatableStrategies::Digest.new(self, token_field, options)
-                 elsif options[:encrypted]
-                   TokenAuthenticatableStrategies::Encrypted.new(self, token_field, options)
-                 else
-                   TokenAuthenticatableStrategies::Insecure.new(self, token_field, options)
-                 end
+      strategy = TokenAuthenticatableStrategies::Base
+        .fabricate(self, token_field, options)
 
       if unique
         define_singleton_method("find_by_#{token_field}") do |token|

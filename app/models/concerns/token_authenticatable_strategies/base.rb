@@ -43,6 +43,16 @@ module TokenAuthenticatableStrategies
       options[:fallback] == true
     end
 
+    def self.fabricate(instance, field, options)
+      if options[:digest]
+       TokenAuthenticatableStrategies::Digest.new(instance, field, options)
+      elsif options[:encrypted]
+       TokenAuthenticatableStrategies::Encrypted.new(instance, field, options)
+      else
+       TokenAuthenticatableStrategies::Insecure.new(instance, field, options)
+      end
+    end
+
     protected
 
     def write_new_token(instance)
