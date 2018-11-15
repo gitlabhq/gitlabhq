@@ -87,6 +87,12 @@ module Clusters
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
+    scope :missing_kubernetes_namespace, -> (kubernetes_namespaces) do
+      subquery = kubernetes_namespaces.select('1').where('clusters_kubernetes_namespaces.cluster_id = clusters.id')
+
+      where('NOT EXISTS (?)', subquery)
+    end
+
     # Returns an ordered list of group clusters order from clusters of closest
     # group up to furthest ancestor group
     def self.ordered_group_clusters_for_project(project_id)
@@ -161,11 +167,17 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    def find_or_initialize_kubernetes_namespace(cluster_project)
-      kubernetes_namespaces.find_or_initialize_by(
-        project: cluster_project.project,
-        cluster_project: cluster_project
-      )
+    def find_or_initialize_kubernetes_namespace_for_project(project)
+      if project_type?
+        kubernetes_namespaces.find_or_initialize_by(
+          project: project,
+          cluster_project: cluster_project
+        )
+      else
+        kubernetes_namespaces.find_or_initialize_by(
+          project: project
+        )
+      end
     end
 
     def allow_user_defined_namespace?

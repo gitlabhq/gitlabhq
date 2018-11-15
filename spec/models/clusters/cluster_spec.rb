@@ -92,6 +92,26 @@ describe Clusters::Cluster do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.missing_kubernetes_namespace' do
+    let!(:cluster) { create(:cluster, :provided_by_gcp, :project) }
+    let(:project) { cluster.project }
+    let(:kubernetes_namespaces) { project.kubernetes_namespaces }
+
+    subject do
+      described_class.joins(:projects).where(projects: { id: project.id }).missing_kubernetes_namespace(kubernetes_namespaces)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+
+    context 'kubernetes namespace exists' do
+      before do
+        create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
+      end
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe 'validation' do
     subject { cluster.valid? }
 
