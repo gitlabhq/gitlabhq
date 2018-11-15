@@ -687,6 +687,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.string "version", null: false
     t.string "hostname"
     t.text "status_reason"
+    t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
