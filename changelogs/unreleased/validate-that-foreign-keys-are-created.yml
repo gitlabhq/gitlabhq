@@ -1,5 +1,0 @@
----
-title: Validate that FK is created for column with _id
-merge_request:
-author:
-type: performance
