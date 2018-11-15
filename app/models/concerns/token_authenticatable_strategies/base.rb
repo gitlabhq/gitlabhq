@@ -24,6 +24,7 @@ module TokenAuthenticatableStrategies
 
     def ensure_token(instance)
       write_new_token(instance) unless token_set?(instance)
+      get_token(instance)
     end
 
     # Returns a token, but only saves when the database is in read & write mode

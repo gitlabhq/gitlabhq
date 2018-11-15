@@ -60,11 +60,11 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#set_token' do
-    it 'writes encrypted token to a model instance' do
+    it 'writes encrypted token to a model instance and returns it' do
       expect(instance).to receive(:[]=)
         .with('some_field_encrypted', encrypted)
 
-      subject.set_token(instance, 'my-value')
+      expect(subject.set_token(instance, 'my-value')).to eq 'my-value'
     end
   end
 end

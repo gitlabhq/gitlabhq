@@ -9,7 +9,7 @@ module TokenAuthenticatable
     private # rubocop:disable Lint/UselessAccessModifier
 
     def add_authentication_token_field(token_field, options = {})
-      @token_fields = [] unless @token_fields
+      @token_fields ||= []
       unique = options.fetch(:unique, true)
 
       if @token_fields.include?(token_field)
@@ -22,6 +22,8 @@ module TokenAuthenticatable
 
       strategy = if options[:digest]
                    TokenAuthenticatableStrategies::Digest.new(self, token_field, options)
+                 elsif options[:encrypted]
+                   TokenAuthenticatableStrategies::Encrypted.new(self, token_field, options)
                  else
                    TokenAuthenticatableStrategies::Insecure.new(self, token_field, options)
                  end

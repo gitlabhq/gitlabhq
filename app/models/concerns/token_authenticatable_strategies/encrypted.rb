@@ -28,6 +28,7 @@ module TokenAuthenticatableStrategies
       raise ArgumentError unless token.present?
 
       instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      token
     end
 
     protected
