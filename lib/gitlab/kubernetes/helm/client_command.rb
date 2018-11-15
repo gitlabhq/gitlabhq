@@ -7,7 +7,7 @@ module Gitlab
           # installing an app. We ensure the helm version stored in the
           # database is correct by also updating this after transition to
           # :installed,:updated in Clusters::Concerns::ApplicationStatus
-          'helm init --upgrade --tiller-namespace gitlab-managed-apps'
+          'helm init --upgrade'
         end
 
         def wait_for_tiller_command

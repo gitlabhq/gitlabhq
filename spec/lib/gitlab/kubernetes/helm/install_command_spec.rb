@@ -26,7 +26,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
   it_behaves_like 'helm commands' do
     let(:commands) do
       <<~EOS
-      helm init --upgrade --tiller-namespace gitlab-managed-apps
+      helm init --upgrade
       for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
       helm repo add app-name https://repository.example.com
       helm repo update
@@ -55,7 +55,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
@@ -86,7 +86,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         #{helm_install_command}
         EOS
@@ -114,7 +114,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
@@ -138,7 +138,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
@@ -162,7 +162,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
@@ -188,7 +188,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --upgrade --tiller-namespace gitlab-managed-apps
+        helm init --upgrade
         for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update

@@ -21,7 +21,7 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
   it_behaves_like 'helm commands' do
     let(:commands) do
       <<~EOS
-         helm init --upgrade --tiller-namespace gitlab-managed-apps
+         helm init --upgrade
          for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
          helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
       EOS
@@ -34,7 +34,7 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --upgrade --tiller-namespace gitlab-managed-apps
+         helm init --upgrade
          for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
          helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
         EOS
@@ -58,7 +58,7 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-           helm init --upgrade --tiller-namespace gitlab-managed-apps
+           helm init --upgrade
            for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
            helm repo add #{application.name} #{application.repository}
            helm upgrade #{application.name} #{application.chart} --tls --tls-ca-cert /data/helm/#{application.name}/config/ca.pem --tls-cert /data/helm/#{application.name}/config/cert.pem --tls-key /data/helm/#{application.name}/config/key.pem --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
@@ -73,7 +73,7 @@ describe Gitlab::Kubernetes::Helm::UpgradeCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-         helm init --upgrade --tiller-namespace gitlab-managed-apps
+         helm init --upgrade
          for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
          helm upgrade #{application.name} #{application.chart} --reset-values --install --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml
         EOS
