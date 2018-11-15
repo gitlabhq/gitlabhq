@@ -40,8 +40,7 @@ module Clusters
 
         def install_command_flags
           ['--set', 'ingressShim.defaultIssuerName=letsencrypt-prod'] +
-            ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer'] +
-            ['--set', 'rbac.create=false']
+            ['--set', 'ingressShim.defaultIssuerKind=ClusterIssuer']
         end
 
         private
