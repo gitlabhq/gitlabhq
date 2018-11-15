@@ -1,5 +1,5 @@
 /* Developer beware! Do not add logic to showButton or hideButton
- * that will force a reflow. Doing so will create a signficant performance
+ * that will force a reflow. Doing so will create a significant performance
  * bottleneck for pages with large diffs. For a comprehensive list of what
  * causes reflows, visit https://gist.github.com/paulirish/5d52fb081b3570c81e3a
  */
