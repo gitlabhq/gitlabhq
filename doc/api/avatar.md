@@ -4,7 +4,7 @@
 
 ## Get a single avatar URL
 
-Get a single avatar URL for a given email addres. If user with matching public
+Get a single avatar URL for a given email address. If user with matching public
 email address is not found, results from external avatar services are returned.
 This endpoint can be accessed without authentication. In case public visibility
 is restricted, response will be `403 Forbidden` when unauthenticated.
