@@ -1095,7 +1095,21 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     it 'returns no Gitaly::DiffStats when there is a nil SHA' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService)
+        .not_to receive(:diff_stats)
+
       collection = repository.diff_stats(nil, 'master')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
+    end
+
+    it 'returns no Gitaly::DiffStats when there is a BLANK_SHA' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService)
+        .not_to receive(:diff_stats)
+
+      collection = repository.diff_stats(Gitlab::Git::BLANK_SHA, 'master')
 
       expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
       expect(collection).to be_a(Enumerable)

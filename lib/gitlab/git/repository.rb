@@ -419,13 +419,17 @@ module Gitlab
       end
 
       def diff_stats(left_id, right_id)
+        if [left_id, right_id].any? { |ref| ref.blank? || Gitlab::Git.blank_ref?(ref) }
+          return empty_diff_stats
+        end
+
         stats = wrapped_gitaly_errors do
           gitaly_commit_client.diff_stats(left_id, right_id)
         end
 
         Gitlab::Git::DiffStatsCollection.new(stats)
       rescue CommandError, TypeError
-        Gitlab::Git::DiffStatsCollection.new([])
+        empty_diff_stats
       end
 
       # Returns a RefName for a given SHA
@@ -961,6 +965,10 @@ module Gitlab
       end
 
       private
+
+      def empty_diff_stats
+        Gitlab::Git::DiffStatsCollection.new([])
+      end
 
       def uncached_has_local_branches?
         wrapped_gitaly_errors do
