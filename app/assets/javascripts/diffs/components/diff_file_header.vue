@@ -171,7 +171,6 @@ export default {
             v-gl-tooltip
             :title="diffFile.new_path"
             class="file-title-name"
-
             v-html="diffFile.new_path_html"
           ></strong>
         </span>
