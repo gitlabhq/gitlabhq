@@ -48,6 +48,12 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
       expect(kubernetes_namespace.service_account_name).to eq("#{namespace}-service-account")
       expect(kubernetes_namespace.service_account_token).to be_present
     end
+
+    it 'calls ClusterPlatformConfigureWorker in a ascync fashion' do
+      expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id)
+
+      subject
+    end
   end
 
   shared_examples 'error' do
