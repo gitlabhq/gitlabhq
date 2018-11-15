@@ -621,7 +621,7 @@ msgstr "Помилка при створенні нової гілки."
 msgid "An error occured whilst fetching the job trace."
 msgstr "Трапилася помилка при отриманні логу завдання."
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr "Трапилася помилка при отриманні даних останнього конвеєра."
 
 msgid "An error occured whilst loading all the files."

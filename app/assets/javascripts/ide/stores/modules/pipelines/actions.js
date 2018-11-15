@@ -28,7 +28,7 @@ export const receiveLatestPipelineError = ({ commit, dispatch }, err) => {
     dispatch(
       'setErrorMessage',
       {
-        text: __('An error occured whilst fetching the latest pipline.'),
+        text: __('An error occured whilst fetching the latest pipeline.'),
         action: () =>
           dispatch('forcePipelineRequest').then(() =>
             dispatch('setErrorMessage', null, { root: true }),
