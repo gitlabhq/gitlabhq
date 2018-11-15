@@ -15,9 +15,10 @@ describe Gitlab::FileDetector do
 
   describe '.type_of' do
     it 'returns the type of a README file' do
+      filenames = Gitlab::MarkupHelper::PLAIN_FILENAMES + Gitlab::MarkupHelper::PLAIN_FILENAMES.map(&:upcase)
       extensions = Gitlab::MarkupHelper::EXTENSIONS + Gitlab::MarkupHelper::EXTENSIONS.map(&:upcase)
       
-      %w[README readme INDEX index].each do |filename|
+      filenames.each do |filename|
         expect(described_class.type_of(filename)).to eq(:readme)
         extensions.each do |extname|
           expect(described_class.type_of(filename + extname)).to eq(:readme)
