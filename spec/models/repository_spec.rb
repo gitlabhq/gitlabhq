@@ -1705,16 +1705,24 @@ describe Repository do
     context 'when ref is a tag' do
       let(:ref) { 'refs/tags/v1.0.0' }
 
-      it 'returns the tag' do
+      it 'returns a tag' do
         is_expected.to be_a(Gitlab::Git::Tag)
+      end
+
+      it 'returns the correct tag' do
+        expect(subject.name).to eq('v1.0.0')
       end
     end
 
     context 'when ref is a branch' do
       let(:ref) { 'refs/heads/master' }
 
-      it 'returns the branch' do
+      it 'returns a branch' do
         is_expected.to be_a(Gitlab::Git::Branch)
+      end
+
+      it 'returns the correct branch' do
+        expect(subject.name).to eq('master')
       end
     end
 

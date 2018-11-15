@@ -2805,7 +2805,7 @@ describe Project do
       context 'when ref exists' do
         let(:ref) { 'refs/heads/master' }
 
-        it 'returns the ref' do
+        it 'returns a ref' do
           is_expected.to be_a(Gitlab::Git::Ref)
         end
       end
@@ -2838,8 +2838,12 @@ describe Project do
           project.repository.add_tag(project.creator, ref, 'master')
         end
 
-        it 'returns full tag ref path' do
+        it 'returns a tag' do
           is_expected.to be_a(Gitlab::Git::Tag)
+        end
+
+        it 'returns the correct tag' do
+          expect(subject.name).to eq(ref)
         end
       end
 
@@ -2848,8 +2852,12 @@ describe Project do
           project.repository.add_branch(project.creator, ref, 'master')
         end
 
-        it 'returns full branch ref path' do
+        it 'returns a branch' do
           is_expected.to be_a(Gitlab::Git::Branch)
+        end
+
+        it 'returns the correct branch' do
+          expect(subject.name).to eq(ref)
         end
       end
     end
