@@ -1,7 +1,7 @@
 <script>
+import { GlTooltipDirective, GlLink, GlButton } from '@gitlab-org/gitlab-ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { sprintf } from '~/locale';
 import scrollDown from '../svg/scroll_down.svg';
@@ -9,9 +9,11 @@ import scrollDown from '../svg/scroll_down.svg';
 export default {
   components: {
     Icon,
+    GlLink,
+    GlButton,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   scrollDown,
   props: {
@@ -67,82 +69,76 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar affix">
+  <div class="top-bar">
     <!-- truncate information -->
     <div class="js-truncated-info truncated-info d-none d-sm-block float-left">
       <template v-if="isTraceSizeVisible">
         {{ jobLogSize }}
 
-        <a
+        <gl-link
           v-if="rawPath"
           :href="rawPath"
           class="js-raw-link raw-link"
         >
           {{ s__("Job|Complete Raw") }}
-        </a>
+        </gl-link>
       </template>
     </div>
     <!-- eo truncate information -->
 
     <div class="controllers float-right">
       <!-- links -->
-      <a
+      <gl-link
         v-if="rawPath"
-        v-tooltip
+        v-gl-tooltip.body
         :title="s__('Job|Show complete raw')"
         :href="rawPath"
         class="js-raw-link-controller controllers-buttons"
-        data-container="body"
       >
         <icon name="doc-text" />
-      </a>
+      </gl-link>
 
-      <a
+      <gl-link
         v-if="erasePath"
-        v-tooltip
+        v-gl-tooltip.body
         :title="s__('Job|Erase job log')"
         :href="erasePath"
         :data-confirm="__('Are you sure you want to erase this build?')"
         class="js-erase-link controllers-buttons"
-        data-container="body"
         data-method="post"
       >
         <icon name="remove" />
-      </a>
+      </gl-link>
       <!-- eo links -->
 
       <!-- scroll buttons -->
       <div
-        v-tooltip
+        v-gl-tooltip
         :title="s__('Job|Scroll to top')"
         class="controllers-buttons"
-        data-container="body"
       >
-        <button
+        <gl-button
           :disabled="isScrollTopDisabled"
           type="button"
           class="js-scroll-top btn-scroll btn-transparent btn-blank"
           @click="handleScrollToTop"
         >
-          <icon name="scroll_up"/>
-        </button>
+          <icon name="scroll_up" />
+        </gl-button>
       </div>
 
       <div
-        v-tooltip
+        v-gl-tooltip
         :title="s__('Job|Scroll to bottom')"
         class="controllers-buttons"
-        data-container="body"
       >
-        <button
+        <gl-button
           :disabled="isScrollBottomDisabled"
-          type="button"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"
           :class="{ animate: isScrollingDown }"
           @click="handleScrollToBottom"
           v-html="$options.scrollDown"
-        >
-        </button>
+        />
       </div>
       <!-- eo scroll buttons -->
     </div>

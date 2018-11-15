@@ -218,5 +218,7 @@ export default {
   diverged_commits_count: 0,
   only_allow_merge_if_pipeline_succeeds: false,
   commit_change_content_path: '/root/acets-app/merge_requests/22/commit_change_content',
-  merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
+  merge_commit_path:
+    'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
+  troubleshooting_docs_path: 'help',
 };

@@ -7,7 +7,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        merge_request = Factory::Resource::MergeRequestFromFork.fabricate! do |merge_request|
+        merge_request = Resource::MergeRequestFromFork.fabricate! do |merge_request|
           merge_request.fork_branch = 'feature-branch'
         end
 

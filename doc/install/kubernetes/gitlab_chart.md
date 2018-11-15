@@ -31,7 +31,7 @@ to deploy.
 
 TIP: **Tip:**
 For production deployments, we strongly recommend using the
-[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/README.md)
+[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/index.md)
 utilizing [external Postgres, Redis, and object storage](https://gitlab.com/charts/gitlab/tree/master/doc/advanced) services.
 
 ### Requirements

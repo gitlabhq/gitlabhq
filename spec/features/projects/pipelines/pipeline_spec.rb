@@ -388,54 +388,83 @@ describe 'Pipeline', :js do
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
+    subject { visit pipeline_failures_page }
+
     context 'with failed build' do
       before do
         failed_build.trace.set('4 examples, 1 failure')
-
-        visit pipeline_failures_page
       end
 
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'shows build failure logs' do
+        subject
+
         expect(page).to have_content('4 examples, 1 failure')
       end
 
       it 'shows the failure reason' do
+        subject
+
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
-      it 'shows retry button for failed build' do
-        page.within(find('.build-failures', match: :first)) do
-          expect(page).to have_link('Retry')
+      context 'when user does not have permission to retry build' do
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).not_to have_link('Retry')
+          end
+        end
+      end
+
+      context 'when user does have permission to retry build' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).to have_link('Retry')
+          end
         end
       end
     end
 
     context 'when missing build logs' do
-      before do
-        visit pipeline_failures_page
-      end
-
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'does not show trace' do
+        subject
+
         expect(page).to have_content('No job trace')
       end
     end
@@ -448,11 +477,9 @@ describe 'Pipeline', :js do
       end
 
       context 'when accessing failed jobs page' do
-        before do
-          visit pipeline_failures_page
-        end
-
         it 'fails to access the page' do
+          subject
+
           expect(page).to have_title('Access Denied')
         end
       end
@@ -461,11 +488,11 @@ describe 'Pipeline', :js do
     context 'without failures' do
       before do
         failed_build.update!(status: :success)
-
-        visit pipeline_failures_page
       end
 
       it 'displays the pipeline graph' do
+        subject
+
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.pipeline-visualization')

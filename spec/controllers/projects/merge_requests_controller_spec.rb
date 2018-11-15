@@ -563,6 +563,7 @@ describe Projects::MergeRequestsController do
     it 'responds with serialized pipelines' do
       expect(json_response['pipelines']).not_to be_empty
       expect(json_response['count']['all']).to eq 1
+      expect(response).to include_pagination_headers
     end
   end
 
@@ -754,7 +755,7 @@ describe Projects::MergeRequestsController do
       let(:environment) { create(:environment, project: forked) }
       let(:pipeline)    { create(:ci_pipeline, sha: sha, project: forked) }
       let(:build)       { create(:ci_build, pipeline: pipeline) }
-      let!(:deployment) { create(:deployment, environment: environment, sha: sha, ref: 'master', deployable: build) }
+      let!(:deployment) { create(:deployment, :succeed, environment: environment, sha: sha, ref: 'master', deployable: build) }
 
       let(:merge_request) do
         create(:merge_request, source_project: forked, target_project: project, target_branch: 'master', head_pipeline: pipeline)
@@ -779,14 +780,14 @@ describe Projects::MergeRequestsController do
           let(:merge_commit_sha)    { project.repository.merge(user, forked.commit.id, merge_request, "merged in test") }
           let(:post_merge_pipeline) { create(:ci_pipeline, sha: merge_commit_sha, project: project) }
           let(:post_merge_build)    { create(:ci_build, pipeline: post_merge_pipeline) }
-          let!(:source_deployment)  { create(:deployment, environment: source_environment, sha: merge_commit_sha, ref: 'master', deployable: post_merge_build) }
+          let!(:source_deployment)  { create(:deployment, :succeed, environment: source_environment, sha: merge_commit_sha, ref: 'master', deployable: post_merge_build) }
 
           before do
             merge_request.update!(merge_commit_sha: merge_commit_sha)
             merge_request.mark_as_merged!
           end
 
-          it 'returns the enviroment on the source project' do
+          it 'returns the environment on the source project' do
             get_ci_environments_status(environment_target: 'merge_commit')
 
             expect(response).to have_gitlab_http_status(:ok)

@@ -9,7 +9,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        key = Factory::Resource::SSHKey.fabricate! do |resource|
+        key = Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title
         end
 

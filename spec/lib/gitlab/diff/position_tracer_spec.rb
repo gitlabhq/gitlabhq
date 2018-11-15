@@ -43,7 +43,7 @@ describe Gitlab::Diff::PositionTracer do
   #
   # In any case, all of this means that the tests below will be extremely
   # (excessively, unjustifiably) thorough for scenarios where "the file was
-  # created in the old diff" and then drop off to comparitively lackluster
+  # created in the old diff" and then drop off to comparatively lackluster
   # testing of other scenarios.
   #
   # I did still try to cover most of the obvious and potentially tricky

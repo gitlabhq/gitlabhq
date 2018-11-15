@@ -1,6 +1,11 @@
 <script>
+import { GlButton } from '@gitlab-org/gitlab-ui';
+
 export default {
   name: 'PipelinesEmptyState',
+  components: {
+    GlButton,
+  },
   props: {
     helpPagePath: {
       type: String,
@@ -41,12 +46,13 @@ export default {
           </p>
 
           <div class="text-center">
-            <a
+            <gl-button
               :href="helpPagePath"
-              class="btn btn-primary js-get-started-pipelines"
+              variant="primary"
+              class="js-get-started-pipelines"
             >
               {{ s__('Pipelines|Get started with Pipelines') }}
-            </a>
+            </gl-button>
           </div>
         </template>
 

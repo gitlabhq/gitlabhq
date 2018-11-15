@@ -14,7 +14,8 @@ describe EnvironmentSerializer do
     let(:project) { create(:project, :repository) }
     let(:deployable) { create(:ci_build) }
     let(:deployment) do
-      create(:deployment, deployable: deployable,
+      create(:deployment, :success,
+                          deployable: deployable,
                           user: user,
                           project: project,
                           sha: project.commit.id)

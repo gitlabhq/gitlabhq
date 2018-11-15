@@ -12,7 +12,6 @@ class LabelsFinder < UnionFinder
     @params = params
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute(skip_authorization: false)
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
@@ -21,7 +20,6 @@ class LabelsFinder < UnionFinder
     items = by_search(items)
     sort(items)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

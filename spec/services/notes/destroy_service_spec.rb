@@ -21,5 +21,38 @@ describe Notes::DestroyService do
       expect { described_class.new(project, user).execute(note) }
         .to change { user.todos_pending_count }.from(1).to(0)
     end
+
+    context 'noteable highlight cache clearing' do
+      let(:repo_project) { create(:project, :repository) }
+      let(:merge_request) do
+        create(:merge_request, source_project: repo_project,
+                               target_project: repo_project)
+      end
+
+      let(:note) do
+        create(:diff_note_on_merge_request, project: repo_project,
+                                            noteable: merge_request)
+      end
+
+      before do
+        allow(note.position).to receive(:unfolded_diff?) { true }
+      end
+
+      it 'clears noteable diff cache when it was unfolded for the note position' do
+        expect(merge_request).to receive_message_chain(:diffs, :clear_cache)
+
+        described_class.new(repo_project, user).execute(note)
+      end
+
+      it 'does not clear cache when note is not the first of the discussion' do
+        reply_note = create(:diff_note_on_merge_request, in_reply_to: note,
+                                                         project: repo_project,
+                                                         noteable: merge_request)
+
+        expect(merge_request).not_to receive(:diffs)
+
+        described_class.new(repo_project, user).execute(reply_note)
+      end
+    end
   end
 end

@@ -216,7 +216,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_gitlab_http_status(200)
       end
 
-      it 'loads the terminals for the enviroment' do
+      it 'loads the terminals for the environment' do
         expect_any_instance_of(Environment).to receive(:terminals)
 
         get :terminal, environment_params

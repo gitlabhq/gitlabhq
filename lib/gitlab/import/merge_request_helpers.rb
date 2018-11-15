@@ -22,7 +22,7 @@ module Gitlab
           # additional work that is strictly necessary.
           merge_request_id = insert_and_return_id(attributes, project.merge_requests)
 
-          merge_request = project.merge_requests.find(merge_request_id)
+          merge_request = project.merge_requests.reload.find(merge_request_id)
 
           # We use .insert_and_return_id which effectively disables all callbacks.
           # Trigger iid logic here to make sure we track internal id values consistently.

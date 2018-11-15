@@ -1,9 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import resolveSvg from 'icons/_icon_resolve_discussion.svg';
-import resolvedSvg from 'icons/_icon_status_success_solid.svg';
-import mrIssueSvg from 'icons/_icon_mr_issue.svg';
-import nextDiscussionSvg from 'icons/_next_discussion.svg';
+import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '../../lib/utils/text_utility';
 import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -11,6 +8,9 @@ import tooltip from '../../vue_shared/directives/tooltip';
 export default {
   directives: {
     tooltip,
+  },
+  components: {
+    Icon,
   },
   mixins: [discussionNavigation],
   computed: {
@@ -37,12 +37,6 @@ export default {
       return this.getNoteableData.create_issue_to_resolve_discussions_path;
     },
   },
-  created() {
-    this.resolveSvg = resolveSvg;
-    this.resolvedSvg = resolvedSvg;
-    this.mrIssueSvg = mrIssueSvg;
-    this.nextDiscussionSvg = nextDiscussionSvg;
-  },
   methods: {
     ...mapActions(['expandDiscussion']),
     jumpToFirstUnresolvedDiscussion() {
@@ -66,15 +60,9 @@ export default {
         <span
           :class="{ 'is-active': allResolved }"
           class="line-resolve-btn is-disabled"
-          type="button">
-          <span
-            v-if="allResolved"
-            v-html="resolvedSvg"
-          ></span>
-          <span
-            v-else
-            v-html="resolveSvg"
-          ></span>
+          type="button"
+        >
+          <icon name="check-circle" />
         </span>
         <span class="line-resolve-text">
           {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ countText }} resolved
@@ -90,7 +78,7 @@ export default {
           :title="s__('Resolve all discussions in new issue')"
           data-container="body"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
-          <span v-html="mrIssueSvg"></span>
+          <icon name="issue-new" />
         </a>
       </div>
       <div
@@ -103,7 +91,7 @@ export default {
           data-container="body"
           class="btn btn-default discussion-next-btn"
           @click="jumpToFirstUnresolvedDiscussion">
-          <span v-html="nextDiscussionSvg"></span>
+          <icon name="comment-next" />
         </button>
       </div>
     </div>

@@ -24,8 +24,8 @@ export default class MRWidgetService {
   fetchDeployments(targetParam) {
     return axios.get(this.endpoints.ciEnvironmentsStatusPath, {
       params: {
-        environment_target: targetParam
-      }
+        environment_target: targetParam,
+      },
     });
   }
 

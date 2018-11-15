@@ -3,6 +3,7 @@ module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
+      extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :raw_commit, :head
 
@@ -59,7 +60,7 @@ module Gitlab
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = repo.wrapped_gitaly_errors do
+          commit = wrapped_gitaly_errors do
             repo.gitaly_commit_client.find_commit(commit_id)
           end
 
@@ -100,7 +101,7 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.between(base, head)
           end
         end
@@ -125,7 +126,7 @@ module Gitlab
         #        are documented here:
         #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
         def find_all(repo, options = {})
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
           end
         end
@@ -142,7 +143,7 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.list_commits_by_oid(oids)
           end
         end

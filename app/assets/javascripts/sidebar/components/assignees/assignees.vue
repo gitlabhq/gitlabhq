@@ -74,8 +74,8 @@ export default {
       }
 
       if (!this.users.length) {
-        const emptyTooltipLabel = this.issuableType === 'issue' ?
-          __('Assignee(s)') : __('Assignee');
+        const emptyTooltipLabel =
+          this.issuableType === 'issue' ? __('Assignee(s)') : __('Assignee');
         names.push(emptyTooltipLabel);
       }
 
@@ -248,4 +248,3 @@ export default {
     </div>
   </div>
 </template>
-

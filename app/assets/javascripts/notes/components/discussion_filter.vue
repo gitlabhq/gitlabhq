@@ -1,7 +1,8 @@
 <script>
 import $ from 'jquery';
-import Icon from '~/vue_shared/components/icon.vue';
 import { mapGetters, mapActions } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
+import { DISCUSSION_FILTERS_DEFAULT_VALUE, HISTORY_ONLY_FILTER_VALUE } from '../constants';
 
 export default {
   components: {
@@ -12,14 +13,17 @@ export default {
       type: Array,
       required: true,
     },
-    defaultValue: {
+    selectedValue: {
       type: Number,
       default: null,
       required: false,
     },
   },
   data() {
-    return { currentValue: this.defaultValue };
+    return {
+      currentValue: this.selectedValue,
+      defaultValue: DISCUSSION_FILTERS_DEFAULT_VALUE,
+    };
   },
   computed: {
     ...mapGetters(['getNotesDataByProp']),
@@ -28,8 +32,11 @@ export default {
       return this.filters.find(filter => filter.value === this.currentValue);
     },
   },
+  mounted() {
+    this.toggleCommentsForm();
+  },
   methods: {
-    ...mapActions(['filterDiscussion']),
+    ...mapActions(['filterDiscussion', 'setCommentsDisabled']),
     selectFilter(value) {
       const filter = parseInt(value, 10);
 
@@ -39,6 +46,10 @@ export default {
       if (filter === this.currentValue) return;
       this.currentValue = filter;
       this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter });
+      this.toggleCommentsForm();
+    },
+    toggleCommentsForm() {
+      this.setCommentsDisabled(this.currentValue === HISTORY_ONLY_FILTER_VALUE);
     },
   },
 };
@@ -73,6 +84,10 @@ export default {
             >
               {{ filter.title }}
             </button>
+            <div
+              v-if="filter.value === defaultValue"
+              class="dropdown-divider"
+            ></div>
           </li>
         </ul>
       </div>

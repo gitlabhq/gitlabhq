@@ -239,7 +239,7 @@ describe ProjectPresenter do
         expect(presenter.new_file_anchor_data).to have_attributes(enabled: false,
                                                                   label: "New file",
                                                                   link: presenter.project_new_blob_path(project, 'master'),
-                                                                  class_modifier: 'new')
+                                                                  class_modifier: 'success')
       end
 
       it 'returns nil if user cannot push' do

@@ -24,12 +24,28 @@ describe Awardable do
       end
     end
 
-    describe ".awarded" do
+    describe "#awarded" do
       it "filters by user and emoji name" do
         expect(Issue.awarded(award_emoji.user, "thumbsup")).to be_empty
         expect(Issue.awarded(award_emoji.user, "thumbsdown")).to eq [issue]
         expect(Issue.awarded(award_emoji2.user, "thumbsup")).to eq [issue2]
         expect(Issue.awarded(award_emoji2.user, "thumbsdown")).to be_empty
+      end
+
+      it "filters by user and any emoji" do
+        issue3 = create(:issue)
+        create(:award_emoji, awardable: issue3, name: "star", user: award_emoji.user)
+        create(:award_emoji, awardable: issue3, name: "star", user: award_emoji2.user)
+
+        expect(Issue.awarded(award_emoji.user)).to contain_exactly(issue, issue3)
+        expect(Issue.awarded(award_emoji2.user)).to contain_exactly(issue2, issue3)
+      end
+    end
+
+    describe "#not_awarded" do
+      it "returns issues not awarded by user" do
+        expect(Issue.not_awarded(award_emoji.user)).to eq [issue2]
+        expect(Issue.not_awarded(award_emoji2.user)).to eq [issue]
       end
     end
   end

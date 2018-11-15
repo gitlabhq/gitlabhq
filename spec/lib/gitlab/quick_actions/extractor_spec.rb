@@ -272,5 +272,24 @@ describe Gitlab::QuickActions::Extractor do
       expect(commands).to be_empty
       expect(msg).to eq expected
     end
+
+    it 'limits to passed commands when they are passed' do
+      msg = <<~MSG.strip
+      Hello, we should only extract the commands passed
+      /reopen
+      /labels hello world
+      /power
+      MSG
+      expected_msg = <<~EXPECTED.strip
+      Hello, we should only extract the commands passed
+      /power
+      EXPECTED
+      expected_commands = [['reopen'], ['labels', 'hello world']]
+
+      msg, commands = extractor.extract_commands(msg, only: [:open, :labels])
+
+      expect(commands).to eq(expected_commands)
+      expect(msg).to eq expected_msg
+    end
   end
 end

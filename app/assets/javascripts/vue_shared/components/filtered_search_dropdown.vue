@@ -56,12 +56,14 @@ export default {
     filteredResults() {
       if (this.filter !== '') {
         return this.items.filter(
-          item => item[this.filterKey] && item[this.filterKey].toLowerCase().includes(this.filter.toLowerCase()),
+          item =>
+            item[this.filterKey] &&
+            item[this.filterKey].toLowerCase().includes(this.filter.toLowerCase()),
         );
       }
 
       return this.items.slice(0, this.visibleItems);
-    }
+    },
   },
   mounted() {
     /**

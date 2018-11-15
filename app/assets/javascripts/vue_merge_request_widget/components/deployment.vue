@@ -10,6 +10,7 @@ import { visitUrl } from '../../lib/utils/url_utility';
 import createFlash from '../../flash';
 import MemoryUsage from './memory_usage.vue';
 import StatusIcon from './mr_widget_status_icon.vue';
+import ReviewAppLink from './review_app_link.vue';
 import MRWidgetService from '../services/mr_widget_service';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     Icon,
     TooltipOnTruncate,
     FilteredSearchDropdown,
+    ReviewAppLink,
   },
   directives: {
     tooltip,
@@ -38,10 +40,8 @@ export default {
     failed: __('Failed to deploy to'),
   },
   data() {
-    const features = window.gon.features || {};
     return {
       isStopping: false,
-      enableCiEnvironmentsStatusChanges: features.ciEnvironmentsStatusChanges,
     };
   },
   computed: {
@@ -62,6 +62,17 @@ export default {
     },
     deployedText() {
       return this.$options.deployedTextMap[this.deployment.status];
+    },
+    isDeployInProgress() {
+      return this.deployment.status === 'running';
+    },
+    deployInProgressTooltip() {
+      return this.isDeployInProgress
+        ? __('Stopping this environment is currently not possible as a deployment is in progress')
+        : '';
+    },
+    shouldRenderDropdown() {
+      return this.deployment.changes && this.deployment.changes.length > 0;
     },
   },
   methods: {
@@ -133,7 +144,7 @@ export default {
           <div>
             <template v-if="hasExternalUrls">
               <filtered-search-dropdown
-                v-if="enableCiEnvironmentsStatusChanges"
+                v-if="shouldRenderDropdown"
                 class="js-mr-wigdet-deployment-dropdown inline"
                 :items="deployment.changes"
                 :main-action-link="deployment.external_url"
@@ -143,18 +154,10 @@ export default {
                   slot="mainAction"
                   slot-scope="slotProps"
                 >
-                  <a
-                    :href="deployment.external_url"
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    class="deploy-link js-deploy-url inline"
-                    :class="slotProps.className"
-                  >
-                    <span>
-                      {{ __('View app') }}
-                      <icon name="external-link" />
-                    </span>
-                  </a>
+                  <review-app-link
+                    :link="deployment.external_url"
+                    :css-class="`deploy-link js-deploy-url inline ${slotProps.className}`"
+                  />
                 </template>
 
                 <template
@@ -177,28 +180,29 @@ export default {
                   </a>
                 </template>
               </filtered-search-dropdown>
-              <a
+              <review-app-link
                 v-else
-                :href="deployment.external_url"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inline"
-              >
-                <span>
-                  {{ __('View app') }}
-                  <icon name="external-link" />
-                </span>
-              </a>
+                :link="deployment.external_url"
+                css-class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inlin"
+              />
             </template>
-            <loading-button
+            <span 
               v-if="deployment.stop_url"
-              :loading="isStopping"
-              container-class="btn btn-default btn-sm inline prepend-left-4"
-              title="Stop environment"
-              @click="stopEnvironment"
+              v-tooltip 
+              :title="deployInProgressTooltip"
+              class="d-inline-block" 
+              tabindex="0"
             >
-              <icon name="stop" />
-            </loading-button>
+              <loading-button
+                :loading="isStopping"
+                :disabled="isDeployInProgress"
+                :title="__('Stop environment')"
+                container-class="js-stop-env btn btn-default btn-sm inline prepend-left-4"
+                @click="stopEnvironment"
+              >
+                <icon name="stop" />
+              </loading-button>
+            </span>
           </div>
         </div>
       </div>

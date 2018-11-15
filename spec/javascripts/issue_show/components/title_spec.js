@@ -25,25 +25,21 @@ describe('Title component', () => {
   });
 
   it('renders title HTML', () => {
-    expect(
-      vm.$el.querySelector('.title').innerHTML.trim(),
-    ).toBe('Testing <img>');
+    expect(vm.$el.querySelector('.title').innerHTML.trim()).toBe('Testing <img>');
   });
 
-  it('updates page title when changing titleHtml', (done) => {
+  it('updates page title when changing titleHtml', done => {
     spyOn(vm, 'setPageTitle');
     vm.titleHtml = 'test';
 
     Vue.nextTick(() => {
-      expect(
-        vm.setPageTitle,
-      ).toHaveBeenCalled();
+      expect(vm.setPageTitle).toHaveBeenCalled();
 
       done();
     });
   });
 
-  it('animates title changes', (done) => {
+  it('animates title changes', done => {
     vm.titleHtml = 'test';
 
     Vue.nextTick(() => {
@@ -61,14 +57,12 @@ describe('Title component', () => {
     });
   });
 
-  it('updates page title after changing title', (done) => {
+  it('updates page title after changing title', done => {
     vm.titleHtml = 'changed';
     vm.titleText = 'changed';
 
     Vue.nextTick(() => {
-      expect(
-        document.querySelector('title').textContent.trim(),
-      ).toContain('changed');
+      expect(document.querySelector('title').textContent.trim()).toContain('changed');
 
       done();
     });

@@ -82,7 +82,7 @@ module Gitlab
         ref: ref,
         startline: startline,
         data: data.join,
-        project_id: project ? project.id : nil
+        project: project
       )
     end
 

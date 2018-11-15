@@ -12,7 +12,7 @@
 
     ![SSH Keys](img/profile_settings_ssh_keys.png)
 
-3. Paste your **public** key that you generated in the first step in the 'Key'
+1. Paste your **public** key that you generated in the first step in the 'Key'
    box.
 
     ![Paste SSH public key](img/profile_settings_ssh_keys_paste_pub.png)

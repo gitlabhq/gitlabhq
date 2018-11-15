@@ -1,0 +1,5 @@
+---
+title: Changed merge request filtering to be by path instead of name
+merge_request:
+author:
+type: changed

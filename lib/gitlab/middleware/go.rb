@@ -38,7 +38,7 @@ module Gitlab
 
       def go_body(path)
         config = Gitlab.config
-        project_url = URI.join(config.gitlab.url, path)
+        project_url = Gitlab::Utils.append_path(config.gitlab.url, path)
         import_prefix = strip_url(project_url.to_s)
 
         repository_url = if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'

@@ -1,6 +1,8 @@
+import Vue from 'vue';
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
+import TaskList from '../../task_list';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
@@ -58,12 +60,13 @@ export const deleteNote = ({ commit, dispatch }, note) =>
     dispatch('updateMergeRequestWidget');
   });
 
-export const updateNote = ({ commit }, { endpoint, note }) =>
+export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
   service
     .updateNote(endpoint, note)
     .then(res => res.json())
     .then(res => {
       commit(types.UPDATE_NOTE, res);
+      dispatch('startTaskList');
     });
 
 export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
@@ -85,6 +88,7 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
         commit(types.ADD_NEW_NOTE, res);
 
         dispatch('updateMergeRequestWidget');
+        dispatch('startTaskList');
       }
       return res;
     });
@@ -260,6 +264,8 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         commit(types.ADD_NEW_NOTE, note);
       }
     });
+
+    dispatch('startTaskList');
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
@@ -335,7 +341,7 @@ export const scrollToNoteIfNeeded = (context, el) => {
 };
 
 export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
-  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+  axios.get(discussion.truncated_diff_lines_path).then(({ data }) => {
     commit(types.SET_DISCUSSION_DIFF_LINES, {
       discussionId: discussion.id,
       diffLines: data.truncated_diff_lines,
@@ -363,6 +369,21 @@ export const filterDiscussion = ({ dispatch }, { path, filter }) => {
       Flash(__('Something went wrong while fetching comments. Please try again.'));
     });
 };
+
+export const setCommentsDisabled = ({ commit }, data) => {
+  commit(types.DISABLE_COMMENTS, data);
+};
+
+export const startTaskList = ({ dispatch }) =>
+  Vue.nextTick(
+    () =>
+      new TaskList({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '.notes .is-editable',
+        onSuccess: () => dispatch('startTaskList'),
+      }),
+  );
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

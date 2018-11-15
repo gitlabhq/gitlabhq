@@ -53,13 +53,33 @@ describe 'Admin Groups' do
       expect_selected_visibility(internal)
     end
 
-    it 'when entered in group path, it auto filled the group name', :js do
+    it 'when entered in group name, it auto filled the group path', :js do
       visit admin_groups_path
       click_link "New group"
-      group_path = 'gitlab'
+      group_name = 'gitlab'
+      fill_in 'group_name', with: group_name
+      path_field = find('input#group_path')
+      expect(path_field.value).to eq group_name
+    end
+
+    it 'auto populates the group path with the group name', :js do
+      visit admin_groups_path
+      click_link "New group"
+      group_name = 'my gitlab project'
+      fill_in 'group_name', with: group_name
+      path_field = find('input#group_path')
+      expect(path_field.value).to eq 'my-gitlab-project'
+    end
+
+    it 'when entering in group path, group name does not change anymore', :js do
+      visit admin_groups_path
+      click_link "New group"
+      group_path = 'my-gitlab-project'
+      group_name = 'My modified gitlab project'
       fill_in 'group_path', with: group_path
-      name_field = find('input#group_name')
-      expect(name_field.value).to eq group_path
+      fill_in 'group_name', with: group_name
+      path_field = find('input#group_path')
+      expect(path_field.value).to eq 'my-gitlab-project'
     end
   end
 

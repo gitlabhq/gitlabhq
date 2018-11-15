@@ -35,9 +35,7 @@ describe('common_utils', () => {
     });
 
     it('should decode params', () => {
-      expect(
-        commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0],
-      ).toBe('label_name[]=test');
+      expect(commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0]).toBe('label_name[]=test');
     });
 
     it('should remove the question mark from the search params', () => {
@@ -49,25 +47,19 @@ describe('common_utils', () => {
 
   describe('urlParamsToObject', () => {
     it('parses path for label with trailing +', () => {
-      expect(
-        commonUtils.urlParamsToObject('label_name[]=label%2B', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
         label_name: ['label+'],
       });
     });
 
     it('parses path for milestone with trailing +', () => {
-      expect(
-        commonUtils.urlParamsToObject('milestone_title=A%2B', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
         milestone_title: 'A+',
       });
     });
 
     it('parses path for search terms with spaces', () => {
-      expect(
-        commonUtils.urlParamsToObject('search=two+words', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('search=two+words', {})).toEqual({
         search: 'two words',
       });
     });
@@ -187,7 +179,11 @@ describe('common_utils', () => {
 
   describe('parseQueryStringIntoObject', () => {
     it('should return object with query parameters', () => {
-      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
+      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({
+        scope: 'all',
+        page: '2',
+      });
+
       expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
       expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
     });
@@ -211,7 +207,9 @@ describe('common_utils', () => {
   describe('buildUrlWithCurrentLocation', () => {
     it('should build an url with current location and given parameters', () => {
       expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
-      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(`${window.location.pathname}?page=2`);
+      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(
+        `${window.location.pathname}?page=2`,
+      );
     });
   });
 
@@ -266,21 +264,24 @@ describe('common_utils', () => {
   });
 
   describe('normalizeCRLFHeaders', () => {
-    beforeEach(function () {
-      this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
+    beforeEach(function() {
+      this.CLRFHeaders =
+        'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
       spyOn(String.prototype, 'split').and.callThrough();
       this.normalizeCRLFHeaders = commonUtils.normalizeCRLFHeaders(this.CLRFHeaders);
     });
 
-    it('should split by newline', function () {
+    it('should split by newline', function() {
       expect(String.prototype.split).toHaveBeenCalledWith('\n');
     });
 
-    it('should split by colon+space for each header', function () {
-      expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
+    it('should split by colon+space for each header', function() {
+      expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(
+        3,
+      );
     });
 
-    it('should return a normalized headers object', function () {
+    it('should return a normalized headers object', function() {
       expect(this.normalizeCRLFHeaders).toEqual({
         'A-HEADER': 'a-value',
         'ANOTHER-HEADER': 'ANOTHER-VALUE',
@@ -359,67 +360,79 @@ describe('common_utils', () => {
       spyOn(window, 'setTimeout').and.callFake(cb => origSetTimeout(cb, 0));
     });
 
-    it('solves the promise from the callback', (done) => {
+    it('solves the promise from the callback', done => {
       const expectedResponseValue = 'Success!';
-      commonUtils.backOff((next, stop) => (
-        new Promise((resolve) => {
-          resolve(expectedResponseValue);
-        }).then((resp) => {
-          stop(resp);
-        })
-      ).catch(done.fail)).then((respBackoff) => {
-        expect(respBackoff).toBe(expectedResponseValue);
-        done();
-      }).catch(done.fail);
-    });
-
-    it('catches the rejected promise from the callback ', (done) => {
-      const errorMessage = 'Mistakes were made!';
-      commonUtils.backOff((next, stop) => {
-        new Promise((resolve, reject) => {
-          reject(new Error(errorMessage));
-        }).then((resp) => {
-          stop(resp);
-        }).catch(err => stop(err));
-      }).catch((errBackoffResp) => {
-        expect(errBackoffResp instanceof Error).toBe(true);
-        expect(errBackoffResp.message).toBe(errorMessage);
-        done();
-      });
-    });
-
-    it('solves the promise correctly after retrying a third time', (done) => {
-      let numberOfCalls = 1;
-      const expectedResponseValue = 'Success!';
-      commonUtils.backOff((next, stop) => (
-        Promise.resolve(expectedResponseValue)
-          .then((resp) => {
-            if (numberOfCalls < 3) {
-              numberOfCalls += 1;
-              next();
-            } else {
-              stop(resp);
-            }
+      commonUtils
+        .backOff((next, stop) =>
+          new Promise(resolve => {
+            resolve(expectedResponseValue);
           })
-      ).catch(done.fail)).then((respBackoff) => {
-        const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
-
-        expect(timeouts).toEqual([2000, 4000]);
-        expect(respBackoff).toBe(expectedResponseValue);
-        done();
-      }).catch(done.fail);
+            .then(resp => {
+              stop(resp);
+            })
+            .catch(done.fail),
+        )
+        .then(respBackoff => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        })
+        .catch(done.fail);
     });
 
-    it('rejects the backOff promise after timing out', (done) => {
-      commonUtils.backOff(next => next(), 64000)
-        .catch((errBackoffResp) => {
-          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
-
-          expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
+    it('catches the rejected promise from the callback ', done => {
+      const errorMessage = 'Mistakes were made!';
+      commonUtils
+        .backOff((next, stop) => {
+          new Promise((resolve, reject) => {
+            reject(new Error(errorMessage));
+          })
+            .then(resp => {
+              stop(resp);
+            })
+            .catch(err => stop(err));
+        })
+        .catch(errBackoffResp => {
           expect(errBackoffResp instanceof Error).toBe(true);
-          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+          expect(errBackoffResp.message).toBe(errorMessage);
           done();
         });
+    });
+
+    it('solves the promise correctly after retrying a third time', done => {
+      let numberOfCalls = 1;
+      const expectedResponseValue = 'Success!';
+      commonUtils
+        .backOff((next, stop) =>
+          Promise.resolve(expectedResponseValue)
+            .then(resp => {
+              if (numberOfCalls < 3) {
+                numberOfCalls += 1;
+                next();
+              } else {
+                stop(resp);
+              }
+            })
+            .catch(done.fail),
+        )
+        .then(respBackoff => {
+          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
+          expect(timeouts).toEqual([2000, 4000]);
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        })
+        .catch(done.fail);
+    });
+
+    it('rejects the backOff promise after timing out', done => {
+      commonUtils.backOff(next => next(), 64000).catch(errBackoffResp => {
+        const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
+        expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
+        expect(errBackoffResp instanceof Error).toBe(true);
+        expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+        done();
+      });
     });
   });
 
@@ -466,11 +479,14 @@ describe('common_utils', () => {
   });
 
   describe('createOverlayIcon', () => {
-    it('should return the favicon with the overlay', (done) => {
-      commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
-        expect(url).toEqual(faviconWithOverlayDataUrl);
-        done();
-      }).catch(done.fail);
+    it('should return the favicon with the overlay', done => {
+      commonUtils
+        .createOverlayIcon(faviconDataUrl, overlayDataUrl)
+        .then(url => {
+          expect(url).toEqual(faviconWithOverlayDataUrl);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -486,11 +502,16 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should set page favicon to provided favicon overlay', (done) => {
-      commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
-        expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
-        done();
-      }).catch(done.fail);
+    it('should set page favicon to provided favicon overlay', done => {
+      commonUtils
+        .setFaviconOverlay(overlayDataUrl)
+        .then(() => {
+          expect(document.getElementById('favicon').getAttribute('href')).toEqual(
+            faviconWithOverlayDataUrl,
+          );
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -512,24 +533,24 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', (done) => {
+    it('should reset favicon in case of error', done => {
       mock.onGet(BUILD_URL).replyOnce(500);
 
-      commonUtils.setCiStatusFavicon(BUILD_URL)
-        .catch(() => {
-          const favicon = document.getElementById('favicon');
+      commonUtils.setCiStatusFavicon(BUILD_URL).catch(() => {
+        const favicon = document.getElementById('favicon');
 
-          expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
-          done();
-        });
+        expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
+        done();
+      });
     });
 
-    it('should set page favicon to CI status favicon based on provided status', (done) => {
+    it('should set page favicon to CI status favicon based on provided status', done => {
       mock.onGet(BUILD_URL).reply(200, {
         favicon: overlayDataUrl,
       });
 
-      commonUtils.setCiStatusFavicon(BUILD_URL)
+      commonUtils
+        .setCiStatusFavicon(BUILD_URL)
         .then(() => {
           const favicon = document.getElementById('favicon');
 
@@ -554,11 +575,15 @@ describe('common_utils', () => {
     });
 
     it('should return the svg for a linked icon', () => {
-      expect(commonUtils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+      expect(commonUtils.spriteIcon('test')).toEqual(
+        '<svg ><use xlink:href="icons.svg#test" /></svg>',
+      );
     });
 
     it('should set svg className when passed', () => {
-      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
+      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual(
+        '<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>',
+      );
     });
   });
 
@@ -578,7 +603,7 @@ describe('common_utils', () => {
 
       const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
 
-      Object.keys(convertedObj).forEach((prop) => {
+      Object.keys(convertedObj).forEach(prop => {
         expect(snakeRegEx.test(prop)).toBeFalsy();
         expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
       });
@@ -597,9 +622,7 @@ describe('common_utils', () => {
         },
       };
 
-      expect(
-        commonUtils.convertObjectPropsToCamelCase(obj),
-      ).toEqual({
+      expect(commonUtils.convertObjectPropsToCamelCase(obj)).toEqual({
         snakeKey: {
           child_snake_key: 'value',
         },
@@ -614,9 +637,7 @@ describe('common_utils', () => {
           },
         };
 
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(obj, { deep: true }),
-        ).toEqual({
+        expect(commonUtils.convertObjectPropsToCamelCase(obj, { deep: true })).toEqual({
           snakeKey: {
             childSnakeKey: 'value',
           },
@@ -630,9 +651,7 @@ describe('common_utils', () => {
           },
         ];
 
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
-        ).toEqual([
+        expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
           {
             childSnakeKey: 'value',
           },
@@ -648,9 +667,7 @@ describe('common_utils', () => {
           ],
         ];
 
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
-        ).toEqual([
+        expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
           [
             {
               childSnakeKey: 'value',

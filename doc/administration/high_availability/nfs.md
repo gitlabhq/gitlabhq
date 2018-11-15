@@ -59,7 +59,7 @@ on an Linux NFS server, do the following:
     sysctl -w fs.leases-enable=0
     ```
 
-2. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
+1. Restart the NFS server process. For example, on CentOS run `service nfs restart`.
 
 ## Avoid using AWS's Elastic File System (EFS)
 
@@ -87,12 +87,12 @@ this configuration.
 Additionally, this configuration is specifically warned against in the
 [Postgres Documentation](https://www.postgresql.org/docs/current/static/creating-cluster.html#CREATING-CLUSTER-NFS):
 
->PostgreSQL does nothing special for NFS file systems, meaning it assumes NFS behaves exactly like 
->locally-connected drives. If the client or server NFS implementation does not provide standard file 
->system semantics, this can cause reliability problems. Specifically, delayed (asynchronous) writes 
+>PostgreSQL does nothing special for NFS file systems, meaning it assumes NFS behaves exactly like
+>locally-connected drives. If the client or server NFS implementation does not provide standard file
+>system semantics, this can cause reliability problems. Specifically, delayed (asynchronous) writes
 >to the NFS server can cause data corruption problems.
 
-For supported database architecture, please see our documentation on 
+For supported database architecture, please see our documentation on
 [Configuring a Database for GitLab HA](https://docs.gitlab.com/ee/administration/high_availability/database.html).
 
 ## NFS Client mount options

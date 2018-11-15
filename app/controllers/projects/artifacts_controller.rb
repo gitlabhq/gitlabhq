@@ -16,7 +16,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   def download
     return render_404 unless artifacts_file
 
-    send_upload(artifacts_file, attachment: artifacts_file.filename)
+    send_upload(artifacts_file, attachment: artifacts_file.filename, proxy: params[:proxy])
   end
 
   def browse

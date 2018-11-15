@@ -1,0 +1,5 @@
+---
+title: Remove gitlab-ui's pagination from global
+merge_request:
+author:
+type: performance

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { mapState } from 'vuex';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import diffsApp from './components/app.vue';
 
 export default function initDiffsApp(store) {
@@ -17,9 +16,7 @@ export default function initDiffsApp(store) {
       return {
         endpoint: dataset.endpoint,
         projectPath: dataset.projectPath,
-        currentUser: convertObjectPropsToCamelCase(JSON.parse(dataset.currentUserData), {
-          deep: true,
-        }),
+        currentUser: JSON.parse(dataset.currentUserData) || {},
       };
     },
     computed: {

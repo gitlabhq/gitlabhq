@@ -40,15 +40,17 @@ production:
 ```
 
 This project has three jobs:
-1. `test` - used to test Django application,
-2. `staging` - used to automatically deploy staging environment every push to `master` branch
-3. `production` - used to automatically deploy production environment for every created tag
+
+- `test` - used to test Django application,
+- `staging` - used to automatically deploy staging environment every push to `master` branch
+- `production` - used to automatically deploy production environment for every created tag
 
 ## Store API keys
 
 You'll need to create two variables in `Settings > CI/CD > Variables` on your GitLab project settings:
-1. `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app,
-2. `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
+
+- `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app.
+- `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.
 
 Find your Heroku API key in [Manage Account](https://dashboard.heroku.com/account).
 

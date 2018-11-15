@@ -348,6 +348,7 @@
 
     @include media-breakpoint-down(xs) {
       width: 100%;
+      margin: $btn-side-margin 0;
     }
   }
 }

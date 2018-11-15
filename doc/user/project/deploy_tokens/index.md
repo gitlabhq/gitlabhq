@@ -13,8 +13,8 @@ You can create as many deploy tokens as you like from the settings of your proje
 
 1. Log in to your GitLab account.
 1. Go to the project you want to create Deploy Tokens for.
-1. Go to **Settings** > **Repository**
-1. Click on "Expand" on **Deploy Tokens** section
+1. Go to **Settings** > **Repository**.
+1. Click on "Expand" on **Deploy Tokens** section.
 1. Choose a name and optionally an expiry date for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-deploy-token).
 1. Click on **Create deploy token**.
@@ -46,8 +46,8 @@ the following table.
 To download a repository using a Deploy Token, you just need to:
 
 1. Create a Deploy Token with `read_repository` as a scope.
-2. Take note of your `username` and `token`
-3. `git clone` the project using the Deploy Token:
+1. Take note of your `username` and `token`.
+1. `git clone` the project using the Deploy Token:
 
     ```sh
     git clone http://<username>:<deploy_token>@gitlab.example.com/tanuki/awesome_project.git
@@ -60,8 +60,8 @@ Replace `<username>` and `<deploy_token>` with the proper values.
 To read the container registry images, you'll need to:
 
 1. Create a Deploy Token with `read_registry` as a scope.
-2. Take note of your `username` and `token`
-3. Log in to GitLab’s Container Registry using the deploy token:
+1. Take note of your `username` and `token`.
+1. Log in to GitLab’s Container Registry using the deploy token:
 
 ```sh
 docker login registry.example.com -u <username> -p <deploy_token>

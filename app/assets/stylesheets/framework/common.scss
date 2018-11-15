@@ -33,6 +33,11 @@
   color: $brand-danger;
 }
 
+.text-danger-muted,
+.text-danger-muted:hover {
+  color: $red-300;
+}
+
 .text-warning,
 .text-warning:hover {
   color: $brand-warning;
@@ -345,6 +350,7 @@ img.emoji {
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-2 { margin-top: 2px; }
+.prepend-top-4 { margin-top: $gl-padding-4; }
 .prepend-top-5 { margin-top: 5px; }
 .prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
@@ -365,6 +371,7 @@ img.emoji {
 .append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
 .append-bottom-0 { margin-bottom: 0; }
+.append-bottom-4 { margin-bottom: $gl-padding-4; }
 .append-bottom-5 { margin-bottom: 5px; }
 .append-bottom-8 { margin-bottom: $grid-size; }
 .append-bottom-10 { margin-bottom: 10px; }

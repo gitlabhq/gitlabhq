@@ -158,7 +158,7 @@
   color: $gl-text-color;
   outline: 0;
 
-  // make sure the text color is not overriden
+  // make sure the text color is not overridden
   &.text-danger {
     color: $brand-danger;
   }
@@ -184,7 +184,7 @@
   text-align: left;
   width: 100%;
 
-  // make sure the text color is not overriden
+  // make sure the text color is not overridden
   &.text-danger {
     color: $brand-danger;
   }

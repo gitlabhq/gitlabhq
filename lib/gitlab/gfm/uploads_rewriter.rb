@@ -16,14 +16,15 @@ module Gitlab
         @pattern = FileUploader::MARKDOWN_PATTERN
       end
 
-      def rewrite(target_project)
+      def rewrite(target_parent)
         return @text unless needs_rewrite?
 
         @text.gsub(@pattern) do |markdown|
           file = find_file(@source_project, $~[:secret], $~[:file])
           break markdown unless file.try(:exists?)
 
-          moved = FileUploader.copy_to(file, target_project)
+          klass = target_parent.is_a?(Namespace) ? NamespaceFileUploader : FileUploader
+          moved = klass.copy_to(file, target_parent)
           moved.markdown_link
         end
       end

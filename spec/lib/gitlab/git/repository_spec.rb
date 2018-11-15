@@ -476,6 +476,27 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#fetch_remote' do
+    it 'delegates to the gitaly RepositoryService' do
+      ssh_auth = double(:ssh_auth)
+      expected_opts = {
+        ssh_auth: ssh_auth,
+        forced: true,
+        no_tags: true,
+        timeout: described_class::GITLAB_PROJECTS_TIMEOUT,
+        prune: false
+      }
+
+      expect(repository.gitaly_repository_client).to receive(:fetch_remote).with('remote-name', expected_opts)
+
+      repository.fetch_remote('remote-name', ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false)
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do
+      subject { repository.fetch_remote('remote-name') }
+    end
+  end
+
   describe '#find_remote_root_ref' do
     it 'gets the remote root ref from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
@@ -1074,7 +1095,21 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     it 'returns no Gitaly::DiffStats when there is a nil SHA' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService)
+        .not_to receive(:diff_stats)
+
       collection = repository.diff_stats(nil, 'master')
+
+      expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
+      expect(collection).to be_a(Enumerable)
+      expect(collection.to_a).to be_empty
+    end
+
+    it 'returns no Gitaly::DiffStats when there is a BLANK_SHA' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService)
+        .not_to receive(:diff_stats)
+
+      collection = repository.diff_stats(Gitlab::Git::BLANK_SHA, 'master')
 
       expect(collection).to be_a(Gitlab::Git::DiffStatsCollection)
       expect(collection).to be_a(Enumerable)
@@ -1190,6 +1225,34 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       it "does not have an info/attributes" do
         expect(File.exist?(attributes_path)).to be_falsey
+      end
+    end
+  end
+
+  describe '#gitattribute' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '') }
+
+    after do
+      ensure_seeds
+    end
+
+    it 'returns matching language attribute' do
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-custom", 'gitlab-language')).to eq('ruby')
+    end
+
+    it 'returns matching language attribute with additional options' do
+      expect(repository.gitattribute("custom-highlighting/test.gitlab-cgi", 'gitlab-language')).to eq('erb?parent=json')
+    end
+
+    it 'returns nil if nothing matches' do
+      expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
+    end
+
+    context 'without gitattributes file' do
+      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+
+      it 'returns nil' do
+        expect(repository.gitattribute("README.md", 'gitlab-language')).to eq(nil)
       end
     end
   end

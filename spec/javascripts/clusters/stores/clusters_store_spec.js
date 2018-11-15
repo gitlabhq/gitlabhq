@@ -100,6 +100,14 @@ describe('Clusters Store', () => {
             requestReason: null,
             hostname: '',
           },
+          knative: {
+            title: 'Knative',
+            status: mockResponseData.applications[5].status,
+            statusReason: mockResponseData.applications[5].status_reason,
+            requestStatus: null,
+            requestReason: null,
+            hostname: null,
+          },
         },
       });
     });

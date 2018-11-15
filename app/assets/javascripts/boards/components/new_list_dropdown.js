@@ -6,36 +6,41 @@ import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
 
-$(document).off('created.label').on('created.label', (e, label) => {
-  boardsStore.new({
-    title: label.title,
-    position: boardsStore.state.lists.length - 2,
-    list_type: 'label',
-    label: {
-      id: label.id,
+$(document)
+  .off('created.label')
+  .on('created.label', (e, label) => {
+    boardsStore.new({
       title: label.title,
-      color: label.color,
-    },
+      position: boardsStore.state.lists.length - 2,
+      list_type: 'label',
+      label: {
+        id: label.id,
+        title: label.title,
+        color: label.color,
+      },
+    });
   });
-});
 
 export default function initNewListDropdown() {
-  $('.js-new-board-list').each(function () {
+  $('.js-new-board-list').each(function() {
     const $this = $(this);
-    new CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('namespacePath'), $this.data('projectPath'));
+    new CreateLabelDropdown(
+      $this.closest('.dropdown').find('.dropdown-new-label'),
+      $this.data('namespacePath'),
+      $this.data('projectPath'),
+    );
 
     $this.glDropdown({
       data(term, callback) {
-        axios.get($this.attr('data-list-labels-path'))
-          .then(({ data }) => {
-            callback(data);
-          });
+        axios.get($this.attr('data-list-labels-path')).then(({ data }) => {
+          callback(data);
+        });
       },
-      renderRow (label) {
+      renderRow(label) {
         const active = boardsStore.findList('title', label.title);
         const $li = $('<li />');
         const $a = $('<a />', {
-          class: (active ? `is-active js-board-list-${active.id}` : ''),
+          class: active ? `is-active js-board-list-${active.id}` : '',
           text: label.title,
           href: '#',
         });
@@ -53,7 +58,7 @@ export default function initNewListDropdown() {
       selectable: true,
       multiSelect: true,
       containerSelector: '.js-tab-container-labels .dropdown-page-one .dropdown-content',
-      clicked (options) {
+      clicked(options) {
         const { e } = options;
         const label = options.selectedObj;
         e.preventDefault();

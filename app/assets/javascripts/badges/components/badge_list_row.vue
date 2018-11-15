@@ -2,6 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -10,6 +11,7 @@ export default {
   components: {
     Badge,
     Icon,
+    GlLoadingIcon,
   },
   props: {
     badge: {

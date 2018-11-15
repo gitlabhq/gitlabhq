@@ -148,7 +148,7 @@
             = link_to 'Archive project', archive_project_path(@project),
                 data: { confirm: "Are you sure that you want to archive this project?" },
                 method: :post, class: "btn btn-warning"
-      .sub-section.rename-respository
+      .sub-section.rename-repository
         %h4.warning-title
           Rename repository
         = render 'projects/errors'
@@ -165,7 +165,7 @@
               .input-group
                 .input-group-prepend
                   .input-group-text
-                    #{URI.join(root_url, @project.namespace.full_path)}/
+                    #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
                 = f.text_field :path, class: 'form-control'
             %ul
               %li Be careful. Renaming a project's repository can have unintended side effects.

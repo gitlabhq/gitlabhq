@@ -22,7 +22,7 @@
     .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
       .fade-left= icon('angle-left')
       .fade-right= icon('angle-right')
-      .nav-links.scrolling-tabs
+      .nav-links.scrolling-tabs.quick-links
         = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
         = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 

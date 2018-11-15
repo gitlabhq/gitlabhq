@@ -17,18 +17,36 @@ export default {
       type: Boolean,
       default: true,
     },
+    innerCssClasses: {
+      type: [Array, Object, String],
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       width: 0,
       height: 0,
-      isZoomable: false,
-      isZoomed: false,
+      isLoaded: false,
     };
   },
   computed: {
     fileSizeReadable() {
       return numberToHumanSize(this.fileSize);
+    },
+    dimensionStyles() {
+      if (!this.isLoaded) return {};
+
+      return {
+        width: `${this.width}px`,
+        height: `${this.height}px`,
+      };
+    },
+    hasFileSize() {
+      return this.fileSize > 0;
+    },
+    hasDimensions() {
+      return this.width && this.height;
     },
   },
   beforeDestroy() {
@@ -48,51 +66,52 @@ export default {
       const { contentImg } = this.$refs;
 
       if (contentImg) {
-        this.isZoomable =
-          contentImg.naturalWidth > contentImg.width ||
-          contentImg.naturalHeight > contentImg.height;
-
         this.width = contentImg.naturalWidth;
         this.height = contentImg.naturalHeight;
 
-        this.$emit('imgLoaded', {
-          width: this.width,
-          height: this.height,
-          renderedWidth: contentImg.clientWidth,
-          renderedHeight: contentImg.clientHeight,
+        this.$nextTick(() => {
+          this.isLoaded = true;
+
+          this.$emit('imgLoaded', {
+            width: this.width,
+            height: this.height,
+            renderedWidth: contentImg.clientWidth,
+            renderedHeight: contentImg.clientHeight,
+          });
         });
       }
-    },
-    onImgClick() {
-      if (this.isZoomable) this.isZoomed = !this.isZoomed;
     },
   },
 };
 </script>
 
 <template>
-  <div class="file-container">
-    <div class="file-content image_file">
+  <div>
+    <div
+      :class="innerCssClasses"
+      :style="dimensionStyles"
+      class="position-relative"
+    >
       <img
         ref="contentImg"
-        :class="{ 'is-zoomable': isZoomable, 'is-zoomed': isZoomed }"
         :src="path"
-        :alt="path"
         @load="onImgLoad"
-        @click="onImgClick"/>
-      <p
-        v-if="renderInfo"
-        class="file-info prepend-top-10">
-        <template v-if="fileSize>0">
-          {{ fileSizeReadable }}
-        </template>
-        <template v-if="fileSize>0 && width && height">
-          |
-        </template>
-        <template v-if="width && height">
-          W: {{ width }} | H: {{ height }}
-        </template>
-      </p>
+      />
+      <slot name="image-overlay"></slot>
     </div>
+    <p
+      v-if="renderInfo"
+      class="image-info"
+    >
+      <template v-if="hasFileSize">
+        {{ fileSizeReadable }}
+      </template>
+      <template v-if="hasFileSize && hasDimensions">
+        |
+      </template>
+      <template v-if="hasDimensions">
+        <strong>W</strong>: {{ width }} | <strong>H</strong>: {{ height }}
+      </template>
+    </p>
   </div>
 </template>

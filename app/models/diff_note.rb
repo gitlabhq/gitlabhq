@@ -8,12 +8,14 @@ class DiffNote < Note
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize
 
-  NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
+  def self.noteable_types
+    %w(MergeRequest Commit)
+  end
 
   validates :original_position, presence: true
   validates :position, presence: true
   validates :line_code, presence: true, line_code: true, if: :on_text?
-  validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
+  validates :noteable_type, inclusion: { in: noteable_types }
   validate :positions_complete
   validate :verify_supported
   validate :diff_refs_match_commit, if: :for_commit?
@@ -64,6 +66,10 @@ class DiffNote < Note
     self.original_position.diff_refs == diff_refs
   end
 
+  def discussion_first_note?
+    self == discussion.first_note
+  end
+
   private
 
   def enqueue_diff_file_creation_job
@@ -76,26 +82,33 @@ class DiffNote < Note
   end
 
   def should_create_diff_file?
-    on_text? && note_diff_file.nil? && self == discussion.first_note
+    on_text? && note_diff_file.nil? && discussion_first_note?
   end
 
   def fetch_diff_file
-    if note_diff_file
-      diff = Gitlab::Git::Diff.new(note_diff_file.to_hash)
-      Gitlab::Diff::File.new(diff,
-                             repository: project.repository,
-                             diff_refs: original_position.diff_refs)
-    elsif created_at_diff?(noteable.diff_refs)
-      # We're able to use the already persisted diffs (Postgres) if we're
-      # presenting a "current version" of the MR discussion diff.
-      # So no need to make an extra Gitaly diff request for it.
-      # As an extra benefit, the returned `diff_file` already
-      # has `highlighted_diff_lines` data set from Redis on
-      # `Diff::FileCollection::MergeRequestDiff`.
-      noteable.diffs(original_position.diff_options).diff_files.first
-    else
-      original_position.diff_file(self.project.repository)
-    end
+    file =
+      if note_diff_file
+        diff = Gitlab::Git::Diff.new(note_diff_file.to_hash)
+        Gitlab::Diff::File.new(diff,
+                               repository: project.repository,
+                               diff_refs: original_position.diff_refs)
+      elsif created_at_diff?(noteable.diff_refs)
+        # We're able to use the already persisted diffs (Postgres) if we're
+        # presenting a "current version" of the MR discussion diff.
+        # So no need to make an extra Gitaly diff request for it.
+        # As an extra benefit, the returned `diff_file` already
+        # has `highlighted_diff_lines` data set from Redis on
+        # `Diff::FileCollection::MergeRequestDiff`.
+        noteable.diffs(original_position.diff_options).diff_files.first
+      else
+        original_position.diff_file(self.project.repository)
+      end
+
+    # Since persisted diff files already have its content "unfolded"
+    # there's no need to make it pass through the unfolding process.
+    file&.unfold_diff_lines(position) unless note_diff_file
+
+    file
   end
 
   def supported?

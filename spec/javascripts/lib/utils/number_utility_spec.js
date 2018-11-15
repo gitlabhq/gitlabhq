@@ -1,4 +1,10 @@
-import { formatRelevantDigits, bytesToKiB, bytesToMiB, bytesToGiB, numberToHumanSize } from '~/lib/utils/number_utils';
+import {
+  formatRelevantDigits,
+  bytesToKiB,
+  bytesToMiB,
+  bytesToGiB,
+  numberToHumanSize,
+} from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
   describe('formatRelevantDigits', () => {

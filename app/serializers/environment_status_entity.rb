@@ -11,7 +11,7 @@ class EnvironmentStatusEntity < Grape::Entity
     project_environment_path(es.project, es.environment)
   end
 
-  expose :metrics_url, if: ->(*) { can_read_environment? && environment.has_metrics? } do |es|
+  expose :metrics_url, if: ->(*) { can_read_environment? && deployment.has_metrics? } do |es|
     metrics_project_environment_deployment_path(es.project, es.environment, es.deployment)
   end
 
@@ -37,12 +37,16 @@ class EnvironmentStatusEntity < Grape::Entity
     es.deployment.try(:formatted_deployment_time)
   end
 
-  expose :changes, if: ->(*) { Feature.enabled?(:ci_environments_status_changes, project) }
+  expose :changes
 
   private
 
   def environment
     object.environment
+  end
+
+  def deployment
+    object.deployment
   end
 
   def project

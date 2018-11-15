@@ -72,6 +72,29 @@ describe('Pipelines table in Commits and Merge requests', function() {
           done();
         }, 0);
       });
+
+      describe('with pagination', () => {
+        it('should make an API request when using pagination', done => {
+          setTimeout(() => {
+            spyOn(vm, 'updateContent');
+
+            vm.store.state.pageInfo = {
+              page: 1,
+              total: 10,
+              perPage: 2,
+              nextPage: 2,
+              totalPages: 5,
+            };
+
+            vm.$nextTick(() => {
+              vm.$el.querySelector('.js-next-button a').click();
+
+              expect(vm.updateContent).toHaveBeenCalledWith({ page: '2' });
+              done();
+            });
+          });
+        });
+      });
     });
 
     describe('pipeline badge counts', () => {

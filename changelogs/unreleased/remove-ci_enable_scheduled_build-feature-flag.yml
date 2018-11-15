@@ -1,0 +1,5 @@
+---
+title: Remove `ci_enable_scheduled_build` feature flag
+merge_request: 22742
+author:
+type: other

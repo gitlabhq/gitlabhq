@@ -7,8 +7,8 @@
 = render 'shared/notes/edit_form', project: @project
 
 - if can_create_note?
-  %ul.notes.notes-form.timeline
-    %li.timeline-entry
+  .notes.notes-form.timeline
+    .timeline-entry.note-form
       .timeline-entry-inner
         .flash-container.timeline-content
 

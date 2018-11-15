@@ -11,7 +11,8 @@ class Upload < ActiveRecord::Base
   validates :model, presence: true
   validates :uploader, presence: true
 
-  scope :with_files_stored_locally, -> { where(store: [nil, ObjectStorage::Store::LOCAL]) }
+  scope :with_files_stored_locally, -> { where(store: ObjectStorage::Store::LOCAL) }
+  scope :with_files_stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
 
   before_save  :calculate_checksum!, if: :foreground_checksummable?
   after_commit :schedule_checksum,   if: :checksummable?
@@ -46,7 +47,18 @@ class Upload < ActiveRecord::Base
   end
 
   def exist?
-    File.exist?(absolute_path)
+    exist = File.exist?(absolute_path)
+
+    # Help sysadmins find missing upload files
+    if persisted? && !exist
+      if Gitlab::Sentry.enabled?
+        Raven.capture_message("Upload file does not exist", extra: self.attributes)
+      end
+
+      Gitlab::Metrics.counter(:upload_file_does_not_exist_total, 'The number of times an upload record could not find its file').increment
+    end
+
+    exist
   end
 
   def uploader_context
@@ -57,8 +69,6 @@ class Upload < ActiveRecord::Base
   end
 
   def local?
-    return true if store.nil?
-
     store == ObjectStorage::Store::LOCAL
   end
 

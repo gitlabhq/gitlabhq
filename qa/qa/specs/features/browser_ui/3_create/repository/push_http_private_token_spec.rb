@@ -7,14 +7,14 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        access_token = Factory::Resource::PersonalAccessToken.fabricate!.access_token
+        access_token = Resource::PersonalAccessToken.fabricate!.access_token
 
-        user = Factory::Resource::User.new.tap do |user|
+        user = Resource::User.new.tap do |user|
           user.username = Runtime::User.username
           user.password = access_token
         end
 
-        push = Factory::Repository::ProjectPush.fabricate! do |push|
+        push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.user = user
           push.file_name = 'README.md'
           push.file_content = '# This is a test project'

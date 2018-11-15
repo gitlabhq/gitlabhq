@@ -349,7 +349,7 @@ module Gitlab
             f.write(message.data)
           end
         end
-        # If the file is empty means that we recieved an empty stream, we delete the file
+        # If the file is empty means that we received an empty stream, we delete the file
         FileUtils.rm(save_path) if File.zero?(save_path)
       end
 

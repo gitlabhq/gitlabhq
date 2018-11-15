@@ -1,0 +1,5 @@
+---
+title: Change HELM_HOST in Auto-DevOps template to work behind proxy
+merge_request: 22596
+author: Sergej Nikolaev <kinolaev@gmail.com>
+type: fixed

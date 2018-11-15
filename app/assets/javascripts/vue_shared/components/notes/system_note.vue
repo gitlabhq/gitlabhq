@@ -76,7 +76,7 @@ export default {
   <li
     :id="noteAnchorId"
     :class="{ target: isTargetNote }"
-    class="note system-note timeline-entry">
+    class="note system-note timeline-entry note-wrapper">
     <div class="timeline-entry-inner">
       <div
         class="timeline-icon"

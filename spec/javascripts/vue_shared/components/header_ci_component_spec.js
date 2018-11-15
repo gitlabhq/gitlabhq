@@ -73,7 +73,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render user icon and name', () => {
-      expect(vm.$el.querySelector('.js-user-link').textContent.trim()).toEqual(props.user.name);
+      expect(vm.$el.querySelector('.js-user-link').innerText.trim()).toContain(props.user.name);
     });
 
     it('should render provided actions', () => {

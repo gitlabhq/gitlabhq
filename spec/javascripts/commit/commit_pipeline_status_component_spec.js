@@ -22,7 +22,7 @@ describe('Commit pipeline status component', () => {
     Component = Vue.extend(commitPipelineStatus);
   });
 
-  describe('While polling pipeline data succesfully', () => {
+  describe('While polling pipeline data successfully', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
       mock.onGet('/dummy/endpoint').reply(() => {
@@ -59,14 +59,14 @@ describe('Commit pipeline status component', () => {
       });
     });
 
-    it('contains a ciStatus when the polling is succesful ', done => {
+    it('contains a ciStatus when the polling is successful ', done => {
       setTimeout(() => {
         expect(vm.ciStatus).toEqual(mockCiStatus);
         done();
       });
     });
 
-    it('contains a ci-status icon when polling is succesful', done => {
+    it('contains a ci-status icon when polling is successful', done => {
       setTimeout(() => {
         expect(vm.$el.querySelector('.ci-status-icon')).not.toBe(null);
         expect(vm.$el.querySelector('.ci-status-icon').classList).toContain(
@@ -77,7 +77,7 @@ describe('Commit pipeline status component', () => {
     });
   });
 
-  describe('When polling data was not succesful', () => {
+  describe('When polling data was not successful', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
       mock.onGet('/dummy/endpoint').reply(502, {});

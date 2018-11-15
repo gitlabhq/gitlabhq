@@ -1,0 +1,5 @@
+---
+title: Remove obsolete gitlab_shell rake tasks
+merge_request: 22417
+author:
+type: removed

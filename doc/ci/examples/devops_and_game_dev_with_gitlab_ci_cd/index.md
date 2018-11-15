@@ -418,7 +418,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the id and secret around, you'll need them later
     ![AWS Access Key Config](img/aws_config_window.png)
 1. Go to your GitLab project, click **Settings > CI/CD** on the left sidebar
-1. Expand the **Secret Variables** section
+1. Expand the **Variables** section
     ![GitLab Secret Config](img/gitlab_config.png)
 1. Add a key named `AWS_KEY_ID` and copy the key id from Step 2 into the **Value** textbox
 1. Add a key named `AWS_KEY_SECRET` and copy the key secret from Step 2 into the **Value** textbox

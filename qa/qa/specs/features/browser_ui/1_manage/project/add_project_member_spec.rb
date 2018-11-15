@@ -5,18 +5,16 @@ module QA
     describe 'Add project member' do
       it 'user adds project member' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        user = Factory::Resource::User.fabricate!
+        user = Resource::User.fabricate!
 
-        Page::Main::Menu.perform { |main| main.sign_out }
-        Page::Main::Login.act { sign_in_using_credentials }
-
-        project = Factory::Resource::Project.fabricate! do |resource|
+        project = Resource::Project.fabricate! do |resource|
           resource.name = 'add-member-project'
         end
         project.visit!
 
-        Page::Project::Menu.act { click_members_settings }
+        Page::Project::Menu.perform(&:click_members_settings)
         Page::Project::Settings::Members.perform do |page|
           page.add_member(user.username)
         end

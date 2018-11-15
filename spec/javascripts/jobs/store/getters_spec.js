@@ -180,7 +180,7 @@ describe('Job Store Getters', () => {
       it('returns true', () => {
         localState.job.runners = {
           available: true,
-          online: false
+          online: false,
         };
 
         expect(getters.hasRunnersForProject(localState)).toEqual(true);
@@ -191,7 +191,7 @@ describe('Job Store Getters', () => {
       it('returns false', () => {
         localState.job.runners = {
           available: false,
-          online: false
+          online: false,
         };
 
         expect(getters.hasRunnersForProject(localState)).toEqual(false);
@@ -202,7 +202,7 @@ describe('Job Store Getters', () => {
       it('returns false', () => {
         localState.job.runners = {
           available: false,
-          online: true
+          online: true,
         };
 
         expect(getters.hasRunnersForProject(localState)).toEqual(false);

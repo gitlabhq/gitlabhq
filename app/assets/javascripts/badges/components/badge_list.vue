@@ -1,5 +1,6 @@
 <script>
 import { mapState } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import BadgeListRow from './badge_list_row.vue';
 import { GROUP_BADGE } from '../constants';
 
@@ -7,6 +8,7 @@ export default {
   name: 'BadgeList',
   components: {
     BadgeListRow,
+    GlLoadingIcon,
   },
   computed: {
     ...mapState(['badges', 'isLoading', 'kind']),

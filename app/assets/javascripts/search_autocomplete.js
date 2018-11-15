@@ -226,7 +226,7 @@ export class SearchAutocomplete {
             icon,
             text: term,
             template: s__('SearchAutocomplete|in all GitLab'),
-            url: `/search?search=${term}`,
+            url: `${gon.relative_url_root}/search?search=${term}`,
           });
 
           if (template) {
@@ -234,7 +234,9 @@ export class SearchAutocomplete {
               icon,
               text: term,
               template,
-              url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
+              url: `${
+                gon.relative_url_root
+              }/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
             });
           }
         }

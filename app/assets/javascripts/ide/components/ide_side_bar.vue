@@ -25,11 +25,11 @@ export default {
   },
   computed: {
     ...mapState(['loading', 'currentActivityView', 'changedFiles', 'stagedFiles', 'lastCommitMsg']),
-    ...mapGetters(['currentProject', 'someUncommitedChanges']),
+    ...mapGetters(['currentProject', 'someUncommittedChanges']),
     showSuccessMessage() {
       return (
         this.currentActivityView === activityBarViews.edit &&
-        (this.lastCommitMsg && !this.someUncommitedChanges)
+        (this.lastCommitMsg && !this.someUncommittedChanges)
       );
     },
   },

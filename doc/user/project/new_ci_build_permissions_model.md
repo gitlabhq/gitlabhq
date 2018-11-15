@@ -60,7 +60,7 @@ Let's consider the following scenario:
    hosted in private repositories and you have multiple CI jobs that make use
    of these repositories.
 
-2. You invite a new [external user][ext]. CI jobs created by that user do not
+1. You invite a new [external user][ext]. CI jobs created by that user do not
    have access to internal repositories, because the user also doesn't have the
    access from within GitLab. You as an employee have to grant explicit access
    for this user. This allows us to prevent from accidental data leakage.

@@ -1,0 +1,23 @@
+From 00c68c2b4f954370ce82a1162bc29c13f524897e Mon Sep 17 00:00:00 2001
+From: Patch User <patchuser@gitlab.org>
+Date: Mon, 22 Oct 2018 11:05:48 +0200
+Subject: [PATCH] This does not apply to the `feature` branch
+
+---
+ files/ruby/feature.rb | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 files/ruby/feature.rb
+
+diff --git a/files/ruby/feature.rb b/files/ruby/feature.rb
+new file mode 100644
+index 0000000..fef26e4
+--- /dev/null
++++ b/files/ruby/feature.rb
+@@ -0,0 +1,5 @@
++class Feature
++  def bar
++    puts 'foo'
++  end
++end
+--
+2.19.1

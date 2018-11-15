@@ -60,7 +60,7 @@ export default {
       class="table-mobile-header"
       role="rowheader"
     >
-      Duration
+      {{ s__('Pipeline|Duration') }}
     </div>
     <div class="table-mobile-content">
       <p
@@ -87,7 +87,8 @@ export default {
           v-tooltip
           :title="tooltipTitle(finishedTime)"
           data-placement="top"
-          data-container="body">
+          data-container="body"
+        >
           {{ timeFormated(finishedTime) }}
         </time>
       </p>

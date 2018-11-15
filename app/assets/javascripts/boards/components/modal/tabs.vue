@@ -1,21 +1,21 @@
 <script>
-  import ModalStore from '../../stores/modal_store';
-  import modalMixin from '../../mixins/modal_mixins';
+import ModalStore from '../../stores/modal_store';
+import modalMixin from '../../mixins/modal_mixins';
 
-  export default {
-    mixins: [modalMixin],
-    data() {
-      return ModalStore.store;
+export default {
+  mixins: [modalMixin],
+  data() {
+    return ModalStore.store;
+  },
+  computed: {
+    selectedCount() {
+      return ModalStore.selectedCount();
     },
-    computed: {
-      selectedCount() {
-        return ModalStore.selectedCount();
-      },
-    },
-    destroyed() {
-      this.activeTab = 'all';
-    },
-  };
+  },
+  destroyed() {
+    this.activeTab = 'all';
+  },
+};
 </script>
 <template>
   <div class="top-area prepend-top-10 append-bottom-10">

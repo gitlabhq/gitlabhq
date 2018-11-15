@@ -1,7 +1,9 @@
 <script>
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
-import tooltip from '../../../vue_shared/directives/tooltip';
+import { GlTooltipDirective, GlLink } from '@gitlab-org/gitlab-ui';
+import { sprintf } from '~/locale';
+import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.
@@ -32,10 +34,12 @@ export default {
   components: {
     ActionComponent,
     JobNameComponent,
+    GlLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
+  mixins: [delayedJobMixin],
   props: {
     job: {
       type: Object,
@@ -59,17 +63,23 @@ export default {
 
     tooltipText() {
       const textBuilder = [];
+      const { name: jobName } = this.job;
 
-      if (this.job.name) {
-        textBuilder.push(this.job.name);
+      if (jobName) {
+        textBuilder.push(jobName);
       }
 
-      if (this.job.name && this.status.tooltip) {
+      const { tooltip: statusTooltip } = this.status;
+      if (jobName && statusTooltip) {
         textBuilder.push('-');
       }
 
-      if (this.status.tooltip) {
-        textBuilder.push(this.job.status.tooltip);
+      if (statusTooltip) {
+        if (this.isDelayedJob) {
+          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
+        } else {
+          textBuilder.push(statusTooltip);
+        }
       }
 
       return textBuilder.join(' ');
@@ -78,7 +88,6 @@ export default {
     tooltipBoundary() {
       return this.dropdownLength < 5 ? 'viewport' : null;
     },
-
     /**
      * Verifies if the provided job has an action path
      *
@@ -97,30 +106,26 @@ export default {
 </script>
 <template>
   <div class="ci-job-component">
-    <a
+    <gl-link
       v-if="status.has_details"
-      v-tooltip
+      v-gl-tooltip="{ boundary: tooltipBoundary }"
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      :data-boundary="tooltipBoundary"
-      data-container="body"
       class="js-pipeline-graph-job-link"
     >
-
       <job-name-component
         :name="job.name"
         :status="job.status"
       />
-    </a>
+    </gl-link>
 
     <div
       v-else
-      v-tooltip
+      v-gl-tooltip
       :title="tooltipText"
       :class="cssClassJobName"
       class="js-job-component-tooltip non-details-job-component"
-      data-container="body"
     >
 
       <job-name-component

@@ -1,5 +1,6 @@
 <script>
 import Sortable from 'sortablejs';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
@@ -11,6 +12,7 @@ export default {
   components: {
     boardCard,
     boardNewIssue,
+    GlLoadingIcon,
   },
   props: {
     groupId: {

@@ -63,7 +63,7 @@ export const isEditModeActive = state => state.currentActivityView === activityB
 export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
 export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
 
-export const someUncommitedChanges = state =>
+export const someUncommittedChanges = state =>
   !!(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {

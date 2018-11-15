@@ -14,7 +14,10 @@ export default {
   },
   computed: {
     labelsList() {
-      const labelsString = this.labels.slice(0, 5).map(label => label.title).join(', ');
+      const labelsString = this.labels
+        .slice(0, 5)
+        .map(label => label.title)
+        .join(', ');
 
       if (this.labels.length > 5) {
         return sprintf(s__('LabelSelect|%{labelsString}, and %{remainingLabelCount} more'), {

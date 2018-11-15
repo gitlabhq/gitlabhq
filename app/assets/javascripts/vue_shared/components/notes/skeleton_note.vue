@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <li class="timeline-entry note">
+  <li class="timeline-entry note note-wrapper">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
       </div>

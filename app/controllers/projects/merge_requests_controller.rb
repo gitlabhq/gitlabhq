@@ -14,9 +14,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
-  before_action do
-    push_frontend_feature_flag(:ci_environments_status_changes)
-  end
 
   def index
     @merge_requests = @issuables
@@ -84,13 +81,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def pipelines
-    @pipelines = @merge_request.all_pipelines
+    @pipelines = @merge_request.all_pipelines.page(params[:page]).per(30)
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
+        .with_pagination(request, response)
         .represent(@pipelines),
       count: {
         all: @pipelines.count

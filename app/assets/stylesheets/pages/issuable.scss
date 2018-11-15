@@ -47,12 +47,6 @@
       @extend .fixed-width-container;
     }
   }
-
-  .diffs {
-    .mr-version-controls {
-      @extend .fixed-width-container;
-    }
-  }
 }
 
 .issuable-details {

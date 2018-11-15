@@ -65,6 +65,21 @@ describe DeleteInconsistentInternalIdRecords, :migration do
 
   context 'for deployments' do
     let(:scope) { :deployment }
+    let(:deployments) { table(:deployments) }
+    let(:internal_ids) { table(:internal_ids) }
+
+    before do
+      internal_ids.create!(project_id: project1.id, usage: 2, last_value: 2)
+      internal_ids.create!(project_id: project2.id, usage: 2, last_value: 2)
+      internal_ids.create!(project_id: project3.id, usage: 2, last_value: 2)
+    end
+
+    let(:create_models) do
+      3.times { |i| deployments.create!(project_id: project1.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+      3.times { |i| deployments.create!(project_id: project2.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+      3.times { |i| deployments.create!(project_id: project3.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+    end
+
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 

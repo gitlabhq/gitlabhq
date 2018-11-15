@@ -6,6 +6,7 @@ describe('pipeline graph job item', () => {
   const JobComponent = Vue.extend(JobItem);
   let component;
 
+  const delayedJobFixture = getJSONFixture('jobs/delayed.json');
   const mockJob = {
     id: 4256,
     name: 'test',
@@ -139,14 +140,12 @@ describe('pipeline graph job item', () => {
   });
 
   describe('tooltip placement', () => {
-    const tooltipBoundary = 'a[data-boundary="viewport"]';
-
     it('does not set tooltip boundary by default', () => {
       component = mountComponent(JobComponent, {
         job: mockJob,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+      expect(component.tooltipBoundary).toBeNull();
     });
 
     it('sets tooltip boundary to viewport for small dropdowns', () => {
@@ -155,7 +154,7 @@ describe('pipeline graph job item', () => {
         dropdownLength: 1,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).not.toBeNull();
+      expect(component.tooltipBoundary).toEqual('viewport');
     });
 
     it('does not set tooltip boundary for large lists', () => {
@@ -164,7 +163,33 @@ describe('pipeline graph job item', () => {
         dropdownLength: 7,
       });
 
-      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+      expect(component.tooltipBoundary).toBeNull();
+    });
+  });
+
+  describe('for delayed job', () => {
+    beforeEach(() => {
+      const fifteenMinutesInMilliseconds = 900000;
+      spyOn(Date, 'now').and.callFake(
+        () => new Date(delayedJobFixture.scheduled_at).getTime() - fifteenMinutesInMilliseconds,
+      );
+    });
+
+    it('displays remaining time in tooltip', done => {
+      component = mountComponent(JobComponent, {
+        job: delayedJobFixture,
+      });
+
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el
+              .querySelector('.js-pipeline-graph-job-link')
+              .getAttribute('data-original-title'),
+          ).toEqual('delayed job - delayed manual action (00:15:00)');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

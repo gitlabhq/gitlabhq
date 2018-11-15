@@ -40,7 +40,9 @@ const createFlashEl = (message, type, isFixedLayout = false) => `
     class="flash-${type}"
   >
     <div
-      class="flash-text ${isFixedLayout ? 'container-fluid container-limited limit-container-width' : ''}"
+      class="flash-text ${
+        isFixedLayout ? 'container-fluid container-limited limit-container-width' : ''
+      }"
     >
       ${_.escape(message)}
     </div>
@@ -78,7 +80,9 @@ const createFlash = function createFlash(
 
   if (!flashContainer) return null;
 
-  const isFixedLayout = navigation ? navigation.parentNode.classList.contains('container-limited') : true;
+  const isFixedLayout = navigation
+    ? navigation.parentNode.classList.contains('container-limited')
+    : true;
 
   flashContainer.innerHTML = createFlashEl(message, type, isFixedLayout);
 

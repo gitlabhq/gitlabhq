@@ -5,6 +5,7 @@ describe Clusters::Applications::Prometheus do
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
+  include_examples 'cluster application helm specs', :clusters_applications_knative
 
   describe '.installed' do
     subject { described_class.installed }
@@ -109,14 +110,20 @@ describe Clusters::Applications::Prometheus do
     end
 
     context 'cluster has kubeclient' do
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
       let(:kubernetes_url) { subject.cluster.platform_kubernetes.api_url }
       let(:kube_client) { subject.cluster.kubeclient.core_client }
 
-      subject { create(:clusters_applications_prometheus) }
+      subject { create(:clusters_applications_prometheus, cluster: cluster) }
 
       before do
         subject.cluster.platform_kubernetes.namespace = 'a-namespace'
-        stub_kubeclient_discover(subject.cluster.platform_kubernetes.api_url)
+        stub_kubeclient_discover(cluster.platform_kubernetes.api_url)
+
+        create(:cluster_kubernetes_namespace,
+               cluster: cluster,
+               cluster_project: cluster.cluster_project,
+               project: cluster.cluster_project.project)
       end
 
       it 'creates proxy prometheus rest client' do
@@ -180,29 +187,6 @@ describe Clusters::Applications::Prometheus do
     let(:values) { subject[:'values.yaml'] }
 
     subject { application.files }
-
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
 
     it 'should include prometheus valid values' do
       expect(values).to include('alertmanager')

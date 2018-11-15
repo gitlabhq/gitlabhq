@@ -116,7 +116,7 @@ export default {
         // init polling
         this.initPostMergeDeploymentsPolling();
       }
-    }
+    },
   },
   created() {
     this.initPolling();
@@ -213,17 +213,21 @@ export default {
         })
         .catch(() => this.throwDeploymentsError());
     },
-    fetchPostMergeDeployments(){
+    fetchPostMergeDeployments() {
       return this.fetchDeployments('merge_commit')
         .then(({ data }) => {
           if (data.length) {
             this.mr.postMergeDeployments = data;
           }
         })
-      .catch(() => this.throwDeploymentsError());
+        .catch(() => this.throwDeploymentsError());
     },
     throwDeploymentsError() {
-      createFlash(__('Something went wrong while fetching the environments for this merge request. Please try again.'));
+      createFlash(
+        __(
+          'Something went wrong while fetching the environments for this merge request. Please try again.',
+        ),
+      );
     },
     fetchActionsContent() {
       this.service
@@ -301,6 +305,7 @@ export default {
       :has-ci="mr.hasCI"
       :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
+      :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
     <deployment
       v-for="deployment in mr.deployments"
@@ -355,6 +360,7 @@ export default {
         :has-ci="mr.hasCI"
         :source-branch="mr.targetBranch"
         :source-branch-link="mr.targetBranch"
+        :troubleshooting-docs-path="mr.troubleshootingDocsPath"
       />
       <deployment
         v-for="postMergeDeployment in mr.postMergeDeployments"

@@ -74,6 +74,8 @@
                   %span
                     = boards_link_text
 
+            = render_if_exists 'layouts/nav/issues_analytics_link'
+
             - if group_sidebar_link?(:labels)
               = nav_link(path: 'labels#index') do
                 = link_to group_labels_path(@group), title: _('Labels') do
@@ -113,6 +115,19 @@
               = link_to group_group_members_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Members')
+
+      - if group_sidebar_link?(:kubernetes)
+        = nav_link(controller: [:clusters]) do
+          = link_to group_clusters_path(@group) do
+            .nav-icon-container
+              = sprite_icon('cloud-gear')
+            %span.nav-item-name
+              = _('Kubernetes')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: [:clusters], html_options: { class: "fly-out-top-item" } ) do
+              = link_to group_clusters_path(@group), title: _('Kubernetes'), class: 'shortcuts-kubernetes' do
+                %strong.fly-out-top-item-name
+                  = _('Kubernetes')
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_nav_link_paths) do

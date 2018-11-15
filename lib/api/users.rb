@@ -512,11 +512,9 @@ module API
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
-            # rubocop: disable CodeReuse/ActiveRecord
             def find_impersonation_token
-              finder.find_by(id: declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
+              finder.find_by_id(declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
             end
-            # rubocop: enable CodeReuse/ActiveRecord
           end
 
           before { authenticated_as_admin! }

@@ -11,13 +11,15 @@ describe('DiscussionFilter component', () => {
   beforeEach(() => {
     store = createStore();
 
-    const discussions = [{
-      ...discussionMock,
-      id: discussionMock.id,
-      notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
-    }];
+    const discussions = [
+      {
+        ...discussionMock,
+        id: discussionMock.id,
+        notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
+      },
+    ];
     const Component = Vue.extend(DiscussionFilter);
-    const defaultValue = discussionFiltersMock[0].value;
+    const selectedValue = discussionFiltersMock[0].value;
 
     store.state.discussions = discussions;
     vm = mountComponentWithStore(Component, {
@@ -25,7 +27,7 @@ describe('DiscussionFilter component', () => {
       store,
       props: {
         filters: discussionFiltersMock,
-        defaultValue,
+        selectedValue,
       },
     });
   });
@@ -35,11 +37,15 @@ describe('DiscussionFilter component', () => {
   });
 
   it('renders the all filters', () => {
-    expect(vm.$el.querySelectorAll('.dropdown-menu li').length).toEqual(discussionFiltersMock.length);
+    expect(vm.$el.querySelectorAll('.dropdown-menu li').length).toEqual(
+      discussionFiltersMock.length,
+    );
   });
 
   it('renders the default selected item', () => {
-    expect(vm.$el.querySelector('#discussion-filter-dropdown').textContent.trim()).toEqual(discussionFiltersMock[0].title);
+    expect(vm.$el.querySelector('#discussion-filter-dropdown').textContent.trim()).toEqual(
+      discussionFiltersMock[0].title,
+    );
   });
 
   it('updates to the selected item', () => {
@@ -56,5 +62,25 @@ describe('DiscussionFilter component', () => {
     filterItem.click();
 
     expect(vm.filterDiscussion).not.toHaveBeenCalled();
+  });
+
+  it('disables commenting when "Show history only" filter is applied', () => {
+    const filterItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
+    filterItem.click();
+
+    expect(vm.$store.state.commentsDisabled).toBe(true);
+  });
+
+  it('enables commenting when "Show history only" filter is not applied', () => {
+    const filterItem = vm.$el.querySelector('.dropdown-menu li:first-child button');
+    filterItem.click();
+
+    expect(vm.$store.state.commentsDisabled).toBe(false);
+  });
+
+  it('renders a dropdown divider for the default filter', () => {
+    const defaultFilter = vm.$el.querySelector('.dropdown-menu li:first-child');
+
+    expect(defaultFilter.lastChild.classList).toContain('dropdown-divider');
   });
 });

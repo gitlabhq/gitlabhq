@@ -42,19 +42,17 @@ export default {
       const req = this.buildUpdateRequest(list);
 
       // Post the data to the backend
-      gl.boardService
-        .bulkUpdate(issueIds, req)
-        .catch(() => {
-          Flash(__('Failed to update issues, please try again.'));
+      gl.boardService.bulkUpdate(issueIds, req).catch(() => {
+        Flash(__('Failed to update issues, please try again.'));
 
-          selectedIssues.forEach((issue) => {
-            list.removeIssue(issue);
-            list.issuesSize -= 1;
-          });
+        selectedIssues.forEach(issue => {
+          list.removeIssue(issue);
+          list.issuesSize -= 1;
         });
+      });
 
       // Add the issues on the frontend
-      selectedIssues.forEach((issue) => {
+      selectedIssues.forEach(issue => {
         list.addIssue(issue);
         list.issuesSize += 1;
       });

@@ -1,5 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Flash from '../../flash';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
@@ -12,6 +13,7 @@ export default {
   components: {
     clipboardButton,
     tableRegistry,
+    GlLoadingIcon,
   },
   directives: {
     tooltip,

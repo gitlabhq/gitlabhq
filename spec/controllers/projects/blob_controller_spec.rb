@@ -157,7 +157,7 @@ describe Projects::BlobController do
 
             match_line = JSON.parse(response.body).first
 
-            expect(match_line['type']).to eq('context')
+            expect(match_line['type']).to be_nil
           end
 
           it 'adds bottom match line when "t"o is less than blob size' do
@@ -177,7 +177,7 @@ describe Projects::BlobController do
 
             match_line = JSON.parse(response.body).last
 
-            expect(match_line['type']).to eq('context')
+            expect(match_line['type']).to be_nil
           end
         end
       end
@@ -331,10 +331,10 @@ describe Projects::BlobController do
           expect(response).to redirect_to(
             project_new_merge_request_path(
               forked_project,
-              merge_request_source_branch: "fork-test-1",
               merge_request: {
                 source_project_id: forked_project.id,
                 target_project_id: project.id,
+                source_branch: "fork-test-1",
                 target_branch: "master"
               }
             )

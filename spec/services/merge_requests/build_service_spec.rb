@@ -392,5 +392,13 @@ describe MergeRequests::BuildService do
         expect(merge_request.source_project).to eq(project)
       end
     end
+
+    context 'when specifying target branch in the description' do
+      let(:description) { "A merge request targeting another branch\n\n/target_branch with-codeowners" }
+
+      it 'sets the attribute from the quick actions' do
+        expect(merge_request.target_branch).to eq('with-codeowners')
+      end
+    end
   end
 end

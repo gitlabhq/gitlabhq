@@ -207,6 +207,10 @@ production: &base
         # endpoint: 'http://127.0.0.1:9000' # default: nil
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Packages (maven repository so far)
+  packages:
+    enabled: false
+
   ## GitLab Pages
   pages:
     enabled: false
@@ -587,7 +591,7 @@ production: &base
   gitaly:
     # Path to the directory containing Gitaly client executables.
     client_path: /home/git/gitaly/bin
-    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # Default Gitaly authentication token. Can be overridden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.
     token:

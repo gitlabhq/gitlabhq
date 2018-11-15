@@ -55,8 +55,8 @@ describe API::Issues do
   end
   let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
-  let(:no_milestone_title) { URI.escape(Milestone::None.title) }
-  let(:any_milestone_title) { URI.escape(Milestone::Any.title) }
+  let(:no_milestone_title) { "None" }
+  let(:any_milestone_title) { "Any" }
 
   before(:all) do
     project.add_reporter(user)
@@ -196,14 +196,24 @@ describe API::Issues do
         expect_paginated_array_response(size: 3)
       end
 
-      it 'returns issues reacted by the authenticated user by the given emoji' do
+      it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
-        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
 
-        get api('/issues', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+        create(:award_emoji, awardable: issue, user: user2, name: 'thumbsup')
 
-        expect_paginated_array_response(size: 1)
-        expect(first_issue['id']).to eq(issue2.id)
+        get api('/issues', user2), my_reaction_emoji: 'Any', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
+      end
+
+      it 'returns issues not reacted by the authenticated user' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        get api('/issues', user2), my_reaction_emoji: 'None', scope: 'all'
+
+        expect_paginated_array_response(size: 2)
       end
 
       it 'returns issues matching given search string for title' do
@@ -1786,6 +1796,74 @@ describe API::Issues do
 
     it "returns 404 when issue doesn't exists" do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'GET :id/issues/:issue_iid/related_merge_requests' do
+    def get_related_merge_requests(project_id, issue_iid, user = nil)
+      get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
+    end
+
+    def create_referencing_mr(user, project, issue)
+      attributes = {
+        author: user,
+        source_project: project,
+        target_project: project,
+        source_branch: "master",
+        target_branch: "test",
+        description: "See #{issue.to_reference}"
+      }
+      create(:merge_request, attributes).tap do |merge_request|
+        create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+      end
+    end
+
+    let!(:related_mr) { create_referencing_mr(user, project, issue) }
+
+    context 'when unauthenticated' do
+      it 'return list of referenced merge requests from issue' do
+        get_related_merge_requests(project.id, issue.iid)
+
+        expect_paginated_array_response(size: 1)
+      end
+
+      it 'renders 404 if project is not visible' do
+        private_project = create(:project, :private)
+        private_issue = create(:issue, project: private_project)
+        create_referencing_mr(user, private_project, private_issue)
+
+        get_related_merge_requests(private_project.id, private_issue.iid)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    it 'returns merge requests that mentioned a issue' do
+      create(:merge_request,
+            :simple,
+            author: user,
+            source_project: project,
+            target_project: project,
+            description: "Some description")
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(size: 1)
+      expect(json_response.first['id']).to eq(related_mr.id)
+    end
+
+    context 'no merge request mentioned a issue' do
+      it 'returns empty array' do
+        get_related_merge_requests(project.id, closed_issue.iid, user)
+
+        expect_paginated_array_response(size: 0)
+      end
+    end
+
+    it "returns 404 when issue doesn't exists" do
+      get_related_merge_requests(project.id, 999999, user)
 
       expect(response).to have_gitlab_http_status(404)
     end

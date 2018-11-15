@@ -46,6 +46,7 @@ export default {
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
         target: this.isTarget,
+        'is-editable': this.note.current_user.can_edit,
       };
     },
     canResolve() {
@@ -173,7 +174,7 @@ export default {
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note timeline-entry"
+    class="note timeline-entry note-wrapper"
   >
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
@@ -182,7 +183,13 @@ export default {
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
-        />
+        >
+          <slot
+            slot="avatar-badge"
+            name="avatar-badge"
+          >
+          </slot>
+        </user-avatar-link>
       </div>
       <div class="timeline-content">
         <div class="note-header">
@@ -190,6 +197,7 @@ export default {
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
+            action-text="commented"
           />
           <note-actions
             :author-id="author.id"

@@ -1,4 +1,3 @@
-
 import Vue from 'vue';
 import emptyState from '~/environments/components/empty_state.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
@@ -25,13 +24,13 @@ describe('environments empty state', () => {
     });
 
     it('renders empty state and new environment button', () => {
-      expect(
-        vm.$el.querySelector('.js-blank-state-title').textContent.trim(),
-      ).toEqual('You don\'t have any environments right now');
+      expect(vm.$el.querySelector('.js-blank-state-title').textContent.trim()).toEqual(
+        "You don't have any environments right now",
+      );
 
-      expect(
-        vm.$el.querySelector('.js-new-environment-button').getAttribute('href'),
-      ).toEqual('foo');
+      expect(vm.$el.querySelector('.js-new-environment-button').getAttribute('href')).toEqual(
+        'foo',
+      );
     });
   });
 
@@ -45,13 +44,11 @@ describe('environments empty state', () => {
     });
 
     it('renders empty state without new button', () => {
-      expect(
-        vm.$el.querySelector('.js-blank-state-title').textContent.trim(),
-      ).toEqual('You don\'t have any environments right now');
+      expect(vm.$el.querySelector('.js-blank-state-title').textContent.trim()).toEqual(
+        "You don't have any environments right now",
+      );
 
-      expect(
-        vm.$el.querySelector('.js-new-environment-button'),
-      ).toBeNull();
+      expect(vm.$el.querySelector('.js-new-environment-button')).toBeNull();
     });
   });
 });

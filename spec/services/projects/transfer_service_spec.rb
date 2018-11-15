@@ -125,7 +125,7 @@ describe Projects::TransferService do
     it { expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.' }
   end
 
-  context 'disallow transfering of project with tags' do
+  context 'disallow transferring of project with tags' do
     let(:container_repository) { create(:container_repository) }
 
     before do

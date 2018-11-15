@@ -18,8 +18,8 @@ export default {
   },
   data() {
     const treeListStored = localStorage.getItem(treeListStorageKey);
-    const renderTreeList = treeListStored !== null ?
-      convertPermissionToBoolean(treeListStored) : true;
+    const renderTreeList =
+      treeListStored !== null ? convertPermissionToBoolean(treeListStored) : true;
 
     return {
       search: '',
@@ -35,7 +35,7 @@ export default {
 
       if (search === '') return this.renderTreeList ? this.tree : this.allBlobs;
 
-      return this.allBlobs.filter(f => f.name.toLowerCase().indexOf(search) >= 0);
+      return this.allBlobs.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
     },
     rowDisplayTextKey() {
       if (this.renderTreeList && this.search.trim() === '') {

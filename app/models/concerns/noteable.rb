@@ -23,7 +23,7 @@ module Noteable
   end
 
   def supports_discussions?
-    DiscussionNote::NOTEABLE_TYPES.include?(base_class_name)
+    DiscussionNote.noteable_types.include?(base_class_name)
   end
 
   def discussions_rendered_on_frontend?

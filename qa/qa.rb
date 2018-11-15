@@ -36,43 +36,40 @@ module QA
   ##
   # GitLab QA fabrication mechanisms
   #
-  module Factory
-    autoload :ApiFabricator, 'qa/factory/api_fabricator'
-    autoload :Base, 'qa/factory/base'
-    autoload :Product, 'qa/factory/product'
+  module Resource
+    autoload :ApiFabricator, 'qa/resource/api_fabricator'
+    autoload :Base, 'qa/resource/base'
 
-    module Resource
-      autoload :Sandbox, 'qa/factory/resource/sandbox'
-      autoload :Group, 'qa/factory/resource/group'
-      autoload :Issue, 'qa/factory/resource/issue'
-      autoload :Project, 'qa/factory/resource/project'
-      autoload :Label, 'qa/factory/resource/label'
-      autoload :MergeRequest, 'qa/factory/resource/merge_request'
-      autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
-      autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
-      autoload :DeployKey, 'qa/factory/resource/deploy_key'
-      autoload :DeployToken, 'qa/factory/resource/deploy_token'
-      autoload :Branch, 'qa/factory/resource/branch'
-      autoload :CiVariable, 'qa/factory/resource/ci_variable'
-      autoload :Runner, 'qa/factory/resource/runner'
-      autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
-      autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
-      autoload :User, 'qa/factory/resource/user'
-      autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
-      autoload :Wiki, 'qa/factory/resource/wiki'
-      autoload :File, 'qa/factory/resource/file'
-      autoload :Fork, 'qa/factory/resource/fork'
-      autoload :SSHKey, 'qa/factory/resource/ssh_key'
-    end
+    autoload :Sandbox, 'qa/resource/sandbox'
+    autoload :Group, 'qa/resource/group'
+    autoload :Issue, 'qa/resource/issue'
+    autoload :Project, 'qa/resource/project'
+    autoload :Label, 'qa/resource/label'
+    autoload :MergeRequest, 'qa/resource/merge_request'
+    autoload :ProjectImportedFromGithub, 'qa/resource/project_imported_from_github'
+    autoload :MergeRequestFromFork, 'qa/resource/merge_request_from_fork'
+    autoload :DeployKey, 'qa/resource/deploy_key'
+    autoload :DeployToken, 'qa/resource/deploy_token'
+    autoload :Branch, 'qa/resource/branch'
+    autoload :CiVariable, 'qa/resource/ci_variable'
+    autoload :Runner, 'qa/resource/runner'
+    autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
+    autoload :KubernetesCluster, 'qa/resource/kubernetes_cluster'
+    autoload :User, 'qa/resource/user'
+    autoload :ProjectMilestone, 'qa/resource/project_milestone'
+    autoload :Wiki, 'qa/resource/wiki'
+    autoload :File, 'qa/resource/file'
+    autoload :Fork, 'qa/resource/fork'
+    autoload :SSHKey, 'qa/resource/ssh_key'
 
     module Repository
-      autoload :Push, 'qa/factory/repository/push'
-      autoload :ProjectPush, 'qa/factory/repository/project_push'
-      autoload :WikiPush, 'qa/factory/repository/wiki_push'
+      autoload :Push, 'qa/resource/repository/push'
+      autoload :ProjectPush, 'qa/resource/repository/project_push'
+      autoload :WikiPush, 'qa/resource/repository/wiki_push'
     end
 
     module Settings
-      autoload :HashedStorage, 'qa/factory/settings/hashed_storage'
+      autoload :HashedStorage, 'qa/resource/settings/hashed_storage'
     end
   end
 

@@ -145,7 +145,7 @@ describe ProjectWiki do
       end
 
       it "returns nil if the page does not exist" do
-        expect(subject.find_page("non-existant")).to eq(nil)
+        expect(subject.find_page("non-existent")).to eq(nil)
       end
 
       it "can find a page by slug" do
@@ -226,7 +226,7 @@ describe ProjectWiki do
       end
 
       it 'returns nil if the page does not exist' do
-        expect(subject.find_file('non-existant')).to eq(nil)
+        expect(subject.find_file('non-existent')).to eq(nil)
       end
 
       it 'returns a Gitlab::Git::WikiFile instance' do

@@ -6,6 +6,7 @@ module Gitlab
   module Git
     class Repository
       include Gitlab::Git::RepositoryMirroring
+      include Gitlab::Git::WrapsGitalyErrors
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
 
@@ -418,13 +419,17 @@ module Gitlab
       end
 
       def diff_stats(left_id, right_id)
+        if [left_id, right_id].any? { |ref| ref.blank? || Gitlab::Git.blank_ref?(ref) }
+          return empty_diff_stats
+        end
+
         stats = wrapped_gitaly_errors do
           gitaly_commit_client.diff_stats(left_id, right_id)
         end
 
         Gitlab::Git::DiffStatsCollection.new(stats)
       rescue CommandError, TypeError
-        Gitlab::Git::DiffStatsCollection.new([])
+        empty_diff_stats
       end
 
       # Returns a RefName for a given SHA
@@ -567,6 +572,20 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_cherry_pick(args)
+        end
+      end
+
+      def update_submodule(user:, submodule:, commit_sha:, message:, branch:)
+        args = {
+          user: user,
+          submodule: submodule,
+          commit_sha: commit_sha,
+          branch: branch,
+          message: message
+        }
+
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_update_submodule(args)
         end
       end
 
@@ -719,6 +738,26 @@ module Gitlab
         end
       end
 
+      # Fetch remote for repository
+      #
+      # remote - remote name
+      # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
+      # forced - should we use --force flag?
+      # no_tags - should we use --no-tags flag?
+      # prune - should we use --prune flag?
+      def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fetch_remote(
+            remote,
+            ssh_auth: ssh_auth,
+            forced: forced,
+            no_tags: no_tags,
+            prune: prune,
+            timeout: GITLAB_PROJECTS_TIMEOUT
+          )
+        end
+      end
+
       def blob_at(sha, path)
         Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
       end
@@ -845,23 +884,9 @@ module Gitlab
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-        Gitlab::GitalyClient.migrate(method, status: status, &block)
-      rescue GRPC::NotFound => e
-        raise NoRepository.new(e)
-      rescue GRPC::InvalidArgument => e
-        raise ArgumentError.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
-      end
-
-      def wrapped_gitaly_errors(&block)
-        yield block
-      rescue GRPC::NotFound => e
-        raise NoRepository.new(e)
-      rescue GRPC::InvalidArgument => e
-        raise ArgumentError.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+        wrapped_gitaly_errors do
+          Gitlab::GitalyClient.migrate(method, status: status, &block)
+        end
       end
 
       def clean_stale_repository_files
@@ -940,6 +965,10 @@ module Gitlab
       end
 
       private
+
+      def empty_diff_stats
+        Gitlab::Git::DiffStatsCollection.new([])
+      end
 
       def uncached_has_local_branches?
         wrapped_gitaly_errors do

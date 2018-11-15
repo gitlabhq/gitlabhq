@@ -93,4 +93,4 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
-| <kbd>⌘</kbd> + <kbd>p</kbd> | Go to file |
+| <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>p</kbd> | Go to file |

@@ -16,11 +16,6 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
@@ -117,16 +112,14 @@ export default {
         'height': swipeMaxPixelHeight,
       }"
       class="swipe-frame">
-      <div class="frame deleted">
-        <image-viewer
-          key="swipeOldImg"
-          ref="swipeOldImg"
-          :render-info="false"
-          :path="oldPath"
-          :project-path="projectPath"
-          @imgLoaded="swipeOldImgLoaded"
-        />
-      </div>
+      <image-viewer
+        key="swipeOldImg"
+        ref="swipeOldImg"
+        :render-info="false"
+        :path="oldPath"
+        class="frame deleted"
+        @imgLoaded="swipeOldImgLoaded"
+      />
       <div
         ref="swipeWrap"
         :style="{
@@ -134,15 +127,19 @@ export default {
           'height': swipeMaxPixelHeight,
         }"
         class="swipe-wrap">
-        <div class="frame added">
-          <image-viewer
-            key="swipeNewImg"
-            :render-info="false"
-            :path="newPath"
-            :project-path="projectPath"
-            @imgLoaded="swipeNewImgLoaded"
-          />
-        </div>
+        <image-viewer
+          key="swipeNewImg"
+          :render-info="false"
+          :path="newPath"
+          class="frame added"
+          @imgLoaded="swipeNewImgLoaded"
+        >
+          <slot
+            slot="image-overlay"
+            name="image-overlay"
+          >
+          </slot>
+        </image-viewer>
       </div>
       <span
         ref="swipeBar"

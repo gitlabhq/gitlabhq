@@ -151,11 +151,11 @@ describe('Grouped Test Reports App', () => {
 
     it('renders resolved failures', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.js-mr-code-resolved-issues').textContent).toContain(
+        expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[0].name,
         );
 
-        expect(vm.$el.querySelector('.js-mr-code-resolved-issues').textContent).toContain(
+        expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[1].name,
         );
         done();

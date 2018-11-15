@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
+  include KubernetesHelpers
 
   set(:project) { create(:project) }
 
@@ -119,7 +122,7 @@ describe Projects::ClustersController do
         it 'has new object' do
           go
 
-          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
+          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
       end
 
@@ -140,7 +143,7 @@ describe Projects::ClustersController do
       it 'has new object' do
         go
 
-        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 
@@ -218,9 +221,9 @@ describe Projects::ClustersController do
     describe 'security' do
       before do
         allow_any_instance_of(described_class)
-        .to receive(:token_in_session).and_return('token')
+          .to receive(:token_in_session).and_return('token')
         allow_any_instance_of(described_class)
-        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+          .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
         allow_any_instance_of(GoogleApi::CloudPlatform::Client)
           .to receive(:projects_zones_clusters_create) do
           OpenStruct.new(
@@ -307,6 +310,11 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      before do
+        allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+        stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:maintainer).of(project) }
@@ -318,14 +326,15 @@ describe Projects::ClustersController do
     end
   end
 
-  describe 'GET status' do
+  describe 'GET cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
     def go
-      get :status, namespace_id: project.namespace,
-                   project_id: project,
-                   id: cluster,
-                   format: :json
+      get :cluster_status,
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param,
+        id: cluster,
+        format: :json
     end
 
     describe 'functionality' do
@@ -359,9 +368,10 @@ describe Projects::ClustersController do
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
     def go
-      get :show, namespace_id: project.namespace,
-                 project_id: project,
-                 id: cluster
+      get :show,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: cluster
     end
 
     describe 'functionality' do
@@ -386,7 +396,20 @@ describe Projects::ClustersController do
   end
 
   describe 'PUT update' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+    def go(format: :html)
+      put :update, params.merge(namespace_id: project.namespace.to_param,
+                                project_id: project.to_param,
+                                id: cluster,
+                                format: format
+                               )
+    end
+
+    before do
+      allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+      stub_kubeclient_get_namespace('https://kubernetes.example.com', namespace: 'my-namespace')
+    end
+
+    let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
     let(:params) do
       {
@@ -400,113 +423,59 @@ describe Projects::ClustersController do
       }
     end
 
-    def go(format: :html)
-      put :update, params.merge(namespace_id: project.namespace,
-                                project_id: project,
-                                id: cluster,
-                                format: format
-                               )
+    it "updates and redirects back to show page" do
+      go
+
+      cluster.reload
+      expect(response).to redirect_to(project_cluster_path(project, cluster))
+      expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
+      expect(cluster.enabled).to be_falsey
+      expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
     end
 
-    context 'when cluster is provided by GCP' do
-      it "updates and redirects back to show page" do
-        go
-
-        cluster.reload
-        expect(response).to redirect_to(project_cluster_path(project, cluster))
-        expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
-        expect(cluster.enabled).to be_falsey
-      end
-
-      it "does not change cluster name" do
-        go
-
-        cluster.reload
-        expect(cluster.name).to eq('test-cluster')
-      end
-
-      context 'when cluster is being created' do
-        let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
-
-        it "rejects changes" do
-          go
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:show)
-          expect(cluster.enabled).to be_truthy
-        end
-      end
-    end
-
-    context 'when cluster is provided by user' do
-      let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
-      let(:params) do
-        {
-          cluster: {
-            enabled: false,
-            name: 'my-new-cluster-name',
-            platform_kubernetes_attributes: {
-              namespace: 'my-namespace'
-            }
-          }
-        }
-      end
-
-      it "updates and redirects back to show page" do
-        go
-
-        cluster.reload
-        expect(response).to redirect_to(project_cluster_path(project, cluster))
-        expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
-        expect(cluster.enabled).to be_falsey
-        expect(cluster.name).to eq('my-new-cluster-name')
-        expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-      end
-
-      context 'when format is json' do
-        context 'when changing parameters' do
-          context 'when valid parameters are used' do
-            let(:params) do
-              {
-                cluster: {
-                  enabled: false,
-                  name: 'my-new-cluster-name',
-                  platform_kubernetes_attributes: {
-                    namespace: 'my-namespace'
-                  }
+    context 'when format is json' do
+      context 'when changing parameters' do
+        context 'when valid parameters are used' do
+          let(:params) do
+            {
+              cluster: {
+                enabled: false,
+                name: 'my-new-cluster-name',
+                platform_kubernetes_attributes: {
+                  namespace: 'my-namespace'
                 }
               }
-            end
-
-            it "updates and redirects back to show page" do
-              go(format: :json)
-
-              cluster.reload
-              expect(response).to have_http_status(:no_content)
-              expect(cluster.enabled).to be_falsey
-              expect(cluster.name).to eq('my-new-cluster-name')
-              expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-            end
+            }
           end
 
-          context 'when invalid parameters are used' do
-            let(:params) do
-              {
-                cluster: {
-                  enabled: false,
-                  platform_kubernetes_attributes: {
-                    namespace: 'my invalid namespace #@'
-                  }
+          it "updates and redirects back to show page" do
+            go(format: :json)
+
+            cluster.reload
+            expect(response).to have_http_status(:no_content)
+            expect(cluster.enabled).to be_falsey
+            expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+          end
+        end
+
+        context 'when invalid parameters are used' do
+          let(:params) do
+            {
+              cluster: {
+                enabled: false,
+                platform_kubernetes_attributes: {
+                  namespace: 'my invalid namespace #@'
                 }
               }
-            end
+            }
+          end
 
-            it "rejects changes" do
-              go(format: :json)
+          it "rejects changes" do
+            go(format: :json)
 
-              expect(response).to have_http_status(:bad_request)
-            end
+            expect(response).to have_http_status(:bad_request)
           end
         end
       end
@@ -530,9 +499,10 @@ describe Projects::ClustersController do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
     def go
-      delete :destroy, namespace_id: project.namespace,
-                       project_id: project,
-                       id: cluster
+      delete :destroy,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: cluster
     end
 
     describe 'functionality' do
@@ -589,6 +559,12 @@ describe Projects::ClustersController do
       it { expect { go }.to be_denied_for(:guest).of(project) }
       it { expect { go }.to be_denied_for(:user) }
       it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
+  context 'no project_id param' do
+    it 'does not respond to any action without project_id param' do
+      expect { get :index }.to raise_error(ActionController::UrlGenerationError)
     end
   end
 end

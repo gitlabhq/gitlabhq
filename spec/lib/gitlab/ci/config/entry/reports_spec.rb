@@ -33,7 +33,7 @@ describe Gitlab::Ci::Config::Entry::Reports do
 
       where(:keyword, :file) do
         :junit | 'junit.xml'
-        :codequality | 'codequality.json'
+        :codequality | 'gl-code-quality-report.json'
         :sast | 'gl-sast-report.json'
         :dependency_scanning | 'gl-dependency-scanning-report.json'
         :container_scanning | 'gl-container-scanning-report.json'

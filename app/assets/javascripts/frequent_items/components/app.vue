@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import AccessorUtilities from '~/lib/utils/accessor';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import eventHub from '../event_hub';
 import store from '../store/';
 import { FREQUENT_ITEMS, STORAGE_KEY } from '../constants';
@@ -14,6 +15,7 @@ export default {
   components: {
     FrequentItemsSearchInput,
     FrequentItemsList,
+    GlLoadingIcon,
   },
   mixins: [frequentItemsMixin],
   props: {

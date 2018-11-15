@@ -6,7 +6,6 @@ import Autosize from 'autosize';
 import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
-import TaskList from '../../task_list';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -146,7 +145,6 @@ export default {
     });
 
     this.initAutoSave();
-    this.initTaskList();
   },
   methods: {
     ...mapActions([
@@ -298,13 +296,6 @@ Please check your network connection and try again.`;
         ]);
       }
     },
-    initTaskList() {
-      return new TaskList({
-        dataType: 'note',
-        fieldName: 'note',
-        selector: '.notes',
-      });
-    },
     resizeTextarea() {
       this.$nextTick(() => {
         Autosize.update(this.$refs.textarea);
@@ -321,10 +312,10 @@ Please check your network connection and try again.`;
       v-else-if="!canCreateNote"
       :issuable-type="issuableTypeTitle"
     />
-    <ul
+    <div
       v-else-if="canCreateNote"
       class="notes notes-form timeline">
-      <li class="timeline-entry">
+      <div class="timeline-entry note-form">
         <div class="timeline-entry-inner">
           <div class="flash-container error-alert timeline-content"></div>
           <div class="timeline-icon d-none d-sm-none d-md-block">
@@ -390,7 +381,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     :disabled="isSubmitButtonDisabled"
                     name="button"
                     type="button"
-                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                     data-display="static"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
@@ -422,7 +413,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
                       <button
                         type="button"
-                        class="btn btn-transparent"
+                        class="btn btn-transparent qa-discussion-option"
                         @click.prevent="setNoteType('discussion')">
                         <i
                           aria-hidden="true"
@@ -462,7 +453,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
             </form>
           </div>
         </div>
-      </li>
-    </ul>
+      </div>
+    </div>
   </div>
 </template>

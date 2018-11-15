@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -12,6 +13,7 @@ export default {
     Icon,
     CiIcon,
     Item,
+    GlLoadingIcon,
   },
   props: {
     stage: {

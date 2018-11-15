@@ -103,7 +103,7 @@ class Import::GithubController < Import::BaseController
     { github_access_token: session[access_token_key] }
   end
 
-  # The following methods are overriden in subclasses
+  # The following methods are overridden in subclasses
   def provider
     :github
   end

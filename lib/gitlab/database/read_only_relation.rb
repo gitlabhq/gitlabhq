@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Database
     # Module that can be injected into a ActiveRecord::Relation to make it

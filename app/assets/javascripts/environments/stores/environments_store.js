@@ -34,14 +34,14 @@ export default class EnvironmentsStore {
    * @returns {Array}
    */
   storeEnvironments(environments = []) {
-    const filteredEnvironments = environments.map((env) => {
-      const oldEnvironmentState = this.state.environments
-      .find((element) => {
-        if (env.latest) {
-          return element.id === env.latest.id;
-        }
-        return element.id === env.id;
-      }) || {};
+    const filteredEnvironments = environments.map(env => {
+      const oldEnvironmentState =
+        this.state.environments.find(element => {
+          if (env.latest) {
+            return element.id === env.latest.id;
+          }
+          return element.id === env.id;
+        }) || {};
 
       let filtered = {};
 
@@ -101,11 +101,11 @@ export default class EnvironmentsStore {
   }
 
   /**
-    * Toggles folder open property for the given folder.
-    *
-    * @param  {Object} folder
-    * @return {Array}
-    */
+   * Toggles folder open property for the given folder.
+   *
+   * @param  {Object} folder
+   * @return {Array}
+   */
   toggleFolder(folder) {
     return this.updateEnvironmentProp(folder, 'isOpen', !folder.isOpen);
   }
@@ -119,7 +119,7 @@ export default class EnvironmentsStore {
    * @return {Object}
    */
   setfolderContent(folder, environments) {
-    const updatedEnvironments = environments.map((env) => {
+    const updatedEnvironments = environments.map(env => {
       let updated = env;
 
       if (env.latest) {
@@ -148,7 +148,7 @@ export default class EnvironmentsStore {
   updateEnvironmentProp(environment, prop, newValue) {
     const { environments } = this.state;
 
-    const updatedEnvironments = environments.map((env) => {
+    const updatedEnvironments = environments.map(env => {
       const updateEnv = Object.assign({}, env);
       if (env.id === environment.id) {
         updateEnv[prop] = newValue;

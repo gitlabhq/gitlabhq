@@ -132,7 +132,7 @@ class TeamcityService < CiService
   end
 
   def build_url(path)
-    URI.join("#{teamcity_url}/", path).to_s
+    Gitlab::Utils.append_path(teamcity_url, path)
   end
 
   def get_path(path)

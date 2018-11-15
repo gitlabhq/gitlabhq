@@ -1,9 +1,9 @@
 require "spec_helper"
 
 describe "User views issue" do
-  set(:project) { create(:project_empty_repo, :public) }
-  set(:user) { create(:user) }
-  set(:issue) { create(:issue, project: project, description: "# Description header", author: user) }
+  let(:project) { create(:project_empty_repo, :public) }
+  let(:user) { create(:user) }
+  let(:issue) { create(:issue, project: project, description: "# Description header", author: user) }
 
   before do
     project.add_developer(user)

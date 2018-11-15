@@ -10,7 +10,7 @@ module PageLayoutHelper
       @breadcrumb_title = @page_title.last
     end
 
-    # Segments are seperated by middot
+    # Segments are separated by middot
     @page_title.join(" · ")
   end
 

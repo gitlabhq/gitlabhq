@@ -149,9 +149,9 @@ class FileUploader < GitlabUploader
 
   # return a new uploader with a file copy on another project
   def self.copy_to(uploader, to_project)
-    moved = uploader.dup.tap do |u|
-      u.model = to_project
-    end
+    moved = self.new(to_project)
+    moved.object_store = uploader.object_store
+    moved.filename = uploader.filename
 
     moved.copy_file(uploader.file)
     moved

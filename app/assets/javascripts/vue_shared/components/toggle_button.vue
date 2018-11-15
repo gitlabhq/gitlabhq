@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import { s__ } from '../../locale';
 import icon from './icon.vue';
 
@@ -10,6 +11,7 @@ const LABEL_OFF = s__('ToggleButton|Toggle Status: OFF');
 export default {
   components: {
     icon,
+    GlLoadingIcon,
   },
 
   model: {

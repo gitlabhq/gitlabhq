@@ -1,10 +1,12 @@
 <script>
 import _ from 'underscore';
+import { GlLink } from '@gitlab-org/gitlab-ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
   components: {
     TimeagoTooltip,
+    GlLink,
   },
   props: {
     user: {
@@ -29,9 +31,9 @@ export default {
     <div class="erased alert alert-warning">
       <template v-if="isErasedByUser">
         {{ s__("Job|Job has been erased by") }}
-        <a :href="user.web_url">
+        <gl-link :href="user.web_url">
           {{ user.username }}
-        </a>
+        </gl-link>
       </template>
       <template v-else>
         {{ s__("Job|Job has been erased") }}

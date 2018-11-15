@@ -298,6 +298,14 @@ module API
           desc: 'Title'
         }
       ],
+      'discord' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'Discord webhook. e.g. https://discordapp.com/api/webhooks/…'
+        }
+      ],
       'drone-ci' => [
         {
           required: true,
@@ -677,6 +685,7 @@ module API
       BuildkiteService,
       CampfireService,
       CustomIssueTrackerService,
+      DiscordService,
       DroneCiService,
       EmailsOnPushService,
       ExternalWikiService,

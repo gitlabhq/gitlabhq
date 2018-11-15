@@ -29,7 +29,7 @@ describe 'Top Plus Menu', :js do
 
       click_topmenuitem("New group")
 
-      expect(page).to have_content('Group path')
+      expect(page).to have_content('Group URL')
       expect(page).to have_content('Group name')
     end
 
@@ -79,7 +79,7 @@ describe 'Top Plus Menu', :js do
 
       click_topmenuitem("New subgroup")
 
-      expect(page).to have_content('Group path')
+      expect(page).to have_content('Group URL')
       expect(page).to have_content('Group name')
     end
 

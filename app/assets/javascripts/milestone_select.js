@@ -9,7 +9,10 @@ import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
-import boardsStore, { boardStoreIssueSet, boardStoreIssueDelete } from './boards/stores/boards_store';
+import boardsStore, {
+  boardStoreIssueSet,
+  boardStoreIssueDelete,
+} from './boards/stores/boards_store';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {

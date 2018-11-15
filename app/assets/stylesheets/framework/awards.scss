@@ -148,10 +148,7 @@
 
     .award-control-icon svg {
       background: $award-emoji-positive-add-bg;
-
-      path {
-        fill: $award-emoji-positive-add-lines;
-      }
+      fill: $award-emoji-positive-add-lines;
     }
 
     .award-control-icon-neutral {

@@ -1,3 +1,10 @@
+// These need to match the enum found in app/models/clusters/cluster.rb
+export const CLUSTER_TYPE = {
+  INSTANCE: 'instance_type',
+  GROUP: 'group_type',
+  PROJECT: 'project_type',
+};
+
 // These need to match what is returned from the server
 export const APPLICATION_STATUS = {
   NOT_INSTALLABLE: 'not_installable',
@@ -16,3 +23,4 @@ export const REQUEST_SUCCESS = 'request-success';
 export const REQUEST_FAILURE = 'request-failure';
 export const INGRESS = 'ingress';
 export const JUPYTER = 'jupyter';
+export const KNATIVE = 'knative';

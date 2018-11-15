@@ -4,9 +4,7 @@ description: "Set and configure Git protocol v2"
 
 # Configuring Git Protocol v2
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/46555) in GitLab 11.4.
-
----
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46555) in GitLab 11.4.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. In order to enable SSH,

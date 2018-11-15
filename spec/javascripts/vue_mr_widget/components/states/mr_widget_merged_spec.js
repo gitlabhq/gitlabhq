@@ -69,7 +69,7 @@ describe('MRWidgetMerged', () => {
         expect(vm.shouldShowRemoveSourceBranch).toEqual(true);
       });
 
-      it('returns false wehn sourceBranchRemoved is true', () => {
+      it('returns false when sourceBranchRemoved is true', () => {
         vm.mr.sourceBranchRemoved = true;
 
         expect(vm.shouldShowRemoveSourceBranch).toEqual(false);

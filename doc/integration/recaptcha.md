@@ -8,19 +8,13 @@ to confirm that a real user, not a bot, is attempting to create an account.
 
 To use reCAPTCHA, first you must create a site and private key.
 
-1. Go to the URL: https://www.google.com/recaptcha/admin
-
-2. Fill out the form necessary to obtain reCAPTCHA keys.
-
-3. Login to your GitLab server, with administrator credentials.
-
-4. Go to Applications Settings on Admin Area (`admin/application_settings`)
-
-5. Fill all recaptcha fields with keys from previous steps
-
-6. Check the `Enable reCAPTCHA` checkbox
-
-7. Save the configuration.
+1. Go to the URL: <https://www.google.com/recaptcha/admin>.
+1. Fill out the form necessary to obtain reCAPTCHA keys.
+1. Login to your GitLab server, with administrator credentials.
+1. Go to Applications Settings on Admin Area (`admin/application_settings`).
+1. Fill all recaptcha fields with keys from previous steps.
+1. Check the `Enable reCAPTCHA` checkbox.
+1. Save the configuration.
 
 ## Enabling reCAPTCHA for user logins via passwords
 

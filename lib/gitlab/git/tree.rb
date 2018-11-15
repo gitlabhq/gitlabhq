@@ -2,6 +2,7 @@ module Gitlab
   module Git
     class Tree
       include Gitlab::EncodingHelper
+      extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :id, :root_id, :name, :path, :flat_path, :type,
         :mode, :commit_id, :submodule_url
@@ -15,7 +16,7 @@ module Gitlab
         def where(repository, sha, path = nil, recursive = false)
           path = nil if path == '' || path == '/'
 
-          repository.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
           end
         end

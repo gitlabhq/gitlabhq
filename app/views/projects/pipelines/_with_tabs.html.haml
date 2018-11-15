@@ -61,12 +61,14 @@
               %td.responsive-table-cell.build-failure{ data: { column: _("Failure")} }
                 = build.present.callout_failure_message
               %td.responsive-table-cell.build-actions
-                = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
-                  = icon('repeat')
-            %tr.build-trace-row.responsive-table-border-end
-              %td
-              %td.responsive-table-cell.build-trace-container{ colspan: 4 }
-                %pre.build-trace.build-trace-rounded
-                  %code.bash.js-build-output
-                    = build_summary(build)
+                - if can?(current_user, :update_build, job)
+                  = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
+                    = icon('repeat')
+            - if can?(current_user, :read_build, job)
+              %tr.build-trace-row.responsive-table-border-end
+                %td
+                %td.responsive-table-cell.build-trace-container{ colspan: 4 }
+                  %pre.build-trace.build-trace-rounded
+                    %code.bash.js-build-output
+                      = build_summary(build)
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

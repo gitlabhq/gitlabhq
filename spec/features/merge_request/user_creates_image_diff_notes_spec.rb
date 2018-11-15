@@ -114,10 +114,9 @@ describe 'Merge request > User creates image diff notes', :js do
           create_image_diff_note
         end
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
-        xit 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
+        it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
           indicator = find('.js-image-badge', match: :first)
-          badge = find('.image-diff-avatar-link .badge', match: :first)
+          badge = find('.user-avatar-link .badge', match: :first)
 
           expect(indicator).to have_content('1')
           expect(badge).to have_content('1')
@@ -157,8 +156,7 @@ describe 'Merge request > User creates image diff notes', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
-    xit 'render diff indicators within the image frame' do
+    it 'render diff indicators within the image frame' do
       diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
 
       wait_for_requests
@@ -200,7 +198,6 @@ describe 'Merge request > User creates image diff notes', :js do
 
   def create_image_diff_note
     find('.js-add-image-diff-note-button', match: :first).click
-    page.all('.js-add-image-diff-note-button')[0].click
     find('.diff-content .note-textarea').native.send_keys('image diff test comment')
     click_button 'Comment'
     wait_for_requests

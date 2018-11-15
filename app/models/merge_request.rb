@@ -353,6 +353,15 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Returns true if there are commits that match at least one commit SHA.
+  def includes_any_commits?(shas)
+    if persisted?
+      merge_request_diff.commits_by_shas(shas).exists?
+    else
+      (commit_shas & shas).present?
+    end
+  end
+
   # Calls `MergeWorker` to proceed with the merge process and
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
@@ -398,6 +407,18 @@ class MergeRequest < ActiveRecord::Base
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
     merge_request_diff&.real_size || diffs.real_size
+  end
+
+  def modified_paths(past_merge_request_diff: nil)
+    diffs = if past_merge_request_diff
+              past_merge_request_diff
+            elsif compare
+              compare
+            else
+              self.merge_request_diff
+            end
+
+    diffs.modified_paths
   end
 
   def diff_base_commit

@@ -18,6 +18,7 @@ export default class MergeRequestStore {
     this.squash = data.squash;
     this.squashBeforeMergeHelpPath =
       this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
+    this.troubleshootingDocsPath = this.troubleshootingDocsPath || data.troubleshooting_docs_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
 
     this.iid = data.iid;

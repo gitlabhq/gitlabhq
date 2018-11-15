@@ -1,10 +1,13 @@
 <script>
+import { GlLink, GlButton } from '@gitlab-org/gitlab-ui';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {
   name: 'PipelineNavControls',
   components: {
     LoadingButton,
+    GlLink,
+    GlButton,
   },
   props: {
     newPipelinePath: {
@@ -40,28 +43,29 @@ export default {
 </script>
 <template>
   <div class="nav-controls">
-    <a
+    <gl-button
       v-if="newPipelinePath"
       :href="newPipelinePath"
-      class="btn btn-success js-run-pipeline"
+      variant="success"
+      class="js-run-pipeline"
     >
       {{ s__('Pipelines|Run Pipeline') }}
-    </a>
+    </gl-button>
 
     <loading-button
       v-if="resetCachePath"
       :loading="isResetCacheButtonLoading"
       :label="s__('Pipelines|Clear Runner Caches')"
-      class="btn btn-default js-clear-cache"
+      class="js-clear-cache"
       @click="onClickResetCache"
     />
 
-    <a
+    <gl-button
       v-if="ciLintPath"
       :href="ciLintPath"
-      class="btn btn-default js-ci-lint"
+      class="js-ci-lint"
     >
       {{ s__('Pipelines|CI Lint') }}
-    </a>
+    </gl-button>
   </div>
 </template>

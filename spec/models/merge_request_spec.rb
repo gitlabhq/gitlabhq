@@ -13,6 +13,20 @@ describe MergeRequest do
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs) }
+
+    context 'for forks' do
+      let!(:project) { create(:project) }
+      let!(:fork) { fork_project(project) }
+      let!(:merge_request) { create(:merge_request, target_project: project, source_project: fork) }
+
+      it 'does not load another project due to inverse relationship' do
+        expect(project.merge_requests.first.target_project.object_id).to eq(project.object_id)
+      end
+
+      it 'finds the associated merge request' do
+        expect(project.merge_requests.find(merge_request.id)).to eq(merge_request)
+      end
+    end
   end
 
   describe '#squash_in_progress?' do
@@ -538,9 +552,9 @@ describe MergeRequest do
       it 'delegates to the MR diffs' do
         merge_request.save
 
-        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options)).and_call_original
 
-        merge_request.diffs(options)
+        merge_request.diffs(options).diff_files
       end
     end
 
@@ -613,6 +627,44 @@ describe MergeRequest do
         expect(Gitlab::Diff::Highlight).not_to receive(:new)
 
         merge_request.diff_size
+      end
+    end
+  end
+
+  describe '#modified_paths' do
+    let(:paths) { double(:paths) }
+    subject(:merge_request) { build(:merge_request) }
+
+    before do
+      expect(diff).to receive(:modified_paths).and_return(paths)
+    end
+
+    context 'when past_merge_request_diff is specified' do
+      let(:another_diff) { double(:merge_request_diff) }
+      let(:diff) { another_diff }
+
+      it 'returns affected file paths from specified past_merge_request_diff' do
+        expect(merge_request.modified_paths(past_merge_request_diff: another_diff)).to eq(paths)
+      end
+    end
+
+    context 'when compare is present' do
+      let(:compare) { double(:compare) }
+      let(:diff) { compare }
+
+      it 'returns affected file paths from compare' do
+        merge_request.compare = compare
+
+        expect(merge_request.modified_paths).to eq(paths)
+      end
+    end
+
+    context 'when no arguments provided' do
+      let(:diff) { merge_request.merge_request_diff }
+      subject(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
+
+      it 'returns affected file paths for merge_request_diff' do
+        expect(merge_request.modified_paths).to eq(paths)
       end
     end
   end
@@ -1822,8 +1874,8 @@ describe MergeRequest do
       let(:environments) { create_list(:environment, 3, project: project) }
 
       before do
-        create(:deployment, environment: environments.first, ref: 'master', sha: project.commit('master').id)
-        create(:deployment, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
+        create(:deployment, :success, environment: environments.first, ref: 'master', sha: project.commit('master').id)
+        create(:deployment, :success, environment: environments.second, ref: 'feature', sha: project.commit('feature').id)
       end
 
       it 'selects deployed environments' do
@@ -1843,7 +1895,7 @@ describe MergeRequest do
       let(:source_environment) { create(:environment, project: source_project) }
 
       before do
-        create(:deployment, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
+        create(:deployment, :success, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
       end
 
       it 'selects deployed environments' do
@@ -1854,7 +1906,7 @@ describe MergeRequest do
         let(:target_environment) { create(:environment, project: project) }
 
         before do
-          create(:deployment, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
+          create(:deployment, :success, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
         end
 
         it 'selects deployed environments' do
@@ -2594,6 +2646,36 @@ describe MergeRequest do
                                    .and_return(true)
 
       expect(merge_request.collaborative_push_possible?).to be_falsy
+    end
+  end
+
+  describe '#includes_any_commits?' do
+    it 'returns false' do
+      expect(subject.includes_any_commits?([])).to be_falsey
+    end
+
+    it 'returns false' do
+      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
+    end
+
+    it 'returns true' do
+      expect(subject.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
+    end
+
+    it 'returns true even when there is a non-existent comit' do
+      expect(subject.includes_any_commits?([Gitlab::Git::BLANK_SHA, subject.merge_request_diff.head_commit_sha])).to be_truthy
+    end
+
+    context 'unpersisted merge request' do
+      let(:new_mr) { build(:merge_request) }
+
+      it 'returns false' do
+        expect(new_mr.includes_any_commits?([Gitlab::Git::BLANK_SHA])).to be_falsey
+      end
+
+      it 'returns true' do
+        expect(new_mr.includes_any_commits?([subject.merge_request_diff.head_commit_sha])).to be_truthy
+      end
     end
   end
 

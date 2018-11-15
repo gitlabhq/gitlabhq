@@ -117,6 +117,8 @@ class Note < ActiveRecord::Base
     case notes_filter
     when UserPreference::NOTES_FILTERS[:only_comments]
       user
+    when UserPreference::NOTES_FILTERS[:only_activity]
+      system
     else
       all
     end

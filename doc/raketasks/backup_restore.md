@@ -9,37 +9,39 @@ You can only restore a backup to **exactly the same version and type (CE/EE)**
 of GitLab on which it was created. The best way to migrate your repositories
 from one server to another is through backup restore.
 
-## Backup
+## Requirements
 
-GitLab provides a simple command line interface to backup your whole installation,
-and is flexible enough to fit your needs.
+In order to be able to backup and restore, you need two essential tools
+installed on your system.
 
-### Requirements
+### Rsync
 
-* rsync
+If you installed GitLab:
 
-If you're using GitLab with the Omnibus package, you're all set. If you
-installed GitLab from source, make sure you have rsync installed.
+-   Using the Omnibus package, you're all set.
+-   From source, make sure `rsync` is installed:
 
-If you're using Ubuntu, you could run:
+    ```sh
+    # Debian/Ubuntu
+    sudo apt-get install rsync
 
-```
-sudo apt-get install -y rsync
-```
+    # RHEL/CentOS
+    sudo yum install rsync
+    ```
 
-* tar
+### Tar
 
 Backup and restore tasks use `tar` under the hood to create and extract
 archives. Ensure you have version 1.30 or above of `tar` available in your
 system. To check the version, run:
 
-```
+```sh
 tar --version
 ```
 
-### Backup timestamp
+## Backup timestamp
 
->**Note:**
+NOTE: **Note:**
 In GitLab 9.2 the timestamp format was changed from `EPOCH_YYYY_MM_DD` to
 `EPOCH_YYYY_MM_DD_GitLab_version`, for example `1493107454_2018_04_25`
 would become `1493107454_2018_04_25_10.6.4-ce`.
@@ -54,30 +56,46 @@ available.
 For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
 then the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
 
-### Creating a backup of the GitLab system
+## Creating a backup of the GitLab system
+
+GitLab provides a simple command line interface to backup your whole instance.
+It backs up your:
+
+- Database
+- Attachments
+- Git repositories data
+- CI/CD job output logs
+- CI/CD job artifacts
+- LFS objects
+- Container Registry images
+- GitLab Pages content
+
+CAUTION: **Warning:**
+GitLab does not back up any configuration files, SSL certificates, or system files.
+You are highly advised to [read about storing configuration files](#storing-configuration-files).
 
 Use this command if you've installed GitLab with the Omnibus package:
 
-```
+```sh
 sudo gitlab-rake gitlab:backup:create
 ```
 
 Use this if you've installed GitLab from source:
 
-```
+```sh
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 If you are running GitLab within a Docker container, you can run the backup from the host:
 
-```
+```sh
 docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
 If you are using the gitlab-omnibus helm chart on a Kubernetes cluster, you can
-run the backup task on the gitlab application pod using kubectl
+run the backup task on the gitlab application pod using kubectl:
 
-```
+```sh
 kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:create
 ```
 
@@ -110,9 +128,50 @@ Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
 
+## Storing configuration files
+
+A backup performed by the [raketask GitLab provides](#creating-a-backup-of-the-gitlab-system)
+does **not** store your configuration files. The primary reason for this is that your
+database contains encrypted information for two-factor authentication, the CI/CD
+'secure variables', etc. Storing encrypted information along with its key in the
+same place defeats the purpose of using encryption in the first place.
+
+CAUTION: **Warning:**
+The secrets file is essential to preserve your database encryption key.
+
+At the very **minimum**, you must backup:
+
+For Omnibus:
+
+- `/etc/gitlab/gitlab-secrets.json`
+- `/etc/gitlab/gitlab.rb`
+
+For installation from source:
+
+- `/home/git/gitlab/config/secrets.yml`
+- `/home/git/gitlab/config/gitlab.yml`
+
+For [Docker installations](https://docs.gitlab.com/omnibus/docker/), you must
+back up the volume where the configuration files are stored. If you have created
+the GitLab container according to the documentation, it should be under
+`/srv/gitlab/config`.
+
+You may also want to back up any TLS keys and certificates, and your
+[SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
+If you use Omnibus GitLab, see some additional information
+[to backup your configuration](https://docs.gitlab.com/omnibus/settings/backups.html).
+
+In the unlikely event that the secrets file is lost, see the
+[troubleshooting section](#when-the-secrets-file-is-lost).
+
+## Backup options
+
+The command line tool GitLab provides to backup your instance can take more options.
+
 ### Backup strategy option
 
-> **Note:** Introduced as an option in GitLab 8.17.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8728) in GitLab 8.17.
 
 The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
@@ -129,8 +188,11 @@ so the problem doesn't compound, but it could be a considerable change for large
 installations. This is why the `copy` strategy is not the default in 8.17.
 
 To use the `copy` strategy instead of the default streaming strategy, specify
-`STRATEGY=copy` in the Rake task command. For example,
-`sudo gitlab-rake gitlab:backup:create STRATEGY=copy`.
+`STRATEGY=copy` in the Rake task command. For example:
+
+```sh
+sudo gitlab-rake gitlab:backup:create STRATEGY=copy
+```
 
 ### Excluding specific directories from the backup
 
@@ -151,11 +213,15 @@ Use a comma to specify several options at the same time:
 All wikis will be backed up as part of the `repositories` group. Non-existent wikis
 will be skipped during a backup.
 
-```
-# use this command if you've installed GitLab with the Omnibus package
-sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+For Omnibus GitLab packages:
 
-# if you've installed GitLab from source
+```sh
+sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+```
+
+For installations from source:
+
+```sh
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
@@ -208,7 +274,7 @@ This example can be used for a bucket in Amsterdam (AMS3).
 
 1. [Reconfigure GitLab] for the changes to take effect
 
-CAUTION: **Warning:**
+NOTE: **Note:**
 If you see `400 Bad Request` by using Digital Ocean Spaces, the cause may be the
 usage of backup encryption. Remove or comment the line that
 contains `gitlab_rails['backup_encryption']` since Digital Ocean Spaces
@@ -370,33 +436,43 @@ backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
-For omnibus packages:
 
-```ruby
-gitlab_rails['backup_upload_connection'] = {
-  :provider => 'Local',
-  :local_root => '/mnt/backups'
-}
+For Omnibus GitLab packages:
 
-# The directory inside the mounted folder to copy backups to
-# Use '.' to store them in the root directory
-gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
-```
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['backup_upload_connection'] = {
+      :provider => 'Local',
+      :local_root => '/mnt/backups'
+    }
+
+    # The directory inside the mounted folder to copy backups to
+    # Use '.' to store them in the root directory
+    gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect.
+
+---
 
 For installations from source:
 
-```yaml
-  backup:
-    # snip
-    upload:
-      # Fog storage connection settings, see http://fog.io/storage/ .
-      connection:
-        provider: Local
-        local_root: '/mnt/backups'
-      # The directory inside the mounted folder to copy backups to
-      # Use '.' to store them in the root directory
-      remote_directory: 'gitlab_backups'
-```
+1. Edit `home/git/gitlab/config/gitlab.yml`:
+
+    ```yaml
+    backup:
+      upload:
+        # Fog storage connection settings, see http://fog.io/storage/ .
+        connection:
+          provider: Local
+          local_root: '/mnt/backups'
+        # The directory inside the mounted folder to copy backups to
+        # Use '.' to store them in the root directory
+        remote_directory: 'gitlab_backups'
+    ```
+
+1. [Restart GitLab] for the changes to take effect.
 
 ### Backup archive permissions
 
@@ -405,45 +481,56 @@ will have owner/group git:git and 0600 permissions by default.
 This is meant to avoid other system users reading GitLab's data.
 If you need the backup archives to have different permissions you can use the 'archive_permissions' setting.
 
-```
-# In /etc/gitlab/gitlab.rb, for omnibus packages
-gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
-```
+For Omnibus GitLab packages:
 
-```
-# In gitlab.yml, for installations from source:
-  backup:
-    archive_permissions: 0644 # Makes the backup archives world-readable
-```
+1. Edit `/etc/gitlab/gitlab.rb`:
 
-### Storing configuration files
+    ```ruby
+    gitlab_rails['backup_archive_permissions'] = 0644 # Makes the backup archives world-readable
+    ```
 
-Please be informed that a backup does not store your configuration
-files. One reason for this is that your database contains encrypted
-information for two-factor authentication. Storing encrypted
-information along with its key in the same place defeats the purpose
-of using encryption in the first place!
+1. [Reconfigure GitLab] for the changes to take effect.
 
-If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
-If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you installed from source, please consider backing up your `config/secrets.yml` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+---
 
-At the very **minimum** you should backup `/etc/gitlab/gitlab.rb` and
-`/etc/gitlab/gitlab-secrets.json` (Omnibus), or
-`/home/git/gitlab/config/secrets.yml` (source) to preserve your database
-encryption key.
+For installations from source:
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+    ```yaml
+    backup:
+      archive_permissions: 0644 # Makes the backup archives world-readable
+    ```
+
+1. [Restart GitLab] for the changes to take effect.
 
 ### Configuring cron to make daily backups
 
->**Note:**
+NOTE: **Note:**
 The following cron jobs do not [backup your GitLab configuration files](#storing-configuration-files)
 or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
-**For Omnibus installations**
+For Omnibus GitLab packages:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    ## Limit backup lifetime to 7 days - 604800 seconds
+    gitlab_rails['backup_keep_time'] = 604800
+    ```
+
+1. [Reconfigure GitLab] for the changes to take effect.
+
+Note that the `backup_keep_time` configuration option only manages local
+files. GitLab does not automatically prune old files stored in a third-party
+object storage (e.g., AWS S3) because the user may not have permission to list
+and delete files. We recommend that you configure the appropriate retention
+policy for your object storage. For example, you can configure [the S3 backup
+policy as described here](http://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
 
 To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
 
-```
+```sh
 sudo su -
 crontab -e
 ```
@@ -455,26 +542,24 @@ There, add the following line to schedule the backup for everyday at 2 AM:
 ```
 
 You may also want to set a limited lifetime for backups to prevent regular
-backups using all your disk space.  To do this add the following lines to
-`/etc/gitlab/gitlab.rb` and reconfigure:
+backups using all your disk space.
 
-```
-# limit backup lifetime to 7 days - 604800 seconds
-gitlab_rails['backup_keep_time'] = 604800
-```
+---
 
-Note that the `backup_keep_time` configuration option only manages local
-files. GitLab does not automatically prune old files stored in a third-party
-object storage (e.g., AWS S3) because the user may not have permission to list
-and delete files. We recommend that you configure the appropriate retention
-policy for your object storage. For example, you can configure [the S3 backup
-policy as described here](http://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
+For installations from source:
 
-**For installation from source**
+1. Edit `home/git/gitlab/config/gitlab.yml`:
 
-```
-cd /home/git/gitlab
-sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
+    ```yaml
+    backup:
+      ## Limit backup lifetime to 7 days - 604800 seconds
+      keep_time: 604800
+    ```
+
+1. [Restart GitLab] for the changes to take effect.
+
+
+```sh
 sudo -u git crontab -e # Edit the crontab for the git user
 ```
 
@@ -710,6 +795,54 @@ The rake task runs this as the `gitlab` user which does not have the superuser a
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
 For more information see similar questions on postgresql issue tracker[here](http://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](http://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](http://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+
+### When the secrets file is lost
+
+If you have failed to [back up the secrets file](#storing-configuration-files),
+then users with 2FA enabled will not be able to log into GitLab. In that case,
+you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone).
+
+In the case of CI/CD, if your project has secure variables set, you might experience
+some weird behavior, like stuck jobs or 500 errors. In that case, you can try
+deleting the `ci_variables` table from the database.
+
+CAUTION: **Warning:**
+Use the following commands at your own risk, and make sure you've taken a
+backup beforehand.
+
+1.  Enter the Rails console:
+
+    For Omnibus GitLab packages:
+
+    ```sh
+    sudo gitlab-rails dbconsole
+    ```
+
+    For installations from source:
+
+    ```sh
+    sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
+    ```
+
+1.  Check the `ci_variables` table:
+
+    ```sql
+    SELECT * FROM public."ci_variables";
+    ```
+
+    Those are the variables that you need to delete.
+
+1.  Drop the table:
+
+    ```sql
+    DELETE FROM ci_variables;
+    ```
+
+1. You may need to reconfigure or restart GitLab for the changes to take
+   effect.
+
+You should now be able to visit your project, and the jobs will start
+running again.
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

@@ -461,7 +461,7 @@
     :versions: []
     :when: 2017-09-13 17:31:16.425819400 Z
 - - :license
-  - "@gitlab-org/gitlab-svgs"
+  - "@gitlab/svgs"
   - MIT
   - :who: Tim Zallmann
     :why: Our own library - GitLab License https://gitlab.com/gitlab-org/gitlab-svgs

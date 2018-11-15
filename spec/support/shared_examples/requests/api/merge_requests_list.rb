@@ -16,7 +16,12 @@ shared_examples 'merge requests list' do
 
       create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
 
-      create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
+      merge_request = create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
+
+      merge_request.metrics.update!(merged_by: user,
+                                    latest_closed_by: user,
+                                    latest_closed_at: 1.hour.ago,
+                                    merged_at: 2.hours.ago)
 
       expect do
         get api(endpoint_path, user)

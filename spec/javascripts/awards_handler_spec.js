@@ -219,7 +219,7 @@ describe('AwardsHandler', function() {
       expect($thumbsUpEmoji.data('originalTitle')).toBe('You, sam, jerry, max, and andy');
     });
 
-    it('handles the special case where "You" is not cleanly comma seperated', function() {
+    it('handles the special case where "You" is not cleanly comma separated', function() {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
@@ -244,7 +244,7 @@ describe('AwardsHandler', function() {
       expect($thumbsUpEmoji.data('originalTitle')).toBe('sam, jerry, max, and andy');
     });
 
-    it('handles the special case where "You" is not cleanly comma seperated', function() {
+    it('handles the special case where "You" is not cleanly comma separated', function() {
       const awardUrl = awardsHandler.getAwardUrl();
       const $votesBlock = $('.js-awards-block').eq(0);
       const $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();

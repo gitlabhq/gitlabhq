@@ -236,7 +236,7 @@ module Gitlab
 
     def single_line_regexp(regex)
       # Turns a multiline extended regexp into a single line one,
-      # beacuse `rake routes` breaks on multiline regexes.
+      # because `rake routes` breaks on multiline regexes.
       Regexp.new(regex.source.gsub(/\(\?#.+?\)/, '').gsub(/\s*/, ''), regex.options ^ Regexp::EXTENDED).freeze
     end
   end

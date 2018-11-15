@@ -53,6 +53,46 @@ To get started with the command line, please read through the
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
+### Supported markup languages and extensions
+
+GitLab supports a number of markup languages (sometimes called [lightweight
+markup languages](https://en.wikipedia.org/wiki/Lightweight_markup_language))
+that you can use for the content of your files in a repository. They are mostly
+used for documentation purposes.
+
+Just pick the right extension for your files and GitLab will render them
+according to the markup language.
+
+| Markup language | Extensions |
+| --------------- | ---------- |
+| Plain text | `txt` |
+| [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
+| [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
+| [Asciidoc](https://asciidoctor.org/docs/what-is-asciidoc/) | `adoc`, `ad`, `asciidoc` |
+| [Textile](https://txstyle.org/) | `textile` |
+| [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
+| [Orgmode](https://orgmode.org/) | `org` |
+| [creole](http://www.wikicreole.org/) | `creole` |
+| [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
+
+### Repository README and index files
+
+When a `README` or `index` file is present in a repository, its contents will be
+automatically pre-rendered by GitLab without opening it.
+
+They can either be plain text or have an extension of a
+[supported markup language](#supported-markup-languages-and-extensions):
+
+Some things to note about precedence:
+
+1. When both a `README` and an `index` file are present, the `README` will always
+   take precedence.
+1. When more than one file is present with different extensions, they are
+   ordered alphabetically, with the exception of a file without an extension
+   which will always be last in precedence. For example, `README.adoc` will take
+   precedence over `README.md`, and `README.rst` will take precedence over
+   `README`.
+
 ### Jupyter Notebook files
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
@@ -165,7 +205,7 @@ minutes.
 
 ![Repository Languages bar](img/repository_languages.png)
 
-Not all files are detected, among others; documentation, 
+Not all files are detected, among others; documentation,
 vendored code, and most markup languages are excluded. This behaviour can be
 adjusted by overriding the default. For example, to enable `.proto` files to be
 detected, add the following to `.gitattributes` in the root of your repository.

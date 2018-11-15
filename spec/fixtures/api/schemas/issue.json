@@ -13,8 +13,10 @@
     "confidential": { "type": "boolean" },
     "due_date": { "type": ["date", "null"] },
     "relative_position": { "type": "integer" },
+    "time_estimate": { "type": "integer" },
     "issue_sidebar_endpoint": { "type": "string" },
     "toggle_subscription_endpoint": { "type": "string" },
+    "assignable_labels_endpoint": { "type": "string" },
     "reference_path": { "type": "string" },
     "real_path": { "type": "string" },
     "project": {

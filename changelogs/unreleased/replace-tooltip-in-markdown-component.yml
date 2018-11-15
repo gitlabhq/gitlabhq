@@ -1,0 +1,5 @@
+---
+title: Replace tooltip in markdown component with gl-tooltip
+merge_request: 21989
+author: George Tsiolis
+type: other

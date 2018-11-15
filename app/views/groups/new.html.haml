@@ -1,12 +1,12 @@
 - @hide_breadcrumbs = true
 - @hide_top_links = true
-- page_title    'New Group'
-- header_title  "Groups", dashboard_groups_path
+- page_title    _('New Group')
+- header_title  _("Groups"), dashboard_groups_path
 
+.page-title-holder
+  %h1.page-title= _('New group')
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
-    %h4.prepend-top-0
-      = _('New group')
     %p
       - group_docs_path = help_page_path('user/group/index')
       - group_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_docs_path }
@@ -15,24 +15,29 @@
       - subgroup_docs_path = help_page_path('user/group/subgroups/index')
       - subgroup_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: subgroup_docs_path }
       = s_('Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}.').html_safe % { subgroup_docs_link_start: subgroup_docs_link_start, subgroup_docs_link_end: '</a>'.html_safe }
+    %p
+      = _('Projects that belong to a group are prefixed with the group namespace. Existing projects may be moved into a group.')
 
   .col-lg-9
     = form_for @group, html: { class: 'group-form gl-show-field-errors' } do |f|
       = form_errors(@group)
       = render 'shared/group_form', f: f, autofocus: true
 
-      .form-group.row.group-description-holder
-        = f.label :avatar, "Group avatar", class: 'col-form-label col-sm-2'
-        .col-sm-10
-          = render 'shared/choose_group_avatar_button', f: f
+      .row
+        .form-group.group-description-holder.col-sm-12
+          = f.label :avatar, _("Group avatar"), class: 'label-bold'
+          %div
+            = render 'shared/choose_group_avatar_button', f: f
 
-      = render 'shared/old_visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
+        .form-group.col-sm-12
+          %label.label-bold
+            = _('Visibility level')
+          %p
+            = _('Who will be able to see this group?')
+            = link_to _('View the documentation'), help_page_path("public_access/public_access"), target: '_blank'
+          = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group, with_label: false
 
-      = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
-
-      .form-group.row
-        .offset-sm-2.col-sm-10
-          = render 'shared/group_tips'
+          = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
       .form-actions
         = f.submit 'Create group', class: "btn btn-success"

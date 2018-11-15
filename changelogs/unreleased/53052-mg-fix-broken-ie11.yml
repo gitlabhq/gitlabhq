@@ -1,0 +1,5 @@
+---
+title: Fix incompatibility with IE11 due to non-transpiled gitlab-ui components
+merge_request: 22695
+author:
+type: fixed

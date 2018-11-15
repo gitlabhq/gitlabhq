@@ -95,6 +95,7 @@ The following table depicts the various user permission levels in a project.
 | Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                   |         |            |             |          | ✓      |
+| View GitLab Pages protected by [access control](../administration/pages/index.md#access-control) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
@@ -206,7 +207,7 @@ They will, like usual users, receive a role in the project or group with all
 the abilities that are mentioned in the table above. They cannot however create
 groups or projects, and they have the same access as logged out users in all
 other cases.
- 
+
 An administrator can flag a user as external [through the API](../api/users.md)
 or by checking the checkbox on the admin panel. As an administrator, navigate
 to **Admin > Users** to create a new user or edit an existing one. There, you
@@ -217,7 +218,7 @@ by an administrator under **Admin > Application Settings**.
 
 ### Default internal users
 
-The "Internal users" field allows specifying an e-mail address regex pattern to identify default internal users.  
+The "Internal users" field allows specifying an e-mail address regex pattern to identify default internal users.
 
 New users whose email address matches the regex pattern will be set to internal by default rather than an external collaborator.
 

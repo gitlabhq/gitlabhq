@@ -253,7 +253,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#predefined_variables' do
+  describe '#predefined_variable' do
     let(:kubeconfig) do
       config_file = expand_fixture_path('config/kubeconfig.yml')
       config = YAML.load(File.read(config_file))
@@ -274,7 +274,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
     shared_examples 'setting variables' do
       it 'sets the variables' do
-        expect(subject.predefined_variables).to include(
+        expect(subject.predefined_variables(project: project)).to include(
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
           { key: 'KUBE_TOKEN', value: 'token', public: false },
           { key: 'KUBE_NAMESPACE', value: namespace, public: true },
@@ -301,7 +301,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       it_behaves_like 'setting variables'
 
       it 'sets the KUBE_NAMESPACE' do
-        kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
+        kube_namespace = subject.predefined_variables(project: project).find { |h| h[:key] == 'KUBE_NAMESPACE' }
 
         expect(kube_namespace).not_to be_nil
         expect(kube_namespace[:value]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)

@@ -1,6 +1,8 @@
 module Gitlab
   module Git
     class Wiki
+      include Gitlab::Git::WrapsGitalyErrors
+
       DuplicatePageError = Class.new(StandardError)
       OperationError = Class.new(StandardError)
 
@@ -65,37 +67,37 @@ module Gitlab
       end
 
       def write_page(name, format, content, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_write_page(name, format, content, commit_details)
         end
       end
 
       def delete_page(page_path, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_delete_page(page_path, commit_details)
         end
       end
 
       def update_page(page_path, title, format, content, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_update_page(page_path, title, format, content, commit_details)
         end
       end
 
       def pages(limit: 0)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_get_all_pages(limit: limit)
         end
       end
 
       def page(title:, version: nil, dir: nil)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_find_page(title: title, version: version, dir: dir)
         end
       end
 
       def file(name, version)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_find_file(name, version)
         end
       end
@@ -105,7 +107,7 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        versions = @repository.wrapped_gitaly_errors do
+        versions = wrapped_gitaly_errors do
           gitaly_wiki_client.page_versions(page_path, options)
         end
 
@@ -127,7 +129,7 @@ module Gitlab
       def page_formatted_data(title:, dir: nil, version: nil)
         version = version&.id
 
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_wiki_client.get_formatted_data(title: title, dir: dir, version: version)
         end
       end

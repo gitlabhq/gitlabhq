@@ -1,16 +1,16 @@
 <script>
 import $ from 'jquery';
-import Tooltip from '../../directives/tooltip';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import ToolbarButton from './toolbar_button.vue';
 import Icon from '../icon.vue';
 
 export default {
-  directives: {
-    Tooltip,
-  },
   components: {
     ToolbarButton,
     Icon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     previewMarkdown: {
@@ -147,7 +147,7 @@ export default {
           icon="table"
         />
         <button
-          v-tooltip
+          v-gl-tooltip
           aria-label="Go full screen"
           class="toolbar-btn toolbar-fullscreen-btn js-zen-enter"
           data-container="body"

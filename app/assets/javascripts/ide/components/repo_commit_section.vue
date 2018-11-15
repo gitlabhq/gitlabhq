@@ -27,10 +27,10 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
-      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+      return !!(this.someUncommittedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
     activeFileKey() {
       return this.activeFile ? this.activeFile.key : null;

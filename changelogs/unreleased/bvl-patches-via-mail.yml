@@ -1,0 +1,5 @@
+---
+title: Allow adding patches when creating a merge request via email
+merge_request: 22723
+author: Serdar Dogruyol
+type: added

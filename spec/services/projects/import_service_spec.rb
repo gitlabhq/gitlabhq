@@ -125,7 +125,7 @@ describe Projects::ImportService do
           project.import_type = 'bitbucket'
         end
 
-        it 'succeeds if repository import is successfull' do
+        it 'succeeds if repository import is successful' do
           expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
           expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
           expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return({})

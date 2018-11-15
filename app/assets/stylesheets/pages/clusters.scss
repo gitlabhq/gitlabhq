@@ -25,6 +25,12 @@
   .cluster-application-row {
     border-bottom: 1px solid $border-color;
     padding: $gl-padding;
+
+    &:last-child {
+      border-bottom: 0;
+      border-bottom-left-radius: calc(#{$border-radius-default} - 1px);
+      border-bottom-right-radius: calc(#{$border-radius-default} - 1px);
+    }
   }
 }
 
@@ -73,6 +79,10 @@
     padding: $gl-padding-top $gl-padding;
   }
 
+  .card {
+    margin-bottom: $gl-vert-padding;
+  }
+
   .empty-state .svg-content img {
     width: 145px;
   }
@@ -80,6 +90,31 @@
   .top-area .nav-controls > .btn.btn-add-cluster {
     margin-right: 0;
   }
+
+  .clusters-table {
+    background-color: $gray-light;
+    padding: $gl-padding-8;
+  }
+
+  .badge-light {
+    background-color: $white-normal;
+  }
+
+  .gl-responsive-table-row {
+    padding: $gl-padding;
+    border: 0;
+
+    &.table-row-header {
+      background-color: none;
+      border: 0;
+      font-weight: bold;
+      color: $gl-gray-500;
+    }
+  }
+}
+
+.cluster-warning {
+  @include alert-variant(theme-color-level('warning', $alert-bg-level), theme-color-level('warning', $alert-border-level), theme-color-level('warning', $alert-color-level));
 }
 
 .gcp-signup-offer {

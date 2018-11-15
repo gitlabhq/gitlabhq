@@ -16,6 +16,7 @@ describe Clusters::Cluster do
   it { is_expected.to have_one(:application_runner) }
   it { is_expected.to have_many(:kubernetes_namespaces) }
   it { is_expected.to have_one(:kubernetes_namespace) }
+  it { is_expected.to have_one(:cluster_project) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
@@ -313,9 +314,10 @@ describe Clusters::Cluster do
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter, knative)
       end
     end
   end
@@ -339,6 +341,28 @@ describe Clusters::Cluster do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#allow_user_defined_namespace?' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { cluster.allow_user_defined_namespace? }
+
+    context 'project type cluster' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'group type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'instance type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

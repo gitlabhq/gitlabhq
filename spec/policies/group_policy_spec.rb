@@ -21,7 +21,11 @@ describe GroupPolicy do
 
   let(:maintainer_permissions) do
     [
-      :create_projects
+      :create_projects,
+      :read_cluster,
+      :create_cluster,
+      :update_cluster,
+      :admin_cluster
     ]
   end
 

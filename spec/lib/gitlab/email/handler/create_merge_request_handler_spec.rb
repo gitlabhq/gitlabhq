@@ -93,5 +93,74 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
         end
       end
     end
+
+    context 'when the email contains patch attachments' do
+      let(:email_raw) { fixture_file("emails/valid_merge_request_with_patch.eml") }
+
+      it 'creates the source branch and applies the patches' do
+        receiver.execute
+
+        branch = project.repository.find_branch('new-branch-with-a-patch')
+
+        expect(branch).not_to be_nil
+        expect(branch.dereferenced_target.message).to include('A commit from a patch')
+      end
+
+      it 'creates the merge request' do
+        expect { receiver.execute }
+          .to change { project.merge_requests.where(source_branch: 'new-branch-with-a-patch').size }.by(1)
+      end
+
+      it 'does not mention the patches in the created merge request' do
+        receiver.execute
+
+        merge_request = project.merge_requests.find_by!(source_branch: 'new-branch-with-a-patch')
+
+        expect(merge_request.description).not_to include('0001-A-commit-from-a-patch.patch')
+      end
+
+      context 'when the patch could not be applied' do
+        let(:email_raw) { fixture_file("emails/merge_request_with_conflicting_patch.eml") }
+
+        it 'raises an error' do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidAttachment)
+        end
+      end
+
+      context 'when specifying the target branch using quick actions' do
+        let(:email_raw) { fixture_file('emails/merge_request_with_patch_and_target_branch.eml') }
+
+        it 'creates the merge request with the correct target branch' do
+          receiver.execute
+
+          merge_request = project.merge_requests.find_by!(source_branch: 'new-branch-with-a-patch')
+
+          expect(merge_request.target_branch).to eq('with-codeowners')
+        end
+
+        it 'based the merge request of the target_branch' do
+          receiver.execute
+
+          merge_request = project.merge_requests.find_by!(source_branch: 'new-branch-with-a-patch')
+
+          expect(merge_request.diff_base_commit).to eq(project.repository.commit('with-codeowners'))
+        end
+      end
+    end
+  end
+
+  describe '#patch_attachments' do
+    let(:email_raw) { fixture_file('emails/merge_request_multiple_patches.eml') }
+    let(:mail) { Mail::Message.new(email_raw) }
+    subject(:handler) { described_class.new(mail, mail_key) }
+
+    it 'orders attachments ending in `.patch` by name' do
+      expected_filenames = ["0001-A-commit-from-a-patch.patch",
+                            "0002-This-does-not-apply-to-the-feature-branch.patch"]
+
+      attachments = handler.__send__(:patch_attachments).map(&:filename)
+
+      expect(attachments).to eq(expected_filenames)
+    end
   end
 end

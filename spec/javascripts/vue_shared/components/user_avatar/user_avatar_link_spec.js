@@ -44,7 +44,7 @@ describe('User Avatar Link Component', function() {
     expect(this.userAvatarLink.$el.querySelector('img')).not.toBeNull();
   });
 
-  it('should return neccessary props as defined', function() {
+  it('should return necessary props as defined', function() {
     _.each(this.propsData, (val, key) => {
       expect(this.userAvatarLink[key]).toBeDefined();
     });
@@ -60,39 +60,43 @@ describe('User Avatar Link Component', function() {
     it('should only render image tag in link', function() {
       const childElements = this.userAvatarLink.$el.childNodes;
 
-      expect(childElements[0].tagName).toBe('IMG');
+      expect(this.userAvatarLink.$el.querySelector('img')).not.toBe('null');
 
       // Vue will render the hidden component as <!---->
       expect(childElements[1].tagName).toBeUndefined();
     });
 
     it('should render avatar image tooltip', function() {
-      expect(this.userAvatarLink.$el.querySelector('img').dataset.originalTitle).toEqual(
-        this.propsData.tooltipText,
-      );
+      expect(this.userAvatarLink.shouldShowUsername).toBe(false);
+      expect(this.userAvatarLink.avatarTooltipText).toEqual(this.propsData.tooltipText);
     });
   });
 
   describe('username', function() {
     it('should not render avatar image tooltip', function() {
-      expect(this.userAvatarLink.$el.querySelector('img').dataset.originalTitle).toEqual('');
+      expect(
+        this.userAvatarLink.$el.querySelector('.js-user-avatar-image-toolip').innerText.trim(),
+      ).toEqual('');
     });
 
     it('should render username prop in <span>', function() {
-      expect(this.userAvatarLink.$el.querySelector('span').innerText.trim()).toEqual(
-        this.propsData.username,
-      );
+      expect(
+        this.userAvatarLink.$el.querySelector('.js-user-avatar-link-username').innerText.trim(),
+      ).toEqual(this.propsData.username);
     });
 
     it('should render text tooltip for <span>', function() {
-      expect(this.userAvatarLink.$el.querySelector('span').dataset.originalTitle).toEqual(
-        this.propsData.tooltipText,
-      );
+      expect(
+        this.userAvatarLink.$el.querySelector('.js-user-avatar-link-username').dataset
+          .originalTitle,
+      ).toEqual(this.propsData.tooltipText);
     });
 
     it('should render text tooltip placement for <span>', function() {
       expect(
-        this.userAvatarLink.$el.querySelector('span').getAttribute('tooltip-placement'),
+        this.userAvatarLink.$el
+          .querySelector('.js-user-avatar-link-username')
+          .getAttribute('tooltip-placement'),
       ).toEqual(this.propsData.tooltipPlacement);
     });
   });

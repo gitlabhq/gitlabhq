@@ -57,6 +57,57 @@ describe Notes::CreateService do
       end
     end
 
+    context 'noteable highlight cache clearing' do
+      let(:project_with_repo) { create(:project, :repository) }
+      let(:merge_request) do
+        create(:merge_request, source_project: project_with_repo,
+                               target_project: project_with_repo)
+      end
+
+      let(:position) do
+        Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
+                                   new_path: "files/ruby/popen.rb",
+                                   old_line: nil,
+                                   new_line: 14,
+                                   diff_refs: merge_request.diff_refs)
+      end
+
+      let(:new_opts) do
+        opts.merge(in_reply_to_discussion_id: nil,
+                   type: 'DiffNote',
+                   noteable_type: 'MergeRequest',
+                   noteable_id: merge_request.id,
+                   position: position.to_h)
+      end
+
+      before do
+        allow_any_instance_of(Gitlab::Diff::Position)
+          .to receive(:unfolded_diff?) { true }
+      end
+
+      it 'clears noteable diff cache when it was unfolded for the note position' do
+        expect_any_instance_of(Gitlab::Diff::HighlightCache).to receive(:clear)
+
+        described_class.new(project_with_repo, user, new_opts).execute
+      end
+
+      it 'does not clear cache when note is not the first of the discussion' do
+        prev_note =
+          create(:diff_note_on_merge_request, noteable: merge_request,
+                                              project: project_with_repo)
+        reply_opts =
+          opts.merge(in_reply_to_discussion_id: prev_note.discussion_id,
+                     type: 'DiffNote',
+                     noteable_type: 'MergeRequest',
+                     noteable_id: merge_request.id,
+                     position: position.to_h)
+
+        expect(merge_request).not_to receive(:diffs)
+
+        described_class.new(project_with_repo, user, reply_opts).execute
+      end
+    end
+
     context 'note diff file' do
       let(:project_with_repo) { create(:project, :repository) }
       let(:merge_request) do

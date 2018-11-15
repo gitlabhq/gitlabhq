@@ -88,25 +88,25 @@ export default {
         class="table-section section-10 js-pipeline-status pipeline-status"
         role="rowheader"
       >
-        Status
+        {{ s__('Pipeline|Status') }}
       </div>
       <div
         class="table-section section-15 js-pipeline-info pipeline-info"
         role="rowheader"
       >
-        Pipeline
+        {{ s__('Pipeline|Pipeline') }}
       </div>
       <div
         class="table-section section-20 js-pipeline-commit pipeline-commit"
         role="rowheader"
       >
-        Commit
+        {{ s__('Pipeline|Commit') }}
       </div>
       <div
         class="table-section section-20 js-pipeline-stages pipeline-stages"
         role="rowheader"
       >
-        Stages
+        {{ s__('Pipeline|Stages') }}
       </div>
     </div>
     <pipelines-table-row-component

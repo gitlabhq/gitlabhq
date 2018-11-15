@@ -1,5 +1,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
 import Flash from '../../flash';
 import store from '../stores';
 import collapsibleContainer from './collapsible_container.vue';
@@ -9,6 +10,7 @@ export default {
   name: 'RegistryListApp',
   components: {
     collapsibleContainer,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {

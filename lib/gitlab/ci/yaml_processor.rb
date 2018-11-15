@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class YamlProcessor
@@ -50,6 +52,8 @@ module Gitlab
             after_script: job[:after_script],
             environment: job[:environment],
             retry: job[:retry],
+            parallel: job[:parallel],
+            instance: job[:instance],
             start_in: job[:start_in]
           }.compact }
       end
@@ -102,7 +106,7 @@ module Gitlab
         ##
         # Jobs
         #
-        @jobs = @ci_config.jobs
+        @jobs = Ci::Config::Normalizer.new(@ci_config.jobs).normalize_jobs
 
         @jobs.each do |name, job|
           # logical validation for job

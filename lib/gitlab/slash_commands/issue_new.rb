@@ -3,7 +3,7 @@ module Gitlab
     class IssueNew < IssueCommand
       def self.match(text)
         # we can not match \n with the dot by passing the m modifier as than
-        # the title and description are not seperated
+        # the title and description are not separated
         /\Aissue\s+(new|create)\s+(?<title>[^\n]*)\n*(?<description>(.|\n)*)/.match(text)
       end
 

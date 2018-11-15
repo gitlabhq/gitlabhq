@@ -3,7 +3,7 @@
 We manage our own Icon and Illustration library in the [gitlab-svgs][gitlab-svgs] repository.
 This repository is published on [npm][npm] and managed as a dependency via yarn.
 You can browse all available Icons and Illustrations [here][svg-preview].
-To upgrade to a new version run `yarn upgrade @gitlab-org/gitlab-svgs`.
+To upgrade to a new version run `yarn upgrade @gitlab/svgs`.
 
 ## Icons
 
@@ -111,6 +111,6 @@ export default {
 </template>
 ```
 
-[npm]: https://www.npmjs.com/package/@gitlab-org/gitlab-svgs
+[npm]: https://www.npmjs.com/package/@gitlab/svgs
 [gitlab-svgs]: https://gitlab.com/gitlab-org/gitlab-svgs
 [svg-preview]: https://gitlab-org.gitlab.io/gitlab-svgs

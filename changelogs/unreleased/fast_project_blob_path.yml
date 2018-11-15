@@ -1,0 +1,5 @@
+---
+title: Improve performance of tree rendering in repositories with lots of items
+merge_request:
+author:
+type: performance

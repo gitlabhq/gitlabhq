@@ -1,202 +1,200 @@
 <script>
-  import projectFeatureSetting from './project_feature_setting.vue';
-  import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
-  import projectSettingRow from './project_setting_row.vue';
-  import { visibilityOptions, visibilityLevelDescriptions } from '../constants';
-  import { toggleHiddenClassBySelector } from '../external';
+import projectFeatureSetting from './project_feature_setting.vue';
+import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
+import projectSettingRow from './project_setting_row.vue';
+import { visibilityOptions, visibilityLevelDescriptions } from '../constants';
+import { toggleHiddenClassBySelector } from '../external';
 
-  export default {
-    components: {
-      projectFeatureSetting,
-      projectFeatureToggle,
-      projectSettingRow,
+export default {
+  components: {
+    projectFeatureSetting,
+    projectFeatureToggle,
+    projectSettingRow,
+  },
+
+  props: {
+    currentSettings: {
+      type: Object,
+      required: true,
+    },
+    canChangeVisibilityLevel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    allowedVisibilityOptions: {
+      type: Array,
+      required: false,
+      default: () => [0, 10, 20],
+    },
+    lfsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    registryAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    visibilityHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    lfsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    registryHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    pagesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pagesAccessControlEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    pagesHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+
+  data() {
+    const defaults = {
+      visibilityOptions,
+      visibilityLevel: visibilityOptions.PUBLIC,
+      issuesAccessLevel: 20,
+      repositoryAccessLevel: 20,
+      mergeRequestsAccessLevel: 20,
+      buildsAccessLevel: 20,
+      wikiAccessLevel: 20,
+      snippetsAccessLevel: 20,
+      pagesAccessLevel: 20,
+      containerRegistryEnabled: true,
+      lfsEnabled: true,
+      requestAccessEnabled: true,
+      highlightChangesClass: false,
+    };
+
+    return { ...defaults, ...this.currentSettings };
+  },
+
+  computed: {
+    featureAccessLevelOptions() {
+      const options = [[10, 'Only Project Members']];
+      if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
+        options.push([20, 'Everyone With Access']);
+      }
+      return options;
     },
 
-    props: {
-      currentSettings: {
-        type: Object,
-        required: true,
-      },
-      canChangeVisibilityLevel: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      allowedVisibilityOptions: {
-        type: Array,
-        required: false,
-        default: () => [0, 10, 20],
-      },
-      lfsAvailable: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      registryAvailable: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      visibilityHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      lfsHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      registryHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      pagesAvailable: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      pagesAccessControlEnabled: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      pagesHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    repoFeatureAccessLevelOptions() {
+      return this.featureAccessLevelOptions.filter(
+        ([value]) => value <= this.repositoryAccessLevel,
+      );
     },
 
-    data() {
-      const defaults = {
-        visibilityOptions,
-        visibilityLevel: visibilityOptions.PUBLIC,
-        issuesAccessLevel: 20,
-        repositoryAccessLevel: 20,
-        mergeRequestsAccessLevel: 20,
-        buildsAccessLevel: 20,
-        wikiAccessLevel: 20,
-        snippetsAccessLevel: 20,
-        pagesAccessLevel: 20,
-        containerRegistryEnabled: true,
-        lfsEnabled: true,
-        requestAccessEnabled: true,
-        highlightChangesClass: false,
-      };
-
-      return { ...defaults, ...this.currentSettings };
+    pagesFeatureAccessLevelOptions() {
+      if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
+        return this.featureAccessLevelOptions.concat([[30, 'Everyone']]);
+      }
+      return this.featureAccessLevelOptions;
     },
 
-    computed: {
-      featureAccessLevelOptions() {
-        const options = [
-          [10, 'Only Project Members'],
-        ];
-        if (this.visibilityLevel !== visibilityOptions.PRIVATE) {
-          options.push([20, 'Everyone With Access']);
+    repositoryEnabled() {
+      return this.repositoryAccessLevel > 0;
+    },
+
+    visibilityLevelDescription() {
+      return visibilityLevelDescriptions[this.visibilityLevel];
+    },
+  },
+
+  watch: {
+    visibilityLevel(value, oldValue) {
+      if (value === visibilityOptions.PRIVATE) {
+        // when private, features are restricted to "only team members"
+        this.issuesAccessLevel = Math.min(10, this.issuesAccessLevel);
+        this.repositoryAccessLevel = Math.min(10, this.repositoryAccessLevel);
+        this.mergeRequestsAccessLevel = Math.min(10, this.mergeRequestsAccessLevel);
+        this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
+        this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
+        this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
+        if (this.pagesAccessLevel === 20) {
+          // When from Internal->Private narrow access for only members
+          this.pagesAccessLevel = 10;
         }
-        return options;
-      },
-
-      repoFeatureAccessLevelOptions() {
-        return this.featureAccessLevelOptions.filter(
-          ([value]) => value <= this.repositoryAccessLevel,
-        );
-      },
-
-      pagesFeatureAccessLevelOptions() {
-        if (this.visibilityLevel !== visibilityOptions.PUBLIC) {
-          return this.featureAccessLevelOptions.concat([[30, 'Everyone']]);
-        }
-        return this.featureAccessLevelOptions;
-      },
-
-      repositoryEnabled() {
-        return this.repositoryAccessLevel > 0;
-      },
-
-      visibilityLevelDescription() {
-        return visibilityLevelDescriptions[this.visibilityLevel];
-      },
+        this.highlightChanges();
+      } else if (oldValue === visibilityOptions.PRIVATE) {
+        // if changing away from private, make enabled features more permissive
+        if (this.issuesAccessLevel > 0) this.issuesAccessLevel = 20;
+        if (this.repositoryAccessLevel > 0) this.repositoryAccessLevel = 20;
+        if (this.mergeRequestsAccessLevel > 0) this.mergeRequestsAccessLevel = 20;
+        if (this.buildsAccessLevel > 0) this.buildsAccessLevel = 20;
+        if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
+        if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
+        if (this.pagesAccessLevel === 10) this.pagesAccessLevel = 20;
+        this.highlightChanges();
+      }
     },
 
-    watch: {
-      visibilityLevel(value, oldValue) {
-        if (value === visibilityOptions.PRIVATE) {
-          // when private, features are restricted to "only team members"
-          this.issuesAccessLevel = Math.min(10, this.issuesAccessLevel);
-          this.repositoryAccessLevel = Math.min(10, this.repositoryAccessLevel);
-          this.mergeRequestsAccessLevel = Math.min(10, this.mergeRequestsAccessLevel);
-          this.buildsAccessLevel = Math.min(10, this.buildsAccessLevel);
-          this.wikiAccessLevel = Math.min(10, this.wikiAccessLevel);
-          this.snippetsAccessLevel = Math.min(10, this.snippetsAccessLevel);
-          if (this.pagesAccessLevel === 20) {
-            // When from Internal->Private narrow access for only members
-            this.pagesAccessLevel = 10;
-          }
-          this.highlightChanges();
-        } else if (oldValue === visibilityOptions.PRIVATE) {
-          // if changing away from private, make enabled features more permissive
-          if (this.issuesAccessLevel > 0) this.issuesAccessLevel = 20;
-          if (this.repositoryAccessLevel > 0) this.repositoryAccessLevel = 20;
-          if (this.mergeRequestsAccessLevel > 0) this.mergeRequestsAccessLevel = 20;
-          if (this.buildsAccessLevel > 0) this.buildsAccessLevel = 20;
-          if (this.wikiAccessLevel > 0) this.wikiAccessLevel = 20;
-          if (this.snippetsAccessLevel > 0) this.snippetsAccessLevel = 20;
-          if (this.pagesAccessLevel === 10) this.pagesAccessLevel = 20;
-          this.highlightChanges();
+    repositoryAccessLevel(value, oldValue) {
+      if (value < oldValue) {
+        // sub-features cannot have more premissive access level
+        this.mergeRequestsAccessLevel = Math.min(this.mergeRequestsAccessLevel, value);
+        this.buildsAccessLevel = Math.min(this.buildsAccessLevel, value);
+
+        if (value === 0) {
+          this.containerRegistryEnabled = false;
+          this.lfsEnabled = false;
         }
-      },
-
-      repositoryAccessLevel(value, oldValue) {
-        if (value < oldValue) {
-          // sub-features cannot have more premissive access level
-          this.mergeRequestsAccessLevel = Math.min(this.mergeRequestsAccessLevel, value);
-          this.buildsAccessLevel = Math.min(this.buildsAccessLevel, value);
-
-          if (value === 0) {
-            this.containerRegistryEnabled = false;
-            this.lfsEnabled = false;
-          }
-        } else if (oldValue === 0) {
-          this.mergeRequestsAccessLevel = value;
-          this.buildsAccessLevel = value;
-          this.containerRegistryEnabled = true;
-          this.lfsEnabled = true;
-        }
-      },
-
-      issuesAccessLevel(value, oldValue) {
-        if (value === 0) toggleHiddenClassBySelector('.issues-feature', true);
-        else if (oldValue === 0) toggleHiddenClassBySelector('.issues-feature', false);
-      },
-
-      mergeRequestsAccessLevel(value, oldValue) {
-        if (value === 0) toggleHiddenClassBySelector('.merge-requests-feature', true);
-        else if (oldValue === 0) toggleHiddenClassBySelector('.merge-requests-feature', false);
-      },
-
-      buildsAccessLevel(value, oldValue) {
-        if (value === 0) toggleHiddenClassBySelector('.builds-feature', true);
-        else if (oldValue === 0) toggleHiddenClassBySelector('.builds-feature', false);
-      },
+      } else if (oldValue === 0) {
+        this.mergeRequestsAccessLevel = value;
+        this.buildsAccessLevel = value;
+        this.containerRegistryEnabled = true;
+        this.lfsEnabled = true;
+      }
     },
 
-    methods: {
-      highlightChanges() {
-        this.highlightChangesClass = true;
-        this.$nextTick(() => {
-          this.highlightChangesClass = false;
-        });
-      },
-
-      visibilityAllowed(option) {
-        return this.allowedVisibilityOptions.includes(option);
-      },
+    issuesAccessLevel(value, oldValue) {
+      if (value === 0) toggleHiddenClassBySelector('.issues-feature', true);
+      else if (oldValue === 0) toggleHiddenClassBySelector('.issues-feature', false);
     },
-  };
+
+    mergeRequestsAccessLevel(value, oldValue) {
+      if (value === 0) toggleHiddenClassBySelector('.merge-requests-feature', true);
+      else if (oldValue === 0) toggleHiddenClassBySelector('.merge-requests-feature', false);
+    },
+
+    buildsAccessLevel(value, oldValue) {
+      if (value === 0) toggleHiddenClassBySelector('.builds-feature', true);
+      else if (oldValue === 0) toggleHiddenClassBySelector('.builds-feature', false);
+    },
+  },
+
+  methods: {
+    highlightChanges() {
+      this.highlightChangesClass = true;
+      this.$nextTick(() => {
+        this.highlightChangesClass = false;
+      });
+    },
+
+    visibilityAllowed(option) {
+      return this.allowedVisibilityOptions.includes(option);
+    },
+  },
+};
 </script>
 
 <template>

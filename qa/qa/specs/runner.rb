@@ -25,6 +25,10 @@ module QA
 
         args.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
 
+        QA::Runtime::Env.supported_features.each_key do |key|
+          args.push(["--tag", "~requires_#{key}"]) unless QA::Runtime::Env.can_test? key
+        end
+
         args.push(options)
         args.push(DEFAULT_TEST_PATH_ARGS) unless options.any? { |opt| opt =~ %r{/features/} }
 

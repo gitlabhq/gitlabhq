@@ -1,13 +1,13 @@
 <script>
-import tooltip from '../../directives/tooltip';
-import icon from '../icon.vue';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import Icon from '../icon.vue';
 
 export default {
   components: {
-    icon,
+    Icon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     buttonTitle: {
@@ -43,7 +43,7 @@ export default {
 
 <template>
   <button
-    v-tooltip
+    v-gl-tooltip
     :data-md-tag="tag"
     :data-md-select="tagSelect"
     :data-md-block="tagBlock"

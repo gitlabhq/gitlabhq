@@ -454,14 +454,10 @@ describe('mrWidgetOptions', () => {
       deployed_at: '2017-03-22T22:44:42.258Z',
       deployed_at_formatted: 'Mar 22, 2017 10:44pm',
       changes,
-      status: 'success'
+      status: 'success',
     };
 
     beforeEach(done => {
-      window.gon = window.gon || {};
-      window.gon.features = window.gon.features || {};
-      window.gon.features.ciEnvironmentsStatusChanges = true;
-
       vm.mr.deployments.push(
         {
           ...deploymentMockData,
@@ -607,33 +603,36 @@ describe('mrWidgetOptions', () => {
 
       describe('with post merge deployments', () => {
         beforeEach(done => {
-          vm.mr.postMergeDeployments = [{
-            id: 15,
-            name: 'review/diplo',
-            url: '/root/acets-review-apps/environments/15',
-            stop_url: '/root/acets-review-apps/environments/15/stop',
-            metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
-            metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
-            external_url: 'http://diplo.',
-            external_url_formatted: 'diplo.',
-            deployed_at: '2017-03-22T22:44:42.258Z',
-            deployed_at_formatted: 'Mar 22, 2017 10:44pm',
-            changes: [
-              {
-                path: 'index.html',
-                external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
-              },
-              {
-                path: 'imgs/gallery.html',
-                external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
-              },
-              {
-                path: 'about/',
-                external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
-              },
-            ],
-            status: 'success'
-          }];
+          vm.mr.postMergeDeployments = [
+            {
+              id: 15,
+              name: 'review/diplo',
+              url: '/root/acets-review-apps/environments/15',
+              stop_url: '/root/acets-review-apps/environments/15/stop',
+              metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+              metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+              external_url: 'http://diplo.',
+              external_url_formatted: 'diplo.',
+              deployed_at: '2017-03-22T22:44:42.258Z',
+              deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+              changes: [
+                {
+                  path: 'index.html',
+                  external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+                },
+                {
+                  path: 'imgs/gallery.html',
+                  external_url:
+                    'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+                },
+                {
+                  path: 'about/',
+                  external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+                },
+              ],
+              status: 'success',
+            },
+          ];
 
           vm.$nextTick(done);
         });

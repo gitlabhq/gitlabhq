@@ -14,8 +14,10 @@ module Clusters
         else
           check_timeout
         end
-      rescue Kubeclient::HttpError
-        app.make_errored!("Kubernetes error") unless app.errored?
+      rescue Kubeclient::HttpError => e
+        Rails.logger.error("Kubernetes error: #{e.error_code} #{e.message}")
+        Gitlab::Sentry.track_acceptable_exception(e, extra: { scope: 'kubernetes', app_id: app.id })
+        app.make_errored!("Kubernetes error: #{e.error_code}") unless app.errored?
       end
 
       private
@@ -51,7 +53,8 @@ module Clusters
 
       def remove_installation_pod
         helm_api.delete_pod!(install_command.pod_name)
-      rescue
+      rescue => e
+        Rails.logger.error("Kubernetes error: #{e.class.name} #{e.message}")
         # no-op
       end
 

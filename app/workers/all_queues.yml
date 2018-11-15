@@ -28,6 +28,7 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
+- gcp_cluster:cluster_platform_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -71,6 +72,8 @@
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
 - pipeline_processing:ci_build_schedule
+
+- deployment:deployments_success
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_batch
