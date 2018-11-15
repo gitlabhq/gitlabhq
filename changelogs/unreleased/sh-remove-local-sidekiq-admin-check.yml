@@ -1,0 +1,5 @@
+---
+title: Remove display of local Sidekiq process in /admin/sidekiq
+merge_request: 23118
+author:
+type: fixed
