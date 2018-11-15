@@ -615,6 +615,9 @@ msgstr ""
 msgid "An error occurred creating the new branch."
 msgstr ""
 
+msgid "An error occurred fetching the dropdown data."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 

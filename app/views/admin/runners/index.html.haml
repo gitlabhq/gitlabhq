@@ -108,7 +108,8 @@
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value
-                    {{title}}
+                    %span.dropdown-light-content
+                      {{name}}
 
             = button_tag class: %w[clear-search hidden] do
               = icon('times')

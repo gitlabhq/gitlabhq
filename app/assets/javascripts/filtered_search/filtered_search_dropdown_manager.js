@@ -7,6 +7,7 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
+import DropdownAjaxFilter from './dropdown_ajax_filter';
 import NullDropdown from './null_dropdown';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
@@ -113,7 +114,7 @@ export default class FilteredSearchDropdownManager {
       },
       tag: {
         reference: null,
-        gl: DropdownNonUser,
+        gl: DropdownAjaxFilter,
         extraArguments: {
           endpoint: this.getRunnerTagsEndpoint(),
           symbol: '~',

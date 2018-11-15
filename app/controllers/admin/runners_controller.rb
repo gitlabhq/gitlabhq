@@ -49,7 +49,9 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def tag_list
-    render json: AutocompleteTagsService.new(Ci::Runner).run
+    tags = Autocomplete::ActsAsTaggableOn::TagsFinder.new(taggable_type: Ci::Runner, params: params).execute
+
+    render json: ActsAsTaggableOn::TagSerializer.new.represent(tags)
   end
 
   private
