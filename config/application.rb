@@ -158,6 +158,9 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
+    # Nokogiri is significantly faster and uses less memory than REXML
+    ActiveSupport::XmlMini.backend = 'Nokogiri'
+
     # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
     # connect to the database.
     config.middleware.insert_after Rails::Rack::Logger, ::Gitlab::Middleware::BasicHealthCheck
