@@ -1,0 +1,5 @@
+---
+title: Extract into Gitlab::Prometheus::QueryVariables
+merge_request: 23335
+author:
+type: other
