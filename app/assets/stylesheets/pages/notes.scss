@@ -14,7 +14,7 @@ $note-form-margin-left: 72px;
 }
 
 @mixin outline-comment() {
-  margin: $gl-padding;
+  margin: $gl-padding $gl-padding 0;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -525,10 +525,6 @@ $note-form-margin-left: 72px;
 
   .notes_content {
     background-color: $white-light;
-  }
-
-  .discussion-reply-holder {
-    border-top: 1px solid $border-color;
   }
 }
 
