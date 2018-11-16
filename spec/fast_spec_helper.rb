@@ -9,3 +9,4 @@ require 'active_support/all'
 
 ActiveSupport::Dependencies.autoload_paths << 'lib'
 ActiveSupport::Dependencies.autoload_paths << 'ee/lib'
+ActiveSupport::XmlMini.backend = 'Nokogiri'
