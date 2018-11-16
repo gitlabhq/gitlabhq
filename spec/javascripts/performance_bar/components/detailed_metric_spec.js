@@ -67,7 +67,7 @@ describe('detailedMetric', () => {
       vm.$el
         .querySelectorAll('.performance-bar-modal td:nth-child(3)')
         .forEach((request, index) => {
-          expect(request.innerText).toContain(requestDetails[index].request);
+          expect(request.innerText).toEqual(requestDetails[index].request);
         });
     });
 
