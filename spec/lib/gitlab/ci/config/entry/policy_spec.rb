@@ -58,7 +58,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
   end
 
   context 'when using complex policy' do
-    context 'when specifiying refs policy' do
+    context 'when specifying refs policy' do
       let(:config) { { refs: ['master'] } }
 
       it 'is a correct configuraton' do
