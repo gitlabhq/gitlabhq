@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab-org/gitlab-ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   name: 'PipelinesEmptyState',

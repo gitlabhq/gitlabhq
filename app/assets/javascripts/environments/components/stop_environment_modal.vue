@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';

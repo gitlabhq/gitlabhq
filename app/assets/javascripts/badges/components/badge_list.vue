@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import BadgeListRow from './badge_list_row.vue';
 import { GROUP_BADGE } from '../constants';
 

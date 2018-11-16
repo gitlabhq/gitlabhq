@@ -1,6 +1,6 @@
 <script>
 import { calculateRemainingMilliseconds, formatTime } from '~/lib/utils/datetime_utility';
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 
 /**
  * Counts down to a given end date.

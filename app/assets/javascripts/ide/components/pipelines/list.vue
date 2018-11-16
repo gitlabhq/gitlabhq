@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, __ } from '../../../locale';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';

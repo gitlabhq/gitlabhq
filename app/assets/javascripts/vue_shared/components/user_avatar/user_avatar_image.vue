@@ -15,7 +15,7 @@
 
 */
 
-import { GlTooltip } from '@gitlab-org/gitlab-ui';
+import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
 

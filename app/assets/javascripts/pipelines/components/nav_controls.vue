@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlButton } from '@gitlab/ui';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {

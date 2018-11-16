@@ -1,6 +1,6 @@
 <script>
 import dateFormat from 'dateformat';
-import { GlTooltip } from '@gitlab-org/gitlab-ui';
+import { GlTooltip } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import { getDayDifference, getTimeago, dateInWords } from '~/lib/utils/datetime_utility';

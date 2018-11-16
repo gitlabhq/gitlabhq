@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   name: 'NoteActions',

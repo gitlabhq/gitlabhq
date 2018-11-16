@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import CiIconBadge from './ci_badge_link.vue';
 import TimeagoTooltip from './time_ago_tooltip.vue';
 import UserAvatarImage from './user_avatar/user_avatar_image.vue';

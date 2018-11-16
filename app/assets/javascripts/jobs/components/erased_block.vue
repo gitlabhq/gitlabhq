@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab/ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {

@@ -2,7 +2,7 @@
 import { __, n__, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   directives: {

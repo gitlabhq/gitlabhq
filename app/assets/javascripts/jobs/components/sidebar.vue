@@ -1,7 +1,7 @@
 <script>
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
-import { GlLink, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlButton } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';

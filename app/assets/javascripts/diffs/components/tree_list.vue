@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
