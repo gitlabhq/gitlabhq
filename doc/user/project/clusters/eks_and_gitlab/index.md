@@ -12,11 +12,7 @@ In this tutorial, we will show how to integrate an
 [Amazon EKS](https://aws.amazon.com/eks/) cluster with GitLab and begin
 deploying applications.
 
-<<<<<<< HEAD
-In this tutorial, we will show how easy it is to integrate an [Amazon EKS](https://aws.amazon.com/eks/) cluster with GitLab, and begin deploying applications.
-=======
 ## Introduction
->>>>>>> 3d9049ecff8... Merge branch 'docs-eks-update' into 'master'
 
 For an end-to-end walkthrough we will:
 
@@ -26,15 +22,9 @@ For an end-to-end walkthrough we will:
 
 You will need:
 
-<<<<<<< HEAD
-1. An account on GitLab, like [GitLab.com](https://gitlab.com)
-1. An Amazon EKS cluster
-1. `kubectl` [installed and configured for access to the EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl)
-=======
 1. An account on GitLab, like [GitLab.com](https://gitlab.com).
 1. An Amazon EKS cluster (with worker nodes properly configured).
 1. `kubectl` [installed and configured for access to the EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl).
->>>>>>> 3d9049ecff8... Merge branch 'docs-eks-update' into 'master'
 
 If you don't have an Amazon EKS cluster, one can be created by following the
 [EKS getting started guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html).
@@ -58,13 +48,6 @@ then click **Add an existing Kubernetes cluster**.
 
 A few details from the EKS cluster will be required to connect it to GitLab:
 
-<<<<<<< HEAD
-1. A valid Kubernetes certificate and token are needed to authenticate to the EKS cluster. A pair is created by default, which can be used. Open a shell and use `kubectl` to retrieve them:
-   * List the secrets with `kubectl get secrets`, and one should named similar to `default-token-xxxxx`. Copy that token name for use below.
-   * Get the certificate with `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`
-   * Retrieve the token with `kubectl get secret <secret name> -o jsonpath="{['data']['token']}" | base64 -D`.
-1. The API server endpoint is also required, so GitLab can connect to the cluster. This is displayed on the AWS EKS console, when viewing the EKS cluster details.
-=======
 1.  **Retrieve the certificate**: A valid Kubernetes certificate is needed to
     authenticate to the EKS cluster. We will use the certificate created by default.
     Open a shell and use `kubectl` to retrieve it:
@@ -159,7 +142,6 @@ A few details from the EKS cluster will be required to connect it to GitLab:
 
 1. The API server endpoint is also required, so GitLab can connect to the cluster.
    This is displayed on the AWS EKS console, when viewing the EKS cluster details.
->>>>>>> 3d9049ecff8... Merge branch 'docs-eks-update' into 'master'
 
 You now have all the information needed to connect the EKS cluster:
 
@@ -178,9 +160,6 @@ automatically be available during CI/CD jobs, making it easy to interact with th
 
 If you would like to utilize your own CI/CD scripts to deploy to the cluster, you can stop here.
 
-<<<<<<< HEAD
-## Disable Role-Based Access Control (RBAC)
-=======
 ## Disable Role-Based Access Control (RBAC) (optional)
 
 When connecting a cluster via GitLab integration, you may specify whether the
@@ -189,7 +168,6 @@ cluster for certain operations. If you **did not** check the "RBAC-enabled clust
 checkbox at creation time, GitLab will assume RBAC is disabled for your cluster
 when interacting with it. If so, you must disable RBAC on your cluster for the
 integration to work properly.
->>>>>>> 3d9049ecff8... Merge branch 'docs-eks-update' into 'master'
 
 Presently, Auto DevOps and one-click app installs do not support [Kubernetes role-based access control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/). Support is [being worked on](https://gitlab.com/groups/gitlab-org/-/epics/136), but in the interim RBAC must be disabled to utilize for these features.
 
