@@ -3,7 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
-import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import { trimFirstCharOfLineContent, getDiffMode } from '~/diffs/store/utils';
 
 export default {

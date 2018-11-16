@@ -13,7 +13,7 @@
  */
 
 import $ from 'jquery';
-import { GlLoadingIcon, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';

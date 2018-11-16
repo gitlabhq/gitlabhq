@@ -1,6 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Flash from '../../flash';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import tooltip from '../../vue_shared/directives/tooltip';

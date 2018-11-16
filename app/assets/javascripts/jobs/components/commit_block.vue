@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {

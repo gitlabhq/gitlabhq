@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';

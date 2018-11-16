@@ -1,7 +1,7 @@
 <script>
 import Timeago from 'timeago.js';
 import _ from 'underscore';
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { humanize } from '~/lib/utils/text_utility';
 import Icon from '~/vue_shared/components/icon.vue';

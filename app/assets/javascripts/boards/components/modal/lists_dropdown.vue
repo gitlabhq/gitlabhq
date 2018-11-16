@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import ModalStore from '../../stores/modal_store';
 import boardsStore from '../../stores/boards_store';

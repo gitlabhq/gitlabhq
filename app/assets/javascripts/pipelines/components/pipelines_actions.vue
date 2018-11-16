@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../event_hub';

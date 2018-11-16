@@ -4,7 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
 

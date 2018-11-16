@@ -12,7 +12,7 @@
  *    css-class="btn-transparent"
  * />
  */
-import { GlButton, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Icon from '../components/icon.vue';
 
 export default {
