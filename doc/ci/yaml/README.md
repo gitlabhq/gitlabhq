@@ -476,6 +476,7 @@ docker build:
       - Dockerfile
       - docker/scripts/*
       - dockerfiles/**/*
+      - more_scripts/*.{rb,py,sh}
 ```
 
 In the scenario above, if you are pushing multiple commits to GitLab to an
@@ -485,6 +486,7 @@ one of the commits contains changes to either:
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
 - Any of the files and subfolders inside `dockerfiles` directory.
+- Any of the files with `rb`, `py`, `sh` extensions inside `more_scripts` directory.
 
 CAUTION: **Warning:**
 There are some caveats when using this feature with new branches and tags. See
