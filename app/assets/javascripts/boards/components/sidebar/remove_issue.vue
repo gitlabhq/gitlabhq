@@ -74,14 +74,8 @@ export default Vue.extend({
 });
 </script>
 <template>
-  <div
-    class="block list"
-  >
-    <button
-      class="btn btn-default btn-block"
-      type="button"
-      @click="removeIssue"
-    >
+  <div class="block list">
+    <button class="btn btn-default btn-block" type="button" @click="removeIssue">
       Remove from board
     </button>
   </div>

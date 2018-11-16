@@ -61,11 +61,7 @@ export default {
 <template>
   <div class="container-image">
     <div class="container-image-head">
-      <button
-        type="button"
-        class="js-toggle-repo btn-link"
-        @click="toggleRepo"
-      >
+      <button type="button" class="js-toggle-repo btn-link" @click="toggleRepo">
         <i
           :class="{
             'fa-chevron-right': !isOpen,
@@ -95,36 +91,18 @@ export default {
           class="js-remove-repo btn btn-danger"
           @click="handleDeleteRepository"
         >
-          <i
-            class="fa fa-trash"
-            aria-hidden="true"
-          >
-          </i>
+          <i class="fa fa-trash" aria-hidden="true"> </i>
         </button>
       </div>
     </div>
 
-    <gl-loading-icon
-      v-if="repo.isLoading"
-      :size="2"
-      class="append-bottom-20"
-    />
+    <gl-loading-icon v-if="repo.isLoading" :size="2" class="append-bottom-20" />
 
-    <div
-      v-else-if="!repo.isLoading && isOpen"
-      class="container-image-tags"
-    >
+    <div v-else-if="!repo.isLoading && isOpen" class="container-image-tags">
+      <table-registry v-if="repo.list.length" :repo="repo" />
 
-      <table-registry
-        v-if="repo.list.length"
-        :repo="repo"
-      />
-
-      <div
-        v-else
-        class="nothing-here-block"
-      >
-        {{ s__("ContainerRegistry|No tags in Container Registry for this container image.") }}
+      <div v-else class="nothing-here-block">
+        {{ s__('ContainerRegistry|No tags in Container Registry for this container image.') }}
       </div>
     </div>
   </div>

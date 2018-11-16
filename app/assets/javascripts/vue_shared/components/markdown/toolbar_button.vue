@@ -55,8 +55,6 @@ export default {
     tabindex="-1"
     data-container="body"
   >
-    <icon
-      :name="icon"
-    />
+    <icon :name="icon" />
   </button>
 </template>

@@ -79,14 +79,15 @@ export default {
     :class="{
       'user-can-drag': !disabled && issue.id,
       'is-disabled': disabled || !issue.id,
-      'is-active': issueDetailVisible
+      'is-active': issueDetailVisible,
     }"
     :index="index"
     :data-issue-id="issue.id"
     class="board-card"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
-    @mouseup="showIssue($event)">
+    @mouseup="showIssue($event);"
+  >
     <issue-card-inner
       :list="list"
       :issue="issue"

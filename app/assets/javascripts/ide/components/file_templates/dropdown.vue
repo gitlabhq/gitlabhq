@@ -75,48 +75,23 @@ export default {
 
 <template>
   <div class="dropdown">
-    <dropdown-button
-      :toggle-text="label"
-      data-display="static"
-    />
+    <dropdown-button :toggle-text="label" data-display="static" />
     <div class="dropdown-menu pb-0">
-      <div
-        v-if="title"
-        class="dropdown-title ml-0 mr-0"
-      >
-        {{ title }}
-      </div>
-      <div
-        v-if="!showLoading && searchable"
-        class="dropdown-input"
-      >
+      <div v-if="title" class="dropdown-title ml-0 mr-0">{{ title }}</div>
+      <div v-if="!showLoading && searchable" class="dropdown-input">
         <input
           v-model="search"
           :placeholder="__('Filter...')"
           type="search"
           class="dropdown-input-field qa-dropdown-filter-input"
         />
-        <i
-          aria-hidden="true"
-          class="fa fa-search dropdown-input-search"
-        ></i>
+        <i aria-hidden="true" class="fa fa-search dropdown-input-search"></i>
       </div>
       <div class="dropdown-content">
-        <gl-loading-icon
-          v-if="showLoading"
-          :size="2"
-        />
+        <gl-loading-icon v-if="showLoading" :size="2" />
         <ul v-else>
-          <li
-            v-for="(item, index) in outputData"
-            :key="index"
-          >
-            <button
-              type="button"
-              @click="clickItem(item)"
-            >
-              {{ item.name }}
-            </button>
+          <li v-for="(item, index) in outputData" :key="index">
+            <button type="button" @click="clickItem(item);">{{ item.name }}</button>
           </li>
         </ul>
       </div>

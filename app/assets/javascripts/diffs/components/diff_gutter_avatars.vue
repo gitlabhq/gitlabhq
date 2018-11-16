@@ -75,10 +75,7 @@ export default {
       class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
       @click="toggleDiscussions"
     >
-      <icon
-        :size="12"
-        name="collapse"
-      />
+      <icon :size="12" name="collapse" />
     </button>
     <template v-else>
       <user-avatar-image
@@ -99,7 +96,8 @@ export default {
         data-placement="top"
         role="button"
         @click="toggleDiscussions"
-      >+{{ moreCount }}</span>
+        >+{{ moreCount }}</span
+      >
     </template>
   </div>
 </template>

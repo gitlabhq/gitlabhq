@@ -75,12 +75,8 @@ export default {
       <template v-if="isTraceSizeVisible">
         {{ jobLogSize }}
 
-        <gl-link
-          v-if="rawPath"
-          :href="rawPath"
-          class="js-raw-link raw-link"
-        >
-          {{ s__("Job|Complete Raw") }}
+        <gl-link v-if="rawPath" :href="rawPath" class="js-raw-link raw-link">
+          {{ s__('Job|Complete Raw') }}
         </gl-link>
       </template>
     </div>
@@ -112,11 +108,7 @@ export default {
       <!-- eo links -->
 
       <!-- scroll buttons -->
-      <div
-        v-gl-tooltip
-        :title="s__('Job|Scroll to top')"
-        class="controllers-buttons"
-      >
+      <div v-gl-tooltip :title="s__('Job|Scroll to top')" class="controllers-buttons">
         <gl-button
           :disabled="isScrollTopDisabled"
           type="button"
@@ -127,11 +119,7 @@ export default {
         </gl-button>
       </div>
 
-      <div
-        v-gl-tooltip
-        :title="s__('Job|Scroll to bottom')"
-        class="controllers-buttons"
-      >
+      <div v-gl-tooltip :title="s__('Job|Scroll to bottom')" class="controllers-buttons">
         <gl-button
           :disabled="isScrollBottomDisabled"
           class="js-scroll-bottom btn-scroll btn-transparent btn-blank"

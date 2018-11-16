@@ -15,15 +15,9 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-nav-form p-0"
-  >
-    <tabs
-      stop-propagation
-    >
-      <tab
-        active
-      >
+  <div class="ide-nav-form p-0">
+    <tabs stop-propagation>
+      <tab active>
         <template slot="title">
           {{ __('Merge Requests') }}
         </template>

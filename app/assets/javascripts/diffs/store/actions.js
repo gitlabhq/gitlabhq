@@ -41,12 +41,14 @@ export const assignDiscussionsToDiff = (
 ) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
 
-  discussions.filter(discussion => discussion.diff_discussion).forEach(discussion => {
-    commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-      discussion,
-      diffPositionByLineCode,
+  discussions
+    .filter(discussion => discussion.diff_discussion)
+    .forEach(discussion => {
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        discussion,
+        diffPositionByLineCode,
+      });
     });
-  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {

@@ -87,9 +87,7 @@ Please update your Git repository remotes as soon as possible.`),
       <label :for="$options.inputId">{{ s__('Profiles|Path') }}</label>
       <div class="input-group">
         <div class="input-group-prepend">
-          <div class="input-group-text">
-            {{ rootUrl }}
-          </div>
+          <div class="input-group-text">{{ rootUrl }}</div>
         </div>
         <input
           :id="$options.inputId"
@@ -99,9 +97,7 @@ Please update your Git repository remotes as soon as possible.`),
           required="required"
         />
       </div>
-      <p class="form-text text-muted">
-        {{ path }}
-      </p>
+      <p class="form-text text-muted">{{ path }}</p>
     </div>
     <button
       :data-target="`#${$options.modalId}`"

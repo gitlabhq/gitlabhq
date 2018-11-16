@@ -212,20 +212,15 @@ export default {
 </script>
 
 <template>
-  <div
-    id="ide"
-    class="blob-viewer-container blob-editor-container"
-  >
+  <div id="ide" class="blob-viewer-container blob-editor-container">
     <div class="ide-mode-tabs clearfix">
-      <ul
-        v-if="!shouldHideEditor && isEditModeActive"
-        class="nav-links float-left"
-      >
+      <ul v-if="!shouldHideEditor && isEditModeActive" class="nav-links float-left">
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'editor' })">
+            @click.prevent="setFileViewMode({ file, viewMode: 'editor' });"
+          >
             <template v-if="viewer === $options.viewerTypes.edit">
               {{ __('Edit') }}
             </template>
@@ -234,41 +229,36 @@ export default {
             </template>
           </a>
         </li>
-        <li
-          v-if="file.previewMode"
-          :class="previewTabCSS">
+        <li v-if="file.previewMode" :class="previewTabCSS">
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode:'preview' })">
+            @click.prevent="setFileViewMode({ file, viewMode: 'preview' });"
+          >
             {{ file.previewMode.previewTitle }}
           </a>
         </li>
       </ul>
-      <external-link
-        :file="file"
-      />
+      <external-link :file="file" />
     </div>
-    <file-templates-bar
-      v-if="showFileTemplatesBar(file.name)"
-    />
+    <file-templates-bar v-if="showFileTemplatesBar(file.name)" />
     <div
-      v-show="!shouldHideEditor && file.viewMode ==='editor'"
+      v-show="!shouldHideEditor && file.viewMode === 'editor'"
       ref="editor"
       :class="{
         'is-readonly': isCommitModeActive,
         'is-deleted': file.deleted,
-        'is-added': file.tempFile
+        'is-added': file.tempFile,
       }"
       class="multi-file-editor-holder"
-    >
-    </div>
+    ></div>
     <content-viewer
       v-if="showContentViewer"
       :content="file.content || file.raw"
       :path="file.rawPath || file.path"
       :file-size="file.size"
-      :project-path="file.projectId"/>
+      :project-path="file.projectId"
+    />
     <diff-viewer
       v-if="showDiffViewer"
       :diff-mode="file.mrChange.diffMode"
@@ -276,6 +266,7 @@ export default {
       :new-sha="currentMergeRequest.sha"
       :old-path="file.mrChange.old_path"
       :old-sha="currentMergeRequest.baseCommitSha"
-      :project-path="file.projectId"/>
+      :project-path="file.projectId"
+    />
   </div>
 </template>

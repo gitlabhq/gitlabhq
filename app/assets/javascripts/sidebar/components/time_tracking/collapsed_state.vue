@@ -120,9 +120,7 @@ export default {
     <icon name="timer" />
     <div class="time-tracking-collapsed-summary">
       <div :class="divClass">
-        <span :class="spanClass">
-          {{ text }}
-        </span>
+        <span :class="spanClass"> {{ text }} </span>
       </div>
     </div>
   </div>

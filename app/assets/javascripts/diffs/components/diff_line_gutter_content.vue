@@ -155,15 +155,10 @@ export default {
 
 <template>
   <div>
-    <span
-      v-if="isMatchLine"
-      class="context-cell"
-      role="button"
-      @click="handleLoadMoreLines"
-    >...</span>
-    <template
-      v-else
+    <span v-if="isMatchLine" class="context-cell" role="button" @click="handleLoadMoreLines"
+      >...</span
     >
+    <template v-else>
       <button
         v-if="shouldShowCommentButton"
         type="button"
@@ -171,21 +166,10 @@ export default {
         title="Add a comment to this line"
         @click="handleCommentButton"
       >
-        <icon
-          :size="12"
-          name="comment"
-        />
+        <icon :size="12" name="comment" />
       </button>
-      <a
-        v-if="lineNumber"
-        :data-linenumber="lineNumber"
-        :href="lineHref"
-      >
-      </a>
-      <diff-gutter-avatars
-        v-if="shouldShowAvatarsOnGutter"
-        :discussions="line.discussions"
-      />
+      <a v-if="lineNumber" :data-linenumber="lineNumber" :href="lineHref"> </a>
+      <diff-gutter-avatars v-if="shouldShowAvatarsOnGutter" :discussions="line.discussions" />
     </template>
   </div>
 </template>

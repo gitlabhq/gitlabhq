@@ -181,9 +181,8 @@ export default class ActivityCalendar {
       .attr('y', stamp => this.dayYPos(stamp.day))
       .attr('width', this.daySize)
       .attr('height', this.daySize)
-      .attr(
-        'fill',
-        stamp => (stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'),
+      .attr('fill', stamp =>
+        stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed',
       )
       .attr('title', stamp => formatTooltipText(stamp))
       .attr('class', 'user-contrib-cell js-tooltip')

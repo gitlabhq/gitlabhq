@@ -57,12 +57,6 @@ export default {
     :title="title"
     data-container="body"
   >
-    <icon :name="iconName" />
-    <span
-      v-if="isValuePresent"
-      class="stat-value"
-    >
-      {{ value }}
-    </span>
+    <icon :name="iconName" /> <span v-if="isValuePresent" class="stat-value"> {{ value }} </span>
   </span>
 </template>

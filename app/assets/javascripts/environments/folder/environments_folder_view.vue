@@ -43,20 +43,12 @@ export default {
   <div :class="cssContainerClass">
     <stop-environment-modal :environment="environmentInStopModal" />
 
-    <div
-      v-if="!isLoading"
-      class="top-area"
-    >
-
+    <div v-if="!isLoading" class="top-area">
       <h4 class="js-folder-name environments-folder-name">
-        {{ s__("Environments|Environments") }} / <b>{{ folderName }}</b>
+        {{ s__('Environments|Environments') }} / <b>{{ folderName }}</b>
       </h4>
 
-      <tabs
-        :tabs="tabs"
-        scope="environments"
-        @onChangeTab="onChangeTab"
-      />
+      <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
     </div>
 
     <container

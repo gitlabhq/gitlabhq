@@ -174,15 +174,12 @@ export default {
         data-boundary="viewport"
         data-placement="bottom"
         type="button"
-        @click="handleAward(awardName)">
+        @click="handleAward(awardName);"
+      >
         <span v-html="getAwardHTML(awardName)"></span>
-        <span class="award-control-text js-counter">
-          {{ awardList.length }}
-        </span>
+        <span class="award-control-text js-counter"> {{ awardList.length }} </span>
       </button>
-      <div
-        v-if="canAwardEmoji"
-        class="award-menu-holder">
+      <div v-if="canAwardEmoji" class="award-menu-holder">
         <button
           v-tooltip
           :class="{ 'js-user-authored': isAuthoredByMe }"
@@ -191,7 +188,8 @@ export default {
           aria-label="Add reaction"
           data-boundary="viewport"
           data-placement="bottom"
-          type="button">
+          type="button"
+        >
           <span class="award-control-icon award-control-icon-neutral">
             <icon name="emoji_slightly_smiling_face" />
           </span>
@@ -203,7 +201,8 @@ export default {
           </span>
           <i
             aria-hidden="true"
-            class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"></i>
+            class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"
+          ></i>
         </button>
       </div>
     </div>

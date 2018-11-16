@@ -73,27 +73,20 @@ export default {
 
 <template>
   <div class="mr-version-controls">
-    <div
-      class="mr-version-menus-container content-block"
-    >
+    <div class="mr-version-menus-container content-block">
       <button
         v-tooltip.hover
         type="button"
         class="btn btn-default append-right-8 js-toggle-tree-list"
         :class="{
-          active: showTreeList
+          active: showTreeList,
         }"
         :title="__('Toggle file browser')"
         @click="toggleShowTreeList"
       >
-        <icon
-          name="hamburger"
-        />
+        <icon name="hamburger" />
       </button>
-      <div
-        v-if="showDropdowns"
-        class="d-flex align-items-center compare-versions-container"
-      >
+      <div v-if="showDropdowns" class="d-flex align-items-center compare-versions-container">
         Changes between
         <compare-versions-dropdown
           :other-versions="mergeRequestDiffs"
@@ -109,20 +102,11 @@ export default {
           class="mr-version-compare-dropdown"
         />
       </div>
-      <div
-        class="inline-parallel-buttons d-none d-md-flex ml-auto"
-      >
-        <a
-          v-show="hasCollapsedFile"
-          class="btn btn-default append-right-8"
-          @click="expandAllFiles"
-        >
+      <div class="inline-parallel-buttons d-none d-md-flex ml-auto">
+        <a v-show="hasCollapsedFile" class="btn btn-default append-right-8" @click="expandAllFiles">
           {{ __('Expand all') }}
         </a>
-        <a
-          :href="toggleWhitespacePath"
-          class="btn btn-default qa-toggle-whitespace"
-        >
+        <a :href="toggleWhitespacePath" class="btn btn-default qa-toggle-whitespace">
           {{ toggleWhitespaceText }}
         </a>
         <div class="btn-group prepend-left-8">

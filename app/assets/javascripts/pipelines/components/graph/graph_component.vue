@@ -58,16 +58,9 @@ export default {
 <template>
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
-      <div class="text-center">
-        <gl-loading-icon
-          v-if="isLoading"
-          :size="3"
-        />
-      </div>
+      <div class="text-center"><gl-loading-icon v-if="isLoading" :size="3" /></div>
 
-      <ul
-        v-if="!isLoading"
-        class="stage-column-list">
+      <ul v-if="!isLoading" class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
           :key="stage.name"

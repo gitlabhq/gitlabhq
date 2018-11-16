@@ -222,23 +222,22 @@ export default {
 
 <template>
   <div class="board-list-component">
-    <div
-      v-if="loading"
-      class="board-list-loading text-center"
-      aria-label="Loading issues">
+    <div v-if="loading" class="board-list-loading text-center" aria-label="Loading issues">
       <gl-loading-icon />
     </div>
     <board-new-issue
       v-if="list.type !== 'closed' && showIssueForm"
       :group-id="groupId"
-      :list="list"/>
+      :list="list"
+    />
     <ul
       v-show="!loading"
       ref="list"
       :data-board="list.id"
       :data-board-type="list.type"
       :class="{ 'is-smaller': showIssueForm }"
-      class="board-list js-board-list">
+      class="board-list js-board-list"
+    >
       <board-card
         v-for="(issue, index) in issues"
         ref="issue"
@@ -249,25 +248,12 @@ export default {
         :issue-link-base="issueLinkBase"
         :group-id="groupId"
         :root-path="rootPath"
-        :disabled="disabled" />
-      <li
-        v-if="showCount"
-        class="board-list-count text-center"
-        data-issue-id="-1">
-        <gl-loading-icon
-          v-show="list.loadingMore"
-          label="Loading more issues"
-        />
-        <span
-          v-if="list.issues.length === list.issuesSize"
-        >
-          Showing all issues
-        </span>
-        <span
-          v-else
-        >
-          Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
-        </span>
+        :disabled="disabled"
+      />
+      <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">
+        <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
+        <span v-if="list.issues.length === list.issuesSize"> Showing all issues </span>
+        <span v-else> Showing {{ list.issues.length }} of {{ list.issuesSize }} issues </span>
       </li>
     </ul>
   </div>

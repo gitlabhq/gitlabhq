@@ -128,28 +128,12 @@ export default {
     @submit="onSubmit"
     @cancel="onCancel"
   >
-    <template
-      slot="body"
-      slot-scope="props"
-    >
+    <template slot="body" slot-scope="props">
       <p v-html="props.text"></p>
       <p v-html="confirmationTextLabel"></p>
-      <form
-        ref="form"
-        :action="deleteUserUrl"
-        method="post"
-      >
-        <input
-          ref="method"
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          :value="csrfToken"
-          type="hidden"
-          name="authenticity_token"
-        />
+      <form ref="form" :action="deleteUserUrl" method="post">
+        <input ref="method" type="hidden" name="_method" value="delete" />
+        <input :value="csrfToken" type="hidden" name="authenticity_token" />
         <input
           v-model="enteredUsername"
           type="text"

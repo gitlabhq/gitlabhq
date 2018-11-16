@@ -74,38 +74,18 @@ export default {
   <div class="mr-widget-body media">
     <template v-if="isRefreshing">
       <status-icon status="loading" />
-      <span class="media-body bold js-refresh-label">
-        {{ s__("mrWidget|Refreshing now") }}
-      </span>
+      <span class="media-body bold js-refresh-label"> {{ s__('mrWidget|Refreshing now') }} </span>
     </template>
     <template v-else>
-      <status-icon
-        :show-disabled-button="true"
-        status="warning"
-      />
+      <status-icon :show-disabled-button="true" status="warning" />
       <div class="media-body space-children">
         <span class="bold">
-          <span
-            v-if="mr.mergeError"
-            class="has-error-message"
-          >
-            {{ mergeError }}.
-          </span>
-          <span v-else>
-            {{ s__("mrWidget|Merge failed.") }}
-          </span>
-          <span
-            :class="{ 'has-custom-error': mr.mergeError }"
-          >
-            {{ timerText }}
-          </span>
+          <span v-if="mr.mergeError" class="has-error-message"> {{ mergeError }}. </span>
+          <span v-else> {{ s__('mrWidget|Merge failed.') }} </span>
+          <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
         </span>
-        <button
-          class="btn btn-default btn-sm js-refresh-button"
-          type="button"
-          @click="refresh"
-        >
-          {{ s__("mrWidget|Refresh now") }}
+        <button class="btn btn-default btn-sm js-refresh-button" type="button" @click="refresh">
+          {{ s__('mrWidget|Refresh now') }}
         </button>
       </div>
     </template>

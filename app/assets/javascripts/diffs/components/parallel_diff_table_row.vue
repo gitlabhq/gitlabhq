@@ -125,8 +125,7 @@ export default {
         class="line_content parallel left-side"
         @mousedown.native="handleParallelLineMouseDown"
         v-html="line.left.rich_text"
-      >
-      </td>
+      ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>
@@ -151,8 +150,7 @@ export default {
         class="line_content parallel right-side"
         @mousedown.native="handleParallelLineMouseDown"
         v-html="line.right.rich_text"
-      >
-      </td>
+      ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>

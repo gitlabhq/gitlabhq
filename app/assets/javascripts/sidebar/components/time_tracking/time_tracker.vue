@@ -90,10 +90,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-cloak
-    class="time_tracker time-tracking-component-wrap"
-  >
+  <div v-cloak class="time_tracker time-tracking-component-wrap">
     <time-tracking-collapsed-state
       :show-comparison-state="showComparisonState"
       :show-no-time-tracking-state="showNoTimeTrackingState"
@@ -105,27 +102,15 @@ export default {
     />
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
-      <div
-        v-if="!showHelpState"
-        class="help-button float-right"
-        @click="toggleHelpState(true)"
-      >
-        <i
-          class="fa fa-question-circle"
-          aria-hidden="true"
-        >
-        </i>
+      <div v-if="!showHelpState" class="help-button float-right" @click="toggleHelpState(true);">
+        <i class="fa fa-question-circle" aria-hidden="true"> </i>
       </div>
       <div
         v-if="showHelpState"
         class="close-help-button float-right"
-        @click="toggleHelpState(false)"
+        @click="toggleHelpState(false);"
       >
-        <i
-          class="fa fa-close"
-          aria-hidden="true"
-        >
-        </i>
+        <i class="fa fa-close" aria-hidden="true"> </i>
       </div>
     </div>
     <div class="time-tracking-content hide-collapsed">
@@ -137,9 +122,7 @@ export default {
         v-if="showSpentOnlyState"
         :time-spent-human-readable="humanTimeSpent"
       />
-      <time-tracking-no-tracking-pane
-        v-if="showNoTimeTrackingState"
-      />
+      <time-tracking-no-tracking-pane v-if="showNoTimeTrackingState" />
       <time-tracking-comparison-pane
         v-if="showComparisonState"
         :time-estimate="timeEstimate"
@@ -148,10 +131,7 @@ export default {
         :time-estimate-human-readable="humanTimeEstimate"
       />
       <transition name="help-state-toggle">
-        <time-tracking-help-state
-          v-if="showHelpState"
-          :root-path="rootPath"
-        />
+        <time-tracking-help-state v-if="showHelpState" :root-path="rootPath" />
       </transition>
     </div>
   </div>

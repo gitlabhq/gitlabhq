@@ -176,10 +176,7 @@ export default {
         type="hidden"
         name="user[status][emoji]"
       />
-      <div
-        ref="userStatusForm"
-        class="form-group position-relative m-0"
-      >
+      <div ref="userStatusForm" class="form-group position-relative m-0">
         <div class="input-group">
           <span class="input-group-btn">
             <button
@@ -197,18 +194,9 @@ export default {
                 v-show="noEmoji"
                 class="js-no-emoji-placeholder no-emoji-placeholder position-relative"
               >
-                <icon
-                  name="emoji_slightly_smiling_face"
-                  css-classes="award-control-icon-neutral"
-                />
-                <icon
-                  name="emoji_smiley"
-                  css-classes="award-control-icon-positive"
-                />
-                <icon
-                  name="emoji_smile"
-                  css-classes="award-control-icon-super-positive"
-                />
+                <icon name="emoji_slightly_smiling_face" css-classes="award-control-icon-neutral" />
+                <icon name="emoji_smiley" css-classes="award-control-icon-positive" />
+                <icon name="emoji_smile" css-classes="award-control-icon-super-positive" />
               </span>
             </button>
           </span>
@@ -223,10 +211,7 @@ export default {
             @keyup.enter.prevent
             @click="hideEmojiMenu"
           />
-          <span
-            v-show="isDirty"
-            class="input-group-btn"
-          >
+          <span v-show="isDirty" class="input-group-btn">
             <button
               v-gl-tooltip.bottom
               :title="s__('SetStatusModal|Clear status')"
@@ -234,7 +219,7 @@ export default {
               name="button"
               type="button"
               class="js-clear-user-status-button clear-user-status btn"
-              @click="clearStatusInputs()"
+              @click="clearStatusInputs();"
             >
               <icon name="close" />
             </button>

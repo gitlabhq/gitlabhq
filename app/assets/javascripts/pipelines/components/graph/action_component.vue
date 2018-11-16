@@ -86,6 +86,6 @@ export default {
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     @click="onClickAction"
   >
-    <icon :name="actionIcon"/>
+    <icon :name="actionIcon" />
   </gl-button>
 </template>

@@ -45,9 +45,6 @@ export default {
     }"
     class="report-block-list-icon"
   >
-    <icon
-      :name="iconName"
-      :size="32"
-    />
+    <icon :name="iconName" :size="32" />
   </div>
 </template>

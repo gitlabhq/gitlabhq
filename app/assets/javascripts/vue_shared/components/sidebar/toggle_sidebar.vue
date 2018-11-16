@@ -46,7 +46,7 @@ export default {
     <i
       :class="{
         'fa-angle-double-right': !collapsed,
-        'fa-angle-double-left': collapsed
+        'fa-angle-double-left': collapsed,
       }"
       aria-label="toggle collapse"
       class="fa"

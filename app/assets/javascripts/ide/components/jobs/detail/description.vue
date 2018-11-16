@@ -23,24 +23,11 @@ export default {
 
 <template>
   <div class="d-flex align-items-center">
-    <ci-icon
-      :status="job.status"
-      :borderless="true"
-      :size="24"
-      class="d-flex"
-    />
+    <ci-icon :status="job.status" :borderless="true" :size="24" class="d-flex" />
     <span class="prepend-left-8">
       {{ job.name }}
-      <a
-        :href="job.path"
-        target="_blank"
-        class="ide-external-link"
-      >
-        {{ jobId }}
-        <icon
-          :size="12"
-          name="external-link"
-        />
+      <a :href="job.path" target="_blank" class="ide-external-link">
+        {{ jobId }} <icon :size="12" name="external-link" />
       </a>
     </span>
   </div>

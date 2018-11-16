@@ -29,9 +29,7 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="[sizeClass, identiconBackgroundClass]"
-    class="avatar identicon">
+  <div :class="[sizeClass, identiconBackgroundClass]" class="avatar identicon">
     {{ identiconTitle }}
   </div>
 </template>
