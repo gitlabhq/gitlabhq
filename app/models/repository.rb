@@ -182,16 +182,6 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
-  def find_ref(ref)
-    if Gitlab::Git.tag_ref?(ref)
-      find_tag(Gitlab::Git.ref_name(ref))
-    elsif Gitlab::Git.branch_ref?(ref)
-      find_branch(Gitlab::Git.ref_name(ref))
-    else
-      nil
-    end
-  end
-
   def add_branch(user, branch_name, ref)
     branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
