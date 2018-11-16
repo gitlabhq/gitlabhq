@@ -124,18 +124,6 @@ describe Gitlab::Git::Branch, :seed_helper do
 
   it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
 
-  describe '#full_ref' do
-    subject do
-      described_class.new(repository, 'master',
-                          repository.commit.sha,
-                          repository.commit).full_ref
-    end
-
-    it 'returns the full ref' do
-      is_expected.to eq('refs/heads/master')
-    end
-  end
-
   def create_commit
     params[:message].delete!("\r")
     Rugged::Commit.create(rugged, params.merge(committer: committer.merge(time: Time.now)))

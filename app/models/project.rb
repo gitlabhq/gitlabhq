@@ -1755,13 +1755,11 @@ class Project < ActiveRecord::Base
     resolved_ref = resolve_ref(ref)
     return false unless resolved_ref
 
-    full_ref = resolved_ref.full_ref
-    ref_name = resolved_ref.name
-
-    if Gitlab::Git.branch_ref?(full_ref)
-      ProtectedBranch.protected?(self, ref_name)
-    elsif Gitlab::Git.tag_ref?(full_ref)
-      ProtectedTag.protected?(self, ref_name)
+    case resolved_ref
+    when Gitlab::Git::Branch
+      ProtectedBranch.protected?(self, resolved_ref.name)
+    when Gitlab::Git::Tag
+      ProtectedTag.protected?(self, resolved_ref.name)
     end
   end
 
