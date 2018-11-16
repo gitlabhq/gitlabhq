@@ -531,7 +531,7 @@ msgstr "新しいブランチの作成中にエラーが発生しました。"
 msgid "An error occured whilst fetching the job trace."
 msgstr "ジョブトレースの取得中にエラーが発生しました。"
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr "最新のパイプラインの取得中にエラーが発生しました。"
 
 msgid "An error occured whilst loading all the files."

@@ -531,7 +531,7 @@ msgstr "创建分支时发生错误。"
 msgid "An error occured whilst fetching the job trace."
 msgstr "获取作业日志时发生错误。"
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr "获取流水线时发生错误。"
 
 msgid "An error occured whilst loading all the files."
