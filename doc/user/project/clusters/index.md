@@ -230,6 +230,10 @@ twice, which can lead to confusion during deployments.
 | [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found at [Nurtch Documentation](http://docs.nurtch.com/en/latest).  **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 | [Knative](https://cloud.google.com/knative) | 0.1.2 | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`.  **Note**: This will require your kubernetes cluster to have RBAC enabled. | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
+NOTE: **Note:**
+As of GitLab 11.6 Helm Tiller will be upgraded to the latest version supported
+by GitLab before installing any of the above applications.
+
 ## Getting the external IP address
 
 NOTE: **Note:**
