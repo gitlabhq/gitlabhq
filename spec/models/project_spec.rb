@@ -2580,7 +2580,7 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
-      let(:ref) { project.repository.find_branch('master') }
+      let(:ref) { 'refs/heads/master' }
 
       before do
         stub_application_setting(
@@ -2593,7 +2593,7 @@ describe Project do
     end
 
     context 'when the ref is a protected branch' do
-      let(:ref) { project.repository.find_branch('master') }
+      let(:ref) { 'refs/heads/master' }
 
       before do
         create(:protected_branch, name: 'master', project: project)
@@ -2605,7 +2605,7 @@ describe Project do
     end
 
     context 'when the ref is a protected tag' do
-      let(:ref) { project.repository.find_tag('v1.0.0') }
+      let(:ref) { 'refs/tags/v1.0.0' }
 
       before do
         create(:protected_tag, name: 'v1.0.0', project: project)
@@ -2802,20 +2802,10 @@ describe Project do
     subject { project.resolve_ref(ref) }
 
     context 'when ref is full ref' do
-      context 'when ref exists' do
-        let(:ref) { 'refs/heads/master' }
+      let(:ref) { 'refs/heads/master' }
 
-        it 'returns a ref' do
-          is_expected.to be_a(Gitlab::Git::Ref)
-        end
-      end
-
-      context 'when ref does not exist' do
-        let(:ref) { 'refs/tags/doesnotexist' }
-
-        it 'returns nil' do
-          is_expected.to eq(nil)
-        end
+      it 'returns the ref' do
+        is_expected.to eq(ref)
       end
     end
 
@@ -2838,12 +2828,8 @@ describe Project do
           project.repository.add_tag(project.creator, ref, 'master')
         end
 
-        it 'returns a tag' do
-          is_expected.to be_a(Gitlab::Git::Tag)
-        end
-
-        it 'returns the correct tag' do
-          expect(subject.name).to eq(ref)
+        it 'returns the tag ref' do
+          is_expected.to eq("refs/tags/#{ref}")
         end
       end
 
@@ -2852,12 +2838,8 @@ describe Project do
           project.repository.add_branch(project.creator, ref, 'master')
         end
 
-        it 'returns a branch' do
-          is_expected.to be_a(Gitlab::Git::Branch)
-        end
-
-        it 'returns the correct branch' do
-          expect(subject.name).to eq(ref)
+        it 'returns the branch ref' do
+          is_expected.to eq("refs/heads/#{ref}")
         end
       end
     end
