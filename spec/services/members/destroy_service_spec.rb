@@ -69,14 +69,14 @@ describe Members::DestroyService do
     it 'calls Member#after_decline_request' do
       expect_any_instance_of(NotificationService).to receive(:decline_access_request).with(member)
 
-      described_class.new(current_user).execute(member)
+      described_class.new(current_user).execute(member, opts)
     end
 
     context 'when current user is the member' do
       it 'does not call Member#after_decline_request' do
         expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(member)
 
-        described_class.new(member_user).execute(member)
+        described_class.new(member_user).execute(member, opts)
       end
     end
   end
@@ -159,7 +159,7 @@ describe Members::DestroyService do
       end
 
       it_behaves_like 'a service destroying a member' do
-        let(:opts) { { skip_authorization: true } }
+        let(:opts) { { skip_authorization: true, skip_subresources: true } }
         let(:member) { group_project.requesters.find_by(user_id: member_user.id) }
       end
 
@@ -168,12 +168,14 @@ describe Members::DestroyService do
       end
 
       it_behaves_like 'a service destroying a member' do
-        let(:opts) { { skip_authorization: true } }
+        let(:opts) { { skip_authorization: true, skip_subresources: true  } }
         let(:member) { group.requesters.find_by(user_id: member_user.id) }
       end
     end
 
     context 'when current user can destroy the given access requester' do
+      let(:opts) { { skip_subresources: true } }
+
       before do
         group_project.add_maintainer(current_user)
         group.add_owner(current_user)
@@ -227,6 +229,56 @@ describe Members::DestroyService do
       it_behaves_like 'a service destroying a member' do
         let(:member) { group_invited_member }
       end
+    end
+  end
+
+  context 'subresources' do
+    let(:user) { create(:user) }
+    let(:member_user) { create(:user) }
+    let(:opts) { {} }
+
+    let(:group) { create(:group, :public) }
+    let(:subgroup) { create(:group, parent: group) }
+    let(:subsubgroup) { create(:group, parent: subgroup) }
+    let(:subsubproject) { create(:project, group: subsubgroup) }
+
+    let(:group_project) { create(:project, :public, group: group) }
+    let(:control_project) { create(:project, group: subsubgroup) }
+
+    before do
+      create(:group_member, :developer, group: subsubgroup, user: member_user)
+
+      subsubproject.add_developer(member_user)
+      control_project.add_maintainer(user)
+      group.add_owner(user)
+
+      group_member = create(:group_member, :developer, group: group, user: member_user)
+
+      described_class.new(user).execute(group_member, opts)
+    end
+
+    it 'removes the project membership' do
+      expect(group_project.members.map(&:user)).not_to include(member_user)
+    end
+
+    it 'removes the group membership' do
+      expect(group.members.map(&:user)).not_to include(member_user)
+    end
+
+    it 'removes the subgroup membership', :postgresql do
+      expect(subgroup.members.map(&:user)).not_to include(member_user)
+    end
+
+    it 'removes the subsubgroup membership', :postgresql do
+      expect(subsubgroup.members.map(&:user)).not_to include(member_user)
+    end
+
+    it 'removes the subsubproject membership', :postgresql do
+      expect(subsubproject.members.map(&:user)).not_to include(member_user)
+    end
+
+    it 'does not remove the user from the control project' do
+      expect(control_project.members.map(&:user)).to include(user)
     end
   end
 end
