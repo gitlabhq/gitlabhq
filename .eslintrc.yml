@@ -29,9 +29,12 @@ rules:
   import/no-useless-path-segments: off
   lines-between-class-members: off
   # Disabled for now, to make the plugin-vue 4.5 -> 5.0 update smoother
-  vue/html-closing-bracket-newline: off
-  vue/html-closing-bracket-spacing: off
   vue/no-confusing-v-for-v-if: error
   vue/no-unused-components: off
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
+  # Disabled due to disagreements with prettier
+  vue/html-closing-bracket-newline: off
+  vue/html-closing-bracket-spacing: off
+  vue/html-indent: off
+  vue/max-attributes-per-line: off
