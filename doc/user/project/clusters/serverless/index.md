@@ -100,12 +100,12 @@ You may download the sample [Knative Ruby App](https://gitlab.com/knative-exampl
 ## Deploy the application with Knative
 
 With all the pieces in place, you can simply create a new CI pipeline to deploy the Knative application. Navigate to 
-**CI/CD >> Pipelines** and click on the "**Run Pipeline"** button on the upper right hand side of the screen. On the 
-Pipelines page now click "**Create pipeline**".
+**CI/CD >> Pipelines** and click the **Run Pipeline** button at the upper-right part of the screen. Then, on the 
+Pipelines page, click **Create pipeline**.
 
 ## Obtain the URL for the Knative deployment
 
-Once all the stages of the pipeline finish, click on the "deploy" stage
+Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
@@ -131,7 +131,7 @@ Service domain: knative.knative-4342902.knative.info
 Job succeeded
 ```
 
-The second to last line, labeled "**Service domain**" contains the URL for the deployment. Copy and paste the domain into your 
+The second to last line, labeled **Service domain** contains the URL for the deployment. Copy and paste the domain into your 
 browser to see the app live.
 
 ![knative app](img/knative-app.png)
