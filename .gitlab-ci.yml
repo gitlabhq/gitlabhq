@@ -821,6 +821,8 @@ pages:
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv eslint-report.html public/ || true
     - mv webpack-report/ public/webpack-report/ || true
+    - cp .public/assets/application-*.css public/application.css || true
+    - cp .public/assets/application-*.css.gz public/application.css.gz || true
   artifacts:
     paths:
       - public
