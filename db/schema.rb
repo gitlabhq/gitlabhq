@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181115140140) do
+ActiveRecord::Schema.define(version: 20181116141504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1409,6 +1409,7 @@ ActiveRecord::Schema.define(version: 20181115140140) do
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
     t.string "runners_token"
+    t.string "runners_token_encrypted"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1753,6 +1754,7 @@ ActiveRecord::Schema.define(version: 20181115140140) do
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
     t.integer "pool_repository_id", limit: 8
+    t.string "runners_token_encrypted"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

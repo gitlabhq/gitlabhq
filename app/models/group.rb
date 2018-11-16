@@ -55,7 +55,7 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  add_authentication_token_field :runners_token
+  add_authentication_token_field :runners_token, encrypted: true, fallback: true
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
