@@ -49,8 +49,8 @@ new Kubernetes cluster to your project:
     NOTE: **Note:**
     You need Maintainer [permissions] and above to access the Kubernetes page.
 
-1. Click on **Add Kubernetes cluster**.
-1. Click on **Create with Google Kubernetes Engine**.
+1. Click **Add Kubernetes cluster**.
+1. Click **Create with Google Kubernetes Engine**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. From there on, choose your cluster's settings:
@@ -78,8 +78,8 @@ To add an existing Kubernetes cluster to your project:
     NOTE: **Note:**
     You need Maintainer [permissions] and above to access the Kubernetes page.
 
-1. Click on **Add Kubernetes cluster**.
-1. Click on **Add an existing Kubernetes cluster** and fill in the details:
+1. Click **Add Kubernetes cluster**.
+1. Click **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
       [associated environment](#setting-the-environment-scope) to this cluster.
@@ -254,10 +254,10 @@ your ingress application in which case you should manually determine it.
 
 ### Manually determining the IP address
 
-If the cluster is on GKE, click on the **Google Kubernetes Engine** link in the
+If the cluster is on GKE, click the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
 [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
-and select the proper project and cluster. Then click on **Connect** and execute
+and select the proper project and cluster. Then click **Connect** and execute
 the `gcloud` command in a local terminal or using the **Cloud Shell**.
 
 If the cluster is not on GKE, follow the specific instructions for your
@@ -301,7 +301,7 @@ your apps will not be able to be reached, and you'd have to change the DNS
 record again. In order to avoid that, you should change it into a static
 reserved IP.
 
-[Read how to promote an ephemeral external IP address in GKE.](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip)
+Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
 
 ### Pointing your DNS at the cluster IP
 
@@ -407,7 +407,7 @@ service account of the cluster integration.
 After you have successfully added your cluster information, you can enable the
 Kubernetes cluster integration:
 
-1. Click the "Enabled/Disabled" switch
+1. Click the **Enabled/Disabled** switch
 1. Hit **Save** for the changes to take effect
 
 You can now start using your Kubernetes cluster for your deployments.
@@ -424,7 +424,7 @@ When you remove a cluster, you only remove its relation to GitLab, not the
 cluster itself. To remove the cluster, you can do so by visiting the GKE
 dashboard or using `kubectl`.
 
-To remove the Kubernetes cluster integration from your project, simply click on the
+To remove the Kubernetes cluster integration from your project, simply click the
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
 
@@ -489,7 +489,7 @@ the deployment variables above, ensuring any pods you create are labelled with
 
 ### Integrating Amazon EKS cluster with GitLab
 
-- Learn how to [connect and deploy to an Amazon EKS cluster.](eks_and_gitlab/index.md)
+- Learn how to [connect and deploy to an Amazon EKS cluster](eks_and_gitlab/index.md).
 
 ### Serverless
 
