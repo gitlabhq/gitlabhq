@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     # Module for gathering system/process statistics such as the memory usage.
