@@ -46,7 +46,7 @@ describe PendingTodosFinder do
 
       create(:todo, :pending, user: user, target: note)
 
-      todos = described_class.new(user, target_type: issue.class).execute
+      todos = described_class.new(user, target_type: issue.class.name).execute
 
       expect(todos).to eq([todo])
     end

@@ -58,7 +58,7 @@ class EventsFinder
   def by_target_type(events)
     return events unless Event::TARGET_TYPES[params[:target_type]]
 
-    events.where(target_type: Event::TARGET_TYPES[params[:target_type]])
+    events.where(target_type: Event::TARGET_TYPES[params[:target_type]].name)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
