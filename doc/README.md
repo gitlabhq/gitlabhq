@@ -23,7 +23,7 @@ No matter how you use GitLab, we have documentation for you.
         Discover features and concepts for GitLab users.
       </td>
       <td width="50%">
-        <a href="administration/index.md"><strong>Administrator documentation</strong></a>
+        <a href="administration/index.md"><strong>Administrator documentation</strong></a> **[CORE ONLY]**
         <br/>
         Everything GitLab administrators need to know.
       </td>
@@ -44,7 +44,7 @@ No matter how you use GitLab, we have documentation for you.
       <td width="50%">
         <a href="#building-an-integration-with-gitlab"><strong>Building an integration with GitLab?</strong></a>
         <br/>
-        Consult our our automation and integration documentation.
+        Consult our automation and integration documentation.
       </td>
       <td width="50%">
         <a href="#coming-to-gitlab-from-another-platform"><strong>Coming to GitLab from another platform?</strong></a>
@@ -117,11 +117,11 @@ GitLab provides statistics and insight into ways you can maximize the value of G
 
 The following documentation relates to the DevOps **Manage** stage:
 
-| Manage Topics                                                     | Description                                                                                                                                                                                                                  |
-|:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Authentication and Authorization](administration/auth/README.md) | Supported authentication and authorization providers.                                                                                                                                                                        |
-| [GitLab Cycle Analytics](user/project/cycle_analytics.md)         | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
-| [Instance Statistics](user/instance_statistics/index.md)          | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
+| Manage Topics                                                                     | Description                                                                                                                                                                                                                  |
+|:----------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Authentication and Authorization](administration/auth/README.md) **[CORE ONLY]** | Supported authentication and authorization providers.                                                                                                                                                                        |
+| [GitLab Cycle Analytics](user/project/cycle_analytics.md)                         | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
+| [Instance Statistics](user/instance_statistics/index.md)                          | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -344,13 +344,13 @@ instant how code changes impact your production environment.
 
 The following documentation relates to the DevOps **Monitor** stage:
 
-| Monitor Topics                                                                  | Description                                                                                                                              |
-|:--------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
-| [GitLab Performance Monitoring](administration/monitoring/performance/index.md) | Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).                 |
-| [GitLab Prometheus](administration/monitoring/prometheus/index.md)              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
-| [Health check](user/admin_area/monitoring/health_check.md)                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
-| [Prometheus project integration](user/project/integrations/prometheus.md)       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
-| [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md)   | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
+| Monitor Topics                                                                                  | Description                                                                                                                              |
+|:------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
+| [GitLab Performance Monitoring](administration/monitoring/performance/index.md) **[CORE ONLY]** | Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).                 |
+| [GitLab Prometheus](administration/monitoring/prometheus/index.md) **[CORE ONLY]**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
+| [Health check](user/admin_area/monitoring/health_check.md)                                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
+| [Prometheus project integration](user/project/integrations/prometheus.md)                       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
+| [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md)                   | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
