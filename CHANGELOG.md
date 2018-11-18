@@ -2,6 +2,50 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.9 (2018-10-31)
+
+### Security (1 change)
+
+- Monkey kubeclient to not follow any redirects.
+
+
+## 11.3.8 (2018-10-27)
+
+- No changes.
+
+## 11.3.7 (2018-10-26)
+
+### Security (6 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2557
+- Persist only SHA digest of PersonalAccessToken#token.
+- Fix XSS in merge request source branch name.
+- Redact personal tokens in unsubscribe links.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
+
+
+## 11.3.6 (2018-10-17)
+
+- No changes.
+
+## 11.3.5 (2018-10-15)
+
+### Fixed (2 changes)
+
+- Fix loading issue on some merge request discussion. !21982
+- Fix project deletion when there is a export available. !22276
+
+
+## 11.3.4 (2018-10-05)
+
+### Security (3 changes)
+
+- Filter user sensitive data from discussions JSON. !2537
+- Properly filter private references from system notes.
+- Markdown API no longer displays confidential title references unless authorized.
+
+
 ## 11.3.3 (2018-10-04)
 
 - No changes.

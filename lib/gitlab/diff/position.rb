@@ -69,6 +69,10 @@ module Gitlab
         JSON.generate(formatter.to_h, opts)
       end
 
+      def as_json(opts = nil)
+        to_h.as_json(opts)
+      end
+
       def type
         formatter.line_age
       end

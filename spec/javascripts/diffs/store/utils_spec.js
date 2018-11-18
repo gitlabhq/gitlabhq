@@ -272,20 +272,12 @@ describe('DiffsStoreUtils', () => {
 
     const discussions = {
       upToDateDiscussion1: {
-        original_position: {
-          formatter: diffPosition,
-        },
-        position: {
-          formatter: wrongDiffPosition,
-        },
+        original_position: diffPosition,
+        position: wrongDiffPosition,
       },
       outDatedDiscussion1: {
-        original_position: {
-          formatter: wrongDiffPosition,
-        },
-        position: {
-          formatter: wrongDiffPosition,
-        },
+        original_position: wrongDiffPosition,
+        position: wrongDiffPosition,
       },
     };
 
