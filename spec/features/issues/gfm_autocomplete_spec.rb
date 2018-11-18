@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe 'GFM autocomplete', :js do
+  let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+
+  let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
@@ -8,6 +12,8 @@ describe 'GFM autocomplete', :js do
 
   before do
     project.add_maintainer(user)
+    project.add_maintainer(user_xss)
+
     sign_in(user)
     visit project_issue_path(project, issue)
 
@@ -34,9 +40,8 @@ describe 'GFM autocomplete', :js do
     expect(page).to have_selector('.atwho-container')
   end
 
-  it 'opens autocomplete menu when field starts with text with item escaping HTML characters' do
-    alert_title = 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;'
-    create(:issue, project: project, title: alert_title)
+  it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+    create(:issue, project: project, title: issue_xss_title)
 
     page.within '.timeline-content-form' do
       find('#note-body').native.send_keys('#')
@@ -45,7 +50,19 @@ describe 'GFM autocomplete', :js do
     expect(page).to have_selector('.atwho-container')
 
     page.within '.atwho-container #at-view-issues' do
-      expect(page.all('li').first.text).to include(alert_title)
+      expect(page.all('li').first.text).to include(issue_xss_title)
+    end
+  end
+
+  it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('@ev')
+    end
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-users' do
+      expect(find('li').text).to have_content(user_xss.username)
     end
   end
 
@@ -106,7 +123,7 @@ describe 'GFM autocomplete', :js do
 
     wait_for_requests
 
-    expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
+    expect(find('#at-view-users')).to have_selector('.cur:first-of-type')
   end
 
   it 'includes items for assignee dropdowns with non-ASCII characters in name' do
@@ -119,7 +136,7 @@ describe 'GFM autocomplete', :js do
 
     wait_for_requests
 
-    expect(find('#at-view-64')).to have_content(user.name)
+    expect(find('#at-view-users')).to have_content(user.name)
   end
 
   it 'selects the first item for non-assignee dropdowns if a query is entered' do
