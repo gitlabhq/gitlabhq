@@ -147,6 +147,8 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
+  services:
+    - :template
 
 methods:
   labels:
