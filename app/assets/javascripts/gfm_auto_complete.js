@@ -149,10 +149,16 @@ class GfmAutoComplete {
     // Team Members
     $input.atwho({
       at: '@',
+      alias: 'users',
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
-        if (value.username != null) {
-          tmpl = GfmAutoComplete.Members.template;
+        const { avatarTag, username, title } = value;
+        if (username != null) {
+          tmpl = GfmAutoComplete.Members.templateFunction({
+            avatarTag,
+            username,
+            title,
+          });
         }
         return tmpl;
       },
@@ -512,8 +518,9 @@ GfmAutoComplete.Emoji = {
 };
 // Team Members
 GfmAutoComplete.Members = {
-  // eslint-disable-next-line no-template-curly-in-string
-  template: '<li>${avatarTag} ${username} <small>${title}</small></li>',
+  templateFunction({ avatarTag, username, title }) {
+    return `<li>${avatarTag} ${username} <small>${_.escape(title)}</small></li>`;
+  },
 };
 GfmAutoComplete.Labels = {
   // eslint-disable-next-line no-template-curly-in-string
