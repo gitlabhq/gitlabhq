@@ -470,6 +470,7 @@ GEM
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
     mysql2 (0.4.10)
+    nakayoshi_fork (0.0.4)
     net-ldap (0.16.0)
     net-ssh (5.0.1)
     netrc (0.11.0)
@@ -1051,6 +1052,7 @@ DEPENDENCIES
   mini_magick
   minitest (~> 5.7.0)
   mysql2 (~> 0.4.10)
+  nakayoshi_fork (~> 0.0.4)
   net-ldap
   net-ssh (~> 5.0)
   nokogiri (~> 1.8.2)

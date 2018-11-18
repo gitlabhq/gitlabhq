@@ -15,6 +15,9 @@ source 'https://rubygems.org'
 gem 'rails', gem_versions['rails']
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
+# Improves copy-on-write performance for MRI
+gem 'nakayoshi_fork', '~> 0.0.4'
+
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
 
