@@ -88,35 +88,19 @@ module BitbucketServer
     def build_url(path)
       return path if path.starts_with?(root_url)
 
-      url_join_paths(root_url, path)
+      Gitlab::Utils.append_path(root_url, path)
     end
 
     def root_url
-      url_join_paths(base_uri, "/rest/api/#{api_version}")
+      Gitlab::Utils.append_path(base_uri, "rest/api/#{api_version}")
     end
 
     def delete_url(resource, path)
       if resource == :branches
-        url_join_paths(base_uri, "/rest/branch-utils/#{api_version}#{path}")
+        Gitlab::Utils.append_path(base_uri, "rest/branch-utils/#{api_version}#{path}")
       else
         build_url(path)
       end
-    end
-
-    # URI.join is stupid in that slashes are important:
-    #
-    # # URI.join('http://example.com/subpath', 'hello')
-    # => http://example.com/hello
-    #
-    # We really want http://example.com/subpath/hello
-    #
-    def url_join_paths(*paths)
-      paths.map { |path| strip_slashes(path) }.join(SEPARATOR)
-    end
-
-    def strip_slashes(path)
-      path = path[1..-1] if path.starts_with?(SEPARATOR)
-      path.chomp(SEPARATOR)
     end
   end
 end

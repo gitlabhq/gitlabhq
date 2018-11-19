@@ -54,7 +54,11 @@ module Gitlab
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
-            kubeclient.create_config_map(config_map_resource)
+            if config_map_exists?(config_map_resource)
+              kubeclient.update_config_map(config_map_resource)
+            else
+              kubeclient.create_config_map(config_map_resource)
+            end
           end
         end
 
@@ -88,23 +92,21 @@ module Gitlab
           end
         end
 
+        def config_map_exists?(resource)
+          kubeclient.get_config_map(resource.metadata.name, resource.metadata.namespace)
+        rescue ::Kubeclient::ResourceNotFoundError
+          false
+        end
+
         def service_account_exists?(resource)
-          resource_exists? do
-            kubeclient.get_service_account(resource.metadata.name, resource.metadata.namespace)
-          end
+          kubeclient.get_service_account(resource.metadata.name, resource.metadata.namespace)
+        rescue ::Kubeclient::ResourceNotFoundError
+          false
         end
 
         def cluster_role_binding_exists?(resource)
-          resource_exists? do
-            kubeclient.get_cluster_role_binding(resource.metadata.name)
-          end
-        end
-
-        def resource_exists?
-          yield
-        rescue ::Kubeclient::HttpError => e
-          raise e unless e.error_code == 404
-
+          kubeclient.get_cluster_role_binding(resource.metadata.name)
+        rescue ::Kubeclient::ResourceNotFoundError
           false
         end
       end

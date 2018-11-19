@@ -232,6 +232,12 @@ class Namespace < ActiveRecord::Base
     Project.inside_path(full_path)
   end
 
+  # Includes pipelines from this namespace and pipelines from all subgroups
+  # that belongs to this namespace
+  def all_pipelines
+    Ci::Pipeline.where(project: all_projects)
+  end
+
   def has_parent?
     parent.present?
   end

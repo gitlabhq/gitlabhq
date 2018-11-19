@@ -68,32 +68,32 @@ export default {
     },
     titleLink() {
       if (this.diffFile.submodule) {
-        return this.diffFile.submoduleTreeUrl || this.diffFile.submoduleLink;
+        return this.diffFile.submodule_tree_url || this.diffFile.submodule_link;
       }
       return this.discussionPath;
     },
     filePath() {
       if (this.diffFile.submodule) {
-        return `${this.diffFile.filePath} @ ${truncateSha(this.diffFile.blob.id)}`;
+        return `${this.diffFile.file_path} @ ${truncateSha(this.diffFile.blob.id)}`;
       }
 
-      if (this.diffFile.deletedFile) {
-        return sprintf(__('%{filePath} deleted'), { filePath: this.diffFile.filePath }, false);
+      if (this.diffFile.deleted_file) {
+        return sprintf(__('%{filePath} deleted'), { filePath: this.diffFile.file_path }, false);
       }
 
-      return this.diffFile.filePath;
+      return this.diffFile.file_path;
     },
     titleTag() {
-      return this.diffFile.fileHash ? 'a' : 'span';
+      return this.diffFile.file_hash ? 'a' : 'span';
     },
     isUsingLfs() {
-      return this.diffFile.storedExternally && this.diffFile.externalStorage === 'lfs';
+      return this.diffFile.stored_externally && this.diffFile.external_storage === 'lfs';
     },
     collapseIcon() {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
     viewFileButtonText() {
-      const truncatedContentSha = _.escape(truncateSha(this.diffFile.contentSha));
+      const truncatedContentSha = _.escape(truncateSha(this.diffFile.content_sha));
       return sprintf(
         s__('MergeRequests|View file @ %{commitId}'),
         {
@@ -103,7 +103,7 @@ export default {
       );
     },
     viewReplacedFileButtonText() {
-      const truncatedBaseSha = _.escape(truncateSha(this.diffFile.diffRefs.baseSha));
+      const truncatedBaseSha = _.escape(truncateSha(this.diffFile.diff_refs.base_sha));
       return sprintf(
         s__('MergeRequests|View replaced file @ %{commitId}'),
         {
@@ -113,7 +113,7 @@ export default {
       );
     },
     gfmCopyText() {
-      return `\`${this.diffFile.filePath}\``;
+      return `\`${this.diffFile.file_path}\``;
     },
   },
   methods: {
@@ -164,21 +164,21 @@ export default {
           aria-hidden="true"
           css-classes="js-file-icon append-right-5"
         />
-        <span v-if="diffFile.renamedFile">
+        <span v-if="diffFile.renamed_file">
           <strong
             v-tooltip
-            :title="diffFile.oldPath"
+            :title="diffFile.old_path"
             class="file-title-name"
             data-container="body"
-            v-html="diffFile.oldPathHtml"
+            v-html="diffFile.old_path_html"
           ></strong>
           →
           <strong
             v-tooltip
-            :title="diffFile.newPath"
+            :title="diffFile.new_path"
             class="file-title-name"
             data-container="body"
-            v-html="diffFile.newPathHtml"
+            v-html="diffFile.new_path_html"
           ></strong>
         </span>
 
@@ -195,16 +195,16 @@ export default {
 
       <clipboard-button
         :title="__('Copy file path to clipboard')"
-        :text="diffFile.filePath"
+        :text="diffFile.file_path"
         :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
       <small
-        v-if="diffFile.modeChanged"
+        v-if="diffFile.mode_changed"
         ref="fileMode"
       >
-        {{ diffFile.aMode }} → {{ diffFile.bMode }}
+        {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
       <span
@@ -220,7 +220,7 @@ export default {
       class="file-actions d-none d-sm-block"
     >
       <template
-        v-if="diffFile.blob && diffFile.blob.readableText"
+        v-if="diffFile.blob && diffFile.blob.readable_text"
       >
         <button
           :disabled="!diffHasDiscussions(diffFile)"
@@ -234,33 +234,33 @@ export default {
         </button>
 
         <edit-button
-          v-if="!diffFile.deletedFile"
+          v-if="!diffFile.deleted_file"
           :can-current-user-fork="canCurrentUserFork"
-          :edit-path="diffFile.editPath"
-          :can-modify-blob="diffFile.canModifyBlob"
+          :edit-path="diffFile.edit_path"
+          :can-modify-blob="diffFile.can_modify_blob"
           @showForkMessage="showForkMessage"
         />
       </template>
 
       <a
-        v-if="diffFile.replacedViewPath"
-        :href="diffFile.replacedViewPath"
+        v-if="diffFile.replaced_view_path"
+        :href="diffFile.replaced_view_path"
         class="btn view-file js-view-file"
         v-html="viewReplacedFileButtonText"
       >
       </a>
       <a
-        :href="diffFile.viewPath"
+        :href="diffFile.view_path"
         class="btn view-file js-view-file"
         v-html="viewFileButtonText"
       >
       </a>
 
       <a
-        v-if="diffFile.externalUrl"
+        v-if="diffFile.external_url"
         v-tooltip
-        :href="diffFile.externalUrl"
-        :title="`View on ${diffFile.formattedExternalUrl}`"
+        :href="diffFile.external_url"
+        :title="`View on ${diffFile.formatted_external_url}`"
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn-file-option"

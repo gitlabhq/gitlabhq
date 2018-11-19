@@ -1,0 +1,5 @@
+---
+title: Fix statement timeouts in RemoveRestrictedTodos migration
+merge_request: 22795
+author:
+type: other

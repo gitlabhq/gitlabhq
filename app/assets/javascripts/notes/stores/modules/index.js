@@ -21,6 +21,7 @@ export default () => ({
     noteableData: {
       current_user: {},
     },
+    commentsDisabled: false,
   },
   actions,
   getters,

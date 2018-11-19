@@ -9,6 +9,7 @@ export default class ClusterService {
       runner: this.options.installRunnerEndpoint,
       prometheus: this.options.installPrometheusEndpoint,
       jupyter: this.options.installJupyterEndpoint,
+      knative: this.options.installKnativeEndpoint,
     };
   }
 

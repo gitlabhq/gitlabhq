@@ -83,7 +83,7 @@ module ImportHelper
   private
 
   def github_project_url(full_path)
-    URI.join(github_root_url, full_path).to_s
+    Gitlab::Utils.append_path(github_root_url, full_path)
   end
 
   def github_root_url
@@ -95,6 +95,6 @@ module ImportHelper
   end
 
   def gitea_project_url(full_path)
-    URI.join(@gitea_host_url, full_path).to_s
+    Gitlab::Utils.append_path(@gitea_host_url, full_path)
   end
 end

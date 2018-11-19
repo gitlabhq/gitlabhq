@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Tooltip from '@gitlab-org/gitlab-ui/dist/directives/tooltip';
+import Tooltip from '@gitlab/ui/dist/directives/tooltip';
 import { __ } from '~/locale';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     ...mapState('diffs', ['commit', 'showTreeList']),
-    ...mapGetters('diffs', ['isInlineView', 'isParallelView', 'areAllFilesCollapsed']),
+    ...mapGetters('diffs', ['isInlineView', 'isParallelView', 'hasCollapsedFile']),
     comparableDiffs() {
       return this.mergeRequestDiffs.slice(1);
     },
@@ -113,8 +113,8 @@ export default {
         class="inline-parallel-buttons d-none d-md-flex ml-auto"
       >
         <a
-          v-if="areAllFilesCollapsed"
-          class="btn btn-default"
+          v-show="hasCollapsedFile"
+          class="btn btn-default append-right-8"
           @click="expandAllFiles"
         >
           {{ __('Expand all') }}

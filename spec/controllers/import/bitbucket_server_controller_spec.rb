@@ -121,12 +121,19 @@ describe Import::BitbucketServerController do
 
       @repo = double(slug: 'vim', project_key: 'asd', full_name: 'asd/vim', "valid?" => true, project_name: 'asd', browse_url: 'http://test', name: 'vim')
       @invalid_repo = double(slug: 'invalid', project_key: 'foobar', full_name: 'asd/foobar', "valid?" => false, browse_url: 'http://bad-repo')
+      @created_repo = double(slug: 'created', project_key: 'existing', full_name: 'group/created', "valid?" => true, browse_url: 'http://existing')
       assign_session_tokens
     end
 
     it 'assigns repository categories' do
-      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id, import_source: 'foo/bar', import_status: 'finished')
-      expect(client).to receive(:repos).and_return([@repo, @invalid_repo])
+      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id, import_status: 'finished', import_source: @created_repo.browse_url)
+      repos = instance_double(BitbucketServer::Collection)
+
+      expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])
+      expect(repos).to receive(:current_page).and_return(1)
+      expect(repos).to receive(:next_page).and_return(2)
+      expect(repos).to receive(:prev_page).and_return(nil)
+      expect(client).to receive(:repos).and_return(repos)
 
       get :status
 

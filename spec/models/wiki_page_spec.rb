@@ -126,23 +126,34 @@ describe WikiPage do
     end
   end
 
-  before do
-    @wiki_attr = { title: "Index", content: "Home Page", format: "markdown" }
-  end
-
   describe "#create" do
+    let(:wiki_attr) do
+      {
+        title: "Index",
+        content: "Home Page",
+        format: "markdown",
+        message: 'Custom Commit Message'
+      }
+    end
+
     after do
       destroy_page("Index")
     end
 
     context "with valid attributes" do
       it "saves the wiki page" do
-        subject.create(@wiki_attr)
+        subject.create(wiki_attr)
         expect(wiki.find_page("Index")).not_to be_nil
       end
 
       it "returns true" do
-        expect(subject.create(@wiki_attr)).to eq(true)
+        expect(subject.create(wiki_attr)).to eq(true)
+      end
+
+      it 'saves the wiki page with message' do
+        subject.create(wiki_attr)
+
+        expect(wiki.find_page("Index").message).to eq 'Custom Commit Message'
       end
     end
   end

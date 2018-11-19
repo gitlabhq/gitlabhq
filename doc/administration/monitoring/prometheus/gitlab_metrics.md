@@ -45,6 +45,7 @@ The following metrics are available:
 | redis_ping_success                | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
 | redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
+| upload_file_does_not_exist        | Counter   | 10.7 in EE, 11.5 in CE  | Number of times an upload record could not find its file |
 | failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
 | successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
 

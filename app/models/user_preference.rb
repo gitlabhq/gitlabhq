@@ -4,7 +4,7 @@ class UserPreference < ActiveRecord::Base
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
-  NOTES_FILTERS = { all_notes: 0, only_comments: 1 }.freeze
+  NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
 
   belongs_to :user
 
@@ -14,7 +14,8 @@ class UserPreference < ActiveRecord::Base
     def notes_filters
       {
         s_('Notes|Show all activity') => NOTES_FILTERS[:all_notes],
-        s_('Notes|Show comments only') => NOTES_FILTERS[:only_comments]
+        s_('Notes|Show comments only') => NOTES_FILTERS[:only_comments],
+        s_('Notes|Show history only') => NOTES_FILTERS[:only_activity]
       }
     end
   end

@@ -28,8 +28,9 @@ describe SendFileUpload do
   describe '#send_upload' do
     let(:controller) { controller_class.new }
     let(:temp_file) { Tempfile.new('test') }
+    let(:params) { {} }
 
-    subject { controller.send_upload(uploader) }
+    subject { controller.send_upload(uploader, **params) }
 
     before do
       FileUtils.touch(temp_file)
@@ -52,7 +53,7 @@ describe SendFileUpload do
     end
 
     context 'with attachment' do
-      let(:send_attachment) { controller.send_upload(uploader, attachment: 'test.js') }
+      let(:params) { { attachment: 'test.js' } }
 
       it 'sends a file with content-type of text/plain' do
         expected_params = {
@@ -62,7 +63,7 @@ describe SendFileUpload do
         }
         expect(controller).to receive(:send_file).with(uploader.path, expected_params)
 
-        send_attachment
+        subject
       end
 
       context 'with a proxied file in object storage' do
@@ -75,7 +76,7 @@ describe SendFileUpload do
 
         it 'sends a file with a custom type' do
           headers = double
-          expected_headers = %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=application/javascript)
+          expected_headers = %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=application/ecmascript)
           expect(Gitlab::Workhorse).to receive(:send_url).with(expected_headers).and_call_original
           expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
 
@@ -83,7 +84,7 @@ describe SendFileUpload do
           expect(controller).to receive(:headers) { headers }
           expect(controller).to receive(:head).with(:ok)
 
-          send_attachment
+          subject
         end
       end
     end
@@ -95,11 +96,7 @@ describe SendFileUpload do
         uploader.store!(temp_file)
       end
 
-      context 'and proxying is enabled' do
-        before do
-          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { true }
-        end
-
+      shared_examples 'proxied file' do
         it 'sends a file' do
           headers = double
           expect(Gitlab::Workhorse).not_to receive(:send_url).with(/response-content-disposition/)
@@ -115,6 +112,14 @@ describe SendFileUpload do
         end
       end
 
+      context 'and proxying is enabled' do
+        before do
+          allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { true }
+        end
+
+        it_behaves_like 'proxied file'
+      end
+
       context 'and proxying is disabled' do
         before do
           allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { false }
@@ -124,6 +129,12 @@ describe SendFileUpload do
           expect(controller).to receive(:redirect_to).with(/#{uploader.path}/)
 
           subject
+        end
+
+        context 'with proxy requested' do
+          let(:params) { { proxy: true } }
+
+          it_behaves_like 'proxied file'
         end
       end
     end

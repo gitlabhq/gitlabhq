@@ -26,6 +26,10 @@ describe BuildActionEntity do
     context 'when job is scheduled' do
       let(:job) { create(:ci_build, :scheduled) }
 
+      it 'returns scheduled' do
+        expect(subject[:scheduled]).to be_truthy
+      end
+
       it 'returns scheduled_at' do
         expect(subject[:scheduled_at]).to eq(job.scheduled_at)
       end

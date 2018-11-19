@@ -3,9 +3,8 @@
 module Gitlab
   module Kubernetes
     class RoleBinding
-      attr_reader :role_name, :namespace, :service_account_name
-
-      def initialize(role_name:, namespace:, service_account_name:)
+      def initialize(name:, role_name:, namespace:, service_account_name:)
+        @name = name
         @role_name = role_name
         @namespace = namespace
         @service_account_name = service_account_name
@@ -21,14 +20,16 @@ module Gitlab
 
       private
 
+      attr_reader :name, :role_name, :namespace, :service_account_name
+
       def metadata
-        { name: "gitlab-#{namespace}", namespace: namespace }
+        { name: name, namespace: namespace }
       end
 
       def role_ref
         {
           apiGroup: 'rbac.authorization.k8s.io',
-          kind: 'Role',
+          kind: 'ClusterRole',
           name: role_name
         }
       end

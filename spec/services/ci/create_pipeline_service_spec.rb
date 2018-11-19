@@ -387,15 +387,24 @@ describe Ci::CreatePipelineService do
 
     context 'with environment' do
       before do
-        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls' })
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME" },
+            script: 'ls',
+            tags: ['hello']
+          })
+
         stub_ci_pipeline_yaml_file(config)
       end
 
-      it 'creates the environment' do
+      it 'creates the environment with tags' do
         result = execute_service
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
+        expect(result.builds.first.tag_list).to contain_exactly('hello')
+        expect(result.builds.first.deployment).to be_persisted
+        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
     end
 
@@ -435,16 +444,34 @@ describe Ci::CreatePipelineService do
     end
 
     context 'when builds with auto-retries are configured' do
-      before do
-        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
-        stub_ci_pipeline_yaml_file(config)
+      context 'as an integer' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['always']
+        end
       end
 
-      it 'correctly creates builds with auto-retry value configured' do
-        pipeline = execute_service
+      context 'as hash' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: { max: 2, when: 'runner_system_failure' } })
+          stub_ci_pipeline_yaml_file(config)
+        end
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['runner_system_failure']
+        end
       end
     end
 
@@ -579,6 +606,54 @@ describe Ci::CreatePipelineService do
       it 'creates a pipeline with specified variables' do
         expect(subject.variables.map { |var| var.slice(:key, :secret_value) })
           .to eq variables_attributes.map(&:with_indifferent_access)
+      end
+    end
+
+    context 'when pipeline has a job with environment' do
+      let(:pipeline) { execute_service }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      context 'when environment name is valid' do
+        let(:config) do
+          {
+            review_app: {
+              script: 'deploy',
+              environment: {
+                name: 'review/${CI_COMMIT_REF_NAME}',
+                url: 'http://${CI_COMMIT_REF_SLUG}-staging.example.com'
+              }
+            }
+          }
+        end
+
+        it 'has a job with environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment.name).to eq('review/master')
+          expect(pipeline.builds.first.deployment).to be_created
+        end
+      end
+
+      context 'when environment name is invalid' do
+        let(:config) do
+          {
+            'job:deploy-to-test-site': {
+              script: 'deploy',
+              environment: {
+                name: '${CI_JOB_NAME}',
+                url: 'https://$APP_URL'
+              }
+            }
+          }
+        end
+
+        it 'has a job without environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment).to be_nil
+          expect(pipeline.builds.first.deployment).to be_nil
+        end
       end
     end
   end

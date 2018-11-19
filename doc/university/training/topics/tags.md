@@ -22,7 +22,7 @@ comments: false
 
 **Additional resources**
 
-[http://git-scm.com/book/en/Git-Basics-Tagging](http://git-scm.com/book/en/Git-Basics-Tagging)
+<https://git-scm.com/book/en/Git-Basics-Tagging>
 
 ----------
 

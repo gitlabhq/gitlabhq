@@ -1,0 +1,5 @@
+---
+title: Adds option to override commit email with a noreply private email
+merge_request: 22560
+author:
+type: added

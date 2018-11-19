@@ -115,6 +115,7 @@ module ApplicationSettingsHelper
       :akismet_api_key,
       :akismet_enabled,
       :allow_local_requests_from_hooks_and_services,
+      :archive_builds_in_human_readable,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
@@ -216,7 +217,8 @@ module ApplicationSettingsHelper
       :user_oauth_applications,
       :version_check_enabled,
       :web_ide_clientside_preview_enabled,
-      :diff_max_patch_bytes
+      :diff_max_patch_bytes,
+      :commit_email_hostname
     ]
   end
 

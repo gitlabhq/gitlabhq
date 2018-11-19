@@ -84,4 +84,6 @@
     = link_to 'import flow', status_import_bitbucket_server_path
     again.
 
+= paginate_without_count(@collection)
+
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_bitbucket_server_path}", import_path: "#{import_bitbucket_server_path}" } }

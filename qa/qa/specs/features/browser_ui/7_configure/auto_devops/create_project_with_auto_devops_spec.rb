@@ -15,21 +15,21 @@ module QA
             Runtime::Browser.visit(:gitlab, Page::Main::Login)
             Page::Main::Login.act { sign_in_using_credentials }
 
-            project = Factory::Resource::Project.fabricate! do |p|
+            project = Resource::Project.fabricate! do |p|
               p.name = 'project-with-autodevops'
               p.description = 'Project with Auto Devops'
             end
 
             # Disable code_quality check in Auto DevOps pipeline as it takes
             # too long and times out the test
-            Factory::Resource::CiVariable.fabricate! do |resource|
+            Resource::CiVariable.fabricate! do |resource|
               resource.project = project
               resource.key = 'CODE_QUALITY_DISABLED'
               resource.value = '1'
             end
 
             # Create Auto Devops compatible repo
-            Factory::Repository::ProjectPush.fabricate! do |push|
+            Resource::Repository::ProjectPush.fabricate! do |push|
               push.project = project
               push.directory = Pathname
                 .new(__dir__)
@@ -41,7 +41,7 @@ module QA
 
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
-            kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |cluster|
+            kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
               cluster.project = project
               cluster.cluster = @cluster
               cluster.install_helm_tiller = true

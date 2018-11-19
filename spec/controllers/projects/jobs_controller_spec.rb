@@ -231,7 +231,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'with deployment' do
         let(:merge_request) { create(:merge_request, source_project: project) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
         it 'exposes the deployment information' do
           expect(response).to have_gitlab_http_status(:ok)

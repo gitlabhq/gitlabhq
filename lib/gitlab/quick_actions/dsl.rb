@@ -31,6 +31,10 @@ module Gitlab
           @description = block_given? ? block : text
         end
 
+        def warning(message = '')
+          @warning = message
+        end
+
         # Allows to define params for the next quick action.
         # These params are shown in the autocomplete menu.
         #
@@ -133,6 +137,7 @@ module Gitlab
             name,
             aliases: aliases,
             description: @description,
+            warning: @warning,
             explanation: @explanation,
             params: @params,
             condition_block: @condition_block,
@@ -150,6 +155,7 @@ module Gitlab
           @explanation = nil
           @params = nil
           @condition_block = nil
+          @warning = nil
           @parse_params_block = nil
         end
       end

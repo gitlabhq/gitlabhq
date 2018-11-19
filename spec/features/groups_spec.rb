@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe 'Group' do
+  let(:user) { create(:admin) }
+
   before do
-    sign_in(create(:admin))
+    sign_in(user)
   end
 
   matcher :have_namespace_error_message do
@@ -14,6 +16,24 @@ describe 'Group' do
   describe 'create a group' do
     before do
       visit new_group_path
+    end
+
+    describe 'as a non-admin' do
+      let(:user) { create(:user) }
+
+      it 'creates a group and persists visibility radio selection', :js do
+        stub_application_setting(default_group_visibility: :private)
+
+        fill_in 'Group name', with: 'test-group'
+        find("input[name='group[visibility_level]'][value='#{Gitlab::VisibilityLevel::PUBLIC}']").click
+        click_button 'Create group'
+
+        group = Group.find_by(name: 'test-group')
+
+        expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+        expect(current_path).to eq(group_path(group))
+        expect(page).to have_selector '.visibility-icon .fa-globe'
+      end
     end
 
     describe 'with space in group path' do

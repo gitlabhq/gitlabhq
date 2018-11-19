@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Finds the diff position in the new diff that corresponds to the same location
 # specified by the provided position in the old diff.
 module Gitlab

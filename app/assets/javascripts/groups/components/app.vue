@@ -8,6 +8,7 @@ import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 
+import { GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '../event_hub';
 import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';
 import groupsComponent from './groups.vue';
@@ -16,6 +17,7 @@ export default {
   components: {
     DeprecatedModal,
     groupsComponent,
+    GlLoadingIcon,
   },
   props: {
     action: {

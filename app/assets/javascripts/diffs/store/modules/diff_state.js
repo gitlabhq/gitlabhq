@@ -24,4 +24,6 @@ export default () => ({
   showTreeList:
     storedTreeShow === null ? bp.getBreakpointSize() !== 'xs' : storedTreeShow === 'true',
   currentDiffFileId: '',
+  projectPath: '',
+  commentForms: [],
 });

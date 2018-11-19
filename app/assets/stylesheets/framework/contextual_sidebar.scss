@@ -322,15 +322,15 @@
   width: $contextual-sidebar-width - 1px;
   transition: width $sidebar-transition-duration;
   position: fixed;
+  height: $toggle-sidebar-height;
   bottom: 0;
-  padding: $gl-padding;
+  padding: 0 $gl-padding;
   background-color: $gray-light;
   border: 0;
   border-top: 1px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
-  line-height: 1;
 
   svg {
     margin-right: 8px;

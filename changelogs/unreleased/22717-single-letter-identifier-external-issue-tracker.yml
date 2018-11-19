@@ -1,0 +1,5 @@
+---
+title: "Allowing issues with single letter identifiers to be linked to external issue tracker (f.ex T-123)"
+merge_request: 22717
+author: Dídac Rodríguez Arbonès
+type: changed

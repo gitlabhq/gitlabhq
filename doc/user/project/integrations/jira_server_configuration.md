@@ -17,17 +17,17 @@ We have split this stage in steps so it is easier to follow.
 
      ![Jira user management link](img/jira_user_management_link.png)
 
-2. The next step is to create a new user (e.g., `gitlab`) who has write access
+1. The next step is to create a new user (e.g., `gitlab`) who has write access
    to projects in Jira. Enter the user's name and a _valid_ e-mail address
    since Jira sends a verification e-mail to set up the password.
    _**Note:** Jira creates the username automatically by using the e-mail
-   prefix. You can change it later, if needed. Our integration does not support SSO (such as SAML). You will need to create 
-    an HTTP basic authentication password. You can do this by visiting the user 
+   prefix. You can change it later, if needed. Our integration does not support SSO (such as SAML). You will need to create
+    an HTTP basic authentication password. You can do this by visiting the user
     profile, looking up the username, and setting a password._
 
      ![Jira create new user](img/jira_create_new_user.png)
 
-3. Create a `gitlab-developers` group which will have write access
+1. Create a `gitlab-developers` group which will have write access
    to projects in Jira. Go to the **Groups** tab and select **Create group**.
 
      ![Jira create new user](img/jira_create_new_group.png)
@@ -36,13 +36,13 @@ We have split this stage in steps so it is easier to follow.
 
      ![Jira create new group](img/jira_create_new_group_name.png)
 
-4. To give the newly-created group 'write' access, go to
+1. To give the newly-created group 'write' access, go to
    **Application access > View configuration** and add the `gitlab-developers`
    group to Jira Core.
 
      ![Jira group access](img/jira_group_access.png)
 
-5. Add the `gitlab` user to the `gitlab-developers` group by going to
+1. Add the `gitlab` user to the `gitlab-developers` group by going to
    **Users > GitLab user > Add group** and selecting the `gitlab-developers`
    group from the dropdown menu. Notice that the group says _Access_, which is
    intended as part of this process.

@@ -98,8 +98,8 @@ describe('Commit component', () => {
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
           component.$el
-            .querySelector('.commit-title .avatar-image-container img')
-            .getAttribute('data-original-title'),
+            .querySelector('.commit-title .avatar-image-container .js-user-avatar-image-toolip')
+            .textContent.trim(),
         ).toContain(props.author.username);
 
         expect(

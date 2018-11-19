@@ -14,7 +14,7 @@ module API
         end
 
         def public_snippets
-          SnippetsFinder.new(current_user, visibility: Snippet::PUBLIC).execute
+          SnippetsFinder.new(current_user, scope: :are_public).execute
         end
       end
 

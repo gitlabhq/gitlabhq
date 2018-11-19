@@ -6,6 +6,7 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
       include EnumWithNil
+      include AfterCommitQueue
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
@@ -25,6 +26,7 @@ module Clusters
         algorithm: 'aes-256-cbc'
 
       before_validation :enforce_namespace_to_lower_case
+      before_validation :enforce_ca_whitespace_trimming
 
       validates :namespace,
         allow_blank: true,
@@ -36,6 +38,8 @@ module Clusters
 
       validates :namespace, exclusion: { in: RESERVED_NAMESPACES }
 
+      validate :no_namespace, unless: :allow_user_defined_namespace?
+
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
@@ -43,12 +47,14 @@ module Clusters
       validate :prevent_modification, on: :update
 
       after_save :clear_reactive_cache!
+      after_update :update_kubernetes_namespace
 
       alias_attribute :ca_pem, :ca_cert
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
       delegate :managed?, to: :cluster, allow_nil: true
+      delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
       delegate :kubernetes_namespace, to: :cluster
 
       alias_method :active?, :enabled?
@@ -67,20 +73,30 @@ module Clusters
         end
       end
 
-      def predefined_variables
-        config = YAML.dump(kubeconfig)
-
+      def predefined_variables(project:)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
-          variables
-            .append(key: 'KUBE_URL', value: api_url)
-            .append(key: 'KUBE_TOKEN', value: token, public: false)
-            .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
-            .append(key: 'KUBECONFIG', value: config, public: false, file: true)
+          variables.append(key: 'KUBE_URL', value: api_url)
 
           if ca_pem.present?
             variables
               .append(key: 'KUBE_CA_PEM', value: ca_pem)
               .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
+          end
+
+          if kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
+            variables.concat(kubernetes_namespace.predefined_variables)
+          else
+            # From 11.5, every Clusters::Project should have at least one
+            # Clusters::KubernetesNamespace, so once migration has been completed,
+            # this 'else' branch will be removed. For more information, please see
+            # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
+            config = YAML.dump(kubeconfig)
+
+            variables
+              .append(key: 'KUBE_URL', value: api_url)
+              .append(key: 'KUBE_TOKEN', value: token, public: false)
+              .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
+              .append(key: 'KUBECONFIG', value: config, public: false, file: true)
           end
         end
       end
@@ -137,7 +153,8 @@ module Clusters
       end
 
       def build_kube_client!
-        raise "Incomplete settings" unless api_url && actual_namespace
+        raise "Incomplete settings" unless api_url
+        raise "No namespace" if cluster.project_type? && actual_namespace.empty?  # can probably remove this line once we remove #actual_namespace
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"
@@ -156,9 +173,7 @@ module Clusters
         kubeclient = build_kube_client!
 
         kubeclient.get_pods(namespace: actual_namespace).as_json
-      rescue Kubeclient::HttpError => err
-        raise err unless err.error_code == 404
-
+      rescue Kubeclient::ResourceNotFoundError
         []
       end
 
@@ -189,6 +204,17 @@ module Clusters
         self.namespace = self.namespace&.downcase
       end
 
+      def enforce_ca_whitespace_trimming
+        self.ca_pem = self.ca_pem&.strip
+        self.token = self.token&.strip
+      end
+
+      def no_namespace
+        if namespace
+          errors.add(:namespace, 'only allowed for project cluster')
+        end
+      end
+
       def prevent_modification
         return unless managed?
 
@@ -198,6 +224,14 @@ module Clusters
         end
 
         true
+      end
+
+      def update_kubernetes_namespace
+        return unless namespace_changed?
+
+        run_after_commit do
+          ClusterPlatformConfigureWorker.perform_async(cluster_id)
+        end
       end
     end
   end

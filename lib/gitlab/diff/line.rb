@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class Line
       SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
 
-      attr_reader :line_code, :type, :index, :old_pos, :new_pos
+      attr_reader :line_code, :type, :old_pos, :new_pos
       attr_writer :rich_text
-      attr_accessor :text
+      attr_accessor :text, :index
 
       def initialize(text, type, index, old_pos, new_pos, parent_file: nil, line_code: nil, rich_text: nil)
         @text, @type, @index = text, type, index
@@ -19,7 +21,14 @@ module Gitlab
       end
 
       def self.init_from_hash(hash)
-        new(hash[:text], hash[:type], hash[:index], hash[:old_pos], hash[:new_pos], line_code: hash[:line_code], rich_text: hash[:rich_text])
+        new(hash[:text],
+            hash[:type],
+            hash[:index],
+            hash[:old_pos],
+            hash[:new_pos],
+            parent_file: hash[:parent_file],
+            line_code: hash[:line_code],
+            rich_text: hash[:rich_text])
       end
 
       def to_hash

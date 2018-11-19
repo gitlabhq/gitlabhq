@@ -92,12 +92,16 @@ In most of the below cases, the notification will be sent to:
 | Reassign issue         | The above, plus the old assignee |
 | Reopen issue           | |
 | Due issue              | Participants and Custom notification level with this event selected |
+| Change milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
+| Remove milestone issue | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New merge request      | |
 | Push to merge request  | Participants and Custom notification level with this event selected |
 | Reassign merge request | The above, plus the old assignee |
 | Close merge request    | |
 | Reopen merge request   | |
 | Merge merge request    | |
+| Change milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
+| Remove milestone merge request | Subscribers, participants mentioned, and Custom notification level with this event selected |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
 | Failed pipeline        | The author of the pipeline |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |

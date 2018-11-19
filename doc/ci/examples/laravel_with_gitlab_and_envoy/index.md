@@ -120,12 +120,12 @@ Now, let's add it to your GitLab project as a [variable](../../variables/README.
 Variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
-![variables page](img/secret_variables_page.png)
-
 To the field **KEY**, add the name `SSH_PRIVATE_KEY`, and to the **VALUE** field, paste the private key you've copied earlier.
 We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our remote server as the deployer user without entering its password.
 
-We also need to add the public key to **Project** > **Settings** > **Repository** as [Deploy Keys](../../../ssh/README.md#deploy-keys), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
+![variables page](img/variables_page.png)
+
+We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../ssh/README.md#deploy-keys), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 
 ```bash
@@ -135,9 +135,9 @@ We also need to add the public key to **Project** > **Settings** > **Repository*
 cat ~/.ssh/id_rsa.pub
 ```
 
-![deploy keys page](img/deploy_keys_page.png)
-
 To the field **Title**, add any name you want, and paste the public key into the **Key** field.
+
+![deploy keys page](img/deploy_keys_page.png)
 
 Now, let's clone our repository on the server just to make sure the `deployer` user has access to the repository.
 
@@ -444,9 +444,7 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to [enable Container Registry](../../../user/project/container_registry.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Sharing and permissions**.
-
-![container registry checkbox](img/container_registry_checkbox.png)
+You may need to [enable Container Registry](../../../user/project/container_registry.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Permissions**.
 
 To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password:
 

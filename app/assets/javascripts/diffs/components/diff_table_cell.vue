@@ -96,9 +96,7 @@ export default {
       };
     },
     lineNumber() {
-      const { lineType } = this;
-
-      return lineType === OLD_LINE_TYPE ? this.line.oldLine : this.line.newLine;
+      return this.lineType === OLD_LINE_TYPE ? this.line.old_line : this.line.new_line;
     },
   },
 };

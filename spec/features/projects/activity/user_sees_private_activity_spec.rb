@@ -5,7 +5,7 @@ describe 'Project > Activity > User sees private activity', :js do
   let(:author) { create(:user) }
   let(:user) { create(:user) }
   let(:issue) { create(:issue, :confidential, project: project, author: author) }
-  let(:message) { "#{author.name} opened issue #{issue.to_reference}" }
+  let(:message) { "#{author.name} #{author.to_reference} opened issue #{issue.to_reference}" }
 
   before do
     project.add_developer(author)

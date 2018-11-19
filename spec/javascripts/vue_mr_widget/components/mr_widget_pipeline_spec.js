@@ -73,7 +73,7 @@ describe('MRWidgetPipeline', () => {
       });
 
       expect(vm.$el.querySelector('.media-body').textContent.trim()).toContain(
-        'Could not retrieve the pipeline status. For troubleshooting steps, read the <a href="help">documentation.</a>',
+        'Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.',
       );
     });
 

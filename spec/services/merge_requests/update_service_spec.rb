@@ -315,7 +315,42 @@ describe MergeRequests::UpdateService, :mailer do
         end
       end
 
-      context 'when the milestone change' do
+      context 'when the milestone is removed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            merge_request.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
+        it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          merge_request.milestone = create(:milestone)
+
+          merge_request.save
+
+          perform_enqueued_jobs do
+            update_merge_request(milestone_id: "")
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+
+      context 'when the milestone is changed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            merge_request.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
         it 'marks pending todos as done' do
           update_merge_request({ milestone: create(:milestone) })
 
@@ -323,6 +358,15 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          perform_enqueued_jobs do
+            update_merge_request(milestone: create(:milestone))
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
       end
 
       context 'when the labels change' do
@@ -549,8 +593,8 @@ describe MergeRequests::UpdateService, :mailer do
     end
 
     context 'setting `allow_collaboration`' do
-      let(:target_project) { create(:project, :public) }
-      let(:source_project) { fork_project(target_project) }
+      let(:target_project) { create(:project, :repository, :public) }
+      let(:source_project) { fork_project(target_project, nil, repository: true) }
       let(:user) { create(:user) }
       let(:merge_request) do
         create(:merge_request,

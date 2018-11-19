@@ -8,7 +8,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
+- Team: ~Plan, ~Manage, ~Quality, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
@@ -61,7 +61,6 @@ people.
 The current team labels are:
 
 - ~Configure
-- ~"CI/CD"
 - ~Create
 - ~Distribution
 - ~Documentation
@@ -74,6 +73,7 @@ The current team labels are:
 - ~Release
 - ~Secure
 - ~UX
+- ~Verify
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.

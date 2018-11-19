@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      isFetching: false,
       currentFilter: null,
     };
   },
@@ -60,6 +61,7 @@ export default {
       'getNotesDataByProp',
       'discussionCount',
       'isLoading',
+      'commentsDisabled',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -120,6 +122,7 @@ export default {
       setTargetNoteHash: 'setTargetNoteHash',
       toggleDiscussion: 'toggleDiscussion',
       setNotesFetchedState: 'setNotesFetchedState',
+      startTaskList: 'startTaskList',
     }),
     getComponentName(discussion) {
       if (discussion.isSkeletonNote) {
@@ -140,6 +143,10 @@ export default {
       return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
+      if (this.isFetching) return null;
+
+      this.isFetching = true;
+
       return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
           this.initPolling();
@@ -148,8 +155,10 @@ export default {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
+          this.isFetching = false;
         })
         .then(() => this.$nextTick())
+        .then(() => this.startTaskList())
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.setLoadingState(false);
@@ -206,6 +215,7 @@ export default {
     </ul>
 
     <comment-form
+      v-if="!commentsDisabled"
       :noteable-type="noteableType"
       :markdown-version="markdownVersion"
     />

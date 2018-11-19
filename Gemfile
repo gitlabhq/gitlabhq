@@ -1,6 +1,6 @@
 # --- Special code for migrating to Rails 5.0 ---
 def rails5?
-  %w[1 true].include?(ENV["RAILS5"])
+  !%w[0 false].include?(ENV["RAILS5"])
 end
 
 gem_versions = {}
@@ -14,6 +14,9 @@ source 'https://rubygems.org'
 
 gem 'rails', gem_versions['rails']
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+
+# Improves copy-on-write performance for MRI
+gem 'nakayoshi_fork', '~> 0.0.4'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -124,7 +127,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.6.4'
+gem 'gitlab-markup', '~> 1.6.5'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
@@ -133,7 +136,7 @@ gem 'rdoc', '~> 6.0'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
-gem 'asciidoctor', '~> 1.5.6'
+gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
@@ -203,6 +206,9 @@ gem 'redis-rails', '~> 5.0.2'
 # Redis
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
+
+# Discord integration
+gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
@@ -312,7 +318,7 @@ group :development do
 
   # Better errors handler
   gem 'better_errors', '~> 2.1.0'
-  gem 'binding_of_caller', '~> 0.7.2'
+  gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
@@ -339,7 +345,7 @@ group :development, :test do
   gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
-  gem 'ffaker', '~> 2.4'
+  gem 'ffaker', '~> 2.10'
 
   gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
@@ -354,14 +360,14 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
-  gem 'haml_lint', '~> 0.26.0', require: false
+  gem 'haml_lint', '~> 0.28.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 5.4', require: false
-  gem 'knapsack', '~> 1.16'
+  gem 'knapsack', '~> 1.17'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 
@@ -416,7 +422,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.118.1', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.123.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'
@@ -431,6 +437,3 @@ gem 'flipper-active_support_cache_store', '~> 0.13.0'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
-
-# Asset synchronization
-gem 'asset_sync', '~> 2.4'

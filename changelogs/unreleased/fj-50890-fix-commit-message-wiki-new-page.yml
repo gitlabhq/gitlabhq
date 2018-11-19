@@ -1,0 +1,5 @@
+---
+title: Fix bug with wiki page create message
+merge_request: 22849
+author:
+type: fixed

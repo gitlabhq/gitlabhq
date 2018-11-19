@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module MergeRequest
@@ -23,8 +25,38 @@ module QA
           element :squash_checkbox
         end
 
+        view 'app/views/projects/merge_requests/show.html.haml' do
+          element :notes_tab
+          element :diffs_tab
+        end
+
+        view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
+          element :diff_comment
+        end
+
+        view 'app/assets/javascripts/notes/components/comment_form.vue' do
+          element :note_dropdown
+          element :discussion_option
+        end
+
+        view 'app/assets/javascripts/notes/components/note_form.vue' do
+          element :reply_input
+        end
+
+        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+          element :discussion_reply
+        end
+
+        view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
+          element :new_diff_line
+        end
+
         view 'app/views/shared/issuable/_sidebar.html.haml' do
           element :labels_block
+        end
+
+        view 'app/views/projects/merge_requests/_mr_title.html.haml' do
+          element :edit_button
         end
 
         def fast_forward_possible?
@@ -105,6 +137,39 @@ module QA
           end
 
           click_element :squash_checkbox
+        end
+
+        def go_to_discussions_tab
+          click_element :notes_tab
+        end
+
+        def go_to_diffs_tab
+          click_element :diffs_tab
+        end
+
+        def add_comment_to_diff(text)
+          wait(time: 5) do
+            page.has_text?("No newline at end of file")
+          end
+          all_elements(:new_diff_line).first.hover
+          click_element :diff_comment
+          fill_element :reply_input, text
+        end
+
+        def start_discussion(text)
+          fill_element :comment_input, text
+          click_element :note_dropdown
+          click_element :discussion_option
+          click_element :comment_button
+        end
+
+        def reply_to_discussion(reply_text)
+          all_elements(:discussion_reply).last.click
+          fill_element :reply_input, reply_text
+        end
+
+        def edit!
+          click_element :edit_button
         end
       end
     end

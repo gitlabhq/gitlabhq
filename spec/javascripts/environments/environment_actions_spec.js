@@ -1,15 +1,19 @@
 import Vue from 'vue';
-import actionsComp from '~/environments/components/environment_actions.vue';
+import eventHub from '~/environments/event_hub';
+import EnvironmentActions from '~/environments/components/environment_actions.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'spec/test_constants';
 
-describe('Actions Component', () => {
-  let ActionsComponent;
-  let actionsMock;
-  let component;
+describe('EnvironmentActions Component', () => {
+  const Component = Vue.extend(EnvironmentActions);
+  let vm;
 
-  beforeEach(() => {
-    ActionsComponent = Vue.extend(actionsComp);
+  afterEach(() => {
+    vm.$destroy();
+  });
 
-    actionsMock = [
+  describe('manual actions', () => {
+    const actions = [
       {
         name: 'bar',
         play_path: 'https://gitlab.com/play',
@@ -25,43 +29,89 @@ describe('Actions Component', () => {
       },
     ];
 
-    component = new ActionsComponent({
-      propsData: {
-        actions: actionsMock,
-      },
-    }).$mount();
-  });
+    beforeEach(() => {
+      vm = mountComponent(Component, { actions });
+    });
 
-  describe('computed', () => {
-    it('title', () => {
-      expect(component.title).toEqual('Deploy to...');
+    it('should render a dropdown button with icon and title attribute', () => {
+      expect(vm.$el.querySelector('.fa-caret-down')).toBeDefined();
+      expect(vm.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual(
+        'Deploy to...',
+      );
+
+      expect(vm.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual(
+        'Deploy to...',
+      );
+    });
+
+    it('should render a dropdown with the provided list of actions', () => {
+      expect(vm.$el.querySelectorAll('.dropdown-menu li').length).toEqual(actions.length);
+    });
+
+    it("should render a disabled action when it's not playable", () => {
+      expect(
+        vm.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
+      ).toEqual('disabled');
+
+      expect(
+        vm.$el.querySelector('.dropdown-menu li:last-child button').classList.contains('disabled'),
+      ).toEqual(true);
     });
   });
 
-  it('should render a dropdown button with icon and title attribute', () => {
-    expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
-    expect(
-      component.$el.querySelector('.dropdown-new').getAttribute('data-original-title'),
-    ).toEqual('Deploy to...');
+  describe('scheduled jobs', () => {
+    const scheduledJobAction = {
+      name: 'scheduled action',
+      playPath: `${TEST_HOST}/scheduled/job/action`,
+      playable: true,
+      scheduledAt: '2063-04-05T00:42:00Z',
+    };
+    const expiredJobAction = {
+      name: 'expired action',
+      playPath: `${TEST_HOST}/expired/job/action`,
+      playable: true,
+      scheduledAt: '2018-10-05T08:23:00Z',
+    };
+    const findDropdownItem = action => {
+      const buttons = vm.$el.querySelectorAll('.dropdown-menu li button');
+      return Array.prototype.find.call(buttons, element =>
+        element.innerText.trim().startsWith(action.name),
+      );
+    };
 
-    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual(
-      'Deploy to...',
-    );
-  });
+    beforeEach(() => {
+      spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
+      vm = mountComponent(Component, { actions: [scheduledJobAction, expiredJobAction] });
+    });
 
-  it('should render a dropdown with the provided list of actions', () => {
-    expect(component.$el.querySelectorAll('.dropdown-menu li').length).toEqual(actionsMock.length);
-  });
+    it('emits postAction event after confirming', () => {
+      const emitSpy = jasmine.createSpy('emit');
+      eventHub.$on('postAction', emitSpy);
+      spyOn(window, 'confirm').and.callFake(() => true);
 
-  it("should render a disabled action when it's not playable", () => {
-    expect(
-      component.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
-    ).toEqual('disabled');
+      findDropdownItem(scheduledJobAction).click();
 
-    expect(
-      component.$el
-        .querySelector('.dropdown-menu li:last-child button')
-        .classList.contains('disabled'),
-    ).toEqual(true);
+      expect(window.confirm).toHaveBeenCalled();
+      expect(emitSpy).toHaveBeenCalledWith({ endpoint: scheduledJobAction.playPath });
+    });
+
+    it('does not emit postAction event if confirmation is cancelled', () => {
+      const emitSpy = jasmine.createSpy('emit');
+      eventHub.$on('postAction', emitSpy);
+      spyOn(window, 'confirm').and.callFake(() => false);
+
+      findDropdownItem(scheduledJobAction).click();
+
+      expect(window.confirm).toHaveBeenCalled();
+      expect(emitSpy).not.toHaveBeenCalled();
+    });
+
+    it('displays the remaining time in the dropdown', () => {
+      expect(findDropdownItem(scheduledJobAction)).toContainText('24:00:00');
+    });
+
+    it('displays 00:00:00 for expired jobs in the dropdown', () => {
+      expect(findDropdownItem(expiredJobAction)).toContainText('00:00:00');
+    });
   });
 });

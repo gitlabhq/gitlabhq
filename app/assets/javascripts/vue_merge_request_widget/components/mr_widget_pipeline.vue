@@ -71,6 +71,7 @@ export default {
           linkStart: `<a href="${this.troubleshootingDocsPath}">`,
           linkEnd: '</a>',
         },
+        false,
       );
     },
   },

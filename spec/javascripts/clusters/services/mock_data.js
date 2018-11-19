@@ -33,6 +33,11 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.INSTALLING,
             status_reason: 'Cannot connect',
           },
+          {
+            name: 'knative',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: 'Cannot connect',
+          },
         ],
       },
     },
@@ -67,6 +72,11 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.INSTALLABLE,
             status_reason: 'Cannot connect',
           },
+          {
+            name: 'knative',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: 'Cannot connect',
+          },
         ],
       },
     },
@@ -77,6 +87,7 @@ const CLUSTERS_MOCK_DATA = {
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/knative': {},
   },
 };
 

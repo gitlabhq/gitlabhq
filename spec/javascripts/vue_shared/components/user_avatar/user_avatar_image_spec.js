@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { placeholderImage } from '~/lazy_loader';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
 
 const DEFAULT_PROPS = {
   size: 99,
@@ -32,18 +32,12 @@ describe('User Avatar Image Component', function() {
     });
 
     it('should have <img> as a child element', function() {
-      expect(vm.$el.tagName).toBe('IMG');
-      expect(vm.$el.getAttribute('src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
-      expect(vm.$el.getAttribute('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
-      expect(vm.$el.getAttribute('alt')).toBe(DEFAULT_PROPS.imgAlt);
-    });
+      const imageElement = vm.$el.querySelector('img');
 
-    it('should properly compute tooltipContainer', function() {
-      expect(vm.tooltipContainer).toBe('body');
-    });
-
-    it('should properly render tooltipContainer', function() {
-      expect(vm.$el.getAttribute('data-container')).toBe('body');
+      expect(imageElement).not.toBe(null);
+      expect(imageElement.getAttribute('src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+      expect(imageElement.getAttribute('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+      expect(imageElement.getAttribute('alt')).toBe(DEFAULT_PROPS.imgAlt);
     });
 
     it('should properly compute avatarSizeClass', function() {
@@ -51,7 +45,7 @@ describe('User Avatar Image Component', function() {
     });
 
     it('should properly render img css', function() {
-      const { classList } = vm.$el;
+      const { classList } = vm.$el.querySelector('img');
       const containsAvatar = classList.contains('avatar');
       const containsSizeClass = classList.contains('s99');
       const containsCustomClass = classList.contains(DEFAULT_PROPS.cssClasses);
@@ -73,12 +67,41 @@ describe('User Avatar Image Component', function() {
     });
 
     it('should add lazy attributes', function() {
-      const { classList } = vm.$el;
-      const lazyClass = classList.contains('lazy');
+      const imageElement = vm.$el.querySelector('img');
+      const lazyClass = imageElement.classList.contains('lazy');
 
       expect(lazyClass).toBe(true);
-      expect(vm.$el.getAttribute('src')).toBe(placeholderImage);
-      expect(vm.$el.getAttribute('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+      expect(imageElement.getAttribute('src')).toBe(placeholderImage);
+      expect(imageElement.getAttribute('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+    });
+  });
+
+  describe('dynamic tooltip content', () => {
+    const props = DEFAULT_PROPS;
+    const slots = {
+      default: ['Action!'],
+    };
+
+    beforeEach(() => {
+      vm = mountComponentWithSlots(UserAvatarImage, { props, slots }).$mount();
+    });
+
+    it('renders the tooltip slot', () => {
+      expect(vm.$el.querySelector('.js-user-avatar-image-toolip')).not.toBe(null);
+    });
+
+    it('renders the tooltip content', () => {
+      expect(vm.$el.querySelector('.js-user-avatar-image-toolip').textContent).toContain(
+        slots.default[0],
+      );
+    });
+
+    it('does not render tooltip data attributes for on avatar image', () => {
+      const avatarImg = vm.$el.querySelector('img');
+
+      expect(avatarImg.dataset.originalTitle).not.toBeDefined();
+      expect(avatarImg.dataset.placement).not.toBeDefined();
+      expect(avatarImg.dataset.container).not.toBeDefined();
     });
   });
 });

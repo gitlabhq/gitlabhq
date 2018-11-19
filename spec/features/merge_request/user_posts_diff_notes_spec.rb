@@ -85,12 +85,13 @@ describe 'Merge request > User posts diff notes', :js do
       # `.line_holder` will be an unfolded line.
       let(:line_holder) { first('#a5cc2925ca8258af241be7e5b0381edf30266302 .line_holder') }
 
-      it 'does not allow commenting on the left side' do
-        should_not_allow_commenting(line_holder, 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(line_holder, 'left')
       end
 
-      it 'does not allow commenting on the right side' do
-        should_not_allow_commenting(line_holder, 'right')
+      it 'allows commenting on the right side' do
+        # Automatically shifts comment box to left side.
+        should_allow_commenting(line_holder, 'right')
       end
     end
   end
@@ -147,8 +148,8 @@ describe 'Merge request > User posts diff notes', :js do
       # `.line_holder` will be an unfolded line.
       let(:line_holder) { first('.line_holder[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
 
-      it 'does not allow commenting' do
-        should_not_allow_commenting line_holder
+      it 'allows commenting' do
+        should_allow_commenting line_holder
       end
     end
 

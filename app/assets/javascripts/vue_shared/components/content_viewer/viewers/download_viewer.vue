@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab/ui';
 import Icon from '../../icon.vue';
 import { numberToHumanSize } from '../../../../lib/utils/number_utils';
 

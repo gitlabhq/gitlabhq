@@ -46,6 +46,21 @@ describe EmailReceiverWorker, :mailer do
           should_not_email_anyone
         end
       end
+
+      context 'when the error is Gitlab::Email::InvalidAttachment' do
+        let(:error) { Gitlab::Email::InvalidAttachment.new("Could not deal with that") }
+
+        it 'reports the error to the sender' do
+          perform_enqueued_jobs do
+            described_class.new.perform(raw_message)
+          end
+
+          email = ActionMailer::Base.deliveries.last
+          expect(email).not_to be_nil
+          expect(email.to).to eq(["jake@adventuretime.ooo"])
+          expect(email.body.parts.last.to_s).to include("Could not deal with that")
+        end
+      end
     end
   end
 

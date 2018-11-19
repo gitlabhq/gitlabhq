@@ -198,6 +198,7 @@ project:
 - last_event
 - services
 - campfire_service
+- discord_service
 - drone_ci_service
 - emails_on_push_service
 - pipelines_email_service
@@ -299,6 +300,7 @@ project:
 - ci_cd_settings
 - import_export_upload
 - repository_languages
+- pool_repository
 award_emoji:
 - awardable
 - user

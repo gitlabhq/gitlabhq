@@ -9,7 +9,7 @@ import eventHub from './event_hub';
 import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
-import applications from './components/applications.vue';
+import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
 
 /**
@@ -28,8 +28,10 @@ export default class Clusters {
       installIngressPath,
       installRunnerPath,
       installJupyterPath,
+      installKnativePath,
       installPrometheusPath,
       managePrometheusPath,
+      clusterType,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -49,6 +51,7 @@ export default class Clusters {
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
+      installKnativeEndpoint: installKnativePath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -65,7 +68,7 @@ export default class Clusters {
     initDismissableCallout('.js-cluster-security-warning');
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
-    this.initApplications();
+    this.initApplications(clusterType);
 
     if (this.store.state.status !== 'created') {
       this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
@@ -77,23 +80,21 @@ export default class Clusters {
     }
   }
 
-  initApplications() {
+  initApplications(type) {
     const { store } = this;
     const el = document.querySelector('#js-cluster-applications');
 
     this.applications = new Vue({
       el,
-      components: {
-        applications,
-      },
       data() {
         return {
           state: store.state,
         };
       },
       render(createElement) {
-        return createElement('applications', {
+        return createElement(Applications, {
           props: {
+            type,
             applications: this.state.applications,
             helpPath: this.state.helpPath,
             ingressHelpPath: this.state.ingressHelpPath,

@@ -21,7 +21,7 @@ const getAvatarElement = vm => vm.$el.querySelector('.user-avatar-link');
 const getCommitterElement = vm => vm.$el.querySelector('.commiter');
 const getCommitActionsElement = vm => vm.$el.querySelector('.commit-actions');
 
-describe('diffs/components/commit_widget', () => {
+describe('diffs/components/commit_item', () => {
   const Component = Vue.extend(CommitItem);
   const timeago = getTimeago();
   const { commit } = getDiffWithCommit();
@@ -37,15 +37,15 @@ describe('diffs/components/commit_widget', () => {
   it('renders commit title', () => {
     const titleElement = getTitleElement(vm);
 
-    expect(titleElement).toHaveAttr('href', commit.commitUrl);
-    expect(titleElement).toHaveText(commit.titleHtml);
+    expect(titleElement).toHaveAttr('href', commit.commit_url);
+    expect(titleElement).toHaveText(commit.title_html);
   });
 
   it('renders commit description', () => {
     const descElement = getDescElement(vm);
     const descExpandElement = getDescExpandElement(vm);
 
-    const expected = commit.descriptionHtml.replace(/&#x000A;/g, '');
+    const expected = commit.description_html.replace(/&#x000A;/g, '');
 
     expect(trimText(descElement.innerHTML)).toEqual(trimText(expected));
     expect(descExpandElement).not.toBeNull();
@@ -56,7 +56,7 @@ describe('diffs/components/commit_widget', () => {
     const labelElement = shaElement.querySelector('.label');
     const buttonElement = shaElement.querySelector('button');
 
-    expect(labelElement.textContent).toEqual(commit.shortId);
+    expect(labelElement.textContent).toEqual(commit.short_id);
     expect(buttonElement).toHaveData('clipboard-text', commit.id);
   });
 
@@ -64,27 +64,27 @@ describe('diffs/components/commit_widget', () => {
     const avatarElement = getAvatarElement(vm);
     const imgElement = avatarElement.querySelector('img');
 
-    expect(avatarElement).toHaveAttr('href', commit.author.webUrl);
+    expect(avatarElement).toHaveAttr('href', commit.author.web_url);
     expect(imgElement).toHaveClass('s36');
     expect(imgElement).toHaveAttr('alt', commit.author.name);
-    expect(imgElement).toHaveAttr('src', commit.author.avatarUrl);
+    expect(imgElement).toHaveAttr('src', commit.author.avatar_url);
   });
 
   it('renders committer text', () => {
     const committerElement = getCommitterElement(vm);
     const nameElement = committerElement.querySelector('a');
 
-    const expectTimeText = timeago.format(commit.authoredDate);
+    const expectTimeText = timeago.format(commit.authored_date);
     const expectedText = `${commit.author.name} authored ${expectTimeText}`;
 
     expect(trimText(committerElement.textContent)).toEqual(expectedText);
-    expect(nameElement).toHaveAttr('href', commit.author.webUrl);
+    expect(nameElement).toHaveAttr('href', commit.author.web_url);
     expect(nameElement).toHaveText(commit.author.name);
   });
 
   describe('without commit description', () => {
     beforeEach(done => {
-      vm.commit.descriptionHtml = '';
+      vm.commit.description_html = '';
 
       vm.$nextTick()
         .then(done)
@@ -103,9 +103,9 @@ describe('diffs/components/commit_widget', () => {
   describe('with no matching user', () => {
     beforeEach(done => {
       vm.commit.author = null;
-      vm.commit.authorEmail = TEST_AUTHOR_EMAIL;
-      vm.commit.authorName = TEST_AUTHOR_NAME;
-      vm.commit.authorGravatarUrl = TEST_AUTHOR_GRAVATAR;
+      vm.commit.author_email = TEST_AUTHOR_EMAIL;
+      vm.commit.author_name = TEST_AUTHOR_NAME;
+      vm.commit.author_gravatar_url = TEST_AUTHOR_GRAVATAR;
 
       vm.$nextTick()
         .then(done)
@@ -132,7 +132,7 @@ describe('diffs/components/commit_widget', () => {
 
   describe('with signature', () => {
     beforeEach(done => {
-      vm.commit.signatureHtml = TEST_SIGNATURE_HTML;
+      vm.commit.signature_html = TEST_SIGNATURE_HTML;
 
       vm.$nextTick()
         .then(done)
@@ -148,7 +148,7 @@ describe('diffs/components/commit_widget', () => {
 
   describe('with pipeline status', () => {
     beforeEach(done => {
-      vm.commit.pipelineStatusPath = TEST_PIPELINE_STATUS_PATH;
+      vm.commit.pipeline_status_path = TEST_PIPELINE_STATUS_PATH;
 
       vm.$nextTick()
         .then(done)

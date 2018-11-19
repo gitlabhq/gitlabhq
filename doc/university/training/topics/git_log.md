@@ -46,11 +46,11 @@ Git log lists commit history. It allows searching and filtering.
 ## Git Log Workflow
 
 1. Change to workspace directory
-2. Clone the multi runner projects
-3. Change to project dir
-4. Search by author
-5. Search by date
-6. Combine
+1. Clone the multi runner projects
+1. Change to project dir
+1. Search by author
+1. Search by date
+1. Combine
 
 ----------
 

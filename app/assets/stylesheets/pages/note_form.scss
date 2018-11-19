@@ -176,8 +176,10 @@
   background-color: $white-light;
 }
 
-.discussion-form-container {
-  padding: $gl-padding-top $gl-padding $gl-padding;
+table {
+  .discussion-form-container {
+    padding: $gl-padding-top $gl-padding $gl-padding;
+  }
 }
 
 .discussion-notes .disabled-comment {
@@ -239,6 +241,7 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+    border-radius: 0 0 3px 3px;
 
     &.is-replying {
       padding-bottom: $gl-padding;
@@ -247,10 +250,15 @@
 }
 
 .discussion-with-resolve-btn {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
+
+
   .discussion-actions {
     display: table;
 
-    .btn-default path {
+    svg {
       fill: $gray-darkest;
     }
 
@@ -269,6 +277,12 @@
 
   .btn {
     width: 100%;
+  }
+
+  .btn-text-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
+    }
   }
 }
 

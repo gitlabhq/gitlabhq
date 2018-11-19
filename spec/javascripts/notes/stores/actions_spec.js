@@ -396,6 +396,9 @@ describe('Actions Notes Store', () => {
             {
               type: 'updateMergeRequestWidget',
             },
+            {
+              type: 'startTaskList',
+            },
           ],
           done,
         );
@@ -507,6 +510,19 @@ describe('Actions Notes Store', () => {
       actions.updateMergeRequestWidget();
 
       expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
+    });
+  });
+
+  describe('setCommentsDisabled', () => {
+    it('should set comments disabled state', done => {
+      testAction(
+        actions.setCommentsDisabled,
+        true,
+        null,
+        [{ type: 'DISABLE_COMMENTS', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });

@@ -45,7 +45,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
+          .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs, metrics: [:latest_closed_by, :merged_by])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

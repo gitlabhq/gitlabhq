@@ -478,6 +478,20 @@ module Ci
           it_behaves_like 'validation is not active'
         end
       end
+
+      context 'when build is degenerated' do
+        let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
+
+        subject { execute(specific_runner, {}) }
+
+        it 'does not pick the build and drops the build' do
+          expect(subject).to be_nil
+
+          pending_job.reload
+          expect(pending_job).to be_failed
+          expect(pending_job).to be_archived_failure
+        end
+      end
     end
 
     describe '#register_success' do

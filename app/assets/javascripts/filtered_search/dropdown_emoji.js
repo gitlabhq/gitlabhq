@@ -69,10 +69,13 @@ export default class DropdownEmoji extends FilteredSearchDropdown {
     // Replace empty gl-emoji tag to real content
     const dropdownItems = [...this.dropdown.querySelectorAll('.filter-dropdown-item')];
     dropdownItems.forEach(dropdownItem => {
-      const name = dropdownItem.querySelector('.js-data-value').innerText;
-      const emojiTag = this.glEmojiTag(name);
-      const emojiElement = dropdownItem.querySelector('gl-emoji');
-      emojiElement.outerHTML = emojiTag;
+      const valueElement = dropdownItem.querySelector('.js-data-value');
+      if (valueElement !== null) {
+        const name = valueElement.innerText;
+        const emojiTag = this.glEmojiTag(name);
+        const emojiElement = dropdownItem.querySelector('gl-emoji');
+        emojiElement.outerHTML = emojiTag;
+      }
     });
   }
 

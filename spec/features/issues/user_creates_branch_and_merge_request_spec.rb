@@ -55,11 +55,11 @@ describe 'User creates branch and merge request on issue page', :js do
           test_branch_name_checking(input_branch_name)
           test_source_checking(input_source)
 
-          # The button inside dropdown should be disabled if any errors occured.
+          # The button inside dropdown should be disabled if any errors occurred.
           expect(page).to have_button('Create branch', disabled: true)
         end
 
-        # The top level button should be disabled if any errors occured.
+        # The top level button should be disabled if any errors occurred.
         expect(page).to have_button('Create branch', disabled: true)
       end
 

@@ -10,17 +10,15 @@ GitLab documentation. Check the
 
 Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
-For help adhering to the guidelines, see [Linting](index.md#linting).
+For help adhering to the guidelines, see [linting](index.md#linting).
 
 ## Files
 
 - [Directory structure](index.md#location-and-naming-documents): place the docs
 in the correct location.
 - [Documentation files](index.md#documentation-files): name the files accordingly.
-- [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
-documentation.
 
-NOTE: **Note:**
+DANGER: **Attention:**
 **Do not** use capital letters, spaces, or special chars in file names,
 branch names, directory names, headings, or in anything that generates a path.
 
@@ -28,65 +26,144 @@ NOTE: **Note:**
 **Do not** create new `README.md` files, name them `index.md` instead. There's
 a test that will fail if it spots a new `README.md` file.
 
-## Text
+### Markdown
 
-- Split up long lines (wrap text), this makes it much easier to review and edit. Only
-  double line breaks are shown as a full line break in [GitLab markdown][gfm].
-  80-100 characters is a good line length.
+The [documentation website](https://docs.gitlab.com) had its markdown engine migrated from [Redcarpet to GitLab Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
+in October, 2018.
+
+The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
+gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
+use regular markdown markup, following the rules on this style guide. For a complete
+Kramdown reference, check the [GiLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
+Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}`) as it will not render properly in
+[`/help`](#gitlab-help).
+
+## Content
+
 - Make sure that the documentation is added in the correct
-  [directory](index.md#documentation-directory-structure) and that
-  there's a link to it somewhere useful.
+  [directory](index.md#documentation-directory-structure), linked from its
+  higher-level index, and linked from other related pages.
 - Do not duplicate information.
 - Be brief and clear.
-- Unless there's a logical reason not to, add documents in alphabetical order.
+- Unless there's a logical reason not to, structure the document in alphabetical order
+(headings, tables, and lists).
 - Write in US English.
-- Use [single spaces][] instead of double spaces.
-- Jump a line between different markups (e.g., after every paragraph, header, list, etc)
 - Capitalize "G" and "L" in GitLab.
-- Use sentence case for titles, headings, labels, menu items, and buttons.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
 [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
 Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
 (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-some features are also objects (e.g. "Merge Requests" and "merge requests").
+some features are also objects (e.g. "GitLab's Merge Requests support X." and "Create a new merge request for Z.").
 
-## Formatting
+## Text
 
-- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
-- Use undescore (`_`) for text in italics (`_italic_`).
-- Put an empty line between different markups. For example:
+- Split up long lines (wrap text), this makes it much easier to review and edit. Only
+  double line breaks are shown as a full line break by creating new paragraphs.
+  80-100 characters is the recommended line length.
+- Use sentence case for titles, headings, labels, menu items, and buttons.
+- Jump a line between different markups (e.g., after every paragraph, header, list, etc). Example:
+
     ```md
     ## Header
 
     Paragraph.
 
-    - List item
-    - List item
+    - List item 1
+    - List item 2
     ```
 
-### Punctuation
+## Emphasis
 
-For punctuation rules, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
+- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
+- Use undescore (`_`) for text in italics (`_italic_`).
+- Use greater than (`>`) for blockquotes.
 
-### Ordered and unordered lists
+## Punctuation
 
-- Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Use the number one (`1`) for ordered lists.
+Check the general punctuation rules for the GitLab documentation on the table below.
+Check specific punctuation rules for [list items](#list-items) below.
+
+| Rule | Example |
+| ---- | ------- |
+| Always end full sentences with a period. | _For a complete overview, read through this document._|
+| Always add a space after a period when beginning a new sentence | _For a complete overview, check this doc. For other references, check out this guide._ |
+| Do not use double spaces. | --- |
+| Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key. | --- |
+| Use serial commas ("Oxford commas") before the final 'and/or' in a list. | _You can create new issues, merge requests, and milestones._ |
+| Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
+| Always use lowercase after a colon. | _Related Issues: a way to create a relationship between issues._ |
+
+## List items
+
+- Always start list items with a capital letter.
+- Always leave a blank line before and after a list.
+- Begin a line with spaces (not tabs) to denote a subitem.
+- To nest subitems, indent them with two spaces.
+- To nest code blocks, indent them with four spaces.
+- Only use ordered lists when their items describe a sequence of steps to follow.
+
+**Markup:**
+
+- Use dashes (`- `) for unordered lists instead of asterisks (`* `).
+- Use the number one (`1`) for each item in an ordered list.
+When rendered, the list items will appear with sequential numbering.
+
+**Punctuation:**
+
+- Do not add commas (`,`) or semicolons (`;`) to the end of a list item.
+- Only add periods to the end of a list item if the item consists of a complete sentence. The [definition of full sentence](https://www2.le.ac.uk/offices/ld/resources/writing/grammar/grammar-guides/sentence) is: _"a complete sentence always contains a verb, expresses a complete idea, and makes sense standing alone"_.
+- Be consistent throughout the list: if the majority of the items do not end in a period, do not end any of the items in a period, even if they consist of a complete sentence. The opposite is also valid: if the majority of the items end with a period, end all with a period.
 - Separate list items from explanatory text with a colon (`:`). For example:
+
     ```md
     The list is as follows:
 
-    - First item: This explains the first item.
-    - Second item: This explains the second item.
+    - First item: this explains the first item.
+    - Second item: this explains the second item.
     ```
-- For further guidance on punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
+
+**Examples:**
+
+Do:
+
+- First list item
+- Second list item
+- Third list item
+
+Don't:
+
+- First list item
+- Second list item
+- Third list item.
+
+Do:
+
+- Let's say this is a complete sentence.
+- Let's say this is also a complete sentence.
+- Not a complete sentence.
+
+Don't:
+
+- Let's say this is a complete sentence.
+- Let's say this is also a complete sentence.
+- Not a complete sentence
+
+## Quotes
+
+Valid for markdown content only, not for frontmatter entries:
+
+- Standard quotes: double quotes (`"`). Example: "This is wrapped in double quotes".
+- Quote within a quote: double quotes (`"`) wrap single quotes (`'`). Example: "I am 'quoting' something within a quote".
+
+For other punctuation rules, please refer to the
+[GitLab UX guide](https://design.gitlab.com/content/punctuation/).
 
 ## Headings
 
 - Add **only one H1** in each document, by adding `#` at the beginning of
   it (when using markdown). The `h1` will be the document `<title>`.
-- Start with an h2 (`##`), and respect the order h2 > h3 > h4 > h5 > h6.
-  Never skip the hierarchy level, such as h2 > h4
+- Start with an `h2` (`##`), and respect the order `h2` > `h3` > `h4` > `h5` > `h6`.
+  Never skip the hierarchy level, such as `h2` > `h4`
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
@@ -96,21 +173,19 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 - Avoid adding things that show ephemeral statuses. For example, if a feature is
   considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
-  grammatically and syntactically correct. Mention one or all
-  of the following GitLab members for a review: `@axil` or `@marcia`.
+  grammatically and syntactically correct. Mention an [assigned technical writer (TW)](https://about.gitlab.com/handbook/product/categories/)
+  for review.
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected.
 - Leave exactly one new line after a heading.
+- Do not use links in headings.
+- Add the corresponding [product badge](#product-badges) according to the tier the feature belongs.
 
 ## Links
 
-- Use the regular inline link markdown markup `[Text](https://example.com)`.
-  It's easier to read, review, and maintain.
-- If there's a link that repeats several times through the same document,
-  you can use `[Text][identifier]` and at the bottom of the section or the
-  document add: `[identifier]: https://example.com`, in which case, we do
-  encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
+- Use inline link markdown markup `[Text](https://example.com)`.
+  It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 - To link to internal documentation, use relative links, not full URLs. Use `../` to
   navigate tp high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
@@ -128,11 +203,12 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 To indicate the steps of navigation through the UI:
 
+
 - Use the exact word as shown in the UI, including any capital letters as-is.
-- Use bold text for navigation items and the char `>` as separator
+- Use bold text for navigation items and the char "greater than" (`>`) as separator
 (e.g., `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-needs to expand the tab to find the settings you're referring to.
+needs to expand the tab to find the settings you're referring to (e.g., `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
 
 ## Images
 
@@ -141,7 +217,7 @@ needs to expand the tab to find the settings you're referring to.
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
   could be `twitter_login_screen.png`.
-- Images should have a specific, non-generic name that will differentiate them.
+- Images should have a specific, non-generic name that will differentiate and describe them properly.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
 - Compress all images with <https://tinypng.com/> or similar tool.
@@ -164,13 +240,39 @@ Inside the document:
 - If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading.
 
+## Code blocks
+
+- Always wrap code added to a sentence in inline code blocks (``` ` ```).
+E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: master`.
+File names, commands, entries, and anything that refers to code should be added to code blocks.
+To make things easier for the user, always add a full code block for things that can be
+useful to copy and paste, as they can easily do it with the button on code blocks.
+- For regular code blocks, always use a highlighting class corresponding to the
+language for better readability. Examples:
+
+      ```md
+       ```ruby
+       Ruby code
+       ```
+
+       ```js
+       JavaScript code
+       ```
+
+       ```md
+       Markdown code
+       ```
+      ```
+
+- For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
+
 ## Alert boxes
 
 Whenever you want to call the attention to a particular sentence,
 use the following markup for highlighting.
 
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
-lists, headers, etc will not render correctly._
+lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
 ### Note
 
@@ -234,6 +336,31 @@ which renders in docs.gitlab.com to:
 
 If the text spans across multiple lines it's OK to split the line.
 
+For multiple paragraphs, use the symbol `>` before every line:
+
+```md
+> This is the first paragraph.
+>
+> This is the second paragraph.
+>
+> - This is a list item
+> - Second item in the list
+>
+> ### This is an `h3`
+```
+
+Which renders to:
+
+> This is the first paragraph.
+>
+> This is the second paragraph.
+>
+> - This is a list item
+> - Second item in the list
+>
+> ### This is an `h3`
+>{:.no_toc}
+
 ## Specific sections and terms
 
 To mention and/or reference specific terms in GitLab, please follow the styles
@@ -290,18 +417,18 @@ feature availability:
 To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
 keyword "only":
 
+- For GitLab Core: `**[CORE ONLY]**`.
 - For GitLab Starter: `**[STARTER ONLY]**`.
 - For GitLab Premium: `**[PREMIUM ONLY]**`.
 - For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
-- For GitLab Core: `**[CORE ONLY]**`.
 
 The tier should be ideally added to headers, so that the full badge will be displayed.
-But it can be also mentioned from paragraphs, list items, and table cells. For these cases,
-the tier mention will be represented by an orange question mark.
+However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
+the tier mention will be represented by an orange question mark that will show the tiers on hover.
 E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
 
 The absence of tiers' mentions mean that the feature is available in GitLab Core,
-GitLab.com Free, and higher tiers.
+GitLab.com Free, and all higher tiers.
 
 #### How it works
 
@@ -317,7 +444,7 @@ avoid duplication, link to the special document that can be found in
 [`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
 read like:
 
-```
+```md
 Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
 for the changes to take effect.
 ```
@@ -348,8 +475,8 @@ prefer to document it in the CE docs to avoid duplication.
 
 Configuration settings include:
 
-- Settings that touch configuration files in `config/`.
-- NGINX settings and settings in `lib/support/` in general.
+1. Settings that touch configuration files in `config/`.
+1. NGINX settings and settings in `lib/support/` in general.
 
 When there is a list of steps to perform, usually that entails editing the
 configuration file and reconfiguring/restarting GitLab. In such case, follow
@@ -386,13 +513,13 @@ the style below as a guide:
 
 In this case:
 
-- before each step list the installation method is declared in bold
-- three dashes (`---`) are used to create a horizontal line and separate the
+- Before each step list the installation method is declared in bold
+- Three dashes (`---`) are used to create a horizontal line and separate the
   two methods
-- the code blocks are indented one or more spaces under the list item to render
+- The code blocks are indented one or more spaces under the list item to render
   correctly
-- different highlighting languages are used for each config in the code block
-- the [references](#references) guide is used for reconfigure/restart
+- Different highlighting languages are used for each config in the code block
+- The [references](#references) guide is used for reconfigure/restart
 
 ### Fake tokens
 
@@ -403,19 +530,19 @@ low.
 
 You can use the following fake tokens as examples.
 
-|     **Token type**    |           **Token value**         |
-| --------------------- | --------------------------------- |
-| Private user token    | `9koXpg98eAheJpvBs5tK`            |
-| Personal access token | `n671WNGecHugsdEDPsyo`            |
+| **Token type**        | **Token value**                                                    |
+|:----------------------|:-------------------------------------------------------------------|
+| Private user token    | `9koXpg98eAheJpvBs5tK`                                             |
+| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| Secret CI variable    | `Li8j-mLUVA3eZYjPfd_H`            |
-| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`        |
-| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`            |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`  |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`            |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`            |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`            |
+| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
 
 ### API
 
@@ -438,16 +565,16 @@ on this document. Further explanation is given below.
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (``` ` ```).
 
-```
+```md
 | Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
+|:----------|:-----|:---------|:------------|
 ```
 
 Rendered example:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user`  | string | yes | The GitLab username |
+| Attribute | Type   | Required | Description         |
+|:----------|:-------|:---------|:--------------------|
+| `user`    | string | yes      | The GitLab username |
 
 #### cURL commands
 
@@ -459,12 +586,12 @@ Rendered example:
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
-| Methods | Description |
-| ------- | ----------- |
+| Methods                                    | Description                                           |
+|:-------------------------------------------|:------------------------------------------------------|
 | `-H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK"` | Use this method as is, whenever authentication needed |
-| `-X POST`   | Use this method when creating new objects |
-| `-X PUT`    | Use this method when updating existing objects |
-| `-X DELETE` | Use this method when removing existing objects |
+| `-X POST`                                  | Use this method when creating new objects             |
+| `-X PUT`                                   | Use this method when updating existing objects        |
+| `-X DELETE`                                | Use this method when removing existing objects        |
 
 #### cURL Examples
 

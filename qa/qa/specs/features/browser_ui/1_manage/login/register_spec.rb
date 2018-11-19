@@ -5,7 +5,7 @@ module QA
     it 'user registers and logs in' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-      Factory::Resource::User.fabricate!
+      Resource::User.fabricate_via_browser_ui!
 
       # TODO, since `Signed in successfully` message was removed
       # this is the only way to tell if user is signed in correctly.

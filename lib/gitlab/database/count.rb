@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For large tables, PostgreSQL can take a long time to count rows due to MVCC.
 # We can optimize this by using the reltuples count as described in https://wiki.postgresql.org/wiki/Slow_Counting.
 module Gitlab

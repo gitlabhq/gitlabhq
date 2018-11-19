@@ -65,7 +65,7 @@ module QA
         end
 
         def sign_in_using_admin_credentials
-          admin = QA::Factory::Resource::User.new.tap do |user|
+          admin = QA::Resource::User.new.tap do |user|
             user.username = QA::Runtime::User.admin_username
             user.password = QA::Runtime::User.admin_password
           end

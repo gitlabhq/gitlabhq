@@ -54,7 +54,7 @@ class JiraService < IssueTrackerService
     {
       username: self.username,
       password: self.password,
-      site: URI.join(url, '/').to_s,
+      site: URI.join(url, '/').to_s, # Intended to find the root
       context_path: url.path.chomp('/'),
       auth_type: :basic,
       read_timeout: 120,

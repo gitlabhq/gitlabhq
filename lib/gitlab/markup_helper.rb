@@ -4,10 +4,11 @@ module Gitlab
   module MarkupHelper
     extend self
 
-    MARKDOWN_EXTENSIONS = %w(mdown mkd mkdn md markdown).freeze
-    ASCIIDOC_EXTENSIONS = %w(adoc ad asciidoc).freeze
-    OTHER_EXTENSIONS = %w(textile rdoc org creole wiki mediawiki rst).freeze
+    MARKDOWN_EXTENSIONS = %w[mdown mkd mkdn md markdown].freeze
+    ASCIIDOC_EXTENSIONS = %w[adoc ad asciidoc].freeze
+    OTHER_EXTENSIONS = %w[textile rdoc org creole wiki mediawiki rst].freeze
     EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + OTHER_EXTENSIONS
+    PLAIN_FILENAMES = %w[readme index].freeze
 
     # Public: Determines if a given filename is compatible with GitHub::Markup.
     #
@@ -43,7 +44,7 @@ module Gitlab
     #
     # Returns boolean
     def plain?(filename)
-      extension(filename) == 'txt' || filename.casecmp('readme').zero?
+      extension(filename) == 'txt' || plain_filename?(filename)
     end
 
     def previewable?(filename)
@@ -54,6 +55,10 @@ module Gitlab
 
     def extension(filename)
       File.extname(filename).downcase.delete('.')
+    end
+
+    def plain_filename?(filename)
+      PLAIN_FILENAMES.include?(filename.downcase)
     end
   end
 end

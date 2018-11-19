@@ -27,10 +27,10 @@ export default {
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
     leftLineCode() {
-      return this.line.left && this.line.left.lineCode;
+      return this.line.left && this.line.left.line_code;
     },
     rightLineCode() {
-      return this.line.right && this.line.right.lineCode;
+      return this.line.right && this.line.right.line_code;
     },
     hasExpandedDiscussionOnLeft() {
       return this.line.left && this.line.left.discussions
@@ -76,8 +76,9 @@ export default {
     :class="className"
     class="notes_holder"
   >
-    <td class="notes_line old"></td>
-    <td class="notes_content parallel old">
+    <td
+      class="notes_content parallel old"
+      colspan="2">
       <div
         v-if="shouldRenderDiscussionsOnLeft"
         class="content"
@@ -95,8 +96,9 @@ export default {
         line-position="left"
       />
     </td>
-    <td class="notes_line new"></td>
-    <td class="notes_content parallel new">
+    <td
+      class="notes_content parallel new"
+      colspan="2">
       <div
         v-if="shouldRenderDiscussionsOnRight"
         class="content"

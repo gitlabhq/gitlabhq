@@ -9,7 +9,9 @@ describe 'User Cluster', :js do
   before do
     project.add_maintainer(user)
     gitlab_sign_in(user)
+
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
+    allow_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute)
   end
 
   context 'when user does not have a cluster and visits cluster index page' do

@@ -5,6 +5,7 @@ module Gitlab
     module Helm
       class UpgradeCommand
         include BaseCommand
+        include ClientCommand
 
         attr_reader :name, :chart, :version, :repository, :files
 
@@ -20,6 +21,7 @@ module Gitlab
         def generate_script
           super + [
             init_command,
+            wait_for_tiller_command,
             repository_command,
             script_command
           ].compact.join("\n")
@@ -35,14 +37,6 @@ module Gitlab
 
         private
 
-        def init_command
-          'helm init --client-only >/dev/null'
-        end
-
-        def repository_command
-          "helm repo add #{name} #{repository}" if repository
-        end
-
         def script_command
           upgrade_flags = "#{optional_version_flag}#{optional_tls_flags}" \
             " --reset-values" \
@@ -50,7 +44,7 @@ module Gitlab
             " --namespace #{::Gitlab::Kubernetes::Helm::NAMESPACE}" \
             " -f /data/helm/#{name}/config/values.yaml"
 
-          "helm upgrade #{name} #{chart}#{upgrade_flags} >/dev/null\n"
+          "helm upgrade #{name} #{chart}#{upgrade_flags}"
         end
 
         def optional_version_flag

@@ -149,7 +149,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope path: 'merge_requests', controller: 'merge_requests/creations' do
         post '', action: :create, as: nil
 
-        scope path: 'new/(:merge_request_source_branch)', as: :new_merge_request do
+        scope path: 'new', as: :new_merge_request do
+          get '', action: :new
+
           scope constraints: { format: nil }, action: :new do
             get :diffs, defaults: { tab: 'diffs' }
             get :pipelines, defaults: { tab: 'pipelines' }
@@ -163,7 +165,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :diff_for_path
           get :branch_from
           get :branch_to
-          get '', action: :new
         end
       end
 
@@ -206,20 +207,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit, :create] do
-        collection do
-          post :create_gcp
-          post :create_user
-        end
-
-        member do
-          get :status, format: :json
-
-          scope :applications do
-            post '/:application', to: 'clusters/applications#create', as: :install_applications
-          end
-        end
-      end
+      concerns :clusterable
 
       resources :environments, except: [:destroy] do
         member do

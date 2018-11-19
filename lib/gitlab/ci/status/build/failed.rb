@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     module Status
@@ -12,7 +14,8 @@ module Gitlab
             missing_dependency_failure: 'missing dependency failure',
             runner_unsupported: 'unsupported runner',
             stale_schedule: 'stale schedule',
-            job_execution_timeout: 'job execution timeout'
+            job_execution_timeout: 'job execution timeout',
+            archived_failure: 'archived failure'
           }.freeze
 
           private_constant :REASONS

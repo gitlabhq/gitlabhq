@@ -7,6 +7,7 @@ class JobEntity < Grape::Entity
   expose :name
 
   expose :started?, as: :started
+  expose :archived?, as: :archived
 
   expose :build_path do |build|
     build_path(build)
@@ -33,6 +34,7 @@ class JobEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
+  expose :scheduled?, as: :scheduled
   expose :scheduled_at, if: -> (*) { scheduled? }
   expose :created_at
   expose :updated_at

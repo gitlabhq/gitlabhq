@@ -104,7 +104,12 @@ class KubernetesService < DeploymentService
     { success: false, result: err }
   end
 
-  def predefined_variables
+  # Project param was added on
+  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011,
+  # as a way to keep this service compatible with
+  # Clusters::Platforms::Kubernetes, it won't be used on this method
+  # as it's only needed for Clusters::Cluster.
+  def predefined_variables(project:)
     config = YAML.dump(kubeconfig)
 
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
@@ -198,9 +203,7 @@ class KubernetesService < DeploymentService
     kubeclient = build_kube_client!
 
     kubeclient.get_pods(namespace: actual_namespace).as_json
-  rescue Kubeclient::HttpError => err
-    raise err unless err.error_code == 404
-
+  rescue Kubeclient::ResourceNotFoundError
     []
   end
 

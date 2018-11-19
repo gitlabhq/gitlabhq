@@ -98,47 +98,19 @@ describe Ci::ProcessBuildService, '#execute' do
 
     let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
 
-    context 'when ci_enable_scheduled_build is enabled' do
-      before do
-        stub_feature_flags(ci_enable_scheduled_build: true)
-      end
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
 
-      context 'when current status is success' do
-        let(:current_status) { 'success' }
-
-        it 'changes the build status' do
-          expect { subject }.to change { build.status }.to('scheduled')
-        end
-      end
-
-      context 'when current status is failed' do
-        let(:current_status) { 'failed' }
-
-        it 'does not change the build status' do
-          expect { subject }.to change { build.status }.to('skipped')
-        end
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('scheduled')
       end
     end
 
-    context 'when ci_enable_scheduled_build is disabled' do
-      before do
-        stub_feature_flags(ci_enable_scheduled_build: false)
-      end
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
 
-      context 'when current status is success' do
-        let(:current_status) { 'success' }
-
-        it 'changes the build status' do
-          expect { subject }.to change { build.status }.to('manual')
-        end
-      end
-
-      context 'when current status is failed' do
-        let(:current_status) { 'failed' }
-
-        it 'does not change the build status' do
-          expect { subject }.to change { build.status }.to('skipped')
-        end
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
       end
     end
   end

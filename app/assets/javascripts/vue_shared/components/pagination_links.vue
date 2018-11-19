@@ -1,5 +1,5 @@
 <script>
-import { GlPagination } from '@gitlab-org/gitlab-ui';
+import { GlPagination } from '@gitlab/ui';
 import { s__ } from '../../locale';
 
 export default {

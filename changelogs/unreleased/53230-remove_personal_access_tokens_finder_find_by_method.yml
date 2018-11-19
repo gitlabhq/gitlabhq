@@ -1,0 +1,5 @@
+---
+title: Remove PersonalAccessTokensFinder#find_by method
+merge_request: 22617
+author:
+type: fixed

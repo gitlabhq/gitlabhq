@@ -23,13 +23,13 @@ module QuickActions
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
-    def execute(content, issuable)
+    def execute(content, issuable, only: nil)
       return [content, {}] unless current_user.can?(:use_quick_actions)
 
       @issuable = issuable
       @updates = {}
 
-      content, commands = extractor.extract_commands(content)
+      content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
       [content, @updates]

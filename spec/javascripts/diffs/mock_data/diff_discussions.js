@@ -492,3 +492,24 @@ export default {
   image_diff_html:
     '<div class="image js-replaced-image" data="">\n<div class="two-up view">\n<div class="wrap">\n<div class="frame deleted">\n<img alt="CHANGELOG" src="http://localhost:3000/gitlab-org/gitlab-test/raw/e63f41fe459e62e1228fcef60d7189127aeba95a/CHANGELOG" />\n</div>\n<p class="image-info hide">\n<span class="meta-filesize">22.3 KB</span>\n|\n<strong>W:</strong>\n<span class="meta-width"></span>\n|\n<strong>H:</strong>\n<span class="meta-height"></span>\n</p>\n</div>\n<div class="wrap">\n<div class="added frame js-image-frame" data-note-type="DiffNote" data-position="{&quot;base_sha&quot;:&quot;e63f41fe459e62e1228fcef60d7189127aeba95a&quot;,&quot;start_sha&quot;:&quot;d9eaefe5a676b820c57ff18cf5b68316025f7962&quot;,&quot;head_sha&quot;:&quot;c48ee0d1bf3b30453f5b32250ce03134beaa6d13&quot;,&quot;old_path&quot;:&quot;CHANGELOG&quot;,&quot;new_path&quot;:&quot;CHANGELOG&quot;,&quot;position_type&quot;:&quot;text&quot;,&quot;old_line&quot;:null,&quot;new_line&quot;:2}">\n<img alt="CHANGELOG" draggable="false" src="http://localhost:3000/gitlab-org/gitlab-test/raw/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG" />\n</div>\n\n<p class="image-info hide">\n<span class="meta-filesize">22.3 KB</span>\n|\n<strong>W:</strong>\n<span class="meta-width"></span>\n|\n<strong>H:</strong>\n<span class="meta-height"></span>\n</p>\n</div>\n</div>\n<div class="swipe view hide">\n<div class="swipe-frame">\n<div class="frame deleted">\n<img alt="CHANGELOG" src="http://localhost:3000/gitlab-org/gitlab-test/raw/e63f41fe459e62e1228fcef60d7189127aeba95a/CHANGELOG" />\n</div>\n<div class="swipe-wrap">\n<div class="added frame js-image-frame" data-note-type="DiffNote" data-position="{&quot;base_sha&quot;:&quot;e63f41fe459e62e1228fcef60d7189127aeba95a&quot;,&quot;start_sha&quot;:&quot;d9eaefe5a676b820c57ff18cf5b68316025f7962&quot;,&quot;head_sha&quot;:&quot;c48ee0d1bf3b30453f5b32250ce03134beaa6d13&quot;,&quot;old_path&quot;:&quot;CHANGELOG&quot;,&quot;new_path&quot;:&quot;CHANGELOG&quot;,&quot;position_type&quot;:&quot;text&quot;,&quot;old_line&quot;:null,&quot;new_line&quot;:2}">\n<img alt="CHANGELOG" draggable="false" src="http://localhost:3000/gitlab-org/gitlab-test/raw/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG" />\n</div>\n\n</div>\n<span class="swipe-bar">\n<span class="top-handle"></span>\n<span class="bottom-handle"></span>\n</span>\n</div>\n</div>\n<div class="onion-skin view hide">\n<div class="onion-skin-frame">\n<div class="frame deleted">\n<img alt="CHANGELOG" src="http://localhost:3000/gitlab-org/gitlab-test/raw/e63f41fe459e62e1228fcef60d7189127aeba95a/CHANGELOG" />\n</div>\n<div class="added frame js-image-frame" data-note-type="DiffNote" data-position="{&quot;base_sha&quot;:&quot;e63f41fe459e62e1228fcef60d7189127aeba95a&quot;,&quot;start_sha&quot;:&quot;d9eaefe5a676b820c57ff18cf5b68316025f7962&quot;,&quot;head_sha&quot;:&quot;c48ee0d1bf3b30453f5b32250ce03134beaa6d13&quot;,&quot;old_path&quot;:&quot;CHANGELOG&quot;,&quot;new_path&quot;:&quot;CHANGELOG&quot;,&quot;position_type&quot;:&quot;text&quot;,&quot;old_line&quot;:null,&quot;new_line&quot;:2}">\n<img alt="CHANGELOG" draggable="false" src="http://localhost:3000/gitlab-org/gitlab-test/raw/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG" />\n</div>\n\n<div class="controls">\n<div class="transparent"></div>\n<div class="drag-track">\n<div class="dragger" style="left: 0px;"></div>\n</div>\n<div class="opaque"></div>\n</div>\n</div>\n</div>\n</div>\n<div class="view-modes hide">\n<ul class="view-modes-menu">\n<li class="two-up" data-mode="two-up">2-up</li>\n<li class="swipe" data-mode="swipe">Swipe</li>\n<li class="onion-skin" data-mode="onion-skin">Onion skin</li>\n</ul>\n</div>\n',
 };
+
+export const imageDiffDiscussions = [
+  {
+    id: '1',
+    position: {
+      x: 10,
+      y: 10,
+      width: 100,
+      height: 200,
+    },
+  },
+  {
+    id: '2',
+    position: {
+      x: 5,
+      y: 5,
+      width: 100,
+      height: 200,
+    },
+  },
+];

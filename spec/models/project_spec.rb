@@ -8,6 +8,7 @@ describe Project do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
@@ -32,6 +33,7 @@ describe Project do
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:discord_service) }
     it { is_expected.to have_one(:drone_ci_service) }
     it { is_expected.to have_one(:emails_on_push_service) }
     it { is_expected.to have_one(:pipelines_email_service) }
@@ -2405,11 +2407,23 @@ describe Project do
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
-      context 'when user configured kubernetes from CI/CD > Clusters' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token) }
+        let!(:cluster) { kubernetes_namespace.cluster }
+        let(:project) { kubernetes_namespace.project }
+
+        it 'should return token from kubernetes namespace' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
       end
     end
   end
@@ -3072,6 +3086,14 @@ describe Project do
 
       it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
+      end
+
+      context 'when partially migrated' do
+        it 'returns true' do
+          project = create(:project, storage_version: 1, skip_disk_validation: true)
+
+          expect(project.migrate_to_hashed_storage!).to be_truthy
+        end
       end
     end
   end
@@ -3960,6 +3982,62 @@ describe Project do
       project = create(:project, namespace: group)
 
       expect(described_class.for_group(group)).to eq([project])
+    end
+  end
+
+  describe '.deployments' do
+    subject { project.deployments }
+
+    let(:project) { create(:project) }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
+  describe '#snippets_visible?' do
+    it 'returns true when a logged in user can read snippets' do
+      project = create(:project, :public)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(true)
+    end
+
+    it 'returns true when an anonymous user can read snippets' do
+      project = create(:project, :public)
+
+      expect(project.snippets_visible?).to eq(true)
+    end
+
+    it 'returns false when a user can not read snippets' do
+      project = create(:project, :private)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(false)
     end
   end
 

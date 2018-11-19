@@ -10,6 +10,7 @@ module TokenAuthenticatable
 
     def add_authentication_token_field(token_field, options = {})
       @token_fields = [] unless @token_fields
+      unique = options.fetch(:unique, true)
 
       if @token_fields.include?(token_field)
         raise ArgumentError.new("#{token_field} already configured via add_authentication_token_field")
@@ -25,8 +26,10 @@ module TokenAuthenticatable
                    TokenAuthenticatableStrategies::Insecure.new(self, token_field, options)
                  end
 
-      define_singleton_method("find_by_#{token_field}") do |token|
-        strategy.find_token_authenticatable(token)
+      if unique
+        define_singleton_method("find_by_#{token_field}") do |token|
+          strategy.find_token_authenticatable(token)
+        end
       end
 
       define_method(token_field) do

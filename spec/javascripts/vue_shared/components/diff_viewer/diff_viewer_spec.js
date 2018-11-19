@@ -30,11 +30,11 @@ describe('DiffViewer', () => {
     });
 
     setTimeout(() => {
-      expect(vm.$el.querySelector('.deleted .image_file img').getAttribute('src')).toBe(
+      expect(vm.$el.querySelector('.deleted img').getAttribute('src')).toBe(
         `//raw/DEF/${RED_BOX_IMAGE_URL}`,
       );
 
-      expect(vm.$el.querySelector('.added .image_file img').getAttribute('src')).toBe(
+      expect(vm.$el.querySelector('.added img').getAttribute('src')).toBe(
         `//raw/ABC/${GREEN_BOX_IMAGE_URL}`,
       );
 

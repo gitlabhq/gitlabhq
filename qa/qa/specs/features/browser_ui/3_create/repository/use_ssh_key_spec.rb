@@ -12,11 +12,11 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        key = Factory::Resource::SSHKey.fabricate! do |resource|
+        key = Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title
         end
 
-        Factory::Repository::ProjectPush.fabricate! do |push|
+        Resource::Repository::ProjectPush.fabricate! do |push|
           push.ssh_key = key
           push.file_name = 'README.md'
           push.file_content = '# Test Use SSH Key'

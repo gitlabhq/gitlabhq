@@ -4,7 +4,6 @@ import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
 import noteForm from './note_form.vue';
-import TaskList from '../../task_list';
 import autosave from '../mixins/autosave';
 
 export default {
@@ -37,14 +36,12 @@ export default {
   },
   mounted() {
     this.renderGFM();
-    this.initTaskList();
 
     if (this.isEditing) {
       this.initAutoSave(this.note);
     }
   },
   updated() {
-    this.initTaskList();
     this.renderGFM();
 
     if (this.isEditing) {
@@ -58,15 +55,6 @@ export default {
   methods: {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
-    },
-    initTaskList() {
-      if (this.canEdit) {
-        this.taskList = new TaskList({
-          dataType: 'note',
-          fieldName: 'note',
-          selector: '.notes',
-        });
-      }
     },
     handleFormUpdate(note, parentElement, callback) {
       this.$emit('handleFormUpdate', note, parentElement, callback);

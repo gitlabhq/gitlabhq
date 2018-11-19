@@ -1,0 +1,5 @@
+---
+title: Rewrite SnippetsFinder to improve performance by a factor of 1500
+merge_request:
+author:
+type: performance

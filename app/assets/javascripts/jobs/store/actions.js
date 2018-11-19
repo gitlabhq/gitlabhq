@@ -80,8 +80,8 @@ export const fetchJob = ({ state, dispatch }) => {
 export const receiveJobSuccess = ({ commit }, data = {}) => {
   commit(types.RECEIVE_JOB_SUCCESS, data);
 
-  if (data.favicon) {
-    setFaviconOverlay(data.favicon);
+  if (data.status && data.status.favicon) {
+    setFaviconOverlay(data.status.favicon);
   } else {
     resetFavicon();
   }

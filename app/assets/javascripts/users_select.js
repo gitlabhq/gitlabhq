@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -696,17 +696,21 @@ UsersSelect.prototype.formatResult = function(user) {
   } else {
     avatar = gon.default_avatar_url;
   }
-  return (
-    "<div class='user-result " +
-    (!user.username ? 'no-username' : void 0) +
-    "'> <div class='user-image'><img class='avatar avatar-inline s32' src='" +
-    avatar +
-    "'></div> <div class='user-name dropdown-menu-user-full-name'>" +
-    _.escape(user.name) +
-    "</div> <div class='user-username dropdown-menu-user-username'>" +
-    (!user.invite ? '@' + _.escape(user.username) : '') +
-    '</div> </div>'
-  );
+  return `
+    <div class='user-result'>
+      <div class='user-image'>
+        <img class='avatar avatar-inline s32' src='${avatar}'>
+      </div>
+      <div class='user-info'>
+        <div class='user-name dropdown-menu-user-full-name'>
+          ${_.escape(user.name)}
+        </div>
+        <div class='user-username dropdown-menu-user-username text-secondary'>
+          ${!user.invite ? '@' + _.escape(user.username) : ''}
+        </div>
+      </div>
+    </div>
+  `;
 };
 
 UsersSelect.prototype.formatSelection = function(user) {

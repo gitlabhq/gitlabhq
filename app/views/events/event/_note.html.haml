@@ -1,9 +1,13 @@
 = icon_for_profile_event(event)
 
-.event-title
-  %span.author_name= link_to_author(event)
-  = event.action_name
+= event_user_info(event)
+
+.event-title.d-flex.flex-wrap
+  = inline_event_icon(event)
+  %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
+    = event.action_name
   = event_note_title_html(event)
+  %span.event-target-title.append-right-4= "&quot;".html_safe + event.target.title + "&quot".html_safe
 
   = render "events/event_scope", event: event
 

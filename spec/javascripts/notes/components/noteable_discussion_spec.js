@@ -3,6 +3,7 @@ import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
+import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
@@ -33,9 +34,20 @@ describe('noteable_discussion component', () => {
     expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
   });
 
+  it('should not render discussion header for non diff discussions', () => {
+    expect(vm.$el.querySelector('.discussion-header')).toBeNull();
+  });
+
   it('should render discussion header', () => {
-    expect(vm.$el.querySelector('.discussion-header')).not.toBeNull();
-    expect(vm.$el.querySelector('.notes').children.length).toEqual(discussionMock.notes.length);
+    const discussion = { ...discussionMock };
+    discussion.diff_file = mockDiffFile;
+    discussion.diff_discussion = true;
+    const diffDiscussionVm = new Component({
+      store,
+      propsData: { discussion },
+    }).$mount();
+
+    expect(diffDiscussionVm.$el.querySelector('.discussion-header')).not.toBeNull();
   });
 
   describe('actions', () => {

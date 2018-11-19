@@ -1,6 +1,6 @@
 <script>
 // only allow classes in images.scss e.g. s12
-const validSizes = [8, 10, 12, 16, 18, 24, 32, 48, 72];
+const validSizes = [8, 10, 12, 14, 16, 18, 24, 32, 48, 72];
 let iconValidator = () => true;
 
 /*

@@ -438,6 +438,67 @@ describe API::Pipelines do
     end
   end
 
+  describe 'DELETE /projects/:id/pipelines/:pipeline_id' do
+    context 'authorized user' do
+      let(:owner) { project.owner }
+
+      it 'destroys the pipeline' do
+        delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
+
+        expect(response).to have_gitlab_http_status(204)
+        expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'returns 404 when it does not exist' do
+        delete api("/projects/#{project.id}/pipelines/123456", owner)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq '404 Not found'
+      end
+
+      it 'logs an audit event' do
+        expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.to change { SecurityEvent.count }.by(1)
+      end
+
+      context 'when the pipeline has jobs' do
+        let!(:build) { create(:ci_build, project: project, pipeline: pipeline) }
+
+        it 'destroys associated jobs' do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner)
+
+          expect(response).to have_gitlab_http_status(204)
+          expect { build.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      context 'when user is not member' do
+        it 'should return a 404' do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(json_response['message']).to eq '404 Project Not Found'
+        end
+      end
+
+      context 'when user is developer' do
+        let(:developer) { create(:user) }
+
+        before do
+          project.add_developer(developer)
+        end
+
+        it 'should return a 403' do
+          delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", developer)
+
+          expect(response).to have_gitlab_http_status(403)
+          expect(json_response['message']).to eq '403 Forbidden'
+        end
+      end
+    end
+  end
+
   describe 'POST /projects/:id/pipelines/:pipeline_id/retry' do
     context 'authorized user' do
       let!(:pipeline) do

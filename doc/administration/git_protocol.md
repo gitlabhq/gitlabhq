@@ -4,9 +4,7 @@ description: "Set and configure Git protocol v2"
 
 # Configuring Git Protocol v2
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/46555) in GitLab 11.4.
-
----
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46555) in GitLab 11.4.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. In order to enable SSH,
@@ -21,7 +19,15 @@ and the [protocol documentation](https://github.com/git/git/blob/master/Document
 From the client side, `git` `v2.18.0` or newer must be installed.
 
 From the server side, if we want to configure SSH we need to set the `sshd`
-server to accept the `GIT_PROTOCOL` environment,
+server to accept the `GIT_PROTOCOL` environment.
+
+In installations using [GitLab Helm Charts](../install/kubernetes/gitlab_chart.md)
+and [All-in-one docker image](https://docs.gitlab.com/omnibus/docker/), the SSH
+service is already configured to accept the `GIT_PROTOCOL` environment and users
+need not do anything more.
+
+For Omnibus GitLab and installations from source, you have to manually update
+the SSH configuration of your server:
 
 ```
 # /etc/ssh/sshd_config

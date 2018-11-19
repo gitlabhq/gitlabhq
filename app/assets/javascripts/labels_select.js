@@ -59,7 +59,6 @@ export default class LabelsSelect {
       $toggleText = $dropdown.find('.dropdown-toggle-text');
       namespacePath = $dropdown.data('namespacePath');
       projectPath = $dropdown.data('projectPath');
-      labelUrl = $dropdown.data('labels');
       issueUpdateURL = $dropdown.data('issueUpdate');
       selectedLabel = $dropdown.data('selected');
       if (selectedLabel != null && !$dropdown.hasClass('js-multiselect')) {
@@ -168,6 +167,7 @@ export default class LabelsSelect {
       $dropdown.glDropdown({
         showMenuAbove: showMenuAbove,
         data: function(term, callback) {
+          labelUrl = $dropdown.attr('data-labels');
           axios
             .get(labelUrl)
             .then(res => {

@@ -531,7 +531,7 @@ msgstr "創建新分支時發生錯誤。"
 msgid "An error occured whilst fetching the job trace."
 msgstr "取得工作追蹤資訊時發生錯誤"
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr "取得最新流水線時發生錯誤"
 
 msgid "An error occured whilst loading all the files."
@@ -2743,7 +2743,7 @@ msgstr "編輯 %{user_name} 的身份"
 msgid "Elasticsearch"
 msgstr "Elasticsearch"
 
-msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr "Elasticsearch 整合。 Elasticsearch AWS IAM。"
 
 msgid "Email"

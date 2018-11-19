@@ -2,6 +2,7 @@ import _ from 'underscore';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 import store from '../store';
 
@@ -11,6 +12,7 @@ export default {
     DropdownButton,
     DropdownSearchInput,
     DropdownHiddenInput,
+    GlLoadingIcon,
   },
   props: {
     fieldId: {

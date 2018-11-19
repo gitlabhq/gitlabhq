@@ -512,11 +512,9 @@ module API
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
-            # rubocop: disable CodeReuse/ActiveRecord
             def find_impersonation_token
-              finder.find_by(id: declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
+              finder.find_by_id(declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
             end
-            # rubocop: enable CodeReuse/ActiveRecord
           end
 
           before { authenticated_as_admin! }
@@ -533,7 +531,7 @@ module API
 
           desc 'Create a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::ImpersonationToken
+            success Entities::ImpersonationTokenWithToken
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
@@ -544,7 +542,7 @@ module API
             impersonation_token = finder.build(declared_params(include_missing: false))
 
             if impersonation_token.save
-              present impersonation_token, with: Entities::ImpersonationToken
+              present impersonation_token, with: Entities::ImpersonationTokenWithToken
             else
               render_validation_error!(impersonation_token)
             end

@@ -31,7 +31,7 @@ Database: el_duderino
 ```
 
 If you are wondering why we used `mysql` for the `Host`, read more at
-[How is service linked to the job](../docker/using_docker_images.md#how-is-service-linked-to-the-job).
+[How services are linked to the job](../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
 You can also use any other docker image available on [Docker Hub][hub-mysql].
 For example, to use MySQL 5.5 the service becomes `mysql:5.5`.

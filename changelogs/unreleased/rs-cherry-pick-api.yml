@@ -1,0 +1,5 @@
+---
+title: Resolve possible cherry pick API race condition
+merge_request:
+author:
+type: fixed

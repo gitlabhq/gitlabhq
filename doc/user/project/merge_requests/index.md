@@ -141,6 +141,15 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
 
+## Commenting on any file line in merge requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13950) in GitLab 11.5.
+
+GitLab provides a way of leaving comments in any part of the file being changed
+in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
+
+![Comment on any diff file line](img/comment-on-any-diff-line.png)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
@@ -165,6 +174,23 @@ this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
 
 ![Create new merge requests by email](img/create_from_email.png)
+
+### Adding patches when creating a merge request via e-mail
+
+> **Note**: This feature was [implemented in GitLab 11.5](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22723)
+
+You can add commits to the merge request being created by adding
+patches as attachments to the email, all attachments with a filename
+ending in `.patch` will be considered patches. The patches will be processed
+ordered by name.
+
+The combined size of the patches can be 2MB.
+
+If the source branch from the subject does not exist, it will be
+created from the repository's HEAD or the specified target branch to
+apply the patches. The target branch can be specified using the
+[`/target_branch` quick action](../quick_actions.md). If the source
+branch already exists, the patches will be applied on top of it.
 
 ## Find the merge request that introduced a change
 

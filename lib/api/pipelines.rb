@@ -81,6 +81,21 @@ module API
         present pipeline, with: Entities::Pipeline
       end
 
+      desc 'Deletes a pipeline' do
+        detail 'This feature was introduced in GitLab 11.6'
+        http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]
+      end
+      params do
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+      end
+      delete ':id/pipelines/:pipeline_id' do
+        authorize! :destroy_pipeline, pipeline
+
+        destroy_conditionally!(pipeline) do
+          ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+        end
+      end
+
       desc 'Retry builds in the pipeline' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Pipeline

@@ -71,7 +71,7 @@ A Registry init file is not shipped with GitLab if you install it from source.
 Hence, [restarting GitLab][restart gitlab] will not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
-At the absolute minimum, make sure your [Registry configuration][registry-auth]
+At the **absolute** minimum, make sure your [Registry configuration][registry-auth]
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
 as the realm:
 
@@ -83,6 +83,9 @@ auth:
     issuer: gitlab-issuer
     rootcertbundle: /root/certs/certbundle
 ```
+
+CAUTION: **Caution:**
+If `auth` is not set up, users will be able to pull docker images without authentication.
 
 ## Container Registry domain configuration
 

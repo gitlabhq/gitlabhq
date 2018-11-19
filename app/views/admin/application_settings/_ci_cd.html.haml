@@ -41,5 +41,13 @@
         The default unit is in seconds, but you can define an alternative. For example:
         <code>4 mins 2 sec</code>, <code>2h42min</code>.
         = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
+    .form-group
+      = f.label :archive_builds_in_human_readable, 'Archive jobs', class: 'label-bold'
+      = f.text_field :archive_builds_in_human_readable, class: 'form-control', placeholder: 'never'
+      .form-text.text-muted
+        Set the duration for which the jobs will be considered as old and expired.
+        Once that time passes, the jobs will be archived and no longer able to be
+        retried. Make it empty to never expire jobs. It has to be no less than 1 day,
+        for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
   = f.submit 'Save changes', class: "btn btn-success"

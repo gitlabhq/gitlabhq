@@ -5,6 +5,7 @@ class ApplicationSetting < ActiveRecord::Base
   include CacheMarkdownField
   include TokenAuthenticatable
   include IgnorableColumn
+  include ChronicDurationAttribute
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
@@ -44,6 +45,8 @@ class ApplicationSetting < ActiveRecord::Base
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
   default_value_for :id, 1
+
+  chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
   validates :uuid, presence: true
 
@@ -184,6 +187,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
 
+  validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
+
+  validates :archive_builds_in_seconds,
+            allow_nil: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -292,8 +301,13 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_internal_regex: nil,
       user_show_add_ssh_key_message: true,
       usage_stats_set_by_user_id: nil,
-      diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES
+      diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+      commit_email_hostname: default_commit_email_hostname
     }
+  end
+
+  def self.default_commit_email_hostname
+    "users.noreply.#{Gitlab.config.gitlab.host}"
   end
 
   def self.create_from_defaults
@@ -349,6 +363,10 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storages
     Array(read_attribute(:repository_storages))
+  end
+
+  def commit_email_hostname
+    super.presence || self.class.default_commit_email_hostname
   end
 
   def default_project_visibility=(level)
@@ -439,6 +457,10 @@ class ApplicationSetting < ActiveRecord::Base
   def reset_memoized_terms
     @latest_terms = nil
     latest_terms
+  end
+
+  def archive_builds_older_than
+    archive_builds_in_seconds.seconds.ago if archive_builds_in_seconds
   end
 
   private

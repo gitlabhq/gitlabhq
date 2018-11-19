@@ -1,0 +1,16 @@
+.card
+  .card-body.gl-responsive-table-row
+    .table-section.section-60
+      .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
+      .table-mobile-content
+        = link_to cluster.name, cluster.show_path
+        - unless cluster.enabled?
+          %span.badge.badge-danger Connection disabled
+    .table-section.section-25
+      .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment scope")
+      .table-mobile-content= cluster.environment_scope
+    .table-section.section-15.text-right
+      .table-mobile-header{ role: "rowheader" }
+      .table-mobile-content
+        %span.badge.badge-light
+          = cluster.project_type? ? s_("ClusterIntegration|Project cluster") : s_("ClusterIntegration|Group cluster")

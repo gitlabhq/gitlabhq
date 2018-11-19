@@ -1,0 +1,5 @@
+---
+title: 'Rails5: fix mysql milliseconds issue in deployment model specs'
+merge_request: 22850
+author: Jasper Maes
+type: other

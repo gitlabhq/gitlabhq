@@ -23,6 +23,7 @@ describe('Applications', () => {
           runner: { title: 'GitLab Runner' },
           prometheus: { title: 'Prometheus' },
           jupyter: { title: 'JupyterHub' },
+          knative: { title: 'Knative' },
         },
       });
     });
@@ -46,6 +47,10 @@ describe('Applications', () => {
     it('renders a row for Jupyter', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBe(null);
     });
+
+    it('renders a row for Knative', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBe(null);
+    });
   });
 
   describe('Ingress application', () => {
@@ -63,6 +68,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
+              knative: { title: 'Knative', hostname: '' },
             },
           });
 
@@ -86,6 +92,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
+              knative: { title: 'Knative', hostname: '' },
             },
           });
 
@@ -105,6 +112,7 @@ describe('Applications', () => {
             runner: { title: 'GitLab Runner' },
             prometheus: { title: 'Prometheus' },
             jupyter: { title: 'JupyterHub', hostname: '' },
+            knative: { title: 'Knative', hostname: '' },
           },
         });
 
@@ -123,6 +131,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -139,6 +148,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -155,6 +165,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
+              knative: { title: 'Knative', status: 'installed', hostname: '' },
             },
           });
 
@@ -171,6 +182,7 @@ describe('Applications', () => {
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'not_installable' },
+              knative: { title: 'Knative' },
             },
           });
         });

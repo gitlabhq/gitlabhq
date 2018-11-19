@@ -165,7 +165,7 @@
               .input-group
                 .input-group-prepend
                   .input-group-text
-                    #{URI.join(root_url, @project.namespace.full_path)}/
+                    #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
                 = f.text_field :path, class: 'form-control'
             %ul
               %li Be careful. Renaming a project's repository can have unintended side effects.
