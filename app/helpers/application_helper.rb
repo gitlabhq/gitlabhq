@@ -188,21 +188,6 @@ module ApplicationHelper
     "#{request.path}?#{params.to_param}"
   end
 
-  def filter_bar_params
-    {
-      milestone_title: params[:milestone_title],
-      assignee_id: params[:assignee_id],
-      author_id: params[:author_id],
-      search: params[:search],
-      label_name: params[:label_name],
-      my_reaction_emoji: params[:my_reaction_emoji]
-    }
-  end
-
-  def has_filter_bar_param?
-    filter_bar_params.values.any? { |v| v.present? }
-  end
-
   def outdated_browser?
     browser.ie? && browser.version.to_i < 10
   end
