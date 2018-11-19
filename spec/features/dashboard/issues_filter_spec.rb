@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Dashboard Issues filtering', :js do
   include Spec::Support::Helpers::Features::SortingHelpers
+  include FilteredSearchHelpers
 
   let(:user)      { create(:user) }
   let(:project)   { create(:project) }
@@ -25,27 +26,21 @@ describe 'Dashboard Issues filtering', :js do
 
   context 'filtering by milestone' do
     it 'shows all issues with no milestone' do
-      show_milestone_dropdown
-
-      click_link 'No Milestone'
+      input_filtered_search("milestone:none")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
 
     it 'shows all issues with the selected milestone' do
-      show_milestone_dropdown
-
-      page.within '.dropdown-content' do
-        click_link milestone.title
-      end
+      input_filtered_search("milestone:%\"#{milestone.title}\"")
 
       expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
       expect(page).to have_selector('.issue', count: 1)
     end
 
     it 'updates atom feed link' do
-      visit_issues(milestone_title: '', assignee_id: user.id)
+      visit_issues(milestone_title: '', assignee_username: user.username)
 
       link = find('.nav-controls a[title="Subscribe to RSS feed"]')
       params = CGI.parse(URI.parse(link[:href]).query)
@@ -54,10 +49,10 @@ describe 'Dashboard Issues filtering', :js do
 
       expect(params).to include('feed_token' => [user.feed_token])
       expect(params).to include('milestone_title' => [''])
-      expect(params).to include('assignee_id' => [user.id.to_s])
+      expect(params).to include('assignee_username' => [user.username.to_s])
       expect(auto_discovery_params).to include('feed_token' => [user.feed_token])
       expect(auto_discovery_params).to include('milestone_title' => [''])
-      expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+      expect(auto_discovery_params).to include('assignee_username' => [user.username.to_s])
     end
   end
 
@@ -66,10 +61,7 @@ describe 'Dashboard Issues filtering', :js do
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
     it 'shows all issues with the selected label' do
-      page.within '.labels-filter' do
-        find('.dropdown').click
-        click_link label.title
-      end
+      input_filtered_search("label:~#{label.title}")
 
       page.within 'ul.content-list' do
         expect(page).to have_content issue.title
@@ -80,12 +72,12 @@ describe 'Dashboard Issues filtering', :js do
 
   context 'sorting' do
     before do
-      visit_issues(assignee_id: user.id)
+      visit_issues(assignee_username: user.username)
     end
 
     it 'remembers last sorting value' do
       sort_by('Created date')
-      visit_issues(assignee_id: user.id)
+      visit_issues(assignee_username: user.username)
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
@@ -96,11 +88,6 @@ describe 'Dashboard Issues filtering', :js do
 
       expect(find('.issues-filters')).to have_content('Created date')
     end
-  end
-
-  def show_milestone_dropdown
-    click_button 'Milestone'
-    expect(page).to have_selector('.dropdown-content', visible: true)
   end
 
   def visit_issues(*args)

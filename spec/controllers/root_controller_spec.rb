@@ -98,7 +98,7 @@ describe RootController do
         it 'redirects to their assigned issues' do
           get :index
 
-          expect(response).to redirect_to issues_dashboard_path(assignee_id: user.id)
+          expect(response).to redirect_to issues_dashboard_path(assignee_username: user.username)
         end
       end
 
@@ -110,7 +110,7 @@ describe RootController do
         it 'redirects to their assigned merge requests' do
           get :index
 
-          expect(response).to redirect_to merge_requests_dashboard_path(assignee_id: user.id)
+          expect(response).to redirect_to merge_requests_dashboard_path(assignee_username: user.username)
         end
       end
 
