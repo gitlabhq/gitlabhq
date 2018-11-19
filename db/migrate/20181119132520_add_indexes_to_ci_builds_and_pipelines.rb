@@ -8,12 +8,37 @@ class AddIndexesToCiBuildsAndPipelines < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_pipelines, [:project_id, :ref, :id], order: { id: :desc }
-    add_concurrent_index :ci_builds, [:commit_id, :artifacts_expire_at, :id], where: "type = 'Ci::Build' AND (retried = false OR retried IS NULL) AND name IN ('sast', 'dependency_scanning', 'sast:container', 'container_scanning', 'dast')"
+    indexes.each do |index|
+      add_concurrent_index(*index)
+    end
   end
 
   def down
-    remove_concurrent_index :ci_pipelines, [:project_id, :ref, :id], order: { id: :desc }
-    remove_concurrent_index :ci_builds, [:commit_id, :artifacts_expire_at, :id], where: "type = 'Ci::Build' AND (retried = false OR retried IS NULL) AND name IN ('sast', 'dependency_scanning', 'sast:container', 'container_scanning', 'dast')"
+    indexes.each do |index|
+      remove_concurrent_index(*index)
+    end
+  end
+
+  private
+
+  def indexes
+    [
+      [
+        :ci_pipelines,
+        [:project_id, :ref, :id],
+        {
+          order: { id: :desc },
+          name: 'index_ci_pipelines_on_project_idandrefandiddesc'
+        }
+      ],
+      [
+        :ci_builds,
+        [:commit_id, :artifacts_expire_at, :id],
+        {
+          where: "type::text = 'Ci::Build'::text AND (retried = false OR retried IS NULL) AND (name::text = ANY (ARRAY['sast'::character varying, 'dependency_scanning'::character varying, 'sast:container'::character varying, 'container_scanning'::character varying, 'dast'::character varying]::text[]))",
+          name: 'index_ci_builds_on_commit_id_and_artifacts_expireatandidpartial'
+        }
+      ]
+    ]
   end
 end
