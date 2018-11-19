@@ -123,7 +123,7 @@ droplab.init().addData([{
 ```
 
 Alternatively, you can specify a specific dropdown to add this data to but passing
-the data as the second argument and and the `id` of the trigger element as the first argument.
+the data as the second argument and the `id` of the trigger element as the first argument.
 
 ```html
 <a href="#" data-dropdown-trigger="#list" id="trigger">Toggle</a>

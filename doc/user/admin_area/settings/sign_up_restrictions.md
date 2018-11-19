@@ -4,7 +4,7 @@ You can block email addresses of specific domains, or whitelist only some
 specific domains via the **Application Settings** in the Admin area.
 
 >**Note**: These restrictions are only applied during sign-up. An admin is
-able to add add a user through the admin panel with a disallowed domain. Also
+able to add a user through the admin panel with a disallowed domain. Also
 note that the users can change their email addresses after signup to
 disallowed domains.
 

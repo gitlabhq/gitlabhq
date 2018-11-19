@@ -22,7 +22,7 @@ an extensive selection of dependency managed libraries and applications.
 
 If you are sure you don't need access to any additional development libraries
 or don't have approximately 15gb of available disk space for Xcode and Homebrew
-use one of the the aforementioned methods.
+use one of the aforementioned methods.
 
 ### Installing Xcode
 

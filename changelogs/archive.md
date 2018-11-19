@@ -2267,7 +2267,7 @@
   - Disable spellcheck and autocorrect for username field in admin page
   - Delete tags using Rugged for performance reasons (Robert Schilling)
   - Add Slack notifications when Wiki is edited (Sebastian Klier)
-  - Diffs load at the correct point when linking from from number
+  - Diffs load at the correct point when linking from number
   - Selected diff rows highlight
   - Fix emoji categories in the emoji picker
   - API: Properly display annotated tags for GET /projects/:id/repository/tags (Robert Schilling)
