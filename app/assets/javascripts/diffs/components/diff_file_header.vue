@@ -4,7 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import EditButton from './edit_button.vue';
@@ -231,7 +231,7 @@ export default {
 
       <a
         v-if="diffFile.external_url"
-        v-gl-tooltip
+        v-gl-tooltip.hover
         :href="diffFile.external_url"
         :title="`View on ${diffFile.formatted_external_url}`"
         target="_blank"

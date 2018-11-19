@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   directives: {
@@ -16,7 +16,7 @@ export default {
 <template>
   <span v-if="count === 50" class="events-info float-right">
     <i
-      v-gl-tooltip.top
+      v-gl-tooltip
       :title="
         n__('Limited to showing %d event at most', 'Limited to showing %d events at most', 50)
       "
