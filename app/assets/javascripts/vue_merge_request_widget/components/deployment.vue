@@ -33,6 +33,10 @@ export default {
       type: Object,
       required: true,
     },
+    showMetrics: {
+      type: Boolean,
+      required: true,
+    },
   },
   deployedTextMap: {
     running: __('Deploying to'),
@@ -73,6 +77,9 @@ export default {
     },
     shouldRenderDropdown() {
       return this.deployment.changes && this.deployment.changes.length > 0;
+    },
+    showMemoryUsage() {
+      return this.hasMetrics && this.showMetrics;
     },
   },
   methods: {
@@ -136,7 +143,7 @@ export default {
               {{ deployTimeago }}
             </span>
             <memory-usage
-              v-if="hasMetrics"
+              v-if="showMemoryUsage"
               :metrics-url="deployment.metrics_url"
               :metrics-monitoring-url="deployment.metrics_monitoring_url"
             />
