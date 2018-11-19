@@ -32,7 +32,7 @@ describe 'Merge request > User sees empty state' do
 
       expect(page).to have_selector('.empty-state')
       expect(page).to have_content('Sorry, your filter produced no results')
-      expect(page).to have_content('To widen your search, change or remove filters in the filter bar above')
+      expect(page).to have_content('To widen your search, change or remove filters above')
     end
   end
 end

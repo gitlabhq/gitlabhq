@@ -15,7 +15,7 @@ describe 'Issues' do
       visit project_issues_path(project, milestone_title: "1.0")
 
       expect(page).to have_content('Sorry, your filter produced no results')
-      expect(page).to have_content('To widen your search, change or remove filters in the filter bar above')
+      expect(page).to have_content('To widen your search, change or remove filters above')
     end
   end
 
