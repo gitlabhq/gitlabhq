@@ -64,7 +64,7 @@ module Gitlab
             optional_version_flag +
             rbac_create_flag +
             namespace_flag +
-            value_flag +
+            value_flag
         end
 
         def rbac_create_flag

@@ -640,6 +640,17 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.index ["user_id"], name: "index_clusters_on_user_id", using: :btree
   end
 
+  create_table "clusters_applications_cert_managers", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "email", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "status_reason"
+    t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", using: :btree
+  end
+
   create_table "clusters_applications_helm", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
