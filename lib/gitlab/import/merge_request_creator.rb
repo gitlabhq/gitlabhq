@@ -6,10 +6,10 @@
 # used for rendering Markdown) are completely unnecessary and may even lead to
 # transaction timeouts.
 #
-# To ensure importing merge requests requests has a minimal impact and can
-# complete in a reasonable time we bypass all the hooks by inserting the row
-# and then retrieving it. We then only perform the additional work that is
-# strictly necessary.
+# To ensure importing merge requests has a minimal impact and can complete in
+# a reasonable time we bypass all the hooks by inserting the row and then
+# retrieving it. We then only perform the additional work that is strictly
+# necessary.
 module Gitlab
   module Import
     class MergeRequestCreator
