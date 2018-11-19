@@ -5,270 +5,135 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 
 # GitLab Documentation
 
-Welcome to [GitLab](https://about.gitlab.com/) Documentation.
+Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
+platform for software development!
 
-Here you can access the complete documentation for GitLab, the single application for the
-[entire DevOps lifecycle](#complete-devops-with-gitlab).
+GitLab offers the most scalable Git-based fully integrated platform for
+software development, with flexible products and subscriptions.
+To understand what features you have access to, check the [GitLab subscriptions](#gitlab-subscriptions) below.
 
-## Overview
+**Shortcuts to GitLab's most visited docs:**
 
-No matter how you use GitLab, we have documentation for you.
+| General documentation | GitLab CI/CD docs |
+| :----- | :----- |
+| [User documentation](user/index.md) | [GitLab CI/CD quick start guide](ci/quick_start/README.md) |
+| [Administrator documentation](administration/index.md) | [GitLab CI/CD examples](ci/examples/README.md) |
+| [Contributor documentation](#contributor-documentation) | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) |
+| [Getting started with GitLab](#getting-started-with-gitlab) | [Using Docker images](ci/docker/using_docker_images.md) |
+| [API](api/README.md) | [Auto DevOps](topics/autodevops/index.md) |
+| [SSH authentication](ssh/README.md) | [Kubernetes integration](user/project/clusters/index.md)|
+| [GitLab Pages](user/project/pages/index.md) | [GitLab Container Registry](user/project/container_registry.md) |
 
-<table>
-  <tbody>
-    <tr>
-      <td width="50%">
-        <a href="user/index.md"><strong>User documentation</strong></a>
-        <br/>
-        Discover features and concepts for GitLab users.
-      </td>
-      <td width="50%">
-        <a href="administration/index.md"><strong>Administrator documentation</strong></a>
-        <br/>
-        Everything GitLab administrators need to know.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="#contributing-to-gitlab"><strong>Contributing to GitLab</strong></a>
-        <br/>
-        At GitLab, everyone can contribute!
-      </td>
-      <td width="50%">
-        <a href="#new-to-git-and-gitlab"><strong>New to Git and GitLab?</strong></a>
-        <br/>
-        We have resources to get you started.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="#building-an-integration-with-gitlab"><strong>Building an integration with GitLab?</strong></a>
-        <br/>
-        Consult our automation and integration documentation.
-      </td>
-      <td width="50%">
-        <a href="#coming-to-gitlab-from-another-platform"><strong>Coming to GitLab from another platform?</strong></a>
-        <br/>
-        Consult our handy guides.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="https://about.gitlab.com/install/"><strong>Install GitLab</strong></a>
-        <br/>
-        Installation options for different platforms.
-      </td>
-      <td width="50%">
-        <a href="#subscribe-to-gitlab"><strong>Subscribe to GitLab</strong></a>
-        <br/>
-        Get access to more features.
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-## Popular Documentation
-
-Have a look at some of our most popular documentation resources:
-
-| Popular Topic                                                   | Description                                                      |
-|:----------------------------------------------------------------|:-----------------------------------------------------------------|
-| [Configuring `.gitlab-ci.yml`](ci/yaml/README.md)               | Complete syntax documentation for configuring your CI pipelines. |
-| [GitLab CI/CD examples](ci/examples/README.md)                  | Get up to speed quickly with common CI/CD scenarios.             |
-| [GitLab Container Registry](user/project/container_registry.md) | Host containers within GitLab.                                   |
-| [GitLab Pages](user/project/pages/index.md)                     | Host static websites for your projects with GitLab.              |
-| [Kubernetes integration](user/project/clusters/index.md)        | Use GitLab with Kubernetes.                                      |
-| [SSH authentication](ssh/README.md)                             | Secure your network communications.                              |
-| [Using Docker images](ci/docker/using_docker_images.md)         | Build and test your applications with Docker.                    |
-
-## The entire DevOps Lifecycle
+## Complete DevOps with GitLab
 
 GitLab is the first single application for software development, security,
-and operations that enables [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/),
-making the software lifecycle faster and radically improving the speed of business.
+and operations that enables Concurrent DevOps, making the software lifecycle
+three times faster and radically improving the speed of business. GitLab
+provides solutions for all the stages of the DevOps lifecycle:
+[plan](#plan), [create](#create), [verify](#verify), [package](#package),
+[release](#release), [configure](#configure), [monitor](#monitor).
 
-GitLab provides solutions for [all the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):
-
-<img class="image-noshadow" src="img/devops-stages.png" alt="DevOps Stages">
-
-The following sections provide links to documentation for each DevOps stage:
-
-| DevOps Stage            | Documentation for                                           |
-|:------------------------|:------------------------------------------------------------|
-| [Manage](#manage)       | Statistics and analytics features.                          |
-| [Plan](#plan)           | Project planning and management features.                   |
-| [Create](#create)       | Source code and data creation and management features.      |
-| [Verify](#verify)       | Testing, code quality, and continuous integration features. |
-| [Package](#package)     | Docker container registry.                                  |
-| [Release](#release)     | Application release and delivery features.                  |
-| [Configure](#configure) | Application and infrastructure configuration tools.         |
-| [Monitor](#monitor)     | Application monitoring and metrics features.                |
-| [Secure](#secure)       | Security capability feature.                                |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-### Manage
-
-GitLab provides statistics and insight into ways you can maximize the value of GitLab in your organization.
-
-The following documentation relates to the DevOps **Manage** stage:
-
-| Manage Topics                                                                     | Description                                                                                                                                                                                                                  |
-|:----------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Authentication and Authorization](administration/auth/README.md) **[CORE ONLY]** | Supported authentication and authorization providers.                                                                                                                                                                        |
-| [GitLab Cycle Analytics](user/project/cycle_analytics.md)                         | Measure the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have. |
-| [Instance Statistics](user/instance_statistics/index.md)                          | Discover statistics on how many GitLab features you use and user activity.                                                                                                                                                   |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+<img class="image-noshadow" src="img/devops_lifecycle.png" alt="DevOps Lifecycle">
 
 ### Plan
 
-Whether you use Waterfall, Agile, or Conversational Development, GitLab streamlines your collaborative workflows.
-
-Visualize, prioritize, coordinate, and track your progress your way with GitLab’s flexible project
+Whether you use Waterfall, Agile, or Conversational Development,
+GitLab streamlines your collaborative workflows. Visualize, prioritize,
+coordinate, and track your progress your way with GitLab’s flexible project
 management tools.
 
-The following documentation relates to the DevOps **Plan** stage:
+- Chat operations
+  - [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)
+  - [Slack slash commands](user/project/integrations/slack_slash_commands.md)
+- [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
+- [Issues](user/project/issues/index.md)
+- [Project Issue Board](user/project/issue_board.md)
+- [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
+- [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
+- [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
+- [Todos](workflow/todos.md): A chronological list of to-dos that are waiting for your input, all in a simple dashboard.
+- [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 
-| Plan Topics                                                                                                                                                                                                                                                | Description                                                                                                                                      |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Discussions](user/discussions/index.md)                                                                                                                                                                                                                   | Threads, comments, and resolvable discussions in issues, commits, and  merge requests.                                                           |
-| [Due Dates](user/project/issues/due_dates.md)                                                                                                                                                                                                              | Keep track of issue deadlines.                                                                                                                   |
-| [Quick Actions](user/project/quick_actions.md)                                                                                                                                                                                                             | Shortcuts for common actions on issues or merge requests, replacing the need to click buttons or use dropdowns in GitLab's UI.                   |
-| [Issues](user/project/issues/index.md), including [confidential issues](user/project/issues/confidential_issues.md), [issue and merge request templates](user/project/description_templates.md), and [moving issues](user/project/issues/moving_issues.md) | Project issues, restricting access to issues, create templates for submitting new issues and merge requests, and moving issues between projects. |
-| [Labels](user/project/labels.md)                                                                                                                                                                                                                           | Categorize issues or merge requests with descriptive labels.                                                                                     |
-| [Milestones](user/project/milestones/index.md)                                                                                                                                                                                                             | Set milestones for delivery of issues and merge requests, with optional due date.                                                                |
-| [Project Issue Board](user/project/issue_board.md)                                                                                                                                                                                                         | Display issues on a Scrum or Kanban board.                                                                                                       |
-| [Time Tracking](workflow/time_tracking.md)                                                                                                                                                                                                                 | Track time spent on issues and merge requests.                                                                                                   |
-| [Todos](workflow/todos.md)                                                                                                                                                                                                                                 | Keep track of work requiring attention with a chronological list displayed on a simple dashboard.                                                |
+#### Migrate and import your projects from other platforms
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [Importing to GitLab](user/project/import/index.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
 ### Create
 
-Consolidate source code into a single [distributed version control system](https://en.wikipedia.org/wiki/Distributed_version_control)
+Consolidate source code into a single [DVCS](https://en.wikipedia.org/wiki/Distributed_version_control)
 that’s easily managed and controlled without disrupting your workflow.
-
-GitLab’s Git repositories come complete with branching tools and access
+GitLab’s git repositories come complete with branching tools and access
 controls, providing a scalable, single source of truth for collaborating
 on projects and code.
 
-The following documentation relates to the DevOps **Create** stage:
+#### Projects and groups
 
-#### Projects and Groups
-
-| Create Topics - Projects and Groups                                                                                                                                                      | Description                                                                    |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------|
-| [Create](gitlab-basics/create-project.md) and [fork](gitlab-basics/fork-project.md) projects, and [import and export projects between instances](user/project/settings/import_export.md) | Create, duplicate, and move projects.                                          |
-| [GitLab Pages](user/project/pages/index.md)                                                                                                                                              | Build, test, and deploy your static website with GitLab Pages.                 |
-| [Groups](user/group/index.md) and [Subgroups](user/group/subgroups/index.md)                                                                                                             | Organize your projects in groups.                                              |
-| [Projects](user/project/index.md), including [project access](public_access/public_access.md) and [settings](user/project/settings/index.md)                                             | Host source code, and control your project's visibility and set configuration. |
-| [Search through GitLab](user/search/index.md)                                                                                                                                            | Search for issues, merge requests, projects, groups, and todos.                |
-| [Snippets](user/snippets.md)                                                                                                                                                             | Snippets allow you to create little bits of code.                              |
-| [Web IDE](user/project/web_ide/index.md)                                                                                                                                                 | Edit files within GitLab's user interface.                                     |
-| [Wikis](user/project/wiki/index.md)                                                                                                                                                      | Enhance your repository documentation with built-in wikis.                     |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
----
+- [Projects](user/project/index.md):
+  - [Project settings](user/project/settings/index.md)
+  - [Create a project](gitlab-basics/create-project.md)
+  - [Fork a project](gitlab-basics/fork-project.md)
+  - [Importing and exporting projects between instances](user/project/settings/import_export.md).
+  - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+  - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
+- [Groups](user/group/index.md): Organize your projects in groups.
+  - [Subgroups](user/group/subgroups/index.md)
+- [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
+- [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
+- [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
+- [Web IDE](user/project/web_ide/index.md)
 
 #### Repositories
 
-| Create Topics - Repositories                                                                                                                                                                                                                                                                            | Description                                                                     |
-|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
-| [Branches](user/project/repository/branches/index.md) and the [default branch](user/project/repository/branches/index.md#default-branch)                                                                                                                                                                | How to use branches in GitLab.                                                  |
-| [Commits](user/project/repository/index.md#commits) and [signing commits](user/project/repository/gpg_signed_commits/index.md)                                                                                                                                                                          | Work with commits, and use GPG to sign your commits.                            |
-| [Create branches](user/project/repository/web_editor.md#create-a-new-branch), [create](user/project/repository/web_editor.md#create-a-file) and [upload](user/project/repository/web_editor.md#upload-a-file) files, and [create directories](user/project/repository/web_editor.md#create-a-directory) | Create branches, create and upload files, and create directories within GitLab. |
-| [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)                                                                                                                                                                                                              | Bulk delete branches after their changes are merged.                            |
-| [File templates](user/project/repository/web_editor.md#template-dropdowns)                                                                                                                                                                                                                              | File templates for common files.                                                |
-| [Files](user/project/repository/index.md#files)                                                                                                                                                                                                                                                         | Files management.                                                               |
-| [Jupyter Notebook files](user/project/repository/index.md#jupyter-notebook-files)                                                                                                                                                                                                                       | GitLab's support for `.ipynb` files.                                            |
-| [Protected branches](user/project/protected_branches.md)                                                                                                                                                                                                                                                | Use protected branches.                                                         |
-| [Repositories](user/project/repository/index.md)                                                                                                                                                                                                                                                        | Manage source code repositories in GitLab's user interface.                     |
-| [Start a merge request](user/project/repository/web_editor.md#tips)                                                                                                                                                                                                                                     | Start merge request when committing via GitLab's user interface.                |
+Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
----
+- [Files](user/project/repository/index.md#files)
+  - [Create a file](user/project/repository/web_editor.md#create-a-file)
+  - [Upload a file](user/project/repository/web_editor.md#upload-a-file)
+  - [File templates](user/project/repository/web_editor.md#template-dropdowns)
+  - [Jupyter Notebook files](user/project/repository/index.md#jupyter-notebook-files)
+  - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
+  - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
+- [Branches](user/project/repository/branches/index.md)
+  - [Default branch](user/project/repository/branches/index.md#default-branch)
+  - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
+  - [Protected branches](user/project/protected_branches.md#protected-branches)
+  - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
+- [Commits](user/project/repository/index.md#commits)
+  - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 #### Merge Requests
 
-| Create Topics - Merge Requests                                                                              | Description                                                                                                                                       |
-|:------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Checking out merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally) | Tips for working with merge requests locally.                                                                                                     |
-| [Cherry-picking](user/project/merge_requests/cherry_pick_changes.md)                                        | Use GitLab for cherry-picking changes.                                                                                                            |
-| [Merge request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue)  | Resolve discussions, move discussions in a merge request to an issue, and only allow merge requests to be merged if all discussions are resolved. |
-| [Merge requests](user/project/merge_requests/index.md)                                                      | Merge request management.                                                                                                                         |
-| [Work In Progress "WIP" merge requests](user/project/merge_requests/work_in_progress_merge_requests.md)     | Prevent merges of work-in-progress merge requests.                                                                                                |
+- [Merge Requests](user/project/merge_requests/index.md)
+  - [Work In Progress "WIP" Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
+  - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
+  - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+#### Integrations
 
----
+- [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
+- [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
-#### Integration and Automation
+#### Automation
 
-| Create Topics - Integration and Automation                        | Description                                                                                                            |
-|:------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|
-| [GitLab API](api/README.md)                                       | Integrate GitLab via a simple and powerful API.                                                                        |
-| [GitLab Integration](integration/README.md)                       | Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication. |
-| [GitLab Webhooks](user/project/integrations/webhooks.md)          | Let GitLab notify you when new code has been pushed to your project.                                                   |
-| [Project Services](user/project/integrations/project_services.md) | Integrate a project with external services, such as CI and chat.                                                       |
-| [Trello Power-Up](integration/trello_power_up.md)                 | Integrate with GitLab's Trello Power-Up.                                                                               |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [API](api/README.md): Automate GitLab via a simple and powerful API.
+- [GitLab Webhooks](user/project/integrations/webhooks.md): Let GitLab notify you when new code has been pushed to your project.
 
 ### Verify
 
 Spot errors sooner, improve security and shorten feedback cycles with built-in
-static code analysis, code testing, code quality, dependency checking, and Review
-Apps. Customize your approval workflow controls, automatically test the quality
-of your code, and spin up a staging environment for every code change.
-
-GitLab Continuous Integration is the most popular next generation testing system that
+static code analysis, code testing, code quality, dependency checking and review
+apps. Customize your approval workflow controls, automatically test the quality
+of your code, and spin up a staging environment for every code change. GitLab
+Continuous Integration is the most popular next generation testing system that
 scales to run your tests faster.
 
-The following documentation relates to the DevOps **Verify** stage:
-
-| Verify Topics                                      | Description                                                                  |
-|:---------------------------------------------------|:-----------------------------------------------------------------------------|
-| [GitLab CI/CD](ci/README.md)                       | Explore the features and capabilities of Continuous Integration with GitLab. |
-| [JUnit test reports](ci/junit_test_reports.md)     | Display JUnit test reports on merge requests.                                |
-| [Pipeline Graphs](ci/pipelines.md#pipeline-graphs) | Visualize builds.                                                            |
-| [Review Apps](ci/review_apps/index.md)             | Preview changes to your application right from a merge request.              |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
+- [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
+- [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
+- [JUnit test reports](ci/junit_test_reports.md)
 
 ### Package
 
@@ -276,17 +141,7 @@ GitLab Container Registry gives you the enhanced security and access controls of
 custom Docker images without 3rd party add-ons. Easily upload and download images
 from GitLab CI/CD with full Git repository management integration.
 
-The following documentation relates to the DevOps **Package** stage:
-
-| Package Topics                                                  | Description                                            |
-|:----------------------------------------------------------------|:-------------------------------------------------------|
-| [GitLab Container Registry](user/project/container_registry.md) | Learn how to use GitLab's built-in Container Registry. |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [GitLab Container Registry](user/project/container_registry.md): Learn how to use GitLab's built-in Container Registry.
 
 ### Release
 
@@ -294,257 +149,112 @@ Spend less time configuring your tools, and more time creating. Whether you’re
 deploying to one server or thousands, build, test, and release your code
 confidently and securely with GitLab’s built-in Continuous Delivery and Deployment.
 
-The following documentation relates to the DevOps **Release** stage:
-
-| Release Topics                                              | Description                                                                                  |
-|:------------------------------------------------------------|:---------------------------------------------------------------------------------------------|
-| [Auto Deploy](topics/autodevops/index.md#auto-deploy)       | Configure GitLab for the deployment of your application.                                     |
-| [Environments and deployments](ci/environments.md)          | With environments, you can control the continuous deployment of your software within GitLab. |
-| [GitLab CI/CD](ci/README.md)                                | Explore the features and capabilities of Continuous Deployment and Delivery with GitLab.     |
-| [GitLab Pages](user/project/pages/index.md)                 | Build, test, and deploy a static site directly from GitLab.                                  |
-| [Protected Runners](ci/runners/README.md#protected-runners) | Select Runners to only pick jobs for protected branches and tags.                            |
-| [Scheduled Pipelines](user/project/pipelines/schedules.md)  | Execute pipelines on a schedule.                                                             |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [Auto Deploy](topics/autodevops/index.md#auto-deploy): Configure GitLab CI for the deployment of your application.
+- [Environments and deployments](ci/environments.md): With environments, you can control the continuous deployment of your software within GitLab.
+- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
+- [Scheduled Pipelines](user/project/pipelines/schedules.md)
+- [Protected Runners](ci/runners/README.md#protected-runners)
 
 ### Configure
 
 Automate your entire workflow from build to deploy and monitoring with GitLab
-Auto DevOps. Best practice templates get you started with minimal to zero
+Auto Devops. Best practice templates get you started with minimal to zero
 configuration. Then customize everything from buildpacks to CI/CD.
 
-The following documentation relates to the DevOps **Configure** stage:
-
-| Configure Topics                                                                                                               | Description                                                               |
-|:-------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|
-| [Auto DevOps](topics/autodevops/index.md)                                                                                      | Automatically employ a complete DevOps lifecycle.                         |
-| [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab) | Use Google Kubernetes Engine and GitLab.                                  |
-| [Executable Runbooks](user/project/clusters/runbooks/index.md)                                                                 | Documented procedures that explain how to carry out particular processes. |
-| [Installing Applications](user/project/clusters/index.md#installing-applications)                                              | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |
-| [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)                                            | Enable and use slash commands from within Mattermost.                     |
-| [Protected variables](ci/variables/README.md#protected-variables)                                                              | Restrict variables to protected branches and tags.                        |
-| [Slack slash commands](user/project/integrations/slack_slash_commands.md)                                                      | Enable and use slash commands from within Slack.                          |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [Auto DevOps](topics/autodevops/index.md)
+- [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
+- [Protected variables](ci/variables/README.md#protected-variables)
+- [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
+- [Executable Runbooks](user/project/clusters/runbooks/index.md)
 
 ### Monitor
 
-Ensure your applications are always responsive and available.
-
-GitLab collects and displays performance metrics for deployed applications so you can know in an
+Measure how long it takes to go from planning to monitoring and ensure your
+applications are always responsive and available. GitLab collects and displays
+performance metrics for deployed apps using Prometheus so you can know in an
 instant how code changes impact your production environment.
 
-The following documentation relates to the DevOps **Monitor** stage:
+- [GitLab Prometheus](administration/monitoring/prometheus/index.md): Configure the bundled Prometheus to collect various metrics from your GitLab instance.
+- [Prometheus project integration](user/project/integrations/prometheus.md): Configure the Prometheus integration per project and monitor your CI/CD environments.
+- [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md): Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch.
+- [GitLab Performance Monitoring](administration/monitoring/performance/index.md): Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).
+- [Health check](user/admin_area/monitoring/health_check.md): GitLab provides liveness and readiness probes to indicate service health and reachability to required services.
+- [GitLab Cycle Analytics](user/project/cycle_analytics.md): Cycle Analytics measures the time it takes to go from an
+  [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have.
 
-| Monitor Topics                                                                                  | Description                                                                                                                              |
-|:------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------|
-| [GitLab Performance Monitoring](administration/monitoring/performance/index.md) **[CORE ONLY]** | Use InfluxDB and Grafana to monitor the performance of your GitLab instance (will be eventually replaced by Prometheus).                 |
-| [GitLab Prometheus](administration/monitoring/prometheus/index.md) **[CORE ONLY]**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
-| [Health check](user/admin_area/monitoring/health_check.md)                                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
-| [Prometheus project integration](user/project/integrations/prometheus.md)                       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
-| [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md)                   | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
+## Getting started with GitLab
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [GitLab Basics](gitlab-basics/README.md): Start working on your command line and on GitLab.
+- [GitLab Workflow](workflow/README.md): Enhance your workflow with the best of GitLab Workflow.
+  - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
+- [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
 
-### Secure
+### User account
 
-GitLab can help you secure your applications from within your development lifecycle.
+- [User account](user/profile/index.md): Manage your account
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, set up your ssh keys and deploy keys for secure access to your projects.
+  - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
+- [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 
-The following documentation relates to the DevOps **Secure** stage:
+### Git and GitLab
 
-| Monitor Topics                                                  | Description                                                                                                |
-|:----------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
-| [Container Scanning example](ci/examples/container_scanning.md) | `.gitlab-ci.yml` example of using Clair and clair-scanner to scan docker images for known vulnerabilities. |
+- [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
+- [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf): Download a PDF describing the most used Git operations.
+- [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
 
-NOTE: **Note:**
-Viewing [Container Scanning reports](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html) within merge requests requires [GitLab Ultimate](https://about.gitlab.com/pricing/).
+## Administrator documentation
 
-## Subscribe to GitLab
+[Administration documentation](administration/index.md) applies to admin users of GitLab
+self-hosted instances.
 
-There are two ways to use GitLab:
+Learn how to install, configure, update, upgrade, integrate, and maintain your own instance.
+Regular users don't have access to GitLab administration tools and settings.
 
-- [GitLab self-managed](#gitlab-self-managed): Install, administer, and maintain your own GitLab instance.
-- [GitLab.com](#gitlab-com): GitLab's SaaS offering. You don't need to install anything to use GitLab.com,
-  you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab straight away.
+## Contributor documentation
 
-The following sections outline tiers and features within GitLab self-managed and GitLab.com.
+GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
+and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
+Learn how to contribute to GitLab:
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+- [Development](development/README.md): All styleguides and explanations how to contribute.
+- [Legal](legal/README.md): Contributor license agreements.
+- [Writing documentation](development/documentation/index.md): Contributing to GitLab Docs.
 
-### GitLab self-managed
+## GitLab subscriptions
 
-With GitLab self-managed, you deploy your own GitLab instance on-premises or on a cloud of your choice.
-GitLab self-managed is available for [free and with paid subscriptions](https://about.gitlab.com/pricing/#self-managed) in the following tiers:
+You have two options to use GitLab:
 
-| Tier     | Includes                                       |
-|:---------|:-----------------------------------------------|
-| Core     | Core features.                                 |
-| Starter  | Core and Starter features.                     |
-| Premium  | Core, Starter, and Premium features.           |
-| Ultimate | Core, Starter, Premium, and Ultimate features. |
+- GitLab self-hosted: Install, administer, and maintain your own GitLab instance.
+- GitLab.com: GitLab's SaaS offering. You don't need to install anything to use GitLab.com,
+you only need to [sign up](https://gitlab.com/users/sign_in) and start using GitLab
+straight away.
 
-The following resources are available for more information on GitLab self-managed:
+### GitLab self-hosted
 
-- [Feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/), for information on what features are available at each tier.
-- [GitLab pricing page](https://about.gitlab.com/pricing/#self-managed), for subscription information and a free trial.
-- Our [product marketing page](https://about.gitlab.com/handbook/marketing/product-marketing/), for additional information including:
-  - How [different tiers are licensed](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
-  - The different [GitLab distributions](https://about.gitlab.com/handbook/marketing/product-marketing/#distributions).
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/pricing/): Core, Starter, Premium, and Ultimate.
 
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+Every feature available in Core is also available in Starter, Premium, and Ultimate.
+Starter features are also available in Premium and Ultimate, and Premium features are also
+available in Ultimate.
 
 ### GitLab.com
 
 GitLab.com is hosted, managed, and administered by GitLab, Inc., with
-[free and paid subscriptions](https://about.gitlab.com/pricing/) for individuals
-and teams in the following tiers:
+[free and paid subscriptions](https://about.gitlab.com/gitlab-com/) for individuals
+and teams: Free, Bronze, Silver, and Gold.
 
-| Tier   | Includes same features available in                 |
-|:-------|:----------------------------------------------------|
-| Free   | [Core](#gitlab-self-managed) self-managed tier.     |
-| Bronze | [Starter](#gitlab-self-managed) self-managed tier.  |
-| Silver | [Premium](#gitlab-self-managed) self-managed tier.  |
-| Gold   | [Ultimate](#gitlab-self-managed) self-managed tier. |
+GitLab.com subscriptions grants access
+to the same features available in GitLab self-hosted, **except
+[administration](administration/index.md) tools and settings**:
 
-GitLab.com subscriptions grant access
-to the same features available in GitLab self-managed, **except
-[administration](administration/index.md) tools and settings**.
+- GitLab.com Free includes the same features available in Core
+- GitLab.com Bronze includes the same features available in GitLab Starter
+- GitLab.com Silver includes the same features available in GitLab Premium
+- GitLab.com Gold includes the same features available in GitLab Ultimate
 
-TIP: **Tip:**
-To support the open source community and encourage the development of open source projects, GitLab grants access to **Gold** features for all GitLab.com **public** projects, regardless of the subscription.
+For supporting the open source community and encouraging the development of
+open source projects, GitLab grants access to **Gold** features
+for all GitLab.com **public** projects, regardless of the subscription.
 
-The following resources are available for more information on GitLab.com:
-
-- [Feature comparison](https://about.gitlab.com/pricing/gitlab-com/feature-comparison/), for information on what features are available at each tier.
-- [GitLab pricing page](https://about.gitlab.com/pricing/), for subscription information and a free trial.
-- Our [product marketing page](https://about.gitlab.com/handbook/marketing/product-marketing/), for additional information including:
-  - How [different tiers are licensed](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
-  - The different [GitLab distributions](https://about.gitlab.com/handbook/marketing/product-marketing/#distributions).
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## New to Git and GitLab?
-
-Working with new systems can be daunting.
-
-We have the following documentation to rapidly uplift your GitLab knowledge:
-
-| Topic                                                                                                                  | Description                                                    |
-|:-----------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------|
-| [GitLab Basics](gitlab-basics/README.md)                                                                               | Start working on the command line and with GitLab.             |
-| [GitLab Workflow](workflow/README.md) and [overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow.        |
-| [Get started with GitLab CI/CD](ci/quick_start/README.md)                                                              | Quickly implement GitLab CI/CD.                                |
-| [Auto DevOps](topics/autodevops/index.md)                                                                              | Learn more about GitLab's Auto DevOps.                         |
-| [GitLab Markdown](user/markdown.md)                                                                                    | GitLab's advanced formatting system (GitLab Flavored Markdown) |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-### User account
-
-Learn more about GitLab account management:
-
-| Topic                                                      | Description                                                                                                                |
-|:-----------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
-| [User account](user/profile/index.md)                      | Manage your account.                                                                                                       |
-| [Authentication](topics/authentication/index.md)           | Account security with two-factor authentication, set up your ssh keys, and deploy keys for secure access to your projects. |
-| [Profile settings](user/profile/index.md#profile-settings) | Manage your profile settings, two factor authentication, and more.                                                         |
-| [User permissions](user/permissions.md)                    | Learn what each role in a project can do.                                                                                  |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-### Git and GitLab
-
-Learn more about using Git, and using Git with GitLab:
-
-| Topic                                                                       | Description                                                                |
-|:----------------------------------------------------------------------------|:---------------------------------------------------------------------------|
-| [Git](topics/git/index.md)                                                  | Getting started with Git, branching strategies, Git LFS, and advanced use. |
-| [Git cheatsheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf) | Download a PDF describing the most used Git operations.                    |
-| [GitLab Flow](workflow/gitlab_flow.md)                                      | Explore the best of Git with the GitLab Flow strategy.                     |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Coming to GitLab from another platform
-
-If you are coming to GitLab from another platform, you'll find the following information useful:
-
-| Topic                                                          | Description                                                                            |
-|:---------------------------------------------------------------|:---------------------------------------------------------------------------------------|
-| [Importing to GitLab](user/project/import/index.md)            | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](workflow/importing/migrating_from_svn.md) | Convert a SVN repository to Git and GitLab.                                            |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Building an integration with GitLab
-
-There are many ways to integrate with GitLab, including:
-
-| Topic                                                      | Description                                     |
-|:-----------------------------------------------------------|:------------------------------------------------|
-| [GitLab API](api/README.md)                                | Integrate GitLab via a simple and powerful API. |
-| [Integrations and automation](#integration-and-automation) | All GitLab integration and automation options.  |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
-
-## Contributing to GitLab
-
-GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
-and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
-
-Learn how to contribute to GitLab with the following resources:
-
-| Topic                                                       | Description                              |
-|:------------------------------------------------------------|:-----------------------------------------|
-| [Development](development/README.md)                        | How to contribute to GitLab development. |
-| [Legal](legal/README.md)                                    | Contributor license agreements.          |
-| [Writing documentation](development/documentation/index.md) | How to contribute to GitLab Docs.        |
-
-<div align="right">
-  <a type="button" class="btn btn-default" href="#overview">
-    Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
-  </a>
-</div>
+To know more about GitLab subscriptions and licensing, please refer to the
+[GitLab Product Marketing Handbook](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers).
