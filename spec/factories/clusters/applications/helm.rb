@@ -49,6 +49,10 @@ FactoryBot.define do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 
+    factory :clusters_applications_prometheus, class: Clusters::Applications::CertManager do
+      cluster factory: %i(cluster with_installed_helm provided_by_gcp)
+    end
+
     factory :clusters_applications_prometheus, class: Clusters::Applications::Prometheus do
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end

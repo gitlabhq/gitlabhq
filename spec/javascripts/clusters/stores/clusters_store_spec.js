@@ -108,6 +108,13 @@ describe('Clusters Store', () => {
             requestReason: null,
             hostname: null,
           },
+          cert_manager: {
+            title: 'Cert-Manager',
+            status: mockResponseData.applications[6].status,
+            statusReason: mockResponseData.applications[6].status_reason,
+            requestStatus: null,
+            requestReason: null,
+          },
         },
       });
     });
