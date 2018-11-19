@@ -98,7 +98,7 @@ module Ci
 
     scope :matches_tag_ids, -> (tag_ids) do
       matcher = ::ActsAsTaggableOn::Tagging
-        .where(taggable_type: CommitStatus)
+        .where(taggable_type: CommitStatus.name)
         .where(context: 'tags')
         .where('taggable_id = ci_builds.id')
         .where.not(tag_id: tag_ids).select('1')
@@ -108,7 +108,7 @@ module Ci
 
     scope :with_any_tags, -> do
       matcher = ::ActsAsTaggableOn::Tagging
-        .where(taggable_type: CommitStatus)
+        .where(taggable_type: CommitStatus.name)
         .where(context: 'tags')
         .where('taggable_id = ci_builds.id').select('1')
 
