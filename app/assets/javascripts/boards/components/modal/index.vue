@@ -6,7 +6,7 @@ import ModalList from './list.vue';
 import ModalFooter from './footer.vue';
 import EmptyState from './empty_state.vue';
 import ModalStore from '../../stores/modal_store';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {

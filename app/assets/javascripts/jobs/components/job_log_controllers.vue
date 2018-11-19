@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

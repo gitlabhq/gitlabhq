@@ -842,11 +842,15 @@
     background-repeat: repeat;
   }
 
-  .diff-file-discussions + .discussion-form::before {
-    width: auto;
-    margin-left: -16px;
-    margin-right: -16px;
-    margin-bottom: 16px;
+  .diff-file-discussions + .discussion-form {
+    padding: $gl-padding;
+
+    &::before {
+      width: auto;
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+      margin-bottom: $gl-padding;
+    }
   }
 
   .notes {

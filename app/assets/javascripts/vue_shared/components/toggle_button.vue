@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '../../locale';
 import icon from './icon.vue';
 

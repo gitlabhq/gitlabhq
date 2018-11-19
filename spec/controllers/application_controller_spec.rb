@@ -650,7 +650,7 @@ describe ApplicationController do
   describe '#access_denied' do
     controller(described_class) do
       def index
-        access_denied!(params[:message])
+        access_denied!(params[:message], params[:status])
       end
     end
 
@@ -668,6 +668,12 @@ describe ApplicationController do
       get :index, message: 'None shall pass'
 
       expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'renders a status passed to access denied' do
+      get :index, status: 401
+
+      expect(response).to have_gitlab_http_status(401)
     end
   end
 

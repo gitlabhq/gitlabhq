@@ -6,7 +6,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   name: 'MRWidgetMerged',

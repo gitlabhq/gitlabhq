@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This grape_logging module (https://github.com/aserafin/grape_logging) makes it
 # possible to log the user who performed the Grape API action by retrieving
 # the user context from the request environment.

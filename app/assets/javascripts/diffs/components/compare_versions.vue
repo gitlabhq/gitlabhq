@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Tooltip from '@gitlab-org/gitlab-ui/dist/directives/tooltip';
+import Tooltip from '@gitlab/ui/dist/directives/tooltip';
 import { __ } from '~/locale';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';

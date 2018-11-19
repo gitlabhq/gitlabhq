@@ -64,7 +64,7 @@ Some features might be simple enough that they only involve one Component, while
 more complex features could involve multiple or even all.
 
 Example (from https://gitlab.com/gitlab-org/gitlab-ce/issues/50353):
-* Respository is
+* Repository is
   * Intuitive
     * It's easy to select the desired file template
     * It doesn't require unnecessary actions to save the change

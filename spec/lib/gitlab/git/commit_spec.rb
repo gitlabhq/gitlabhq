@@ -94,7 +94,7 @@ describe Gitlab::Git::Commit, :seed_helper do
       context 'body_size less than threshold' do
         let(:body_size) { 123 }
 
-        it 'fetches commit message seperately' do
+        it 'fetches commit message separately' do
           expect(described_class).to receive(:get_message).with(repository, id)
 
           commit.safe_message

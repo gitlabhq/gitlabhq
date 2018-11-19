@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from './ci_icon.vue';
 /**
  * Renders CI Badge link with CI icon and status text based on

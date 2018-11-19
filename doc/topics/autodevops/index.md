@@ -657,6 +657,8 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
 | `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
 | `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
+| `OLD_REPORTS_DISABLED`       | From GitLab 11.5, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
+| `NEW_REPORTS_DISABLED`       | From GitLab 11.5, this variable can be used to disable the `sast_dashboard` job. If the variable is present, the job will not be created. |
 
 TIP: **Tip:**
 Set up the replica variables using a

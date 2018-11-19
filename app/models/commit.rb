@@ -230,24 +230,13 @@ class Commit
 
   def lazy_author
     BatchLoader.for(author_email.downcase).batch do |emails, loader|
-      # A Hash that maps user Emails to the corresponding User objects. The
-      # Emails at this point are the _primary_ Emails of the Users.
-      users_for_emails = User
-        .by_any_email(emails)
-        .each_with_object({}) { |user, hash| hash[user.email] = user }
+      users = User.by_any_email(emails).includes(:emails)
 
-      users_for_ids = users_for_emails
-        .values
-        .each_with_object({}) { |user, hash| hash[user.id] = user }
+      emails.each do |email|
+        user = users.find { |u| u.any_email?(email) }
 
-      # Some commits may have used an alternative Email address. In this case we
-      # need to query the "emails" table to map those addresses to User objects.
-      Email
-        .where(email: emails - users_for_emails.keys)
-        .pluck(:email, :user_id)
-        .each { |(email, id)| users_for_emails[email] = users_for_ids[id] }
-
-      users_for_emails.each { |email, user| loader.call(email, user) }
+        loader.call(email, user)
+      end
     end
   end
 

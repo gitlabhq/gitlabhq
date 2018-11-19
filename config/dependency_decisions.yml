@@ -544,13 +544,6 @@
     :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
     :versions: []
     :when: 2018-06-08 05:30:56.764116000 Z
-- - :license
-  - "@gitlab-org/gitlab-ui"
-  - MIT
-  - :who: Clement Ho
-    :why: Our own library
-    :versions: []
-    :when: 2018-07-17 21:02:54.529227000 Z
 - - :approve
   - lz-string
   - :who: Phil Hughes

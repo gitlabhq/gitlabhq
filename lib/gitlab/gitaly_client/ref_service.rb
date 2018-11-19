@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class RefService
@@ -218,7 +220,7 @@ module Gitlab
         request = Gitaly::GetTagMessagesRequest.new(repository: @gitaly_repo, tag_ids: tag_ids)
         response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_messages, request, timeout: GitalyClient.fast_timeout)
 
-        messages = Hash.new { |h, k| h[k] = ''.b }
+        messages = Hash.new { |h, k| h[k] = +''.b }
         current_tag_id = nil
 
         response.each do |rpc_message|

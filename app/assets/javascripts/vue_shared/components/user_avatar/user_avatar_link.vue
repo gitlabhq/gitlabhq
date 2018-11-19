@@ -17,7 +17,7 @@
 
 */
 
-import { GlLink, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import userAvatarImage from './user_avatar_image.vue';
 
 export default {

@@ -231,7 +231,7 @@ Their abstraction level is comparable to how a user would interact with the UI.
 <details>
   <summary>Vuex stores</summary>
   When testing the frontend code of a page as a whole, the interaction between Vue components and Vuex stores is covered as well.
-<details>
+</details>
 
 ## Feature tests
 

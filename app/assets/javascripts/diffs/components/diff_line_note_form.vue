@@ -53,7 +53,7 @@ export default {
         this.noteableData.diff_head_sha,
         DIFF_NOTE_TYPE,
         this.noteableData.source_project_id,
-        this.line.lineCode,
+        this.line.line_code,
       ];
 
       this.initAutoSave(this.noteableData, keys);
@@ -72,7 +72,7 @@ export default {
       }
 
       this.cancelCommentForm({
-        lineCode: this.line.lineCode,
+        lineCode: this.line.line_code,
       });
       this.$nextTick(() => {
         this.resetAutoSave();
@@ -94,7 +94,7 @@ export default {
     <note-form
       ref="noteForm"
       :is-editing="true"
-      :line-code="line.lineCode"
+      :line-code="line.line_code"
       save-button-title="Comment"
       class="diff-comment-form"
       @cancelForm="handleCancelCommentForm"

@@ -73,7 +73,7 @@ export default {
     }),
     ...mapGetters(['isLoggedIn']),
     lineHref() {
-      return `#${this.line.lineCode || ''}`;
+      return `#${this.line.line_code || ''}`;
     },
     shouldShowCommentButton() {
       return (
@@ -99,7 +99,7 @@ export default {
   methods: {
     ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
-      this.showCommentForm({ lineCode: this.line.lineCode });
+      this.showCommentForm({ lineCode: this.line.line_code });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {
@@ -108,8 +108,8 @@ export default {
 
       this.isRequesting = true;
       const endpoint = this.contextLinesPath;
-      const oldLineNumber = this.line.metaData.oldPos || 0;
-      const newLineNumber = this.line.metaData.newPos || 0;
+      const oldLineNumber = this.line.meta_data.old_pos || 0;
+      const newLineNumber = this.line.meta_data.new_pos || 0;
       const offset = newLineNumber - oldLineNumber;
       const bottom = this.isBottom;
       const { fileHash } = this;
@@ -125,12 +125,12 @@ export default {
         to = lineNumber + UNFOLD_COUNT;
       } else {
         const diffFile = utils.findDiffFile(this.diffFiles, this.fileHash);
-        const indexForInline = utils.findIndexInInlineLines(diffFile.highlightedDiffLines, {
+        const indexForInline = utils.findIndexInInlineLines(diffFile.highlighted_diff_lines, {
           oldLineNumber,
           newLineNumber,
         });
-        const prevLine = diffFile.highlightedDiffLines[indexForInline - 2];
-        const prevLineNumber = (prevLine && prevLine.newLine) || 0;
+        const prevLine = diffFile.highlighted_diff_lines[indexForInline - 2];
+        const prevLineNumber = (prevLine && prevLine.new_line) || 0;
 
         if (since <= prevLineNumber + 1) {
           since = prevLineNumber + 1;

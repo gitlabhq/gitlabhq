@@ -27,7 +27,7 @@ describe 'New/edit issue', :js do
       before do
         # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
         # somehow refer to the very block we defined to _wrap_ that method, instead of
-        # the original method, resulting in infinite recurison when called.
+        # the original method, resulting in infinite recursion when called.
         # This is likely a bug with helper modules included into dynamically generated view classes.
         # To work around this, we have to hold on to and call to the original implementation manually.
         original_issue_dropdown_options = FormHelper.instance_method(:issue_assignees_dropdown_options)

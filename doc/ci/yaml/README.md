@@ -476,6 +476,7 @@ docker build:
       - Dockerfile
       - docker/scripts/*
       - dockerfiles/**/*
+      - more_scripts/*.{rb,py,sh}
 ```
 
 In the scenario above, if you are pushing multiple commits to GitLab to an
@@ -485,6 +486,7 @@ one of the commits contains changes to either:
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
 - Any of the files and subfolders inside `dockerfiles` directory.
+- Any of the files with `rb`, `py`, `sh` extensions inside `more_scripts` directory.
 
 CAUTION: **Warning:**
 There are some caveats when using this feature with new branches and tags. See
@@ -1602,10 +1604,11 @@ test:
 
 ## `include`
 
-> Introduced in [GitLab Edition Premium][ee] 10.5.
-> Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> Available for Starter, Premium and Ultimate since 10.6.
 > Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
-> Available for Libre since [11.4](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+to GitLab Core in 11.4
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1767,7 +1770,7 @@ stages:
 
 production:
   script:
-    - install_depedencies
+    - install_dependencies
     - deploy
     - notify_owner
 ```

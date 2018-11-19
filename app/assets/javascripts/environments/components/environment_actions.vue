@@ -4,7 +4,7 @@ import { formatTime } from '~/lib/utils/datetime_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 import tooltip from '../../vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   directives: {

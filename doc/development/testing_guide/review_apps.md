@@ -24,7 +24,7 @@ Review Apps are automatically deployed by each pipeline, both in
       [`scripts/review_apps/review-apps.sh`][review-apps.sh]
     - These scripts are basically
       [our official Auto DevOps scripts][Auto-DevOps.gitlab-ci.yml] where the
-      default CNG images are overriden with the images built and stored in the
+      default CNG images are overridden with the images built and stored in the
       [`CNG-mirror` project's registry][cng-mirror-registry].
     - Since we're using [the official GitLab Helm chart][helm-chart], this means
       you get a dedicated environment for your branch that's very close to what it
@@ -33,7 +33,7 @@ Review Apps are automatically deployed by each pipeline, both in
   thanks to the direct link to it from the MR widget. The default username is
   `root` and its password can be found in the 1Password secure note named
   **gitlab-{ce,ee} Review App's root password** (note that there's currently
-  [a bug where the default password seems to be overriden][password-bug]).
+  [a bug where the default password seems to be overridden][password-bug]).
 
 **Additional notes:**
 

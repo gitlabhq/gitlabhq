@@ -10,7 +10,7 @@ module QA
 
       let(:key_title) { "key for ssh tests #{Time.now.to_f}" }
       let(:ssh_key) do
-        Factory::Resource::SSHKey.fabricate! do |resource|
+        Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title
         end
       end
@@ -38,7 +38,7 @@ module QA
 
       it 'user pushes to the repository' do
         # Create a project to push to
-        project = Factory::Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate! do |project|
           project.name = 'git-protocol-project'
         end
 

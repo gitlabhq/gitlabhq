@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlButton } from '@gitlab-org/gitlab-ui';
+import { GlButton } from '@gitlab/ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';

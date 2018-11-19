@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import ToolbarButton from './toolbar_button.vue';
 import Icon from '../icon.vue';
 

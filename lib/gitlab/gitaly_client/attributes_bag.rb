@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     # This module expects an `ATTRS` const to be defined on the subclass

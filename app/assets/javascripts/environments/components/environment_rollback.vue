@@ -6,7 +6,7 @@
  * Makes a post request when the button is clicked.
  */
 import { s__ } from '~/locale';
-import { GlTooltipDirective, GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 
@@ -63,7 +63,7 @@ export default {
   >
     <icon
       v-if="isLastDeployment"
-      name="repeat" 
+      name="repeat"
     />
     <icon
       v-else

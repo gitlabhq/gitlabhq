@@ -16,7 +16,7 @@ import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';
-import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';

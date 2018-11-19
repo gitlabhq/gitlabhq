@@ -17,6 +17,7 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock.stub_request(:get, api_url + '/apis/extensions/v1beta1').to_return(kube_response(kube_v1beta1_discovery_body))
     WebMock.stub_request(:get, api_url + '/apis/rbac.authorization.k8s.io/v1').to_return(kube_response(kube_v1_rbac_authorization_discovery_body))
+    WebMock.stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1').to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
   end
 
   def stub_kubeclient_pods(response = nil)
@@ -130,6 +131,18 @@ module KubernetesHelpers
         { "name" => "clusterroles", "namespaced" => false, "kind" => "ClusterRole" },
         { "name" => "rolebindings", "namespaced" => true, "kind" => "RoleBinding" },
         { "name" => "roles", "namespaced" => true, "kind" => "Role" }
+      ]
+    }
+  end
+
+  def kube_v1alpha1_serving_knative_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
+        { "name" => "revisions", "namespaced" => true, "kind" => "Revision" },
+        { "name" => "services", "namespaced" => true, "kind" => "Service" },
+        { "name" => "configurations", "namespaced" => true, "kind" => "Configuration" },
+        { "name" => "routes", "namespaced" => true, "kind" => "Route" }
       ]
     }
   end

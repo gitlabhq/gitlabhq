@@ -152,11 +152,13 @@ class Member < ActiveRecord::Base
 
       return member unless can_update_member?(current_user, member)
 
-      member.attributes = {
-        created_by: member.created_by || current_user,
-        access_level: access_level,
-        expires_at: expires_at
-      }
+      set_member_attributes(
+        member,
+        access_level,
+        current_user: current_user,
+        expires_at: expires_at,
+        ldap: ldap
+      )
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
@@ -173,6 +175,18 @@ class Member < ActiveRecord::Base
 
       member
       # rubocop: enable CodeReuse/ServiceClass
+    end
+
+    # Populates the attributes of a member.
+    #
+    # This logic resides in a separate method so that EE can extend this logic,
+    # without having to patch the `add_user` method directly.
+    def set_member_attributes(member, access_level, current_user: nil, expires_at: nil, ldap: false)
+      member.attributes = {
+        created_by: member.created_by || current_user,
+        access_level: access_level,
+        expires_at: expires_at
+      }
     end
 
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)

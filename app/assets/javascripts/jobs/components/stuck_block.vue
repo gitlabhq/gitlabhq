@@ -1,5 +1,5 @@
 <script>
-import { GlLink } from '@gitlab-org/gitlab-ui';
+import { GlLink } from '@gitlab/ui';
 /**
  * Renders Stuck Runners block for job's view.
  */
