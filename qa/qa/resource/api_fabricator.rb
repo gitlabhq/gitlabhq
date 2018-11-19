@@ -41,6 +41,7 @@ module QA
 
       private
 
+      include Support::Api
       attr_writer :api_resource, :api_response
 
       def resource_web_url(resource)
@@ -82,10 +83,6 @@ module QA
         end
       end
 
-      def parse_body(response)
-        JSON.parse(response.body, symbolize_names: true)
-      end
-
       def process_api_response(parsed_response)
         self.api_response = parsed_response
         self.api_resource = transform_api_resource(parsed_response.deep_dup)
@@ -93,25 +90,6 @@ module QA
 
       def transform_api_resource(api_resource)
         api_resource
-      end
-
-      def post(url, payload)
-        RestClient::Request.execute(
-            method: :post,
-            url: url,
-            payload: payload,
-            verify_ssl: false)
-      rescue RestClient::ExceptionWithResponse => e
-        e.response
-      end
-
-      def get(url)
-        RestClient::Request.execute(
-            method: :get,
-            url: url,
-            verify_ssl: false)
-      rescue RestClient::ExceptionWithResponse => e
-        e.response
       end
     end
   end
