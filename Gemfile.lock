@@ -146,8 +146,6 @@ GEM
       html-pipeline
     declarative (0.0.10)
     declarative-option (0.1.0)
-    default_value_for (3.0.5)
-      activerecord (>= 3.2.0, < 5.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     device_detector (1.0.0)
@@ -277,6 +275,8 @@ GEM
     gitaly-proto (0.123.0)
       grpc (~> 1.0)
     github-markup (1.7.0)
+    gitlab-default_value_for (3.1.1)
+      activerecord (>= 3.2.0, < 6.0)
     gitlab-markup (1.6.5)
     gitlab-sidekiq-fetcher (0.3.0)
       sidekiq (~> 5)
@@ -972,7 +972,6 @@ DEPENDENCIES
   creole (~> 0.5.0)
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
-  default_value_for (~> 3.0.5)
   device_detector
   devise (~> 4.4)
   devise-two-factor (~> 3.0.0)
@@ -1008,6 +1007,7 @@ DEPENDENCIES
   gettext_i18n_rails_js (~> 1.3)
   gitaly-proto (~> 0.123.0)
   github-markup (~> 1.7.0)
+  gitlab-default_value_for (~> 3.1.1)
   gitlab-markup (~> 1.6.5)
   gitlab-sidekiq-fetcher
   gitlab-styles (~> 2.4)

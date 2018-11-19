@@ -4,10 +4,9 @@ def rails5?
 end
 
 gem_versions = {}
-gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
-gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
-gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'    : '0.2'
+gem_versions['rails']                           = rails5? ? '5.0.7'  : '4.2.10'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1' : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
 source 'https://rubygems.org'
@@ -24,7 +23,11 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', gem_versions['default_value_for']
+if rails5?
+  gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
+else
+  gem 'default_value_for', '~> 3.0.0'
+end
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql

@@ -28,7 +28,7 @@ module Users
 
       identity_attrs = params.slice(:extern_uid, :provider)
 
-      if identity_attrs.any?
+      unless identity_attrs.empty?
         user.identities.build(identity_attrs)
       end
 
