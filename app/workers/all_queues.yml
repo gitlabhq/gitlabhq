@@ -133,3 +133,4 @@
 - create_note_diff_file
 - delete_diff_files
 - detect_repository_languages
+- repository_cleanup

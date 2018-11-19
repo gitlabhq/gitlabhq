@@ -225,7 +225,7 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
-msgid "403|Please contact your GitLab administrator to get the permission."
+msgid "403|Please contact your GitLab administrator to get permission."
 msgstr ""
 
 msgid "403|You don't have the permission to access this page."
@@ -1242,6 +1242,9 @@ msgid "Choose File ..."
 msgstr ""
 
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
+msgstr ""
+
+msgid "Choose a file"
 msgstr ""
 
 msgid "Choose a template..."
@@ -2939,6 +2942,9 @@ msgstr ""
 msgid "Failed to update issues, please try again."
 msgstr ""
 
+msgid "Failed to upload object map file"
+msgstr ""
+
 msgid "Failure"
 msgstr ""
 
@@ -4333,6 +4339,9 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
+msgid "No file selected"
+msgstr ""
+
 msgid "No files found."
 msgstr ""
 
@@ -5489,6 +5498,12 @@ msgstr ""
 msgid "Repository URL"
 msgstr ""
 
+msgid "Repository cleanup"
+msgstr ""
+
+msgid "Repository cleanup has started. You will receive an email once the cleanup operation is complete."
+msgstr ""
+
 msgid "Repository maintenance"
 msgstr ""
 
@@ -6162,6 +6177,9 @@ msgstr ""
 msgid "Start and due date"
 msgstr ""
 
+msgid "Start cleanup"
+msgstr ""
+
 msgid "Start date"
 msgstr ""
 
@@ -6375,6 +6393,9 @@ msgid "The import will time out after %{timeout}. For repositories that take lon
 msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr ""
+
+msgid "The maximum file size allowed is %{max_attachment_size}mb"
 msgstr ""
 
 msgid "The maximum file size allowed is 200KB."
@@ -7057,6 +7078,9 @@ msgid "Upload New File"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "Upload object map"
 msgstr ""
 
 msgid "UploadLink|click to upload"
