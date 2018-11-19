@@ -15,6 +15,17 @@ module TokenAuthenticatableStrategies
       end
 
       token_authenticatable
+    rescue ActiveRecord::StatementInvalid
+      nil
+    end
+
+    def ensure_token(instance)
+      # TODO, tech debt, because some specs are testing migrations, but are still
+      # using factory bot to create resources, it might happen that a database
+      # schema does not have "#{token_name}_encrypted" field yet, however a bunch
+      # of models call `ensure_#{token_name}` in `before_save`.
+      #
+      super if instance.has_attribute?(encrypted_field)
     end
 
     def get_token(instance)
@@ -40,7 +51,7 @@ module TokenAuthenticatableStrategies
 
     def token_set?(instance)
       raw_token = instance.read_attribute(encrypted_field)
-      raw_token ||= instance.read_attribute(token_field) if fallback?
+      raw_token ||= (instance.read_attribute(token_field) if fallback?)
 
       raw_token.present?
     end
