@@ -810,6 +810,12 @@ msgstr ""
 msgid "Available group Runners : %{runners}."
 msgstr ""
 
+msgid "Available shared Runners :"
+msgstr ""
+
+msgid "Available specific runners"
+msgstr ""
+
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -2450,6 +2456,9 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Disable shared Runners"
+msgstr ""
+
 msgid "Discard"
 msgstr ""
 
@@ -2589,6 +2598,9 @@ msgid "Enable or disable version check and usage ping."
 msgstr ""
 
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgstr ""
+
+msgid "Enable shared Runners"
 msgstr ""
 
 msgid "Enable the Performance Bar for a given group."
@@ -3048,6 +3060,9 @@ msgid "GitLab Group Runners can execute code for all the projects in this group.
 msgstr ""
 
 msgid "GitLab Import"
+msgstr ""
+
+msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
 msgstr ""
 
 msgid "GitLab User"
@@ -5470,6 +5485,9 @@ msgstr ""
 msgid "Runners API"
 msgstr ""
 
+msgid "Runners activated for this project"
+msgstr ""
+
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
@@ -6715,6 +6733,9 @@ msgid "To preserve performance only <strong>%{display_size} of ${real_size}</str
 msgstr ""
 
 msgid "To start serving your jobs you can add Runners to your group"
+msgstr ""
+
+msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
 msgstr ""
 
 msgid "To this GitLab instance"
