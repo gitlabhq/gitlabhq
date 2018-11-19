@@ -13,15 +13,7 @@ module Clusters
         include ::Clusters::Concerns::ApplicationData
   
         default_value_for :version, VERSION
-  
-        def ready_status
-          [:installed]
-        end
-  
-        def ready?
-          ready_status.include?(status_name)
-        end
-  
+
         def chart
           'stable/cert-manager'
         end
@@ -32,7 +24,7 @@ module Clusters
             version: VERSION,
             rbac: cluster.platform_kubernetes_rbac?,
             chart: chart,
-            files: files.merge!(cluster_issuer_file),
+            files: files.merge(cluster_issuer_file),
             postinstall: post_install_script
           )
         end
@@ -61,4 +53,3 @@ module Clusters
       end
     end
   end
-  
