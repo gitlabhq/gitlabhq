@@ -33,8 +33,3 @@ rules:
   vue/no-unused-components: off
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
-  # Disabled due to disagreements with prettier
-  vue/html-closing-bracket-newline: off
-  vue/html-closing-bracket-spacing: off
-  vue/html-indent: off
-  vue/max-attributes-per-line: off
