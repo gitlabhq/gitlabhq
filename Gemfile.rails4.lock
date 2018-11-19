@@ -55,7 +55,7 @@ GEM
       faraday_middleware (~> 0.9)
       faraday_middleware-multi_json (~> 0.0)
       oauth2 (~> 1.0)
-    asciidoctor (1.5.6.2)
+    asciidoctor (1.5.8)
     asciidoctor-plantuml (0.0.8)
       asciidoctor (~> 1.5)
     ast (2.4.0)
@@ -933,7 +933,7 @@ DEPENDENCIES
   addressable (~> 2.5.2)
   akismet (~> 2.0)
   asana (~> 0.6.0)
-  asciidoctor (~> 1.5.6)
+  asciidoctor (~> 1.5.8)
   asciidoctor-plantuml (= 0.0.8)
   attr_encrypted (~> 3.1.0)
   awesome_print
