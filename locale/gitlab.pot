@@ -2211,6 +2211,9 @@ msgstr ""
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
+msgid "Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here."
+msgstr ""
+
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes."
 msgstr ""
 
@@ -2510,6 +2513,9 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
+msgid "Edit environment"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -2588,6 +2594,9 @@ msgstr ""
 msgid "Environments"
 msgstr ""
 
+msgid "Environments allow you to track deployments of your application %{link_to_read_more}."
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -2655,6 +2664,9 @@ msgid "Environments|Stop"
 msgstr ""
 
 msgid "Environments|Stop environment"
+msgstr ""
+
+msgid "Environments|Stopping"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -2790,6 +2802,9 @@ msgid "Explore projects"
 msgstr ""
 
 msgid "Explore public groups"
+msgstr ""
+
+msgid "External URL"
 msgstr ""
 
 msgid "Facebook"
@@ -3881,6 +3896,9 @@ msgstr ""
 msgid "Metrics and profiling"
 msgstr ""
 
+msgid "Metrics for environment"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -4025,6 +4043,9 @@ msgstr ""
 msgid "New Application"
 msgstr ""
 
+msgid "New Environment"
+msgstr ""
+
 msgid "New Group"
 msgstr ""
 
@@ -4055,6 +4076,9 @@ msgid "New branch unavailable"
 msgstr ""
 
 msgid "New directory"
+msgstr ""
+
+msgid "New environment"
 msgstr ""
 
 msgid "New file"
@@ -5130,6 +5154,9 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
+msgid "Read more about environments"
+msgstr ""
+
 msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
@@ -5501,6 +5528,9 @@ msgid "SearchAutocomplete|in this project"
 msgstr ""
 
 msgid "Secret"
+msgstr ""
+
+msgid "See metrics"
 msgstr ""
 
 msgid "Select"
@@ -6075,6 +6105,9 @@ msgid "Template"
 msgstr ""
 
 msgid "Templates"
+msgstr ""
+
+msgid "Terminal for environment"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
@@ -6885,6 +6918,9 @@ msgstr ""
 msgid "View app"
 msgstr ""
 
+msgid "View deployment"
+msgstr ""
+
 msgid "View file @ "
 msgstr ""
 
@@ -7180,6 +7216,9 @@ msgid "You don't have any applications"
 msgstr ""
 
 msgid "You don't have any authorized applications"
+msgstr ""
+
+msgid "You don't have any deployments right now."
 msgstr ""
 
 msgid "You have no permissions"
