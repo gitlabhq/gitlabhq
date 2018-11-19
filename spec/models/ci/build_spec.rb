@@ -1928,12 +1928,26 @@ describe Ci::Build do
   describe '#repo_url' do
     subject { build.repo_url }
 
-    it { is_expected.to be_a(String) }
-    it { is_expected.to end_with(".git") }
-    it { is_expected.to start_with(project.web_url[0..6]) }
-    it { is_expected.to include(build.token) }
-    it { is_expected.to include('gitlab-ci-token') }
-    it { is_expected.to include(project.web_url[7..-1]) }
+    context 'when token is set' do
+      before do
+        build.ensure_token
+      end
+
+      it { is_expected.to be_a(String) }
+      it { is_expected.to end_with(".git") }
+      it { is_expected.to start_with(project.web_url[0..6]) }
+      it { is_expected.to include(build.token) }
+      it { is_expected.to include('gitlab-ci-token') }
+      it { is_expected.to include(project.web_url[7..-1]) }
+    end
+
+    context 'when token is empty' do
+      before do
+        build.token = nil
+      end
+
+      it { is_expected.to be_nil}
+    end
   end
 
   describe '#stuck?' do
@@ -2043,7 +2057,8 @@ describe Ci::Build do
       end
 
       context 'use from gitlab-ci.yml' do
-        let(:pipeline) { create(:ci_pipeline) }
+        let(:project) { create(:project, :repository) }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
 
         before do
           stub_ci_pipeline_yaml_file(config)
@@ -2085,56 +2100,6 @@ describe Ci::Build do
 
   describe '#variables' do
     let(:container_registry_enabled) { false }
-    let(:gitlab_version_info) { Gitlab::VersionInfo.parse(Gitlab::VERSION) }
-    let(:predefined_variables) do
-      [
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
-        { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true },
-        { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
-        { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true },
-        { key: 'CI_JOB_TOKEN', value: build.token, public: false },
-        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
-        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
-        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
-        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
-        { key: 'CI', value: 'true', public: true },
-        { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_VERSION_MAJOR', value: gitlab_version_info.major.to_s, public: true },
-        { key: 'CI_SERVER_VERSION_MINOR', value: gitlab_version_info.minor.to_s, public: true },
-        { key: 'CI_SERVER_VERSION_PATCH', value: gitlab_version_info.patch.to_s, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
-        { key: 'CI_JOB_NAME', value: 'test', public: true },
-        { key: 'CI_JOB_STAGE', value: 'test', public: true },
-        { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
-        { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
-        { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
-        { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
-        { key: 'CI_NODE_TOTAL', value: '1', public: true },
-        { key: 'CI_BUILD_REF', value: build.sha, public: true },
-        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
-        { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
-        { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true },
-        { key: 'CI_BUILD_NAME', value: 'test', public: true },
-        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
-        { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
-        { key: 'CI_PROJECT_NAME', value: project.path, public: true },
-        { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
-        { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
-        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
-        { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
-        { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
-        { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
-        { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
-        { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
-        { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
-      ]
-    end
 
     before do
       stub_container_registry_config(enabled: container_registry_enabled, host_port: 'registry.example.com')
@@ -2143,11 +2108,174 @@ describe Ci::Build do
     subject { build.variables }
 
     context 'returns variables' do
+      let(:predefined_variables) do
+        [
+          { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+          { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true },
+          { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+          { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true },
+          { key: 'CI_JOB_TOKEN', value: 'my-token', public: false },
+          { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+          { key: 'CI_BUILD_TOKEN', value: 'my-token', public: false },
+          { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+          { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false },
+          { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+          { key: 'CI', value: 'true', public: true },
+          { key: 'GITLAB_CI', value: 'true', public: true },
+          { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
+          { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+          { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+          { key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s, public: true },
+          { key: 'CI_SERVER_VERSION_MINOR', value: Gitlab.version_info.minor.to_s, public: true },
+          { key: 'CI_SERVER_VERSION_PATCH', value: Gitlab.version_info.patch.to_s, public: true },
+          { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
+          { key: 'CI_JOB_NAME', value: 'test', public: true },
+          { key: 'CI_JOB_STAGE', value: 'test', public: true },
+          { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
+          { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
+          { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
+          { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
+          { key: 'CI_NODE_TOTAL', value: '1', public: true },
+          { key: 'CI_BUILD_REF', value: build.sha, public: true },
+          { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
+          { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
+          { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true },
+          { key: 'CI_BUILD_NAME', value: 'test', public: true },
+          { key: 'CI_BUILD_STAGE', value: 'test', public: true },
+          { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
+          { key: 'CI_PROJECT_NAME', value: project.path, public: true },
+          { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+          { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
+          { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
+          { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
+          { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
+          { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
+          { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
+          { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
+          { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
+          { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
+          { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
+        ]
+      end
+
       before do
+        build.token = 'my-token'
         build.yaml_variables = []
       end
 
       it { is_expected.to include(*predefined_variables) }
+
+      context 'when yaml variables are undefined' do
+        let(:pipeline) do
+          create(:ci_pipeline, project: project,
+                               sha: project.commit.id,
+                               ref: project.default_branch)
+        end
+
+        before do
+          build.yaml_variables = nil
+        end
+
+        context 'use from gitlab-ci.yml' do
+          before do
+            stub_ci_pipeline_yaml_file(config)
+          end
+
+          context 'when config is not found' do
+            let(:config) { nil }
+
+            it { is_expected.to include(*predefined_variables) }
+          end
+
+          context 'when config does not have a questioned job' do
+            let(:config) do
+              YAML.dump({
+                test_other: {
+                  script: 'Hello World'
+                }
+              })
+            end
+
+            it { is_expected.to include(*predefined_variables) }
+          end
+
+          context 'when config has variables' do
+            let(:config) do
+              YAML.dump({
+                test: {
+                  script: 'Hello World',
+                  variables: {
+                    KEY: 'value'
+                  }
+                }
+              })
+            end
+
+            let(:variables) do
+              [{ key: 'KEY', value: 'value', public: true }]
+            end
+
+            it { is_expected.to include(*predefined_variables) }
+            it { is_expected.to include(*variables) }
+          end
+        end
+      end
+
+      describe 'variables ordering' do
+        context 'when variables hierarchy is stubbed' do
+          let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
+          let(:project_pre_var) { { key: 'project', value: 'value', public: true } }
+          let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true } }
+          let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true } }
+
+          before do
+            allow(build).to receive(:predefined_variables) { [build_pre_var] }
+            allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+            allow(build).to receive(:persisted_variables) { [] }
+
+            allow_any_instance_of(Project)
+              .to receive(:predefined_variables) { [project_pre_var] }
+
+            project.variables.create!(key: 'secret', value: 'value')
+
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:predefined_variables) { [pipeline_pre_var] }
+          end
+
+          it 'returns variables in order depending on resource hierarchy' do
+            is_expected.to eq(
+              [build_pre_var,
+               project_pre_var,
+               pipeline_pre_var,
+               build_yaml_var,
+               { key: 'secret', value: 'value', public: false }])
+          end
+        end
+
+        context 'when build has environment and user-provided variables' do
+          let(:expected_variables) do
+            predefined_variables.map { |variable| variable.fetch(:key) } +
+              %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
+                 CI_ENVIRONMENT_URL]
+          end
+
+          before do
+            create(:environment, project: build.project,
+                                 name: 'staging')
+
+            build.yaml_variables = [{ key: 'YAML_VARIABLE',
+                                      value: 'var',
+                                      public: true }]
+            build.environment = 'staging'
+          end
+
+          it 'matches explicit variables ordering' do
+            received_variables = subject.map { |variable| variable.fetch(:key) }
+
+            expect(received_variables).to eq expected_variables
+          end
+        end
+      end
     end
 
     context 'when build has user' do
@@ -2409,75 +2537,20 @@ describe Ci::Build do
       end
 
       before do
-        pipeline_schedule.pipelines << pipeline
+        pipeline_schedule.pipelines << pipeline.reload
         pipeline_schedule.reload
       end
 
       it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
     end
 
-    context 'when yaml_variables are undefined' do
-      let(:pipeline) do
-        create(:ci_pipeline, project: project,
-                             sha: project.commit.id,
-                             ref: project.default_branch)
-      end
-
-      before do
-        build.yaml_variables = nil
-      end
-
-      context 'use from gitlab-ci.yml' do
-        before do
-          stub_ci_pipeline_yaml_file(config)
-        end
-
-        context 'when config is not found' do
-          let(:config) { nil }
-
-          it { is_expected.to include(*predefined_variables) }
-        end
-
-        context 'when config does not have a questioned job' do
-          let(:config) do
-            YAML.dump({
-              test_other: {
-                script: 'Hello World'
-              }
-            })
-          end
-
-          it { is_expected.to include(*predefined_variables) }
-        end
-
-        context 'when config has variables' do
-          let(:config) do
-            YAML.dump({
-              test: {
-                script: 'Hello World',
-                variables: {
-                  KEY: 'value'
-                }
-              }
-            })
-          end
-          let(:variables) do
-            [{ key: 'KEY', value: 'value', public: true }]
-          end
-
-          it { is_expected.to include(*predefined_variables) }
-          it { is_expected.to include(*variables) }
-        end
-      end
-    end
-
     context 'when container registry is enabled' do
       let(:container_registry_enabled) { true }
       let(:ci_registry) do
-        { key: 'CI_REGISTRY',  value: 'registry.example.com',  public: true }
+        { key: 'CI_REGISTRY', value: 'registry.example.com',  public: true }
       end
       let(:ci_registry_image) do
-        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_url, public: true }
+        { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true }
       end
 
       context 'and is disabled for project' do
@@ -2595,66 +2668,6 @@ describe Ci::Build do
         is_expected.to include(
           { key: 'CI_NODE_TOTAL', value: total.to_s, public: true }
         )
-      end
-    end
-
-    describe 'variables ordering' do
-      context 'when variables hierarchy is stubbed' do
-        let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
-        let(:project_pre_var) { { key: 'project', value: 'value', public: true } }
-        let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true } }
-        let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true } }
-
-        before do
-          allow(build).to receive(:predefined_variables) { [build_pre_var] }
-          allow(build).to receive(:yaml_variables) { [build_yaml_var] }
-          allow(build).to receive(:persisted_variables) { [] }
-
-          allow_any_instance_of(Project)
-            .to receive(:predefined_variables) { [project_pre_var] }
-
-          allow_any_instance_of(Project)
-            .to receive(:ci_variables_for)
-            .with(ref: 'master', environment: nil) do
-            [create(:ci_variable, key: 'secret', value: 'value')]
-          end
-
-          allow_any_instance_of(Ci::Pipeline)
-            .to receive(:predefined_variables) { [pipeline_pre_var] }
-        end
-
-        it 'returns variables in order depending on resource hierarchy' do
-          is_expected.to eq(
-            [build_pre_var,
-             project_pre_var,
-             pipeline_pre_var,
-             build_yaml_var,
-             { key: 'secret', value: 'value', public: false }])
-        end
-      end
-
-      context 'when build has environment and user-provided variables' do
-        let(:expected_variables) do
-          predefined_variables.map { |variable| variable.fetch(:key) } +
-            %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-               CI_ENVIRONMENT_URL]
-        end
-
-        before do
-          create(:environment, project: build.project,
-                               name: 'staging')
-
-          build.yaml_variables = [{ key: 'YAML_VARIABLE',
-                                    value: 'var',
-                                    public: true }]
-          build.environment = 'staging'
-        end
-
-        it 'matches explicit variables ordering' do
-          received_variables = subject.map { |variable| variable.fetch(:key) }
-
-          expect(received_variables).to eq expected_variables
-        end
       end
     end
 
