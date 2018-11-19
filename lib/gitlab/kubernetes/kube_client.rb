@@ -16,7 +16,8 @@ module Gitlab
       SUPPORTED_API_GROUPS = {
         core: { group: 'api', version: 'v1' },
         rbac: { group: 'apis/rbac.authorization.k8s.io', version: 'v1' },
-        extensions: { group: 'apis/extensions', version: 'v1beta1' }
+        extensions: { group: 'apis/extensions', version: 'v1beta1' },
+        knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' }
       }.freeze
 
       SUPPORTED_API_GROUPS.each do |name, params|

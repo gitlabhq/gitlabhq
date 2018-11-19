@@ -14,7 +14,7 @@ module Gitlab
 
             pipeline.modified_paths.any? do |path|
               @globs.any? do |glob|
-                File.fnmatch?(glob, path, File::FNM_PATHNAME | File::FNM_DOTMATCH)
+                File.fnmatch?(glob, path, File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB)
               end
             end
           end

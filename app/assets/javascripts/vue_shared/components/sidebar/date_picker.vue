@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import datePicker from '../pikaday.vue';
 import toggleSidebar from './toggle_sidebar.vue';
 import collapsedCalendarIcon from './collapsed_calendar_icon.vue';

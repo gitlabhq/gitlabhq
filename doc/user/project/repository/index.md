@@ -53,17 +53,35 @@ To get started with the command line, please read through the
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
+### Supported markup languages and extensions
+
+GitLab supports a number of markup languages (sometimes called [lightweight
+markup languages](https://en.wikipedia.org/wiki/Lightweight_markup_language))
+that you can use for the content of your files in a repository. They are mostly
+used for documentation purposes.
+
+Just pick the right extension for your files and GitLab will render them
+according to the markup language.
+
+| Markup language | Extensions |
+| --------------- | ---------- |
+| Plain text | `txt` |
+| [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
+| [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
+| [Asciidoc](https://asciidoctor.org/docs/what-is-asciidoc/) | `adoc`, `ad`, `asciidoc` |
+| [Textile](https://txstyle.org/) | `textile` |
+| [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
+| [Orgmode](https://orgmode.org/) | `org` |
+| [creole](http://www.wikicreole.org/) | `creole` |
+| [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
+
 ### Repository README and index files
 
 When a `README` or `index` file is present in a repository, its contents will be
 automatically pre-rendered by GitLab without opening it.
 
-They can either be plain text or have an extension of a supported markup language:
-
-- Asciidoc: `README.adoc` or `index.adoc`
-- Markdown: `README.md` or `index.md`
-- reStructuredText: `README.rst` or `index.rst`
-- Text: `README.txt` or `index.txt`
+They can either be plain text or have an extension of a
+[supported markup language](#supported-markup-languages-and-extensions):
 
 Some things to note about precedence:
 
@@ -74,10 +92,6 @@ Some things to note about precedence:
    which will always be last in precedence. For example, `README.adoc` will take
    precedence over `README.md`, and `README.rst` will take precedence over
    `README`.
-
-NOTE: **Note:**
-`index` files without an extension will not automatically pre-render. You'll
-have to explicitly open them to see their contents.
 
 ### Jupyter Notebook files
 

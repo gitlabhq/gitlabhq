@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';

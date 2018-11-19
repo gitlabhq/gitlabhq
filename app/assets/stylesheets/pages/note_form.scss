@@ -176,8 +176,10 @@
   background-color: $white-light;
 }
 
-.discussion-form-container {
-  padding: $gl-padding-top $gl-padding $gl-padding;
+table {
+  .discussion-form-container {
+    padding: $gl-padding-top $gl-padding $gl-padding;
+  }
 }
 
 .discussion-notes .disabled-comment {
@@ -239,7 +241,7 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
-    border-radius: 0 0 $border-radius-default $border-radius-default;
+    border-radius: 0 0 3px 3px;
 
     &.is-replying {
       padding-bottom: $gl-padding;

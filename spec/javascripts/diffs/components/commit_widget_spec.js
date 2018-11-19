@@ -19,6 +19,6 @@ describe('diffs/components/commit_widget', () => {
     const commitElement = vm.$el.querySelector('li.commit');
 
     expect(commitElement).not.toBeNull();
-    expect(commitElement).toContainText(commit.shortId);
+    expect(commitElement).toContainText(commit.short_id);
   });
 });

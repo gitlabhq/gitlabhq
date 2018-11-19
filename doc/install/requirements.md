@@ -197,7 +197,13 @@ use the CI features.
 
 ## Supported web browsers
 
-We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
+We support the current and the previous major release of:
+
+- Firefox
+- Chrome/Chromium
+- Safari
+- Microsoft Edge
+- Internet Explorer 11
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 

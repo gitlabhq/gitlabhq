@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
@@ -231,7 +231,7 @@ export default {
         >
           <span class="js-assignee-tooltip">
             <span class="bold d-block">Assignee</span>
-            {{ assignee.name }} 
+            {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>
         </user-avatar-link>

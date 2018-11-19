@@ -17,6 +17,7 @@ the [GitHub rake task](../../../administration/raketasks/github_import.md) to im
 GitHub without the constraints of a Sidekiq worker.
 
 The following aspects of a project are imported:
+
   * Repository description (GitLab.com & 7.7+)
   * Git repository data (GitLab.com & 7.7+)
   * Issues (GitLab.com & 7.7+)
@@ -65,9 +66,9 @@ developer documentation.
 
 Before you begin, ensure that any GitHub users who you want to map to GitLab users have either:
 
-1. A GitLab account that has logged in using the GitHub icon
+- A GitLab account that has logged in using the GitHub icon
 \- or -
-2. A GitLab account with an email address that matches the [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) of the GitHub user
+- A GitLab account with an email address that matches the [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.
@@ -77,10 +78,10 @@ If you are using a self-hosted GitLab instance, this process requires that you h
 [GitHub integration][gh-import].
 
 1. From the top navigation bar, click **+** and select **New project**.
-2. Select the **Import project** tab and then select **GitHub**.
-3. Select the first button to **List your GitHub repositories**. You are redirected to a page on github.com to authorize the GitLab application.
-4. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
-5. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
+1. Select the **Import project** tab and then select **GitHub**.
+1. Select the first button to **List your GitHub repositories**. You are redirected to a page on github.com to authorize the GitLab application.
+1. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
+1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
 ### Using a GitHub token
 
@@ -92,12 +93,12 @@ integration enabled, that should be the preferred method to import your reposito
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 
 1. Go to https://github.com/settings/tokens/new
-2. Enter a token description.
-3. Select the repo scope.
-4. Click **Generate token**.
-5. Copy the token hash.
-6. Go back to GitLab and provide the token to the GitHub importer.
-7. Hit the **List Your GitHub Repositories** button and wait while GitLab reads your repositories' information.
+1. Enter a token description.
+1. Select the repo scope.
+1. Click **Generate token**.
+1. Copy the token hash.
+1. Go back to GitLab and provide the token to the GitHub importer.
+1. Hit the **List Your GitHub Repositories** button and wait while GitLab reads your repositories' information.
    Once done, you'll be taken to the importer page to select the repositories to import.
 
 ### Selecting which repositories to import
@@ -107,10 +108,10 @@ your GitHub repositories are listed.
 
 1. By default, the proposed repository namespaces match the names as they exist in GitHub, but based on your permissions,
    you can choose to edit these names before you proceed to import any of them.
-2. Select the **Import** button next to any number of repositories, or select **Import all repositories**.
-3. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
+1. Select the **Import** button next to any number of repositories, or select **Import all repositories**.
+1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
    update in realtime or you can return to it later.
-4. Once a repository has been imported, click its GitLab path to open its GitLab URL.
+1. Once a repository has been imported, click its GitLab path to open its GitLab URL.
 
 ## Mirroring and pipeline status sharing
 

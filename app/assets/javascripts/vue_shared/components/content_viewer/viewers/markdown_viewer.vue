@@ -2,7 +2,7 @@
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import $ from 'jquery';
-import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 
 const { CancelToken } = axios;
 let axiosSource;

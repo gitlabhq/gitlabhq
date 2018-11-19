@@ -139,7 +139,7 @@ module Gitlab
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
-      # Keep track, seperately, for the performance bar
+      # Keep track, separately, for the performance bar
       self.query_time += duration
       gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),

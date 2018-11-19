@@ -47,12 +47,6 @@
       @extend .fixed-width-container;
     }
   }
-
-  .diffs {
-    .mr-version-controls {
-      @extend .fixed-width-container;
-    }
-  }
 }
 
 .issuable-details {
@@ -733,6 +727,10 @@
       .issuable-main-info {
         flex: 1 auto;
         margin-right: 10px;
+
+        .issue-weight-icon {
+          vertical-align: sub;
+        }
       }
 
       .issuable-meta {

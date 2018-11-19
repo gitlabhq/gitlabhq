@@ -1,7 +1,7 @@
 <script>
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Popover from '~/vue_shared/components/help_popover.vue';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 /**
  * Renders the summary row for each report

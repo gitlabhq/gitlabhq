@@ -3,7 +3,7 @@ import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
 import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Item from './item.vue';
 import TokenedInput from '../shared/tokened_input.vue';
 

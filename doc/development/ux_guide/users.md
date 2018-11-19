@@ -101,7 +101,7 @@ GitLab's interface initially attracted Nazim when he was comparing version contr
 ### Demographics
 
 **Age**
- 
+
 42 years old
 
 **Location**
@@ -148,11 +148,11 @@ Matthieu describes GitLab as:
 >"the only tool that offers the real feeling of having everything you need in one place."
 
 
-He credits himself as being entirely responsible for moving his company to GitLab. 
+He credits himself as being entirely responsible for moving his company to GitLab.
 
 ### Frustrations
 #### Updating to the latest release
-Matthieu introduced his company to GitLab. He is responsible for maintaining and managing the company's installation in addition to his day job. He feels updates are too frequent and he doesn't always have sufficient time to update GitLab. As a result, he's not up to date with releases. 
+Matthieu introduced his company to GitLab. He is responsible for maintaining and managing the company's installation in addition to his day job. He feels updates are too frequent and he doesn't always have sufficient time to update GitLab. As a result, he's not up to date with releases.
 
 Matthieu tried to set up automatic updates, however, as he isn't a Systems Administrator, he wasn't confident in his setup. He feels he should be able to "upgrade without users even noticing" but hasn't figured out how to do this yet. Matthieu would like the "update process to be triggered from the Admin Panel, perhaps accompanied with a changelog and the option to skip updates."
 
@@ -173,11 +173,11 @@ It's Matthieu's responsibility to get teams across his organization up and runni
 He states that there has been: "a sluggishness of others to adapt" and it's "a low-effort adaptation at that."
 
 ### Goals
-* To save time. One of the reasons Matthieu moved his company to GitLab was to reduce the effort it took him to manage and configure multiple tools, thus saving him time. He has to balance his day job in addition to managing the company's GitLab installation and onboarding new teams to GitLab. 
-* To use a platform which is easy to manage. Matthieu isn't a Systems Administrator, and when updating GitLab, creating backups, etc. He would prefer to work within GitLab's UI. Explanations / guided instructions when configuring settings in GitLab's interface would really help Matthieu. He needs reassurance that what he is about to change is 
+* To save time. One of the reasons Matthieu moved his company to GitLab was to reduce the effort it took him to manage and configure multiple tools, thus saving him time. He has to balance his day job in addition to managing the company's GitLab installation and onboarding new teams to GitLab.
+* To use a platform which is easy to manage. Matthieu isn't a Systems Administrator, and when updating GitLab, creating backups, etc. He would prefer to work within GitLab's UI. Explanations / guided instructions when configuring settings in GitLab's interface would really help Matthieu. He needs reassurance that what he is about to change is
 
-1. the right setting
-2. will provide him with the desired result he wants.
+- The right setting.
+- Will provide him with the desired result he wants.
 
 * Matthieu needs to educate his colleagues about GitLab. Matthieu's colleagues won't adopt GitLab as they're unaware of its capabilities and the positive impact it could have on their work. Matthieu needs support in getting this message across to them.
 

@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 import diffsModule from '~/diffs/store/modules';
 import notesModule from '~/notes/stores/modules';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 Vue.use(Vuex);
@@ -24,9 +23,9 @@ describe('diff_file_header', () => {
   });
 
   beforeEach(() => {
-    const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file, { deep: true });
+    const diffFile = diffDiscussionMock.diff_file;
     props = {
-      diffFile,
+      diffFile: { ...diffFile },
       canCurrentUserFork: false,
     };
   });
@@ -62,8 +61,8 @@ describe('diff_file_header', () => {
       beforeEach(() => {
         props.discussionPath = 'link://to/discussion';
         Object.assign(props.diffFile, {
-          submoduleLink: 'link://to/submodule',
-          submoduleTreeUrl: 'some://tree/url',
+          submodule_link: 'link://to/submodule',
+          submodule_tree_url: 'some://tree/url',
         });
       });
 
@@ -80,18 +79,18 @@ describe('diff_file_header', () => {
 
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.titleLink).toBe(props.diffFile.submoduleTreeUrl);
+        expect(vm.titleLink).toBe(props.diffFile.submodule_tree_url);
       });
 
       it('returns the submoduleLink for submodules without submoduleTreeUrl', () => {
         Object.assign(props.diffFile, {
           submodule: true,
-          submoduleTreeUrl: null,
+          submodule_tree_url: null,
         });
 
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.titleLink).toBe(props.diffFile.submoduleLink);
+        expect(vm.titleLink).toBe(props.diffFile.submodule_link);
       });
 
       it('sets the correct path to the discussion', () => {
@@ -107,7 +106,7 @@ describe('diff_file_header', () => {
       beforeEach(() => {
         Object.assign(props.diffFile, {
           blob: { id: 'b10b1db10b1d' },
-          filePath: 'path/to/file',
+          file_path: 'path/to/file',
         });
       });
 
@@ -116,7 +115,7 @@ describe('diff_file_header', () => {
 
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.filePath).toBe(props.diffFile.filePath);
+        expect(vm.filePath).toBe(props.diffFile.file_path);
       });
 
       it('appends the truncated blob id for submodules', () => {
@@ -125,14 +124,14 @@ describe('diff_file_header', () => {
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(vm.filePath).toBe(
-          `${props.diffFile.filePath} @ ${props.diffFile.blob.id.substr(0, 8)}`,
+          `${props.diffFile.file_path} @ ${props.diffFile.blob.id.substr(0, 8)}`,
         );
       });
     });
 
     describe('titleTag', () => {
       it('returns a link tag if fileHash is set', () => {
-        props.diffFile.fileHash = 'some hash';
+        props.diffFile.file_hash = 'some hash';
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -140,7 +139,7 @@ describe('diff_file_header', () => {
       });
 
       it('returns a span tag if fileHash is not set', () => {
-        props.diffFile.fileHash = null;
+        props.diffFile.file_hash = null;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -151,8 +150,8 @@ describe('diff_file_header', () => {
     describe('isUsingLfs', () => {
       beforeEach(() => {
         Object.assign(props.diffFile, {
-          storedExternally: true,
-          externalStorage: 'lfs',
+          stored_externally: true,
+          external_storage: 'lfs',
         });
       });
 
@@ -163,7 +162,7 @@ describe('diff_file_header', () => {
       });
 
       it('returns false if file is not stored externally', () => {
-        props.diffFile.storedExternally = false;
+        props.diffFile.stored_externally = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -171,7 +170,7 @@ describe('diff_file_header', () => {
       });
 
       it('returns false if file is not stored in LFS', () => {
-        props.diffFile.externalStorage = 'not lfs';
+        props.diffFile.external_storage = 'not lfs';
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -200,7 +199,7 @@ describe('diff_file_header', () => {
     describe('viewFileButtonText', () => {
       it('contains the truncated content SHA', () => {
         const dummySha = 'deebd00f is no SHA';
-        props.diffFile.contentSha = dummySha;
+        props.diffFile.content_sha = dummySha;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -212,7 +211,7 @@ describe('diff_file_header', () => {
     describe('viewReplacedFileButtonText', () => {
       it('contains the truncated base SHA', () => {
         const dummySha = 'deadabba sings no more';
-        props.diffFile.diffRefs.baseSha = dummySha;
+        props.diffFile.diff_refs.base_sha = dummySha;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -281,32 +280,32 @@ describe('diff_file_header', () => {
       const filePaths = () => vm.$el.querySelectorAll('.file-title-name');
 
       it('displays the path of a added file', () => {
-        props.diffFile.renamedFile = false;
+        props.diffFile.renamed_file = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(filePaths()).toHaveLength(1);
-        expect(filePaths()[0]).toHaveText(props.diffFile.filePath);
+        expect(filePaths()[0]).toHaveText(props.diffFile.file_path);
       });
 
       it('displays path for deleted file', () => {
-        props.diffFile.renamedFile = false;
-        props.diffFile.deletedFile = true;
+        props.diffFile.renamed_file = false;
+        props.diffFile.deleted_file = true;
 
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(filePaths()).toHaveLength(1);
-        expect(filePaths()[0]).toHaveText(`${props.diffFile.filePath} deleted`);
+        expect(filePaths()[0]).toHaveText(`${props.diffFile.file_path} deleted`);
       });
 
       it('displays old and new path if the file was renamed', () => {
-        props.diffFile.renamedFile = true;
+        props.diffFile.renamed_file = true;
 
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(filePaths()).toHaveLength(2);
-        expect(filePaths()[0]).toHaveText(props.diffFile.oldPath);
-        expect(filePaths()[1]).toHaveText(props.diffFile.newPath);
+        expect(filePaths()[0]).toHaveText(props.diffFile.old_path);
+        expect(filePaths()[1]).toHaveText(props.diffFile.new_path);
       });
     });
 
@@ -323,19 +322,19 @@ describe('diff_file_header', () => {
 
     describe('file mode', () => {
       it('it displays old and new file mode if it changed', () => {
-        props.diffFile.modeChanged = true;
+        props.diffFile.mode_changed = true;
 
         vm = mountComponentWithStore(Component, { props, store });
 
         const { fileMode } = vm.$refs;
 
         expect(fileMode).not.toBe(undefined);
-        expect(fileMode).toContainText(props.diffFile.aMode);
-        expect(fileMode).toContainText(props.diffFile.bMode);
+        expect(fileMode).toContainText(props.diffFile.a_mode);
+        expect(fileMode).toContainText(props.diffFile.b_mode);
       });
 
       it('does not display the file mode if it has not changed', () => {
-        props.diffFile.modeChanged = false;
+        props.diffFile.mode_changed = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -350,8 +349,8 @@ describe('diff_file_header', () => {
 
       it('displays the LFS label for files stored in LFS', () => {
         Object.assign(props.diffFile, {
-          storedExternally: true,
-          externalStorage: 'lfs',
+          stored_externally: true,
+          external_storage: 'lfs',
         });
 
         vm = mountComponentWithStore(Component, { props, store });
@@ -361,7 +360,7 @@ describe('diff_file_header', () => {
       });
 
       it('does not display the LFS label for files stored in repository', () => {
-        props.diffFile.storedExternally = false;
+        props.diffFile.stored_externally = false;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -378,7 +377,7 @@ describe('diff_file_header', () => {
 
       it('should show edit button when file is editable', () => {
         props.addMergeRequestButtons = true;
-        props.diffFile.editPath = '/';
+        props.diffFile.edit_path = '/';
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(vm.$el.querySelector('.js-edit-blob')).toContainText('Edit');
@@ -386,8 +385,8 @@ describe('diff_file_header', () => {
 
       it('should not show edit button when file is deleted', () => {
         props.addMergeRequestButtons = true;
-        props.diffFile.deletedFile = true;
-        props.diffFile.editPath = '/';
+        props.diffFile.deleted_file = true;
+        props.diffFile.edit_path = '/';
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(vm.$el.querySelector('.js-edit-blob')).toEqual(null);
@@ -397,7 +396,7 @@ describe('diff_file_header', () => {
     describe('addMergeRequestButtons', () => {
       beforeEach(() => {
         props.addMergeRequestButtons = true;
-        props.diffFile.editPath = '';
+        props.diffFile.edit_path = '';
       });
 
       describe('view on environment button', () => {
@@ -405,8 +404,8 @@ describe('diff_file_header', () => {
         const title = 'url.title';
 
         it('displays link to external url', () => {
-          props.diffFile.externalUrl = url;
-          props.diffFile.formattedExternalUrl = title;
+          props.diffFile.external_url = url;
+          props.diffFile.formatted_external_url = title;
 
           vm = mountComponentWithStore(Component, { props, store });
 
@@ -415,8 +414,8 @@ describe('diff_file_header', () => {
         });
 
         it('hides link if no external url', () => {
-          props.diffFile.externalUrl = '';
-          props.diffFile.formattedExternalUrl = title;
+          props.diffFile.external_url = '';
+          props.diffFile.formattedExternal_url = title;
 
           vm = mountComponentWithStore(Component, { props, store });
 
@@ -434,11 +433,11 @@ describe('diff_file_header', () => {
           path: 'lib/base.js',
           name: 'base.js',
           mode: '100644',
-          readableText: true,
+          readable_text: true,
           icon: 'file-text-o',
         };
         propsCopy.addMergeRequestButtons = true;
-        propsCopy.diffFile.deletedFile = true;
+        propsCopy.diffFile.deleted_file = true;
 
         vm = mountComponentWithStore(Component, {
           props: propsCopy,
@@ -459,11 +458,11 @@ describe('diff_file_header', () => {
             path: 'lib/base.js',
             name: 'base.js',
             mode: '100644',
-            readableText: true,
+            readable_text: true,
             icon: 'file-text-o',
           };
           propsCopy.addMergeRequestButtons = true;
-          propsCopy.diffFile.deletedFile = true;
+          propsCopy.diffFile.deleted_file = true;
 
           const discussionGetter = () => [diffDiscussionMock];
           const notesModuleMock = notesModule();

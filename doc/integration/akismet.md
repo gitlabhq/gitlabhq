@@ -20,17 +20,17 @@ To use Akismet:
 
 1. Go to the URL: https://akismet.com/account/
 
-2. Sign-in or create a new account.
+1. Sign-in or create a new account.
 
-3. Click on **Show** to reveal the API key.
+1. Click on **Show** to reveal the API key.
 
-4. Go to Applications Settings on Admin Area (`admin/application_settings`)
+1. Go to Applications Settings on Admin Area (`admin/application_settings`)
 
-5. Check the **Enable Akismet** checkbox
+1. Check the **Enable Akismet** checkbox
 
-6. Fill in the API key from step 3.
+1. Fill in the API key from step 3.
 
-7. Save the configuration.
+1. Save the configuration.
 
 ![Screenshot of Akismet settings](img/akismet_settings.png)
 
@@ -42,9 +42,9 @@ To use Akismet:
 As a way to better recognize between spam and ham, you can train the Akismet
 filter whenever there is a false positive or false negative.
 
-When an entry is recognized as spam, it is rejected and added to the Spam Logs. 
+When an entry is recognized as spam, it is rejected and added to the Spam Logs.
 From here you can review if they are really spam. If one of them is not really
-spam, you can use the **Submit as ham** button to tell Akismet that it falsely 
+spam, you can use the **Submit as ham** button to tell Akismet that it falsely
 recognized an entry as spam.
 
 ![Screenshot of Spam Logs](img/spam_log.png)

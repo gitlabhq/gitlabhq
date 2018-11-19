@@ -665,7 +665,7 @@ cache, queues, and shared_state. To make this work with Sentinel:
     **Note**: Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_MASTER_NAME`
 
     1. PASSWORD is the plaintext password for the Redis instance
-    2. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
+    1. SENTINEL_MASTER_NAME is the Sentinel master name (e.g. `gitlab-redis-cache`)
 1. Include an array of hashes with host/port combinations, such as the following:
 
     ```ruby
@@ -684,7 +684,7 @@ cache, queues, and shared_state. To make this work with Sentinel:
     ```
 1. Note that for each persistence class, GitLab will default to using the
    configuration specified in `gitlab_rails['redis_sentinels']` unless
-   overriden by the settings above.
+   overridden by the settings above.
 1. Be sure to include BOTH configuration options for each persistent classes. For example,
    if you choose to configure a cache instance, you must specify both `gitlab_rails['redis_cache_instance']`
    and `gitlab_rails['redis_cache_sentinels']` for GitLab to generate the proper configuration files.

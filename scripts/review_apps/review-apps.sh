@@ -179,8 +179,18 @@ function delete() {
   track="${1-stable}"
   name="$CI_ENVIRONMENT_SLUG"
 
+  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+    echo "No release given, aborting the delete!"
+    return
+  fi
+
   if [[ "$track" != "stable" ]]; then
     name="$name-$track"
+  fi
+
+  if ! deployExists "${KUBE_NAMESPACE}" "${name}"; then
+    echo "The release $name doesn't exist, aborting the cleanup!"
+    return
   fi
 
   echo "Deleting release '$name'..."
@@ -188,12 +198,16 @@ function delete() {
 }
 
 function cleanup() {
-  echo "Cleaning up $CI_ENVIRONMENT_SLUG..."
-  kubectl -n "$KUBE_NAMESPACE" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa 2>&1 \
-    | grep "$CI_ENVIRONMENT_SLUG" \
-    | awk '{print $1}' \
-    | xargs kubectl -n "$KUBE_NAMESPACE" delete \
-    || true
+  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+    echo "No release given, aborting the delete!"
+    return
+  fi
+
+  echo "Cleaning up '$CI_ENVIRONMENT_SLUG'..."
+  kubectl -n "$KUBE_NAMESPACE" delete \
+    ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
+    -l release="$CI_ENVIRONMENT_SLUG" \
+  || true
 }
 
 function install_external_dns() {

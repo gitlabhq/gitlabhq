@@ -1,5 +1,5 @@
 <script>
-import { GlTooltip } from '@gitlab-org/gitlab-ui';
+import { GlTooltip } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 

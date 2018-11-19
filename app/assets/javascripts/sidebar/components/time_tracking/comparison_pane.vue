@@ -1,7 +1,7 @@
 <script>
 import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import tooltip from '../../../vue_shared/directives/tooltip';
-import { GlProgressBar } from '@gitlab-org/gitlab-ui';
+import { GlProgressBar } from '@gitlab/ui';
 
 export default {
   name: 'TimeTrackingComparisonPane',

@@ -9,17 +9,17 @@ The process of solving performance problems is roughly as follows:
 
 1. Make sure there's an issue open somewhere (e.g., on the GitLab CE issue
    tracker), create one if there isn't. See [#15607][#15607] for an example.
-2. Measure the performance of the code in a production environment such as
+1. Measure the performance of the code in a production environment such as
    GitLab.com (see the [Tooling](#tooling) section below). Performance should be
    measured over a period of _at least_ 24 hours.
-3. Add your findings based on the measurement period (screenshots of graphs,
+1. Add your findings based on the measurement period (screenshots of graphs,
    timings, etc) to the issue mentioned in step 1.
-4. Solve the problem.
-5. Create a merge request, assign the "Performance" label and assign it to
+1. Solve the problem.
+1. Create a merge request, assign the "Performance" label and assign it to
    [@yorickpeterse][yorickpeterse] for reviewing.
-6. Once a change has been deployed make sure to _again_ measure for at least 24
+1. Once a change has been deployed make sure to _again_ measure for at least 24
    hours to see if your changes have any impact on the production environment.
-7. Repeat until you're done.
+1. Repeat until you're done.
 
 When providing timings make sure to provide:
 
@@ -94,14 +94,14 @@ result of this should be used instead of the `Benchmark` module.
 
 In short:
 
-1. Don't trust benchmarks you find on the internet.
-2. Never make claims based on just benchmarks, always measure in production to
+- Don't trust benchmarks you find on the internet.
+- Never make claims based on just benchmarks, always measure in production to
    confirm your findings.
-3. X being N times faster than Y is meaningless if you don't know what impact it
+- X being N times faster than Y is meaningless if you don't know what impact it
    will actually have on your production environment.
-4. A production environment is the _only_ benchmark that always tells the truth
+- A production environment is the _only_ benchmark that always tells the truth
    (unless your performance monitoring systems are not set up correctly).
-5. If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
+- If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
    `Benchmark` module.
 
 ## Profiling

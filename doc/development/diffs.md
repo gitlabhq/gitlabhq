@@ -17,20 +17,20 @@ The diffs fetching process _limits_ single file diff sizes and the overall size 
 then persisted on `merge_request_diff_files` table.
 
 Even though diffs larger than 10% of the value of `ApplicationSettings#diff_max_patch_bytes` are collapsed,
-we still keep them on Postgres. However, diff files larger than defined _safety limits_ 
+we still keep them on Postgres. However, diff files larger than defined _safety limits_
 (see the [Diff limits section](#diff-limits)) are _not_ persisted in the database.
 
 In order to present diffs information on the Merge Request diffs page, we:
 
 1. Fetch all diff files from database `merge_request_diff_files`
-2. Fetch the _old_ and _new_ file blobs in batch to:
-   1. Highlight old and new file content
-   2. Know which viewer it should use for each file (text, image, deleted, etc)
-   3. Know if the file content changed
-   4. Know if it was stored externally
-   5. Know if it had storage errors
-3. If the diff file is cacheable (text-based), it's cached on Redis
-using `Gitlab::Diff::FileCollection::MergeRequestDiff`
+1. Fetch the _old_ and _new_ file blobs in batch to:
+   - Highlight old and new file content
+   - Know which viewer it should use for each file (text, image, deleted, etc)
+   - Know if the file content changed
+   - Know if it was stored externally
+   - Know if it had storage errors
+1. If the diff file is cacheable (text-based), it's cached on Redis
+   using `Gitlab::Diff::FileCollection::MergeRequestDiff`
 
 ### Note diffs
 
@@ -39,9 +39,9 @@ on `NoteDiffFile` (which is associated with the actual `DiffNote`). So instead
 of hitting the repository every time we need the diff of the file, we:
 
 1. Check whether we have the `NoteDiffFile#diff` persisted and use it
-2. Otherwise, if it's a current MR revision, use the persisted
-`MergeRequestDiffFile#diff`
-3. In the last scenario, go the the repository and fetch the diff
+1. Otherwise, if it's a current MR revision, use the persisted
+   `MergeRequestDiffFile#diff`
+1. In the last scenario, go the repository and fetch the diff
 
 ## Diff limits
 

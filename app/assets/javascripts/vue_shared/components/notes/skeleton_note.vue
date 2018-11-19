@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 
 export default {
   name: 'SkeletonNote',

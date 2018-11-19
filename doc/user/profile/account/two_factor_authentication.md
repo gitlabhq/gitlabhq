@@ -158,7 +158,7 @@ authentication. If an SSH key is added to your GitLab account, you can generate
 a new set of recovery codes with SSH.
 
 1. Run `ssh git@gitlab.example.com 2fa_recovery_codes`.
-2. You are prompted to confirm that you want to generate new codes. Continuing this process invalidates previously saved codes.
+1. You are prompted to confirm that you want to generate new codes. Continuing this process invalidates previously saved codes.
     ```
     bash
     $ ssh git@gitlab.example.com 2fa_recovery_codes
@@ -185,7 +185,7 @@ a new set of recovery codes with SSH.
     so you do not lose access to your account again.
     ```
 
-3. Go to the GitLab sign-in page and enter your username/email and password.
+1. Go to the GitLab sign-in page and enter your username/email and password.
    When prompted for a two-factor code, enter one of the recovery codes obtained
    from the command-line output.
 

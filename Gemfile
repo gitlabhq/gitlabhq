@@ -1,6 +1,6 @@
 # --- Special code for migrating to Rails 5.0 ---
 def rails5?
-  %w[1 true].include?(ENV["RAILS5"])
+  !%w[0 false].include?(ENV["RAILS5"])
 end
 
 gem_versions = {}
@@ -315,7 +315,7 @@ group :development do
 
   # Better errors handler
   gem 'better_errors', '~> 2.1.0'
-  gem 'binding_of_caller', '~> 0.7.2'
+  gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
@@ -342,7 +342,7 @@ group :development, :test do
   gem 'minitest', '~> 5.7.0'
 
   # Generate Fake data
-  gem 'ffaker', '~> 2.4'
+  gem 'ffaker', '~> 2.10'
 
   gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
@@ -357,14 +357,14 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
-  gem 'haml_lint', '~> 0.26.0', require: false
+  gem 'haml_lint', '~> 0.28.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 5.4', require: false
-  gem 'knapsack', '~> 1.16'
+  gem 'knapsack', '~> 1.17'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 

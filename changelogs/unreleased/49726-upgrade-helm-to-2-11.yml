@@ -1,0 +1,5 @@
+---
+title: Upgrade helm to 2.11.0 and upgrade on every install
+merge_request: 22693
+author:
+type: added

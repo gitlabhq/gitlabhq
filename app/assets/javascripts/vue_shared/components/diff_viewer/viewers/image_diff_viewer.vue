@@ -44,8 +44,11 @@ export default {
     isNew() {
       return this.diffMode === diffModes.new;
     },
+    isRenamed() {
+      return this.diffMode === diffModes.renamed;
+    },
     imagePath() {
-      return this.isNew ? this.newPath : this.oldPath;
+      return this.isNew || this.isRenamed ? this.newPath : this.oldPath;
     },
   },
   methods: {
@@ -114,7 +117,7 @@ export default {
           }]"
         >
           <slot
-            v-if="isNew"
+            v-if="isNew || isRenamed"
             slot="image-overlay"
             name="image-overlay"
           >

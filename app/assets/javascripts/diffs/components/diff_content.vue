@@ -39,7 +39,7 @@ export default {
       return this.diffFile.viewer.name === 'text';
     },
     diffFileCommentForm() {
-      return this.getCommentFormForDiffFile(this.diffFile.fileHash);
+      return this.getCommentFormForDiffFile(this.diffFile.file_hash);
     },
     showNotesContainer() {
       return this.diffFile.discussions.length || this.diffFileCommentForm;
@@ -73,28 +73,28 @@ export default {
         <inline-diff-view
           v-if="isInlineView"
           :diff-file="diffFile"
-          :diff-lines="diffFile.highlightedDiffLines || []"
+          :diff-lines="diffFile.highlighted_diff_lines || []"
         />
         <parallel-diff-view
           v-if="isParallelView"
           :diff-file="diffFile"
-          :diff-lines="diffFile.parallelDiffLines || []"
+          :diff-lines="diffFile.parallel_diff_lines || []"
         />
       </template>
       <diff-viewer
         v-else
         :diff-mode="diffMode"
-        :new-path="diffFile.newPath"
-        :new-sha="diffFile.diffRefs.headSha"
-        :old-path="diffFile.oldPath"
-        :old-sha="diffFile.diffRefs.baseSha"
-        :file-hash="diffFile.fileHash"
+        :new-path="diffFile.new_path"
+        :new-sha="diffFile.diff_refs.head_sha"
+        :old-path="diffFile.old_path"
+        :old-sha="diffFile.diff_refs.base_sha"
+        :file-hash="diffFile.file_hash"
         :project-path="projectPath"
       >
         <image-diff-overlay
           slot="image-overlay"
           :discussions="diffFile.discussions"
-          :file-hash="diffFile.fileHash"
+          :file-hash="diffFile.file_hash"
           :can-comment="getNoteableData.current_user.can_create_note"
         />
         <div
@@ -115,7 +115,7 @@ export default {
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handleFormUpdate="handleSaveNote"
-            @cancelForm="closeDiffFileCommentForm(diffFile.fileHash)"
+            @cancelForm="closeDiffFileCommentForm(diffFile.file_hash)"
           />          
         </div>
       </diff-viewer>

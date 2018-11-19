@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {

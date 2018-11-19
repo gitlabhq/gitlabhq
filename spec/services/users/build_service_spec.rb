@@ -159,9 +159,9 @@ describe Users::BuildService do
           true  | true  | 'fl@example.com'        | ''                      | true
           true  | false | 'fl@example.com'        | ''                      | true
 
-          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
 
           true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
           true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
