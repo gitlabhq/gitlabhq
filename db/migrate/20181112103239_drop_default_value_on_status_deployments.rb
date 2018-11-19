@@ -9,7 +9,7 @@ class DropDefaultValueOnStatusDeployments < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    change_column_default :deployments, :status, :nil
+    change_column_default :deployments, :status, nil
   end
 
   def down
