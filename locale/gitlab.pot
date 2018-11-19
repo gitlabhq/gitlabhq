@@ -3424,6 +3424,12 @@ msgstr ""
 msgid "Invite"
 msgstr ""
 
+msgid "Invoke Count"
+msgstr ""
+
+msgid "Invoke Time"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 
