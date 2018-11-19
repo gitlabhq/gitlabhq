@@ -126,6 +126,23 @@ export default {
           </p>
         `;
     },
+    certManagerDescription() {
+      return sprintf(
+        _.escape(
+          s__(
+            `ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates.
+            Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
+            are valid and up to date.`,
+          ),
+        ),
+        {
+          letsEncrypt: `<a href="https://letsencrypt.org/"
+              target="_blank" rel="noopener noreferrer">
+              ${_.escape(s__('ClusterIntegration|Let\'s Encrypt'))}</a>`,
+        },
+        false,
+      );
+    },
     prometheusDescription() {
       return sprintf(
         _.escape(
@@ -302,14 +319,10 @@ export default {
         class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
-        <div slot="description">
-          <p>
-            {{ s__(`ClusterIntegration|Cert-Manager is a native Kubernetes 
-              certificate management controller. It will ensure certificates 
-              are valid and up to date, and attempt to renew certificates at 
-              a configured time before expiry. We use Lets Encrypt as a Certificate 
-              Authority with Cert-Manager.`) }}
-          </p>
+        <div 
+          slot="description"
+          v-html="certManagerDescription"
+        >
         </div>
       </application-row>
       <application-row
