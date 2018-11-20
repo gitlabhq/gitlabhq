@@ -63,6 +63,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
     it 'writes encrypted token to a model instance and returns it' do
       expect(instance).to receive(:[]=)
         .with('some_field_encrypted', encrypted)
+      expect(instance).to receive(:[]=)
+        .with('some_field', nil)
 
       expect(subject.set_token(instance, 'my-value')).to eq 'my-value'
     end

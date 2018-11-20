@@ -24,13 +24,16 @@ module TokenAuthenticatableStrategies
       # using factory bot to create resources, it might happen that a database
       # schema does not have "#{token_name}_encrypted" field yet, however a bunch
       # of models call `ensure_#{token_name}` in `before_save`.
+      #
+      # In that case we are using insecure strategy, but this should only happen
+      # in tests, because otherwise `encrypted_field` is going to exist.
 
       return super if instance.has_attribute?(encrypted_field)
 
       if fallback?
         fallback_strategy.ensure_token(instance)
       else
-        raise ArgumentError, 'Encrypted field does not exist without fallback'
+        raise ArgumentError, 'No fallback defined when encrypted field is missing!'
       end
     end
 
@@ -45,6 +48,7 @@ module TokenAuthenticatableStrategies
       raise ArgumentError unless token.present?
 
       instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      instance[token_field] = nil
       token
     end
 
