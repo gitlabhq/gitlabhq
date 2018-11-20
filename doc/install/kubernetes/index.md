@@ -4,6 +4,9 @@ description: 'Read through the different methods to deploy GitLab on Kubernetes.
 
 # Installing GitLab on Kubernetes
 
+TIP: **If in doubt, choose Omnibus:**
+For nearly all GitLab installations we recommend using an Omnibus package. **GitLab can support up to 40,000 users on a single box Omnibus installation** with enough CPU and RAM. (See [requirements documentation](requirements.md)). Before starting to install GitLab in Kubernetes, please read [Choose the best installation method for your needs](install/README.md)
+
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
 to take advantage of GitLab's Helm charts. [Helm] is a package
 management tool for Kubernetes, allowing apps to be easily managed via their
@@ -37,7 +40,7 @@ Learn more about [gitlab-runner chart](gitlab_runner_chart.md).
 
 CAUTION: **Deprecated:**
 These charts are **deprecated**. We recommend using the [GitLab Chart](gitlab_chart.md)
-instead.
+instead. (**Note:** Omnibus is still the recommended installation for most use cases - only the Omnibus Helm chart is deprecated.)
 
 ### GitLab-Omnibus Chart
 

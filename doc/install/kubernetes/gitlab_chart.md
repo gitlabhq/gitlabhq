@@ -1,7 +1,10 @@
 # GitLab Helm Chart
 
-This is the official and recommended way to install GitLab on a cloud native environment.
+This is the official way to install GitLab on a cloud native environment.
 For more information on other available GitLab Helm Charts, see the [charts overview](index.md#chart-overview).
+
+TIP: **If in doubt, choose Omnibus:**
+For nearly all GitLab installations we recommend using an Omnibus package. **GitLab can support up to 40,000 users on a single box Omnibus installation** with enough CPU and RAM. (See [requirements documentation](requirements.md)). Before starting to install GitLab in Kubernetes, please read [Choose the best installation method for your needs](install/README.md)
 
 ## Introduction
 
