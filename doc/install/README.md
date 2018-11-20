@@ -45,13 +45,13 @@ If you need additional flexibility and resilience you can scale GitLab Omnibus a
 CAUTION: **If in doubt, choose Omnibus:**
 Installing GitLab in Kubernetes is not currently recommended unless you're experienced with Kubernetes and you know why you need GitLab to be installed in Kubernetes.
 
-GitLab are committed to Kubernetes as a foundational technology. There are three areas where Kubernetes intersects with GitLab:
+GitLab is committed to Kubernetes as a foundational technology. There are three areas where Kubernetes intersects with GitLab:
 
 1. Deploying your applications from GitLab projects to Kubernetes (e.g. see [Auto DevOps](autodevops/index.md))
 1. [Running GitLab CI Runners in a Kubernetes Cluster](runner/install/kubernetes.md)
 1. Installing GitLab in Kubernetes
 
-While we recommend using GitLab for the first two points above, for most scenarios we do not currently recommend installing GitLab in Kubernetes. There are number of trade-offs that you need to be aware of that may not be immediately obvious and could prevent you getting the best experience from GitLab:
+While we recommend using GitLab for the first two points above, for most scenarios we do not currently recommend installing GitLab in Kubernetes. There are a number of trade-offs that you need to be aware of that may not be immediately obvious and could prevent you getting the best experience from GitLab:
 
 1. Configuration of feature such as object storage, backups and certificates can be more challenging
 1. Administration and troubleshooting requires Kubernetes knowledge
