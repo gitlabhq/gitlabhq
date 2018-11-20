@@ -321,6 +321,7 @@ describe('IDE store merge request actions', () => {
             expect(store.dispatch).toHaveBeenCalledWith('getFileData', {
               path: change.new_path,
               makeFileActive: i === 0,
+              openFile: true,
             });
           });
         })
