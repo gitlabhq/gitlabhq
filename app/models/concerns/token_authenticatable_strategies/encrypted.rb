@@ -24,8 +24,14 @@ module TokenAuthenticatableStrategies
       # using factory bot to create resources, it might happen that a database
       # schema does not have "#{token_name}_encrypted" field yet, however a bunch
       # of models call `ensure_#{token_name}` in `before_save`.
-      #
-      super if instance.has_attribute?(encrypted_field)
+
+      return super if instance.has_attribute?(encrypted_field)
+
+      if fallback?
+        fallback_strategy.ensure_token(instance)
+      else
+        raise ArgumentError, 'Encrypted field does not exist without fallback'
+      end
     end
 
     def get_token(instance)
