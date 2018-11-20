@@ -30,7 +30,6 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
-          externalIp: null,
         },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
