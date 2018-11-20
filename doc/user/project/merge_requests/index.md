@@ -231,9 +231,10 @@ have been marked as a **Work In Progress**.
 
 ## Merge request diff file navigation
 
-The diff view has a file tree for file navigation. As you scroll through
-diffs with a large number of files, you can easily jump to any changed file
-using the file tree.
+When reviewing changes in the **Changes** tab the diff can be navigated using
+the file tree or file list. As you scroll through large diffs with many
+changes, you can quickly jump to any changed file using the file tree or file
+list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
