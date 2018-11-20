@@ -1,6 +1,7 @@
 <script>
 import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
+import { polyfillSticky } from '~/lib/utils/sticky';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -115,6 +116,9 @@ export default {
     gfmCopyText() {
       return `\`${this.diffFile.file_path}\``;
     },
+  },
+  mounted() {
+    polyfillSticky(this.$refs.header);
   },
   methods: {
     ...mapActions('diffs', ['toggleFileDiscussions']),
