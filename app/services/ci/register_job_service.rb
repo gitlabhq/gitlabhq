@@ -36,7 +36,7 @@ module Ci
         builds = builds.with_any_tags
       end
 
-      builds.find do |build|
+      selection = builds.find do |build|
         next unless runner.can_pick?(build)
 
         begin
@@ -45,7 +45,7 @@ module Ci
           if assign_runner!(build, params)
             register_success(build)
 
-            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
+            break build
           end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
@@ -60,6 +60,8 @@ module Ci
           valid = false
         end
       end
+
+      return Result.new(selection, true) if selection
 
       register_failure
       Result.new(nil, valid)
