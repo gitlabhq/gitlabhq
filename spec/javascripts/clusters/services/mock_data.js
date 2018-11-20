@@ -42,7 +42,7 @@ const CLUSTERS_MOCK_DATA = {
             name: 'cert_manager',
             status: APPLICATION_STATUS.ERROR,
             status_reason: 'Cannot connect',
-          }
+          },
         ],
       },
     },
@@ -86,7 +86,7 @@ const CLUSTERS_MOCK_DATA = {
             name: 'cert_manager',
             status: APPLICATION_STATUS.ERROR,
             status_reason: 'Cannot connect',
-          }
+          },
         ],
       },
     },

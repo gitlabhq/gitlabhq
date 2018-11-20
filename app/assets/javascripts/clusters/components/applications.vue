@@ -138,7 +138,7 @@ export default {
         {
           letsEncrypt: `<a href="https://letsencrypt.org/"
               target="_blank" rel="noopener noreferrer">
-              ${_.escape(s__('ClusterIntegration|Let\'s Encrypt'))}</a>`,
+              ${_.escape(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
         },
         false,
       );
