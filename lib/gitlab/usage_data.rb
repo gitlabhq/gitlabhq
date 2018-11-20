@@ -60,6 +60,7 @@ module Gitlab
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_applications_helm: count(::Clusters::Applications::Helm.installed),
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.installed),
+            clusters_applications_cert_managers: count(::Clusters::Applications::CertManager.installed),
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.installed),
             clusters_applications_runner: count(::Clusters::Applications::Runner.installed),
             clusters_applications_knative: count(::Clusters::Applications::Knative.installed),

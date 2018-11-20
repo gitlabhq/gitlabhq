@@ -207,6 +207,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
           --tls-ca-cert /data/helm/app-name/config/ca.pem
           --tls-cert /data/helm/app-name/config/cert.pem
           --tls-key /data/helm/app-name/config/key.pem
+          --set rbac.create\\=false,rbac.enabled\\=false
           --namespace gitlab-managed-apps
           -f /data/helm/app-name/config/values.yaml
         EOS
