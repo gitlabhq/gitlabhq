@@ -1501,6 +1501,13 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
   end
 
+  create_table "pool_repositories", id: :bigserial, force: :cascade do |t|
+    t.integer "shard_id", null: false
+    t.string "disk_path"
+    t.index ["disk_path"], name: "index_pool_repositories_on_disk_path", unique: true, using: :btree
+    t.index ["shard_id"], name: "index_pool_repositories_on_shard_id", using: :btree
+  end
+
   create_table "programming_languages", force: :cascade do |t|
     t.string "name", null: false
     t.string "color", null: false
@@ -1796,13 +1803,6 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.datetime "updated_at", null: false
     t.index ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
     t.index ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
-  end
-
-  create_table "repositories", id: :bigserial, force: :cascade do |t|
-    t.integer "shard_id", null: false
-    t.string "disk_path", null: false
-    t.index ["disk_path"], name: "index_repositories_on_disk_path", unique: true, using: :btree
-    t.index ["shard_id"], name: "index_repositories_on_shard_id", using: :btree
   end
 
   create_table "repository_languages", id: false, force: :cascade do |t|
@@ -2377,6 +2377,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "pool_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
@@ -2389,7 +2390,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
-  add_foreign_key "projects", "repositories", column: "pool_repository_id", name: "fk_6e5c14658a", on_delete: :nullify
+  add_foreign_key "projects", "pool_repositories", name: "fk_6e5c14658a", on_delete: :nullify
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
@@ -2401,7 +2402,6 @@ ActiveRecord::Schema.define(version: 20181126153547) do
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
-  add_foreign_key "repositories", "shards", on_delete: :restrict
   add_foreign_key "repository_languages", "projects", on_delete: :cascade
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify
