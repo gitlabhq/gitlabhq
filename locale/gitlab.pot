@@ -5961,9 +5961,6 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
-msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
-msgstr ""
-
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -6835,9 +6832,6 @@ msgid "UserProfile|Overview"
 msgstr ""
 
 msgid "UserProfile|Personal projects"
-msgstr ""
-
-msgid "UserProfile|Recent contributions"
 msgstr ""
 
 msgid "UserProfile|Report abuse"
