@@ -9,7 +9,7 @@ in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/
 
 GitLab on AWS can leverage many of the services that are already
 configurable with High Availability. These services have a lot of
-flexibility and are able to adopt to most companies, best of all is the
+flexibility and are able to adapt to most companies, best of all is the
 ability to automate both vertical and horizontal scaling.
 
 In this article we'll go through a basic HA setup where we'll start by
@@ -55,9 +55,9 @@ and from the Actions dropdown choose Edit DNS Hostnames and select Yes.
 ### Subnet
 
 Now let's create some subnets in different Availability Zones. Make sure
-that each subnet is associated the the VPC we just created, that it has
+that each subnet is associated to the VPC we just created, that it has
 a distinct VPC and lastly that CIDR blocks don't overlap. This will also
-allow us to enable multi AZ for redundancy.
+allow us to enable multi-AZ for redundancy.
 
 We will create private and public subnets to match load balancers and
 RDS instances as well.
@@ -98,7 +98,7 @@ traffic from any destination.
 
 ![Subnet Config](img/ig-rt.png)
 
-Before leaving this screen select the next tab to the rgiht which is
+Before leaving this screen select the next tab to the right which is
 Subnet Associations and add our public subnets. If you followed our
 naming convention they should be easy to find.
 
@@ -106,8 +106,8 @@ naming convention they should be easy to find.
 
 ## Database with RDS
 
-For our database server we will use Amazon RDS which offers Multi AZ
-for redundancy. Lets start by creating a subnet group and then we'll
+For our database server we will use Amazon RDS which offers Multi-AZ
+for redundancy. Let's start by creating a subnet group and then we'll
 create the actual RDS instance.
 
 ### Subnet Group
@@ -122,7 +122,7 @@ the VPC ID dropdown and at the bottom we can add our private subnets.
 Select the RDS service from the Database section and create a new
 PostgreSQL instance. After choosing between a Production or
 Development instance we'll start with the actual configuration. On the
-image bellow we have the settings for this article but note the
+image below we have the settings for this article but note the
 following two options which are of particular interest for HA:
 
 1. Multi-AZ-Deployment is recommended as redundancy. Read more at
@@ -133,7 +133,7 @@ IOPS (SSD) is best suited for HA. Read more about it at
 
 ![RDS Instance Specs](img/instance_specs.png)
 
-The rest of the setting on this page request a DB identifier, username
+The rest of the setting on this page request a DB identifier, username,
 and a master password. We've chosen to use `gitlab-ha`, `gitlab` and a
 very secure password respectively. Keep these in hand for later.
 
@@ -152,7 +152,7 @@ EC is an in-memory hosted caching solution. Redis maintains its own
 persistence and is used for certain types of application.
 
 Let's choose the ElastiCache service in the Database section from our
-AWS console. Now lets create a cache subnet group which will be very
+AWS console. Now let's create a cache subnet group which will be very
 similar to the RDS subnet group. Make sure to select our VPC and its
 private subnets.
 
@@ -160,7 +160,7 @@ private subnets.
 
 Now press the Launch a Cache Cluster and choose Redis for our
 DB engine. You'll be able to configure details such as replication,
-Multi AZ and node types. The second section will allow us to choose our
+Multi-AZ and node types. The second section will allow us to choose our
 subnet and security group and     
 
 ![Redis Cluster details](img/redis-cluster-det.png)
@@ -274,7 +274,7 @@ username, and password.
     gitlab_rails['db_password'] = "mypassword"
     gitlab_rails['db_host'] = "<rds-endpoint>"
 
-Next we only need to configure the Redis section by adding the host and
+Next, we only need to configure the Redis section by adding the host and
 uncommenting the port.
 
 
@@ -285,7 +285,7 @@ to make the EFS integration easier to manage.
     gitlab_rails['redis_host'] = "<redis-endpoint>"
     gitlab_rails['redis_port'] = 6379
 
-Finally run reconfigure, you might find it useful to run a check and
+Finally, run reconfigure. You might find it useful to run a check and
 a service status to make sure everything has been set up correctly.
 
     sudo gitlab-ctl reconfigure  
@@ -321,10 +321,10 @@ The Load Balancer Health will allow us to indicate where to ping and what
 makes up a healthy or unhealthy instance.
 
 We won't add the instance on the next session because we'll destroy it
-momentarily as we'll be using the image we where creating. We will keep
+momentarily as we'll be using the image we were creating. We will keep
 the Enable Cross-Zone and Enable Connection Draining active.
 
-After we finish creating the Load Balancer we can re visit our Security
+After we finish creating the Load Balancer we can revisit our Security
 Groups to improve access only through the ELB and any other requirement
 you might have.
 
@@ -363,7 +363,7 @@ After this is launched we are able to start creating our Auto Scaling
 Group. Start by giving it a name and assigning it our VPC and private
 subnets. We also want to always start with two instances and if you
 scroll down to Advanced Details we can choose to receive traffic from ELBs.
-Lets enable that option and select our ELB. We also want to use the ELB's
+Let's enable that option and select our ELB. We also want to use the ELB's
 health check.
 
 ![Auto scaling](img/auto-scaling-det.png)
@@ -388,9 +388,9 @@ we where aiming for.
 
 After you're done with the policies section have some fun trying to break
 instances. You should be able to see how the Auto Scaling Group and the
-EC2 screen start bringing them up again.
+EC2 screen starts bringing them up again.
 
-High Availability is a very big area, we went mostly through scaling and
+High Availability is a vast area, we went mostly through scaling and
 some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
