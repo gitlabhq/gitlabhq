@@ -259,6 +259,34 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
 
+## Pipeline status in merge requests
+
+If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
+you will be able to see:
+
+- Both pre and post-merge pipelines and the environment information if any.
+- Which deployments are in progress.
+
+If there's an [environment](../../../ci/environments.md) and the application is
+successfully deployed to it, the deployed environment and the link to the
+Review App will be shown as well.
+
+### Post-merge pipeline status
+
+When a merge request is merged, you can see the post-merge pipeline status of
+the branch the merge request was merged into. For example, when a merge request
+is merged into the master branch and then triggers a deployment to the staging
+environment.
+
+Deployments that are ongoing will be shown, as well as the deploying/deployed state
+for environments. If it's the first time the branch is deployed, the link
+will return a `404` error until done. During the deployment, the stop button will
+be disabled. If the pipeline fails to deploy, the deployment info will be hidden.
+
+![Merge request pipeline](img/merge_request_pipeline.png)
+
+For more information, [read about pipelines](../../../ci/pipelines.md).
+
 ## Bulk editing merge requests
 
 Find out about [bulk editing merge requests](../../project/bulk_editing.md).
