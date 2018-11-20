@@ -586,13 +586,13 @@ exist, you should see something like:
 >
 > - For the monitoring dashboard to appear, you need to:
 >   - Have enabled the [Prometheus integration][prom]
->   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
+>   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/index.md)
 > - With GitLab 9.2, all deployments to an environment are shown directly on the
 >  monitoring dashboard
 
 If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
-Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
+Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/index.html) for any
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear for each environment.
 
