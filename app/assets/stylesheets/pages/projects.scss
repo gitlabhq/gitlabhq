@@ -352,10 +352,6 @@
 
   .mobile-git-clone {
     margin-top: $gl-padding-8;
-
-    .dropdown-menu-inner-content {
-      @extend .monospace;
-    }
   }
 }
 

@@ -21,7 +21,7 @@
                   selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
-            = dropdown_toggle f.object.source_branch || _("Select source branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[source_branch]", 'refs-url': refs_project_path(@source_project), selected: f.object.source_branch }, { toggle_class: "js-compare-dropdown js-source-branch git-revision-dropdown-toggle" }
+            = dropdown_toggle f.object.source_branch || _("Select source branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[source_branch]", 'refs-url': refs_project_path(@source_project), selected: f.object.source_branch }, { toggle_class: "js-compare-dropdown js-source-branch monospace" }
             .dropdown-menu.dropdown-menu-selectable.js-source-branch-dropdown.git-revision-dropdown
               = dropdown_title(_("Select source branch"))
               = dropdown_filter(_("Search branches"))
@@ -49,7 +49,7 @@
                   selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
-            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch }, { toggle_class: "js-compare-dropdown js-target-branch git-revision-dropdown-toggle" }
+            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch }, { toggle_class: "js-compare-dropdown js-target-branch monospace" }
             .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown.git-revision-dropdown
               = dropdown_title(_("Select target branch"))
               = dropdown_filter(_("Search branches"))
