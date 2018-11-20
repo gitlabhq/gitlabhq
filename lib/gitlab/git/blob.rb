@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
