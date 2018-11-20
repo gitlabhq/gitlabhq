@@ -12,7 +12,7 @@ module Gitlab
         class HashedProject
           attr_accessor :project
 
-          ROOT_PATH_PREFIX = '@hashed'.freeze
+          ROOT_PATH_PREFIX = '@hashed'
 
           def initialize(project)
             @project = project
@@ -42,7 +42,7 @@ module Gitlab
       end
 
       # Concern used by Project and Namespace to determine the full
-      # route the the project
+      # route to the project
       module Routable
         extend ActiveSupport::Concern
 
@@ -128,21 +128,64 @@ module Gitlab
         end
       end
 
-      # Class to add the fullpath to the git repo config
-      class Up
+      # Base class for Up and Down migration classes
+      class BackfillFullpathMigration
+        RETRY_DELAY = 15.minutes
+        MAX_RETRIES = 2
+
+        # Base class for retrying one project
+        class BaseRetryOne
+          def perform(project_id, retry_count)
+            project = Project.find(project_id)
+
+            migration_class.new.safe_perform_one(project, retry_count) if project
+          end
+        end
+
         def perform(start_id, end_id)
           Project.where(id: start_id..end_id).each do |project|
-            project.add_fullpath_config
+            safe_perform_one(project)
           end
+        end
+
+        def safe_perform_one(project, retry_count = 0)
+          perform_one(project)
+        rescue GRPC::NotFound, GRPC::InvalidArgument
+          nil
+        rescue GRPC::BadStatus
+          schedule_retry(project, retry_count + 1) if retry_count < MAX_RETRIES
+        end
+
+        def schedule_retry(project, retry_count)
+          BackgroundMigrationWorker.perform_in(RETRY_DELAY, self.class::RetryOne.name, [project.id, retry_count])
+        end
+      end
+
+      # Class to add the fullpath to the git repo config
+      class Up < BackfillFullpathMigration
+        # Class used to retry
+        class RetryOne < BaseRetryOne
+          def migration_class
+            Up
+          end
+        end
+
+        def perform_one(project)
+          project.add_fullpath_config
         end
       end
 
       # Class to rollback adding the fullpath to the git repo config
-      class Down
-        def perform(start_id, end_id)
-          Project.where(id: start_id..end_id).each do |project|
-            project.remove_fullpath_config
+      class Down < BackfillFullpathMigration
+        # Class used to retry
+        class RetryOne < BaseRetryOne
+          def migration_class
+            Down
           end
+        end
+
+        def perform_one(project)
+          project.remove_fullpath_config
         end
       end
     end

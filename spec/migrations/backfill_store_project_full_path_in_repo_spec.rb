@@ -27,6 +27,16 @@ describe BackfillStoreProjectFullPathInRepo, :migration do
         migration.up
       end
 
+      it 'retries in case of failure' do
+        repository_service = spy(:repository_service)
+
+        allow(Gitlab::GitalyClient::RepositoryService).to receive(:new).and_return(repository_service)
+        allow(repository_service).to receive(:set_config).and_raise(GRPC::BadStatus, 'Retry me')
+        expect(repository_service).to receive(:set_config).exactly(3).times
+
+        migration.up
+      end
+
       context 'legacy storage' do
         it 'finds the repository at the correct location' do
           Project.find(project.id).create_repository
