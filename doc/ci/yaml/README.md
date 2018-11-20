@@ -1682,6 +1682,11 @@ include:
     NOTE: **Note:**
     The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
 
+    NOTE: **Note:**
+    In order to include files from another repository inside your local network, 
+    you may need to enable the **Allow requests to the local network from hooks and services** checkbox
+    located in the **Settings > Network > Outbound requests** section within the **Admin area**.
+
 ---
 
 
