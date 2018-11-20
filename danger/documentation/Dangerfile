@@ -15,10 +15,10 @@ docs_paths_to_review = docs_paths_requiring_review(helper.all_changed_files)
 
 unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a ' \
-    'review from the docs team.'
+    'review from the Docs team.'
 
   markdown(<<~MARKDOWN)
-## Docs Review
+## Docs review
 
 The following files require a review from the Documentation team:
 
@@ -32,24 +32,15 @@ the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab
 
 Who to ping [based on DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages):
 
-| Stage         | Tech writer |
-| ------------- | ----------- |
-| ~Create       | `@marcia`   |
-| ~Configure    | `@eread`    |
-| ~Distribution | `@axil`     |
-| ~Geo          | `@eread`    |
-| ~Gitaly       | `@axil`     |
-| ~Gitter       | `@axil`     |
-| ~Manage       | `@eread`    |
-| ~Monitoring   | `@axil`     |
-| ~Packaging    | `@axil`     |
-| ~Plan         | `@mikelewis`|
-| ~Release      | `marcia`    |
-| ~Secure       | `@axil`     |
-| ~Verify       | `@eread`    |
+| Tech writer  | Stage(s)                                                     |
+| ------------ | ------------------------------------------------------------ |
+| `@marcia`    | ~Create ~Release                                             |
+| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Packaging ~Secure |
+| `@eread`     | ~Manage ~Configure ~Geo ~Verify                              |
+| `@mikelewis` | ~Plan                                                        |
 
 If you are not sure which category the change falls within, or the change is not
-part of one of these categories, you can mention the whole team with `@gl-docsteam`.
+part of one of these categories, you can mention one of the usernames above.
   MARKDOWN
 
   unless gitlab.mr_labels.include?('Documentation')
