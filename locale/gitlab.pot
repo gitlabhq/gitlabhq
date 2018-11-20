@@ -5608,6 +5608,9 @@ msgstr ""
 msgid "See metrics"
 msgstr ""
 
+msgid "See the affected projects in the GitLab admin panel"
+msgstr ""
+
 msgid "Select"
 msgstr ""
 
@@ -7014,6 +7017,9 @@ msgstr ""
 msgid "View deployment"
 msgstr ""
 
+msgid "View details: %{details_url}"
+msgstr ""
+
 msgid "View file @ "
 msgstr ""
 
@@ -7267,6 +7273,9 @@ msgid "You are going to transfer %{project_full_name} to another owner. Are you 
 msgstr ""
 
 msgid "You are on a read-only GitLab instance."
+msgstr ""
+
+msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
