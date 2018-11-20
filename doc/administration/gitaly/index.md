@@ -1,10 +1,8 @@
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) (introduced in GitLab
-9.0) is a service that provides high-level RPC access to Git
-repositories. Gitaly was optional when it was first introduced in
-GitLab, but since GitLab 9.4 it is a mandatory component of the
-application.
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that 
+provides high-level RPC access to Git repositories. Without it, no other
+components can read or write Git data.
 
 GitLab components that access Git repositories (gitlab-rails,
 gitlab-shell, gitlab-workhorse) act as clients to Gitaly. End users do
@@ -47,15 +45,9 @@ installations that are larger than a single machine. Most
 installations will be better served with the default configuration
 used by Omnibus and the GitLab source installation guide.
 
-Starting with GitLab 9.4 it is possible to run Gitaly on a different
-server from the rest of the application. This can improve performance
-when running GitLab with its repositories stored on an NFS server.
-
-At the moment (GitLab 9.4) Gitaly is not yet a replacement for NFS
-because some parts of GitLab still bypass Gitaly when accessing Git
-repositories. If you choose to deploy Gitaly on your NFS server you
-must still also mount your Git shares on your GitLab application
-servers.
+Starting with GitLab 11.4, Gitaly is a replacement for NFS except
+when the [Elastic Search indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
+is used.
 
 Gitaly network traffic is unencrypted so you should use a firewall to
 restrict access to your Gitaly server.
