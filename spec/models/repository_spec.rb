@@ -1005,6 +1005,53 @@ describe Repository do
     end
   end
 
+  describe '#resolve_ref' do
+    subject { repository.resolve_ref(ref) }
+
+    context 'when ref is full ref' do
+      let(:ref) { 'refs/heads/master' }
+
+      it 'returns the ref' do
+        is_expected.to eq(ref)
+      end
+    end
+
+    context 'when ref is a tag or branch name' do
+      let(:ref) { 'ref' }
+
+      context 'when ref is ambiguous' do
+        before do
+          repository.add_tag(project.creator, ref, 'master')
+          repository.add_branch(project.creator, ref, 'master')
+        end
+
+        it 'returns nil' do
+          is_expected.to eq(nil)
+        end
+      end
+
+      context 'when ref is tag name' do
+        before do
+          repository.add_tag(project.creator, ref, 'master')
+        end
+
+        it 'returns the tag ref' do
+          is_expected.to eq("refs/tags/#{ref}")
+        end
+      end
+
+      context 'when ref is branch name' do
+        before do
+          repository.add_branch(project.creator, ref, 'master')
+        end
+
+        it 'returns the branch ref' do
+          is_expected.to eq("refs/heads/#{ref}")
+        end
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:branch_name) { 'new_feature' }
     let(:target) { 'master' }

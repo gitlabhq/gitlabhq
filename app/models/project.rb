@@ -1160,21 +1160,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def resolve_ref(ref)
-    tag_exists = repository.tag_exists?(ref)
-    branch_exists = repository.branch_exists?(ref)
-
-    if tag_exists && branch_exists
-      nil
-    elsif tag_exists
-      Gitlab::Git::TAG_REF_PREFIX + ref
-    elsif branch_exists
-      Gitlab::Git::BRANCH_REF_PREFIX + ref
-    else
-      ref
-    end
-  end
-
   def root_ref?(branch)
     repository.root_ref == branch
   end
@@ -1752,7 +1737,7 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    resolved_ref = resolve_ref(ref)
+    resolved_ref = repository.resolve_ref(ref)
     return false unless resolved_ref
 
     ref_name = Gitlab::Git.ref_name(resolved_ref)

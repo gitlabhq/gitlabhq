@@ -182,6 +182,21 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
+  def resolve_ref(ref)
+    tag_exists = tag_exists?(ref)
+    branch_exists = branch_exists?(ref)
+
+    if tag_exists && branch_exists
+      nil
+    elsif tag_exists
+      Gitlab::Git::TAG_REF_PREFIX + ref
+    elsif branch_exists
+      Gitlab::Git::BRANCH_REF_PREFIX + ref
+    else
+      ref
+    end
+  end
+
   def add_branch(user, branch_name, ref)
     branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 

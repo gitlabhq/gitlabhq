@@ -17,7 +17,7 @@ module Gitlab
                 return error('Commit not found')
               end
 
-              unless @command.project.resolve_ref(@command.origin_ref)
+              unless @command.project.repository.resolve_ref(@command.origin_ref)
                 return error('Ref is ambiguous')
               end
             end

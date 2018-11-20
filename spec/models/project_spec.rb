@@ -2568,7 +2568,7 @@ describe Project do
     subject { project.protected_for?('ref') }
 
     before do
-      allow(project).to receive(:resolve_ref).and_return(ref)
+      allow(project.repository).to receive(:resolve_ref).and_return(ref)
     end
 
     context 'when ref is ambiguous' do
@@ -2792,55 +2792,6 @@ describe Project do
         let(:project_name) { 'Project' }
 
         it { is_expected.to eq(expected_url) }
-      end
-    end
-  end
-
-  describe '#resolve_ref' do
-    let(:project) { create(:project, :repository) }
-
-    subject { project.resolve_ref(ref) }
-
-    context 'when ref is full ref' do
-      let(:ref) { 'refs/heads/master' }
-
-      it 'returns the ref' do
-        is_expected.to eq(ref)
-      end
-    end
-
-    context 'when ref is a tag or branch name' do
-      let(:ref) { 'ref' }
-
-      context 'when ref is ambiguous' do
-        before do
-          project.repository.add_tag(project.creator, ref, 'master')
-          project.repository.add_branch(project.creator, ref, 'master')
-        end
-
-        it 'returns nil' do
-          is_expected.to eq(nil)
-        end
-      end
-
-      context 'when ref is tag name' do
-        before do
-          project.repository.add_tag(project.creator, ref, 'master')
-        end
-
-        it 'returns the tag ref' do
-          is_expected.to eq("refs/tags/#{ref}")
-        end
-      end
-
-      context 'when ref is branch name' do
-        before do
-          project.repository.add_branch(project.creator, ref, 'master')
-        end
-
-        it 'returns the branch ref' do
-          is_expected.to eq("refs/heads/#{ref}")
-        end
       end
     end
   end
