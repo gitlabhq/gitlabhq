@@ -74,7 +74,7 @@ export const getFileData = (
       const normalizedHeaders = normalizeHeaders(headers);
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
-      commit(types.SET_FILE_DATA, { data, file });
+      if (data) commit(types.SET_FILE_DATA, { data, file });
       if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
