@@ -4,6 +4,9 @@ require 'spec_helper'
 
 describe Gitlab::PrivateCommitEmail do
   let(:hostname) { Gitlab::CurrentSettings.current_application_settings.commit_email_hostname }
+  let(:id) { 1 }
+  let(:valid_email) { "#{id}-foo@#{hostname}" }
+  let(:invalid_email) { "#{id}-foo@users.noreply.bar.com" }
 
   context '.regex' do
     subject { described_class.regex }
@@ -16,18 +19,25 @@ describe Gitlab::PrivateCommitEmail do
   end
 
   context '.user_id_for_email' do
-    let(:id) { 1 }
-
     it 'parses user id from email' do
-      email = "#{id}-foo@#{hostname}"
-
-      expect(described_class.user_id_for_email(email)).to eq(id)
+      expect(described_class.user_id_for_email(valid_email)).to eq(id)
     end
 
     it 'returns nil on invalid commit email' do
-      email = "#{id}-foo@users.noreply.bar.com"
+      expect(described_class.user_id_for_email(invalid_email)).to be_nil
+    end
+  end
 
-      expect(described_class.user_id_for_email(email)).to be_nil
+  context '.user_ids_for_email' do
+    it 'returns deduplicated user IDs for each valid email' do
+      result = described_class.user_ids_for_emails([valid_email, valid_email, invalid_email])
+
+      expect(result).to eq([id])
+    end
+
+    it 'returns an empty array with no valid emails' do
+      result = described_class.user_ids_for_emails([invalid_email])
+      expect(result).to eq([])
     end
   end
 

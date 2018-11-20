@@ -130,7 +130,7 @@ describe "Admin::Users" do
       context 'with regex to match internal user email address set', :js do
         before do
           stub_application_setting(user_default_external: true)
-          stub_application_setting(user_default_internal_regex: '.internal@')
+          stub_application_setting(user_default_internal_regex: '\.internal@')
 
           visit new_admin_user_path
         end
@@ -168,6 +168,22 @@ describe "Admin::Users" do
           uncheck 'user_external'
 
           expects_warning_to_be_hidden
+        end
+
+        it 'creates an internal user' do
+          user_name = 'tester1'
+          fill_in 'user_email', with: 'test.internal@domain.ch'
+          fill_in 'user_name', with: 'tester1 name'
+          fill_in 'user_username', with: user_name
+
+          expects_external_to_be_unchecked
+          expects_warning_to_be_shown
+
+          click_button 'Create user'
+
+          new_user = User.find_by(username: user_name)
+
+          expect(new_user.external).to be_falsy
         end
       end
     end

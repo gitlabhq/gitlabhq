@@ -41,7 +41,7 @@ describe('Deployment component', () => {
 
   describe('', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData }, showMetrics: true });
     });
 
     describe('deployTimeago', () => {
@@ -174,11 +174,31 @@ describe('Deployment component', () => {
     });
   });
 
+  describe('with showMetrics enabled', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData }, showMetrics: true });
+    });
+
+    it('shows metrics', () => {
+      expect(vm.$el).toContainElement('.js-mr-memory-usage');
+    });
+  });
+
+  describe('with showMetrics disabled', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData }, showMetrics: false });
+    });
+
+    it('hides metrics', () => {
+      expect(vm.$el).not.toContainElement('.js-mr-memory-usage');
+    });
+  });
+
   describe('without changes', () => {
     beforeEach(() => {
       delete deploymentMockData.changes;
 
-      vm = mountComponent(Component, { deployment: { ...deploymentMockData } });
+      vm = mountComponent(Component, { deployment: { ...deploymentMockData }, showMetrics: true });
     });
 
     it('renders the link to the review app without dropdown', () => {
@@ -192,6 +212,7 @@ describe('Deployment component', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
           deployment: Object.assign({}, deploymentMockData, { status: 'running' }),
+          showMetrics: true,
         });
       });
 
@@ -208,6 +229,7 @@ describe('Deployment component', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
           deployment: Object.assign({}, deploymentMockData, { status: 'success' }),
+          showMetrics: true,
         });
       });
 
@@ -220,6 +242,7 @@ describe('Deployment component', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
           deployment: Object.assign({}, deploymentMockData, { status: 'failed' }),
+          showMetrics: true,
         });
       });
 

@@ -177,11 +177,11 @@ administrator to do so.
 
 ### Adding patches when creating a merge request via e-mail
 
-> **Note**: This feature was [implemented in GitLab 11.5](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22723)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22723) in GitLab 11.5.
 
 You can add commits to the merge request being created by adding
-patches as attachments to the email, all attachments with a filename
-ending in `.patch` will be considered patches. The patches will be processed
+patches as attachments to the email. All attachments with a filename
+ending in `.patch` will be considered patches and they will be processed
 ordered by name.
 
 The combined size of the patches can be 2MB.
@@ -194,7 +194,7 @@ branch already exists, the patches will be applied on top of it.
 
 ## Find the merge request that introduced a change
 
-> **Note**: this feature was [implemented in GitLab 10.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383) in GitLab 10.5.
 
 When viewing the commit details page, GitLab will link to the merge request (or
 merge requests, if it's in more than one) containing that commit.
@@ -231,9 +231,10 @@ have been marked as a **Work In Progress**.
 
 ## Merge request diff file navigation
 
-The diff view has a file tree for file navigation. As you scroll through
-diffs with a large number of files, you can easily jump to any changed file
-using the file tree.
+When reviewing changes in the **Changes** tab the diff can be navigated using
+the file tree or file list. As you scroll through large diffs with many
+changes, you can quickly jump to any changed file using the file tree or file
+list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
