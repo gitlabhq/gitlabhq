@@ -296,15 +296,14 @@ module Gitlab
     def self.add_call_details(details)
       return unless Gitlab::SafeRequestStore[:peek_enabled]
 
-      Gitlab::SafeRequestStore['gitaly_call_details'] ||= {}
-      Gitlab::SafeRequestStore['gitaly_call_details'][id] ||= {}
-      Gitlab::SafeRequestStore['gitaly_call_details'][id].merge!(details)
+      Gitlab::SafeRequestStore['gitaly_call_details'] ||= []
+      Gitlab::SafeRequestStore['gitaly_call_details'] << details
     end
 
     def self.list_call_details
-      return {} unless Gitlab::SafeRequestStore[:peek_enabled]
+      return [] unless Gitlab::SafeRequestStore[:peek_enabled]
 
-      Gitlab::SafeRequestStore['gitaly_call_details'] || {}
+      Gitlab::SafeRequestStore['gitaly_call_details'] || []
     end
 
     def self.expected_server_version

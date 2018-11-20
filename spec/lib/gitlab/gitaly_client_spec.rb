@@ -216,4 +216,29 @@ describe Gitlab::GitalyClient do
       end
     end
   end
+
+  describe 'Peek Performance bar details' do
+    let(:gitaly_server) { Gitaly::Server.all.first }
+
+    before do
+      Gitlab::SafeRequestStore[:peek_enabled] = true
+    end
+
+    context 'when the request store is active', :request_store do
+      it 'records call details if a RPC is called' do
+        gitaly_server.server_version
+
+        expect(described_class.list_call_details).not_to be_empty
+        expect(described_class.list_call_details.size).to be(1)
+      end
+    end
+
+    context 'when no request store is active' do
+      it 'records nothing' do
+        gitaly_server.server_version
+
+        expect(described_class.list_call_details).to be_empty
+      end
+    end
+  end
 end
