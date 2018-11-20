@@ -135,23 +135,25 @@ If the mirror updates successfully, it will be enqueued once again with a small 
 If the mirror fails (for example, a branch diverged from upstream), the project's backoff period is
 increased each time it fails, up to a maximum amount of time.
 
-### SSH authentication **[STARTER]**
+### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Push mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Pull mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 
 - You have to prove to the server that you're allowed to access the repository.
 - The server also has to prove to *you* that it's who it claims to be.
 
-You provide your credentials as a password or public key. The server that the source repository
-resides on provides its credentials as a "host key", the fingerprint of which needs to be verified manually.
+You provide your credentials as a password or public key. The server that the
+other repository resides on provides its credentials as a "host key", the
+fingerprint of which needs to be verified manually.
 
 If you're mirroring over SSH (that is, using an `ssh://` URL), you can authenticate using:
 
 - Password-based authentication, just as over HTTPS.
-- Public key authentication. This is often more secure than password authentication, especially when
-  the source repository supports [Deploy Keys](../ssh/README.md#deploy-keys).
+- Public key authentication. This is often more secure than password authentication,
+  especially when the other repository supports [Deploy Keys](../ssh/README.md#deploy-keys).
 
 To get started:
 
@@ -171,9 +173,9 @@ If you click the:
 - **Detect host keys** button, GitLab will fetch the host keys from the server and display the fingerprints.
 - **Input host keys manually** button, a field is displayed where you can paste in host keys.
 
-You now need to verify that the fingerprints are those you expect. GitLab.com
-and other code hosting sites publish their fingerprints in the open for you
-to check:
+Assuming you used the former, you now need to verify that the fingerprints are
+those you expect. GitLab.com and other code hosting sites publish their
+fingerprints in the open for you to check:
 
 - [AWS CodeCommit](http://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
 - [Bitbucket](https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints)
@@ -184,7 +186,8 @@ to check:
 - [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
 
 Other providers will vary. If you're running self-managed GitLab, or otherwise
-have access to the source server, you can securely gather the key fingerprints:
+have access to the server for the other repository, you can securely gather the
+key fingerprints:
 
 ```sh
 $ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
@@ -196,25 +199,27 @@ $ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
 NOTE: **Note:**
 You may need to exclude `-E md5` for some older versions of SSH.
 
-When pulling changes from the source repository, GitLab will now check that at least one of the stored
-host keys matches before connecting. This can prevent malicious code from being injected into your
-mirror, or your password being stolen.
+When mirroring the repository, GitLab will now check that at least one of the
+stored host keys matches before connecting. This can prevent malicious code from
+being injected into your mirror, or your password being stolen.
 
 ### SSH public key authentication
 
-To use SSH public key authentication, you'll also need to choose that option from the **Authentication method**
-dropdown. GitLab will generate a 4096-bit RSA key and display the public component of that key to you.
+To use SSH public key authentication, you'll also need to choose that option
+from the **Authentication method** dropdown. GitLab will generate a 4096-bit RSA
+key and display the public component of that key to you.
 
-You then need to add the public SSH key to the source repository configuration. If:
+You then need to add the public SSH key to the other repository's configuration:
 
-- The source is hosted on GitLab, you should add the public SSH key as a [Deploy Key](../ssh/README.md#deploy-keys).
-- The source is hosted elsewhere, you may need to add the key to your user's `authorized_keys` file.
-  Paste the entire public SSH key into the file on its own line and save it.
+- If the other repository is hosted on GitLab, you should add the public SSH key
+  as a [Deploy Key](../ssh/README.md#deploy-keys).
+- If the other repository is hosted elsewhere, you may need to add the key to
+  your user's  `authorized_keys` file. Paste the entire public SSH key into the
+  file on its own line and save it.
 
-Once the public key is set up on the source repository, click the **Mirror repository** button and
-your mirror will begin working.
-
-If you need to change the key at any time, you can click the **Regenerate key** button to do so. You'll have to update the source repository with the new key to keep the mirror running.
+If you need to change the key at any time, you can remove and re-add the mirror
+to generate a new key. You'll have to update the other repository with the new
+key to keep the mirror running.
 
 ### Overwrite diverged branches **[STARTER]**
 

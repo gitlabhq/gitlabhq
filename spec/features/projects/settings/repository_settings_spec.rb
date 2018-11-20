@@ -132,6 +132,27 @@ describe 'Projects > Settings > Repository settings' do
       it 'shows push mirror settings', :js do
         expect(page).to have_selector('#mirror_direction')
       end
+
+      it 'generates an SSH public key on submission', :js do
+        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        select 'SSH public key', from: 'Authentication method'
+
+        direction_select = find('#mirror_direction')
+
+        # In CE, this select box is disabled, but in EE, it is enabled
+        if direction_select.disabled?
+          expect(direction_select.value).to eq('push')
+        else
+          direction_select.select('Push')
+        end
+
+        Sidekiq::Testing.fake! do
+          click_button 'Mirror repository'
+        end
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(page).to have_selector('[title="Copy SSH public key"]')
+      end
     end
   end
 end

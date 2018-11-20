@@ -130,7 +130,7 @@ describe Gitlab::GitalyClient::RepositoryService do
     end
 
     context 'SSH auth' do
-      where(:ssh_import, :ssh_key_auth, :ssh_private_key, :ssh_known_hosts, :expected_params) do
+      where(:ssh_mirror_url, :ssh_key_auth, :ssh_private_key, :ssh_known_hosts, :expected_params) do
         false | false | 'key' | 'known_hosts' | {}
         false | true  | 'key' | 'known_hosts' | {}
         true  | false | 'key' | 'known_hosts' | { known_hosts: 'known_hosts' }
@@ -145,7 +145,7 @@ describe Gitlab::GitalyClient::RepositoryService do
         let(:ssh_auth) do
           double(
             :ssh_auth,
-            ssh_import?: ssh_import,
+            ssh_mirror_url?: ssh_mirror_url,
             ssh_key_auth?: ssh_key_auth,
             ssh_private_key: ssh_private_key,
             ssh_known_hosts: ssh_known_hosts
