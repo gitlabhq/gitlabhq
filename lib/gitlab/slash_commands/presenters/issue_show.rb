@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module SlashCommands
     module Presenters
@@ -38,10 +40,10 @@ module Gitlab
         end
 
         def text
-          message = "**#{status_text(@resource)}**"
+          message = ["**#{status_text(@resource)}**"]
 
           if @resource.upvotes.zero? && @resource.downvotes.zero? && @resource.user_notes_count.zero?
-            return message
+            return message.join
           end
 
           message << " · "
@@ -49,7 +51,7 @@ module Gitlab
           message << ":-1: #{@resource.downvotes} " unless @resource.downvotes.zero?
           message << ":speech_balloon: #{@resource.user_notes_count}" unless @resource.user_notes_count.zero?
 
-          message
+          message.join
         end
 
         def pretext
