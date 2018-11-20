@@ -154,6 +154,8 @@ excluded_attributes:
     - :encrypted_token_iv
     - :encrypted_url
     - :encrypted_url_iv
+  services:
+    - :template
 
 methods:
   labels:
