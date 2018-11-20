@@ -80,8 +80,18 @@ describe Gitlab::Git::Tree, :seed_helper do
   end
 
   describe '#where' do
-    it 'returns an empty array when called with an invalid ref' do
-      expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
+    shared_examples '#where' do
+      it 'returns an empty array when called with an invalid ref' do
+        expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like '#where'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#where'
     end
   end
 end

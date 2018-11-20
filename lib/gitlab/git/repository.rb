@@ -885,6 +885,12 @@ module Gitlab
         Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
+      def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+        wrapped_gitaly_errors do
+          Gitlab::GitalyClient.migrate(method, status: status, &block)
+        end
+      end
+
       def clean_stale_repository_files
         wrapped_gitaly_errors do
           gitaly_repository_client.cleanup if exists?
