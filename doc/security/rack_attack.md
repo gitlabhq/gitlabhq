@@ -35,9 +35,9 @@ For more information on how to use these options check out
     gitlab_rails['rack_attack_git_basic_auth'] = {
       'enabled' => true,
       'ip_whitelist' => ["127.0.0.1"],
-      'maxretry' => 10,
-      'findtime' => 60,
-      'bantime' => 3600
+      'maxretry' => 10, # Limit the number of Git HTTP authentication attempts per IP
+      'findtime' => 60, # Reset the auth attempt counter per IP after 60 seconds
+      'bantime' => 3600 # Ban an IP for one hour (3600s) after too many auth attempts
     }
     ```
 
@@ -55,9 +55,9 @@ The following settings can be configured:
 - `maxretry`: The maximum amount of times a request can be made in the
    specified time.
 - `findtime`: The maximum amount of time failed requests can count against an IP
-   before it's blacklisted.
-- `bantime`: The total amount of time that a blacklisted IP will be blocked in
-   seconds.
+   before it's blacklisted (in seconds).
+- `bantime`: The total amount of time that a blacklisted IP will be blocked (in
+   seconds).
 
 **Installations from source**
 
