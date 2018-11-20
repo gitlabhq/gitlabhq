@@ -1,5 +1,5 @@
 - @no_container = true
-- page_title "Terminal for environment", @environment.name
+- page_title _("Terminal for environment"), @environment.name
 
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag "xterm.css"
@@ -9,7 +9,7 @@
     .row
       .col-sm-6
         %h3.page-title
-          Terminal for environment
+          = _("Terminal for environment")
           = @environment.name
 
       .col-sm-6
