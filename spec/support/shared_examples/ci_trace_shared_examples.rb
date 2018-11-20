@@ -180,10 +180,9 @@ shared_examples_for 'common trace features' do
     end
 
     context 'runners token' do
-      let(:token) { 'my_secret_token' }
+      let(:token) { build.project.runners_token }
 
       before do
-        build.project.update(runners_token: token)
         trace.set(token)
       end
 
@@ -193,10 +192,9 @@ shared_examples_for 'common trace features' do
     end
 
     context 'hides build token' do
-      let(:token) { 'my_secret_token' }
+      let(:token) { build.token }
 
       before do
-        build.update(token: token)
         trace.set(token)
       end
 
