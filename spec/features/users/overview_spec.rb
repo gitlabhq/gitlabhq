@@ -54,15 +54,15 @@ describe 'Overview tab on a user profile', :js do
       end
     end
 
-    describe 'user has 10 activities' do
+    describe 'user has 11 activities' do
       before do
-        10.times { push_code_contribution }
+        11.times { push_code_contribution }
       end
 
       include_context 'visit overview tab'
 
-      it 'displays 5 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 5)
+      it 'displays 10 entries in the list of activities' do
+        expect(find('#js-overview')).to have_selector('.event-item', count: 10)
       end
 
       it 'shows a link to the activity list' do

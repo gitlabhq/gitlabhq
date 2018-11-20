@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     class WebTransaction < Transaction
@@ -40,7 +42,7 @@ module Gitlab
         # increasing the cardinality of our metrics, we limit the number of
         # possible suffixes.
         if suffix && ALLOWED_SUFFIXES.include?(suffix)
-          action += ".#{suffix}"
+          action = "#{action}.#{suffix}"
         end
 
         { controller: controller.class.name, action: action }

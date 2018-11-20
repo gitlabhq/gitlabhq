@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitlab::Middleware::Multipart - a Rack::Multipart replacement
 #
 # Rack::Multipart leaves behind tempfiles in /tmp and uses valuable Ruby

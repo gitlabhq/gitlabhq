@@ -389,7 +389,7 @@ group :test do
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.
   gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
-  gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.2.5'
   gem 'rspec_junit_formatter'
 end

@@ -7,7 +7,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        user = Resource::User.fabricate!
+        user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
 
         project = Resource::Project.fabricate! do |resource|
           resource.name = 'add-member-project'

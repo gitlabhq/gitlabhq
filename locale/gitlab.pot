@@ -1073,6 +1073,9 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
+msgid "CI / CD Charts"
+msgstr ""
+
 msgid "CI / CD Settings"
 msgstr ""
 
@@ -1167,6 +1170,9 @@ msgid "Changelog"
 msgstr ""
 
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
+msgstr ""
+
+msgid "Changes suppressed. Click to show."
 msgstr ""
 
 msgid "Charts"
@@ -1962,6 +1968,9 @@ msgstr ""
 msgid "Contribution"
 msgstr ""
 
+msgid "Contribution Charts"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr ""
 
@@ -2218,6 +2227,9 @@ msgid "Default: Map a FogBugz account ID to a full name"
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
+msgstr ""
+
+msgid "Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here."
 msgstr ""
 
 msgid "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes."
@@ -2519,6 +2531,9 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
+msgid "Edit environment"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -2597,6 +2612,9 @@ msgstr ""
 msgid "Environments"
 msgstr ""
 
+msgid "Environments allow you to track deployments of your application %{link_to_read_more}."
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -2664,6 +2682,9 @@ msgid "Environments|Stop"
 msgstr ""
 
 msgid "Environments|Stop environment"
+msgstr ""
+
+msgid "Environments|Stopping"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -2801,6 +2822,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "External URL"
+msgstr ""
+
 msgid "Facebook"
 msgstr ""
 
@@ -2847,6 +2871,18 @@ msgid "February"
 msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
+msgstr ""
+
+msgid "File added"
+msgstr ""
+
+msgid "File deleted"
+msgstr ""
+
+msgid "File mode changed from %{a_mode} to %{b_mode}"
+msgstr ""
+
+msgid "File moved"
 msgstr ""
 
 msgid "File templates"
@@ -3890,6 +3926,9 @@ msgstr ""
 msgid "Metrics and profiling"
 msgstr ""
 
+msgid "Metrics for environment"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -4034,6 +4073,9 @@ msgstr ""
 msgid "New Application"
 msgstr ""
 
+msgid "New Environment"
+msgstr ""
+
 msgid "New Group"
 msgstr ""
 
@@ -4064,6 +4106,9 @@ msgid "New branch unavailable"
 msgstr ""
 
 msgid "New directory"
+msgstr ""
+
+msgid "New environment"
 msgstr ""
 
 msgid "New file"
@@ -4154,6 +4199,9 @@ msgid "No messages were logged"
 msgstr ""
 
 msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No preview for this file type"
 msgstr ""
 
 msgid "No prioritised labels with such name or description"
@@ -4441,6 +4489,9 @@ msgid "Permissions, LFS, 2FA"
 msgstr ""
 
 msgid "Personal Access Token"
+msgstr ""
+
+msgid "Pick a name"
 msgstr ""
 
 msgid "Pipeline"
@@ -5139,6 +5190,9 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
+msgid "Read more about environments"
+msgstr ""
+
 msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
@@ -5163,6 +5217,9 @@ msgid "Regex pattern"
 msgstr ""
 
 msgid "Register / Sign In"
+msgstr ""
+
+msgid "Register U2F device"
 msgstr ""
 
 msgid "Register and see your runners for this group."
@@ -5512,6 +5569,9 @@ msgstr ""
 msgid "Secret"
 msgstr ""
 
+msgid "See metrics"
+msgstr ""
+
 msgid "Select"
 msgstr ""
 
@@ -5605,6 +5665,9 @@ msgstr ""
 msgid "Set up a specific Runner automatically"
 msgstr ""
 
+msgid "Set up new U2F device"
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -5683,6 +5746,9 @@ msgid "Sign in"
 msgstr ""
 
 msgid "Sign in / Register"
+msgstr ""
+
+msgid "Sign in via 2FA code"
 msgstr ""
 
 msgid "Sign out"
@@ -5970,9 +6036,6 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
-msgid "Summary of issues, merge requests, push events, and comments (Timezone: %{utcFormatted})"
-msgstr ""
-
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -6084,6 +6147,9 @@ msgid "Template"
 msgstr ""
 
 msgid "Templates"
+msgstr ""
+
+msgid "Terminal for environment"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
@@ -6236,6 +6302,9 @@ msgstr ""
 msgid "Third party offers"
 msgstr ""
 
+msgid "This %{viewer} could not be displayed because %{reason}."
+msgstr ""
+
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
@@ -6252,6 +6321,9 @@ msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
 msgid "This diff is collapsed."
+msgstr ""
+
+msgid "This diff was suppressed by a .gitattributes entry."
 msgstr ""
 
 msgid "This directory"
@@ -6609,6 +6681,9 @@ msgstr ""
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
+msgid "To preserve performance only <strong>%{display_size} of ${real_size}</strong> files are displayed."
+msgstr ""
+
 msgid "To start serving your jobs you can add Runners to your group"
 msgstr ""
 
@@ -6628,6 +6703,9 @@ msgid "Todos"
 msgstr ""
 
 msgid "Toggle Sidebar"
+msgstr ""
+
+msgid "Toggle comments for this file"
 msgstr ""
 
 msgid "Toggle commit description"
@@ -6688,6 +6766,12 @@ msgid "Triggers can force a specific branch or tag to get rebuilt with an API ca
 msgstr ""
 
 msgid "Try again"
+msgstr ""
+
+msgid "Try again?"
+msgstr ""
+
+msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."
 msgstr ""
 
 msgid "Twitter"
@@ -6846,9 +6930,6 @@ msgstr ""
 msgid "UserProfile|Personal projects"
 msgstr ""
 
-msgid "UserProfile|Recent contributions"
-msgstr ""
-
 msgid "UserProfile|Report abuse"
 msgstr ""
 
@@ -6892,6 +6973,9 @@ msgid "Version"
 msgstr ""
 
 msgid "View app"
+msgstr ""
+
+msgid "View deployment"
 msgstr ""
 
 msgid "View file @ "
@@ -6955,6 +7039,9 @@ msgid "We detected potential spam in the %{humanized_resource_name}. Please solv
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
+msgstr ""
+
+msgid "We heard back from your U2F device. You have been authenticated."
 msgstr ""
 
 msgid "We want to be sure it is you, please confirm you are not a robot."
@@ -7191,6 +7278,9 @@ msgstr ""
 msgid "You don't have any authorized applications"
 msgstr ""
 
+msgid "You don't have any deployments right now."
+msgstr ""
+
 msgid "You have no permissions"
 msgstr ""
 
@@ -7204,6 +7294,9 @@ msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You need permission."
+msgstr ""
+
+msgid "You need to register a two-factor authentication app before you can set up a U2F device."
 msgstr ""
 
 msgid "You will loose all changes you've made to this file. This action cannot be undone."
@@ -7266,10 +7359,16 @@ msgstr ""
 msgid "Your Todos"
 msgstr ""
 
+msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
+msgstr ""
+
 msgid "Your applications (%{size})"
 msgstr ""
 
 msgid "Your authorized applications"
+msgstr ""
+
+msgid "Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer)."
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
@@ -7279,6 +7378,9 @@ msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
 
 msgid "Your comment will not be visible to the public."
+msgstr ""
+
+msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
 msgstr ""
 
 msgid "Your groups"
@@ -7322,6 +7424,9 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "deleted"
+msgstr ""
+
 msgid "deploy token"
 msgstr ""
 
@@ -7332,6 +7437,9 @@ msgid "done"
 msgstr ""
 
 msgid "enabled"
+msgstr ""
+
+msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
