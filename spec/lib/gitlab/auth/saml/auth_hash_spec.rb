@@ -82,6 +82,17 @@ describe Gitlab::Auth::Saml::AuthHash do
       end
     end
 
+    context 'with SAML 2.0 response_object' do
+      before do
+        auth_hash_data[:extra][:response_object] = { document:
+                                                         saml_xml(File.read('spec/fixtures/authentication/saml2_response.xml')) }
+      end
+
+      it 'can extract authn_context' do
+        expect(saml_auth_hash.authn_context).to eq 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'
+      end
+    end
+
     context 'without response_object' do
       it 'returns an empty string' do
         expect(saml_auth_hash.authn_context).to be_nil
