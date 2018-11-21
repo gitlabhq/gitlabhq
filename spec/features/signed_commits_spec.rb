@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'GPG signed commits', :js do
-  set(:ref) { :'2d1096e3a0ecf1d2baf6dee036cc80775d4940ba' }
-  let(:project) { create(:project, :repository) }
+  let(:ref) { '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba' }
+  let(:project) { create(:project, :public, :repository) }
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
     user = create :user, email: 'unrelated.user@example.org'
@@ -62,6 +62,7 @@ describe 'GPG signed commits', :js do
   end
 
   context 'shows popover badges' do
+    let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
     let(:user_1) do
       create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
     end
@@ -85,19 +86,10 @@ describe 'GPG signed commits', :js do
       end
     end
 
-    before do
-      user = create :user
-      project.add_maintainer(user)
-
-      sign_in(user)
-    end
-
     it 'unverified signature' do
-      visit project_commits_path(project, ref)
+      visit project_commit_path(project, ref)
 
-      within(find('.commit', text: 'signed commit by bette cartwright')) do
-        click_on 'Unverified'
-      end
+      click_on 'Unverified'
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with an unverified signature.'
@@ -106,13 +98,13 @@ describe 'GPG signed commits', :js do
     end
 
     it 'unverified signature: user email does not match the committer email, but is the same user' do
+      ref = 'a17a9f66543673edf0a3d1c6b93bdda3fe600f32'
+
       user_2_key
 
-      visit project_commits_path(project, ref)
+      visit project_commit_path(project, ref)
 
-      within(find('.commit', text: 'signed and authored commit by bette cartwright, different email')) do
-        click_on 'Unverified'
-      end
+      click_on 'Unverified'
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not verified to belong to the same user.'
@@ -125,11 +117,9 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email' do
       user_2_key
 
-      visit project_commits_path(project, ref)
+      visit project_commit_path(project, ref)
 
-      within(find('.commit', text: 'signed commit by bette cartwright')) do
-        click_on 'Unverified'
-      end
+      click_on 'Unverified'
 
       within '.popover' do
         expect(page).to have_content "This commit was signed with a different user's verified signature."
@@ -140,13 +130,13 @@ describe 'GPG signed commits', :js do
     end
 
     it 'verified and the gpg user has a gitlab profile' do
+      ref = '3c1d9a0266cb0c62d926f4a6c649beed561846f5'
+
       user_1_key
 
-      visit project_commits_path(project, ref)
+      visit project_commit_path(project, ref)
 
-      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
-        click_on 'Verified'
-      end
+      click_on 'Verified'
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
@@ -157,22 +147,20 @@ describe 'GPG signed commits', :js do
     end
 
     it "verified and the gpg user's profile doesn't exist anymore" do
+      ref = '3c1d9a0266cb0c62d926f4a6c649beed561846f5'
+
       user_1_key
 
-      visit project_commits_path(project, ref)
+      visit project_commit_path(project, ref)
 
       # wait for the signature to get generated
-      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
-        expect(page).to have_content 'Verified'
-      end
+      expect(page).to have_content 'Verified'
 
       user_1.destroy!
 
       refresh
 
-      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
-        click_on 'Verified'
-      end
+      click_on 'Verified'
 
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
