@@ -42,6 +42,8 @@ export default {
     running: __('Deploying to'),
     success: __('Deployed to'),
     failed: __('Failed to deploy to'),
+    created: __('Will deploy to'),
+    canceled: __('Failed to deploy to'),
   },
   data() {
     return {
