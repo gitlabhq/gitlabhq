@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <li :class="className" class="replies-toggle">
+  <li :class="className" class="replies-toggle js-toggle-replies">
     <template v-if="collapsed">
       <icon name="chevron-right" @click.native="toggle" />
       <div>

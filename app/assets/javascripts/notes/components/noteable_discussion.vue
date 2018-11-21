@@ -68,7 +68,7 @@ export default {
       isReplying: false,
       isResolving: false,
       resolveAsThread: true,
-      isRepliesCollapsed: (!this.discussion.diff_discussion && this.discussion.resolved) || false,
+      isRepliesToggledByUser: false,
     };
   },
   computed: {
@@ -189,6 +189,15 @@ export default {
 
       return isExpanded || this.alwaysExpanded || isResolvedNonDiffDiscussion;
     },
+    isRepliesCollapsed() {
+      const { discussion, isRepliesToggledByUser } = this;
+      const { resolved, notes } = discussion;
+      const hasReplies = notes.length > 1;
+
+      return (
+        (!discussion.diff_discussion && resolved && hasReplies && !isRepliesToggledByUser) || false
+      );
+    },
   },
   watch: {
     isReplying() {
@@ -233,7 +242,7 @@ export default {
       this.toggleDiscussion({ discussionId: this.discussion.id });
     },
     toggleReplies() {
-      this.isRepliesCollapsed = !this.isRepliesCollapsed;
+      this.isRepliesToggledByUser = !this.isRepliesToggledByUser;
     },
     showReplyForm() {
       this.isReplying = true;
