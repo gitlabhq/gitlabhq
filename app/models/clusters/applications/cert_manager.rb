@@ -14,6 +14,8 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      validates :hostname, presence: true
+
       def chart
         'stable/cert-manager'
       end
