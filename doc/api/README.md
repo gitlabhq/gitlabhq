@@ -105,7 +105,7 @@ not explicit. This allows for a stable API endpoint, but also means new
 features can be added to the API in the same version number.
 
 New features and bug fixes are released in tandem with a new GitLab, and apart
-from incidental patch and security releases, are released on the 22nd each
+from incidental patch and security releases, are released on the 22nd of each
 month. Backward incompatible changes (e.g. endpoints removal, parameters
 removal etc.), as well as removal of entire API versions are done in tandem
 with a major point release of GitLab itself. All deprecations and changes
