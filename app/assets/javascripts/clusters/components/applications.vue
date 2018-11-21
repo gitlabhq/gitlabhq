@@ -296,11 +296,7 @@ export default {
         class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
-        <div 
-          slot="description"
-          v-html="certManagerDescription"
-        >
-        </div>
+        <div slot="description" v-html="certManagerDescription"></div>
       </application-row>
       <application-row
         v-if="isProjectCluster"
@@ -412,12 +408,11 @@ export default {
         <div slot="description">
           <p>
             {{
-              s__(`ClusterIntegration|A Knative build extends Kubernetes
-              and utilizes existing Kubernetes primitives to provide you with
-              the ability to run on-cluster container builds from source.
-              For example, you can write a build that uses Kubernetes-native
-              resources to obtain your source code from a repository,
-              build it into container a image, and then run that image.`)
+              s__(`ClusterIntegration|Knative (pronounced kay-nay-tiv) extends
+              Kubernetes to provide a set of middleware components that are
+              essential to build modern, source-centric, and container-based
+              applications that can run anywhere: on premises, in the cloud, or
+              even in a third-party data center.`)
             }}
           </p>
 
