@@ -2,26 +2,21 @@
 
 require 'spec_helper'
 
-describe 'GPG signed commits', :js do
-  let(:ref) { '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba' }
+describe 'GPG signed commits' do
   let(:project) { create(:project, :public, :repository) }
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
-    user = create :user, email: 'unrelated.user@example.org'
-    project.add_maintainer(user)
+    ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
+    user = create(:user, email: 'unrelated.user@example.org')
 
     perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
-    sign_in(user)
+    visit project_commit_path(project, ref)
 
-    visit project_commits_path(project, ref)
-
-    within '#commits-list' do
-      expect(page).to have_content 'Unverified'
-      expect(page).not_to have_content 'Verified'
-    end
+    expect(page).to have_content 'Unverified'
+    expect(page).not_to have_content 'Verified'
 
     # user changes his email which makes the gpg key verified
     perform_enqueued_jobs do
@@ -29,38 +24,30 @@ describe 'GPG signed commits', :js do
       user.update!(email: GpgHelpers::User1.emails.first)
     end
 
-    visit project_commits_path(project, ref)
+    visit project_commit_path(project, ref)
 
-    within '#commits-list' do
-      expect(page).to have_content 'Unverified'
-      expect(page).to have_content 'Verified'
-    end
+    expect(page).not_to have_content 'Unverified'
+    expect(page).to have_content 'Verified'
   end
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
-    user = create :user, email: GpgHelpers::User1.emails.first
-    project.add_maintainer(user)
+    ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
+    user = create(:user, email: GpgHelpers::User1.emails.first)
 
-    sign_in(user)
+    visit project_commit_path(project, ref)
 
-    visit project_commits_path(project, ref)
-
-    within '#commits-list' do
-      expect(page).to have_content 'Unverified'
-      expect(page).not_to have_content 'Verified'
-    end
+    expect(page).to have_content 'Unverified'
+    expect(page).not_to have_content 'Verified'
 
     # user adds the gpg key which makes the signature valid
     perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
-    visit project_commits_path(project, ref)
+    visit project_commit_path(project, ref)
 
-    within '#commits-list' do
-      expect(page).to have_content 'Unverified'
-      expect(page).to have_content 'Verified'
-    end
+    expect(page).not_to have_content 'Unverified'
+    expect(page).to have_content 'Verified'
   end
 
   context 'shows popover badges', :js do
