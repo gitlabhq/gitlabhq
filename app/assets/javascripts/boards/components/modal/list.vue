@@ -117,38 +117,22 @@ export default {
 };
 </script>
 <template>
-  <section
-    ref="list"
-    class="add-issues-list add-issues-list-columns">
+  <section ref="list" class="add-issues-list add-issues-list-columns">
     <div
       v-if="issuesCount > 0 && issues.length === 0"
-      class="empty-state add-issues-empty-state-filter text-center">
-      <div class="svg-content">
-        <img :src="emptyStateSvg" />
-      </div>
-      <div class="text-content">
-        <h4>
-          There are no issues to show.
-        </h4>
-      </div>
+      class="empty-state add-issues-empty-state-filter text-center"
+    >
+      <div class="svg-content"><img :src="emptyStateSvg" /></div>
+      <div class="text-content"><h4>There are no issues to show.</h4></div>
     </div>
-    <div
-      v-for="(group, index) in groupedIssues"
-      :key="index"
-      class="add-issues-list-column">
-      <div
-        v-for="issue in group"
-        v-if="showIssue(issue)"
-        :key="issue.id"
-        class="board-card-parent">
+    <div v-for="(group, index) in groupedIssues" :key="index" class="add-issues-list-column">
+      <div v-for="issue in group" v-if="showIssue(issue)" :key="issue.id" class="board-card-parent">
         <div
           :class="{ 'is-active': issue.selected }"
           class="board-card"
-          @click="toggleIssue($event, issue)">
-          <issue-card-inner
-            :issue="issue"
-            :issue-link-base="issueLinkBase"
-            :root-path="rootPath"/>
+          @click="toggleIssue($event, issue);"
+        >
+          <issue-card-inner :issue="issue" :issue-link-base="issueLinkBase" :root-path="rootPath" />
           <icon
             v-if="issue.selected"
             :aria-label="'Issue #' + issue.id + ' selected'"

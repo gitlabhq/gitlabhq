@@ -46,26 +46,14 @@ export default {
 <template>
   <div class="report-block-list-issue report-block-list-issue-parent">
     <div class="report-block-list-icon append-right-10 prepend-left-5">
-      <gl-loading-icon
-        v-if="statusIcon === 'loading'"
-        css-class="report-block-list-loading-icon"
-      />
-      <ci-icon
-        v-else
-        :status="iconStatus"
-      />
+      <gl-loading-icon v-if="statusIcon === 'loading'" css-class="report-block-list-loading-icon" />
+      <ci-icon v-else :status="iconStatus" />
     </div>
 
     <div class="report-block-list-issue-description">
-      <div class="report-block-list-issue-description-text">
-        {{ summary }}
-      </div>
+      <div class="report-block-list-issue-description-text">{{ summary }}</div>
 
-      <popover
-        v-if="popoverOptions"
-        :options="popoverOptions"
-      />
-
+      <popover v-if="popoverOptions" :options="popoverOptions" />
     </div>
   </div>
 </template>

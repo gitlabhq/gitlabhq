@@ -52,10 +52,7 @@ export default {
     class="btn-blank"
     @click.stop.prevent="clicked"
   >
-    <icon
-      :name="icon"
-      :css-classes="iconClasses"
-    />
+    <icon :name="icon" :css-classes="iconClasses" />
     <template v-if="showLabel">
       {{ label }}
     </template>

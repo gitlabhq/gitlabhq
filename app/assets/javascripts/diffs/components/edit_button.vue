@@ -32,11 +32,5 @@ export default {
 </script>
 
 <template>
-  <a
-    :href="editPath"
-    class="btn btn-default js-edit-blob"
-    @click="handleEditClick"
-  >
-    Edit
-  </a>
+  <a :href="editPath" class="btn btn-default js-edit-blob" @click="handleEditClick"> Edit </a>
 </template>

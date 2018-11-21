@@ -72,17 +72,9 @@ export default {
 </script>
 
 <template>
-  <tr
-    :class="className"
-    class="notes_holder"
-  >
-    <td
-      class="notes_content parallel old"
-      colspan="2">
-      <div
-        v-if="shouldRenderDiscussionsOnLeft"
-        class="content"
-      >
+  <tr :class="className" class="notes_holder">
+    <td class="notes_content parallel old" colspan="2">
+      <div v-if="shouldRenderDiscussionsOnLeft" class="content">
         <diff-discussions
           v-if="line.left.discussions.length"
           :discussions="line.left.discussions"
@@ -96,13 +88,8 @@ export default {
         line-position="left"
       />
     </td>
-    <td
-      class="notes_content parallel new"
-      colspan="2">
-      <div
-        v-if="shouldRenderDiscussionsOnRight"
-        class="content"
-      >
+    <td class="notes_content parallel new" colspan="2">
+      <div v-if="shouldRenderDiscussionsOnRight" class="content">
         <diff-discussions
           v-if="line.right.discussions.length"
           :discussions="line.right.discussions"

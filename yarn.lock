@@ -616,10 +616,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@gitlab/eslint-config@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-1.1.0.tgz#9757764b3a78b6bacfbcd9533331cb6345ffdd59"
-  integrity sha512-tTdHj8nmZbgl7ygzZYYgfETgvFX/+Z/xA5abqbmwcejpI4fmJUhQwERTHu7P+NwQ2ywzPCS6dO4LljlT/r1jBw==
+"@gitlab/eslint-config@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-1.2.0.tgz#115568a70edabbc024f1bc13ba1ba499a9ba05a9"
+  integrity sha512-TnZO5T7JjLQjw30aIGtKIsAX4pRnSbqOir3Ji5zPwtCVWY53DnG6Lcesgy7WYdsnnkt3oQPXFTOZlkymUs2PsA==
   dependencies:
     babel-eslint "^10.0.1"
     eslint-config-airbnb-base "^13.1.0"
@@ -6415,10 +6415,10 @@ prettier@1.13.7:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.13.7.tgz#850f3b8af784a49a6ea2d2eaa7ed1428a34b7281"
   integrity sha512-KIU72UmYPGk4MujZGYMFwinB7lOf2LsDNGSOC8ufevsrPLISrZbNJlWstRi3m0AMuszbH+EFSQ/r6w56RSPK6w==
 
-prettier@1.14.3:
-  version "1.14.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.14.3.tgz#90238dd4c0684b7edce5f83b0fb7328e48bd0895"
-  integrity sha512-qZDVnCrnpsRJJq5nSsiHCE3BYMED2OtsI+cmzIzF1QIfqm5ALf8tEJcO27zV1gKNKRPdhjO0dNWnrzssDQ1tFg==
+prettier@1.15.2:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.2.tgz#d31abe22afa4351efa14c7f8b94b58bb7452205e"
+  integrity sha512-YgPLFFA0CdKL4Eg2IHtUSjzj/BWgszDHiNQAe0VAIBse34148whfdzLagRL+QiKS+YfK5ftB6X4v/MBw8yCoug==
 
 prismjs@^1.6.0:
   version "1.6.0"

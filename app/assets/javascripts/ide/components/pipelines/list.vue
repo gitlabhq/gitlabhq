@@ -50,34 +50,14 @@ export default {
 
 <template>
   <div class="ide-pipeline">
-    <gl-loading-icon
-      v-if="showLoadingIcon"
-      :size="2"
-      class="prepend-top-default"
-    />
+    <gl-loading-icon v-if="showLoadingIcon" :size="2" class="prepend-top-default" />
     <template v-else-if="latestPipeline !== null">
-      <header
-        v-if="latestPipeline"
-        class="ide-tree-header ide-pipeline-header"
-      >
-        <ci-icon
-          :status="latestPipeline.details.status"
-          :size="24"
-        />
+      <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
+        <ci-icon :status="latestPipeline.details.status" :size="24" />
         <span class="prepend-left-8">
-          <strong>
-            {{ __('Pipeline') }}
-          </strong>
-          <a
-            :href="latestPipeline.path"
-            target="_blank"
-            class="ide-external-link"
-          >
-            #{{ latestPipeline.id }}
-            <icon
-              :size="12"
-              name="external-link"
-            />
+          <strong> {{ __('Pipeline') }} </strong>
+          <a :href="latestPipeline.path" target="_blank" class="ide-external-link">
+            #{{ latestPipeline.id }} <icon :size="12" name="external-link" />
           </a>
         </span>
       </header>
@@ -87,58 +67,25 @@ export default {
         :empty-state-svg-path="pipelinesEmptyStateSvgPath"
         :can-set-ci="true"
       />
-      <div
-        v-else-if="latestPipeline.yamlError"
-        class="bs-callout bs-callout-danger"
-      >
-        <p class="append-bottom-0">
-          {{ __('Found errors in your .gitlab-ci.yml:') }}
-        </p>
-        <p class="append-bottom-0 break-word">
-          {{ latestPipeline.yamlError }}
-        </p>
-        <p
-          class="append-bottom-0"
-          v-html="ciLintText"
-        ></p>
+      <div v-else-if="latestPipeline.yamlError" class="bs-callout bs-callout-danger">
+        <p class="append-bottom-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
+        <p class="append-bottom-0 break-word">{{ latestPipeline.yamlError }}</p>
+        <p class="append-bottom-0" v-html="ciLintText"></p>
       </div>
-      <tabs
-        v-else
-        class="ide-pipeline-list"
-      >
-        <tab
-          :active="!pipelineFailed"
-        >
+      <tabs v-else class="ide-pipeline-list">
+        <tab :active="!pipelineFailed">
           <template slot="title">
             {{ __('Jobs') }}
-            <span
-              v-if="jobsCount"
-              class="badge badge-pill"
-            >
-              {{ jobsCount }}
-            </span>
+            <span v-if="jobsCount" class="badge badge-pill"> {{ jobsCount }} </span>
           </template>
-          <jobs-list
-            :loading="isLoadingJobs"
-            :stages="stages"
-          />
+          <jobs-list :loading="isLoadingJobs" :stages="stages" />
         </tab>
-        <tab
-          :active="pipelineFailed"
-        >
+        <tab :active="pipelineFailed">
           <template slot="title">
             {{ __('Failed Jobs') }}
-            <span
-              v-if="failedJobsCount"
-              class="badge badge-pill"
-            >
-              {{ failedJobsCount }}
-            </span>
+            <span v-if="failedJobsCount" class="badge badge-pill"> {{ failedJobsCount }} </span>
           </template>
-          <jobs-list
-            :loading="isLoadingJobs"
-            :stages="failedStages"
-          />
+          <jobs-list :loading="isLoadingJobs" :stages="failedStages" />
         </tab>
       </tabs>
     </template>

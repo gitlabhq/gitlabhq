@@ -34,27 +34,11 @@ export default {
 </script>
 <template>
   <p class="build-detail-row">
-    <span
-      v-if="hasTitle"
-      class="build-light-text"
-    >
-      {{ title }}:
-    </span>
-    {{ value }}
+    <span v-if="hasTitle" class="build-light-text"> {{ title }}: </span> {{ value }}
 
-    <span
-      v-if="hasHelpURL"
-      class="help-button float-right"
-    >
-      <gl-link
-        :href="helpUrl"
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-      >
-        <i
-          class="fa fa-question-circle"
-          aria-hidden="true"
-        ></i>
+    <span v-if="hasHelpURL" class="help-button float-right">
+      <gl-link :href="helpUrl" target="_blank" rel="noopener noreferrer nofollow">
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
       </gl-link>
     </span>
   </p>

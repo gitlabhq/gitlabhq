@@ -23,12 +23,7 @@ export default {
         type="button"
         class="dropdown-title-button dropdown-menu-back"
       >
-        <i
-          aria-hidden="true"
-          class="fa fa-arrow-left"
-          data-hidden="true"
-        >
-        </i>
+        <i aria-hidden="true" class="fa fa-arrow-left" data-hidden="true"> </i>
       </button>
       {{ headerTitle }}
       <button
@@ -36,12 +31,7 @@ export default {
         type="button"
         class="dropdown-title-button dropdown-menu-close"
       >
-        <i
-          aria-hidden="true"
-          class="fa fa-times dropdown-menu-close-icon"
-          data-hidden="true"
-        >
-        </i>
+        <i aria-hidden="true" class="fa fa-times dropdown-menu-close-icon" data-hidden="true"> </i>
       </button>
     </div>
     <div class="dropdown-content">
@@ -75,16 +65,10 @@ export default {
         />
       </div>
       <div class="clearfix">
-        <button
-          type="button"
-          class="btn btn-primary float-left js-new-label-btn disabled"
-        >
+        <button type="button" class="btn btn-primary float-left js-new-label-btn disabled">
           {{ __('Create') }}
         </button>
-        <button
-          type="button"
-          class="btn btn-default float-right js-cancel-label-btn"
-        >
+        <button type="button" class="btn btn-default float-right js-cancel-label-btn">
           {{ __('Cancel') }}
         </button>
       </div>

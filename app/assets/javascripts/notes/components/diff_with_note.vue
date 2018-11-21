@@ -90,11 +90,7 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="fileHolder"
-    :class="diffFileClass"
-    class="diff-file file-holder"
-  >
+  <div ref="fileHolder" :class="diffFileClass" class="diff-file file-holder">
     <diff-file-header
       :discussion-path="discussion.discussion_path"
       :diff-file="diffFile"
@@ -102,36 +98,17 @@ export default {
       :discussions-expanded="isDiscussionsExpanded"
       :expanded="!isCollapsed"
     />
-    <div
-      v-if="diffFile.text"
-      :class="userColorScheme"
-      class="diff-content code"
-    >
+    <div v-if="diffFile.text" :class="userColorScheme" class="diff-content code">
       <table>
-        <tr
-          v-for="line in normalizedDiffLines"
-          :key="line.line_code"
-          class="line_holder"
-        >
+        <tr v-for="line in normalizedDiffLines" :key="line.line_code" class="line_holder">
           <td class="diff-line-num old_line">{{ line.old_line }}</td>
           <td class="diff-line-num new_line">{{ line.new_line }}</td>
-          <td
-            :class="line.type"
-            class="line_content"
-            v-html="line.rich_text"
-          >
-          </td>
+          <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
         </tr>
-        <tr
-          v-if="!hasTruncatedDiffLines"
-          class="line_holder line-holder-placeholder"
-        >
+        <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
           <td class="old_line diff-line-num"></td>
           <td class="new_line diff-line-num"></td>
-          <td
-            v-if="error"
-            class="js-error-lazy-load-diff diff-loading-error-block"
-          >
+          <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
             Unable to load the diff
             <button
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
@@ -140,28 +117,18 @@ export default {
               Try again
             </button>
           </td>
-          <td
-            v-else
-            class="line_content js-success-lazy-load"
-          >
+          <td v-else class="line_content js-success-lazy-load">
             <span></span>
             <gl-skeleton-loading />
             <span></span>
           </td>
         </tr>
         <tr class="notes_holder">
-          <td
-            class="notes_content"
-            colspan="3"
-          >
-            <slot></slot>
-          </td>
+          <td class="notes_content" colspan="3"><slot></slot></td>
         </tr>
       </table>
     </div>
-    <div
-      v-else
-    >
+    <div v-else>
       <diff-viewer
         :diff-mode="diffMode"
         :new-path="diffFile.new_path"

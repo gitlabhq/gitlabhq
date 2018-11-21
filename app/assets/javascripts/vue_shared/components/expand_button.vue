@@ -44,14 +44,10 @@ export default {
       :aria-label="ariaLabel"
       type="button"
       class="text-expander btn-blank"
-      @click="onClick">
-      <icon
-        :size="12"
-        name="ellipsis_h"
-      />
+      @click="onClick"
+    >
+      <icon :size="12" name="ellipsis_h" />
     </button>
-    <span v-if="!isCollapsed">
-      <slot name="expanded"></slot>
-    </span>
+    <span v-if="!isCollapsed"> <slot name="expanded"></slot> </span>
   </span>
 </template>

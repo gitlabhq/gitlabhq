@@ -176,35 +176,19 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="!showEmptyState"
-    :key="forceRedraw"
-    class="prometheus-graphs prepend-top-default"
-  >
+  <div v-if="!showEmptyState" :key="forceRedraw" class="prometheus-graphs prepend-top-default">
     <div class="environments d-flex align-items-center">
       {{ s__('Metrics|Environment') }}
       <div class="dropdown prepend-left-10">
-        <button
-          class="dropdown-menu-toggle"
-          data-toggle="dropdown"
-          type="button"
-        >
-          <span>
-            {{ currentEnvironmentName }}
-          </span>
-          <icon
-            name="chevron-down"
-          />
+        <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
+          <span> {{ currentEnvironmentName }} </span> <icon name="chevron-down" />
         </button>
-        <div 
-          v-if="store.environmentsData.length > 0"  
+        <div
+          v-if="store.environmentsData.length > 0"
           class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up"
         >
           <ul>
-            <li
-              v-for="environment in store.environmentsData"
-              :key="environment.latest.id"
-            >
+            <li v-for="environment in store.environmentsData" :key="environment.latest.id">
               <a
                 :href="environment.latest.metrics_path"
                 :class="{ 'is-active': environment.latest.name == currentEnvironmentName }"

@@ -302,20 +302,14 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li
-    class="note note-discussion timeline-entry"
-    :class="componentClassName"
-  >
+  <li class="note note-discussion timeline-entry" :class="componentClassName">
     <div class="timeline-entry-inner">
       <div class="timeline-content">
         <div
           :data-discussion-id="transformedDiscussion.discussion_id"
           class="discussion js-discussion-container"
         >
-          <div
-            v-if="shouldRenderHeader"
-            class="discussion-header note-wrapper"
-          >
+          <div v-if="shouldRenderHeader" class="discussion-header note-wrapper">
             <div class="timeline-icon">
               <user-avatar-link
                 v-if="author"
@@ -346,9 +340,7 @@ Please check your network connection and try again.`;
               </template>
               <template v-else-if="discussion.for_commit">
                 started a discussion on commit
-                <a :href="discussion.discussion_path">
-                  {{ truncateSha(discussion.commit_id) }}
-                </a>
+                <a :href="discussion.discussion_path"> {{ truncateSha(discussion.commit_id) }} </a>
               </template>
               <template v-else>
                 started a discussion
@@ -369,14 +361,8 @@ Please check your network connection and try again.`;
               class-name="discussion-headline-light js-discussion-headline"
             />
           </div>
-          <div
-            v-if="shouldShowDiscussions"
-            class="discussion-body">
-            <component
-              :is="wrapperComponent"
-              v-bind="wrapperComponentProps"
-              :class="wrapperClass"
-            >
+          <div v-if="shouldShowDiscussions" class="discussion-body">
+            <component :is="wrapperComponent" v-bind="wrapperComponentProps" :class="wrapperClass">
               <div class="discussion-notes">
                 <ul class="notes">
                   <template v-if="shouldGroupReplies">
@@ -385,11 +371,7 @@ Please check your network connection and try again.`;
                       :note="componentData(initialDiscussion)"
                       @handleDeleteNote="deleteNoteHandler"
                     >
-                      <slot
-                        slot="avatar-badge"
-                        name="avatar-badge"
-                      >
-                      </slot>
+                      <slot slot="avatar-badge" name="avatar-badge"> </slot>
                     </component>
                     <toggle-replies-widget
                       v-if="hasReplies"
@@ -415,12 +397,7 @@ Please check your network connection and try again.`;
                       :note="componentData(note)"
                       @handleDeleteNote="deleteNoteHandler"
                     >
-                      <slot
-                        v-if="index === 0"
-                        slot="avatar-badge"
-                        name="avatar-badge"
-                      >
-                      </slot>
+                      <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"> </slot>
                     </component>
                   </template>
                 </ul>
@@ -443,7 +420,7 @@ Please check your network connection and try again.`;
                         <button
                           type="button"
                           class="btn btn-default mr-sm-2"
-                          @click="resolveHandler()"
+                          @click="resolveHandler();"
                         >
                           <i
                             v-if="isResolving"
@@ -458,10 +435,7 @@ Please check your network connection and try again.`;
                         class="btn-group discussion-actions ml-sm-2"
                         role="group"
                       >
-                        <div
-                          v-if="!discussionResolved"
-                          class="btn-group"
-                          role="group">
+                        <div v-if="!discussionResolved" class="btn-group" role="group">
                           <a
                             v-tooltip
                             :href="discussion.resolve_with_issue_path"
@@ -473,10 +447,7 @@ Please check your network connection and try again.`;
                             <icon name="issue-new" />
                           </a>
                         </div>
-                        <div
-                          v-if="showJumpToNextDiscussion"
-                          class="btn-group"
-                          role="group">
+                        <div v-if="showJumpToNextDiscussion" class="btn-group" role="group">
                           <button
                             v-tooltip
                             class="btn btn-default discussion-next-btn"

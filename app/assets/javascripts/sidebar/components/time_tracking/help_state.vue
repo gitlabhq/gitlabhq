@@ -40,22 +40,11 @@ export default {
 <template>
   <div class="time-tracking-help-state">
     <div class="time-tracking-info">
-      <h4>
-        {{ __('Track time with quick actions') }}
-      </h4>
-      <p>
-        {{ __('Quick actions can be used in the issues description and comment boxes.') }}
-      </p>
-      <p v-html="estimateText">
-      </p>
-      <p v-html="spendText">
-      </p>
-      <a
-        :href="href"
-        class="btn btn-default learn-more-button"
-      >
-        {{ __('Learn more') }}
-      </a>
+      <h4>{{ __('Track time with quick actions') }}</h4>
+      <p>{{ __('Quick actions can be used in the issues description and comment boxes.') }}</p>
+      <p v-html="estimateText"></p>
+      <p v-html="spendText"></p>
+      <a :href="href" class="btn btn-default learn-more-button"> {{ __('Learn more') }} </a>
     </div>
   </div>
 </template>

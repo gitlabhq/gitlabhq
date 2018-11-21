@@ -17,11 +17,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    :class="`bs-callout bs-callout-${category}`"
-    role="alert"
-    aria-live="assertive"
-  >
+  <div :class="`bs-callout bs-callout-${category}`" role="alert" aria-live="assertive">
     {{ message }}
   </div>
 </template>

@@ -60,9 +60,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="viewer"
-    class="diff-file preview-container">
+  <div v-if="viewer" class="diff-file preview-container">
     <component
       :is="viewer"
       :diff-mode="diffMode"
@@ -70,11 +68,7 @@ export default {
       :old-path="fullOldPath"
       :project-path="projectPath"
     >
-      <slot
-        slot="image-overlay"
-        name="image-overlay"
-      >
-      </slot>
+      <slot slot="image-overlay" name="image-overlay"> </slot>
     </component>
     <slot></slot>
   </div>

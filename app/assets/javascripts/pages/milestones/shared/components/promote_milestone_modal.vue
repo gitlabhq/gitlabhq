@@ -69,9 +69,7 @@ export default {
     footer-primary-button-variant="warning"
     @submit="onSubmit"
   >
-    <template
-      slot="title"
-    >
+    <template slot="title">
       {{ title }}
     </template>
     {{ text }}

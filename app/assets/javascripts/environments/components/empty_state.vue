@@ -24,11 +24,11 @@ export default {
         {{ s__("Environments|You don't have any environments right now") }}
       </h4>
       <p class="blank-state-text">
-        {{ s__(`Environments|Environments are places where
-        code gets deployed, such as staging or production.`) }}
-        <a :href="helpPath">
-          {{ s__("Environments|Read more about environments") }}
-        </a>
+        {{
+          s__(`Environments|Environments are places where
+        code gets deployed, such as staging or production.`)
+        }}
+        <a :href="helpPath"> {{ s__('Environments|Read more about environments') }} </a>
       </p>
 
       <div class="text-center">
@@ -37,7 +37,7 @@ export default {
           :href="newPath"
           class="btn btn-success js-new-environment-button"
         >
-          {{ s__("Environments|New environment") }}
+          {{ s__('Environments|New environment') }}
         </a>
       </div>
     </div>

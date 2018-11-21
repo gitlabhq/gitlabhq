@@ -38,63 +38,22 @@ export default {
       <limit-warning :count="items.length" />
     </div>
     <ul class="stage-event-list">
-      <li
-        v-for="(build, i) in items"
-        :key="i"
-        class="stage-event-item item-build-component"
-      >
+      <li v-for="(build, i) in items" :key="i" class="stage-event-item item-build-component">
         <div class="item-details">
           <h5 class="item-title">
-            <span
-              class="icon-build-status"
-              v-html="iconBuildStatus"
-            >
-            </span>
-            <a
-              :href="build.url"
-              class="item-build-name"
-            >
-              {{ build.name }}
-            </a>
-            &middot;
-            <a
-              :href="build.url"
-              class="pipeline-id"
-            >
-              #{{ build.id }}
-            </a>
-            <icon
-              :size="16"
-              name="fork"
-            />
-            <a
-              :href="build.branch.url"
-              class="ref-name"
-            >
-              {{ build.branch.name }}
-            </a>
-            <span
-              class="icon-branch"
-              v-html="iconBranch"
-            >
-            </span>
-            <a
-              :href="build.commitUrl"
-              class="commit-sha">
-              {{ build.shortSha }}
-            </a>
+            <span class="icon-build-status" v-html="iconBuildStatus"> </span>
+            <a :href="build.url" class="item-build-name"> {{ build.name }} </a> &middot;
+            <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
+            <icon :size="16" name="fork" />
+            <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
+            <span class="icon-branch" v-html="iconBranch"> </span>
+            <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>
           </h5>
           <span>
-            <a
-              :href="build.url"
-              class="issue-date">
-              {{ build.date }}
-            </a>
+            <a :href="build.url" class="issue-date"> {{ build.date }} </a>
           </span>
         </div>
-        <div class="item-time">
-          <total-time :time="build.totalTime" />
-        </div>
+        <div class="item-time"><total-time :time="build.totalTime" /></div>
       </li>
     </ul>
   </div>

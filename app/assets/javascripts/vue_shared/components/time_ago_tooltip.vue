@@ -39,6 +39,7 @@ export default {
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
     data-container="body"
-    v-text="timeFormated(time)">
+    v-text="timeFormated(time)"
+  >
   </time>
 </template>

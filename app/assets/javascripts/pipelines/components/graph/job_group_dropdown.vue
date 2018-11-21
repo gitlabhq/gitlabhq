@@ -69,22 +69,15 @@ export default {
     >
       <ci-icon :status="group.status" />
 
-      <span class="ci-status-text">
-        {{ group.name }}
-      </span>
+      <span class="ci-status-text"> {{ group.name }} </span>
 
-      <span class="dropdown-counter-badge">
-        {{ group.size }}
-      </span>
+      <span class="dropdown-counter-badge"> {{ group.size }} </span>
     </button>
 
     <ul class="dropdown-menu big-pipeline-graph-dropdown-menu js-grouped-pipeline-dropdown">
       <li class="scrollable-menu">
         <ul>
-          <li
-            v-for="job in group.jobs"
-            :key="job.id"
-          >
+          <li v-for="job in group.jobs" :key="job.id">
             <job-item
               :dropdown-length="group.size"
               :job="job"

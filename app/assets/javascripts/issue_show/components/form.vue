@@ -80,9 +80,7 @@ export default {
   <form>
     <locked-warning v-if="formState.lockedWarningVisible" />
     <div class="row">
-      <div
-        v-if="hasIssuableTemplates"
-        class="col-sm-4 col-lg-3">
+      <div v-if="hasIssuableTemplates" class="col-sm-4 col-lg-3">
         <description-template
           :form-state="formState"
           :issuable-templates="issuableTemplates"
@@ -96,10 +94,7 @@ export default {
           'col-12': !hasIssuableTemplates,
         }"
       >
-        <title-field
-          :form-state="formState"
-          :issuable-templates="issuableTemplates"
-        />
+        <title-field :form-state="formState" :issuable-templates="issuableTemplates" />
       </div>
     </div>
     <description-field

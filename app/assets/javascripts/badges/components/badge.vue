@@ -65,12 +65,7 @@ export default {
 
 <template>
   <div>
-    <a
-      v-show="!isLoading && !hasError"
-      :href="linkUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <a v-show="!isLoading && !hasError" :href="linkUrl" target="_blank" rel="noopener noreferrer">
       <img
         :src="imageUrlWithRetries"
         class="project-badge"
@@ -80,15 +75,9 @@ export default {
       />
     </a>
 
-    <gl-loading-icon
-      v-show="isLoading"
-      :inline="true"
-    />
+    <gl-loading-icon v-show="isLoading" :inline="true" />
 
-    <div
-      v-show="hasError"
-      class="btn-group"
-    >
+    <div v-show="hasError" class="btn-group">
       <div class="btn btn-default btn-sm disabled">
         <icon
           :size="16"
@@ -97,9 +86,7 @@ export default {
           aria-hidden="true"
         />
       </div>
-      <div
-        class="btn btn-default btn-sm disabled"
-      >
+      <div class="btn btn-default btn-sm disabled">
         <span class="prepend-left-8 append-right-8">{{ s__('Badges|No badge image') }}</span>
       </div>
     </div>
@@ -112,10 +99,7 @@ export default {
       type="button"
       @click="reloadImage"
     >
-      <icon
-        :size="16"
-        name="retry"
-      />
+      <icon :size="16" name="retry" />
     </button>
   </div>
 </template>

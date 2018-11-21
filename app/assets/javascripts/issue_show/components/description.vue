@@ -106,7 +106,7 @@ export default {
   <div
     v-if="descriptionHtml"
     :class="{
-      'js-task-list-container': canUpdate
+      'js-task-list-container': canUpdate,
     }"
     class="description"
   >
@@ -114,11 +114,11 @@ export default {
       ref="gfm-content"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
-        'issue-realtime-trigger-pulse': pulseAnimation
+        'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="wiki"
-      v-html="descriptionHtml">
-    </div>
+      v-html="descriptionHtml"
+    ></div>
     <textarea
       v-if="descriptionText"
       v-model="descriptionText"
@@ -127,10 +127,6 @@ export default {
     >
     </textarea>
 
-    <recaptcha-modal
-      v-show="showRecaptcha"
-      :html="recaptchaHTML"
-      @close="closeRecaptcha"
-    />
+    <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>
 </template>
