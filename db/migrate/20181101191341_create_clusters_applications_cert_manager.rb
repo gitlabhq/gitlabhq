@@ -7,7 +7,7 @@ class CreateClustersApplicationsCertManager < ActiveRecord::Migration
 
   def change
     create_table :clusters_applications_cert_managers do |t|
-      t.references :cluster, null: false, unique: true, index: false, foreign_key: { on_delete: :cascade }
+      t.references :cluster, null: false, index: false, foreign_key: { on_delete: :cascade }
       t.integer :status, null: false
       t.string :version, null: false
       t.string :email, null: false
