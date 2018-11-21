@@ -65,14 +65,12 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Example response:
 
 ```json
-[
-  {
-    "content" : "home page",
-    "format" : "markdown",
-    "slug" : "home",
-    "title" : "home"
-  }
-]
+{
+  "content" : "home page",
+  "format" : "markdown",
+  "slug" : "home",
+  "title" : "home"
+}
 ```
 
 ## Create a new wiki page
