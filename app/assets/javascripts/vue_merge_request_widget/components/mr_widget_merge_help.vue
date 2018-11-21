@@ -28,7 +28,7 @@ export default {
       {{ missingBranchInfo }}
     </template>
     <template v-else>
-      {{ s__("mrWidget|You can merge this merge request manually using the") }}
+      {{ s__('mrWidget|You can merge this merge request manually using the') }}
     </template>
 
     <button
@@ -37,7 +37,7 @@ export default {
       data-toggle="modal"
       data-target="#modal_merge_info"
     >
-      {{ s__("mrWidget|command line") }}
+      {{ s__('mrWidget|command line') }}
     </button>
   </section>
 </template>

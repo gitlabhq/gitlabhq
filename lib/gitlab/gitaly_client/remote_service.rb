@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class RemoteService
@@ -66,12 +68,17 @@ module Gitlab
         encode_utf8(response.ref)
       end
 
-      def update_remote_mirror(ref_name, only_branches_matching)
+      def update_remote_mirror(ref_name, only_branches_matching, ssh_key: nil, known_hosts: nil)
         req_enum = Enumerator.new do |y|
-          y.yield Gitaly::UpdateRemoteMirrorRequest.new(
+          first_request = Gitaly::UpdateRemoteMirrorRequest.new(
             repository: @gitaly_repo,
             ref_name: ref_name
           )
+
+          first_request.ssh_key = ssh_key if ssh_key.present?
+          first_request.known_hosts = known_hosts if known_hosts.present?
+
+          y.yield(first_request)
 
           current_size = 0
 

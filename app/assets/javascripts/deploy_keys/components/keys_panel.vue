@@ -30,24 +30,14 @@ export default {
 <template>
   <div class="deploy-keys-panel table-holder">
     <template v-if="keys.length > 0">
-      <div
-        role="row"
-        class="gl-responsive-table-row table-row-header">
-        <div
-          role="rowheader"
-          class="table-section section-40">
+      <div role="row" class="gl-responsive-table-row table-row-header">
+        <div role="rowheader" class="table-section section-40">
           {{ s__('DeployKeys|Deploy key') }}
         </div>
-        <div
-          role="rowheader"
-          class="table-section section-30">
+        <div role="rowheader" class="table-section section-30">
           {{ s__('DeployKeys|Project usage') }}
         </div>
-        <div
-          role="rowheader"
-          class="table-section section-15 text-right">
-          {{ __('Created') }}
-        </div>
+        <div role="rowheader" class="table-section section-15 text-right">{{ __('Created') }}</div>
       </div>
       <deploy-key
         v-for="deployKey in keys"
@@ -58,10 +48,7 @@ export default {
         :project-id="projectId"
       />
     </template>
-    <div
-      v-else
-      class="settings-message text-center"
-    >
+    <div v-else class="settings-message text-center">
       {{ s__('DeployKeys|No deploy keys found. Create one with the form above.') }}
     </div>
   </div>

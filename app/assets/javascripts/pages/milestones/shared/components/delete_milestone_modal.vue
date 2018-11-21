@@ -121,13 +121,10 @@ Once deleted, it cannot be undone or recovered.`),
     :text="text"
     :primary-button-label="s__('Milestones|Delete milestone')"
     kind="danger"
-    @submit="onSubmit">
-
-    <template
-      slot="body"
-      slot-scope="props">
+    @submit="onSubmit"
+  >
+    <template slot="body" slot-scope="props">
       <p v-html="props.text"></p>
     </template>
-
   </deprecated-modal>
 </template>

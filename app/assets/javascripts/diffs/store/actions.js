@@ -41,12 +41,14 @@ export const assignDiscussionsToDiff = (
 ) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
 
-  discussions.filter(discussion => discussion.diff_discussion).forEach(discussion => {
-    commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-      discussion,
-      diffPositionByLineCode,
+  discussions
+    .filter(discussion => discussion.diff_discussion)
+    .forEach(discussion => {
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        discussion,
+        diffPositionByLineCode,
+      });
     });
-  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
@@ -167,7 +169,7 @@ export const expandAllFiles = ({ commit }) => {
 export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   const discussions = getters.getDiffFileDiscussions(diff);
   const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
-  const shouldExpandAll = getters.diffHasAllCollpasedDiscussions(diff);
+  const shouldExpandAll = getters.diffHasAllCollapsedDiscussions(diff);
 
   discussions.forEach(discussion => {
     const data = { discussionId: discussion.id };

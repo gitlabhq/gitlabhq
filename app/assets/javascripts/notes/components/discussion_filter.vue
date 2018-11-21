@@ -64,30 +64,24 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      {{ currentFilter.title }}
-      <icon name="chevron-down" />
+      {{ currentFilter.title }} <icon name="chevron-down" />
     </button>
     <div
       class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
-      aria-labelledby="discussion-filter-dropdown">
+      aria-labelledby="discussion-filter-dropdown"
+    >
       <div class="dropdown-content">
         <ul>
-          <li
-            v-for="filter in filters"
-            :key="filter.value"
-          >
+          <li v-for="filter in filters" :key="filter.value">
             <button
               :class="{ 'is-active': filter.value === currentValue }"
               class="qa-filter-options"
               type="button"
-              @click="selectFilter(filter.value)"
+              @click="selectFilter(filter.value);"
             >
               {{ filter.title }}
             </button>
-            <div
-              v-if="filter.value === defaultValue"
-              class="dropdown-divider"
-            ></div>
+            <div v-if="filter.value === defaultValue" class="dropdown-divider"></div>
           </li>
         </ul>
       </div>

@@ -45,9 +45,9 @@ class RootController < Dashboard::ProjectsController
     when 'todos'
       redirect_to(dashboard_todos_path)
     when 'issues'
-      redirect_to(issues_dashboard_path(assignee_id: current_user.id))
+      redirect_to(issues_dashboard_path(assignee_username: current_user.username))
     when 'merge_requests'
-      redirect_to(merge_requests_dashboard_path(assignee_id: current_user.id))
+      redirect_to(merge_requests_dashboard_path(assignee_username: current_user.username))
     end
   end
 

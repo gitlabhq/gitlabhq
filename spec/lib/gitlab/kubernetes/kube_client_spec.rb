@@ -66,6 +66,20 @@ describe Gitlab::Kubernetes::KubeClient do
     end
   end
 
+  describe '#knative_client' do
+    subject { client.knative_client }
+
+    it_behaves_like 'a Kubeclient'
+
+    it 'has the extensions API group endpoint' do
+      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/serving.knative.dev\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1alpha1')
+    end
+  end
+
   describe 'core API' do
     let(:core_client) { client.core_client }
 

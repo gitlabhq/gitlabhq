@@ -225,7 +225,7 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when the project has limited access to piplines' do
+    context 'when the project has limited access to pipelines' do
       let(:project) { create(:project, :private, :repository) }
       let(:current_user) { create(:user) }
       let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }

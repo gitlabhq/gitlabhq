@@ -3,7 +3,7 @@
  * Renders a terminal button to open a web terminal.
  * Used in environments table.
  */
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {

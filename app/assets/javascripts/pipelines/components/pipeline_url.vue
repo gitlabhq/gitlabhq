@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import popover from '~/vue_shared/directives/popover';
 
@@ -48,10 +48,7 @@ export default {
 </script>
 <template>
   <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
-    <gl-link
-      :href="pipeline.path"
-      class="js-pipeline-url-link"
-    >
+    <gl-link :href="pipeline.path" class="js-pipeline-url-link">
       <span class="pipeline-id">#{{ pipeline.id }}</span>
     </gl-link>
     <span>by</span>
@@ -62,11 +59,7 @@ export default {
       :tooltip-text="pipeline.user.name"
       class="js-pipeline-url-user"
     />
-    <span
-      v-if="!user"
-      class="js-pipeline-url-api api">
-      API
-    </span>
+    <span v-if="!user" class="js-pipeline-url-api api"> API </span>
     <div class="label-container">
       <span
         v-if="pipeline.flags.latest"
@@ -101,10 +94,7 @@ export default {
       >
         Auto DevOps
       </gl-link>
-      <span
-        v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck badge badge-warning"
-      >
+      <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
         stuck
       </span>
     </div>

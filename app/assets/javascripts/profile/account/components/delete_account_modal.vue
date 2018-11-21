@@ -83,34 +83,16 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
     :primary-button-label="s__('Profiles|Delete account')"
     :submit-disabled="!canSubmit()"
     kind="danger"
-    @submit="onSubmit">
-
-    <template
-      slot="body"
-      slot-scope="props">
+    @submit="onSubmit"
+  >
+    <template slot="body" slot-scope="props">
       <p v-html="props.text"></p>
 
-      <form
-        ref="form"
-        :action="actionUrl"
-        method="post">
+      <form ref="form" :action="actionUrl" method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <input :value="csrfToken" type="hidden" name="authenticity_token" />
 
-        <input
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          :value="csrfToken"
-          type="hidden"
-          name="authenticity_token"
-        />
-
-        <p
-          id="input-label"
-          v-html="inputLabel"
-        >
-        </p>
+        <p id="input-label" v-html="inputLabel"></p>
 
         <input
           v-if="confirmWithPassword"
@@ -130,6 +112,5 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
         />
       </form>
     </template>
-
   </deprecated-modal>
 </template>

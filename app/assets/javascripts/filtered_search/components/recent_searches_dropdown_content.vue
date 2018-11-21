@@ -58,20 +58,16 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      v-if="!isLocalStorageAvailable"
-      class="dropdown-info-note">
+    <div v-if="!isLocalStorageAvailable" class="dropdown-info-note">
       This feature requires local storage to be enabled
     </div>
     <ul v-else-if="hasItems">
-      <li
-        v-for="(item, index) in processedItems"
-        :key="`processed-items-${index}`"
-      >
+      <li v-for="(item, index) in processedItems" :key="`processed-items-${index}`">
         <button
           type="button"
           class="filtered-search-history-dropdown-item"
-          @click="onItemActivated(item.text)">
+          @click="onItemActivated(item.text);"
+        >
           <span>
             <span
               v-for="(token, tokenIndex) in item.tokens"
@@ -92,15 +88,12 @@ export default {
         <button
           type="button"
           class="filtered-search-history-clear-button"
-          @click="onRequestClearRecentSearches($event)">
+          @click="onRequestClearRecentSearches($event);"
+        >
           Clear recent searches
         </button>
       </li>
     </ul>
-    <div
-      v-else
-      class="dropdown-info-note">
-      You don't have any recent searches
-    </div>
+    <div v-else class="dropdown-info-note">You don't have any recent searches</div>
   </div>
 </template>

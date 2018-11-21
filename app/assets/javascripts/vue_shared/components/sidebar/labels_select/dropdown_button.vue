@@ -65,14 +65,7 @@ export default {
     class="dropdown-menu-toggle wide js-label-select js-multiselect js-context-config-modal"
     data-toggle="dropdown"
   >
-    <span class="dropdown-toggle-text">
-      {{ dropdownToggleText }}
-    </span>
-    <i
-      aria-hidden="true"
-      class="fa fa-chevron-down"
-      data-hidden="true"
-    >
-    </i>
+    <span class="dropdown-toggle-text"> {{ dropdownToggleText }} </span>
+    <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"> </i>
   </button>
 </template>

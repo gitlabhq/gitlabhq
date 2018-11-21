@@ -35,7 +35,7 @@ describe Clusters::Applications::Prometheus do
 
   describe 'transition to installed' do
     let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, projects: [project]) }
+    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
     let(:prometheus_service) { double('prometheus_service') }
 
     subject { create(:clusters_applications_prometheus, :installing, cluster: cluster) }

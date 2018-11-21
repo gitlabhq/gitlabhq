@@ -80,32 +80,17 @@ export default {
 </script>
 <template>
   <div class="ci-table">
-    <div
-      class="gl-responsive-table-row table-row-header"
-      role="row"
-    >
-      <div
-        class="table-section section-10 js-pipeline-status pipeline-status"
-        role="rowheader"
-      >
+    <div class="gl-responsive-table-row table-row-header" role="row">
+      <div class="table-section section-10 js-pipeline-status pipeline-status" role="rowheader">
         {{ s__('Pipeline|Status') }}
       </div>
-      <div
-        class="table-section section-15 js-pipeline-info pipeline-info"
-        role="rowheader"
-      >
+      <div class="table-section section-15 js-pipeline-info pipeline-info" role="rowheader">
         {{ s__('Pipeline|Pipeline') }}
       </div>
-      <div
-        class="table-section section-20 js-pipeline-commit pipeline-commit"
-        role="rowheader"
-      >
+      <div class="table-section section-20 js-pipeline-commit pipeline-commit" role="rowheader">
         {{ s__('Pipeline|Commit') }}
       </div>
-      <div
-        class="table-section section-20 js-pipeline-stages pipeline-stages"
-        role="rowheader"
-      >
+      <div class="table-section section-20 js-pipeline-stages pipeline-stages" role="rowheader">
         {{ s__('Pipeline|Stages') }}
       </div>
     </div>
@@ -128,6 +113,5 @@ export default {
     >
       <span v-html="modalText"></span>
     </modal>
-
   </div>
 </template>

@@ -77,7 +77,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occurred whilst fetching the latest pipline.',
+              text: 'An error occurred whilst fetching the latest pipeline.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: null,

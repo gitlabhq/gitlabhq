@@ -103,9 +103,7 @@ export default {
 </script>
 
 <template>
-  <td
-    :class="classNameMap"
-  >
+  <td :class="classNameMap">
     <diff-line-gutter-content
       :line="line"
       :file-hash="fileHash"

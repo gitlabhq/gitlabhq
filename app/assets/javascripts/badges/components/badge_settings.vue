@@ -46,7 +46,8 @@ export default {
       :header-title-text="s__('Badges|Delete badge?')"
       :footer-primary-button-text="s__('Badges|Delete badge')"
       footer-primary-button-variant="danger"
-      @submit="onSubmitModal">
+      @submit="onSubmitModal"
+    >
       <div class="well">
         <badge
           :image-url="badgeInModal ? badgeInModal.renderedImageUrl : ''"
@@ -56,15 +57,9 @@ export default {
       <p v-html="deleteModalText"></p>
     </gl-modal>
 
-    <badge-form
-      v-show="isEditing"
-      :is-editing="true"
-    />
+    <badge-form v-show="isEditing" :is-editing="true" />
 
-    <badge-form
-      v-show="!isEditing"
-      :is-editing="false"
-    />
+    <badge-form v-show="!isEditing" :is-editing="false" />
     <badge-list v-show="!isEditing" />
   </div>
 </template>

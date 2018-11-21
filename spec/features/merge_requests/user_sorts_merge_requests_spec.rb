@@ -25,7 +25,7 @@ describe 'User sorts merge requests' do
       click_link('Milestone')
     end
 
-    visit(merge_requests_dashboard_path(assignee_id: user.id))
+    visit(merge_requests_dashboard_path(assignee_username: user.username))
 
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
 
@@ -41,7 +41,7 @@ describe 'User sorts merge requests' do
   it 'fallbacks to issuable_sort cookie key when remembering the sorting option' do
     set_cookie('issuable_sort', 'milestone')
 
-    visit(merge_requests_dashboard_path(assignee_id: user.id))
+    visit(merge_requests_dashboard_path(assignee_username: user.username))
 
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
   end

@@ -154,27 +154,19 @@ export default {
 
 <template>
   <div class="mr-info-list clearfix mr-memory-usage js-mr-memory-usage">
-    <p
-      v-if="shouldShowLoading"
-      class="usage-info js-usage-info usage-info-loading">
-      <i
-        class="fa fa-spinner fa-spin usage-info-load-spinner"
-        aria-hidden="true">
-      </i>{{ s__('mrWidget|Loading deployment statistics') }}
+    <p v-if="shouldShowLoading" class="usage-info js-usage-info usage-info-loading">
+      <i class="fa fa-spinner fa-spin usage-info-load-spinner" aria-hidden="true"> </i
+      >{{ s__('mrWidget|Loading deployment statistics') }}
     </p>
     <p
       v-if="shouldShowMemoryGraph"
       class="usage-info js-usage-info"
-      v-html="memoryChangeMessage">
-    </p>
-    <p
-      v-if="shouldShowLoadFailure"
-      class="usage-info js-usage-info usage-info-failed">
+      v-html="memoryChangeMessage"
+    ></p>
+    <p v-if="shouldShowLoadFailure" class="usage-info js-usage-info usage-info-failed">
       {{ s__('mrWidget|Failed to load deployment statistics') }}
     </p>
-    <p
-      v-if="shouldShowMetricsUnavailable"
-      class="usage-info js-usage-info usage-info-unavailable">
+    <p v-if="shouldShowMetricsUnavailable" class="usage-info js-usage-info usage-info-unavailable">
       {{ s__('mrWidget|Deployment statistics are not available currently') }}
     </p>
     <memory-graph

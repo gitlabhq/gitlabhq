@@ -76,7 +76,7 @@ describe 'User creates branch and merge request on issue page', :js do
 
           visit project_issue_path(project, issue)
 
-          expect(page).to have_content('created branch 1-cherry-coloured-funk')
+          expect(page).to have_content("created merge request !1 to address this issue")
           expect(page).to have_content('mentioned in merge request !1')
         end
 
@@ -106,7 +106,7 @@ describe 'User creates branch and merge request on issue page', :js do
 
           visit project_issue_path(project, issue)
 
-          expect(page).to have_content('created branch custom-branch-name')
+          expect(page).to have_content("created merge request !1 to address this issue")
           expect(page).to have_content('mentioned in merge request !1')
         end
 

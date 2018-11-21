@@ -16,10 +16,6 @@ export default {
 
 <template>
   <div class="disabled-comment text-center">
-    Please
-    <a :href="registerLink">register</a>
-    or
-    <a :href="signInLink">sign in</a>
-    to reply
+    Please <a :href="registerLink">register</a> or <a :href="signInLink">sign in</a> to reply
   </div>
 </template>

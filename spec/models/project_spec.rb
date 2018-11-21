@@ -3087,6 +3087,14 @@ describe Project do
       it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
       end
+
+      context 'when partially migrated' do
+        it 'returns true' do
+          project = create(:project, storage_version: 1, skip_disk_validation: true)
+
+          expect(project.migrate_to_hashed_storage!).to be_truthy
+        end
+      end
     end
   end
 

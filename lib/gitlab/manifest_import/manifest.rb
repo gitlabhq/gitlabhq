@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Class to parse manifest file and build a list of repositories for import
 #
 # <manifest>

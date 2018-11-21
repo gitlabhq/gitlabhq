@@ -36,62 +36,23 @@ export default {
       <limit-warning :count="items.length" />
     </div>
     <ul class="stage-event-list">
-      <li
-        v-for="(build, i) in items"
-        :key="i"
-        class="stage-event-item item-build-component"
-      >
+      <li v-for="(build, i) in items" :key="i" class="stage-event-item item-build-component">
         <div class="item-details">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
-          <user-avatar-image :img-src="build.author.avatarUrl"/>
+          <user-avatar-image :img-src="build.author.avatarUrl" />
           <h5 class="item-title">
-            <a
-              :href="build.url"
-              class="pipeline-id"
-            >
-              #{{ build.id }}
-            </a>
-            <icon
-              :size="16"
-              name="fork"
-            />
-            <a
-              :href="build.branch.url"
-              class="ref-name"
-            >
-              {{ build.branch.name }}
-            </a>
-            <span
-              class="icon-branch"
-              v-html="iconBranch"
-            >
-            </span>
-            <a
-              :href="build.commitUrl"
-              class="commit-sha"
-            >
-              {{ build.shortSha }}
-            </a>
+            <a :href="build.url" class="pipeline-id"> #{{ build.id }} </a>
+            <icon :size="16" name="fork" />
+            <a :href="build.branch.url" class="ref-name"> {{ build.branch.name }} </a>
+            <span class="icon-branch" v-html="iconBranch"> </span>
+            <a :href="build.commitUrl" class="commit-sha"> {{ build.shortSha }} </a>
           </h5>
           <span>
-            <a
-              :href="build.url"
-              class="build-date"
-            >
-              {{ build.date }}
-            </a>
-            {{ s__('ByAuthor|by') }}
-            <a
-              :href="build.author.webUrl"
-              class="issue-author-link"
-            >
-              {{ build.author.name }}
-            </a>
+            <a :href="build.url" class="build-date"> {{ build.date }} </a> {{ s__('ByAuthor|by') }}
+            <a :href="build.author.webUrl" class="issue-author-link"> {{ build.author.name }} </a>
           </span>
         </div>
-        <div class="item-time">
-          <total-time :time="build.totalTime" />
-        </div>
+        <div class="item-time"><total-time :time="build.totalTime" /></div>
       </li>
     </ul>
   </div>

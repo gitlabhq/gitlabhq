@@ -247,20 +247,8 @@ export default {
       v-if="shouldRenderTabs || shouldRenderButtons"
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
     >
-      <div class="fade-left">
-        <i
-          class="fa fa-angle-left"
-          aria-hidden="true"
-        >
-        </i>
-      </div>
-      <div class="fade-right">
-        <i
-          class="fa fa-angle-right"
-          aria-hidden="true"
-        >
-        </i>
-      </div>
+      <div class="fade-left"><i class="fa fa-angle-left" aria-hidden="true"> </i></div>
+      <div class="fade-right"><i class="fa fa-angle-right" aria-hidden="true"> </i></div>
 
       <navigation-tabs
         v-if="shouldRenderTabs"
@@ -280,7 +268,6 @@ export default {
     </div>
 
     <div class="content-list pipelines">
-
       <gl-loading-icon
         v-if="stateToRender === $options.stateMap.loading"
         :label="s__('Pipelines|Loading Pipelines')"
@@ -298,8 +285,10 @@ export default {
       <svg-blank-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="errorStateSvgPath"
-        :message="s__(`Pipelines|There was an error fetching the pipelines.
-        Try again in a few moments or contact your support team.`)"
+        :message="
+          s__(`Pipelines|There was an error fetching the pipelines.
+        Try again in a few moments or contact your support team.`)
+        "
       />
 
       <svg-blank-state
@@ -308,11 +297,7 @@ export default {
         :message="emptyTabMessage"
       />
 
-      <div
-        v-else-if="stateToRender === $options.stateMap.tableList"
-        class="table-holder"
-      >
-
+      <div v-else-if="stateToRender === $options.stateMap.tableList" class="table-holder">
         <pipelines-table-component
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"

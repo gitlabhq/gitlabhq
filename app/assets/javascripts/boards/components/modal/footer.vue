@@ -63,28 +63,15 @@ export default {
 };
 </script>
 <template>
-  <footer
-    class="form-actions add-issues-footer"
-  >
+  <footer class="form-actions add-issues-footer">
     <div class="float-left">
-      <button
-        :disabled="submitDisabled"
-        class="btn btn-success"
-        type="button"
-        @click="addIssues"
-      >
+      <button :disabled="submitDisabled" class="btn btn-success" type="button" @click="addIssues">
         {{ submitText }}
       </button>
-      <span class="inline add-issues-footer-to-list">
-        to list
-      </span>
-      <lists-dropdown/>
+      <span class="inline add-issues-footer-to-list"> to list </span>
+      <lists-dropdown />
     </div>
-    <button
-      class="btn btn-default float-right"
-      type="button"
-      @click="toggleModal(false)"
-    >
+    <button class="btn btn-default float-right" type="button" @click="toggleModal(false);">
       Cancel
     </button>
   </footer>

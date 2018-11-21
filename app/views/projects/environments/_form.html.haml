@@ -1,22 +1,21 @@
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
     %h4.prepend-top-0
-      Environments
+      = _("Environments")
     %p
-      Environments allow you to track deployments of your application
-      = succeed "." do
-        = link_to "Read more about environments", help_page_path("ci/environments")
+      - link_to_read_more = link_to(_("Read more about environments"), help_page_path("ci/environments"))
+      = _("Environments allow you to track deployments of your application %{link_to_read_more}.").html_safe % { link_to_read_more: link_to_read_more }
 
   = form_for [@project.namespace.becomes(Namespace), @project, @environment], html: { class: 'col-lg-9' } do |f|
     = form_errors(@environment)
 
     .form-group
-      = f.label :name, 'Name', class: 'label-bold'
+      = f.label :name, _('Name'), class: 'label-bold'
       = f.text_field :name, required: true, class: 'form-control'
     .form-group
-      = f.label :external_url, 'External URL', class: 'label-bold'
+      = f.label :external_url, _('External URL'), class: 'label-bold'
       = f.url_field :external_url, class: 'form-control'
 
     .form-actions
-      = f.submit 'Save', class: 'btn btn-success'
-      = link_to 'Cancel', project_environments_path(@project), class: 'btn btn-cancel'
+      = f.submit _('Save'), class: 'btn btn-save'
+      = link_to _('Cancel'), project_environments_path(@project), class: 'btn btn-cancel'

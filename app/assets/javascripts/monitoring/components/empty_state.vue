@@ -89,27 +89,14 @@ export default {
 
 <template>
   <div class="prometheus-state">
-    <div class="state-svg svg-content">
-      <img :src="currentState.svgUrl" />
-    </div>
-    <h4 class="state-title">
-      {{ currentState.title }}
-    </h4>
+    <div class="state-svg svg-content"><img :src="currentState.svgUrl" /></div>
+    <h4 class="state-title">{{ currentState.title }}</h4>
     <p class="state-description">
       {{ currentState.description }}
-      <a
-        v-if="showButtonDescription"
-        :href="settingsPath"
-      >
-        Prometheus server
-      </a>
+      <a v-if="showButtonDescription" :href="settingsPath"> Prometheus server </a>
     </p>
     <div class="state-button">
-      <a
-        v-if="currentState.buttonPath"
-        :href="currentState.buttonPath"
-        class="btn btn-success"
-      >
+      <a v-if="currentState.buttonPath" :href="currentState.buttonPath" class="btn btn-success">
         {{ currentState.buttonText }}
       </a>
     </div>

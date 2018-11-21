@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.6 (2018-11-18)
+
+### Security (1 change)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+
+
 ## 11.4.5 (2018-11-04)
 
 ### Fixed (4 changes, 1 of them is from the community)
@@ -269,6 +276,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.10 (2018-11-18)
+
+### Security (1 change)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
 
 
 ## 11.3.9 (2018-10-31)

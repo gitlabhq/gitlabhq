@@ -49,10 +49,6 @@ export default {
       type="search"
       class="form-control"
     />
-    <icon
-      v-if="!searchQuery"
-      name="search"
-      class="search-icon"
-    />
+    <icon v-if="!searchQuery" name="search" class="search-icon" />
   </div>
 </template>

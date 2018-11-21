@@ -141,7 +141,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggleFile($event, true)"
+    @click="handleToggleFile($event, true);"
   >
     <div class="file-header-content">
       <icon
@@ -152,12 +152,7 @@ export default {
         class="diff-toggle-caret append-right-5"
         @click.stop="handleToggle"
       />
-      <a
-        v-once
-        ref="titleWrapper"
-        :href="titleLink"
-        class="append-right-4 js-title-wrapper"
-      >
+      <a v-once ref="titleWrapper" :href="titleLink" class="append-right-4 js-title-wrapper">
         <file-icon
           :file-name="filePath"
           :size="18"
@@ -182,13 +177,7 @@ export default {
           ></strong>
         </span>
 
-        <strong
-          v-else
-          v-tooltip
-          :title="filePath"
-          class="file-title-name"
-          data-container="body"
-        >
+        <strong v-else v-tooltip :title="filePath" class="file-title-name" data-container="body">
           {{ filePath }}
         </strong>
       </a>
@@ -200,28 +189,18 @@ export default {
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <small
-        v-if="diffFile.mode_changed"
-        ref="fileMode"
-      >
+      <small v-if="diffFile.mode_changed" ref="fileMode">
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
-      <span
-        v-if="isUsingLfs"
-        class="label label-lfs append-right-5"
-      >
-        {{ __('LFS') }}
-      </span>
+      <span v-if="isUsingLfs" class="label label-lfs append-right-5"> {{ __('LFS') }} </span>
     </div>
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
       class="file-actions d-none d-sm-block"
     >
-      <template
-        v-if="diffFile.blob && diffFile.blob.readable_text"
-      >
+      <template v-if="diffFile.blob && diffFile.blob.readable_text">
         <button
           :disabled="!diffHasDiscussions(diffFile)"
           :class="{ active: hasExpandedDiscussions }"
@@ -249,11 +228,7 @@ export default {
         v-html="viewReplacedFileButtonText"
       >
       </a>
-      <a
-        :href="diffFile.view_path"
-        class="btn view-file js-view-file"
-        v-html="viewFileButtonText"
-      >
+      <a :href="diffFile.view_path" class="btn view-file js-view-file" v-html="viewFileButtonText">
       </a>
 
       <a

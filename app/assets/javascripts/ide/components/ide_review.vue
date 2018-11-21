@@ -42,13 +42,8 @@ export default {
 </script>
 
 <template>
-  <ide-tree-list
-    :viewer-type="viewer"
-    header-class="ide-review-header"
-  >
-    <template
-      slot="header"
-    >
+  <ide-tree-list :viewer-type="viewer" header-class="ide-review-header">
+    <template slot="header">
       <div class="ide-review-button-holder">
         {{ __('Review') }}
         <editor-mode-dropdown
@@ -63,12 +58,12 @@ export default {
           {{ __('Latest changes') }}
         </template>
         <template v-else-if="showMergeRequestText">
-          {{ __('Merge request') }}
-          (<a
+          {{ __('Merge request') }} (<a
             v-if="currentMergeRequest"
             :href="currentMergeRequest.web_url"
             v-text="mergeRequestId"
-          ></a>)
+          ></a
+          >)
         </template>
       </div>
     </template>

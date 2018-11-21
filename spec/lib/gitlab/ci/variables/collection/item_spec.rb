@@ -36,7 +36,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
     shared_examples 'raises error for invalid type' do
       it do
         expect { described_class.new(key: variable_key, value: variable_value) }
-          .to raise_error ArgumentError, /`value` must be of type String, while it was:/
+          .to raise_error ArgumentError, /`#{variable_key}` must be of type String, while it was:/
       end
     end
 
@@ -46,7 +46,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
       let(:variable_value) { nil }
       let(:expected_value) { nil }
 
-      it_behaves_like 'creates variable'
+      it_behaves_like 'raises error for invalid type'
     end
 
     context "when it's an empty string" do

@@ -4,9 +4,11 @@ module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize
 
-    FAILURE_REASONS = {
-      config_error: 'CI/CD YAML configuration error!'
-    }.freeze
+    # We use a class method here instead of a constant, allowing EE to redefine
+    # the returned `Hash` more easily.
+    def self.failure_reasons
+      { config_error: 'CI/CD YAML configuration error!' }
+    end
 
     presents :pipeline
 
@@ -21,7 +23,7 @@ module Ci
     def failure_reason
       return unless pipeline.failure_reason?
 
-      FAILURE_REASONS[pipeline.failure_reason.to_sym] ||
+      self.class.failure_reasons[pipeline.failure_reason.to_sym] ||
         pipeline.failure_reason
     end
 

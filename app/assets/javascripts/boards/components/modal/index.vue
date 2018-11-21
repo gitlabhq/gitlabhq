@@ -6,7 +6,7 @@ import ModalList from './list.vue';
 import ModalFooter from './footer.vue';
 import EmptyState from './empty_state.vue';
 import ModalStore from '../../stores/modal_store';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
@@ -143,9 +143,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-if="showAddIssuesModal"
-    class="add-issues-modal">
+  <div v-if="showAddIssuesModal" class="add-issues-modal">
     <div class="add-issues-container">
       <modal-header
         :project-id="projectId"
@@ -163,15 +161,10 @@ export default {
         :new-issue-path="newIssuePath"
         :empty-state-svg="emptyStateSvg"
       />
-      <section
-        v-if="loading || filterLoading"
-        class="add-issues-list text-center"
-      >
-        <div class="add-issues-list-loading">
-          <gl-loading-icon />
-        </div>
+      <section v-if="loading || filterLoading" class="add-issues-list text-center">
+        <div class="add-issues-list-loading"><gl-loading-icon /></div>
       </section>
-      <modal-footer/>
+      <modal-footer />
     </div>
   </div>
 </template>

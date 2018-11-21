@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module QueryLimiting
     class Transaction
@@ -68,7 +70,7 @@ module Gitlab
 
       def error_message
         header = 'Too many SQL queries were executed'
-        header += " in #{action}" if action
+        header = "#{header} in #{action}" if action
 
         "#{header}: a maximum of #{THRESHOLD} is allowed but #{count} SQL queries were executed"
       end

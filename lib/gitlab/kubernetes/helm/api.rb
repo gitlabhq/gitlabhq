@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
@@ -54,7 +56,11 @@ module Gitlab
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
-            kubeclient.create_config_map(config_map_resource)
+            if config_map_exists?(config_map_resource)
+              kubeclient.update_config_map(config_map_resource)
+            else
+              kubeclient.create_config_map(config_map_resource)
+            end
           end
         end
 
@@ -86,6 +92,12 @@ module Gitlab
               kubeclient.create_cluster_role_binding(cluster_role_binding_resource)
             end
           end
+        end
+
+        def config_map_exists?(resource)
+          kubeclient.get_config_map(resource.metadata.name, resource.metadata.namespace)
+        rescue ::Kubeclient::ResourceNotFoundError
+          false
         end
 
         def service_account_exists?(resource)

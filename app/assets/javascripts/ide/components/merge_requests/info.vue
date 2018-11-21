@@ -19,13 +19,8 @@ export default {
 <template>
   <div class="ide-merge-request-info h-100 d-flex flex-column">
     <div class="detail-page-header">
-      <icon
-        name="git-merge"
-        class="align-self-center append-right-8"
-      />
-      <strong>
-        !{{ currentMergeRequest.iid }}
-      </strong>
+      <icon name="git-merge" class="align-self-center append-right-8" />
+      <strong> !{{ currentMergeRequest.iid }} </strong>
     </div>
     <div class="issuable-details">
       <title-component

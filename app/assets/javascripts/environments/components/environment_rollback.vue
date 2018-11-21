@@ -6,7 +6,7 @@
  * Makes a post request when the button is clicked.
  */
 import { s__ } from '~/locale';
-import { GlTooltipDirective, GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 
@@ -61,14 +61,7 @@ export default {
     class="btn d-none d-sm-none d-md-block"
     @click="onClick"
   >
-    <icon
-      v-if="isLastDeployment"
-      name="repeat" 
-    />
-    <icon
-      v-else
-      name="redo"
-    />
+    <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
     <gl-loading-icon v-if="isLoading" />
   </button>
 </template>

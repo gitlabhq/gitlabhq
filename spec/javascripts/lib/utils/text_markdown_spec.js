@@ -86,6 +86,29 @@ describe('init markdown', () => {
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });
+
+    it('places the cursor inside the tags', () => {
+      const start = 'lorem ';
+      const end = ' ipsum';
+      const tag = '*';
+
+      textArea.value = `${start}${end}`;
+      textArea.setSelectionRange(start.length, start.length);
+
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag,
+        blockTag: null,
+        selected: '',
+        wrap: true,
+      });
+
+      expect(textArea.value).toEqual(`${start}**${end}`);
+
+      // cursor placement should be between tags
+      expect(textArea.selectionStart).toBe(start.length + tag.length);
+    });
   });
 
   describe('with selection', () => {
@@ -98,16 +121,22 @@ describe('init markdown', () => {
     });
 
     it('applies the tag to the selected value', () => {
+      const selectedIndex = text.indexOf(selected);
+      const tag = '*';
+
       insertMarkdownText({
         textArea,
         text: textArea.value,
-        tag: '*',
+        tag,
         blockTag: null,
         selected,
         wrap: true,
       });
 
       expect(textArea.value).toEqual(text.replace(selected, `*${selected}*`));
+
+      // cursor placement should be after selection + 2 tag lengths
+      expect(textArea.selectionStart).toBe(selectedIndex + selected.length + 2 * tag.length);
     });
 
     it('replaces the placeholder in the tag', () => {

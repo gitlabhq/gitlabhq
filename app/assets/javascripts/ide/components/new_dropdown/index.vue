@@ -73,19 +73,11 @@ export default {
         :aria-label="__('Create new file or directory')"
         type="button"
         class="rounded border-0 d-flex ide-entry-dropdown-toggle"
-        @click.stop="openDropdown()"
+        @click.stop="openDropdown();"
       >
-        <icon
-          name="ellipsis_v"
-        />
-        <icon
-          name="arrow-down"
-        />
+        <icon name="ellipsis_v" /> <icon name="arrow-down" />
       </button>
-      <ul
-        ref="dropdownMenu"
-        class="dropdown-menu dropdown-menu-right"
-      >
+      <ul ref="dropdownMenu" class="dropdown-menu dropdown-menu-right">
         <template v-if="type === 'tree'">
           <li>
             <item-button
@@ -93,22 +85,17 @@ export default {
               class="d-flex"
               icon="doc-new"
               icon-classes="mr-2"
-              @click="createNewItem('blob')"
+              @click="createNewItem('blob');"
             />
           </li>
-          <li>
-            <upload
-              :path="path"
-              @create="createTempEntry"
-            />
-          </li>
+          <li><upload :path="path" @create="createTempEntry" /></li>
           <li>
             <item-button
               :label="__('New directory')"
               class="d-flex"
               icon="folder-new"
               icon-classes="mr-2"
-              @click="createNewItem($options.modalTypes.tree)"
+              @click="createNewItem($options.modalTypes.tree);"
             />
           </li>
           <li class="divider"></li>
@@ -119,7 +106,7 @@ export default {
             class="d-flex"
             icon="pencil"
             icon-classes="mr-2"
-            @click="createNewItem($options.modalTypes.rename)"
+            @click="createNewItem($options.modalTypes.rename);"
           />
         </li>
         <li>
@@ -128,7 +115,7 @@ export default {
             class="d-flex"
             icon="remove"
             icon-classes="mr-2"
-            @click="deleteEntry(path)"
+            @click="deleteEntry(path);"
           />
         </li>
       </ul>

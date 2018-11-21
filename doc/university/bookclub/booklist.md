@@ -10,7 +10,7 @@ List of books and resources, that may be worth reading.
 
 1.  **The Humble Programmer**
 
-    Edsger W. Dijkstra, 1972 ([paper](http://dl.acm.org/citation.cfm?id=361591))
+    Edsger W. Dijkstra, 1972 ([paper](https://dl.acm.org/citation.cfm?id=361591))
 
 ## Programming
 

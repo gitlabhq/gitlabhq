@@ -67,9 +67,8 @@
 @babel/template,7.1.2,MIT
 @babel/traverse,7.1.0,MIT
 @babel/types,7.1.2,MIT
-@gitlab-org/gitlab-svgs,1.32.0,MIT
-@gitlab-org/gitlab-ui,1.10.0,MIT
 @gitlab/svgs,1.35.0,MIT
+@gitlab/ui,1.11.0,MIT
 @sindresorhus/is,0.7.0,MIT
 @types/jquery,2.0.48,MIT
 @vue/component-compiler-utils,2.2.0,MIT

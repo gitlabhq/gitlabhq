@@ -81,36 +81,36 @@ module IssuableCollections
   end
 
   def issuable_finder_for(finder_class)
-    finder_class.new(current_user, filter_params)
+    finder_class.new(current_user, finder_options)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  # rubocop: disable CodeReuse/ActiveRecord
-  def filter_params
-    set_sort_order_from_cookie
-    set_default_state
+  def finder_options
+    params[:state] = default_state if params[:state].blank?
 
-    # Skip irrelevant Rails routing params
-    @filter_params = params.dup.except(:controller, :action, :namespace_id)
-    @filter_params[:sort] ||= default_sort_order
+    options = {
+      scope: params[:scope],
+      state: params[:state],
+      sort: set_sort_order_from_cookie || default_sort_order
+    }
 
-    @sort = @filter_params[:sort]
+    # Used by view to highlight active option
+    @sort = options[:sort]
 
     if @project
-      @filter_params[:project_id] = @project.id
+      options[:project_id] = @project.id
     elsif @group
-      @filter_params[:group_id] = @group.id
-      @filter_params[:include_subgroups] = true
-      @filter_params[:use_cte_for_search] = true
+      options[:group_id] = @group.id
+      options[:include_subgroups] = true
+      options[:use_cte_for_search] = true
     end
 
-    @filter_params.permit(finder_type.valid_params)
+    params.permit(finder_type.valid_params).merge(options)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  def set_default_state
-    params[:state] = 'opened' if params[:state].blank?
+  def default_state
+    'opened'
   end
 
   def set_sort_order_from_cookie
@@ -121,7 +121,7 @@ module IssuableCollections
 
     sort_value = update_cookie_value(sort_param)
     set_secure_cookie(remember_sorting_key, sort_value)
-    params[:sort] = sort_value
+    sort_value
   end
 
   def remember_sorting_key

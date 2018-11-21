@@ -110,19 +110,8 @@ export default {
     >
       {{ yAxisLabelSentenceCase }}
     </text>
-    <rect
-      :x="xPosition + 60"
-      :y="graphHeight - 80"
-      class="rect-axis-text"
-      width="35"
-      height="50"
-    />
-    <text
-      :x="xPosition + 60"
-      :y="yPosition"
-      class="label-axis-text x-label-text"
-      dy=".35em"
-    >
+    <rect :x="xPosition + 60" :y="graphHeight - 80" class="rect-axis-text" width="35" height="50" />
+    <text :x="xPosition + 60" :y="yPosition" class="label-axis-text x-label-text" dy=".35em">
       {{ timeString }}
     </text>
   </g>

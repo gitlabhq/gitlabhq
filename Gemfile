@@ -4,10 +4,9 @@ def rails5?
 end
 
 gem_versions = {}
-gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
-gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
-gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'    : '0.2'
+gem_versions['rails']                           = rails5? ? '5.0.7'  : '4.2.10'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1' : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
 source 'https://rubygems.org'
@@ -15,13 +14,20 @@ source 'https://rubygems.org'
 gem 'rails', gem_versions['rails']
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
+# Improves copy-on-write performance for MRI
+gem 'nakayoshi_fork', '~> 0.0.4'
+
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
 
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', gem_versions['default_value_for']
+if rails5?
+  gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
+else
+  gem 'default_value_for', '~> 3.0.0'
+end
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
@@ -133,7 +139,7 @@ gem 'rdoc', '~> 6.0'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
-gem 'asciidoctor', '~> 1.5.6'
+gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
@@ -223,7 +229,7 @@ gem 'slack-notifier', '~> 1.5.1'
 gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
-gem 'asana', '~> 0.6.0'
+gem 'asana', '~> 0.8.1'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -364,7 +370,7 @@ group :development, :test do
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
   gem 'license_finder', '~> 5.4', require: false
-  gem 'knapsack', '~> 1.16'
+  gem 'knapsack', '~> 1.17'
 
   gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
 
@@ -383,7 +389,7 @@ group :test do
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.
   gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
-  gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.2.5'
   gem 'rspec_junit_formatter'
 end

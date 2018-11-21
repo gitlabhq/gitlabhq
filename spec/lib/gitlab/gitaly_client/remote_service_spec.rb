@@ -68,6 +68,8 @@ describe Gitlab::GitalyClient::RemoteService do
   describe '#update_remote_mirror' do
     let(:ref_name) { 'remote_mirror_1' }
     let(:only_branches_matching) { ['my-branch', 'master'] }
+    let(:ssh_key) { 'KEY' }
+    let(:known_hosts) { 'KNOWN HOSTS' }
 
     it 'sends an update_remote_mirror message' do
       expect_any_instance_of(Gitaly::RemoteService::Stub)
@@ -75,7 +77,7 @@ describe Gitlab::GitalyClient::RemoteService do
         .with(kind_of(Enumerator), kind_of(Hash))
         .and_return(double(:update_remote_mirror_response))
 
-      client.update_remote_mirror(ref_name, only_branches_matching)
+      client.update_remote_mirror(ref_name, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts)
     end
   end
 

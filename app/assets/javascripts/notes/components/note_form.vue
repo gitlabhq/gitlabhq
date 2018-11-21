@@ -146,27 +146,14 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="editNoteForm"
-    class="note-edit-form current-note-edit-form js-discussion-note-form">
-    <div
-      v-if="conflictWhileEditing"
-      class="js-conflict-edit-warning alert alert-danger">
+  <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
+    <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
       This comment has changed since you started editing, please review the
-      <a
-        :href="noteHash"
-        target="_blank"
-        rel="noopener noreferrer">
-        updated comment
-      </a>
-      to ensure information is not lost.
+      <a :href="noteHash" target="_blank" rel="noopener noreferrer"> updated comment </a> to ensure
+      information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form
-      :data-line-code="lineCode"
-      class="edit-note common-note-form js-quick-submit gfm-form"
-    >
-
+    <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <issue-warning
         v-if="hasWarning(getNoteableData)"
         :is-locked="isLocked(getNoteableData)"
@@ -178,7 +165,8 @@ export default {
         :markdown-docs-path="markdownDocsPath"
         :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
-        :add-spacing-classes="false">
+        :add-spacing-classes="false"
+      >
         <textarea
           id="note_note"
           ref="textarea"
@@ -190,10 +178,11 @@ export default {
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
-          @keydown.meta.enter="handleUpdate()"
-          @keydown.ctrl.enter="handleUpdate()"
-          @keydown.up="editMyLastNote()"
-          @keydown.esc="cancelHandler(true)">
+          @keydown.meta.enter="handleUpdate();"
+          @keydown.ctrl.enter="handleUpdate();"
+          @keydown.up="editMyLastNote();"
+          @keydown.esc="cancelHandler(true);"
+        >
         </textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
@@ -201,20 +190,22 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           :disabled="isDisabled"
           type="button"
           class="js-vue-issue-save btn btn-success js-comment-button "
-          @click="handleUpdate()">
+          @click="handleUpdate();"
+        >
           {{ saveButtonTitle }}
         </button>
         <button
           v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true)"
+          @click.prevent="handleUpdate(true);"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
-          @click="cancelHandler()">
+          @click="cancelHandler();"
+        >
           Cancel
         </button>
       </div>
