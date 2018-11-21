@@ -46,9 +46,7 @@ export default {
           :img-size="40"
         />
       </div>
-      <div
-        :class="{ discussion: !note.individual_note }"
-        class="timeline-content">
+      <div :class="{ discussion: !note.individual_note }" class="timeline-content">
         <div class="note-header">
           <div class="note-header-info">
             <a :href="getUserData.path">

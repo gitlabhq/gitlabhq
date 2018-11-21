@@ -2,6 +2,6 @@
 
 - return unless can?(current_user, :read_environment, environment)
 
-= link_to environment_metrics_path(environment), title: 'See metrics', class: 'btn metrics-button' do
+= link_to environment_metrics_path(environment), title: _('See metrics'), class: 'btn metrics-button' do
   = sprite_icon('chart')
-  Monitoring
+  = _("Monitoring")

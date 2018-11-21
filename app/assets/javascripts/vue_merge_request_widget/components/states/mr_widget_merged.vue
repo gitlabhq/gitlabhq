@@ -154,7 +154,7 @@ export default {
       </div>
       <section class="mr-info-list">
         <p>
-          {{ s__("mrWidget|The changes were merged into") }}
+          {{ s__('mrWidget|The changes were merged into') }}
           <span class="label-branch">
             <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
           </span>
@@ -174,27 +174,22 @@ export default {
           </template>
         </p>
         <p v-if="mr.sourceBranchRemoved">
-          {{ s__("mrWidget|The source branch has been removed") }}
+          {{ s__('mrWidget|The source branch has been removed') }}
         </p>
-        <p
-          v-if="shouldShowRemoveSourceBranch"
-          class="space-children"
-        >
-          <span>{{ s__("mrWidget|You can remove source branch now") }}</span>
+        <p v-if="shouldShowRemoveSourceBranch" class="space-children">
+          <span>{{ s__('mrWidget|You can remove source branch now') }}</span>
           <button
             :disabled="isMakingRequest"
             type="button"
             class="btn btn-sm btn-default js-remove-branch-button"
             @click="removeSourceBranch"
           >
-            {{ s__("mrWidget|Remove Source Branch") }}
+            {{ s__('mrWidget|Remove Source Branch') }}
           </button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
           <gl-loading-icon :inline="true" />
-          <span>
-            {{ s__("mrWidget|The source branch is being removed") }}
-          </span>
+          <span> {{ s__('mrWidget|The source branch is being removed') }} </span>
         </p>
       </section>
     </div>

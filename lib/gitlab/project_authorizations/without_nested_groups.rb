@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ProjectAuthorizations
     # Calculating new project authorizations when not supporting nested groups.

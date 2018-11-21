@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181107054254) do
+ActiveRecord::Schema.define(version: 20181112103239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -807,7 +807,7 @@ ActiveRecord::Schema.define(version: 20181107054254) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
-    t.integer "status", limit: 2, default: 2, null: false
+    t.integer "status", limit: 2, null: false
     t.datetime_with_timezone "finished_at"
     t.index ["created_at"], name: "index_deployments_on_created_at", using: :btree
     t.index ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree

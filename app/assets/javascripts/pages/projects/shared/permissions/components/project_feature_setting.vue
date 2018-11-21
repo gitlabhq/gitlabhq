@@ -69,16 +69,8 @@ export default {
 </script>
 
 <template>
-  <div
-    :data-for="name"
-    class="project-feature-controls"
-  >
-    <input
-      v-if="name"
-      :name="name"
-      :value="value"
-      type="hidden"
-    />
+  <div :data-for="name" class="project-feature-controls">
+    <input v-if="name" :name="name" :value="value" type="hidden" />
     <project-feature-toggle
       :value="featureEnabled"
       :disabled-input="disabledInput"
@@ -99,11 +91,7 @@ export default {
           {{ optionName }}
         </option>
       </select>
-      <i
-        aria-hidden="true"
-        class="fa fa-chevron-down"
-      >
-      </i>
+      <i aria-hidden="true" class="fa fa-chevron-down"> </i>
     </div>
   </div>
 </template>

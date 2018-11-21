@@ -1,7 +1,7 @@
 - @no_container = true
-- add_to_breadcrumbs "Environments", project_environments_path(@project)
+- add_to_breadcrumbs _("Environments"), project_environments_path(@project)
 - breadcrumb_title @environment.name
-- page_title "Environments"
+- page_title _("Environments")
 
 %div{ class: container_class }
   - if can?(current_user, :stop_environment, @environment)
@@ -10,7 +10,7 @@
         .modal-content
           .modal-header
             %h4.modal-title.d-flex.mw-100
-              Stopping
+              = s_("Environments|Stopping")
               %span.has-tooltip.text-truncate.ml-1.mr-1.flex-fill{ title: @environment.name, data: { container: '#stop-environment-modal' } }
                 = @environment.name
               ?
@@ -40,7 +40,7 @@
         = render 'projects/environments/external_url', environment: @environment
         = render 'projects/environments/metrics_button', environment: @environment
         - if can?(current_user, :update_environment, @environment)
-          = link_to 'Edit', edit_project_environment_path(@project, @environment), class: 'btn'
+          = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
         - if can?(current_user, :stop_environment, @environment)
           = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
             target: '#stop-environment-modal' } do
@@ -52,21 +52,19 @@
       .empty-state
         .text-content
           %h4.state-title
-            You don't have any deployments right now.
+            = _("You don't have any deployments right now.")
           %p.blank-state-text
-            Define environments in the deploy stage(s) in
-            %code .gitlab-ci.yml
-            to track deployments here.
+            = _("Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.").html_safe
           .text-center
             = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
     - else
       .table-holder
         .ci-table.environments{ role: 'grid' }
           .gl-responsive-table-row.table-row-header{ role: 'row' }
-            .table-section.section-10{ role: 'columnheader' } ID
-            .table-section.section-30{ role: 'columnheader' } Commit
-            .table-section.section-25{ role: 'columnheader' } Job
-            .table-section.section-15{ role: 'columnheader' } Created
+            .table-section.section-10{ role: 'columnheader' }= _('ID')
+            .table-section.section-30{ role: 'columnheader' }= _('Commit')
+            .table-section.section-25{ role: 'columnheader' }= _('Job')
+            .table-section.section-15{ role: 'columnheader' }= _('Created')
 
           = render @deployments
 

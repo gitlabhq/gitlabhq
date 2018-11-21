@@ -294,11 +294,7 @@ export default {
         :issuable-type="issuableType"
       />
 
-      <recaptcha-modal
-        v-show="showRecaptcha"
-        :html="recaptchaHTML"
-        @close="closeRecaptchaModal"
-      />
+      <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptchaModal" />
     </div>
     <div v-else>
       <title-component

@@ -44,14 +44,7 @@ export default {
 
 <template>
   <div :class="type">
-    <prompt
-      :type="promptType"
-      :count="count" />
-    <pre
-      ref="code"
-      :class="codeCssClass"
-      class="language-python"
-      v-text="code">
-    </pre>
+    <prompt :type="promptType" :count="count" />
+    <pre ref="code" :class="codeCssClass" class="language-python" v-text="code"></pre>
   </div>
 </template>

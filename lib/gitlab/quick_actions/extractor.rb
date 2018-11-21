@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module QuickActions
     # This class takes an array of commands that should be extracted from a

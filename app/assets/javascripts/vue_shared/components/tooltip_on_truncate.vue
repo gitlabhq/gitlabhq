@@ -59,9 +59,5 @@ export default {
   >
     <slot></slot>
   </span>
-  <span
-    v-else
-  >
-    <slot></slot>
-  </span>
+  <span v-else> <slot></slot> </span>
 </template>

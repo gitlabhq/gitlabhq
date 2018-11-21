@@ -34,12 +34,6 @@ export default {
   <h4 class="js-mr-widget-author">
     {{ actionText }}
     <mr-widget-author :author="author" />
-    <time
-      v-tooltip
-      :title="dateTitle"
-      data-container="body"
-    >
-      {{ dateReadable }}
-    </time>
+    <time v-tooltip :title="dateTitle" data-container="body"> {{ dateReadable }} </time>
   </h4>
 </template>

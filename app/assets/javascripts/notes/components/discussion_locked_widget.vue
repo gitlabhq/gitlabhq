@@ -13,11 +13,7 @@ export default {
 <template>
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning inline">
-      <icon
-        :size="16"
-        name="lock"
-        class="icon"
-      />
+      <icon :size="16" name="lock" class="icon" />
       <span>
         This {{ issuableDisplayName }} is locked. Only <b>project members</b> can comment.
       </span>

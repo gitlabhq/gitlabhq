@@ -425,14 +425,16 @@ describe('common_utils', () => {
     });
 
     it('rejects the backOff promise after timing out', done => {
-      commonUtils.backOff(next => next(), 64000).catch(errBackoffResp => {
-        const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+      commonUtils
+        .backOff(next => next(), 64000)
+        .catch(errBackoffResp => {
+          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
 
-        expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
-        expect(errBackoffResp instanceof Error).toBe(true);
-        expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
-        done();
-      });
+          expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+          done();
+        });
     });
   });
 

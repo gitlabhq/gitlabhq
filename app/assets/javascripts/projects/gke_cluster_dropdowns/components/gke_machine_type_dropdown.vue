@@ -87,13 +87,8 @@ export default {
 
 <template>
   <div>
-    <div
-      class="js-gcp-machine-type-dropdown dropdown"
-    >
-      <dropdown-hidden-input
-        :name="fieldName"
-        :value="selectedMachineType"
-      />
+    <div class="js-gcp-machine-type-dropdown dropdown">
+      <dropdown-hidden-input :name="fieldName" :value="selectedMachineType" />
       <dropdown-button
         :class="{ 'border-danger': hasErrors }"
         :is-disabled="isDisabled"
@@ -112,29 +107,21 @@ export default {
                 {{ s__('ClusterIntegration|No machine types matched your search') }}
               </span>
             </li>
-            <li
-              v-for="result in results"
-              :key="result.id"
-            >
-              <button
-                type="button"
-                @click.prevent="setItem(result.name)"
-              >
+            <li v-for="result in results" :key="result.id">
+              <button type="button" @click.prevent="setItem(result.name);">
                 {{ result.name }}
               </button>
             </li>
           </ul>
         </div>
-        <div class="dropdown-loading">
-          <gl-loading-icon />
-        </div>
+        <div class="dropdown-loading"><gl-loading-icon /></div>
       </div>
     </div>
     <span
       v-if="hasErrors"
       :class="{
         'text-danger': hasErrors,
-        'text-muted': !hasErrors
+        'text-muted': !hasErrors,
       }"
       class="form-text"
     >

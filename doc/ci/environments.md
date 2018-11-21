@@ -416,19 +416,18 @@ and/or `production`) you can see this information in the merge request itself.
 
 ### Go directly from source files to public pages on the environment
 
-> Introduced in GitLab 8.17.
+> Introduced in GitLab 8.17. In GitLab 11.5 the file links
+are surfaced to the merge request widget.
 
-To go one step further, we can specify a Route Map to get GitLab to show us "View on [environment URL]" buttons to go directly from a file to that file's representation on the deployed website. It will be exposed in a few places:
-
-| In the diff for a merge request, comparison or commit | In the file view |
-| ------ | ------ |
-| !["View on env" button in merge request diff](img/view_on_env_mr.png) | !["View on env" button in file view](img/view_on_env_blob.png) |
+You can specify a Route Map to get GitLab to show "View on <environment URL>"
+buttons to go directly from a file to that file's representation on the
+[deployed website via Review Apps](review_apps/index.md).
 
 To get this to work, you need to tell GitLab how the paths of files in your repository map to paths of pages on your website, using a Route Map.
 
 A Route Map is a file inside the repository at `.gitlab/route-map.yml`, which contains a YAML array that maps `source` paths (in the repository) to `public` paths (on the website).
-
-This is an example of a route map for [Middleman](https://middlemanapp.com) static websites like [http://about.gitlab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
+Below is an example of a route map for [Middleman](https://middlemanapp.com) static websites
+like <https://gitlab.com/gitlab-com/www-gitlab-com>:
 
 ```yaml
 # Team data
@@ -464,6 +463,25 @@ Mappings are defined as entries in the root YAML array, and are identified by a 
 The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
 
 In the example above, the fact that mappings are evaluated in order of their definition is used to ensure that `source/index.html.haml` will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`, and will result in a public path of `index.html`, instead of `index.html.haml`.
+
+---
+
+Once you have the route mapping set up, it will be exposed in a few places:
+
+- In the merge request widget. The **View app** button will take you to the
+  environment URL you have set up in `.gitlab-ci.yml`. The dropdown will render
+  the first 5 matched items from the route map, but you can filter them if more
+  than 5 are available.
+
+    ![View app file list in merge request widget](img/view_on_mr_widget.png)
+
+- In the diff for a merge request, comparison, or commit.
+
+    !["View on env" button in merge request diff](img/view_on_env_mr.png)
+
+- In the blob file view.
+
+    !["View on env" button in file view](img/view_on_env_blob.png) |
 
 ---
 
@@ -568,13 +586,13 @@ exist, you should see something like:
 >
 > - For the monitoring dashboard to appear, you need to:
 >   - Have enabled the [Prometheus integration][prom]
->   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
+>   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/index.md)
 > - With GitLab 9.2, all deployments to an environment are shown directly on the
 >  monitoring dashboard
 
 If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
-Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
+Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/index.html) for any
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear for each environment.
 

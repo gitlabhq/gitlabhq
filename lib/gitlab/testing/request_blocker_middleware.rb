@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/ClassVars
 
 # This is inspired by http://www.salsify.com/blog/engineering/tearing-capybara-ajax-tests

@@ -84,13 +84,9 @@ export default {
           :placeholder="__('Search merge requests')"
           @focus="onSearchFocus"
           @input="searchMergeRequests"
-          @removeToken="setSearchType(null)"
+          @removeToken="setSearchType(null);"
         />
-        <icon
-          :size="18"
-          name="search"
-          class="input-icon"
-        />
+        <icon :size="18" name="search" class="input-icon" />
       </div>
     </div>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
@@ -100,36 +96,23 @@ export default {
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
       <template v-else>
-        <ul
-          class="mb-3 w-100"
-        >
+        <ul class="mb-3 w-100">
           <template v-if="showSearchTypes">
-            <li
-              v-for="searchType in $options.searchTypes"
-              :key="searchType.type"
-            >
+            <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button
                 type="button"
                 class="btn-link d-flex align-items-center"
-                @click.stop="setSearchType(searchType)"
+                @click.stop="setSearchType(searchType);"
               >
                 <span class="d-flex append-right-default ide-search-list-current-icon">
-                  <icon
-                    :size="18"
-                    name="search"
-                  />
+                  <icon :size="18" name="search" />
                 </span>
-                <span>
-                  {{ searchType.label }}
-                </span>
+                <span> {{ searchType.label }} </span>
               </button>
             </li>
           </template>
           <template v-else-if="hasMergeRequests">
-            <li
-              v-for="item in mergeRequests"
-              :key="item.id"
-            >
+            <li v-for="item in mergeRequests" :key="item.id">
               <item
                 :item="item"
                 :current-id="currentMergeRequestId"
@@ -137,10 +120,7 @@ export default {
               />
             </li>
           </template>
-          <li
-            v-else
-            class="ide-search-list-empty d-flex align-items-center justify-content-center"
-          >
+          <li v-else class="ide-search-list-empty d-flex align-items-center justify-content-center">
             {{ __('No merge requests found') }}
           </li>
         </ul>

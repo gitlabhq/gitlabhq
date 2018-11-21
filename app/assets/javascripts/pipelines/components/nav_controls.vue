@@ -60,11 +60,7 @@ export default {
       @click="onClickResetCache"
     />
 
-    <gl-button
-      v-if="ciLintPath"
-      :href="ciLintPath"
-      class="js-ci-lint"
-    >
+    <gl-button v-if="ciLintPath" :href="ciLintPath" class="js-ci-lint">
       {{ s__('Pipelines|CI Lint') }}
     </gl-button>
   </div>

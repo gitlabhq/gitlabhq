@@ -76,19 +76,13 @@ export default {
   <li
     :id="noteAnchorId"
     :class="{ target: isTargetNote }"
-    class="note system-note timeline-entry note-wrapper">
+    class="note system-note timeline-entry note-wrapper"
+  >
     <div class="timeline-entry-inner">
-      <div
-        class="timeline-icon"
-        v-html="iconHtml">
-      </div>
+      <div class="timeline-icon" v-html="iconHtml"></div>
       <div class="timeline-content">
         <div class="note-header">
-          <note-header
-            :author="note.author"
-            :created-at="note.created_at"
-            :note-id="note.id"
-          >
+          <note-header :author="note.author" :created-at="note.created_at" :note-id="note.id">
             <span v-html="actionTextHtml"></span>
           </note-header>
         </div>
@@ -96,24 +90,14 @@ export default {
           <div
             :class="{
               'system-note-commit-list': hasMoreCommits,
-              'hide-shade': expanded
+              'hide-shade': expanded,
             }"
             class="note-text"
             v-html="note.note_html"
           ></div>
-          <div
-            v-if="hasMoreCommits"
-            class="flex-list"
-          >
-            <div
-              class="system-note-commit-list-toggler flex-row"
-              @click="expanded = !expanded"
-            >
-              <icon
-                :name="toggleIcon"
-                :size="8"
-                class="append-right-5"
-              />
+          <div v-if="hasMoreCommits" class="flex-list">
+            <div class="system-note-commit-list-toggler flex-row" @click="expanded = !expanded;">
+              <icon :name="toggleIcon" :size="8" class="append-right-5" />
               <span>Toggle commit list</span>
             </div>
           </div>

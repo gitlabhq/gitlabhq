@@ -1604,10 +1604,11 @@ test:
 
 ## `include`
 
-> Introduced in [GitLab Edition Premium][ee] 10.5.
-> Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> Available for Starter, Premium and Ultimate since 10.6.
 > Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
-> Available for Libre since [11.4](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+to GitLab Core in 11.4
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1680,6 +1681,11 @@ include:
 
     NOTE: **Note:**
     The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
+
+    NOTE: **Note:**
+    In order to include files from another repository inside your local network, 
+    you may need to enable the **Allow requests to the local network from hooks and services** checkbox
+    located in the **Settings > Network > Outbound requests** section within the **Admin area**.
 
 ---
 

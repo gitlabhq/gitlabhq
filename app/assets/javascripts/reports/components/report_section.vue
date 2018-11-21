@@ -143,11 +143,7 @@ export default {
         <span class="js-code-text code-text">
           {{ headerText }}
 
-          <popover
-            v-if="hasPopover"
-            :options="popoverOptions"
-            class="prepend-left-5"
-          />
+          <popover v-if="hasPopover" :options="popoverOptions" class="prepend-left-5" />
         </span>
 
         <slot name="actionButtons"></slot>
@@ -163,11 +159,7 @@ export default {
       </div>
     </div>
 
-    <div
-      v-if="hasIssues"
-      v-show="isExpanded"
-      class="js-report-section-container"
-    >
+    <div v-if="hasIssues" v-show="isExpanded" class="js-report-section-container">
       <slot name="body">
         <issues-list
           :unresolved-issues="unresolvedIssues"

@@ -31,9 +31,7 @@ export default {
   <div class="info-well prepend-top-default">
     <div class="well-segment">
       <ul class="blob-commit-info">
-        <commit-item
-          :commit="commit"
-        />
+        <commit-item :commit="commit" />
       </ul>
     </div>
   </div>

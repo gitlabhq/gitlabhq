@@ -1,0 +1,5 @@
+---
+title: Enable Rubocop on lib/gitlab
+merge_request:
+author: gfyoung
+type: other

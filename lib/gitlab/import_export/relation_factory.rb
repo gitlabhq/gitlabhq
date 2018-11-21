@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class RelationFactory
@@ -211,7 +213,7 @@ module Gitlab
 
       def update_note_for_missing_author(author_name)
         @relation_hash['note'] = '*Blank note*' if @relation_hash['note'].blank?
-        @relation_hash['note'] += missing_author_note(@relation_hash['updated_at'], author_name)
+        @relation_hash['note'] = "#{@relation_hash['note']}#{missing_author_note(@relation_hash['updated_at'], author_name)}"
       end
 
       def admin_user?

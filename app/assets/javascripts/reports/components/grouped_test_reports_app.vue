@@ -77,13 +77,8 @@ export default {
     :has-issues="reports.length > 0"
     class="mr-widget-section grouped-security-reports mr-report"
   >
-    <div
-      slot="body"
-      class="mr-widget-grouped-section report-block"
-    >
-      <template
-        v-for="(report, i) in reports"
-      >
+    <div slot="body" class="mr-widget-grouped-section report-block">
+      <template v-for="(report, i) in reports">
         <summary-row
           :key="`summary-row-${i}`"
           :summary="reportText(report)"
@@ -100,10 +95,7 @@ export default {
         />
       </template>
 
-      <modal
-        :title="modalTitle"
-        :modal-data="modalData"
-      />
+      <modal :title="modalTitle" :modal-data="modalData" />
     </div>
   </report-section>
 </template>

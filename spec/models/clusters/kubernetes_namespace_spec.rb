@@ -45,14 +45,14 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     end
   end
 
-  describe '#configure_predefined_variables' do
+  describe '#set_defaults' do
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace) }
     let(:cluster) { kubernetes_namespace.cluster }
     let(:platform) { kubernetes_namespace.platform_kubernetes }
 
-    subject { kubernetes_namespace.configure_predefined_credentials }
+    subject { kubernetes_namespace.set_defaults }
 
-    describe 'namespace' do
+    describe '#namespace' do
       before do
         platform.update_column(:namespace, namespace)
       end
@@ -80,7 +80,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
       end
     end
 
-    describe 'service_account_name' do
+    describe '#service_account_name' do
       let(:service_account_name) { "#{kubernetes_namespace.namespace}-service-account" }
 
       it 'should set a service account name based on namespace' do

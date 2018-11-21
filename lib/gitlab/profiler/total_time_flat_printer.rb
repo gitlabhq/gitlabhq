@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Profiler
     class TotalTimeFlatPrinter < RubyProf::FlatPrinter

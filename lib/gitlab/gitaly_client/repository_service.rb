@@ -69,7 +69,7 @@ module Gitlab
           no_tags: no_tags, timeout: timeout, no_prune: !prune
         )
 
-        if ssh_auth&.ssh_import?
+        if ssh_auth&.ssh_mirror_url?
           if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
             request.ssh_key = ssh_auth.ssh_private_key
           end

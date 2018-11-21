@@ -349,20 +349,28 @@ class User < ActiveRecord::Base
     def find_by_any_email(email, confirmed: false)
       return unless email
 
-      downcased = email.downcase
-
-      find_by_private_commit_email(downcased) || by_any_email(downcased, confirmed: confirmed).take
+      by_any_email(email, confirmed: confirmed).take
     end
 
-    # Returns a relation containing all the users for the given Email address
-    def by_any_email(email, confirmed: false)
-      users = where(email: email)
-      users = users.confirmed if confirmed
+    # Returns a relation containing all the users for the given email addresses
+    #
+    # @param emails [String, Array<String>] email addresses to check
+    # @param confirmed [Boolean] Only return users where the email is confirmed
+    def by_any_email(emails, confirmed: false)
+      emails = Array(emails).map(&:downcase)
 
-      emails = joins(:emails).where(emails: { email: email })
-      emails = emails.confirmed if confirmed
+      from_users = where(email: emails)
+      from_users = from_users.confirmed if confirmed
 
-      from_union([users, emails])
+      from_emails = joins(:emails).where(emails: { email: emails })
+      from_emails = from_emails.confirmed if confirmed
+
+      items = [from_users, from_emails]
+
+      user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(emails)
+      items << where(id: user_ids) if user_ids.present?
+
+      from_union(items)
     end
 
     def find_by_private_commit_email(email)
@@ -1031,6 +1039,7 @@ class User < ActiveRecord::Base
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?
+    all_emails << private_commit_email
     all_emails.concat(emails.map(&:email))
     all_emails
   end
@@ -1043,16 +1052,24 @@ class User < ActiveRecord::Base
     verified_emails
   end
 
+  def any_email?(check_email)
+    downcased = check_email.downcase
+
+    # handle the outdated private commit email case
+    return true if persisted? &&
+        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+
+    all_emails.include?(check_email.downcase)
+  end
+
   def verified_email?(check_email)
     downcased = check_email.downcase
 
-    if email == downcased
-      primary_email_verified?
-    else
-      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+    # handle the outdated private commit email case
+    return true if persisted? &&
+        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
 
-      user_id == id || emails.confirmed.where(email: downcased).exists?
-    end
+    verified_emails.include?(check_email.downcase)
   end
 
   def hook_attrs

@@ -41,7 +41,6 @@ export default {
 
 <template>
   <div class="environments-container">
-
     <gl-loading-icon
       v-if="isLoading"
       :size="3"
@@ -51,10 +50,7 @@ export default {
 
     <slot name="emptyState"></slot>
 
-    <div
-      v-if="!isLoading && environments.length > 0"
-      class="table-holder">
-
+    <div v-if="!isLoading && environments.length > 0" class="table-holder">
       <environment-table
         :environments="environments"
         :can-create-deployment="canCreateDeployment"

@@ -71,24 +71,16 @@ export default {
   <fieldset class="common-note-form ide-commit-message-field">
     <div
       :class="{
-        'is-focused': isFocused
+        'is-focused': isFocused,
       }"
       class="md-area"
     >
-      <div
-        v-once
-        class="md-header"
-      >
+      <div v-once class="md-header">
         <ul class="nav-links">
           <li>
             {{ __('Commit Message') }}
-            <span
-              v-popover="$options.popoverOptions"
-              class="form-text text-muted prepend-left-10"
-            >
-              <icon
-                name="question"
-              />
+            <span v-popover="$options.popoverOptions" class="form-text text-muted prepend-left-10">
+              <icon name="question" />
             </span>
           </li>
         </ul>
@@ -97,22 +89,13 @@ export default {
         <div class="ide-commit-message-highlights-container">
           <div
             :style="{
-              transform: `translate3d(0, ${-scrollTop}px, 0)`
+              transform: `translate3d(0, ${-scrollTop}px, 0)`,
             }"
             class="note-textarea highlights monospace"
           >
-            <div
-              v-for="(line, index) in allLines"
-              :key="index"
-            >
-              <span
-                v-text="line.text"
-              >
-              </span><mark
-                v-show="line.highlightedText"
-                v-text="line.highlightedText"
-              >
-              </mark>
+            <div v-for="(line, index) in allLines" :key="index">
+              <span v-text="line.text"> </span
+              ><mark v-show="line.highlightedText" v-text="line.highlightedText"> </mark>
             </div>
           </div>
         </div>
@@ -124,8 +107,8 @@ export default {
           name="commit-message"
           @scroll="handleScroll"
           @input="onInput"
-          @focus="updateIsFocused(true)"
-          @blur="updateIsFocused(false)"
+          @focus="updateIsFocused(true);"
+          @blur="updateIsFocused(false);"
         >
         </textarea>
       </div>

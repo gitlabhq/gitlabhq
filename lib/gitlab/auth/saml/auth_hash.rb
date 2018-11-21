@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def extract_authn_context(document)
-          REXML::XPath.first(document, "//saml:AuthnStatement/saml:AuthnContext/saml:AuthnContextClassRef/text()").to_s
+          REXML::XPath.first(document, "//*[name()='saml:AuthnStatement' or name()='saml2:AuthnStatement']/*[name()='saml:AuthnContext' or name()='saml2:AuthnContext']/*[name()='saml:AuthnContextClassRef' or name()='saml2:AuthnContextClassRef']/text()").to_s
         end
       end
     end

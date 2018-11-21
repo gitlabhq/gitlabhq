@@ -184,11 +184,7 @@ export default {
           :img-alt="author.name"
           :img-size="40"
         >
-          <slot
-            slot="avatar-badge"
-            name="avatar-badge"
-          >
-          </slot>
+          <slot slot="avatar-badge" name="avatar-badge"> </slot>
         </user-avatar-link>
       </div>
       <div class="timeline-content">

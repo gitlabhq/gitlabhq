@@ -43,10 +43,7 @@ export default {
 
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      :show-disabled-button="Boolean(mr.removeWIPPath)"
-      status="warning"
-    />
+    <status-icon :show-disabled-button="Boolean(mr.removeWIPPath)" status="warning" />
     <div class="media-body space-children">
       <span class="bold">
         This is a Work in Progress
@@ -56,7 +53,8 @@ export default {
           title="When this merge request is ready,
           remove the WIP: prefix from the title to allow it to be merged"
           aria-label="When this merge request is ready,
-          remove the WIP: prefix from the title to allow it to be merged">
+          remove the WIP: prefix from the title to allow it to be merged"
+        >
         </i>
       </span>
       <button
@@ -64,13 +62,10 @@ export default {
         :disabled="isMakingRequest"
         type="button"
         class="btn btn-default btn-sm js-remove-wip"
-        @click="removeWIP">
-        <i
-          v-if="isMakingRequest"
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true">
-        </i>
-        Resolve WIP status
+        @click="removeWIP"
+      >
+        <i v-if="isMakingRequest" class="fa fa-spinner fa-spin" aria-hidden="true"> </i> Resolve WIP
+        status
       </button>
     </div>
   </div>

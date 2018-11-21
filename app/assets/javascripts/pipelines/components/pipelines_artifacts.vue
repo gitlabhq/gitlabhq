@@ -20,10 +20,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="btn-group"
-    role="group"
-  >
+  <div class="btn-group" role="group">
     <gl-button
       v-gl-tooltip
       class="dropdown-toggle build-artifacts js-pipeline-dropdown-download"
@@ -31,23 +28,11 @@ export default {
       data-toggle="dropdown"
       aria-label="Artifacts"
     >
-      <icon name="download" />
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true"
-      >
-      </i>
+      <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
     </gl-button>
     <ul class="dropdown-menu dropdown-menu-right">
-      <li
-        v-for="(artifact, i) in artifacts"
-        :key="i"
-      >
-        <gl-link
-          :href="artifact.path"
-          rel="nofollow"
-          download
-        >
+      <li v-for="(artifact, i) in artifacts" :key="i">
+        <gl-link :href="artifact.path" rel="nofollow" download>
           Download {{ artifact.name }} artifacts
         </gl-link>
       </li>

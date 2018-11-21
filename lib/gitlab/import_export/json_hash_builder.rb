@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     # Generates a hash that conforms with http://apidock.com/rails/Hash/to_json

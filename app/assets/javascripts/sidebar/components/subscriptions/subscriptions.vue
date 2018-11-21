@@ -73,10 +73,7 @@ export default {
 
 <template>
   <div>
-    <div
-      class="sidebar-collapsed-icon"
-      @click="onClickCollapsedIcon"
-    >
+    <div class="sidebar-collapsed-icon" @click="onClickCollapsedIcon">
       <span
         v-tooltip
         :title="notificationTooltip"
@@ -92,9 +89,7 @@ export default {
         />
       </span>
     </div>
-    <span class="issuable-header-text hide-collapsed float-left">
-      {{ __('Notifications') }}
-    </span>
+    <span class="issuable-header-text hide-collapsed float-left"> {{ __('Notifications') }} </span>
     <toggle-button
       ref="toggleButton"
       :is-loading="showLoadingState"

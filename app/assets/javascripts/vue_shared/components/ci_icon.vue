@@ -59,10 +59,5 @@ export default {
 };
 </script>
 <template>
-  <span :class="cssClass">
-    <icon
-      :name="icon"
-      :size="size"
-    />
-  </span>
+  <span :class="cssClass"> <icon :name="icon" :size="size" /> </span>
 </template>

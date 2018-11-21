@@ -42,18 +42,9 @@ export default {
 
 <template>
   <div class="d-flex ide-commit-editor-header align-items-center">
-    <file-icon
-      :file-name="activeFile.name"
-      :size="16"
-      class="mr-2"
-    />
-    <strong class="mr-2">
-      {{ activeFile.path }}
-    </strong>
-    <changed-file-icon
-      :file="activeFile"
-      class="ml-0"
-    />
+    <file-icon :file-name="activeFile.name" :size="16" class="mr-2" />
+    <strong class="mr-2"> {{ activeFile.path }} </strong>
+    <changed-file-icon :file="activeFile" class="ml-0" />
     <div class="ml-auto">
       <button
         v-if="!isStaged"
@@ -66,7 +57,7 @@ export default {
       <button
         :class="{
           'btn-success': !isStaged,
-          'btn-warning': isStaged
+          'btn-warning': isStaged,
         }"
         type="button"
         class="btn btn-inverted"
