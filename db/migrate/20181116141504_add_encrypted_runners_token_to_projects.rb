@@ -7,6 +7,5 @@ class AddEncryptedRunnersTokenToProjects < ActiveRecord::Migration
 
   def change
     add_column :projects, :runners_token_encrypted, :string
-    # TODO index
   end
 end

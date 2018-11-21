@@ -7,6 +7,5 @@ class AddEncryptedRunnersTokenToNamespaces < ActiveRecord::Migration
 
   def change
     add_column :namespaces, :runners_token_encrypted, :string
-    # TODO index
   end
 end

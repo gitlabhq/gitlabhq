@@ -7,6 +7,5 @@ class AddTokenEncryptedToCiRunners < ActiveRecord::Migration
 
   def change
     add_column :ci_runners, :token_encrypted, :string
-    # TODO index
   end
 end

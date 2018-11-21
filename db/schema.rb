@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120151656) do
+ActiveRecord::Schema.define(version: 20181121101802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -527,6 +527,7 @@ ActiveRecord::Schema.define(version: 20181120151656) do
     t.index ["locked"], name: "index_ci_runners_on_locked", using: :btree
     t.index ["runner_type"], name: "index_ci_runners_on_runner_type", using: :btree
     t.index ["token"], name: "index_ci_runners_on_token", using: :btree
+    t.index ["token_encrypted"], name: "index_ci_runners_on_token_encrypted", unique: true, using: :btree
   end
 
   create_table "ci_stages", force: :cascade do |t|
@@ -1334,6 +1335,7 @@ ActiveRecord::Schema.define(version: 20181120151656) do
     t.index ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
     t.index ["require_two_factor_authentication"], name: "index_namespaces_on_require_two_factor_authentication", using: :btree
     t.index ["runners_token"], name: "index_namespaces_on_runners_token", unique: true, using: :btree
+    t.index ["runners_token_encrypted"], name: "index_namespaces_on_runners_token_encrypted", unique: true, using: :btree
     t.index ["type"], name: "index_namespaces_on_type", using: :btree
   end
 
@@ -1669,6 +1671,7 @@ ActiveRecord::Schema.define(version: 20181120151656) do
     t.index ["repository_storage", "created_at"], name: "idx_project_repository_check_partial", where: "(last_repository_check_at IS NULL)", using: :btree
     t.index ["repository_storage"], name: "index_projects_on_repository_storage", using: :btree
     t.index ["runners_token"], name: "index_projects_on_runners_token", using: :btree
+    t.index ["runners_token_encrypted"], name: "index_projects_on_runners_token_encrypted", unique: true, using: :btree
     t.index ["star_count"], name: "index_projects_on_star_count", using: :btree
     t.index ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
   end
