@@ -262,28 +262,16 @@ describe('IDE store merge request actions', () => {
         bar: {},
       };
 
-      const originalDispatch = store.dispatch;
-
-      spyOn(store, 'dispatch').and.callFake((type, payload) => {
+      spyOn(store, 'dispatch').and.callFake(type => {
         switch (type) {
           case 'getMergeRequestData':
             return Promise.resolve(testMergeRequest);
           case 'getMergeRequestChanges':
             return Promise.resolve(testMergeRequestChanges);
-          case 'getFiles':
-          case 'getMergeRequestVersions':
-          case 'getBranchData':
-          case 'setFileMrChange':
-            return Promise.resolve();
           default:
-            return originalDispatch(type, payload);
+            return Promise.resolve();
         }
       });
-      spyOn(service, 'getFileData').and.callFake(() =>
-        Promise.resolve({
-          headers: {},
-        }),
-      );
     });
 
     it('dispatch actions for merge request data', done => {
@@ -315,17 +303,7 @@ describe('IDE store merge request actions', () => {
     });
 
     it('updates activity bar view and gets file data, if changes are found', done => {
-      store.state.entries.foo = {
-        url: 'test',
-      };
-      store.state.entries.bar = {
-        url: 'test',
-      };
-
-      testMergeRequestChanges.changes = [
-        { new_path: 'foo', path: 'foo' },
-        { new_path: 'bar', path: 'bar' },
-      ];
+      testMergeRequestChanges.changes = [{ new_path: 'foo' }, { new_path: 'bar' }];
 
       openMergeRequest(store, mr)
         .then(() => {
@@ -343,11 +321,8 @@ describe('IDE store merge request actions', () => {
             expect(store.dispatch).toHaveBeenCalledWith('getFileData', {
               path: change.new_path,
               makeFileActive: i === 0,
-              openFile: true,
             });
           });
-
-          expect(store.state.openFiles.length).toBe(testMergeRequestChanges.changes.length);
         })
         .then(done)
         .catch(done.fail);

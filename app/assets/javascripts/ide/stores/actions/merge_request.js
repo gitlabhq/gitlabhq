@@ -161,7 +161,6 @@ export const openMergeRequest = (
             dispatch('getFileData', {
               path: change.new_path,
               makeFileActive: ind === 0,
-              openFile: true,
             });
           }
         }

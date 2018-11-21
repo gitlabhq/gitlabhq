@@ -56,10 +56,7 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   dispatch('scrollToTab');
 };
 
-export const getFileData = (
-  { state, commit, dispatch },
-  { path, makeFileActive = true, openFile = makeFileActive },
-) => {
+export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
   const file = state.entries[path];
 
   if (file.raw || (file.tempFile && !file.prevPath)) return Promise.resolve();
@@ -74,8 +71,8 @@ export const getFileData = (
       const normalizedHeaders = normalizeHeaders(headers);
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
-      if (data) commit(types.SET_FILE_DATA, { data, file });
-      if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
+      commit(types.SET_FILE_DATA, { data, file });
+      if (makeFileActive) commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
