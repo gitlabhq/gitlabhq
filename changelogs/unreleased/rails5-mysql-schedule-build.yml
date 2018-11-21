@@ -1,5 +1,0 @@
----
-title: 'Rails 5: fix mysql milliseconds problems in scheduled build specs'
-merge_request: 22170
-author: Jasper Maes
-type: other

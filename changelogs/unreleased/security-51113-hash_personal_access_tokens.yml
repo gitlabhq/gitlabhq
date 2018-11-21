@@ -1,5 +1,0 @@
----
-title: Persist only SHA digest of PersonalAccessToken#token
-merge_request:
-author:
-type: security

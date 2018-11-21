@@ -1,5 +1,0 @@
----
-title: Disable replication lag check for Aurora PostgreSQL databases
-merge_request: 22786
-author:
-type: fixed

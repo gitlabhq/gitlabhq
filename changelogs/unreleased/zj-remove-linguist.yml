@@ -1,5 +1,0 @@
----
-title: Remove Linguist gem, reducing Rails memory usage by 128MB per process
-merge_request: 21008
-author:
-type: changed

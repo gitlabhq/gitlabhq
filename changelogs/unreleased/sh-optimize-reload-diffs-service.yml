@@ -1,5 +1,0 @@
----
-title: Significantly cut memory usage and SQL queries when reloading diffs
-merge_request: 22725
-author:
-type: performance
