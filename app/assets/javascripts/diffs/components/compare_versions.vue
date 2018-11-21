@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import Tooltip from '@gitlab/ui/dist/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -12,7 +12,7 @@ export default {
     Icon,
   },
   directives: {
-    Tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     mergeRequestDiffs: {
@@ -75,7 +75,7 @@ export default {
   <div class="mr-version-controls">
     <div class="mr-version-menus-container content-block">
       <button
-        v-tooltip.hover
+        v-gl-tooltip.hover
         type="button"
         class="btn btn-default append-right-8 js-toggle-tree-list"
         :class="{

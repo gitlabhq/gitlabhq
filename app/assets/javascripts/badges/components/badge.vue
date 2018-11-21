@@ -1,17 +1,15 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import Tooltip from '~/vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
-    Tooltip,
     GlLoadingIcon,
   },
   directives: {
-    Tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     imageUrl: {
@@ -93,7 +91,7 @@ export default {
 
     <button
       v-show="hasError"
-      v-tooltip
+      v-gl-tooltip.hover
       :title="s__('Badges|Reload badge image')"
       class="btn btn-transparent btn-sm text-primary"
       type="button"
