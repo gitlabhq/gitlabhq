@@ -9,7 +9,7 @@ collaborate with other people on the same project.
 
 A Merge Request (**MR**) is the basis of GitLab as a code collaboration
 and version control platform.
-Is it simple as the name implies: a _request_ to _merge_ one branch into another.
+It is as simple as the name implies: a _request_ to _merge_ one branch into another.
 
 With GitLab merge requests, you can:
 
