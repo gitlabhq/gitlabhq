@@ -170,7 +170,7 @@ export default class LabelsSelect {
           axios
             .get(labelUrl)
             .then(res => {
-              let data = res.data;
+              let { data } = res;
               if ($dropdown.hasClass('js-extra-options')) {
                 var extraData = [];
                 if (showNo) {
@@ -256,7 +256,8 @@ export default class LabelsSelect {
             }
           }
           if (label.color) {
-            colorEl = "<span class='dropdown-label-box' style='background: " + label.color + "'></span>";
+            colorEl =
+              "<span class='dropdown-label-box' style='background: " + label.color + "'></span>";
           } else {
             colorEl = '';
           }
