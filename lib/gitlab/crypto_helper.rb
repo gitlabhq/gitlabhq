@@ -17,7 +17,7 @@ module Gitlab
 
     def aes256_gcm_encrypt(value)
       encrypted_token = Encryptor.encrypt(AES256_GCM_OPTIONS.merge(value: value))
-      Base64.encode64(encrypted_token)
+      Base64.strict_encode64(encrypted_token)
     end
 
     def aes256_gcm_decrypt(value)
