@@ -29,7 +29,7 @@ describe('ide component', () => {
     resetStore(vm.$store);
   });
 
-  it('does not render right right when no files open', () => {
+  it('does not render right when no files open', () => {
     expect(vm.$el.querySelector('.panel-right')).toBeNull();
   });
 

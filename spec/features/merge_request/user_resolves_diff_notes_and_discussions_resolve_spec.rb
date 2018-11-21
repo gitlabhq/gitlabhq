@@ -325,7 +325,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      it 'allows user user to mark all discussions as resolved' do
+      it 'allows user to mark all discussions as resolved' do
         page.all('.discussion-reply-holder', count: 2).each do |reply_holder|
           page.within reply_holder do
             click_button 'Resolve discussion'
