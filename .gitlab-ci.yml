@@ -620,7 +620,8 @@ gitlab:assets:compile:
       - webpack-report/
       - public/assets/
   tags:
-    - docker
+    - gitlab-org-delivery
+    - high-cpu
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
