@@ -7,7 +7,7 @@ description: Read through the GitLab installation methods.
 
 ## Requirements
 
-Before installing GitLab, make sure to check the [requirements documentation](requirements.md)
+Before installing GitLab, make sure to check the [requirements documentation](install/requirements.md)
 which includes useful information on the supported Operating Systems as well as
 the hardware requirements.
 
@@ -23,7 +23,7 @@ To get the best experience from GitLab you need to balance:
 1. cost of hosting
 
 TIP: **If in doubt, choose Omnibus:**
-For nearly all GitLab installations we recommend using an Omnibus package **GitLab can support up to 40,000 users on a single box Omnibus installation** with enough CPU and RAM. (See [requirements documentation](requirements.md))
+For nearly all GitLab installations we recommend using an Omnibus package **GitLab can support up to 40,000 users on a single box Omnibus installation** with enough CPU and RAM. (See [requirements documentation](install/requirements.md))
 
 ### Omnibus (recommended)
 
@@ -53,7 +53,7 @@ GitLab is committed to Kubernetes as a foundational technology. There are three 
 
 While we recommend using GitLab for the first two points above, for most scenarios we do not currently recommend installing GitLab in Kubernetes. There are a number of trade-offs that you need to be aware of that may not be immediately obvious and could prevent you getting the best experience from GitLab:
 
-1. Configuration of feature such as object storage, backups and certificates can be more challenging
+1. Configuration of features such as object storage, backups and certificates can be more challenging
 1. Administration and troubleshooting requires Kubernetes knowledge
 1. It can be more expensive for smaller installations. You need multiple nodes for a basic installation when a single box Omnibus installation would work well
 1. There are some feature [limitations to be aware of](install/kubernetes/gitlab_chart.md#limitations)
