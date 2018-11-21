@@ -30,7 +30,7 @@ clients at your disposal.
 ### Installing the SSH client for Windows 8.1 and Windows 7
 
 The easiest way to install Git and the SSH client on Windows 8.1 and Windows 7
-is [Git for Windows](https://gitforwindows.com). It provides a BASH
+is [Git for Windows](https://gitforwindows.org). It provides a BASH
 emulation (Git Bash) used for running Git from the command line and the
 `ssh-keygen` command that is useful to create SSH keys as you'll learn below.
 
