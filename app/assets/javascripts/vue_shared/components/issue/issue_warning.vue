@@ -32,17 +32,14 @@ export default {
 </script>
 <template>
   <div class="issuable-note-warning">
-    <icon
-      v-if="!isLockedAndConfidential"
-      :name="warningIcon"
-      :size="16"
-      class="icon inline"
-    />
+    <icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}
-      {{ __(`People without permission will never
-get a notification and won't be able to comment.`) }}
+      {{
+        __(`People without permission will never
+get a notification and won't be able to comment.`)
+      }}
     </span>
 
     <span v-else-if="isConfidential">
@@ -51,8 +48,7 @@ get a notification and won't be able to comment.`) }}
     </span>
 
     <span v-else-if="isLocked">
-      {{ __('This issue is locked.') }}
-      {{ __('Only project members can comment.') }}
+      {{ __('This issue is locked.') }} {{ __('Only project members can comment.') }}
     </span>
   </div>
 </template>

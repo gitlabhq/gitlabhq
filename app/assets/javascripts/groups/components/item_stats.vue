@@ -76,14 +76,8 @@ export default {
       css-class="item-visibility"
       tooltip-placement="left"
     />
-    <div
-      v-if="isProject"
-      class="last-updated"
-    >
-      <time-ago-tooltip
-        :time="item.updatedAt"
-        tooltip-placement="bottom"
-      />
+    <div v-if="isProject" class="last-updated">
+      <time-ago-tooltip :time="item.updatedAt" tooltip-placement="bottom" />
     </div>
   </div>
 </template>

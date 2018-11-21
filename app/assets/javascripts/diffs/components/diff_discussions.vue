@@ -45,29 +45,22 @@ export default {
       v-for="(discussion, index) in discussions"
       :key="discussion.id"
       :class="{
-        collapsed: !isExpanded(discussion)
+        collapsed: !isExpanded(discussion),
       }"
       class="discussion-notes diff-discussions position-relative"
     >
-      <ul
-        :data-discussion-id="discussion.id"
-        class="notes"
-      >
+      <ul :data-discussion-id="discussion.id" class="notes">
         <template v-if="shouldCollapseDiscussions">
           <button
             :class="{
               'diff-notes-collapse': discussion.expanded,
-              'btn-transparent badge badge-pill': !discussion.expanded
+              'btn-transparent badge badge-pill': !discussion.expanded,
             }"
             type="button"
             class="js-diff-notes-toggle"
-            @click="toggleDiscussion({ discussionId: discussion.id })"
+            @click="toggleDiscussion({ discussionId: discussion.id });"
           >
-            <icon
-              v-if="discussion.expanded"
-              name="collapse"
-              class="collapse-icon"
-            />
+            <icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />
             <template v-else>
               {{ index + 1 }}
             </template>
@@ -81,11 +74,7 @@ export default {
           :discussions-by-diff-order="true"
           @noteDeleted="deleteNoteHandler"
         >
-          <span
-            v-if="renderAvatarBadge"
-            slot="avatar-badge"
-            class="badge badge-pill"
-          >
+          <span v-if="renderAvatarBadge" slot="avatar-badge" class="badge badge-pill">
             {{ index + 1 }}
           </span>
         </noteable-discussion>

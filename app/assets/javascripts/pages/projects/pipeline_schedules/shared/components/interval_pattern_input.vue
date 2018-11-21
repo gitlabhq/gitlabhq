@@ -70,20 +70,13 @@ export default {
         :checked="isEditable"
         class="label-bold"
         type="radio"
-        @click="toggleCustomInput(true)"
+        @click="toggleCustomInput(true);"
       />
 
-      <label for="custom">
-        {{ s__('PipelineSheduleIntervalPattern|Custom') }}
-      </label>
+      <label for="custom"> {{ s__('PipelineSheduleIntervalPattern|Custom') }} </label>
 
       <span class="cron-syntax-link-wrap">
-        (<a
-          :href="cronSyntaxUrl"
-          target="_blank"
-        >
-          {{ __('Cron syntax') }}
-        </a>)
+        (<a :href="cronSyntaxUrl" target="_blank"> {{ __('Cron syntax') }} </a>)
       </span>
     </div>
 
@@ -95,15 +88,10 @@ export default {
         :value="cronIntervalPresets.everyDay"
         class="label-bold"
         type="radio"
-        @click="toggleCustomInput(false)"
+        @click="toggleCustomInput(false);"
       />
 
-      <label
-        class="label-bold"
-        for="every-day"
-      >
-        {{ __('Every day (at 4:00am)') }}
-      </label>
+      <label class="label-bold" for="every-day"> {{ __('Every day (at 4:00am)') }} </label>
     </div>
 
     <div class="cron-preset-radio-input">
@@ -114,13 +102,10 @@ export default {
         :value="cronIntervalPresets.everyWeek"
         class="label-bold"
         type="radio"
-        @click="toggleCustomInput(false)"
+        @click="toggleCustomInput(false);"
       />
 
-      <label
-        class="label-bold"
-        for="every-week"
-      >
+      <label class="label-bold" for="every-week">
         {{ __('Every week (Sundays at 4:00am)') }}
       </label>
     </div>
@@ -133,13 +118,10 @@ export default {
         :value="cronIntervalPresets.everyMonth"
         class="label-bold"
         type="radio"
-        @click="toggleCustomInput(false)"
+        @click="toggleCustomInput(false);"
       />
 
-      <label
-        class="label-bold"
-        for="every-month"
-      >
+      <label class="label-bold" for="every-month">
         {{ __('Every month (on the 1st at 4:00am)') }}
       </label>
     </div>

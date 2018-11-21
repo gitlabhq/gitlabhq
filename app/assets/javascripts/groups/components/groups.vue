@@ -43,19 +43,9 @@ export default {
 
 <template>
   <div class="groups-list-tree-container qa-groups-list-tree-container">
-    <div
-      v-if="searchEmpty"
-      class="has-no-search-results"
-    >
-      {{ searchEmptyMessage }}
-    </div>
-    <template
-      v-else
-    >
-      <group-folder
-        :groups="groups"
-        :action="action"
-      />
+    <div v-if="searchEmpty" class="has-no-search-results">{{ searchEmptyMessage }}</div>
+    <template v-else>
+      <group-folder :groups="groups" :action="action" />
       <pagination-links
         :change="change"
         :page-info="pageInfo"

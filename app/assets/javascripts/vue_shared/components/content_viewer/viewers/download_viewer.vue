@@ -39,17 +39,8 @@ export default {
           ({{ fileSizeReadable }})
         </template>
       </p>
-      <gl-link
-        :href="path"
-        class="btn btn-default"
-        rel="nofollow"
-        download
-        target="_blank">
-        <icon
-          :size="16"
-          name="download"
-          css-classes="float-left append-right-8"
-        />
+      <gl-link :href="path" class="btn btn-default" rel="nofollow" download target="_blank">
+        <icon :size="16" name="download" css-classes="float-left append-right-8" />
         {{ __('Download') }}
       </gl-link>
     </div>

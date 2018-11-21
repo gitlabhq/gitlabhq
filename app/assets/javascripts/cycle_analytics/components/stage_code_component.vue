@@ -28,45 +28,26 @@ export default {
       <limit-warning :count="items.length" />
     </div>
     <ul class="stage-event-list">
-      <li
-        v-for="(mergeRequest, i) in items"
-        :key="i"
-        class="stage-event-item"
-      >
+      <li v-for="(mergeRequest, i) in items" :key="i" class="stage-event-item">
         <div class="item-details">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
           <user-avatar-image :img-src="mergeRequest.author.avatarUrl" />
           <h5 class="item-title merge-merquest-title">
-            <a :href="mergeRequest.url">
-              {{ mergeRequest.title }}
-            </a>
+            <a :href="mergeRequest.url"> {{ mergeRequest.title }} </a>
           </h5>
-          <a
-            :href="mergeRequest.url"
-            class="issue-link">
-            !{{ mergeRequest.iid }}
-          </a>
-          &middot;
+          <a :href="mergeRequest.url" class="issue-link"> !{{ mergeRequest.iid }} </a> &middot;
           <span>
             {{ s__('OpenedNDaysAgo|Opened') }}
-            <a
-              :href="mergeRequest.url"
-              class="issue-date">
-              {{ mergeRequest.createdAt }}
-            </a>
+            <a :href="mergeRequest.url" class="issue-date"> {{ mergeRequest.createdAt }} </a>
           </span>
           <span>
             {{ s__('ByAuthor|by') }}
-            <a
-              :href="mergeRequest.author.webUrl"
-              class="issue-author-link">
+            <a :href="mergeRequest.author.webUrl" class="issue-author-link">
               {{ mergeRequest.author.name }}
             </a>
           </span>
         </div>
-        <div class="item-time">
-          <total-time :time="mergeRequest.totalTime" />
-        </div>
+        <div class="item-time"><total-time :time="mergeRequest.totalTime" /></div>
       </li>
     </ul>
   </div>

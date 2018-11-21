@@ -45,12 +45,7 @@ export default {
 </script>
 
 <template>
-  <canvas
-    ref="canvas"
-    :data-page="number"
-    class="pdf-page"
-  >
-  </canvas>
+  <canvas ref="canvas" :data-page="number" class="pdf-page"> </canvas>
 </template>
 
 <style>

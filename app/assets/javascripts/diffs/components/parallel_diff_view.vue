@@ -41,9 +41,7 @@ export default {
   >
     <table>
       <tbody>
-        <template
-          v-for="(line, index) in diffLines"
-        >
+        <template v-for="(line, index) in diffLines">
           <parallel-diff-table-row
             :key="index"
             :file-hash="diffFile.file_hash"

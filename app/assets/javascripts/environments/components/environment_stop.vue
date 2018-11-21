@@ -65,6 +65,6 @@ export default {
     data-target="#stop-environment-modal"
     @click="onClick"
   >
-    <icon name="stop"/>
+    <icon name="stop" />
   </loading-button>
 </template>

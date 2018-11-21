@@ -38,10 +38,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-once
-    class="multi-file-discard-btn d-flex"
-  >
+  <div v-once class="multi-file-discard-btn d-flex">
     <button
       v-tooltip
       :aria-label="__('Stage changes')"
@@ -51,13 +48,9 @@ export default {
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click.stop.prevent="stageChange(path)"
+      @click.stop.prevent="stageChange(path);"
     >
-      <icon
-        :size="16"
-        name="mobile-issue-close"
-        class="ml-auto mr-auto"
-      />
+      <icon :size="16" name="mobile-issue-close" class="ml-auto mr-auto" />
     </button>
     <button
       v-tooltip
@@ -70,18 +63,14 @@ export default {
       data-placement="bottom"
       @click.stop.prevent="showDiscardModal"
     >
-      <icon
-        :size="16"
-        name="remove"
-        class="ml-auto mr-auto"
-      />
+      <icon :size="16" name="remove" class="ml-auto mr-auto" />
     </button>
     <gl-modal
       :id="modalId"
       :header-title-text="modalTitle"
       :footer-primary-button-text="__('Discard changes')"
       footer-primary-button-variant="danger"
-      @submit="discardFileChanges(path)"
+      @submit="discardFileChanges(path);"
     >
       {{ __("You will loose all changes you've made to this file. This action cannot be undone.") }}
     </gl-modal>

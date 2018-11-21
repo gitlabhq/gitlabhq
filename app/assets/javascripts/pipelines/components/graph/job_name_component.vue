@@ -28,8 +28,6 @@ export default {
   <span class="ci-job-name-component">
     <ci-icon :status="status" />
 
-    <span class="ci-status-text">
-      {{ name }}
-    </span>
+    <span class="ci-status-text"> {{ name }} </span>
   </span>
 </template>

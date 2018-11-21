@@ -112,8 +112,8 @@ describe('popover', () => {
         length: 0,
       };
 
-      spyOn($.fn, 'init').and.callFake(
-        selector => (selector === '.popover:hover' ? fakeJquery : $.fn),
+      spyOn($.fn, 'init').and.callFake(selector =>
+        selector === '.popover:hover' ? fakeJquery : $.fn,
       );
       spyOn(togglePopover, 'call');
       mouseleave();
@@ -126,8 +126,8 @@ describe('popover', () => {
         length: 1,
       };
 
-      spyOn($.fn, 'init').and.callFake(
-        selector => (selector === '.popover:hover' ? fakeJquery : $.fn),
+      spyOn($.fn, 'init').and.callFake(selector =>
+        selector === '.popover:hover' ? fakeJquery : $.fn,
       );
       spyOn(togglePopover, 'call');
       mouseleave();

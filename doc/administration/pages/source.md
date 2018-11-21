@@ -393,8 +393,9 @@ server_name ~^.*\.pages\.example\.io$;
 
 ## Access control
 
-Access control was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422)
-in GitLab 11.5. It can be configured per-project, and allows access to a Pages
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
+
+GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
 
 Access control works by registering the Pages daemon as an OAuth application
@@ -408,15 +409,17 @@ Each request to view a resource in a private site is authenticated by Pages
 using that token. For each request it receives, it makes a request to the GitLab
 API to check that the user is authorized to read that site.
 
-Pages access control is currently disabled by default. To enable it, you must:
+Pages access control is disabled by default. To enable it:
 
 1. Modify your `config/gitlab.yml` file:
+
     ```yaml
     pages:
       access_control: true
     ```
-1. [Restart GitLab][restart]
-1. Create a new [system OAuth application](../../integration/oauth_provider.md#adding-an-application-through-the-profile)
+
+1. [Restart GitLab][restart].
+1. Create a new [system OAuth application](../../integration/oauth_provider.md#adding-an-application-through-the-profile).
    This should be called `GitLab Pages` and have a `Redirect URL` of
    `https://projects.example.io/auth`. It does not need to be a "trusted"
    application, but it does need the "api" scope.
@@ -428,6 +431,8 @@ Pages access control is currently disabled by default. To enable it, you must:
       -auth-secret <40 random hex characters> \
       -auth-server <URL of the GitLab instance>
     ```
+
+1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
 
 ## Change storage path
 

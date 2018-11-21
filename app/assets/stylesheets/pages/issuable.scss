@@ -6,18 +6,15 @@
 .issuable-warning-icon {
   background-color: $orange-100;
   border-radius: $border-radius-default;
-  margin: 0 $btn-side-margin 0 0;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
+  margin-right: $issuable-warning-icon-margin;
+  line-height: $gl-line-height-24;
 
   .icon {
     fill: $orange-600;
     vertical-align: text-bottom;
-  }
-
-  &:first-of-type {
-    margin-right: $issuable-warning-icon-margin;
   }
 }
 
@@ -689,7 +686,6 @@
   flex: 1;
   display: inline-block;
   font-size: 14px;
-  line-height: 24px;
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;

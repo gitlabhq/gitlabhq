@@ -226,7 +226,17 @@ export const getParameterByName = (name, urlToParse) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-const handleSelectedRange = range => {
+const handleSelectedRange = (range, restrictToNode) => {
+  // Make sure this range is within the restricting container
+  if (restrictToNode && !range.intersectsNode(restrictToNode)) return null;
+
+  // If only a part of the range is within the wanted container, we need to restrict the range to it
+  if (restrictToNode && !restrictToNode.contains(range.commonAncestorContainer)) {
+    if (!restrictToNode.contains(range.startContainer)) range.setStart(restrictToNode, 0);
+    if (!restrictToNode.contains(range.endContainer))
+      range.setEnd(restrictToNode, restrictToNode.childNodes.length);
+  }
+
   const container = range.commonAncestorContainer;
   // add context to fragment if needed
   if (container.tagName === 'OL') {
@@ -237,14 +247,22 @@ const handleSelectedRange = range => {
   return range.cloneContents();
 };
 
-export const getSelectedFragment = () => {
+export const getSelectedFragment = restrictToNode => {
   const selection = window.getSelection();
   if (selection.rangeCount === 0) return null;
+  // Most usages of the selection only want text from a part of the page (e.g. discussion)
+  if (restrictToNode && !selection.containsNode(restrictToNode, true)) return null;
+
   const documentFragment = document.createDocumentFragment();
+  documentFragment.originalNodes = [];
 
   for (let i = 0; i < selection.rangeCount; i += 1) {
     const range = selection.getRangeAt(i);
-    documentFragment.appendChild(handleSelectedRange(range));
+    const handledRange = handleSelectedRange(range, restrictToNode);
+    if (handledRange) {
+      documentFragment.appendChild(handledRange);
+      documentFragment.originalNodes.push(range.commonAncestorContainer);
+    }
   }
   if (documentFragment.textContent.length === 0) return null;
 

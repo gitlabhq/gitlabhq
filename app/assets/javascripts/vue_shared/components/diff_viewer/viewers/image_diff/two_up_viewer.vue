@@ -32,11 +32,7 @@ export default {
       :inner-css-classes="['frame', 'added']"
       class="wrap w-50"
     >
-      <slot
-        slot="image-overlay"
-        name="image-overlay"
-      >
-      </slot>
+      <slot slot="image-overlay" name="image-overlay"> </slot>
     </image-viewer>
   </div>
 </template>

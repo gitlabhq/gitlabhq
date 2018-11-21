@@ -93,21 +93,11 @@ export default {
     <stop-environment-modal :environment="environmentInStopModal" />
 
     <div class="top-area">
-      <tabs
-        :tabs="tabs"
-        scope="environments"
-        @onChangeTab="onChangeTab"
-      />
+      <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
 
-      <div
-        v-if="canCreateEnvironment && !isLoading"
-        class="nav-controls"
-      >
-        <a
-          :href="newEnvironmentPath"
-          class="btn btn-success"
-        >
-          {{ s__("Environments|New environment") }}
+      <div v-if="canCreateEnvironment && !isLoading" class="nav-controls">
+        <a :href="newEnvironmentPath" class="btn btn-success">
+          {{ s__('Environments|New environment') }}
         </a>
       </div>
     </div>

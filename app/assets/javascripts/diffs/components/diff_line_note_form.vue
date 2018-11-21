@@ -88,9 +88,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="content discussion-form discussion-form-container discussion-notes"
-  >
+  <div class="content discussion-form discussion-form-container discussion-notes">
     <note-form
       ref="noteForm"
       :is-editing="true"

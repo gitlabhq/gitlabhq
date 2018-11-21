@@ -42,29 +42,18 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-file-list qa-file-list"
-  >
+  <div class="ide-file-list qa-file-list">
     <template v-if="showLoading">
-      <div
-        v-for="n in 3"
-        :key="n"
-        class="multi-file-loading-container"
-      >
+      <div v-for="n in 3" :key="n" class="multi-file-loading-container">
         <gl-skeleton-loading />
       </div>
     </template>
     <template v-else>
-      <header
-        :class="headerClass"
-        class="ide-tree-header"
-      >
+      <header :class="headerClass" class="ide-tree-header">
         <nav-dropdown />
         <slot name="header"></slot>
       </header>
-      <div
-        class="ide-tree-body h-100"
-      >
+      <div class="ide-tree-body h-100">
         <file-row
           v-for="file in currentTree.tree"
           :key="file.key"

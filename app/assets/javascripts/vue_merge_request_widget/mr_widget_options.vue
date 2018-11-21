@@ -295,9 +295,7 @@ export default {
 </script>
 <template>
   <div class="mr-state-widget prepend-top-default">
-    <mr-widget-header
-      :mr="mr"
-    />
+    <mr-widget-header :mr="mr" />
     <mr-widget-pipeline
       v-if="shouldRenderPipelines"
       :pipeline="mr.pipeline"
@@ -322,17 +320,10 @@ export default {
       />
 
       <div class="mr-widget-section">
-        <component
-          :is="componentName"
-          :mr="mr"
-          :service="service"
-        />
+        <component :is="componentName" :mr="mr" :service="service" />
 
-        <section
-          v-if="mr.allowCollaboration"
-          class="mr-info-list mr-links"
-        >
-          {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
+        <section v-if="mr.allowCollaboration" class="mr-info-list mr-links">
+          {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
         </section>
 
         <mr-widget-related-links
@@ -341,16 +332,9 @@ export default {
           :related-links="mr.relatedLinks"
         />
 
-        <source-branch-removal-status
-          v-if="shouldRenderSourceBranchRemovalStatus"
-        />
+        <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
       </div>
-      <div
-        v-if="shouldRenderMergeHelp"
-        class="mr-widget-footer"
-      >
-        <mr-widget-merge-help />
-      </div>
+      <div v-if="shouldRenderMergeHelp" class="mr-widget-footer"><mr-widget-merge-help /></div>
     </div>
 
     <template v-if="shouldRenderMergedPipeline">

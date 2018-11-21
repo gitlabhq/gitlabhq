@@ -32,7 +32,6 @@
 
   .file-title {
     @extend .monospace;
-
     line-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
@@ -44,13 +43,6 @@
     padding-right: $gl-padding;
     border-right: 1px solid $border-color;
     display: block;
-    float: left;
-    margin-right: 10px;
-  }
-
-  .editor-file-name {
-    @extend .monospace;
-
     float: left;
     margin-right: 10px;
   }

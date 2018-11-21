@@ -69,13 +69,8 @@ export default {
 
 <template>
   <div class="float-right ide-file-icon-holder">
-    <mr-file-icon
-      v-if="file.mrChange"
-    />
-    <span
-      v-if="showTreeChangesCount"
-      class="ide-tree-changes"
-    >
+    <mr-file-icon v-if="file.mrChange" />
+    <span v-if="showTreeChangesCount" class="ide-tree-changes">
       {{ changesCount }}
       <icon
         v-tooltip

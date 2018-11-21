@@ -1,5 +1,5 @@
 ---
-last_updated: 2018-08-16
+last_updated: 2018-11-19
 author: Marcia Ramos
 author_gitlab: marcia
 level: beginner
@@ -183,7 +183,7 @@ you can use the following setup:
 - In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`
 - In GitLab, add the domain to GitLab Pages
 - In Cloudflare, create a DNS `TXT` record to verify your domain
-- In Cloudflare, create a DNS `CNAME` record poiting `www` to `domain.com`
+- In Cloudflare, create a DNS `CNAME` record pointing `www` to `domain.com`
 
 ## SSL/TLS Certificates
 

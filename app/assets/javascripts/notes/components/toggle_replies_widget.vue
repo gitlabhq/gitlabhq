@@ -42,15 +42,9 @@ export default {
 </script>
 
 <template>
-  <li
-    :class="className"
-    class="replies-toggle"
-  >
+  <li :class="className" class="replies-toggle">
     <template v-if="collapsed">
-      <icon
-        name="chevron-right"
-        @click.native="toggle"
-      />
+      <icon name="chevron-right" @click.native="toggle" />
       <div>
         <user-avatar-link
           v-for="author in uniqueAuthors"
@@ -63,32 +57,17 @@ export default {
           tooltip-placement="bottom"
         />
       </div>
-      <button
-        class="btn btn-link js-replies-text"
-        type="button"
-        @click="toggle"
-      >
+      <button class="btn btn-link js-replies-text" type="button" @click="toggle">
         {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
       </button>
       {{ __('Last reply by') }}
-      <a
-        :href="lastReply.author.path"
-        class="btn btn-link author-link"
-      >
+      <a :href="lastReply.author.path" class="btn btn-link author-link">
         {{ lastReply.author.name }}
       </a>
-      <time-ago-tooltip
-        :time="lastReply.created_at"
-        tooltip-placement="bottom"
-      />
+      <time-ago-tooltip :time="lastReply.created_at" tooltip-placement="bottom" />
     </template>
-    <span
-      v-else
-      class="collapse-replies-btn js-collapse-replies"
-      @click="toggle"
-    >
-      <icon name="chevron-down" />
-      {{ s__('Notes|Collapse replies') }}
+    <span v-else class="collapse-replies-btn js-collapse-replies" @click="toggle">
+      <icon name="chevron-down" /> {{ s__('Notes|Collapse replies') }}
     </span>
   </li>
 </template>

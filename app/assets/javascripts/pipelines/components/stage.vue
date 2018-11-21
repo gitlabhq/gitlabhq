@@ -169,35 +169,20 @@ export default {
       aria-expanded="false"
       @click="onClickStage"
     >
-
-      <span
-        :aria-label="stage.title"
-        aria-hidden="true"
-        class="no-pointer-events"
-      >
+      <span :aria-label="stage.title" aria-hidden="true" class="no-pointer-events">
         <icon :name="borderlessIcon" />
       </span>
 
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true"
-      >
-      </i>
+      <i class="fa fa-caret-down" aria-hidden="true"> </i>
     </button>
 
     <div
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
       aria-labelledby="stageDropdown"
     >
-      <gl-loading-icon v-if="isLoading"/>
-      <ul
-        v-else
-        class="js-builds-dropdown-list scrollable-menu"
-      >
-        <li
-          v-for="job in dropdownContent"
-          :key="job.id"
-        >
+      <gl-loading-icon v-if="isLoading" />
+      <ul v-else class="js-builds-dropdown-list scrollable-menu">
+        <li v-for="job in dropdownContent" :key="job.id">
           <job-item
             :dropdown-length="dropdownContent.length"
             :job="job"

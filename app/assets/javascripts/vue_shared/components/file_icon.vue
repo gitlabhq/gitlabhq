@@ -72,21 +72,10 @@ export default {
 </script>
 <template>
   <span>
-    <svg
-      v-if="!loading && !folder"
-      :class="[iconSizeClass, cssClasses]"
-    >
-      <use v-bind="{ 'xlink:href':spriteHref }" />
+    <svg v-if="!loading && !folder" :class="[iconSizeClass, cssClasses]">
+      <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>
-    <icon
-      v-if="!loading && folder"
-      :name="folderIconName"
-      :size="size"
-      css-classes="folder-icon"
-    />
-    <gl-loading-icon
-      v-if="loading"
-      :inline="true"
-    />
+    <icon v-if="!loading && folder" :name="folderIconName" :size="size" css-classes="folder-icon" />
+    <gl-loading-icon v-if="loading" :inline="true" />
   </span>
 </template>

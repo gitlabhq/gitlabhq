@@ -51,8 +51,8 @@ describe('SigninTabsMemoizer', () => {
     const fakeTab = {
       click: () => {},
     };
-    spyOn(document, 'querySelector').and.callFake(
-      selector => (selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab),
+    spyOn(document, 'querySelector').and.callFake(selector =>
+      selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab,
     );
     spyOn(fakeTab, 'click');
 

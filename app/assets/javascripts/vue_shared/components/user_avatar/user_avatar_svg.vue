@@ -34,10 +34,5 @@ export default {
 </script>
 
 <template>
-  <svg
-    :class="avatarSizeClass"
-    :height="size"
-    :width="size"
-    v-html="svg"
-  />
+  <svg :class="avatarSizeClass" :height="size" :width="size" v-html="svg" />
 </template>

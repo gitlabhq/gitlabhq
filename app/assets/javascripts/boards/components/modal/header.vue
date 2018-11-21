@@ -58,16 +58,14 @@ export default {
           class="close"
           data-dismiss="modal"
           aria-label="Close"
-          @click="toggleModal(false)"
+          @click="toggleModal(false);"
         >
           <span aria-hidden="true">×</span>
         </button>
       </h2>
     </header>
-    <modal-tabs v-if="!loading && issuesCount > 0"/>
-    <div
-      v-if="showSearch"
-      class="add-issues-search append-bottom-10">
+    <modal-tabs v-if="!loading && issuesCount > 0" />
+    <div v-if="showSearch" class="add-issues-search append-bottom-10">
       <modal-filters :store="filter" />
       <button
         ref="selectAllBtn"

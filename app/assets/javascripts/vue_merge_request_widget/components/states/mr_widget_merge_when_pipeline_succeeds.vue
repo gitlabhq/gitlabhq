@@ -84,9 +84,9 @@ export default {
     <div class="media-body">
       <h4 class="d-flex align-items-start">
         <span class="append-right-10">
-          {{ s__("mrWidget|Set by") }}
+          {{ s__('mrWidget|Set by') }}
           <mr-widget-author :author="mr.setToMWPSBy" />
-          {{ s__("mrWidget|to be merged automatically when the pipeline succeeds") }}
+          {{ s__('mrWidget|to be merged automatically when the pipeline succeeds') }}
         </span>
         <a
           v-if="mr.canCancelAutomaticMerge"
@@ -94,35 +94,23 @@ export default {
           role="button"
           href="#"
           class="btn btn-sm btn-default js-cancel-auto-merge"
-          @click.prevent="cancelAutomaticMerge">
-          <i
-            v-if="isCancellingAutoMerge"
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true"
-          >
-          </i>
-          {{ s__("mrWidget|Cancel automatic merge") }}
+          @click.prevent="cancelAutomaticMerge"
+        >
+          <i v-if="isCancellingAutoMerge" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+          {{ s__('mrWidget|Cancel automatic merge') }}
         </a>
       </h4>
       <section class="mr-info-list">
         <p>
-          {{ s__("mrWidget|The changes will be merged into") }}
-          <a
-            :href="mr.targetBranchPath"
-            class="label-branch"
-          >
-            {{ mr.targetBranch }}
-          </a>
+          {{ s__('mrWidget|The changes will be merged into') }}
+          <a :href="mr.targetBranchPath" class="label-branch"> {{ mr.targetBranch }} </a>
         </p>
         <p v-if="mr.shouldRemoveSourceBranch">
-          {{ s__("mrWidget|The source branch will be removed") }}
+          {{ s__('mrWidget|The source branch will be removed') }}
         </p>
-        <p
-          v-else
-          class="d-flex align-items-start"
-        >
+        <p v-else class="d-flex align-items-start">
           <span class="append-right-10">
-            {{ s__("mrWidget|The source branch will not be removed") }}
+            {{ s__('mrWidget|The source branch will not be removed') }}
           </span>
           <a
             v-if="canRemoveSourceBranch"
@@ -132,13 +120,8 @@ export default {
             href="#"
             @click.prevent="removeSourceBranch"
           >
-            <i
-              v-if="isRemovingSourceBranch"
-              class="fa fa-spinner fa-spin"
-              aria-hidden="true"
-            >
-            </i>
-            {{ s__("mrWidget|Remove source branch") }}
+            <i v-if="isRemovingSourceBranch" class="fa fa-spinner fa-spin" aria-hidden="true"> </i>
+            {{ s__('mrWidget|Remove source branch') }}
           </a>
         </p>
       </section>

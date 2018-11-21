@@ -111,7 +111,7 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
-    "@gitlab/eslint-config": "^1.1.0",
+    "@gitlab/eslint-config": "^1.2.0",
     "axios-mock-adapter": "^1.15.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-rewire": "^1.2.0",
@@ -139,7 +139,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.0-beta.0",
     "nodemon": "^1.18.4",
-    "prettier": "1.14.3",
+    "prettier": "1.15.2",
     "webpack-dev-server": "^3.1.8"
   }
 }

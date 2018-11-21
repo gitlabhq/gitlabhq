@@ -66,25 +66,17 @@ export default {
 
 <template>
   <span>
-    <span
-      ref="issueDueDate"
-      class="board-card-info card-number"
-    >
+    <span ref="issueDueDate" class="board-card-info card-number">
       <icon
-        :class="{'text-danger': isPastDue, 'board-card-info-icon': true}"
+        :class="{ 'text-danger': isPastDue, 'board-card-info-icon': true }"
         name="calendar"
-      /><time
-        :class="{'text-danger': isPastDue}"
-        datetime="date"
-        class="board-card-info-text">{{ body }}</time>
+      /><time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
+        body
+      }}</time>
     </span>
-    <gl-tooltip
-      :target="() => $refs.issueDueDate"
-      placement="bottom"
-    >
-      <span class="bold">{{ __('Due date') }}</span>
-      <br />
-      <span :class="{'text-danger-muted': isPastDue}">{{ title }}</span>
+    <gl-tooltip :target="() => $refs.issueDueDate" placement="bottom">
+      <span class="bold">{{ __('Due date') }}</span> <br />
+      <span :class="{ 'text-danger-muted': isPastDue }">{{ title }}</span>
     </gl-tooltip>
   </span>
 </template>

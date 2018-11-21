@@ -21,9 +21,7 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      status="warning"
-    />
+    <status-icon status="warning" />
     <div class="media-body">
       <mr-widget-author-time
         :action-text="s__('mrWidget|Closed by')"
@@ -34,13 +32,8 @@ export default {
 
       <section class="mr-info-list">
         <p>
-          {{ s__("mrWidget|The changes were not merged into") }}
-          <a
-            :href="mr.targetBranchPath"
-            class="label-branch"
-          >
-            {{ mr.targetBranch }}
-          </a>
+          {{ s__('mrWidget|The changes were not merged into') }}
+          <a :href="mr.targetBranchPath" class="label-branch"> {{ mr.targetBranch }} </a>
         </p>
       </section>
     </div>

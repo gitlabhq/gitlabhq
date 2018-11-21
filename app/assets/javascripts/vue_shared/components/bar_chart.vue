@@ -271,25 +271,17 @@ export default {
 };
 </script>
 <template>
-  <div
-    ref="svgContainer"
-    :class="activateGrabCursor"
-    class="svg-graph-container"
-  >
+  <div ref="svgContainer" :class="activateGrabCursor" class="svg-graph-container">
     <svg
       ref="baseSvg"
       :width="vpWidth"
       :height="vpHeight"
       :viewBox="svgViewBox"
-      :preserveAspectRatio="preserveAspectRatioType">
-      <g
-        ref="xAxis"
-        :transform="xAxisLocation"
-        class="x-axis"
-      />
+      :preserveAspectRatio="preserveAspectRatioType"
+    >
+      <g ref="xAxis" :transform="xAxisLocation" class="x-axis" />
       <g v-if="!isLoading">
-        <template
-          v-for="(data, index) in graphData">
+        <template v-for="(data, index) in graphData">
           <rect
             :key="index"
             v-tooltip
@@ -301,43 +293,24 @@ export default {
             :title="setTooltipTitle(data)"
             class="bar-rect"
             data-placement="top"
-            @mouseover="barHoveredIn(index)"
-            @mouseout="barHoveredOut(index)"
+            @mouseover="barHoveredIn(index);"
+            @mouseout="barHoveredOut(index);"
           />
         </template>
       </g>
-      <rect
-        :height="vbHeight + 100"
-        transform="translate(-100, -5)"
-        width="100"
-        fill="#fff"
-      />
+      <rect :height="vbHeight + 100" transform="translate(-100, -5)" width="100" fill="#fff" />
       <g class="y-axis-label">
-        <line
-          :x1="0"
-          :x2="0"
-          :y1="0"
-          :y2="vbHeight"
-          transform="translate(-35, 0)"
-          stroke="black"
-        />
-        <!--Get text length and change the height of this rect accordingly-->
+        <line :x1="0" :x2="0" :y1="0" :y2="vbHeight" transform="translate(-35, 0)" stroke="black" />
+        <!-- Get text length and change the height of this rect accordingly -->
         <rect
           :height="rectYAxisLabelDims.height"
           :transform="yAxisLabelRectTransform"
           :width="30"
           fill="#fff"
         />
-        <text
-          ref="yAxisLabel"
-          :transform="yAxisLabelTextTransform"
-        >
-          {{ yAxisLabel }}
-        </text>
+        <text ref="yAxisLabel" :transform="yAxisLabelTextTransform">{{ yAxisLabel }}</text>
       </g>
-      <g
-        class="y-axis"
-      />
+      <g class="y-axis" />
       <g v-if="showScrollIndicator">
         <rect
           :height="vbHeight + 100"
@@ -354,38 +327,24 @@ export default {
           class="animate-flicker"
         />
       </g>
-      <!--The line that shows up when the data elements surpass the available width -->
-      <g
-        v-if="showScrollIndicator"
-        :transform="scrollIndicatorTransform">
-        <rect
-          :height="vbHeight"
-          x="0"
-          y="0"
-          width="20"
-          fill="url(#shadow-gradient)"
-        />
+      <!-- The line that shows up when the data elements surpass the available width -->
+      <g v-if="showScrollIndicator" :transform="scrollIndicatorTransform">
+        <rect :height="vbHeight" x="0" y="0" width="20" fill="url(#shadow-gradient)" />
       </g>
-      <!--Left scroll indicator-->
-      <g
-        v-if="showLeftScrollIndicator"
-        transform="translate(0, 0)">
-        <rect
-          :height="vbHeight"
-          x="0"
-          y="0"
-          width="20"
-          fill="url(#left-shadow-gradient)"
-        />
+      <!-- Left scroll indicator -->
+      <g v-if="showLeftScrollIndicator" transform="translate(0, 0)">
+        <rect :height="vbHeight" x="0" y="0" width="20" fill="url(#left-shadow-gradient)" />
       </g>
       <svg-gradient
         :colors="gradientColors"
         :opacity="gradientOpacity"
-        identifier-name="shadow-gradient"/>
+        identifier-name="shadow-gradient"
+      />
       <svg-gradient
         :colors="inverseGradientColors"
         :opacity="inverseGradientOpacity"
-        identifier-name="left-shadow-gradient"/>
+        identifier-name="left-shadow-gradient"
+      />
     </svg>
   </div>
 </template>

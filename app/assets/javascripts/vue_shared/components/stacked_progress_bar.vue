@@ -88,16 +88,8 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="cssClass"
-    class="stacked-progress-bar"
-  >
-    <span
-      v-if="!totalCount"
-      class="status-unavailable"
-    >
-      {{ __("Not available") }}
-    </span>
+  <div :class="cssClass" class="stacked-progress-bar">
+    <span v-if="!totalCount" class="status-unavailable"> {{ __('Not available') }} </span>
     <span
       v-if="successPercent"
       v-tooltip

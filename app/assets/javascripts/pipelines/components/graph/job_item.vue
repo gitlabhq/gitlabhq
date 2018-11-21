@@ -114,10 +114,7 @@ export default {
       :class="cssClassJobName"
       class="js-pipeline-graph-job-link"
     >
-      <job-name-component
-        :name="job.name"
-        :status="job.status"
-      />
+      <job-name-component :name="job.name" :status="job.status" />
     </gl-link>
 
     <div
@@ -127,11 +124,7 @@ export default {
       :class="cssClassJobName"
       class="js-job-component-tooltip non-details-job-component"
     >
-
-      <job-name-component
-        :name="job.name"
-        :status="job.status"
-      />
+      <job-name-component :name="job.name" :status="job.status" />
     </div>
 
     <action-component

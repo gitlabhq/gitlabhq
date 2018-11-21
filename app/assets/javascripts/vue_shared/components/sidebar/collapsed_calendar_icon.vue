@@ -47,16 +47,9 @@ export default {
     data-boundary="viewport"
     @click="click"
   >
-    <i
-      v-if="showIcon"
-      class="fa fa-calendar"
-      aria-hidden="true"
-    >
-    </i>
+    <i v-if="showIcon" class="fa fa-calendar" aria-hidden="true"> </i>
     <slot>
-      <span>
-        {{ text }}
-      </span>
+      <span> {{ text }} </span>
     </slot>
   </div>
 </template>

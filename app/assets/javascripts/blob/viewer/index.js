@@ -23,10 +23,12 @@ export default class BlobViewer {
     if (!viewer || !viewer.dataset.richType) return;
 
     const initViewer = promise =>
-      promise.then(module => module.default(viewer)).catch(error => {
-        Flash('Error loading file viewer.');
-        throw error;
-      });
+      promise
+        .then(module => module.default(viewer))
+        .catch(error => {
+          Flash('Error loading file viewer.');
+          throw error;
+        });
 
     switch (viewer.dataset.richType) {
       case 'balsamiq':

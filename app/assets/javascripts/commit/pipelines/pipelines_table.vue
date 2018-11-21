@@ -82,7 +82,6 @@ export default {
 </script>
 <template>
   <div class="content-list pipelines">
-
     <gl-loading-icon
       v-if="isLoading"
       :label="s__('Pipelines|Loading Pipelines')"
@@ -93,14 +92,13 @@ export default {
     <svg-blank-state
       v-else-if="shouldRenderErrorState"
       :svg-path="errorStateSvgPath"
-      :message="s__(`Pipelines|There was an error fetching the pipelines.
-      Try again in a few moments or contact your support team.`)"
+      :message="
+        s__(`Pipelines|There was an error fetching the pipelines.
+      Try again in a few moments or contact your support team.`)
+      "
     />
 
-    <div
-      v-else-if="shouldRenderTable"
-      class="table-holder"
-    >
+    <div v-else-if="shouldRenderTable" class="table-holder">
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"

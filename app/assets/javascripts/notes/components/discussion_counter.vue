@@ -50,13 +50,9 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="discussionCount > 0"
-    class="line-resolve-all-container prepend-top-8">
+  <div v-if="discussionCount > 0" class="line-resolve-all-container prepend-top-8">
     <div>
-      <div
-        :class="{ 'has-next-btn': hasNextButton }"
-        class="line-resolve-all">
+      <div :class="{ 'has-next-btn': hasNextButton }" class="line-resolve-all">
         <span
           :class="{ 'is-active': allResolved }"
           class="line-resolve-btn is-disabled"
@@ -68,29 +64,25 @@ export default {
           {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ countText }} resolved
         </span>
       </div>
-      <div
-        v-if="resolveAllDiscussionsIssuePath && !allResolved"
-        class="btn-group"
-        role="group">
+      <div v-if="resolveAllDiscussionsIssuePath && !allResolved" class="btn-group" role="group">
         <a
           v-tooltip
           :href="resolveAllDiscussionsIssuePath"
           :title="s__('Resolve all discussions in new issue')"
           data-container="body"
-          class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
+          class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
+        >
           <icon name="issue-new" />
         </a>
       </div>
-      <div
-        v-if="isLoggedIn && !allResolved"
-        class="btn-group"
-        role="group">
+      <div v-if="isLoggedIn && !allResolved" class="btn-group" role="group">
         <button
           v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"
           class="btn btn-default discussion-next-btn"
-          @click="jumpToFirstUnresolvedDiscussion">
+          @click="jumpToFirstUnresolvedDiscussion"
+        >
           <icon name="comment-next" />
         </button>
       </div>

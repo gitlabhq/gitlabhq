@@ -111,44 +111,19 @@ export default {
   <div class="branch-commit">
     <template v-if="hasCommitRef && showBranch">
       <div class="icon-container">
-        <i
-          v-if="tag"
-          class="fa fa-tag"
-          aria-hidden="true"
-        >
-        </i>
-        <icon
-          v-if="!tag"
-          name="fork"
-        />
+        <i v-if="tag" class="fa fa-tag" aria-hidden="true"> </i> <icon v-if="!tag" name="fork" />
       </div>
 
-      <a
-        v-gl-tooltip
-        :href="commitRef.ref_url"
-        :title="commitRef.name"
-        class="ref-name"
-      >
+      <a v-gl-tooltip :href="commitRef.ref_url" :title="commitRef.name" class="ref-name">
         {{ commitRef.name }}
       </a>
     </template>
-    <icon
-      name="commit"
-      class="commit-icon js-commit-icon"
-    />
+    <icon name="commit" class="commit-icon js-commit-icon" />
 
-    <a
-      :href="commitUrl"
-      class="commit-sha"
-    >
-      {{ shortSha }}
-    </a>
+    <a :href="commitUrl" class="commit-sha"> {{ shortSha }} </a>
 
     <div class="commit-title flex-truncate-parent">
-      <span
-        v-if="title"
-        class="flex-truncate-child"
-      >
+      <span v-if="title" class="flex-truncate-child">
         <user-avatar-link
           v-if="hasAuthor"
           :link-href="author.path"
@@ -157,16 +132,9 @@ export default {
           :tooltip-text="author.username"
           class="avatar-image-container"
         />
-        <a
-          :href="commitUrl"
-          class="commit-row-message"
-        >
-          {{ title }}
-        </a>
+        <a :href="commitUrl" class="commit-row-message"> {{ title }} </a>
       </span>
-      <span v-else>
-        Can't find HEAD commit for this branch
-      </span>
+      <span v-else> Can't find HEAD commit for this branch </span>
     </div>
   </div>
 </template>

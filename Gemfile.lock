@@ -182,7 +182,7 @@ GEM
     encryptor (3.0.0)
     equalizer (0.0.11)
     erubis (2.7.0)
-    escape_utils (1.1.1)
+    escape_utils (1.2.1)
     et-orbi (1.0.3)
       tzinfo
     eventmachine (1.2.7)

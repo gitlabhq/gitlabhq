@@ -27,22 +27,18 @@ export default {
 
 <template>
   <span>
-    <span
-      ref="issueTimeEstimate"
-      class="board-card-info card-number"
-    >
-      <icon
-        name="hourglass"
-        css-classes="board-card-info-icon"
-      /><time class="board-card-info-text">{{ timeEstimate }}</time>
+    <span ref="issueTimeEstimate" class="board-card-info card-number">
+      <icon name="hourglass" css-classes="board-card-info-icon" /><time
+        class="board-card-info-text"
+        >{{ timeEstimate }}</time
+      >
     </span>
     <gl-tooltip
       :target="() => $refs.issueTimeEstimate"
       placement="bottom"
       class="js-issue-time-estimate"
     >
-      <span class="bold d-block">{{ __('Time estimate') }}</span>
-      {{ title }}
+      <span class="bold d-block">{{ __('Time estimate') }}</span> {{ title }}
     </gl-tooltip>
   </span>
 </template>
