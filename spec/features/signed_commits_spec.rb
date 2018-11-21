@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'GPG signed commits', :js do
@@ -61,8 +63,7 @@ describe 'GPG signed commits', :js do
     end
   end
 
-  context 'shows popover badges' do
-    let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
+  context 'shows popover badges', :js do
     let(:user_1) do
       create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
     end
@@ -87,7 +88,7 @@ describe 'GPG signed commits', :js do
     end
 
     it 'unverified signature' do
-      visit project_commit_path(project, ref)
+      visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
 
       click_on 'Unverified'
 
@@ -98,11 +99,9 @@ describe 'GPG signed commits', :js do
     end
 
     it 'unverified signature: user email does not match the committer email, but is the same user' do
-      ref = 'a17a9f66543673edf0a3d1c6b93bdda3fe600f32'
-
       user_2_key
 
-      visit project_commit_path(project, ref)
+      visit project_commit_path(project, GpgHelpers::DIFFERING_EMAIL_SHA)
 
       click_on 'Unverified'
 
@@ -117,7 +116,7 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email' do
       user_2_key
 
-      visit project_commit_path(project, ref)
+      visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
 
       click_on 'Unverified'
 
@@ -130,11 +129,9 @@ describe 'GPG signed commits', :js do
     end
 
     it 'verified and the gpg user has a gitlab profile' do
-      ref = '3c1d9a0266cb0c62d926f4a6c649beed561846f5'
-
       user_1_key
 
-      visit project_commit_path(project, ref)
+      visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
 
       click_on 'Verified'
 
@@ -147,11 +144,9 @@ describe 'GPG signed commits', :js do
     end
 
     it "verified and the gpg user's profile doesn't exist anymore" do
-      ref = '3c1d9a0266cb0c62d926f4a6c649beed561846f5'
-
       user_1_key
 
-      visit project_commit_path(project, ref)
+      visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
 
       # wait for the signature to get generated
       expect(page).to have_content 'Verified'
