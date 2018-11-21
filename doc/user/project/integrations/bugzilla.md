@@ -16,8 +16,9 @@ Once you have configured and enabled Bugzilla you'll see the Bugzilla link on th
 ## Referencing issues in Bugzilla
 
 Issues in Bugzilla can be referenced in two alternative ways:
-1. `#<ID>` where `<ID>` is a number (example `#143`).
-2. `<PROJECT>-<ID>` where `<PROJECT>` starts with a capital letter which is
+
+- `#<ID>` where `<ID>` is a number (example `#143`).
+- `<PROJECT>-<ID>` where `<PROJECT>` starts with a capital letter which is
   then followed by capital letters, numbers or underscores, and `<ID>` is
   a number (example `API_32-143`).
 

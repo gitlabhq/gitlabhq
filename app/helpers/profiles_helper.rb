@@ -7,7 +7,7 @@ module ProfilesHelper
 
     [
       [s_("Profiles|Use a private email - %{email}").html_safe % { email: private_email }, Gitlab::PrivateCommitEmail::TOKEN],
-      verified_emails
+      *verified_emails
     ]
   end
 

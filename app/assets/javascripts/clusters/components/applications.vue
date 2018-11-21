@@ -158,15 +158,13 @@ export default {
 
 <template>
   <section id="cluster-applications">
-    <h4>
-      {{ s__('ClusterIntegration|Applications') }}
-    </h4>
+    <h4>{{ s__('ClusterIntegration|Applications') }}</h4>
     <p class="append-bottom-0">
-      {{ s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.
-        Helm Tiller is required to install any of the following applications.`) }}
-      <a :href="helpPath">
-        {{ __('More information') }}
-      </a>
+      {{
+        s__(`ClusterIntegration|Choose which applications to install on your Kubernetes cluster.
+        Helm Tiller is required to install any of the following applications.`)
+      }}
+      <a :href="helpPath"> {{ __('More information') }} </a>
     </p>
 
     <div class="cluster-application-list prepend-top-10">
@@ -182,23 +180,20 @@ export default {
         title-link="https://docs.helm.sh/"
       >
         <div slot="description">
-          {{ s__(`ClusterIntegration|Helm streamlines installing
+          {{
+            s__(`ClusterIntegration|Helm streamlines installing
             and managing Kubernetes applications.
             Tiller runs inside of your Kubernetes Cluster,
-            and manages releases of your charts.`) }}
+            and manages releases of your charts.`)
+          }}
         </div>
       </application-row>
-      <div
-        v-show="!helmInstalled"
-        class="cluster-application-warning"
-      >
-        <div
-          class="svg-container"
-          v-html="helmInstallIllustration"
-        >
-        </div>
-        {{ s__(`ClusterIntegration|You must first install Helm Tiller before
-          installing the applications below`) }}
+      <div v-show="!helmInstalled" class="cluster-application-warning">
+        <div class="svg-container" v-html="helmInstallIllustration"></div>
+        {{
+          s__(`ClusterIntegration|You must first install Helm Tiller before
+          installing the applications below`)
+        }}
       </div>
       <application-row
         :id="ingressId"
@@ -213,9 +208,11 @@ export default {
       >
         <div slot="description">
           <p>
-            {{ s__(`ClusterIntegration|Ingress gives you a way to route
+            {{
+              s__(`ClusterIntegration|Ingress gives you a way to route
               requests to services based on the request host or path,
-              centralizing a number of services into a single entrypoint.`) }}
+              centralizing a number of services into a single entrypoint.`)
+            }}
           </p>
 
           <template v-if="ingressInstalled">
@@ -223,10 +220,7 @@ export default {
               <label for="ingress-ip-address">
                 {{ s__('ClusterIntegration|Ingress IP Address') }}
               </label>
-              <div
-                v-if="ingressExternalIp"
-                class="input-group"
-              >
+              <div v-if="ingressExternalIp" class="input-group">
                 <input
                   id="ingress-ip-address"
                   :value="ingressExternalIp"
@@ -242,50 +236,33 @@ export default {
                   />
                 </span>
               </div>
-              <input
-                v-else
-                type="text"
-                class="form-control js-ip-address"
-                readonly
-                value="?"
-              />
+              <input v-else type="text" class="form-control js-ip-address" readonly value="?" />
             </div>
 
-            <p
-              v-if="!ingressExternalIp"
-              class="settings-message js-no-ip-message"
-            >
-              {{ s__(`ClusterIntegration|The IP address is in
+            <p v-if="!ingressExternalIp" class="settings-message js-no-ip-message">
+              {{
+                s__(`ClusterIntegration|The IP address is in
               the process of being assigned. Please check your Kubernetes
-              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`) }}
+              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+              }}
 
-              <a
-                :href="ingressHelpPath"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a :href="ingressHelpPath" target="_blank" rel="noopener noreferrer">
                 {{ __('More information') }}
               </a>
             </p>
 
             <p>
-              {{ s__(`ClusterIntegration|Point a wildcard DNS to this
+              {{
+                s__(`ClusterIntegration|Point a wildcard DNS to this
               generated IP address in order to access
-              your application after it has been deployed.`) }}
-              <a
-                :href="ingressDnsHelpPath"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              your application after it has been deployed.`)
+              }}
+              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                 {{ __('More information') }}
               </a>
             </p>
-
           </template>
-          <div
-            v-html="ingressDescription"
-          >
-          </div>
+          <div v-html="ingressDescription"></div>
         </div>
       </application-row>
       <application-row
@@ -301,11 +278,7 @@ export default {
         :disabled="!helmInstalled"
         title-link="https://prometheus.io/docs/introduction/overview/"
       >
-        <div
-          slot="description"
-          v-html="prometheusDescription"
-        >
-        </div>
+        <div slot="description" v-html="prometheusDescription"></div>
       </application-row>
       <application-row
         v-if="isProjectCluster"
@@ -320,10 +293,12 @@ export default {
         title-link="https://docs.gitlab.com/runner/"
       >
         <div slot="description">
-          {{ s__(`ClusterIntegration|GitLab Runner connects to this
+          {{
+            s__(`ClusterIntegration|GitLab Runner connects to this
             project's repository and executes CI/CD jobs,
             pushing results back and deploying,
-            applications to production.`) }}
+            applications to production.`)
+          }}
         </div>
       </application-row>
       <application-row
@@ -341,11 +316,13 @@ export default {
       >
         <div slot="description">
           <p>
-            {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+            {{
+              s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
               manages, and proxies multiple instances of the single-user
               Jupyter notebook server. JupyterHub can be used to serve
               notebooks to a class of students, a corporate data science group,
-              or a scientific research group.`) }}
+              or a scientific research group.`)
+            }}
           </p>
 
           <template v-if="ingressExternalIp">
@@ -361,9 +338,7 @@ export default {
                   type="text"
                   class="form-control js-hostname"
                 />
-                <span
-                  class="input-group-btn"
-                >
+                <span class="input-group-btn">
                   <clipboard-button
                     :text="jupyterHostname"
                     :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
@@ -373,13 +348,11 @@ export default {
               </div>
             </div>
             <p v-if="ingressInstalled">
-              {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
-              If you do so, point hostname to Ingress IP Address from above.`) }}
-              <a
-                :href="ingressDnsHelpPath"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              {{
+                s__(`ClusterIntegration|Replace this with your own hostname if you want.
+              If you do so, point hostname to Ingress IP Address from above.`)
+              }}
+              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                 {{ __('More information') }}
               </a>
             </p>
@@ -394,19 +367,21 @@ export default {
         :status-reason="applications.knative.statusReason"
         :request-status="applications.knative.requestStatus"
         :request-reason="applications.knative.requestReason"
-        :install-application-request-params="{ hostname: applications.knative.hostname}"
+        :install-application-request-params="{ hostname: applications.knative.hostname }"
         :disabled="!helmInstalled"
         class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
           <p>
-            {{ s__(`ClusterIntegration|A Knative build extends Kubernetes
+            {{
+              s__(`ClusterIntegration|A Knative build extends Kubernetes
               and utilizes existing Kubernetes primitives to provide you with
               the ability to run on-cluster container builds from source.
               For example, you can write a build that uses Kubernetes-native
               resources to obtain your source code from a repository,
-              build it into container a image, and then run that image.`) }}
+              build it into container a image, and then run that image.`)
+            }}
           </p>
 
           <template v-if="knativeInstalled">

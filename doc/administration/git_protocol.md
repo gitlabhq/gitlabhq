@@ -19,7 +19,15 @@ and the [protocol documentation](https://github.com/git/git/blob/master/Document
 From the client side, `git` `v2.18.0` or newer must be installed.
 
 From the server side, if we want to configure SSH we need to set the `sshd`
-server to accept the `GIT_PROTOCOL` environment,
+server to accept the `GIT_PROTOCOL` environment.
+
+In installations using [GitLab Helm Charts](../install/kubernetes/gitlab_chart.md)
+and [All-in-one docker image](https://docs.gitlab.com/omnibus/docker/), the SSH
+service is already configured to accept the `GIT_PROTOCOL` environment and users
+need not do anything more.
+
+For Omnibus GitLab and installations from source, you have to manually update
+the SSH configuration of your server:
 
 ```
 # /etc/ssh/sshd_config

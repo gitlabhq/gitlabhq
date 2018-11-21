@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '../../locale';
 import icon from './icon.vue';
 
@@ -61,29 +61,20 @@ export default {
 
 <template>
   <label class="toggle-wrapper">
-    <input
-      v-if="name"
-      :name="name"
-      :value="value"
-      type="hidden"
-    />
+    <input v-if="name" :name="name" :value="value" type="hidden" />
     <button
       :aria-label="ariaLabel"
       :class="{
         'is-checked': value,
         'is-disabled': disabledInput,
-        'is-loading': isLoading
+        'is-loading': isLoading,
       }"
       type="button"
       class="project-feature-toggle"
       @click="toggleFeature"
     >
       <gl-loading-icon class="loading-icon" />
-      <span class="toggle-icon">
-        <icon
-          :name="toggleIcon"
-          css-classes="toggle-icon-svg"/>
-      </span>
+      <span class="toggle-icon"> <icon :name="toggleIcon" css-classes="toggle-icon-svg" /> </span>
     </button>
   </label>
 </template>

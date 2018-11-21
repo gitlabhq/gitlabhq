@@ -253,19 +253,6 @@
         right: 7px;
       }
 
-      .frame {
-        top: 0;
-        right: 0;
-        position: absolute;
-
-        &.deleted {
-          margin: 0;
-          display: block;
-          top: 13px;
-          right: 7px;
-        }
-      }
-
       .swipe-bar {
         display: block;
         height: 100%;
@@ -435,7 +422,7 @@
     .onion-skin.view {
       .swipe-wrap {
         top: 0;
-        right: 0;
+        left: 0;
       }
 
       .frame.deleted {
@@ -842,11 +829,15 @@
     background-repeat: repeat;
   }
 
-  .diff-file-discussions + .discussion-form::before {
-    width: auto;
-    margin-left: -16px;
-    margin-right: -16px;
-    margin-bottom: 16px;
+  .diff-file-discussions + .discussion-form {
+    padding: $gl-padding;
+
+    &::before {
+      width: auto;
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+      margin-bottom: $gl-padding;
+    }
   }
 
   .notes {

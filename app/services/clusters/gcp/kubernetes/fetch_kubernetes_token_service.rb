@@ -21,10 +21,7 @@ module Clusters
 
         def get_secret
           kubeclient.get_secret(service_account_token_name, namespace).as_json
-        rescue Kubeclient::HttpError => err
-          raise err unless err.error_code == 404
-
-          nil
+        rescue Kubeclient::ResourceNotFoundError
         end
       end
     end

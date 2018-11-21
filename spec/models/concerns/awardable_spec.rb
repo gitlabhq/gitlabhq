@@ -37,8 +37,8 @@ describe Awardable do
         create(:award_emoji, awardable: issue3, name: "star", user: award_emoji.user)
         create(:award_emoji, awardable: issue3, name: "star", user: award_emoji2.user)
 
-        expect(Issue.awarded(award_emoji.user)).to eq [issue, issue3]
-        expect(Issue.awarded(award_emoji2.user)).to eq [issue2, issue3]
+        expect(Issue.awarded(award_emoji.user)).to contain_exactly(issue, issue3)
+        expect(Issue.awarded(award_emoji2.user)).to contain_exactly(issue2, issue3)
       end
     end
 

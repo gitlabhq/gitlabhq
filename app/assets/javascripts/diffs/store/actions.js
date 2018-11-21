@@ -41,17 +41,19 @@ export const assignDiscussionsToDiff = (
 ) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
 
-  discussions.filter(discussion => discussion.diff_discussion).forEach(discussion => {
-    commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-      discussion,
-      diffPositionByLineCode,
+  discussions
+    .filter(discussion => discussion.diff_discussion)
+    .forEach(discussion => {
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        discussion,
+        diffPositionByLineCode,
+      });
     });
-  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
-  const { fileHash, line_code, id } = removeDiscussion;
-  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash, lineCode: line_code, id });
+  const { file_hash, line_code, id } = removeDiscussion;
+  commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash: file_hash, lineCode: line_code, id });
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
@@ -167,7 +169,7 @@ export const expandAllFiles = ({ commit }) => {
 export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   const discussions = getters.getDiffFileDiscussions(diff);
   const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
-  const shouldExpandAll = getters.diffHasAllCollpasedDiscussions(diff);
+  const shouldExpandAll = getters.diffHasAllCollapsedDiscussions(diff);
 
   discussions.forEach(discussion => {
     const data = { discussionId: discussion.id };
@@ -189,7 +191,7 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
-    .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.fileHash))
+    .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
     .then(() => dispatch('startTaskList', null, { root: true }))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };

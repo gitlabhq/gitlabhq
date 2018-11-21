@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
       class InstallCommand
         include BaseCommand
+        include ClientCommand
 
         attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
 
@@ -20,6 +23,7 @@ module Gitlab
         def generate_script
           super + [
             init_command,
+            wait_for_tiller_command,
             repository_command,
             repository_update_command,
             preinstall_command,
@@ -33,14 +37,6 @@ module Gitlab
         end
 
         private
-
-        def init_command
-          'helm init --client-only'
-        end
-
-        def repository_command
-          ['helm', 'repo', 'add', name, repository].shelljoin if repository
-        end
 
         def repository_update_command
           'helm repo update' if repository

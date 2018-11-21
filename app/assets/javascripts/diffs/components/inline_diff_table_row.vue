@@ -52,9 +52,7 @@ export default {
       };
     },
     inlineRowId() {
-      const { lineCode, oldLine, newLine } = this.line;
-
-      return lineCode || `${this.fileHash}_${oldLine}_${newLine}`;
+      return this.line.line_code || `${this.fileHash}_${this.line.old_line}_${this.line.new_line}`;
     },
   },
   created() {
@@ -104,11 +102,6 @@ export default {
       :is-hover="isHover"
       class="diff-line-num new_line qa-new-diff-line"
     />
-    <td
-      :class="line.type"
-      class="line_content"
-      v-html="line.richText"
-    >
-    </td>
+    <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
   </tr>
 </template>

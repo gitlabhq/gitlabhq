@@ -26,18 +26,8 @@ export default {
 };
 </script>
 <template>
-  <div
-    :id="`peek-view-${metric}`"
-    class="view"
-  >
-    <span
-      v-if="currentRequest.details"
-      class="bold"
-    >
-      {{ duration }}
-      /
-      {{ calls }}
-    </span>
+  <div :id="`peek-view-${metric}`" class="view">
+    <span v-if="currentRequest.details" class="bold"> {{ duration }} / {{ calls }} </span>
     {{ metric }}
   </div>
 </template>

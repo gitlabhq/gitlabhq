@@ -28,9 +28,9 @@ to filter data by. Instead one should ask themselves the following questions:
 
 1. Can I write my query in such a way that it re-uses as many existing indexes
    as possible?
-2. Is the data going to be large enough that using an index will actually be
+1. Is the data going to be large enough that using an index will actually be
    faster than just iterating over the rows in the table?
-3. Is the overhead of maintaining the index worth the reduction in query
+1. Is the overhead of maintaining the index worth the reduction in query
    timings?
 
 We'll explore every question in detail below.
@@ -62,7 +62,7 @@ In short:
 
 1. Try to write your query in such a way that it re-uses as many existing
    indexes as possible.
-2. Run the query using `EXPLAIN ANALYZE` and study the output to find the most
+1. Run the query using `EXPLAIN ANALYZE` and study the output to find the most
    ideal query.
 
 ## Data Size

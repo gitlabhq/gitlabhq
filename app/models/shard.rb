@@ -9,13 +9,12 @@ class Shard < ActiveRecord::Base
 
     # The GitLab config does not change for the lifecycle of the process
     in_config = Gitlab.config.repositories.storages.keys.map(&:to_s)
+    in_db = all.pluck(:name)
 
-    transaction do
-      in_db = all.pluck(:name)
-      missing = in_config - in_db
-
-      missing.map { |name| by_name(name) }
-    end
+    # This may race with other processes creating shards at the same time, but
+    # `by_name` will handle that correctly
+    missing = in_config - in_db
+    missing.map { |name| by_name(name) }
   end
 
   def self.by_name(name)

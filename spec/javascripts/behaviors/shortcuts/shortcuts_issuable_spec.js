@@ -1,3 +1,7 @@
+/* eslint-disable
+  no-underscore-dangle
+*/
+
 import $ from 'jquery';
 import initCopyAsGFM from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -27,13 +31,17 @@ describe('ShortcutsIssuable', function() {
 
   describe('replyWithSelectedText', () => {
     // Stub window.gl.utils.getSelectedFragment to return a node with the provided HTML.
-    const stubSelection = html => {
-      window.gl.utils.getSelectedFragment = () => {
+    const stubSelection = (html, invalidNode) => {
+      ShortcutsIssuable.__Rewire__('getSelectedFragment', () => {
+        const documentFragment = document.createDocumentFragment();
         const node = document.createElement('div');
-        node.innerHTML = html;
 
-        return node;
-      };
+        node.innerHTML = html;
+        if (!invalidNode) node.className = 'md';
+
+        documentFragment.appendChild(node);
+        return documentFragment;
+      });
     };
     describe('with empty selection', () => {
       it('does not return an error', () => {
@@ -103,6 +111,134 @@ describe('ShortcutsIssuable', function() {
         expect($(FORM_SELECTOR).val()).toBe(
           '> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n',
         );
+      });
+    });
+
+    describe('with an invalid selection', () => {
+      beforeEach(() => {
+        stubSelection('<p>Selected text.</p>', true);
+      });
+
+      it('does not add anything to the input', () => {
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect($(FORM_SELECTOR).val()).toBe('');
+      });
+
+      it('triggers `focus`', () => {
+        const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(spy).toHaveBeenCalled();
+      });
+    });
+
+    describe('with a semi-valid selection', () => {
+      beforeEach(() => {
+        stubSelection('<div class="md">Selected text.</div><p>Invalid selected text.</p>', true);
+      });
+
+      it('only adds the valid part to the input', () => {
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect($(FORM_SELECTOR).val()).toBe('> Selected text.\n\n');
+      });
+
+      it('triggers `focus`', () => {
+        const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(spy).toHaveBeenCalled();
+      });
+
+      it('triggers `input`', () => {
+        let triggered = false;
+        $(FORM_SELECTOR).on('input', () => {
+          triggered = true;
+        });
+
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(triggered).toBe(true);
+      });
+    });
+
+    describe('with a selection in a valid block', () => {
+      beforeEach(() => {
+        ShortcutsIssuable.__Rewire__('getSelectedFragment', () => {
+          const documentFragment = document.createDocumentFragment();
+          const node = document.createElement('div');
+          const originalNode = document.createElement('body');
+          originalNode.innerHTML = `<div class="issue">
+            <div class="otherElem">Text...</div>
+            <div class="md"><p><em>Selected text.</em></p></div>
+          </div>`;
+          documentFragment.originalNodes = [originalNode.querySelector('em')];
+
+          node.innerHTML = '<em>Selected text.</em>';
+
+          documentFragment.appendChild(node);
+
+          return documentFragment;
+        });
+      });
+
+      it('adds the quoted selection to the input', () => {
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect($(FORM_SELECTOR).val()).toBe('> _Selected text._\n\n');
+      });
+
+      it('triggers `focus`', () => {
+        const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(spy).toHaveBeenCalled();
+      });
+
+      it('triggers `input`', () => {
+        let triggered = false;
+        $(FORM_SELECTOR).on('input', () => {
+          triggered = true;
+        });
+
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(triggered).toBe(true);
+      });
+    });
+
+    describe('with a selection in an invalid block', () => {
+      beforeEach(() => {
+        ShortcutsIssuable.__Rewire__('getSelectedFragment', () => {
+          const documentFragment = document.createDocumentFragment();
+          const node = document.createElement('div');
+          const originalNode = document.createElement('body');
+          originalNode.innerHTML = `<div class="issue">
+            <div class="otherElem"><div><b>Selected text.</b></div></div>
+            <div class="md"><p><em>Valid text</em></p></div>
+          </div>`;
+          documentFragment.originalNodes = [originalNode.querySelector('b')];
+
+          node.innerHTML = '<b>Selected text.</b>';
+
+          documentFragment.appendChild(node);
+
+          return documentFragment;
+        });
+      });
+
+      it('does not add anything to the input', () => {
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect($(FORM_SELECTOR).val()).toBe('');
+      });
+
+      it('triggers `focus`', () => {
+        const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
+        ShortcutsIssuable.replyWithSelectedText(true);
+
+        expect(spy).toHaveBeenCalled();
       });
     });
   });

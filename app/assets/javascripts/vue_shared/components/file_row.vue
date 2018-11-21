@@ -161,17 +161,11 @@ export default {
       class="file-row"
       role="button"
       @click="clickFile"
-      @mouseover="toggleHover(true)"
-      @mouseout="toggleHover(false)"
+      @mouseover="toggleHover(true);"
+      @mouseout="toggleHover(false);"
     >
-      <div
-        class="file-row-name-container"
-      >
-        <span
-          ref="textOutput"
-          :style="levelIndentation"
-          class="file-row-name str-truncated"
-        >
+      <div class="file-row-name-container">
+        <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
           <file-icon
             v-if="!showChangedIcon || file.type === 'tree'"
             :file-name="file.name"
@@ -180,12 +174,7 @@ export default {
             :opened="file.opened"
             :size="16"
           />
-          <changed-file-icon
-            v-else
-            :file="file"
-            :size="16"
-            class="append-right-5"
-          />
+          <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
           {{ outputText }}
         </span>
         <component

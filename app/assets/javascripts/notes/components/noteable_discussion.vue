@@ -1,6 +1,5 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
@@ -88,17 +87,16 @@ export default {
     transformedDiscussion() {
       return {
         ...this.discussion.notes[0],
-        truncatedDiffLines: this.discussion.truncated_diff_lines || [],
-        truncatedDiffLinesPath: this.discussion.truncated_diff_lines_path,
-        diffFile: this.discussion.diff_file,
-        diffDiscussion: this.discussion.diff_discussion,
-        imageDiffHtml: this.discussion.image_diff_html,
+        truncated_diff_lines: this.discussion.truncated_diff_lines || [],
+        truncated_diff_lines_path: this.discussion.truncated_diff_lines_path,
+        diff_file: this.discussion.diff_file,
+        diff_discussion: this.discussion.diff_discussion,
         active: this.discussion.active,
-        discussionPath: this.discussion.discussion_path,
+        discussion_path: this.discussion.discussion_path,
         resolved: this.discussion.resolved,
-        resolvedBy: this.discussion.resolved_by,
-        resolvedByPush: this.discussion.resolved_by_push,
-        resolvedAt: this.discussion.resolved_at,
+        resolved_by: this.discussion.resolved_by,
+        resolved_by_push: this.discussion.resolved_by_push,
+        resolved_at: this.discussion.resolved_at,
       };
     },
     author() {
@@ -138,7 +136,7 @@ export default {
       return null;
     },
     resolvedText() {
-      return this.transformedDiscussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
+      return this.transformedDiscussion.resolved_by_push ? 'Automatically resolved' : 'Resolved';
     },
     hasMultipleUnresolvedDiscussions() {
       return this.unresolvedDiscussions.length > 1;
@@ -150,12 +148,14 @@ export default {
       );
     },
     shouldRenderDiffs() {
-      const { diffDiscussion, diffFile } = this.transformedDiscussion;
-
-      return diffDiscussion && diffFile && this.renderDiffFile;
+      return (
+        this.transformedDiscussion.diff_discussion &&
+        this.transformedDiscussion.diff_file &&
+        this.renderDiffFile
+      );
     },
     shouldGroupReplies() {
-      return !this.shouldRenderDiffs && !this.transformedDiscussion.diffDiscussion;
+      return !this.shouldRenderDiffs && !this.transformedDiscussion.diff_discussion;
     },
     shouldRenderHeader() {
       return this.shouldRenderDiffs;
@@ -165,7 +165,7 @@ export default {
     },
     wrapperComponentProps() {
       if (this.shouldRenderDiffs) {
-        return { discussion: convertObjectPropsToCamelCase(this.discussion) };
+        return { discussion: this.discussion };
       }
 
       return {};
@@ -184,8 +184,8 @@ export default {
     },
     shouldShowDiscussions() {
       const isExpanded = this.discussion.expanded;
-      const { diffDiscussion, resolved } = this.transformedDiscussion;
-      const isResolvedNonDiffDiscussion = !diffDiscussion && resolved;
+      const { resolved } = this.transformedDiscussion;
+      const isResolvedNonDiffDiscussion = !this.transformedDiscussion.diff_discussion && resolved;
 
       return isExpanded || this.alwaysExpanded || isResolvedNonDiffDiscussion;
     },
@@ -302,20 +302,14 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li
-    class="note note-discussion timeline-entry"
-    :class="componentClassName"
-  >
+  <li class="note note-discussion timeline-entry" :class="componentClassName">
     <div class="timeline-entry-inner">
       <div class="timeline-content">
         <div
           :data-discussion-id="transformedDiscussion.discussion_id"
           class="discussion js-discussion-container"
         >
-          <div
-            v-if="shouldRenderHeader"
-            class="discussion-header note-wrapper"
-          >
+          <div v-if="shouldRenderHeader" class="discussion-header note-wrapper">
             <div class="timeline-icon">
               <user-avatar-link
                 v-if="author"
@@ -333,9 +327,9 @@ Please check your network connection and try again.`;
               :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
             >
-              <template v-if="transformedDiscussion.diffDiscussion">
+              <template v-if="transformedDiscussion.diff_discussion">
                 started a discussion on
-                <a :href="transformedDiscussion.discussionPath">
+                <a :href="transformedDiscussion.discussion_path">
                   <template v-if="transformedDiscussion.active">
                     the diff
                   </template>
@@ -346,9 +340,7 @@ Please check your network connection and try again.`;
               </template>
               <template v-else-if="discussion.for_commit">
                 started a discussion on commit
-                <a :href="discussion.discussion_path">
-                  {{ truncateSha(discussion.commit_id) }}
-                </a>
+                <a :href="discussion.discussion_path"> {{ truncateSha(discussion.commit_id) }} </a>
               </template>
               <template v-else>
                 started a discussion
@@ -356,8 +348,8 @@ Please check your network connection and try again.`;
             </note-header>
             <note-edited-text
               v-if="transformedDiscussion.resolved"
-              :edited-at="transformedDiscussion.resolvedAt"
-              :edited-by="transformedDiscussion.resolvedBy"
+              :edited-at="transformedDiscussion.resolved_at"
+              :edited-by="transformedDiscussion.resolved_by"
               :action-text="resolvedText"
               class-name="discussion-headline-light js-discussion-headline"
             />
@@ -369,14 +361,8 @@ Please check your network connection and try again.`;
               class-name="discussion-headline-light js-discussion-headline"
             />
           </div>
-          <div
-            v-if="shouldShowDiscussions"
-            class="discussion-body">
-            <component
-              :is="wrapperComponent"
-              v-bind="wrapperComponentProps"
-              :class="wrapperClass"
-            >
+          <div v-if="shouldShowDiscussions" class="discussion-body">
+            <component :is="wrapperComponent" v-bind="wrapperComponentProps" :class="wrapperClass">
               <div class="discussion-notes">
                 <ul class="notes">
                   <template v-if="shouldGroupReplies">
@@ -385,11 +371,7 @@ Please check your network connection and try again.`;
                       :note="componentData(initialDiscussion)"
                       @handleDeleteNote="deleteNoteHandler"
                     >
-                      <slot
-                        slot="avatar-badge"
-                        name="avatar-badge"
-                      >
-                      </slot>
+                      <slot slot="avatar-badge" name="avatar-badge"> </slot>
                     </component>
                     <toggle-replies-widget
                       v-if="hasReplies"
@@ -415,12 +397,7 @@ Please check your network connection and try again.`;
                       :note="componentData(note)"
                       @handleDeleteNote="deleteNoteHandler"
                     >
-                      <slot
-                        v-if="index === 0"
-                        slot="avatar-badge"
-                        name="avatar-badge"
-                      >
-                      </slot>
+                      <slot v-if="index === 0" slot="avatar-badge" name="avatar-badge"> </slot>
                     </component>
                   </template>
                 </ul>
@@ -443,7 +420,7 @@ Please check your network connection and try again.`;
                         <button
                           type="button"
                           class="btn btn-default mr-sm-2"
-                          @click="resolveHandler()"
+                          @click="resolveHandler();"
                         >
                           <i
                             v-if="isResolving"
@@ -458,10 +435,7 @@ Please check your network connection and try again.`;
                         class="btn-group discussion-actions ml-sm-2"
                         role="group"
                       >
-                        <div
-                          v-if="!discussionResolved"
-                          class="btn-group"
-                          role="group">
+                        <div v-if="!discussionResolved" class="btn-group" role="group">
                           <a
                             v-tooltip
                             :href="discussion.resolve_with_issue_path"
@@ -473,10 +447,7 @@ Please check your network connection and try again.`;
                             <icon name="issue-new" />
                           </a>
                         </div>
-                        <div
-                          v-if="showJumpToNextDiscussion"
-                          class="btn-group"
-                          role="group">
+                        <div v-if="showJumpToNextDiscussion" class="btn-group" role="group">
                           <button
                             v-tooltip
                             class="btn btn-default discussion-next-btn"

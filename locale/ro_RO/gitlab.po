@@ -591,7 +591,7 @@ msgstr ""
 msgid "An error occured whilst fetching the job trace."
 msgstr ""
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr ""
 
 msgid "An error occured whilst loading all the files."
@@ -2811,7 +2811,7 @@ msgstr ""
 msgid "Elasticsearch"
 msgstr ""
 
-msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr ""
 
 msgid "Email"

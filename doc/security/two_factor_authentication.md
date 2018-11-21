@@ -13,8 +13,8 @@ You can read more about it here:
 Users on GitLab, can enable it without any admin's intervention. If you want to
 enforce everyone to set up 2FA, you can choose from two different ways:
 
- 1. Enforce on next login
- 2. Suggest on next login, but allow a grace period before enforcing.
+- Enforce on next login.
+- Suggest on next login, but allow a grace period before enforcing.
 
 In the Admin area under **Settings** (`/admin/application_settings`), look for
 the "Sign-in Restrictions" area, where you can configure both.

@@ -161,6 +161,8 @@ excluded_attributes:
   runners:
     - :token
     - :token_encrypted
+  services:
+    - :template
 
 methods:
   labels:

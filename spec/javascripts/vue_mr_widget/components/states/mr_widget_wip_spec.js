@@ -85,7 +85,9 @@ describe('Wip', () => {
       expect(el.innerText).toContain('This is a Work in Progress');
       expect(el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(el.querySelector('button').innerText).toContain('Merge');
-      expect(el.querySelector('.js-remove-wip').innerText).toContain('Resolve WIP status');
+      expect(el.querySelector('.js-remove-wip').innerText.replace(/\s\s+/g, ' ')).toContain(
+        'Resolve WIP status',
+      );
     });
 
     it('should not show removeWIP button is user cannot update MR', done => {

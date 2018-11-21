@@ -43,17 +43,8 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="dropdown"
-    class="btn-group ide-nav-dropdown dropdown"
-  >
+  <div ref="dropdown" class="btn-group ide-nav-dropdown dropdown">
     <nav-dropdown-button />
-    <div
-      class="dropdown-menu dropdown-menu-left p-0"
-    >
-      <nav-form
-        v-if="isVisibleDropdown"
-      />
-    </div>
+    <div class="dropdown-menu dropdown-menu-left p-0"><nav-form v-if="isVisibleDropdown" /></div>
   </div>
 </template>

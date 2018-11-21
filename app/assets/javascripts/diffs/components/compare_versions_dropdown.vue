@@ -56,16 +56,16 @@ export default {
   methods: {
     commitsText(version) {
       return n__(
-        `${version.commitsCount} commit,`,
-        `${version.commitsCount} commits,`,
-        version.commitsCount,
+        `${version.commits_count} commit,`,
+        `${version.commits_count} commits,`,
+        version.commits_count,
       );
     },
     href(version) {
       if (this.showCommitCount) {
-        return version.versionPath;
+        return version.version_path;
       }
-      return version.comparePath;
+      return version.compare_path;
     },
     versionName(version) {
       if (this.isLatest(version)) {
@@ -74,7 +74,7 @@ export default {
       if (this.targetBranch && (this.isBase(version) || !version)) {
         return this.targetBranch.branchName;
       }
-      return `version ${version.versionIndex}`;
+      return `version ${version.version_index}`;
     },
     isActive(version) {
       if (!version) {
@@ -84,11 +84,11 @@ export default {
       if (this.targetBranch) {
         return (
           (this.isBase(version) && !this.startVersion) ||
-          (this.startVersion && this.startVersion.versionIndex === version.versionIndex)
+          (this.startVersion && this.startVersion.version_index === version.version_index)
         );
       }
 
-      return version.versionIndex === this.mergeRequestVersion.versionIndex;
+      return version.version_index === this.mergeRequestVersion.version_index;
     },
     isBase(version) {
       if (!version || !this.targetBranch) {
@@ -98,7 +98,7 @@ export default {
     },
     isLatest(version) {
       return (
-        this.mergeRequestVersion && version.versionIndex === this.targetVersions[0].versionIndex
+        this.mergeRequestVersion && version.version_index === this.targetVersions[0].version_index
       );
     },
   },
@@ -112,26 +112,14 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      <span>
-        {{ selectedVersionName }}
-      </span>
-      <icon
-        :size="12"
-        name="angle-down"
-        class="position-absolute"
-      />
+      <span> {{ selectedVersionName }} </span>
+      <icon :size="12" name="angle-down" class="position-absolute" />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
       <div class="dropdown-content">
         <ul>
-          <li
-            v-for="version in targetVersions"
-            :key="version.id"
-          >
-            <a
-              :class="{ 'is-active': isActive(version) }"
-              :href="href(version)"
-            >
+          <li v-for="version in targetVersions" :key="version.id">
+            <a :class="{ 'is-active': isActive(version) }" :href="href(version)">
               <div>
                 <strong>
                   {{ versionName(version) }}
@@ -141,9 +129,7 @@ export default {
                 </strong>
               </div>
               <div>
-                <small class="commit-sha">
-                  {{ version.truncatedCommitSha }}
-                </small>
+                <small class="commit-sha"> {{ version.truncated_commit_sha }} </small>
               </div>
               <div>
                 <small>
@@ -151,8 +137,8 @@ export default {
                     {{ commitsText(version) }}
                   </template>
                   <time-ago
-                    v-if="version.createdAt"
-                    :time="version.createdAt"
+                    v-if="version.created_at"
+                    :time="version.created_at"
                     class="js-timeago js-timeago-render"
                   />
                 </small>

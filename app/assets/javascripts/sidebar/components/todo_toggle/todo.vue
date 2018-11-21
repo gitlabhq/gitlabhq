@@ -1,7 +1,7 @@
 <script>
 import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 import Icon from '~/vue_shared/components/icon.vue';
 
@@ -84,15 +84,7 @@ export default {
       :css-classes="collapsedButtonIconClasses"
       :name="collapsedButtonIcon"
     />
-    <span
-      v-show="!collapsed"
-      class="issuable-todo-inner"
-    >
-      {{ buttonLabel }}
-    </span>
-    <gl-loading-icon
-      v-show="isActionActive"
-      :inline="true"
-    />
+    <span v-show="!collapsed" class="issuable-todo-inner"> {{ buttonLabel }} </span>
+    <gl-loading-icon v-show="isActionActive" :inline="true" />
   </button>
 </template>

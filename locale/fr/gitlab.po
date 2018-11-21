@@ -561,7 +561,7 @@ msgstr "Une erreur est survenue lors de la création de la nouvelle branche."
 msgid "An error occured whilst fetching the job trace."
 msgstr "Une erreur est survenue pendant le rapatriement de la trace de la tâche."
 
-msgid "An error occured whilst fetching the latest pipline."
+msgid "An error occured whilst fetching the latest pipeline."
 msgstr "Une erreur est survenue lors du rapatriement de dernier pipeline."
 
 msgid "An error occured whilst loading all the files."
@@ -2777,7 +2777,7 @@ msgstr "Modifier l’identité de %{user_name}"
 msgid "Elasticsearch"
 msgstr "Elasticsearch"
 
-msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr "Intégration d’Elasticsearch. AWS Elasticsearch IAM."
 
 msgid "Email"

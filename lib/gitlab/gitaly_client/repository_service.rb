@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class RepositoryService
@@ -56,9 +58,9 @@ module Gitlab
         request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
 
         response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request, timeout: GitalyClient.fast_timeout)
-        response.each_with_object("") do |message, attributes|
+        response.each_with_object([]) do |message, attributes|
           attributes << message.attributes
-        end
+        end.join
       end
 
       def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
@@ -67,7 +69,7 @@ module Gitlab
           no_tags: no_tags, timeout: timeout, no_prune: !prune
         )
 
-        if ssh_auth&.ssh_import?
+        if ssh_auth&.ssh_mirror_url?
           if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
             request.ssh_key = ssh_auth.ssh_private_key
           end

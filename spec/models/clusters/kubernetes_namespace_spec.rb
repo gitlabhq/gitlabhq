@@ -8,6 +8,22 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to have_one(:platform_kubernetes) }
 
+  describe 'has_service_account_token' do
+    subject { described_class.has_service_account_token }
+
+    context 'namespace has service_account_token' do
+      let!(:namespace) { create(:cluster_kubernetes_namespace, :with_token) }
+
+      it { is_expected.to include(namespace) }
+    end
+
+    context 'namespace has no service_account_token' do
+      let!(:namespace) { create(:cluster_kubernetes_namespace) }
+
+      it { is_expected.not_to include(namespace) }
+    end
+  end
+
   describe 'namespace uniqueness validation' do
     let(:cluster_project) { create(:cluster_project) }
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, namespace: 'my-namespace') }
@@ -29,14 +45,14 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     end
   end
 
-  describe '#configure_predefined_variables' do
+  describe '#set_defaults' do
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace) }
     let(:cluster) { kubernetes_namespace.cluster }
     let(:platform) { kubernetes_namespace.platform_kubernetes }
 
-    subject { kubernetes_namespace.configure_predefined_credentials }
+    subject { kubernetes_namespace.set_defaults }
 
-    describe 'namespace' do
+    describe '#namespace' do
       before do
         platform.update_column(:namespace, namespace)
       end
@@ -64,7 +80,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
       end
     end
 
-    describe 'service_account_name' do
+    describe '#service_account_name' do
       let(:service_account_name) { "#{kubernetes_namespace.namespace}-service-account" }
 
       it 'should set a service account name based on namespace' do

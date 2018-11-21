@@ -27,16 +27,7 @@ export default {
   >
     <slot></slot>
   </virtual-list>
-  <component
-    :is="rtag"
-    v-else
-    class="js-plain-element"
-  >
-    <component
-      :is="wtag"
-      :class="wclass"
-    >
-      <slot></slot>
-    </component>
+  <component :is="rtag" v-else class="js-plain-element">
+    <component :is="wtag" :class="wclass"> <slot></slot> </component>
   </component>
 </template>

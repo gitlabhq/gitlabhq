@@ -3,7 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -94,7 +94,7 @@ export default {
       return __('Show latest version');
     },
     canCurrentUserFork() {
-      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+      return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
     },
     showCompareVersions() {
       return this.mergeRequestDiffs && this.mergeRequestDiff;
@@ -181,18 +181,8 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <div
-      v-if="isLoading"
-      class="loading"
-    >
-      <gl-loading-icon />
-    </div>
-    <div
-      v-else
-      id="diffs"
-      :class="{ active: shouldShow }"
-      class="diffs tab-pane"
-    >
+    <div v-if="isLoading" class="loading"><gl-loading-icon /></div>
+    <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions
         v-if="showCompareVersions"
         :merge-request-diffs="mergeRequestDiffs"
@@ -214,38 +204,21 @@ export default {
         class="mr-version-controls"
       >
         <div class="content-block comments-disabled-notif clearfix">
-          <i class="fa fa-info-circle"></i>
-          {{ notAllCommentsDisplayed }}
+          <i class="fa fa-info-circle"></i> {{ notAllCommentsDisplayed }}
           <div class="pull-right">
-            <a
-              :href="latestVersionPath"
-              class="btn btn-sm"
-            >
-              {{ showLatestVersion }}
-            </a>
+            <a :href="latestVersionPath" class="btn btn-sm"> {{ showLatestVersion }} </a>
           </div>
         </div>
       </div>
 
-      <commit-widget
-        v-if="commit"
-        :commit="commit"
-      />
+      <commit-widget v-if="commit" :commit="commit" />
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files d-flex prepend-top-default"
       >
-        <div
-          v-show="showTreeList"
-          class="diff-tree-list"
-        >
-          <tree-list />
-        </div>
-        <div
-          v-if="diffFiles.length > 0"
-          class="diff-files-holder"
-        >
+        <div v-show="showTreeList" class="diff-tree-list"><tree-list /></div>
+        <div v-if="diffFiles.length > 0" class="diff-files-holder">
           <diff-file
             v-for="file in diffFiles"
             :key="file.newPath"

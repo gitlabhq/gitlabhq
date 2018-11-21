@@ -44,7 +44,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     let(:namespace) { "#{project.path}-#{project.id}" }
 
     let(:kubernetes_namespace) do
-      build(:cluster_kubernetes_namespace,
+      create(:cluster_kubernetes_namespace,
             cluster: cluster,
             project: cluster_project.project,
             cluster_project: cluster_project)

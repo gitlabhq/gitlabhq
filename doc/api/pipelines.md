@@ -235,5 +235,22 @@ Response:
 }
 ```
 
+## Delete a pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22988) in GitLab 11.6.
+
+```
+DELETE /projects/:id/pipelines/:pipeline_id
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+```
+
 [ce-5837]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5837
 [ce-7209]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7209

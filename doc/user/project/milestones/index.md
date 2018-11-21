@@ -6,6 +6,26 @@ Milestones in GitLab are a way to track issues and merge requests created to ach
 
 Milestones allow you to organize issues and merge requests into a cohesive group, with an optional start date and an optional due date.
 
+## Milestones as Agile sprints
+
+Milestones can be used as Agile sprints.
+Set the milestone start date and due date to represent
+the start and end of your Agile sprint.
+Set the milestone title to the name of your Agile sprint,
+such as `November 2018 sprint`.
+Add an issue to your Agile sprint by associating
+the milestone to the issue.  
+
+## Milestones as releases
+
+Milestones can be used as releases.
+Set the milestone due date to represent the release date of your release. 
+(And leave the milestone start date blank.)
+Set the the milestone title to the version of your release,
+such as `Version 9.4`.
+Add an issue to your release by associating
+the milestone to the issue.
+
 ## Project milestones and group milestones
 
 - **Project milestones** can be assigned to issues or merge requests in that project only.

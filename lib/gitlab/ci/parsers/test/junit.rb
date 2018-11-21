@@ -14,7 +14,7 @@ module Gitlab
               test_case = create_test_case(test_case)
               test_suite.add_test_case(test_case)
             end
-          rescue REXML::ParseException
+          rescue Nokogiri::XML::SyntaxError
             raise JunitParserError, "XML parsing failed"
           rescue
             raise JunitParserError, "JUnit parsing failed"

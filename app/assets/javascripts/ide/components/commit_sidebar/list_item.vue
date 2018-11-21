@@ -99,7 +99,7 @@ export default {
       v-tooltip
       :title="tooltipTitle"
       :class="{
-        'is-active': isActive
+        'is-active': isActive,
       }"
       class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
       role="button"
@@ -107,18 +107,11 @@ export default {
       @click="openFileInEditor"
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">
-        <file-icon
-          :file-name="file.name"
-          class="append-right-8"
-        />{{ file.name }}
+        <file-icon :file-name="file.name" class="append-right-8" />{{ file.name }}
       </span>
       <div class="ml-auto d-flex align-items-center">
         <div class="d-flex align-items-center ide-commit-list-changed-icon">
-          <icon
-            :name="iconName"
-            :size="16"
-            :css-classes="iconClass"
-          />
+          <icon :name="iconName" :size="16" :css-classes="iconClass" />
         </div>
       </div>
     </div>

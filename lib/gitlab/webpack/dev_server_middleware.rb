@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This Rack middleware is intended to proxy the webpack assets directory to the
 # webpack-dev-server.  It is only intended for use in development.
 

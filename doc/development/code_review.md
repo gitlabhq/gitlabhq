@@ -9,11 +9,11 @@ code is effective, understandable, and maintainable.
 
 ## Getting your merge request reviewed, approved, and merged
 
-You are strongly encouraged to get your code **reviewed** by a 
+You are strongly encouraged to get your code **reviewed** by a
 [reviewer](https://about.gitlab.com/handbook/engineering/#reviewer) as soon as
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
-uncovered edge cases. The reviewer can be from a different team, but it is 
+uncovered edge cases. The reviewer can be from a different team, but it is
 recommended to pick someone who knows the domain well. You can read more about the
 importance of involving reviewer(s) in the section on the responsibility of the author below.
 
@@ -23,7 +23,7 @@ one of the [Merge request coaches][team].
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
 
-For approvals, we use the approval functionality found in the merge request 
+For approvals, we use the approval functionality found in the merge request
 widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
 
    1. If your merge request includes backend changes [^1], it must be
@@ -42,43 +42,43 @@ widget. Reviewers can add their approval by [approving additionally](https://doc
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
 
-As described in the section on the responsibility of the maintainer below, you 
-are recommended to get your merge request approved and merged by maintainer(s) 
+As described in the section on the responsibility of the maintainer below, you
+are recommended to get your merge request approved and merged by maintainer(s)
 from other teams than your own.
 
 ### The responsibility of the merge request author
 
 The responsibility to find the best solution and implement it lies with the
-merge request author. 
+merge request author.
 
-Before assigning a merge request to a maintainer for approval and merge, they 
-should be confident that it actually solves the problem it was meant to solve, 
-that it does so in the most appropriate way, that it satisfies all requirements, 
-and that there are no remaining bugs, logical problems, or uncovered edge cases. 
-The merge request should also have a completed task list in its description and 
+Before assigning a merge request to a maintainer for approval and merge, they
+should be confident that it actually solves the problem it was meant to solve,
+that it does so in the most appropriate way, that it satisfies all requirements,
+and that there are no remaining bugs, logical problems, or uncovered edge cases.
+The merge request should also have a completed task list in its description and
 a passing CI pipeline to avoid unnecessary back and forth.
 
 To reach the required level of confidence in their solution, an author is expected
-to involve other people in the investigation and implementation processes as 
+to involve other people in the investigation and implementation processes as
 appropriate.
 
-They are encouraged to reach out to domain experts to discuss different solutions 
-or get an implementation reviewed, to product managers and UX designers to clear 
-up confusion or verify that the end result matches what they had in mind, to 
+They are encouraged to reach out to domain experts to discuss different solutions
+or get an implementation reviewed, to product managers and UX designers to clear
+up confusion or verify that the end result matches what they had in mind, to
 database specialists to get input on the data model or specific queries, or to
 any other developer to get an in-depth review of the solution.
 
 If an author is unsure if a merge request needs a domain expert's opinion, that's
-usually a pretty good sign that it does, since without it the required level of 
+usually a pretty good sign that it does, since without it the required level of
 confidence in their solution will not have been reached.
 
 ### The responsibility of the maintainer
 
 Maintainers are responsible for the overall health, quality, and consistency of
-the GitLab codebase, across domains and product areas. 
+the GitLab codebase, across domains and product areas.
 
-Consequently, their reviews will focus primarily on things like overall 
-architecture, code organization, separation of concerns, tests, DRYness, 
+Consequently, their reviews will focus primarily on things like overall
+architecture, code organization, separation of concerns, tests, DRYness,
 consistency, and readability.
 
 Since a maintainer's job only depends on their knowledge of the overall GitLab
@@ -87,12 +87,12 @@ merge requests from any team and in any product area.
 
 In fact, authors are recommended to get their merge requests merged by maintainers
 from other teams than their own, to ensure that all code across GitLab is consistent
-and can be easily understood by all contributors, from both inside and outside the 
+and can be easily understood by all contributors, from both inside and outside the
 company, without requiring team-specific expertise.
 
 Maintainers will do their best to also review the specifics of the chosen solution
 before merging, but as they are not necessarily domain experts, they may be poorly
-placed to do so without an unreasonable investment of time. In those cases, they 
+placed to do so without an unreasonable investment of time. In those cases, they
 will defer to the judgment of the author and earlier reviewers and involved domain
 experts, in favor of focusing on their primary responsibilities.
 
@@ -100,7 +100,7 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
 
-Maintainers should check before merging if the merge request is approved by the 
+Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
 ## Best practices
@@ -230,41 +230,41 @@ Enterprise Edition instance. This has some implications:
 1. **Query changes** should be tested to ensure that they don't result in worse
    performance at the scale of GitLab.com:
    1. Generating large quantities of data locally can help.
-   2. Asking for query plans from GitLab.com is the most reliable way to validate
+   1. Asking for query plans from GitLab.com is the most reliable way to validate
       these.
-2. **Database migrations** must be:
+1. **Database migrations** must be:
    1. Reversible.
-   2. Performant at the scale of GitLab.com - ask a maintainer to test the
+   1. Performant at the scale of GitLab.com - ask a maintainer to test the
       migration on the staging environment if you aren't sure.
-   3. Categorised correctly:
+   1. Categorised correctly:
       - Regular migrations run before the new code is running on the instance.
       - [Post-deployment migrations](post_deployment_migrations.md) run _after_
         the new code is deployed, when the instance is configured to do that.
       - [Background migrations](background_migrations.md) run in Sidekiq, and
         should only be done for migrations that would take an extreme amount of
         time at GitLab.com scale.
-3. **Sidekiq workers**
+1. **Sidekiq workers**
    [cannot change in a backwards-incompatible way](sidekiq_style_guide.md#removing-or-renaming-queues):
    1. Sidekiq queues are not drained before a deploy happens, so there will be
       workers in the queue from the previous version of GitLab.
-   2. If you need to change a method signature, try to do so across two releases,
+   1. If you need to change a method signature, try to do so across two releases,
       and accept both the old and new arguments in the first of those.
-   3. Similarly, if you need to remove a worker, stop it from being scheduled in
+   1. Similarly, if you need to remove a worker, stop it from being scheduled in
       one release, then remove it in the next. This will allow existing jobs to
       execute.
-   4. Don't forget, not every instance will upgrade to every intermediate version
+   1. Don't forget, not every instance will upgrade to every intermediate version
       (some people may go from X.1.0 to X.10.0, or even try bigger upgrades!), so
       try to be liberal in accepting the old format if it is cheap to do so.
-4. **Cached values** may persist across releases. If you are changing the type a
+1. **Cached values** may persist across releases. If you are changing the type a
    cached value returns (say, from a string or nil to an array), change the
    cache key at the same time.
-5. **Settings** should be added as a
+1. **Settings** should be added as a
    [last resort](https://about.gitlab.com/handbook/product/#convention-over-configuration).
    If you're adding a new setting in `gitlab.yml`:
    1. Try to avoid that, and add to `ApplicationSetting` instead.
-   2. Ensure that it is also
+   1. Ensure that it is also
       [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml.html#adding-a-new-setting-to-gitlab-yml).
-6. **Filesystem access** can be slow, so try to avoid
+1. **Filesystem access** can be slow, so try to avoid
    [shared files](shared_files.md) when an alternative solution is available.
 
 ### Credits

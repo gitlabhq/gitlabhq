@@ -1903,10 +1903,6 @@ class Project < ActiveRecord::Base
     false
   end
 
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
-  end
-
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end
@@ -1968,7 +1964,7 @@ class Project < ActiveRecord::Base
   end
 
   def migrate_to_hashed_storage!
-    return if hashed_storage?(:repository)
+    return unless storage_upgradable?
 
     update!(repository_read_only: true)
 

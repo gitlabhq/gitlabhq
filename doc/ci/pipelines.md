@@ -294,7 +294,7 @@ runners will not use regular runners, they must be tagged accordingly.
 
 [jobs]: #jobs
 [jobs-yaml]: yaml/README.md#jobs
-[manual]: yaml/README.md#manual
+[manual]: yaml/README.md#whenmanual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html

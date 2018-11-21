@@ -8,7 +8,7 @@ describe Users::BuildService do
 
     context 'with an admin user' do
       let(:admin_user) { create(:admin) }
-      let(:service) { described_class.new(admin_user, params) }
+      let(:service) { described_class.new(admin_user, ActionController::Parameters.new(params).permit!) }
 
       it 'returns a valid user' do
         expect(service.execute).to be_valid
@@ -159,9 +159,9 @@ describe Users::BuildService do
           true  | true  | 'fl@example.com'        | ''                      | true
           true  | false | 'fl@example.com'        | ''                      | true
 
-          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
-          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
 
           true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
           true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true

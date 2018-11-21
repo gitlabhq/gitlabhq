@@ -1,0 +1,6 @@
+---
+title: Avoid returning deployment metrics url to MR widget when the deployment is
+  not successful
+merge_request: 23010
+author:
+type: fixed

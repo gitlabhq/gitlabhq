@@ -352,10 +352,6 @@
 
   .mobile-git-clone {
     margin-top: $gl-padding-8;
-
-    .dropdown-menu-inner-content {
-      @extend .monospace;
-    }
   }
 }
 
@@ -1221,5 +1217,29 @@ pre.light-well {
 
   &:hover {
     opacity: 1;
+  }
+}
+
+.project-mirror-settings {
+  .btn-show-advanced {
+    min-width: 135px;
+
+    .label-show {
+      display: none;
+    }
+
+    .label-hide {
+      display: inline;
+    }
+
+    &.show-advanced {
+      .label-show {
+        display: inline;
+      }
+
+      .label-hide {
+        display: none;
+      }
+    }
   }
 }

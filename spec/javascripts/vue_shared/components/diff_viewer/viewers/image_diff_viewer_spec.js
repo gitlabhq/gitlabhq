@@ -97,6 +97,26 @@ describe('ImageDiffViewer', () => {
     });
   });
 
+  it('renders image diff for renamed', done => {
+    vm = new Vue({
+      components: {
+        imageDiffViewer,
+      },
+      template: `
+        <image-diff-viewer diff-mode="renamed" new-path="${GREEN_BOX_IMAGE_URL}" old-path="">
+          <span slot="image-overlay" class="overlay">test</span>
+        </image-diff-viewer>
+      `,
+    }).$mount();
+
+    setTimeout(() => {
+      expect(vm.$el.querySelector('img').getAttribute('src')).toBe(GREEN_BOX_IMAGE_URL);
+      expect(vm.$el.querySelector('.overlay')).not.toBe(null);
+
+      done();
+    });
+  });
+
   describe('swipeMode', () => {
     beforeEach(done => {
       createComponent({

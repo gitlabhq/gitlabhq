@@ -338,10 +338,10 @@ payload will also include information about the target of the comment. For examp
 a comment on an issue will include the specific issue information under the `issue` key.
 Valid target types:
 
-1. `commit`
-2. `merge_request`
-3. `issue`
-4. `snippet`
+- `commit`
+- `merge_request`
+- `issue`
+- `snippet`
 
 #### Comment on commit
 

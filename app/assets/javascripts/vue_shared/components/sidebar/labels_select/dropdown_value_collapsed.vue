@@ -46,12 +46,7 @@ export default {
     data-container="body"
     @click="handleClick"
   >
-    <i
-      aria-hidden="true"
-      data-hidden="true"
-      class="fa fa-tags"
-    >
-    </i>
+    <i aria-hidden="true" data-hidden="true" class="fa fa-tags"> </i>
     <span>{{ labels.length }}</span>
   </div>
 </template>

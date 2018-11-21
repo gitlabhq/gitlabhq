@@ -2,9 +2,10 @@
 
 module Projects
   class EnableDeployKeyService < BaseService
-    # rubocop: disable CodeReuse/ActiveRecord
     def execute
-      key = accessible_keys.find_by(id: params[:key_id] || params[:id])
+      key_id = params[:key_id] || params[:id]
+      key = find_accessible_key(key_id)
+
       return unless key
 
       unless project.deploy_keys.include?(key)
@@ -13,12 +14,15 @@ module Projects
 
       key
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
-    def accessible_keys
-      current_user.accessible_deploy_keys
+    def find_accessible_key(key_id)
+      if current_user.admin?
+        DeployKey.find_by_id(key_id)
+      else
+        current_user.accessible_deploy_keys.find_by_id(key_id)
+      end
     end
   end
 end

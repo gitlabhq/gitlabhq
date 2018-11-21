@@ -73,14 +73,8 @@ export default {
     @cancel="close"
   >
     <div slot="body">
-      <p>
-        {{ __('We want to be sure it is you, please confirm you are not a robot.') }}
-      </p>
-      <div
-        ref="recaptcha"
-        v-html="html"
-      >
-      </div>
+      <p>{{ __('We want to be sure it is you, please confirm you are not a robot.') }}</p>
+      <div ref="recaptcha" v-html="html"></div>
     </div>
   </deprecated-modal>
 </template>

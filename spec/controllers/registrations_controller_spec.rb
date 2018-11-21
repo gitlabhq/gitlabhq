@@ -49,7 +49,7 @@ describe RegistrationsController do
       end
 
       it 'displays an error when the reCAPTCHA is not solved' do
-        # Without this, `verify_recaptcha` arbitraily returns true in test env
+        # Without this, `verify_recaptcha` arbitrarily returns true in test env
         Recaptcha.configuration.skip_verify_env.delete('test')
 
         post(:create, user_params)

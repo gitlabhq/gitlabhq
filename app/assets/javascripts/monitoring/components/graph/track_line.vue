@@ -18,9 +18,7 @@ export default {
 </script>
 <template>
   <td>
-    <svg
-      width="16"
-      height="8">
+    <svg width="16" height="8">
       <line
         :stroke-dasharray="stylizedLine"
         :stroke="track.lineColor"
