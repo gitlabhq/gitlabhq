@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 class Landing {
   constructor(landingElement, dismissButton, cookieName) {
@@ -30,7 +31,7 @@ class Landing {
   }
 
   isDismissed() {
-    return Cookies.get(this.cookieName) === 'true';
+    return parseBoolean(Cookies.get(this.cookieName));
   }
 }
 
