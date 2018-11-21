@@ -20,6 +20,12 @@ describe BackfillStoreProjectFullPathInRepo, :migration do
 
   describe '#up' do
     shared_examples_for 'writes the full path to git config' do
+      let(:repository_service) { spy(:repository_service) }
+
+      def stub_repository_service
+        allow(Gitlab::GitalyClient::RepositoryService).to receive(:new).and_return(repository_service)
+      end
+
       it 'writes the git config' do
         expect_any_instance_of(Gitlab::GitalyClient::RepositoryService)
           .to receive(:set_config).with('gitlab.fullpath' => expected_path)
@@ -28,11 +34,19 @@ describe BackfillStoreProjectFullPathInRepo, :migration do
       end
 
       it 'retries in case of failure' do
-        repository_service = spy(:repository_service)
+        stub_repository_service
 
-        allow(Gitlab::GitalyClient::RepositoryService).to receive(:new).and_return(repository_service)
         allow(repository_service).to receive(:set_config).and_raise(GRPC::BadStatus, 'Retry me')
         expect(repository_service).to receive(:set_config).exactly(3).times
+
+        migration.up
+      end
+
+      it 'cleans up repository in case of failure' do
+        stub_repository_service
+
+        allow(repository_service).to receive(:set_config).and_raise(GRPC::BadStatus, 'Retry me')
+        expect(repository_service).to receive(:cleanup)
 
         migration.up
       end

@@ -106,6 +106,10 @@ module Gitlab
           repository_service.delete_config([FULLPATH_CONFIG_KEY])
         end
 
+        def cleanup_repository
+          repository_service.cleanup
+        end
+
         def storage
           @storage ||=
             if hashed_storage?
@@ -138,7 +142,10 @@ module Gitlab
           def perform(project_id, retry_count)
             project = Project.find(project_id)
 
-            migration_class.new.safe_perform_one(project, retry_count) if project
+            return unless project
+
+            project.cleanup_repository
+            migration_class.new.safe_perform_one(project, retry_count)
           end
         end
 
