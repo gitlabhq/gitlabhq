@@ -30,7 +30,7 @@ export default class ShortcutsIssuable extends Shortcuts {
       return false;
     }
 
-    const documentFragment = getSelectedFragment(document.querySelector('.issuable-details'));
+    const documentFragment = getSelectedFragment(document.querySelector('#content-body'));
 
     if (!documentFragment) {
       $replyField.focus();
