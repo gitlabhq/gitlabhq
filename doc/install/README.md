@@ -58,7 +58,7 @@ While we recommend using GitLab for the first two points above, for most scenari
 1. It can be more expensive for smaller installations. You need multiple nodes for a basic installation when a single box Omnibus installation would work well
 1. There are some feature [limitations to be aware of](install/kubernetes/gitlab_chart.md#limitations)
 
- Unless you are a Kubernetes expert and have a very large user-base (multiple tens of thousands of users) we recommend an Omnibus installation at this time.
+ Unless you are experienced with Kubernetes and have a very large user-base (thousands of users) we recommend an Omnibus installation at this time.
 
  Over time Kubernetes will mature, hosting options will improve, and GitLab Helm charts and documentation will be refined in production environments.  We'll update our recommendations as conditions change.
 
