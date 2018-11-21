@@ -1142,7 +1142,8 @@ module API
     end
 
     class JobArtifactFile < Grape::Entity
-      expose :filename, :size
+      expose :filename
+      expose :cached_size, as: :size
     end
 
     class JobArtifact < Grape::Entity
