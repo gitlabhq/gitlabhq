@@ -219,6 +219,13 @@
     margin-bottom: 0;
   }
 
+  .has-warning {
+    .name,
+    .description {
+      color: $orange-700;
+    }
+  }
+
   .cur {
     .avatar {
       @include disableAllAnimation;
@@ -245,6 +252,11 @@
 
         small {
           color: inherit;
+        }
+
+        &.has-warning {
+          color: $orange-700;
+          background-color: $orange-100;
         }
       }
 
