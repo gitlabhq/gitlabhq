@@ -260,11 +260,7 @@ module Gitlab
         )
         request.old_revision = old_ref.b unless old_ref.nil?
 
-        response = GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
-
-        raise Gitlab::Git::CommandError, encode!(response.error) if response.error.present?
-
-        true
+        GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
       end
 
       def set_config(entries)
