@@ -1,5 +1,0 @@
----
-title: Enable some frozen string in lib/gitlab
-merge_request:
-author: gfyoung
-type: performance

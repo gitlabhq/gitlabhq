@@ -1,5 +1,0 @@
----
-title: Do not reload self on hooks when creating deployment
-merge_request:
-author:
-type: fixed

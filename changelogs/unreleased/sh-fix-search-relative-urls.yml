@@ -1,5 +1,0 @@
----
-title: Fix search "all in GitLab" not working with relative URLs
-merge_request: 22644
-author:
-type: fixed
