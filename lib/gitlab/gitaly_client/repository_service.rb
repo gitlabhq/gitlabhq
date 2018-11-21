@@ -251,12 +251,11 @@ module Gitlab
         )
       end
 
-      def write_ref(ref_path, ref, old_ref, shell)
+      def write_ref(ref_path, ref, old_ref)
         request = Gitaly::WriteRefRequest.new(
           repository: @gitaly_repo,
           ref: ref_path.b,
-          revision: ref.b,
-          shell: shell
+          revision: ref.b
         )
         request.old_revision = old_ref.b unless old_ref.nil?
 

@@ -259,7 +259,7 @@ class Repository
         next if kept_around?(sha)
 
         # This will still fail if the file is corrupted (e.g. 0 bytes)
-        raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
+        raw_repository.write_ref(keep_around_ref_name(sha), sha)
       rescue Gitlab::Git::CommandError => ex
         Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
       end
