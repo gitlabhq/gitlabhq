@@ -648,7 +648,7 @@ ActiveRecord::Schema.define(version: 20181112103239) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
-    t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", using: :btree
+    t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", unique: true, using: :btree
   end
 
   create_table "clusters_applications_helm", force: :cascade do |t|
