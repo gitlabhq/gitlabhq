@@ -39,18 +39,20 @@ module Clusters
 
       def cluster_issuer_file
         {
-          'cluster_issuer.yaml': cluster_issuer_yaml_content
+          'cluster_issuer.yaml': cluster_issuer_content.deep_merge(cluster_issue_overlay)
         }
       end
 
-      def cluster_issuer_yaml_content
-        data = YAML.load_file(cluster_issuer_file_path)
-        data["spec"]["acme"]["email"] = self.email
-        YAML.dump(data)
+      def cluster_issuer_content
+        YAML.load_file(cluster_issuer_file_path)
+      end
+
+      def cluster_issue_overlay
+        { "spec" => { "acme" => { "email" => self.email } } }
       end
 
       def cluster_issuer_file_path
-        "#{Rails.root}/vendor/cert_manager/cluster_issuer.yaml"
+        Rails.root.join('vendor', 'cert_manager', 'cluster_issuer.yaml')
       end
     end
   end
