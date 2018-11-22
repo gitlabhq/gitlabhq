@@ -66,8 +66,7 @@
 
 @include media-breakpoint-down(sm) {
   .page-title {
-    .note-created-ago,
-    .new-issue-link {
+    .note-created-ago {
       display: none;
     }
   }
