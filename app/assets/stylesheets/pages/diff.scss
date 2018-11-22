@@ -6,6 +6,28 @@
   .file-title-flex-parent {
     cursor: pointer;
 
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 92px;
+      z-index: 102;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -10px;
+        width: 10px;
+        height: calc(100% + 1px);
+        background: $white-light;
+        border-right: 1px solid $border-color;
+      }
+    }
+
+    .with-performance-bar & {
+      top: 127px;
+    }
+
     a:hover {
       text-decoration: none;
     }
