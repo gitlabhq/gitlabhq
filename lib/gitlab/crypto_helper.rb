@@ -6,8 +6,8 @@ module Gitlab
 
     AES256_GCM_OPTIONS = {
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_truncated,
-      iv: Settings.attr_encrypted_db_key_base_truncated[0..11]
+      key: Settings.attr_encrypted_db_key_base_32,
+      iv: Settings.attr_encrypted_db_key_base_12
     }.freeze
 
     def sha256(value)

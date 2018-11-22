@@ -16,6 +16,20 @@ module Gitlab
       str.force_encoding(Encoding::UTF_8)
     end
 
+    def ensure_utf8_size(str, bytes:)
+      raise ArgumentError if str.empty? || bytes.negative?
+
+      truncated = str.each_char.each_with_object(String.new) do |char, object|
+        if object.bytesize + char.bytesize > bytes
+          break object
+        else
+          object.concat(char)
+        end
+      end
+
+      truncated + ("\0" * (bytes - truncated.bytesize))
+    end
+
     # Append path to host, making sure there's one single / in between
     def append_path(host, path)
       "#{host.to_s.sub(%r{\/+$}, '')}/#{path.to_s.sub(%r{^\/+}, '')}"
