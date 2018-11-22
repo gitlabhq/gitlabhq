@@ -65,12 +65,6 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .page-title {
-    .note-created-ago {
-      display: none;
-    }
-  }
-
   aside:not(.right-sidebar) {
     display: none;
   }
