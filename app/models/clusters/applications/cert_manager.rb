@@ -48,7 +48,7 @@ module Clusters
       end
 
       def cluster_issuer_content
-        YAML.safe_load(cluster_issuer_file_path)
+        YAML.safe_load(File.read(cluster_issuer_file_path))
       end
 
       def cluster_issue_overlay
