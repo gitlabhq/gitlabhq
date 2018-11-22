@@ -70,7 +70,7 @@ describe Ci::PipelineSchedulePolicy, :models do
         pipeline_schedule.update(owner: user)
       end
 
-      it 'includes abilities to do do all operations on pipeline schedule' do
+      it 'includes abilities to do all operations on pipeline schedule' do
         expect(policy).to be_allowed :play_pipeline_schedule
         expect(policy).to be_allowed :update_pipeline_schedule
         expect(policy).to be_allowed :admin_pipeline_schedule
@@ -82,7 +82,7 @@ describe Ci::PipelineSchedulePolicy, :models do
         project.add_maintainer(user)
       end
 
-      it 'includes abilities to do do all operations on pipeline schedule' do
+      it 'includes abilities to do all operations on pipeline schedule' do
         expect(policy).to be_allowed :play_pipeline_schedule
         expect(policy).to be_allowed :update_pipeline_schedule
         expect(policy).to be_allowed :admin_pipeline_schedule

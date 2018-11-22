@@ -39,7 +39,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    it('should should commit error', done => {
+    it('should commit error', done => {
       testAction(
         receiveMergeRequestsError,
         { type: 'created', search: '' },

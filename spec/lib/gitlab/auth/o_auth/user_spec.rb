@@ -498,7 +498,7 @@ describe Gitlab::Auth::OAuth::User do
     end
   end
 
-  describe 'ensure backwards compatibility with with sync email from provider option' do
+  describe 'ensure backwards compatibility with sync email from provider option' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do

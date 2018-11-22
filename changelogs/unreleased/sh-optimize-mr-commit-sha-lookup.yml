@@ -1,5 +1,0 @@
----
-title: Optimize merge request refresh by using the database to check commit SHAs
-merge_request: 22731
-author:
-type: performance

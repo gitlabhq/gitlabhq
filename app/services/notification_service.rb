@@ -50,7 +50,7 @@ class NotificationService
 
   # Always notify the user about gpg key added
   #
-  # This is a security email so it will be sent even if the user user disabled
+  # This is a security email so it will be sent even if the user disabled
   # notifications
   def new_gpg_key(gpg_key)
     if gpg_key.user&.can?(:receive_notifications)

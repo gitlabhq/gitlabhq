@@ -658,7 +658,7 @@ POST /projects/:id/issues/:issue_iid/move
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"to_project_id": 5}' https://gitlab.example.com/api/v4/projects/4/issues/85/move
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form to_project_id=5 https://gitlab.example.com/api/v4/projects/4/issues/85/move
 ```
 
 Example response:

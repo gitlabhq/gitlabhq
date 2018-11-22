@@ -6446,7 +6446,7 @@ msgstr ""
 msgid "This job requires a manual action"
 msgstr ""
 
-msgid "This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
+msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -7243,6 +7243,9 @@ msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"
+msgstr ""
+
+msgid "Will deploy to"
 msgstr ""
 
 msgid "Withdraw Access Request"

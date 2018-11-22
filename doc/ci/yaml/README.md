@@ -334,7 +334,7 @@ There are a few rules that apply to the usage of job policy:
 
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
-* `only` and `except` allow the use of regular expressions.
+* `only` and `except` allow the use of regular expressions (using [Ruby regexp syntax](https://ruby-doc.org/core/Regexp.html)).
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
@@ -1633,6 +1633,10 @@ rspec:
   script:
     - bundle exec rspec
 ```
+
+NOTE: **Note:**
+`include` requires the external YAML files to have the extensions `.yml` or `.yaml`. 
+The external file will not be included if the extension is missing.
 
 You can define it either as a single string, or, in case you want to include
 more than one files, an array of different values . The following examples

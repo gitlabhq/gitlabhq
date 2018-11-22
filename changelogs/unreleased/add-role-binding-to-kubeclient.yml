@@ -1,5 +1,0 @@
----
-title: Allow kubeclient to call RoleBinding methods
-merge_request: 22524
-author:
-type: other

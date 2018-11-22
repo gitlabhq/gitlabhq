@@ -1,5 +1,0 @@
----
-title: Use the standard PIP_CACHE_DIR for Python dependency caching template
-merge_request: 22211
-author: Takuya Noguchi
-type: fixed

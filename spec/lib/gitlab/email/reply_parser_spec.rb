@@ -49,7 +49,7 @@ describe Gitlab::Email::ReplyParser do
       expect(test_parse_body(fixture_file("emails/paragraphs.eml")))
         .to eq(
           <<-BODY.strip_heredoc.chomp
-            Is there any reason the *old* candy can't be be kept in silos while the new candy
+            Is there any reason the *old* candy can't be kept in silos while the new candy
             is imported into *new* silos?
 
             The thing about candy is it stays delicious for a long time -- we can just keep

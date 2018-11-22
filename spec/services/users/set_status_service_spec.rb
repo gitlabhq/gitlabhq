@@ -7,7 +7,7 @@ describe Users::SetStatusService do
   subject(:service) { described_class.new(current_user, params) }
 
   describe '#execute' do
-    context 'when when params are set' do
+    context 'when params are set' do
       let(:params) { { emoji: 'taurus', message: 'a random status' } }
 
       it 'creates a status' do

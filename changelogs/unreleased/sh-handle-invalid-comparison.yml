@@ -1,5 +1,0 @@
----
-title: Reject invalid branch names in repository compare controller
-merge_request: 22186
-author:
-type: fixed
