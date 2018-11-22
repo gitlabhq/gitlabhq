@@ -2565,13 +2565,9 @@ describe Project do
   describe '#protected_for?' do
     let(:project) { create(:project, :repository) }
 
-    subject { project.protected_for?('ref') }
+    subject { project.protected_for?(ref) }
 
-    before do
-      allow(project.repository).to receive(:resolve_ref).and_return(ref)
-    end
-
-    context 'when ref is ambiguous' do
+    context 'when ref is nil' do
       let(:ref) { nil }
 
       it 'returns false' do
@@ -2579,8 +2575,21 @@ describe Project do
       end
     end
 
+    context 'when ref is ambiguous' do
+      let(:ref) { 'ref' }
+
+      before do
+        project.repository.add_branch(project.creator, ref, 'master')
+        project.repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
     context 'when the ref is not protected' do
-      let(:ref) { 'refs/heads/master' }
+      let(:ref) { 'master' }
 
       before do
         stub_application_setting(
@@ -2593,7 +2602,7 @@ describe Project do
     end
 
     context 'when the ref is a protected branch' do
-      let(:ref) { 'refs/heads/master' }
+      let(:ref) { 'master' }
 
       before do
         create(:protected_branch, name: 'master', project: project)
@@ -2605,7 +2614,7 @@ describe Project do
     end
 
     context 'when the ref is a protected tag' do
-      let(:ref) { 'refs/tags/v1.0.0' }
+      let(:ref) { 'v1.0.0' }
 
       before do
         create(:protected_tag, name: 'v1.0.0', project: project)

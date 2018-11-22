@@ -1005,7 +1005,36 @@ describe Repository do
     end
   end
 
+  describe '#ambiguous_ref?' do
+    let(:ref) { 'ref' }
+
+    subject { repository.ambiguous_ref?(ref) }
+
+    context 'when ref is ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+        repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'should be true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when ref is not ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'should be false' do
+        is_expected.to eq(false)
+      end
+    end
+  end
+
   describe '#resolve_ref' do
+    let(:ref) { 'ref' }
+
     subject { repository.resolve_ref(ref) }
 
     context 'when ref is full ref' do
@@ -1016,38 +1045,23 @@ describe Repository do
       end
     end
 
-    context 'when ref is a tag or branch name' do
-      let(:ref) { 'ref' }
-
-      context 'when ref is ambiguous' do
-        before do
-          repository.add_tag(project.creator, ref, 'master')
-          repository.add_branch(project.creator, ref, 'master')
-        end
-
-        it 'returns nil' do
-          is_expected.to eq(nil)
-        end
+    context 'when ref is tag name' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
       end
 
-      context 'when ref is tag name' do
-        before do
-          repository.add_tag(project.creator, ref, 'master')
-        end
+      it 'returns the tag ref' do
+        is_expected.to eq("refs/tags/#{ref}")
+      end
+    end
 
-        it 'returns the tag ref' do
-          is_expected.to eq("refs/tags/#{ref}")
-        end
+    context 'when ref is branch name' do
+      before do
+        repository.add_branch(project.creator, ref, 'master')
       end
 
-      context 'when ref is branch name' do
-        before do
-          repository.add_branch(project.creator, ref, 'master')
-        end
-
-        it 'returns the branch ref' do
-          is_expected.to eq("refs/heads/#{ref}")
-        end
+      it 'returns the branch ref' do
+        is_expected.to eq("refs/heads/#{ref}")
       end
     end
   end

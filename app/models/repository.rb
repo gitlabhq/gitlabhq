@@ -182,15 +182,14 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
-  def resolve_ref(ref)
-    tag_exists = tag_exists?(ref)
-    branch_exists = branch_exists?(ref)
+  def ambiguous_ref?(ref)
+    tag_exists?(ref) && branch_exists?(ref)
+  end
 
-    if tag_exists && branch_exists
-      nil
-    elsif tag_exists
+  def resolve_ref(ref)
+    if tag_exists?(ref)
       Gitlab::Git::TAG_REF_PREFIX + ref
-    elsif branch_exists
+    elsif branch_exists?(ref)
       Gitlab::Git::BRANCH_REF_PREFIX + ref
     else
       ref
