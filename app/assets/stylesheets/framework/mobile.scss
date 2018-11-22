@@ -69,12 +69,6 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .issues-filters {
-    .milestone-filter {
-      display: none;
-    }
-  }
-
   .page-title {
     .note-created-ago,
     .new-issue-link {
