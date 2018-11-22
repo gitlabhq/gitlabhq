@@ -10,7 +10,7 @@ module Gitlab
               image: 'illustrations/illustrations_scheduled-job_countdown.svg',
               size: 'svg-394',
               title: _("This is a delayed job to run in %{remainingTime}"),
-              content: _("This job will automatically run after it's timer finishes. " \
+              content: _("This job will automatically run after its timer finishes. " \
                          "Often they are used for incremental roll-out deploys " \
                          "to production environments. When unscheduled it converts " \
                          "into a manual action.")

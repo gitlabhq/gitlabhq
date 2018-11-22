@@ -596,7 +596,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it 'shows delayed job', :js do
         expect(page).to have_content('This is a delayed job to run in')
-        expect(page).to have_content("This job will automatically run after it's timer finishes.")
+        expect(page).to have_content("This job will automatically run after its timer finishes.")
         expect(page).to have_link('Unschedule job')
       end
 
