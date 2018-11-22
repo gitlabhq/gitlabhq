@@ -39,8 +39,12 @@ module Clusters
 
       def cluster_issuer_file
         {
-          'cluster_issuer.yaml': cluster_issuer_content.deep_merge(cluster_issue_overlay)
+          'cluster_issuer.yaml': cluster_issuer_yaml_content
         }
+      end
+
+      def cluster_issuer_yaml_content
+        YAML.dump(cluster_issuer_content.deep_merge(cluster_issue_overlay))
       end
 
       def cluster_issuer_content
