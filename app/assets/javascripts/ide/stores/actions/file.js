@@ -82,7 +82,7 @@ export const getFileData = (
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
       dispatch('setErrorMessage', {
-        text: __('An error occured whilst loading the file.'),
+        text: __('An error occurred whilst loading the file.'),
         action: payload =>
           dispatch('getFileData', payload).then(() => dispatch('setErrorMessage', null)),
         actionText: __('Please try again'),
@@ -124,7 +124,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
       })
       .catch(() => {
         dispatch('setErrorMessage', {
-          text: __('An error occured whilst loading the file content.'),
+          text: __('An error occurred whilst loading the file content.'),
           action: payload =>
             dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
           actionText: __('Please try again'),

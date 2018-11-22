@@ -84,7 +84,7 @@ export default class AjaxVariableList {
       .catch(() => {
         loadingIcon.classList.toggle('hide', true);
         this.variableList.toggleEnableRow(true);
-        Flash(s__('CiVariable|Error occured while saving variables'));
+        Flash(s__('CiVariable|Error occurred while saving variables'));
       });
   }
 

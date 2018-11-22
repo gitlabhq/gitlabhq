@@ -47,7 +47,7 @@ export default {
     errorMessage() {
       return sprintf(
         s__(
-          'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
+          'ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}',
         ),
         { error: this.gapiError },
       );
