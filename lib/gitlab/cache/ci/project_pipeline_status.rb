@@ -9,8 +9,6 @@ module Gitlab
       class ProjectPipelineStatus
         attr_accessor :sha, :status, :ref, :project, :loaded
 
-        delegate :commit, to: :project
-
         def self.load_for_project(project)
           new(project).tap do |status|
             status.load_status
@@ -18,31 +16,10 @@ module Gitlab
         end
 
         def self.load_in_batch_for_projects(projects)
-          cached_results_for_projects(projects).zip(projects).each do |result, project|
-            project.pipeline_status = new(project, result)
+          projects.each do |project|
+            project.pipeline_status = new(project)
             project.pipeline_status.load_status
           end
-        end
-
-        def self.cached_results_for_projects(projects)
-          result = Gitlab::Redis::Cache.with do |redis|
-            redis.multi do
-              projects.each do |project|
-                cache_key = cache_key_for_project(project)
-                redis.exists(cache_key)
-                redis.hmget(cache_key, :sha, :status, :ref)
-              end
-            end
-          end
-
-          result.each_slice(2).map do |(cache_key_exists, (sha, status, ref))|
-            pipeline_info = { sha: sha, status: status, ref: ref }
-            { loaded_from_cache: cache_key_exists, pipeline_info: pipeline_info }
-          end
-        end
-
-        def self.cache_key_for_project(project)
-          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:project:#{project.id}:pipeline_status:#{project.commit&.sha}"
         end
 
         def self.update_for_pipeline(pipeline)
@@ -132,7 +109,13 @@ module Gitlab
         end
 
         def cache_key
-          self.class.cache_key_for_project(project)
+          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:project:#{project.id}:pipeline_status:#{commit&.sha}"
+        end
+
+        def commit
+          return @commit if defined?(@commit)
+
+          @commit = project.commit
         end
       end
     end
