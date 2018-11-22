@@ -66,7 +66,6 @@ describe 'Merge request > User sees versions', :js do
 
     it 'shows comments that were last relevant at that version' do
       expect(page).to have_content '5 changed files'
-      expect(page).to have_content 'Not all comments are displayed'
 
       position = Gitlab::Diff::Position.new(
         old_path: ".gitmodules",
@@ -112,7 +111,6 @@ describe 'Merge request > User sees versions', :js do
       )
       expect(page).to have_content '4 changed files'
       expect(page).to have_content '15 additions 6 deletions'
-      expect(page).to have_content 'Not all comments are displayed'
 
       position = Gitlab::Diff::Position.new(
         old_path: ".gitmodules",
