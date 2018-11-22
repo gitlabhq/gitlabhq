@@ -233,7 +233,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def validate_diff_params
     if [:since, :to, :offset].any? { |key| params[key].blank? }
-      render nothing: true
+      head :ok
     end
   end
 

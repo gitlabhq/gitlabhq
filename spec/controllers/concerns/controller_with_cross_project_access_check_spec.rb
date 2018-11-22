@@ -27,11 +27,11 @@ describe ControllerWithCrossProjectAccessCheck do
                                               if: -> { if_condition }
 
         def index
-          render nothing: true
+          head :ok
         end
 
         def show
-          render nothing: true
+          head :ok
         end
 
         def unless_condition
@@ -88,15 +88,15 @@ describe ControllerWithCrossProjectAccessCheck do
                                         if: -> { if_condition }
 
         def index
-          render nothing: true
+          head :ok
         end
 
         def show
-          render nothing: true
+          head :ok
         end
 
         def edit
-          render nothing: true
+          head :ok
         end
 
         def unless_condition
