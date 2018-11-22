@@ -74,6 +74,19 @@ module API
         options
       end
 
+      def authorize_push_to_merge_request!(merge_request)
+        forbidden!('Source branch does not exist') unless
+          merge_request.source_branch_exists?
+
+        user_access = Gitlab::UserAccess.new(
+          current_user,
+          project: merge_request.source_project
+        )
+
+        forbidden!('Cannot push to source branch') unless
+          user_access.can_push_to_branch?(merge_request.source_branch)
+      end
+
       params :merge_requests_params do
         optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
                          desc: 'Return opened, closed, locked, merged, or all merge requests'
@@ -376,6 +389,19 @@ module API
         ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)
           .cancel(merge_request)
+      end
+
+      desc 'Rebase the merge request against its target branch' do
+        detail 'This feature was added in GitLab 11.6'
+      end
+      put ':id/merge_requests/:merge_request_iid/rebase' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
+
+        authorize_push_to_merge_request!(merge_request)
+
+        RebaseWorker.perform_async(merge_request.id, current_user.id)
+
+        status :accepted
       end
 
       desc 'List issues that will be closed on merge' do

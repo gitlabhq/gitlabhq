@@ -1206,6 +1206,31 @@ Parameters:
 }
 ```
 
+## Rebase a merge request
+
+Automatically rebase the `source_branch` of the merge request against its
+`target_branch`.
+
+If you don't have permissions to push to the merge request's source branch -
+you'll get a `403 Forbidden` response.
+
+```
+PUT /projects/:id/merge_requests/:merge_request_iid/rebase
+```
+
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
+```
+
+This is an asynchronous request. The API will return an empty `202 Accepted`
+response if the request is enqueued successfully. You should poll the
+[Get single MR](#get-single-mr) endpoint to determine success or failure.
+
 ## Comments on merge requests
 
 Comments are done via the [notes](notes.md) resource.

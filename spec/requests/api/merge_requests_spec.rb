@@ -1181,6 +1181,26 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
+    it 'enques a rebase of the merge request against the target branch' do
+      Sidekiq::Testing.fake! do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+      end
+
+      expect(response).to have_gitlab_http_status(202)
+      expect(RebaseWorker.jobs.size).to eq(1)
+    end
+
+    it 'returns 403 if the user cannot push to the branch' do
+      guest = create(:user)
+      project.add_guest(guest)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", guest)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+  end
+
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 
