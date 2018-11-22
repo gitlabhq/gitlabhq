@@ -1,4 +1,4 @@
-class ChangeDefaultValueForDsaKeyRestriction < ActiveRecord::Migration
+class ChangeDefaultValueForDsaKeyRestriction < ActiveRecord::Migration[4.2]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 

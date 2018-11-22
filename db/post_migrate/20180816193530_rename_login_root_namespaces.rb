@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RenameLoginRootNamespaces < ActiveRecord::Migration
+class RenameLoginRootNamespaces < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::Database::RenameReservedPathsMigration::V1
 

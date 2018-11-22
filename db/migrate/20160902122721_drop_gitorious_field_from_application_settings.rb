@@ -1,4 +1,4 @@
-class DropGitoriousFieldFromApplicationSettings < ActiveRecord::Migration
+class DropGitoriousFieldFromApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # After the deploy the caches will be cold anyway

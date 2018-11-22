@@ -2,7 +2,7 @@
 # It's easier to achieve this by adding the column with the `['api']` default, and then changing the default to
 # `[]`.
 
-class AddColumnScopesToPersonalAccessTokens < ActiveRecord::Migration
+class AddColumnScopesToPersonalAccessTokens < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

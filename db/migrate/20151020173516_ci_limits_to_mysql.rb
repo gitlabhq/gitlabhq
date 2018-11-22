@@ -1,4 +1,4 @@
-class CiLimitsToMysql < ActiveRecord::Migration
+class CiLimitsToMysql < ActiveRecord::Migration[4.2]
   def change
     return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/
 

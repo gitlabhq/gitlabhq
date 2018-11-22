@@ -1,4 +1,4 @@
-class AddWhenAndYamlVariablesToCiBuilds < ActiveRecord::Migration
+class AddWhenAndYamlVariablesToCiBuilds < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

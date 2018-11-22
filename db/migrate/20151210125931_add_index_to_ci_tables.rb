@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddIndexToCiTables < ActiveRecord::Migration
+class AddIndexToCiTables < ActiveRecord::Migration[4.2]
   def change
     add_index :ci_builds, :gl_project_id
     add_index :ci_runner_projects, :gl_project_id

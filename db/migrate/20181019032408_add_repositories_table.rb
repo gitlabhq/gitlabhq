@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddRepositoriesTable < ActiveRecord::Migration
+class AddRepositoriesTable < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

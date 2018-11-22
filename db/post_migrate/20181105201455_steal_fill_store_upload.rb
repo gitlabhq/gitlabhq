@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StealFillStoreUpload < ActiveRecord::Migration
+class StealFillStoreUpload < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

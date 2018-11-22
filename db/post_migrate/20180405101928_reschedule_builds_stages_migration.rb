@@ -1,4 +1,4 @@
-class RescheduleBuildsStagesMigration < ActiveRecord::Migration
+class RescheduleBuildsStagesMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   ##

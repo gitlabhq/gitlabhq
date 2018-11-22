@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class PostPopulateCanPushFromDeployKeysProjects < ActiveRecord::Migration
+class PostPopulateCanPushFromDeployKeysProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

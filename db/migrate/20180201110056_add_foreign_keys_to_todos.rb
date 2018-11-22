@@ -1,4 +1,4 @@
-class AddForeignKeysToTodos < ActiveRecord::Migration
+class AddForeignKeysToTodos < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   class Todo < ActiveRecord::Base

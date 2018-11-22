@@ -1,5 +1,5 @@
 # rubocop:disable Migration/RemoveColumn
-class RemoveNotificationLevelFromUsers < ActiveRecord::Migration
+class RemoveNotificationLevelFromUsers < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

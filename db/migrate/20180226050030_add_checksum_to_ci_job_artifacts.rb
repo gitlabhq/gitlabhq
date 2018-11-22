@@ -1,4 +1,4 @@
-class AddChecksumToCiJobArtifacts < ActiveRecord::Migration
+class AddChecksumToCiJobArtifacts < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

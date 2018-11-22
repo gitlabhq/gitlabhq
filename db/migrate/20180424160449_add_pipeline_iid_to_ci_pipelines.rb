@@ -1,4 +1,4 @@
-class AddPipelineIidToCiPipelines < ActiveRecord::Migration
+class AddPipelineIidToCiPipelines < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

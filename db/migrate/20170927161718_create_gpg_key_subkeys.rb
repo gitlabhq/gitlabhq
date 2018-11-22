@@ -1,4 +1,4 @@
-class CreateGpgKeySubkeys < ActiveRecord::Migration
+class CreateGpgKeySubkeys < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

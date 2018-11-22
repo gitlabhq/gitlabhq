@@ -1,4 +1,4 @@
-class ChangeDefaultValueForPagesHttpsOnly < ActiveRecord::Migration
+class ChangeDefaultValueForPagesHttpsOnly < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

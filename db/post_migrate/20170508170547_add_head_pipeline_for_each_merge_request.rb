@@ -1,5 +1,5 @@
 # rubocop:disable Migration/UpdateLargeTable
-class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration
+class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

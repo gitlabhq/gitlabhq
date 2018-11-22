@@ -1,4 +1,4 @@
-class AddRebaseCommitShaToMergeRequestsCe < ActiveRecord::Migration
+class AddRebaseCommitShaToMergeRequestsCe < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

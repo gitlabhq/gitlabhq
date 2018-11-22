@@ -26,6 +26,9 @@ module Gitlab
     # setting disabled
     require_dependency Rails.root.join('lib/mysql_zero_date')
 
+    # This can be removed when we drop support for rails 4
+    require_dependency Rails.root.join('lib/rails4_migration_version')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

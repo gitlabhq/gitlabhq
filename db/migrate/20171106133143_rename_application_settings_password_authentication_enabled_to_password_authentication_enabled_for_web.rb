@@ -1,4 +1,4 @@
-class RenameApplicationSettingsPasswordAuthenticationEnabledToPasswordAuthenticationEnabledForWeb < ActiveRecord::Migration
+class RenameApplicationSettingsPasswordAuthenticationEnabledToPasswordAuthenticationEnabledForWeb < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

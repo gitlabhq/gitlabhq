@@ -1,4 +1,4 @@
-class InitSchema < ActiveRecord::Migration
+class InitSchema < ActiveRecord::Migration[4.2]
   DOWNTIME = true
 
   # rubocop:disable Metrics/AbcSize

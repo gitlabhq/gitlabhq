@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddResourceLabelEventReferenceFields < ActiveRecord::Migration
+class AddResourceLabelEventReferenceFields < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

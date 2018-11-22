@@ -1,6 +1,6 @@
 # rubocop:disable Migration/Datetime
 # rubocop:disable RemoveIndex
-class AddDeletedAtToNamespaces < ActiveRecord::Migration
+class AddDeletedAtToNamespaces < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

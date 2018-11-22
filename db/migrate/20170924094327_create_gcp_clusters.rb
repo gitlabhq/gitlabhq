@@ -1,4 +1,4 @@
-class CreateGcpClusters < ActiveRecord::Migration
+class CreateGcpClusters < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

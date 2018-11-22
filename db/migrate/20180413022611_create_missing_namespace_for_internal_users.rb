@@ -1,4 +1,4 @@
-class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration
+class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up
