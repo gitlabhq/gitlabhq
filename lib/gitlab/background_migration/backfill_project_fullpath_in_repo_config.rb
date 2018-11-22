@@ -144,7 +144,6 @@ module Gitlab
 
             return unless project
 
-            project.cleanup_repository
             migration_class.new.safe_perform_one(project, retry_count)
           end
         end
@@ -178,6 +177,7 @@ module Gitlab
         end
 
         def perform_one(project)
+          project.cleanup_repository
           project.add_fullpath_config
         end
       end
@@ -192,6 +192,7 @@ module Gitlab
         end
 
         def perform_one(project)
+          project.cleanup_repository
           project.remove_fullpath_config
         end
       end

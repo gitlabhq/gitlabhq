@@ -46,10 +46,12 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
         projects.create!(namespace_id: subgroup.id, name: 'buzz', path: 'buzz', storage_version: 1)
 
         expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |repository_service|
+          allow(repository_service).to receive(:cleanup)
           expect(repository_service).to receive(:set_config).with('gitlab.fullpath' => 'foo/bar/baz')
         end
 
         expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |repository_service|
+          allow(repository_service).to receive(:cleanup)
           expect(repository_service).to receive(:set_config).with('gitlab.fullpath' => 'foo/bar/buzz')
         end
 
@@ -65,8 +67,10 @@ describe Gitlab::BackgroundMigration::BackfillProjectFullpathInRepoConfig, :migr
       it 'asks the gitaly client to set config' do
         projects.create!(namespace_id: subgroup.id, name: 'baz', path: 'baz')
 
-        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService)
-          .to receive(:delete_config).with(['gitlab.fullpath'])
+        expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |repository_service|
+          allow(repository_service).to receive(:cleanup)
+          expect(repository_service).to receive(:delete_config).with(['gitlab.fullpath'])
+        end
 
         migrate
       end
