@@ -620,10 +620,10 @@ gitlab:assets:compile:
       - webpack-report/
       - public/assets/
   only:
-    - branches@gitlab-org/gitlab-ce
-    - branches@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ee
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
+    - //@gitlab/gitabhq
+    - //@gitlab/gitlab-ee
   tags:
     - gitlab-org-delivery
     - high-cpu
