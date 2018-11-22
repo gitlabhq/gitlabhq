@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
-describe Gitlab::GitalyClient, skip_gitaly_mock: true do
+describe Gitlab::GitalyClient do
   describe '.stub_class' do
     it 'returns the gRPC health check stub' do
       expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)
@@ -191,102 +191,13 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
     let(:feature_name) { 'my_feature' }
     let(:real_feature_name) { "gitaly_#{feature_name}" }
 
-    context 'when Gitaly is disabled' do
-      before do
-        allow(described_class).to receive(:enabled?).and_return(false)
-      end
-
-      it 'returns false' do
-        expect(described_class.feature_enabled?(feature_name)).to be(false)
-      end
+    before do
+      allow(Feature).to receive(:enabled?).and_return(false)
     end
 
-    context 'when the feature status is DISABLED' do
-      let(:feature_status) { Gitlab::GitalyClient::MigrationStatus::DISABLED }
-
-      it 'returns false' do
-        expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-      end
-    end
-
-    context 'when the feature_status is OPT_IN' do
-      let(:feature_status) { Gitlab::GitalyClient::MigrationStatus::OPT_IN }
-
-      context "when the feature flag hasn't been set" do
-        it 'returns false' do
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-        end
-      end
-
-      context "when the feature flag is set to disable" do
-        before do
-          Feature.get(real_feature_name).disable
-        end
-
-        it 'returns false' do
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-        end
-      end
-
-      context "when the feature flag is set to enable" do
-        before do
-          Feature.get(real_feature_name).enable
-        end
-
-        it 'returns true' do
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(true)
-        end
-      end
-
-      context "when the feature flag is set to a percentage of time" do
-        before do
-          Feature.get(real_feature_name).enable_percentage_of_time(70)
-        end
-
-        it 'bases the result on pseudo-random numbers' do
-          expect(Random).to receive(:rand).and_return(0.3)
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(true)
-
-          expect(Random).to receive(:rand).and_return(0.8)
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-        end
-      end
-
-      context "when a feature is not persisted" do
-        it 'returns false when opt_into_all_features is off' do
-          allow(Feature).to receive(:persisted?).and_return(false)
-          allow(described_class).to receive(:opt_into_all_features?).and_return(false)
-
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-        end
-
-        it 'returns true when the override is on' do
-          allow(Feature).to receive(:persisted?).and_return(false)
-          allow(described_class).to receive(:opt_into_all_features?).and_return(true)
-
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(true)
-        end
-      end
-    end
-
-    context 'when the feature_status is OPT_OUT' do
-      let(:feature_status) { Gitlab::GitalyClient::MigrationStatus::OPT_OUT }
-
-      context "when the feature flag hasn't been set" do
-        it 'returns true' do
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(true)
-        end
-      end
-
-      context "when the feature flag is set to disable" do
-        before do
-          Feature.get(real_feature_name).disable
-        end
-
-        it 'returns false' do
-          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
-        end
-      end
+    it 'returns false' do
+      expect(Feature).to receive(:enabled?).with(real_feature_name)
+      expect(described_class.feature_enabled?(feature_name)).to be(false)
     end
   end
 
@@ -302,6 +213,31 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
         expect(described_class.default_timeout).to be(55)
         expect(described_class.medium_timeout).to be(30)
         expect(described_class.fast_timeout).to be(10)
+      end
+    end
+  end
+
+  describe 'Peek Performance bar details' do
+    let(:gitaly_server) { Gitaly::Server.all.first }
+
+    before do
+      Gitlab::SafeRequestStore[:peek_enabled] = true
+    end
+
+    context 'when the request store is active', :request_store do
+      it 'records call details if a RPC is called' do
+        gitaly_server.server_version
+
+        expect(described_class.list_call_details).not_to be_empty
+        expect(described_class.list_call_details.size).to be(1)
+      end
+    end
+
+    context 'when no request store is active' do
+      it 'records nothing' do
+        gitaly_server.server_version
+
+        expect(described_class.list_call_details).to be_empty
       end
     end
   end
