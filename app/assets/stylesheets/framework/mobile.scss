@@ -63,9 +63,3 @@
     }
   }
 }
-
-@include media-breakpoint-down(sm) {
-  aside:not(.right-sidebar) {
-    display: none;
-  }
-}
