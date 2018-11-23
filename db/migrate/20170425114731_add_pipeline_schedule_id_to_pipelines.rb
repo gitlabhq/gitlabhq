@@ -1,4 +1,4 @@
-class AddPipelineScheduleIdToPipelines < ActiveRecord::Migration
+class AddPipelineScheduleIdToPipelines < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

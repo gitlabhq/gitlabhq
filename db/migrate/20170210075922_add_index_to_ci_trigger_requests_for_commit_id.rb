@@ -1,5 +1,5 @@
 # rubocop:disable RemoveIndex
-class AddIndexToCiTriggerRequestsForCommitId < ActiveRecord::Migration
+class AddIndexToCiTriggerRequestsForCommitId < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

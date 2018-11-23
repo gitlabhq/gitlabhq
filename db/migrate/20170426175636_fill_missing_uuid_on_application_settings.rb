@@ -1,4 +1,4 @@
-class FillMissingUuidOnApplicationSettings < ActiveRecord::Migration
+class FillMissingUuidOnApplicationSettings < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

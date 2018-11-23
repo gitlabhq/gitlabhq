@@ -106,6 +106,7 @@ module Trigger
     def extra_variables
       {
         'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
+        'GITLAB_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG'],
         'ALTERNATIVE_SOURCES' => 'true',
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master'

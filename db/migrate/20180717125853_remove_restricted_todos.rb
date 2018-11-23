@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 # frozen_string_literal: true
 
-class RemoveRestrictedTodos < ActiveRecord::Migration
+class RemoveRestrictedTodos < ActiveRecord::Migration[4.2]
   DOWNTIME = false
   disable_ddl_transaction!
 

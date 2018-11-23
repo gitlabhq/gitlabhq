@@ -3,6 +3,7 @@ import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
 import store from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffsMockData from '../mock_data/merge_request_diffs';
+import getDiffWithCommit from '../mock_data/diff_with_commit';
 
 describe('CompareVersions', () => {
   let vm;
@@ -120,6 +121,26 @@ describe('CompareVersions', () => {
       window.history.replaceState({}, null, '?w=0');
 
       expect(vm.isWhitespaceVisible()).toBe(true);
+    });
+  });
+
+  describe('commit', () => {
+    beforeEach(done => {
+      vm.$store.state.diffs.commit = getDiffWithCommit().commit;
+      vm.mergeRequestDiffs = [];
+
+      vm.$nextTick(done);
+    });
+
+    it('renders latest version button', () => {
+      expect(vm.$el.querySelector('.js-latest-version').textContent.trim()).toBe(
+        'Show latest version',
+      );
+    });
+
+    it('renders short commit ID', () => {
+      expect(vm.$el.textContent).toContain('Viewing commit');
+      expect(vm.$el.textContent).toContain(vm.commit.short_id);
     });
   });
 });

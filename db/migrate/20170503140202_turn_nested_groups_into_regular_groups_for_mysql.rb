@@ -5,7 +5,7 @@
 # updating a namespace to also rename directories (uploads, GitLab pages, etc).
 # The alternative is to copy hundreds of lines of code into this migration,
 # adjust them where needed, etc; something which doesn't work well at all.
-class TurnNestedGroupsIntoRegularGroupsForMysql < ActiveRecord::Migration
+class TurnNestedGroupsIntoRegularGroupsForMysql < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

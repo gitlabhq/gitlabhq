@@ -1,4 +1,4 @@
-class AddVerificationStatusToGpgSignatures < ActiveRecord::Migration
+class AddVerificationStatusToGpgSignatures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   include Gitlab::Database::MigrationHelpers

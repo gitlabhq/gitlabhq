@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class AddIndexForStuckMrQuery < ActiveRecord::Migration
+class AddIndexForStuckMrQuery < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

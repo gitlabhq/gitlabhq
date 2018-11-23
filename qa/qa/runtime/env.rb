@@ -103,6 +103,14 @@ module QA
         ENV['GITLAB_SANDBOX_NAME']
       end
 
+      def namespace_name
+        ENV['GITLAB_NAMESPACE_NAME']
+      end
+
+      def auto_devops_project_name
+        ENV['GITLAB_AUTO_DEVOPS_PROJECT_NAME']
+      end
+
       def gcloud_account_key
         ENV.fetch("GCLOUD_ACCOUNT_KEY")
       end

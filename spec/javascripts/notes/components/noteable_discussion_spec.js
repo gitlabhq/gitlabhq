@@ -6,6 +6,7 @@ import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
+const diffDiscussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('noteable_discussion component', () => {
   const Component = Vue.extend(noteableDiscussion);
@@ -113,6 +114,49 @@ describe('noteable_discussion component', () => {
           })
           .then(done)
           .catch(done.fail);
+      });
+    });
+
+    describe('isRepliesCollapsed', () => {
+      it('should return false for diff discussions', done => {
+        const diffDiscussion = getJSONFixture(diffDiscussionFixture)[0];
+        vm.$store.dispatch('setInitialNotes', [diffDiscussion]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.isRepliesCollapsed).toEqual(false);
+            expect(vm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
+            expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('should return false if discussion does not have a reply', () => {
+        const discussion = { ...discussionMock, resolved: true };
+        discussion.notes = discussion.notes.slice(0, 1);
+        const noRepliesVm = new Component({
+          store,
+          propsData: { discussion },
+        }).$mount();
+
+        expect(noRepliesVm.isRepliesCollapsed).toEqual(false);
+        expect(noRepliesVm.$el.querySelector('.js-toggle-replies')).toBeNull();
+        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
+        noRepliesVm.$destroy();
+      });
+
+      it('should return true for resolved non-diff discussion which has replies', () => {
+        const discussion = { ...discussionMock, resolved: true };
+        const resolvedDiscussionVm = new Component({
+          store,
+          propsData: { discussion },
+        }).$mount();
+
+        expect(resolvedDiscussionVm.isRepliesCollapsed).toEqual(true);
+        expect(resolvedDiscussionVm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
+        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
+        resolvedDiscussionVm.$destroy();
       });
     });
   });

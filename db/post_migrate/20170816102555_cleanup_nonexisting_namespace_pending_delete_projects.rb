@@ -1,7 +1,7 @@
 # Follow up of CleanupNamespacelessPendingDeleteProjects and it cleans
 # all projects with `pending_delete = true` and for which the
 # namespace no longer exists.
-class CleanupNonexistingNamespacePendingDeleteProjects < ActiveRecord::Migration
+class CleanupNonexistingNamespacePendingDeleteProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

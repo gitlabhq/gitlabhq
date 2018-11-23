@@ -1,4 +1,4 @@
-class AddTriggerIdForeignKey < ActiveRecord::Migration
+class AddTriggerIdForeignKey < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

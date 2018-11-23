@@ -6,7 +6,7 @@
 #
 # Why this happened is lost in the mists of time, so repeat the SQL query
 # without speculation, just in case more than one person was affected.
-class AddTimestampsToMembersAgain < ActiveRecord::Migration
+class AddTimestampsToMembersAgain < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

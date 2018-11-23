@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DropDefaultValueOnStatusDeployments < ActiveRecord::Migration
+class DropDefaultValueOnStatusDeployments < ActiveRecord::Migration[4.2]
   DOWNTIME = false
   DEPLOYMENT_STATUS_SUCCESS = 2 # Equivalent to Deployment.state_machine.states['success'].value
 

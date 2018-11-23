@@ -1,6 +1,6 @@
 # rubocop:disable Migration/RemoveColumn
 # rubocop:disable RemoveIndex
-class RemoveOldProjectIdColumns < ActiveRecord::Migration
+class RemoveOldProjectIdColumns < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 

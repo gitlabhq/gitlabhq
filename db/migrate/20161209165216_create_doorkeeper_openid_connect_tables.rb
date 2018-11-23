@@ -1,4 +1,4 @@
-class CreateDoorkeeperOpenidConnectTables < ActiveRecord::Migration
+class CreateDoorkeeperOpenidConnectTables < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

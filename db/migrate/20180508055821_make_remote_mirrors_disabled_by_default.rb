@@ -1,4 +1,4 @@
-class MakeRemoteMirrorsDisabledByDefault < ActiveRecord::Migration
+class MakeRemoteMirrorsDisabledByDefault < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

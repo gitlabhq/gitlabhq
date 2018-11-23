@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateRedirectRoutes < ActiveRecord::Migration
+class CreateRedirectRoutes < ActiveRecord::Migration[4.2]
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 

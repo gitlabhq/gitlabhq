@@ -1,4 +1,4 @@
-class AddGroupToTodos < ActiveRecord::Migration
+class AddGroupToTodos < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateProjectFeatures < ActiveRecord::Migration
+class CreateProjectFeatures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

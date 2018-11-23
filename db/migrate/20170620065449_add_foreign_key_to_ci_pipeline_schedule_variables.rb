@@ -1,4 +1,4 @@
-class AddForeignKeyToCiPipelineScheduleVariables < ActiveRecord::Migration
+class AddForeignKeyToCiPipelineScheduleVariables < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

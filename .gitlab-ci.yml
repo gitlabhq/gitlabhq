@@ -619,6 +619,11 @@ gitlab:assets:compile:
     paths:
       - webpack-report/
       - public/assets/
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
+    - //@gitlab/gitabhq
+    - //@gitlab/gitlab-ee
   tags:
     - gitlab-org-delivery
     - high-cpu

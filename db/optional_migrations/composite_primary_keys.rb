@@ -7,7 +7,7 @@
 # which requires all tables to have a primary key constraint.
 #
 # In that sense, the migration is optional and not strictly needed.
-class CompositePrimaryKeysMigration < ActiveRecord::Migration
+class CompositePrimaryKeysMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

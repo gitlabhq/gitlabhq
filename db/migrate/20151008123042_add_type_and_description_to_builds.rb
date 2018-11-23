@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddTypeAndDescriptionToBuilds < ActiveRecord::Migration
+class AddTypeAndDescriptionToBuilds < ActiveRecord::Migration[4.2]
   def change
     add_column :ci_builds, :type, :string
     add_column :ci_builds, :target_url, :string

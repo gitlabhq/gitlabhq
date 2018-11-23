@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddInviteDataToMember < ActiveRecord::Migration
+class AddInviteDataToMember < ActiveRecord::Migration[4.2]
   def up
     add_column :members, :created_by_id, :integer
     add_column :members, :invite_email, :string

@@ -1,4 +1,4 @@
-class AddNewProjectGuidelinesToAppearances < ActiveRecord::Migration
+class AddNewProjectGuidelinesToAppearances < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

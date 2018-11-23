@@ -1,4 +1,4 @@
-class AddIndexOnCiRunnersRunnerType < ActiveRecord::Migration
+class AddIndexOnCiRunnersRunnerType < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

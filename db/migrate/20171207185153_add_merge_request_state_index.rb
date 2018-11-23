@@ -1,4 +1,4 @@
-class AddMergeRequestStateIndex < ActiveRecord::Migration
+class AddMergeRequestStateIndex < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

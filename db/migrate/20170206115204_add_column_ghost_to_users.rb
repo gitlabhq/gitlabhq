@@ -1,4 +1,4 @@
-class AddColumnGhostToUsers < ActiveRecord::Migration
+class AddColumnGhostToUsers < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

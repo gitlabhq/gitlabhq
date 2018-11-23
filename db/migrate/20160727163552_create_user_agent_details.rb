@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateUserAgentDetails < ActiveRecord::Migration
+class CreateUserAgentDetails < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

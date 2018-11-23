@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateClustersKubernetesNamespaces < ActiveRecord::Migration
+class CreateClustersKubernetesNamespaces < ActiveRecord::Migration[4.2]
   DOWNTIME = false
   INDEX_NAME = 'kubernetes_namespaces_cluster_and_namespace'
 
