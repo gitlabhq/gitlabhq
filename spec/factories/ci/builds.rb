@@ -257,7 +257,7 @@ FactoryBot.define do
 
     trait :with_runner_session do
       after(:build) do |build|
-        build.build_runner_session(url: 'ws://localhost')
+        build.build_runner_session(url: 'https://localhost')
       end
     end
   end
