@@ -12,6 +12,6 @@
         = markdown_field(@group, :description)
 
     - if current_user
-      .group-buttons
+      .group-buttons.d-none.d-sm-block
         = render 'shared/members/access_request_buttons', source: @group
         = render 'shared/notifications/button', notification_setting: @notification_setting
