@@ -156,6 +156,20 @@ Sample Prometheus queries:
 - **Data transmitted:** `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
 - **Data received:** `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
 
+## Prometheus as a Grafana data source
+
+Grafana allows you to import Prometheus performance metrics as a data source
+and render the metrics as graphs and dashboards which is helpful with visualisation.
+
+To add a Prometheus dashboard for a single server GitLab setup:
+
+1. Create a new data source in Grafana.
+1. Name your data source i.e GitLab.
+1. Select `Prometheus` in the type drop down.
+1. Add your Prometheus listen address as the URL and set access to `Browser`.
+1. Set the HTTP method to `GET`.
+1. Save & Test your configuration to verify that it works.
+
 ## GitLab metrics
 
 > Introduced in GitLab 9.3.
