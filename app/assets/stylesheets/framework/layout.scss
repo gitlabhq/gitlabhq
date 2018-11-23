@@ -43,6 +43,12 @@ body {
 
     @include media-breakpoint-down(xs) { margin-top: 20px; }
   }
+
+  @include media-breakpoint-down(xs) {
+    .container .title {
+      padding-left: 15px !important;
+    }
+  }
 }
 
 .navless-container {
