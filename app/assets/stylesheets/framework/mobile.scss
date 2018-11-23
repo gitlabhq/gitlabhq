@@ -1,9 +1,5 @@
 /** Common mobile (screen XS, SM) styles **/
 @include media-breakpoint-down(xs) {
-  .container .content {
-    margin-top: 20px;
-  }
-
   .container .title {
     padding-left: 15px !important;
   }
