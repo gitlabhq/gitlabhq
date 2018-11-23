@@ -4,10 +4,9 @@ describe 'User browses commits' do
   include RepoHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:project) { create(:project, :public, :repository, namespace: user.namespace) }
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -125,6 +124,26 @@ describe 'User browses commits' do
       expect(body).to have_selector('title', text: "#{project.name}:master commits")
         .and have_selector('author email', text: commit.author_email)
         .and have_selector('entry summary', text: commit.description[0..10].delete("\r\n"))
+    end
+
+    context 'when a commit links to a confidential issue' do
+      let(:confidential_issue) { create(:issue, confidential: true, title: 'Secret issue!', project: project) }
+
+      before do
+        project.repository.create_file(user, 'dummy-file', 'dummy content',
+                                       branch_name: 'feature',
+                                       message: "Linking #{confidential_issue.to_reference}")
+      end
+
+      context 'when the user cannot see confidential issues but was cached with a link', :use_clean_rails_memory_store_fragment_caching do
+        it 'does not render the confidential issue' do
+          visit project_commits_path(project, 'feature')
+          sign_in(create(:user))
+          visit project_commits_path(project, 'feature')
+
+          expect(page).not_to have_link(href: project_issue_path(project, confidential_issue))
+        end
+      end
     end
 
     context 'master branch' do
