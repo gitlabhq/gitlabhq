@@ -4,7 +4,7 @@ describe 'Help Pages' do
   describe 'Get the main help page' do
     shared_examples_for 'help page' do |prefix: ''|
       it 'prefixes links correctly' do
-        expect(page).to have_selector(%(div.documentation-index > ul a[href="#{prefix}/help/api/README.md"]))
+        expect(page).to have_selector(%(div.documentation-index > table tbody tr td a[href="#{prefix}/help/api/README.md"]))
       end
     end
 
