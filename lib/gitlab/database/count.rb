@@ -116,7 +116,7 @@ module Gitlab
         def size_estimates(check_statistics: true)
           table_to_model = models.each_with_object({}) { |model, h| h[model.table_name] = model }
 
-          # Querying tuple stats only works on the primary. Due to load
+          # Querying tuple stats only works on the primary. Due to load balancing, the
           # easiest way to do this is to start a transaction.
           ActiveRecord::Base.transaction do
             get_statistics(table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
