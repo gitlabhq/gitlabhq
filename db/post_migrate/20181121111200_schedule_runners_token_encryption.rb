@@ -5,7 +5,7 @@ class ScheduleRunnersTokenEncryption < ActiveRecord::Migration
 
   DOWNTIME = false
   BATCH_SIZE = 10000
-  RANGE_SIZE = 100
+  RANGE_SIZE = 2000
   MIGRATION = 'EncryptRunnersTokens'
 
   MODELS = [
@@ -20,7 +20,7 @@ class ScheduleRunnersTokenEncryption < ActiveRecord::Migration
   def up
     MODELS.each do |model|
       model.each_batch(of: BATCH_SIZE) do |relation, index|
-        delay = index * 2.minutes
+        delay = index * 4.minutes
 
         relation.each_batch(of: RANGE_SIZE) do |relation|
           range = relation.pluck('MIN(id)', 'MAX(id)').first
