@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.10 (2018-11-18)
+
+### Security (1 change)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+
+
 ## 11.3.9 (2018-10-31)
 
 ### Security (1 change)
