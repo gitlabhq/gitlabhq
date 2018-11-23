@@ -15,8 +15,7 @@ module Clusters
           check_timeout
         end
       rescue Kubeclient::HttpError => e
-        Rails.logger.error("Kubernetes error: #{e.error_code} #{e.message}")
-        Gitlab::Sentry.track_acceptable_exception(e, extra: { scope: 'kubernetes', app_id: app.id })
+        log_error(e)
         app.make_errored!("Kubernetes error: #{e.error_code}") unless app.errored?
       end
 

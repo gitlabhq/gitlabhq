@@ -113,6 +113,12 @@ describe Clusters::Applications::CheckInstallationProgressService do
         expect(application).to be_errored
         expect(application.status_reason).to eq('Kubernetes error: 401')
       end
+
+      it 'should log error' do
+        expect(service.send(:logger)).to receive(:error)
+
+        service.execute
+      end
     end
   end
 end

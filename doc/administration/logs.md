@@ -126,6 +126,25 @@ It contains information about [integrations](../user/project/integrations/projec
 {"severity":"INFO","time":"2018-09-06T17:15:16.365Z","service_class":"JiraService","project_id":3,"project_path":"namespace2/project2","message":"Successfully posted","client_url":"http://jira.example.net"}
 ```
 
+## `kubernetes.log`
+
+Introduced in GitLab 11.6. This file lives in
+`/var/log/gitlab/gitlab-rails/kubernetes.log` for Omnibus GitLab
+packages or in `/home/git/gitlab/log/kubernetes.log` for
+installations from source.
+
+It logs information related to the Kubernetes Integration including errors
+during installing cluster applications on your GitLab managed Kubernetes
+clusters.
+
+Each line contains a JSON line that can be ingested by Elasticsearch, Splunk,
+etc. For example:
+
+```json
+{"severity":"ERROR","time":"2018-11-23T15:14:54.652Z","exception":"Kubeclient::HttpError","error_code":401,"service":"Clusters::Applications::CheckInstallationProgressService","app_id":14,"project_ids":[1],"group_ids":[],"message":"Unauthorized"}
+{"severity":"ERROR","time":"2018-11-23T15:42:11.647Z","exception":"Kubeclient::HttpError","error_code":null,"service":"Clusters::Applications::InstallService","app_id":2,"project_ids":[19],"group_ids":[],"message":"SSL_connect returned=1 errno=0 state=error: certificate verify failed (unable to get local issuer certificate)"}
+```
+
 ## `githost.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
