@@ -29,4 +29,30 @@ describe TokenAuthenticatableStrategies::Base do
       end
     end
   end
+
+  describe '#fallback?' do
+    context 'when fallback is set' do
+      it 'recognizes fallback setting' do
+        strategy = described_class.new(instance, field, fallback: true)
+
+        expect(strategy.fallback?).to be true
+      end
+    end
+
+    context 'when fallback is not a valid value' do
+      it 'raises an error' do
+        strategy = described_class.new(instance, field, fallback: 'something')
+
+        expect { strategy.fallback? }.to raise_error ArgumentError
+      end
+    end
+
+    context 'when fallback is not set' do
+      it 'raises an error' do
+        strategy = described_class.new(instance, field, {})
+
+        expect(strategy.fallback?).to eq false
+      end
+    end
+  end
 end

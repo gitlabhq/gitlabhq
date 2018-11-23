@@ -40,6 +40,10 @@ module TokenAuthenticatableStrategies
     end
 
     def fallback?
+      unless options[:fallback].in?([true, false, nil])
+        raise ArgumentError, 'fallback: needs to be a boolean value!'
+      end
+
       options[:fallback] == true
     end
 
