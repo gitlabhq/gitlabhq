@@ -494,6 +494,7 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
+      header['Content-Disposition'] = "attachment; filename=#{blob.name.inspect}"
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
