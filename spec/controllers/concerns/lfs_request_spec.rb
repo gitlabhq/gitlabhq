@@ -10,7 +10,7 @@ describe LfsRequest do
     def show
       storage_project
 
-      render nothing: true
+      head :ok
     end
 
     def project
