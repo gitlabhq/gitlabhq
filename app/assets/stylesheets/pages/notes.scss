@@ -433,14 +433,8 @@ $note-form-margin-left: 72px;
   }
 
   .discussion-notes {
-    &:not(:first-child) {
-      border-top: 1px solid $white-normal;
-      margin-top: 20px;
-    }
-
     &:not(:last-child) {
-      border-bottom: 1px solid $white-normal;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
 
     .system-note {

@@ -1,5 +1,0 @@
----
-title: Fix commit signature error when project is disabled
-merge_request: 22344
-author:
-type: fixed

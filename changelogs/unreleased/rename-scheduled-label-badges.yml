@@ -1,5 +1,0 @@
----
-title: Rename "scheduled" label/badge of delayed jobs to "delayed"
-merge_request: 22245
-author:
-type: changed

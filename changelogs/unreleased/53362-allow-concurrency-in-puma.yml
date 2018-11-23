@@ -1,5 +1,0 @@
----
-title: Allow Rails concurrency when running in Puma
-merge_request: 22751
-author:
-type: performance

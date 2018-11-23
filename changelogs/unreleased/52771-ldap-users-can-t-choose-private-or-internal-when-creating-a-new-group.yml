@@ -1,5 +1,0 @@
----
-title: Fix bug stopping non-admin users from changing visibility level on group creation
-merge_request: 22468
-author:
-type: fixed
