@@ -14,17 +14,9 @@ module Gitlab
 
       class << self
         def get_message(repository, tag_id)
-          BatchLoader.for({ repository: repository, tag_id: tag_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              tag_ids = items.map { |i| i[:tag_id] }
-
-              messages = get_messages(repository, tag_ids)
-
-              messages.each do |id, message|
-                loader.call({ repository: repository, tag_id: id }, message)
-              end
+          BatchLoader.for(tag_id).batch(key: repository) do |tag_ids, loader, args|
+            get_messages(args[:key], tag_ids).each do |tag_id, message|
+              loader.call(tag_id, message)
             end
           end
         end
