@@ -771,13 +771,13 @@ describe Ci::Build do
     context 'hide runners token' do
       let(:data) { "new #{project.runners_token} data"}
 
-      it { is_expected.to match(/^new [x]+ data$/) }
+      it { is_expected.to match(/^new x+ data$/) }
     end
 
     context 'hide build token' do
       let(:data) { "new #{build.token} data"}
 
-      it { is_expected.to match(/^new [x]+ data$/) }
+      it { is_expected.to match(/^new x+ data$/) }
     end
   end
 

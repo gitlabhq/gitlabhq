@@ -14,7 +14,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#find_token_authenticatable' do
-    it 'finds a relevant resource by encrypted value' do
+    it 'finds the encrypted resource by cleartext' do
       allow(model).to receive(:find_by)
         .with('some_field_encrypted' => encrypted)
         .and_return('encrypted resource')
@@ -23,8 +23,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
         .to eq 'encrypted resource'
     end
 
-    it 'uses fallback strategy when token can not be found' do
-      allow_any_instance_of(TokenAuthenticatableStrategies::Insecure)
+    it 'uses fallback strategy when encrypted token cannot be found' do
+      allow(subject.send(:fallback_strategy))
         .to receive(:find_token_authenticatable)
         .and_return('plaintext resource')
 
@@ -38,7 +38,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#get_token' do
-    it 'decrypts a token when encrypted token is present' do
+    it 'returns decrypted token when an encrypted token is present' do
       allow(instance).to receive(:read_attribute)
         .with('some_field_encrypted')
         .and_return(encrypted)
@@ -46,7 +46,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
       expect(subject.get_token(instance)).to eq 'my-value'
     end
 
-    it 'reads a plaintext token when encrypted token is not present' do
+    it 'returns the plaintext token when encrypted token is not present' do
       allow(instance).to receive(:read_attribute)
         .with('some_field_encrypted')
         .and_return(nil)
@@ -60,7 +60,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#set_token' do
-    it 'writes encrypted token to a model instance and returns it' do
+    it 'writes encrypted token and removes plaintext token and returns it' do
       expect(instance).to receive(:[]=)
         .with('some_field_encrypted', encrypted)
       expect(instance).to receive(:[]=)

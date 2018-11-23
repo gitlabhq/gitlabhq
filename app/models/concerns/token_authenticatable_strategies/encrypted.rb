@@ -15,8 +15,6 @@ module TokenAuthenticatableStrategies
       end
 
       token_authenticatable
-    rescue ActiveRecord::StatementInvalid
-      nil
     end
 
     def ensure_token(instance)
@@ -38,8 +36,8 @@ module TokenAuthenticatableStrategies
     end
 
     def get_token(instance)
-      raw_token = instance.read_attribute(encrypted_field)
-      token = Gitlab::CryptoHelper.aes256_gcm_decrypt(raw_token)
+      encrypted_token = instance.read_attribute(encrypted_field)
+      token = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
 
       token || (fallback_strategy.get_token(instance) if fallback?)
     end
@@ -61,7 +59,7 @@ module TokenAuthenticatableStrategies
 
     def token_set?(instance)
       raw_token = instance.read_attribute(encrypted_field)
-      raw_token ||= (instance.read_attribute(token_field) if fallback?)
+      raw_token ||= (fallback_strategy.get_token(instance) if fallback?)
 
       raw_token.present?
     end
