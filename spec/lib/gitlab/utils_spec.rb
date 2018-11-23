@@ -134,7 +134,7 @@ describe Gitlab::Utils do
         transformed = described_class.ensure_utf8_size('a' * 10, bytes: 32)
 
         expect(transformed.bytesize).to eq 32
-        expect(transformed).to eq ('a' * 10) + ("\0" * 22)
+        expect(transformed).to eq(('a' * 10) + ("\0" * 22))
       end
     end
 
@@ -160,7 +160,7 @@ describe Gitlab::Utils do
       it 'truncates string to 32 characters and backfills it if needed' do
         transformed = described_class.ensure_utf8_size('❤' * 18, bytes: 32)
 
-        expect(transformed).to eq ('❤' * 10) + ("\0" * 2)
+        expect(transformed).to eq(('❤' * 10) + ("\0" * 2))
         expect(transformed.bytesize).to eq 32
       end
     end

@@ -19,7 +19,7 @@ module Gitlab
     def ensure_utf8_size(str, bytes:)
       raise ArgumentError if str.empty? || bytes.negative?
 
-      truncated = str.each_char.each_with_object(String.new) do |char, object|
+      truncated = str.each_char.each_with_object(+'') do |char, object|
         if object.bytesize + char.bytesize > bytes
           break object
         else

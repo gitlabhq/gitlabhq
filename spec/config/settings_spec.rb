@@ -24,7 +24,7 @@ describe Settings do
 
       it 'expands db key base secret to 12 bytes' do
         expect(described_class.attr_encrypted_db_key_base_12)
-          .to eq ('a' * 10) + ("\0" * 2)
+          .to eq(('a' * 10) + ("\0" * 2))
       end
     end
 
@@ -38,7 +38,7 @@ describe Settings do
       it 'does not use more than 32 bytes' do
         db_key_base = described_class.attr_encrypted_db_key_base_12
 
-        expect(db_key_base).to eq ('❤' * 4)
+        expect(db_key_base).to eq('❤' * 4)
         expect(db_key_base.bytesize).to eq 12
       end
     end
@@ -99,7 +99,7 @@ describe Settings do
       it 'does not use more than 32 bytes' do
         db_key_base = described_class.attr_encrypted_db_key_base_32
 
-        expect(db_key_base).to eq ('❤' * 10) + ("\0" * 2)
+        expect(db_key_base).to eq(('❤' * 10) + ("\0" * 2))
         expect(db_key_base.bytesize).to eq 32
       end
     end
