@@ -830,6 +830,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           expect(job.trace.raw).to eq 'BUILD TRACE UPDATED'
           expect(job.job_artifacts_trace.open.read).to eq 'BUILD TRACE UPDATED'
         end
+
+        context 'when concurrent update of trace is happening' do
+          before do
+            job.trace.write('wb') do
+              update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+            end
+          end
+
+          it 'returns that operation conflicts' do
+            expect(response.status).to eq(409)
+          end
+        end
       end
 
       context 'when no trace is given' do
@@ -1019,6 +1031,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
               end
             end
+          end
+        end
+
+        context 'when concurrent update of trace is happening' do
+          before do
+            job.trace.write('wb') do
+              patch_the_trace
+            end
+          end
+
+          it 'returns that operation conflicts' do
+            expect(response.status).to eq(409)
           end
         end
 
