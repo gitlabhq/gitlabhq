@@ -24,6 +24,13 @@ export default class ClusterStore {
           requestReason: null,
           externalIp: null,
         },
+        cert_manager: {
+          title: s__('ClusterIntegration|Cert-Manager'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+        },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
           status: null,

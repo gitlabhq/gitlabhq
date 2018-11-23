@@ -1415,6 +1415,9 @@ msgstr ""
 msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Cert-Manager"
+msgstr ""
+
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
@@ -1572,6 +1575,9 @@ msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Let's Encrypt"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1734,6 +1740,9 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up to date."
 msgstr ""
 
 msgid "ClusterIntegration|check the pricing here"
