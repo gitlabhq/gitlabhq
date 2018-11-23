@@ -210,7 +210,14 @@ class IssuableFinder
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name].include?(Label::None.title)
+    downcased = label_names.map(&:downcase)
+
+    # Label::NONE is deprecated and should be removed in 12.0
+    downcased.include?(FILTER_NONE) || downcased.include?(Label::NONE)
+  end
+
+  def filter_by_any_label?
+    label_names.map(&:downcase).include?(FILTER_ANY)
   end
 
   def labels
@@ -465,6 +472,8 @@ class IssuableFinder
     items =
       if filter_by_no_label?
         items.without_label
+      elsif filter_by_any_label?
+        items.any_label
       else
         items.with_label(label_names, params[:sort])
       end
