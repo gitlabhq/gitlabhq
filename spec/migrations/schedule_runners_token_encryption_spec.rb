@@ -24,6 +24,13 @@ describe ScheduleRunnersTokenEncryption, :migration do
       Timecop.freeze do
         migrate!
 
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 'settings', 1, 1)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 'namespace', 11, 11)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, 'namespace', 12, 12)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 'project', 111, 111)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, 'project', 114, 114)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 'runner', 201, 201)
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, 'runner', 202, 202)
         expect(BackgroundMigrationWorker.jobs.size).to eq 7
       end
     end

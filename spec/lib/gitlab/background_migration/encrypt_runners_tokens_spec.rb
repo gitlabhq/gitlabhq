@@ -12,7 +12,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
     end
 
     it 'migrates runners registration tokens' do
-      migrate!(:settings, :runners_registration_token, 1, 1)
+      migrate!(:settings, 1, 1)
 
       encrypted_token = settings.first.runners_registration_token_encrypted
       decrypted_token = ::Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
@@ -30,7 +30,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
     end
 
     it 'migrates runners registration tokens' do
-      migrate!(:namespace, :runners_token, 11, 22)
+      migrate!(:namespace, 11, 22)
 
       expect(namespaces.all.reload).to all(
         have_attributes(runners_token: nil, runners_token_encrypted: be_a(String))
@@ -47,7 +47,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
     end
 
     it 'migrates runners registration tokens' do
-      migrate!(:project, :runners_token, 111, 116)
+      migrate!(:project, 111, 116)
 
       expect(projects.all.reload).to all(
         have_attributes(runners_token: nil, runners_token_encrypted: be_a(String))
@@ -63,7 +63,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
     end
 
     it 'migrates runners communication tokens' do
-      migrate!(:runner, :token, 201, 203)
+      migrate!(:runner, 201, 203)
 
       expect(runners.all.reload).to all(
         have_attributes(token: nil, token_encrypted: be_a(String))
@@ -71,9 +71,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
     end
   end
 
-  def migrate!(model, attribute, from, to)
-    model = "::Gitlab::BackgroundMigration::Models::EncryptColumns::#{model.to_s.capitalize}"
-
-    subject.perform(model, [attribute], from, to)
+  def migrate!(model, from, to)
+    subject.perform(model, from, to)
   end
 end

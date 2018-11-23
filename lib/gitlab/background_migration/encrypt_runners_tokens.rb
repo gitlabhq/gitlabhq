@@ -15,6 +15,14 @@ module Gitlab
     #
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/54328
     #
-    class EncryptRunnersTokens < EncryptColumns; end
+    class EncryptRunnersTokens < EncryptColumns
+      def perform(model, from, to)
+        resource = "::Gitlab::BackgroundMigration::Models::EncryptColumns::#{model.to_s.capitalize}"
+        model = resource.constantize
+        attributes = model.encrypted_attributes.keys
+
+        super(model, attributes, from, to)
+      end
+    end
   end
 end

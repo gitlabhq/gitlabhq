@@ -24,7 +24,7 @@ class ScheduleRunnersTokenEncryption < ActiveRecord::Migration
 
         relation.each_batch(of: RANGE_SIZE) do |relation|
           range = relation.pluck('MIN(id)', 'MAX(id)').first
-          args = [model, model.encrypted_attributes.keys, *range]
+          args = [model.name.demodulize.downcase, *range]
 
           BackgroundMigrationWorker.perform_in(delay, MIGRATION, args)
         end
