@@ -15,7 +15,6 @@ describe Gitlab::CryptoHelper do
       encrypted = described_class.aes256_gcm_encrypt('some-value')
 
       expect(encrypted).to match %r{^[A-Za-z0-9+/=]+$}
-      expect(encrypted).to eq encrypted.strip
     end
   end
 
