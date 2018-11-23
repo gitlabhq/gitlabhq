@@ -13,13 +13,17 @@ module Gitlab
           self.table_name = 'application_settings'
           self.inheritance_column = :_type_disabled
 
-          def runners_token=(value)
-            self.runners_token_encrypted =
+          def runners_registration_token=(value)
+            self.runners_registration_token_encrypted =
               ::Gitlab::CryptoHelper.aes256_gcm_encrypt(value)
           end
 
           def self.encrypted_attributes
-            { runners_token: { attribute: :runners_token_encrypted } }
+            {
+              runners_registration_token: {
+                attribute: :runners_registration_token_encrypted
+              }
+            }
           end
         end
       end
