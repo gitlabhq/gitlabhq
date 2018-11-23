@@ -5841,6 +5841,9 @@ msgstr ""
 msgid "Something went wrong. Please try again."
 msgstr ""
 
+msgid "Sorry, your filter produced no results"
+msgstr ""
+
 msgid "Sort by"
 msgstr ""
 
@@ -6296,9 +6299,6 @@ msgstr ""
 msgid "There are no labels yet"
 msgstr ""
 
-msgid "There are no merge requests to show"
-msgstr ""
-
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
@@ -6721,6 +6721,9 @@ msgid "To this GitLab instance"
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
+msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "Today"
