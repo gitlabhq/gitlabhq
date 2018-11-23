@@ -304,6 +304,7 @@ project:
 - import_export_upload
 - repository_languages
 - pool_repository
+- kubernetes_namespaces
 award_emoji:
 - awardable
 - user
