@@ -75,6 +75,10 @@ module Gitlab
         end
       end
 
+      class PgClass < ActiveRecord::Base
+        self.table_name = 'pg_class'
+      end
+
       # This strategy counts based on PostgreSQL's statistics in pg_stat_user_tables.
       #
       # Specifically, it relies on the column reltuples in said table. An additional
@@ -110,20 +114,15 @@ module Gitlab
         end
 
         def size_estimates(check_statistics: true)
-          query = postgresql_estimate_query(table_names, check_statistics: check_statistics)
-          rows = []
+          table_to_model = models.each_with_object({}) { |model, h| h[model.table_name] = model }
 
           # Querying tuple stats only works on the primary. Due to load
           # easiest way to do this is to start a transaction.
           ActiveRecord::Base.transaction do
-            rows = ActiveRecord::Base.connection.select_all(query)
-          end
-
-          table_to_model = models.each_with_object({}) { |model, h| h[model.table_name] = model }
-
-          rows.each_with_object({}) do |row, data|
-            model = table_to_model[row['table_name']]
-            data[model] = row['estimate'].to_i
+            get_statistics(table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
+              model = table_to_model[row.table_name]
+              data[model] = row.estimate
+            end
           end
         end
 
@@ -132,19 +131,19 @@ module Gitlab
         #
         # @param [Array] table names
         # @returns [Hash] Table name to count mapping (e.g. { 'projects' => 5, 'users' => 100 })
-        def postgresql_estimate_query(table_names, check_statistics: true)
+        def get_statistics(table_names, check_statistics: true)
           time = "to_timestamp(#{1.hour.ago.to_i})"
-          base_query = <<~SQL
-          SELECT pg_class.relname AS table_name, reltuples::bigint AS estimate FROM pg_class
-          LEFT JOIN pg_stat_user_tables ON pg_class.relname = pg_stat_user_tables.relname
-          WHERE pg_class.relname IN (#{table_names.map { |table| "'#{table}'" }.join(',')})
-          SQL
+
+          query = PgClass.joins("LEFT JOIN pg_stat_user_tables USING (relname)")
+            .where(relname: table_names)
+            .select('pg_class.relname AS table_name, reltuples::bigint AS estimate')
 
           if check_statistics
-            base_query + "AND (last_vacuum > #{time} OR last_autovacuum > #{time} OR last_analyze > #{time} OR last_autoanalyze > #{time})"
-          else
-            base_query
+            query = query.where('last_vacuum > ? OR last_autovacuum > ? OR last_analyze > ? OR last_autoanalyze > ?',
+                                time, time, time, time)
           end
+
+          query
         end
       end
 
