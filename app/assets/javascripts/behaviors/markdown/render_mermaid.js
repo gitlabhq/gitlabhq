@@ -25,6 +25,9 @@ export default function renderMermaid($els) {
       },
       // mermaidAPI options
       theme: 'neutral',
+      flowchart: {
+        htmlLabels: false,
+      },
     });
 
     $els.each((i, el) => {
