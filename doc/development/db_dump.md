@@ -13,7 +13,7 @@ large database imports.
 ```
 # On STAGING
 echo "postgresql['checkpoint_segments'] = 64" | sudo tee -a /etc/gitlab/gitlab.rb
-sudo touch /etc/gitlab/skip-auto-migrations
+sudo touch /etc/gitlab/skip-auto-reconfigure
 sudo gitlab-ctl reconfigure
 sudo gitlab-ctl stop unicorn
 sudo gitlab-ctl stop sidekiq
