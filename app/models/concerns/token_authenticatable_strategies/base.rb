@@ -48,6 +48,10 @@ module TokenAuthenticatableStrategies
     end
 
     def self.fabricate(instance, field, options)
+      if options[:digest] && options[:encrypted]
+        raise ArgumentError, 'Incompatible options set!'
+      end
+
       if options[:digest]
         TokenAuthenticatableStrategies::Digest.new(instance, field, options)
       elsif options[:encrypted]

@@ -28,6 +28,13 @@ describe TokenAuthenticatableStrategies::Base do
         expect(strategy).to be_a TokenAuthenticatableStrategies::Insecure
       end
     end
+
+    context 'when incompatible options are provided' do
+      it 'raises an error' do
+        expect { described_class.fabricate(instance, field, digest: true, encrypted: true) }
+          .to raise_error ArgumentError
+      end
+    end
   end
 
   describe '#fallback?' do
