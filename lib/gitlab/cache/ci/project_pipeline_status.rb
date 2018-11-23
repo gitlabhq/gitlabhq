@@ -7,6 +7,8 @@ module Gitlab
   module Cache
     module Ci
       class ProjectPipelineStatus
+        include Gitlab::Utils::StrongMemoize
+
         attr_accessor :sha, :status, :ref, :project, :loaded
 
         def self.load_for_project(project)
@@ -112,9 +114,9 @@ module Gitlab
         end
 
         def commit
-          return @commit if defined?(@commit)
-
-          @commit = project.commit
+          strong_memoize(:commit) do
+            project.commit
+          end
         end
       end
     end
