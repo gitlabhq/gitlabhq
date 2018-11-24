@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
+  before_action :check_impersonation_availability
 
   around_action :set_locale
 
@@ -461,5 +462,29 @@ class ApplicationController < ActionController::Base
     ApplicationSettings::UpdateService
       .new(settings, current_user, application_setting_params)
       .execute
+  end
+
+  def check_impersonation_availability
+    return unless session[:impersonator_id]
+
+    unless Gitlab.config.gitlab.impersonation_enabled
+      stop_impersonation
+      access_denied! _('Impersonation has been disabled')
+    end
+  end
+
+  def stop_impersonation
+    impersonated_user = current_user
+
+    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
+
+    warden.set_user(impersonator, scope: :user)
+    session[:impersonator_id] = nil
+
+    impersonated_user
+  end
+
+  def impersonator
+    @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
 end
