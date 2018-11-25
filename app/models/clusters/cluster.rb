@@ -4,6 +4,7 @@ module Clusters
   class Cluster < ActiveRecord::Base
     include Presentable
     include Gitlab::Utils::StrongMemoize
+    include FromUnion
 
     self.table_name = 'clusters'
 

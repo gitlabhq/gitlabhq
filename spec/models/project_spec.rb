@@ -3984,6 +3984,27 @@ describe Project do
     end
   end
 
+  describe '#all_clusters' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, cluster_type: :project_type, projects: [project]) }
+
+    subject { project.all_clusters }
+
+    it 'returns project level cluster' do
+      expect(subject).to eq([cluster])
+    end
+
+    context 'project belongs to a group' do
+      let(:group_cluster) { create(:cluster, :group) }
+      let(:group) { group_cluster.group }
+      let(:project) { create(:project, group: group) }
+
+      it 'returns clusters for groups of this project' do
+        expect(subject).to contain_exactly(cluster, group_cluster)
+      end
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

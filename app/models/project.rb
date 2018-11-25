@@ -1061,6 +1061,12 @@ class Project < ActiveRecord::Base
     path
   end
 
+  def all_clusters
+    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+
+    Clusters::Cluster.from_union([clusters, group_clusters])
+  end
+
   def items_for(entity)
     case entity
     when 'issue' then
