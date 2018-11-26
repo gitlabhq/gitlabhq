@@ -760,6 +760,7 @@ qa:selectors:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
     - yarn run webpack-prod
+  <<: *except-docs
 
 qa-frontend-node:6:
   <<: *qa-frontend-node
