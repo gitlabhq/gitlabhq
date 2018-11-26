@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.1 (2018-11-26)
+
+### Security (17 changes)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Don't expose confidential information in commit message list.
+- Provide email notification when a user changes their email address.
+- Restrict Personal Access Tokens to API scope on web requests.
+- Resolve reflected XSS in Ouath authorize window.
+- Fix SSRF in project integrations.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Configure mermaid to not render HTML content in diagrams.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+
+
 ## 11.5.0 (2018-11-22)
 
 ### Security (10 changes, 1 of them is from the community)
