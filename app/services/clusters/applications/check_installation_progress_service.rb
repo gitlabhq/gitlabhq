@@ -29,17 +29,13 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!('Installation failed')
-      ensure
-        remove_installation_pod
+        app.make_errored!("Installation failed. Check pod logs for #{install_command.pod_name} for more details.")
       end
 
       def check_timeout
         if timeouted?
           begin
-            app.make_errored!('Installation timed out')
-          ensure
-            remove_installation_pod
+            app.make_errored!("Installation timed out. Check pod logs for #{install_command.pod_name} for more details.")
           end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
@@ -53,9 +49,6 @@ module Clusters
 
       def remove_installation_pod
         helm_api.delete_pod!(install_command.pod_name)
-      rescue => e
-        Rails.logger.error("Kubernetes error: #{e.class.name} #{e.message}")
-        # no-op
       end
 
       def installation_phase
