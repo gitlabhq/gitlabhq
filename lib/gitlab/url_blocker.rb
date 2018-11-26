@@ -11,11 +11,8 @@ module Gitlab
       def validate!(url, allow_localhost: false, allow_local_network: true, enforce_user: false, ports: [], protocols: [])
         return true if url.nil?
 
-        begin
-          uri = Addressable::URI.parse(url)
-        rescue Addressable::URI::InvalidURIError
-          raise BlockedUrlError, "URI is invalid"
-        end
+        # Param url can be a string, URI or Addressable::URI
+        uri = parse_url(url)
 
         # Allow imports from the GitLab instance itself but only from the configured ports
         return true if internal?(uri)
@@ -51,6 +48,18 @@ module Gitlab
       end
 
       private
+
+      def parse_url(url)
+        raise Addressable::URI::InvalidURIError if multiline?(url)
+
+        Addressable::URI.parse(url)
+      rescue Addressable::URI::InvalidURIError, URI::InvalidURIError
+        raise BlockedUrlError, 'URI is invalid'
+      end
+
+      def multiline?(url)
+        CGI.unescape(url.to_s) =~ /\n|\r/
+      end
 
       def validate_port!(port, ports)
         return if port.blank?
