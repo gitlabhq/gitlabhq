@@ -1737,10 +1737,14 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    return false unless ref && !repository.ambiguous_ref?(ref)
+    return false if ref.nil? || repository.ambiguous_ref?(ref)
 
     resolved_ref = repository.resolve_ref(ref)
-    ref_name = resolved_ref == ref ? Gitlab::Git.ref_name(resolved_ref) : ref
+    ref_name = if resolved_ref == ref
+                 Gitlab::Git.ref_name(resolved_ref)
+               else
+                 ref
+               end
 
     if Gitlab::Git.branch_ref?(resolved_ref)
       ProtectedBranch.protected?(self, ref_name)
