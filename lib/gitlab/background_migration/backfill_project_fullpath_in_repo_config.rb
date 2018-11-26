@@ -77,6 +77,7 @@ module Gitlab
       # child of another namespace.
       class Namespace < ActiveRecord::Base
         self.table_name = 'namespaces'
+        self.inheritance_column = nil
 
         include Routable
 
