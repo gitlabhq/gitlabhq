@@ -59,6 +59,7 @@ FactoryBot.define do
     end
 
     factory :clusters_applications_runner, class: Clusters::Applications::Runner do
+      runner factory: %i(ci_runner)
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 

@@ -698,6 +698,7 @@ ActiveRecord::Schema.define(version: 20181126150622) do
     t.string "version", null: false
     t.string "hostname"
     t.text "status_reason"
+    t.string "external_ip"
     t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
   end
 
