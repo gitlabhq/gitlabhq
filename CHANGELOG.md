@@ -567,6 +567,45 @@ entry.
 - Check frozen string in style builds. (gfyoung)
 
 
+## 11.3.11 (2018-11-26)
+
+### Security (33 changes)
+
+- Filter user sensitive data from discussions JSON. !2537
+- Escape entity title while autocomplete template rendering to prevent XSS. !2557
+- Restrict Personal Access Tokens to API scope on web requests.
+- Fix XSS in merge request source branch name.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Set timeout for syntax highlighting.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Don't expose confidential information in commit message list.
+- Markdown API no longer displays confidential title references unless authorized.
+- Provide email notification when a user changes their email address.
+- Properly filter private references from system notes.
+- Redact personal tokens in unsubscribe links.
+- Resolve reflected XSS in Ouath authorize window.
+- Fix SSRF in project integrations.
+- Fix stored XSS in merge requests from imported repository.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Monkey kubeclient to not follow any redirects.
+- Configure mermaid to not render HTML content in diagrams.
+- Redact confidential events in the API.
+- Fix xss vulnerability sourced from package.json.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+- Block loopback addresses in UrlBlocker.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
+
+
 ## 11.3.10 (2018-11-18)
 
 ### Security (1 change)
