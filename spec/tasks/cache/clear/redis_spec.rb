@@ -6,7 +6,10 @@ describe 'clearing redis cache' do
   end
 
   describe 'clearing pipeline status cache' do
-    let(:pipeline_status) { create(:ci_pipeline).project.pipeline_status }
+    let(:pipeline_status) do
+      project = create(:project, :repository)
+      create(:ci_pipeline, project: project).project.pipeline_status
+    end
 
     before do
       allow(pipeline_status).to receive(:loaded).and_return(nil)
