@@ -4016,6 +4016,18 @@ msgstr ""
 msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
+msgid "MergeRequests|started a discussion"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
+msgstr ""
+
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
