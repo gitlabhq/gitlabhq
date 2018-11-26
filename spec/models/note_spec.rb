@@ -517,7 +517,7 @@ describe Note do
 
   describe '#to_ability_name' do
     it 'returns snippet for a project snippet note' do
-      expect(build(:note_on_project_snippet).to_ability_name).to eq('snippet')
+      expect(build(:note_on_project_snippet).to_ability_name).to eq('project_snippet')
     end
 
     it 'returns personal_snippet for a personal snippet note' do
