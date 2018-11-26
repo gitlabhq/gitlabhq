@@ -5,6 +5,16 @@ describe TreeHelper do
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 
+  def create_file(filename)
+    project.repository.create_file(
+      project.creator,
+      filename,
+      'test this',
+      message: "Automatically created file #{filename}",
+      branch_name: 'master'
+    )
+  end
+
   describe '.render_tree' do
     before do
       @id = sha
@@ -57,6 +67,15 @@ describe TreeHelper do
 
       expect(fast_path).to start_with('/gitlab/root')
     end
+
+    it 'encodes files starting with #' do
+      filename = '#test-file'
+      create_file(filename)
+
+      fast_path = fast_project_blob_path(project, filename)
+
+      expect(fast_path).to end_with('%23test-file')
+    end
   end
 
   describe '.fast_project_tree_path' do
@@ -72,6 +91,15 @@ describe TreeHelper do
       allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
 
       expect(fast_path).to start_with('/gitlab/root')
+    end
+
+    it 'encodes files starting with #' do
+      filename = '#test-file'
+      create_file(filename)
+
+      fast_path = fast_project_tree_path(project, filename)
+
+      expect(fast_path).to end_with('%23test-file')
     end
   end
 
