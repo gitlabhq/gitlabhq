@@ -283,14 +283,14 @@ describe Projects::NotesController do
 
       def post_create(extra_params = {})
         post :create, {
-               note: { note: 'some other note' },
-               namespace_id: project.namespace,
-               project_id: project,
-               target_type: 'merge_request',
-               target_id: merge_request.id,
-               note_project_id: forked_project.id,
-               in_reply_to_discussion_id: existing_comment.discussion_id
-             }.merge(extra_params)
+          note: { note: 'some other note', noteable_id: merge_request.id },
+          namespace_id: project.namespace,
+          project_id: project,
+          target_type: 'merge_request',
+          target_id: merge_request.id,
+          note_project_id: forked_project.id,
+          in_reply_to_discussion_id: existing_comment.discussion_id
+        }.merge(extra_params)
       end
 
       context 'when the note_project_id is not correct' do
@@ -321,6 +321,30 @@ describe Projects::NotesController do
         it 'creates the note' do
           expect { post_create }.to change { forked_project.notes.count }.by(1)
         end
+      end
+    end
+
+    context 'when target_id and noteable_id do not match' do
+      let(:locked_issue) { create(:issue, :locked, project: project) }
+      let(:issue) {create(:issue, project: project)}
+
+      before do
+        project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+        project.project_member(user).destroy
+      end
+
+      it 'uses target_id and ignores noteable_id' do
+        request_params = {
+          note: { note: 'some note', noteable_type: 'Issue', noteable_id: locked_issue.id },
+          target_type: 'issue',
+          target_id: issue.id,
+          project_id: project,
+          namespace_id: project.namespace
+        }
+
+        expect { post :create, request_params }.to change { issue.notes.count }.by(1)
+          .and change { locked_issue.notes.count }.by(0)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -376,35 +400,60 @@ describe Projects::NotesController do
   end
 
   describe 'PUT update' do
-    let(:request_params) do
-      {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: note,
-        format: :json,
-        note: {
-          note: "New comment"
+    context "should update the note with a valid issue" do
+      let(:request_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: note,
+          format: :json,
+          note: {
+            note: "New comment"
+          }
         }
-      }
-    end
+      end
 
-    before do
-      sign_in(note.author)
-      project.add_developer(note.author)
-    end
+      before do
+        sign_in(note.author)
+        project.add_developer(note.author)
+      end
 
-    it "updates the note" do
-      expect { put :update, request_params }.to change { note.reload.note }
+      it "updates the note" do
+        expect { put :update, request_params }.to change { note.reload.note }
+      end
+    end
+    context "doesnt update the note" do
+      let(:issue)   { create(:issue, :confidential, project: project) }
+      let(:note)    { create(:note, noteable: issue, project: project) }
+
+      before do
+        sign_in(user)
+        project.add_guest(user)
+      end
+
+      it "disallows edits when the issue is confidential and the user has guest permissions" do
+        request_params = {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: note,
+          format: :json,
+          note: {
+            note: "New comment"
+          }
+        }
+        expect { put :update, request_params }.not_to change { note.reload.note }
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 
   describe 'DELETE destroy' do
     let(:request_params) do
       {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: note,
-        format: :js
+          namespace_id: project.namespace,
+          project_id: project,
+          id: note,
+          format: :js
       }
     end
 
