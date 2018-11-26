@@ -7,7 +7,7 @@ module QA
     # creating it if it doesn't yet exist.
     #
     class Sandbox < Base
-      attr_accessor :path
+      attr_reader :path
 
       attribute :id
 
