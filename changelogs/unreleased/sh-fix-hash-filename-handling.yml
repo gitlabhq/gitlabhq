@@ -1,0 +1,5 @@
+---
+title: Fix handling of filenames with hash characters in tree view
+merge_request: 23368
+author:
+type: fixed
