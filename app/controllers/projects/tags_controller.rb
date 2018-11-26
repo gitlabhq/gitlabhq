@@ -3,6 +3,8 @@
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
 
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!

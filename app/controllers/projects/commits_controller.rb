@@ -6,6 +6,7 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
 
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :whitelist_query_limiting, except: :commits_root
   before_action :require_non_empty_project
   before_action :assign_ref_vars, except: :commits_root
