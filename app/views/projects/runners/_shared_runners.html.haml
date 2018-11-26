@@ -18,6 +18,6 @@
 - if @shared_runners_count.zero?
   = _('This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area.')
 - else
-  %h4.underlined-title #{_('Available shared Runners :')} #{@shared_runners_count}
+  %h4.underlined-title #{_('Available shared Runners:')} #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners
     = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
