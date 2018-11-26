@@ -27,6 +27,7 @@ export const getReversePosition = linePosition => {
 
 export function getFormData(params) {
   const {
+    commit,
     note,
     noteableType,
     noteableData,
@@ -66,7 +67,7 @@ export function getFormData(params) {
       position,
       noteable_type: noteableType,
       noteable_id: noteableData.id,
-      commit_id: '',
+      commit_id: commit && commit.id,
       type:
         diffFile.diff_refs.start_sha && diffFile.diff_refs.head_sha
           ? DIFF_NOTE_TYPE

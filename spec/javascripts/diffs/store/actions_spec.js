@@ -29,6 +29,7 @@ import actions, {
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
@@ -607,11 +608,18 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('saveDiffDiscussion', () => {
-    beforeEach(() => {
-      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
-    });
-
     it('dispatches actions', done => {
+      const commitId = 'something';
+      const formData = {
+        diffFile: { ...mockDiffFile },
+        noteableData: {},
+      };
+      const note = {};
+      const state = {
+        commit: {
+          id: commitId,
+        },
+      };
       const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
         switch (name) {
           case 'saveNote':
@@ -625,11 +633,19 @@ describe('DiffsStoreActions', () => {
         }
       });
 
-      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+      saveDiffDiscussion({ state, dispatch }, { note, formData })
         .then(() => {
-          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
-          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
-          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
+          const { calls } = dispatch;
+
+          expect(calls.count()).toBe(5);
+          expect(calls.argsFor(0)).toEqual(['saveNote', jasmine.any(Object), { root: true }]);
+
+          const postData = calls.argsFor(0)[1];
+
+          expect(postData.data.note.commit_id).toBe(commitId);
+
+          expect(calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
         })
         .then(done)
         .catch(done.fail);
