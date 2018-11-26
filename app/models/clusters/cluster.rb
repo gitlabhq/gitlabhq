@@ -133,6 +133,16 @@ module Clusters
       !user?
     end
 
+    def all_projects
+      if project_type?
+        projects
+      elsif group_type?
+        first_group.all_projects
+      else
+        Project.none
+      end
+    end
+
     def first_project
       strong_memoize(:first_project) do
         projects.first

@@ -312,6 +312,31 @@ describe Clusters::Cluster do
     end
   end
 
+  describe '#all_projects' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, projects: [project]) }
+
+    subject { cluster.all_projects }
+
+    context 'project cluster' do
+      it 'returns project' do
+        is_expected.to eq([project])
+      end
+    end
+
+    context 'group cluster' do
+      let(:cluster) { create(:cluster, :group) }
+      let(:group) { cluster.group }
+      let(:project) { create(:project, group: group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:subproject) { create(:project, group: subgroup) }
+
+      it 'returns all projects for group' do
+        is_expected.to contain_exactly(project, subproject)
+      end
+    end
+  end
+
   describe '#first_project' do
     subject { cluster.first_project }
 
