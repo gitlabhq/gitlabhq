@@ -450,10 +450,16 @@ describe Gitlab::Git::Commit, :seed_helper do
             described_class.extract_signature_lazily(repository, commit_id)
           end
 
+          other_repository = double(:repository)
+          described_class.extract_signature_lazily(other_repository, commit_ids.first)
+
           expect(described_class).to receive(:batch_signature_extraction)
             .with(repository, commit_ids)
             .once
             .and_return({})
+
+          expect(described_class).not_to receive(:batch_signature_extraction)
+            .with(other_repository, commit_ids.first)
 
           2.times { signatures.each(&:itself) }
         end

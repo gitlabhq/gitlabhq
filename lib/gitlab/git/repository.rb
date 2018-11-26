@@ -80,7 +80,13 @@ module Gitlab
       end
 
       def ==(other)
-        [storage, relative_path] == [other.storage, other.relative_path]
+        other.is_a?(self.class) && [storage, relative_path] == [other.storage, other.relative_path]
+      end
+
+      alias_method :eql?, :==
+
+      def hash
+        [self.class, storage, relative_path].hash
       end
 
       # This method will be removed when Gitaly reaches v1.1.
