@@ -5,7 +5,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :personal_access_token
+      attr_writer :personal_access_token, :ldap_username, :ldap_password
 
       # The environment variables used to indicate if the environment under test
       # supports the given feature
@@ -92,11 +92,11 @@ module QA
       end
 
       def ldap_username
-        ENV['GITLAB_LDAP_USERNAME']
+        @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
       end
 
       def ldap_password
-        ENV['GITLAB_LDAP_PASSWORD']
+        @ldap_password ||= ENV['GITLAB_LDAP_PASSWORD']
       end
 
       def sandbox_name
