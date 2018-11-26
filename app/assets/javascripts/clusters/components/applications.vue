@@ -296,11 +296,7 @@ export default {
         class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
-        <div 
-          slot="description"
-          v-html="certManagerDescription"
-        >
-        </div>
+        <div slot="description" v-html="certManagerDescription"></div>
       </application-row>
       <application-row
         v-if="isProjectCluster"
