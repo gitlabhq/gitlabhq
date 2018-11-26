@@ -62,12 +62,13 @@ To remove all the time spent at once, use `/remove_time_spent`.
 ## Configuration
 
 The following time units are available:
+* months (mo)
 * weeks (w)
 * days (d)
 * hours (h)
 * minutes (m)
 
-Default conversion rates are 1w = 5d and 1d = 8h.
+Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
 [landing]: https://about.gitlab.com/features/time-tracking
 [quick actions]: ../user/project/quick_actions.md

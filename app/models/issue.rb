@@ -99,6 +99,10 @@ class Issue < ActiveRecord::Base
     alias_method :in_parents, :in_projects
   end
 
+  def self.parent_column
+    :project_id
+  end
+
   def self.reference_prefix
     '#'
   end

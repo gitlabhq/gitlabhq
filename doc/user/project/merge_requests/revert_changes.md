@@ -12,6 +12,12 @@ The **Revert** button will only be available for merge requests
 created since GitLab 8.5. However, you can still revert a merge request
 by reverting the merge commit from the list of Commits page.
 
+NOTE: **Note:**
+The **Revert** button will only be shown for projects that use the
+merge method "Merge Commit", which can be set under the project's
+**Settings > General > Merge request**. [Fast-forward commits](fast_forward_merge.md)
+can not be reverted via the MR view.
+
 After the Merge Request has been merged, a **Revert** button will be available
 to revert the changes introduced by that merge request.
 

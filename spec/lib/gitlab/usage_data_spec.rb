@@ -19,6 +19,7 @@ describe Gitlab::UsageData do
       create(:cluster, :provided_by_user, :disabled)
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_cert_managers, :installed, cluster: gcp_cluster)
       create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
@@ -81,6 +82,7 @@ describe Gitlab::UsageData do
         clusters_platforms_user
         clusters_applications_helm
         clusters_applications_ingress
+        clusters_applications_cert_managers
         clusters_applications_prometheus
         clusters_applications_runner
         clusters_applications_knative
@@ -131,6 +133,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_platforms_user]).to eq(1)
       expect(count_data[:clusters_applications_helm]).to eq(1)
       expect(count_data[:clusters_applications_ingress]).to eq(1)
+      expect(count_data[:clusters_applications_cert_managers]).to eq(1)
       expect(count_data[:clusters_applications_prometheus]).to eq(1)
       expect(count_data[:clusters_applications_runner]).to eq(1)
       expect(count_data[:clusters_applications_knative]).to eq(1)

@@ -7,6 +7,7 @@ import helmLogo from 'images/cluster_app_logos/helm.png';
 import jeagerLogo from 'images/cluster_app_logos/jeager.png';
 import jupyterhubLogo from 'images/cluster_app_logos/jupyterhub.png';
 import kubernetesLogo from 'images/cluster_app_logos/kubernetes.png';
+import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
@@ -59,6 +60,7 @@ export default {
     jeagerLogo,
     jupyterhubLogo,
     kubernetesLogo,
+    certManagerLogo,
     knativeLogo,
     meltanoLogo,
     prometheusLogo,
@@ -123,6 +125,23 @@ export default {
             ${externalIpParagraph}
           </p>
         `;
+    },
+    certManagerDescription() {
+      return sprintf(
+        _.escape(
+          s__(
+            `ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates.
+            Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
+            are valid and up to date.`,
+          ),
+        ),
+        {
+          letsEncrypt: `<a href="https://letsencrypt.org/"
+              target="_blank" rel="noopener noreferrer">
+              ${_.escape(s__("ClusterIntegration|Let's Encrypt"))}</a>`,
+        },
+        false,
+      );
     },
     prometheusDescription() {
       return sprintf(
@@ -264,6 +283,20 @@ export default {
           </template>
           <div v-html="ingressDescription"></div>
         </div>
+      </application-row>
+      <application-row
+        id="cert_manager"
+        :logo-url="certManagerLogo"
+        :title="applications.cert_manager.title"
+        :status="applications.cert_manager.status"
+        :status-reason="applications.cert_manager.statusReason"
+        :request-status="applications.cert_manager.requestStatus"
+        :request-reason="applications.cert_manager.requestReason"
+        :disabled="!helmInstalled"
+        class="hide-bottom-border rounded-bottom"
+        title-link="https://cert-manager.readthedocs.io/en/latest/#"
+      >
+        <div slot="description" v-html="certManagerDescription"></div>
       </application-row>
       <application-row
         v-if="isProjectCluster"

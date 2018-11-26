@@ -26,8 +26,8 @@ page was open. Only the first two requests per unique URL are captured.
 ## Enable the Performance Bar via the Admin panel
 
 GitLab Performance Bar is disabled by default. To enable it for a given group,
-navigate to the Admin area in **Settings > Profiling - Performance Bar**
-(`/admin/application_settings`).
+navigate to the Admin area in **Settings > Metrics and Profiling > Profiling - Performance bar**
+(`admin/application_settings/metrics_and_profiling`).
 
 The only required setting you need to set is the full path of the group that
 will be allowed to display the Performance Bar.

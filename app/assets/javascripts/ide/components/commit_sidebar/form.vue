@@ -126,6 +126,7 @@ export default {
           :text="commitMessage"
           :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
+          @submit="commitChanges"
         />
         <div class="clearfix prepend-top-15">
           <actions />

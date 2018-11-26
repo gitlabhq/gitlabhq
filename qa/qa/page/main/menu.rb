@@ -68,6 +68,12 @@ module QA
           end
         end
 
+        def has_admin_area_link?(wait: Capybara.default_max_wait_time)
+          using_wait_time(wait) do
+            page.has_selector?(element_selector_css(:admin_area_link))
+          end
+        end
+
         private
 
         def within_top_menu

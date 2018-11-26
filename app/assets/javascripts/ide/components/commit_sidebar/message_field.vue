@@ -49,6 +49,10 @@ export default {
     onInput(e) {
       this.$emit('input', e.target.value);
     },
+    onCtrlEnter() {
+      if (!this.isFocused) return;
+      this.$emit('submit');
+    },
     updateIsFocused(isFocused) {
       this.isFocused = isFocused;
     },
@@ -109,6 +113,8 @@ export default {
           @input="onInput"
           @focus="updateIsFocused(true);"
           @blur="updateIsFocused(false);"
+          @keydown.ctrl.enter="onCtrlEnter"
+          @keydown.meta.enter="onCtrlEnter"
         >
         </textarea>
       </div>

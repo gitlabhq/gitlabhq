@@ -216,6 +216,9 @@ msgstr[1] ""
 msgid "1st contribution!"
 msgstr ""
 
+msgid "2FA"
+msgstr ""
+
 msgid "2FA enabled"
 msgstr ""
 
@@ -810,6 +813,12 @@ msgstr ""
 msgid "Available group Runners : %{runners}."
 msgstr ""
 
+msgid "Available shared Runners:"
+msgstr ""
+
+msgid "Available specific runners"
+msgstr ""
+
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -913,6 +922,9 @@ msgid "Bitbucket Server Import"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blocked"
 msgstr ""
 
 msgid "Blog"
@@ -1152,6 +1164,9 @@ msgid "Cannot be merged automatically"
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
+msgid "Change permissions"
 msgstr ""
 
 msgid "Change template"
@@ -1415,6 +1430,9 @@ msgstr ""
 msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
+msgid "ClusterIntegration|Cert-Manager"
+msgstr ""
+
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
@@ -1572,6 +1590,9 @@ msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Let's Encrypt"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1734,6 +1755,9 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up to date."
 msgstr ""
 
 msgid "ClusterIntegration|check the pricing here"
@@ -2450,6 +2474,12 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Disable shared Runners"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
 msgid "Discard"
 msgstr ""
 
@@ -2591,6 +2621,9 @@ msgstr ""
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
+msgid "Enable shared Runners"
+msgstr ""
+
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
@@ -2598,6 +2631,9 @@ msgid "Enable usage ping"
 msgstr ""
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
+msgstr ""
+
+msgid "Enabled"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -2795,6 +2831,9 @@ msgstr ""
 msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
+msgid "Everyone"
+msgstr ""
+
 msgid "Everyone can contribute"
 msgstr ""
 
@@ -2808,6 +2847,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Expires in %{expires_at}"
 msgstr ""
 
 msgid "Explain the problem. If appropriate, provide a link to the relevant issue or comment."
@@ -2907,6 +2949,9 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter by commit message"
+msgstr ""
+
+msgid "Filter by two-factor authentication"
 msgstr ""
 
 msgid "Filter..."
@@ -3050,6 +3095,9 @@ msgstr ""
 msgid "GitLab Import"
 msgstr ""
 
+msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
+msgstr ""
+
 msgid "GitLab User"
 msgstr ""
 
@@ -3077,6 +3125,9 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "Given access %{time_ago}"
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
@@ -3099,6 +3150,9 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr ""
 
 msgid "Got it!"
+msgstr ""
+
+msgid "Grant access"
 msgstr ""
 
 msgid "Graph"
@@ -3515,6 +3569,9 @@ msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are sear
 msgstr ""
 
 msgid "Issues, merge requests, pushes and comments."
+msgstr ""
+
+msgid "It's you"
 msgstr ""
 
 msgid "Jan"
@@ -5366,6 +5423,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Requested %{time_ago}"
+msgstr ""
+
 msgid "Requests Profiles"
 msgstr ""
 
@@ -5373,6 +5433,9 @@ msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
+msgstr ""
+
+msgid "Resend invite"
 msgstr ""
 
 msgid "Reset health check access token"
@@ -5468,6 +5531,9 @@ msgid "Runners"
 msgstr ""
 
 msgid "Runners API"
+msgstr ""
+
+msgid "Runners activated for this project"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
@@ -5839,6 +5905,9 @@ msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, your filter produced no results"
 msgstr ""
 
 msgid "Sort by"
@@ -6296,9 +6365,6 @@ msgstr ""
 msgid "There are no labels yet"
 msgstr ""
 
-msgid "There are no merge requests to show"
-msgstr ""
-
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
@@ -6717,10 +6783,16 @@ msgstr ""
 msgid "To start serving your jobs you can add Runners to your group"
 msgstr ""
 
+msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
+msgstr ""
+
 msgid "To this GitLab instance"
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
+msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "Today"
@@ -6979,6 +7051,9 @@ msgid "UserProfile|View user in admin area"
 msgstr ""
 
 msgid "Users"
+msgstr ""
+
+msgid "Users requesting access to"
 msgstr ""
 
 msgid "Variables"

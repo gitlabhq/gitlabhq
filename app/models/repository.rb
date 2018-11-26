@@ -69,7 +69,13 @@ class Repository
   end
 
   def ==(other)
-    @disk_path == other.disk_path
+    other.is_a?(self.class) && @disk_path == other.disk_path
+  end
+
+  alias_method :eql?, :==
+
+  def hash
+    [self.class, @disk_path].hash
   end
 
   def raw_repository

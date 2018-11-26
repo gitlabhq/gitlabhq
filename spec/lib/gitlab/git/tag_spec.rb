@@ -38,6 +38,9 @@ describe Gitlab::Git::Tag, :seed_helper do
     end
 
     it 'gets messages in one batch', :request_store do
+      other_repository = double(:repository)
+      described_class.get_message(other_repository, tag_ids.first)
+
       expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
     end
   end
