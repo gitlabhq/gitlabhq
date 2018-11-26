@@ -713,6 +713,13 @@
     source-map "^0.5.6"
     vue-template-es2015-compiler "^1.6.0"
 
+"@vue/test-utils@^1.0.0-beta.25":
+  version "1.0.0-beta.25"
+  resolved "https://registry.yarnpkg.com/@vue/test-utils/-/test-utils-1.0.0-beta.25.tgz#4703076de3076bac42cdd242cd53e6fb8752ed8c"
+  integrity sha512-mfvguEmEpAn0BuT4u+qm+0J1NTKgQS+ffUyWHY1QeSovIkJcy98fj1rO+PJgiZSEvGjjnDNX+qmofYFPLrofbA==
+  dependencies:
+    lodash "^4.17.4"
+
 "@webassemblyjs/ast@1.7.6":
   version "1.7.6"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.6.tgz#3ef8c45b3e5e943a153a05281317474fef63e21e"
