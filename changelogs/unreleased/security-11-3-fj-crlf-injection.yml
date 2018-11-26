@@ -1,5 +1,0 @@
----
-title: Fix CRLF vulnerability in Project hooks
-merge_request:
-author:
-type: security

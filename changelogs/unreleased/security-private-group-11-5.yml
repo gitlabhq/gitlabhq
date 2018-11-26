@@ -1,6 +1,0 @@
----
-title: Removed ability to see private group names when the group id is entered in
-  the url.
-merge_request:
-author:
-type: security
