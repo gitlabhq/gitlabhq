@@ -5,7 +5,7 @@ module QA
     describe 'Merge request squashing' do
       it 'user squashes commits while merging'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         project = Resource::Project.fabricate! do |project|
           project.name = "squash-before-merge"
@@ -38,13 +38,12 @@ module QA
 
           Git::Repository.perform do |repository|
             repository.uri = Page::Project::Show.act do
-              choose_repository_clone_http
-              repository_location.uri
+              repository_clone_http_location.uri
             end
 
             repository.use_default_credentials
 
-            repository.act { clone }
+            repository.clone
 
             expect(repository.commits.size).to eq 3
           end
