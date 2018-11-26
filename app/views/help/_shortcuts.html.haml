@@ -249,6 +249,13 @@
                     - else
                       %kbd ctrl p
                   %td Go to file
+                %tr
+                  %td.shortcut
+                    - if browser.platform.mac?
+                      %kbd &#8984; enter
+                    - else
+                      %kbd ctrl enter
+                  %td Commit (when editing commit message)
           .col-lg-4
             %table.shortcut-mappings
               %tbody.hidden-shortcut{ style: 'display:none' }
