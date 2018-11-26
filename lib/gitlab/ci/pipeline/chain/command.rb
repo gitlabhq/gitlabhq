@@ -57,6 +57,12 @@ module Gitlab
               project.protected_for?(origin_ref)
             end
           end
+
+          def ambiguous_ref?
+            strong_memoize(:ambiguous_ref) do
+              project.repository.ambiguous_ref?(origin_ref)
+            end
+          end
         end
       end
     end
