@@ -19,7 +19,7 @@ export default class LazyLoader {
   }
 
   searchLazyImages() {
-    requestIdleCallback(
+    window.requestIdleCallback(
       () => {
         const lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
@@ -107,7 +107,7 @@ export default class LazyLoader {
   }
 
   scrollCheck() {
-    requestAnimationFrame(() => this.checkElementsInView());
+    window.requestAnimationFrame(() => this.checkElementsInView());
   }
 
   checkElementsInView() {
@@ -122,7 +122,7 @@ export default class LazyLoader {
         const imgBound = imgTop + imgBoundRect.height;
 
         if (scrollTop <= imgBound && visHeight >= imgTop) {
-          requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
             LazyLoader.loadImage(selectedImage);
           });
           return false;
