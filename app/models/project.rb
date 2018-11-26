@@ -988,9 +988,9 @@ class Project < ActiveRecord::Base
   end
 
   def readme_url
-    readme = repository.readme
-    if readme
-      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    readme_path = repository.readme_path
+    if readme_path
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme_path))
     end
   end
 

@@ -1488,6 +1488,7 @@ describe Repository do
         :size,
         :commit_count,
         :rendered_readme,
+        :readme_path,
         :contribution_guide,
         :changelog,
         :license_blob,
@@ -1874,6 +1875,42 @@ describe Repository do
     end
   end
 
+  describe '#readme_path', :use_clean_rails_memory_store_caching do
+    context 'with a non-existing repository' do
+      let(:project) { create(:project) }
+
+      it 'returns nil' do
+        expect(repository.readme_path).to be_nil
+      end
+    end
+
+    context 'with an existing repository' do
+      context 'when no README exists' do
+        let(:project) { create(:project, :empty_repo) }
+
+        it 'returns nil' do
+          expect(repository.readme_path).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
+        it 'returns the README' do
+          expect(repository.readme_path).to eq("README.md")
+        end
+
+        it 'caches the response' do
+          expect(repository).to receive(:readme).and_call_original.once
+
+          2.times do
+            expect(repository.readme_path).to eq("README.md")
+          end
+        end
+      end
+    end
+  end
+
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
       expect(repository).to receive(:expire_method_caches)
@@ -2042,9 +2079,10 @@ describe Repository do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(rendered_readme license_blob license_key license))
+        .with(%i(rendered_readme readme_path license_blob license_key license))
 
       expect(repository).to receive(:rendered_readme)
+      expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
       expect(repository).to receive(:license)
