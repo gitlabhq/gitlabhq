@@ -17,6 +17,12 @@ module Gitlab
     class EncryptColumns
       def perform(model, attributes, from, to)
         model = model.constantize if model.is_a?(String)
+
+        # If sidekiq hasn't undergone a restart, its idea of what columns are
+        # present may be inaccurate, so ensure this is as fresh as possible
+        model.reset_column_information
+        model.define_attribute_methods
+
         attributes = expand_attributes(model, Array(attributes).map(&:to_sym))
 
         model.transaction do
@@ -40,6 +46,14 @@ module Gitlab
 
           raise "Couldn't determine encrypted column for #{klass}##{attribute}" if
             crypt_column_name.nil?
+
+          raise "#{klass} source column: #{attribute} is missing" unless
+            klass.column_names.include?(attribute.to_s)
+
+          # Running the migration without the destination column being present
+          # leads to data loss
+          raise "#{klass} destination column: #{crypt_column_name} is missing" unless
+            klass.column_names.include?(crypt_column_name.to_s)
 
           [attribute, crypt_column_name]
         end
