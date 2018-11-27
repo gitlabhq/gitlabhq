@@ -58,7 +58,7 @@ The following sections provide links to documentation for each DevOps stage:
 | [Release](#release)     | Application release and delivery features.                  |
 | [Configure](#configure) | Application and infrastructure configuration tools.         |
 | [Monitor](#monitor)     | Application monitoring and metrics features.                |
-| [Secure](#secure)       | Security capability feature.                                |
+| [Secure](#secure)       | Security capability features.                               |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
