@@ -189,6 +189,9 @@ experience, refactors the existing code). Then:
   subsequent revisions for anything that would be spotted after that.
 - Consider using the [Squash and
   merge][squash-and-merge] feature when the merge request has a lot of commits.
+  When merging code a maintainer should only use the squash feature if the
+  author has already set this option or if the merge request clearly contains a
+  messy commit history that is intended to be squashed.
 
 [squash-and-merge]: https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#squash-and-merge
 
