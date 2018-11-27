@@ -88,9 +88,6 @@ class Project < ActiveRecord::Base
 
   after_create :create_project_feature, unless: :project_feature
 
-  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
-
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
