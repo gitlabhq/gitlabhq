@@ -7,6 +7,8 @@ module Gitlab
     # Storing the full project path in the git config allows admins to
     # easily identify a project when it is using hashed storage.
     module BackfillProjectFullpathInRepoConfig
+      OrphanedNamespaceError = Class.new(StandardError)
+
       module Storage
         # Class that returns the disk path for a project using hashed storage
         class HashedProject
@@ -51,11 +53,15 @@ module Gitlab
         end
 
         def build_full_path
-          if parent && path
-            parent.full_path + '/' + path
-          else
-            path
-          end
+          return path unless has_parent?
+
+          raise OrphanedNamespaceError if parent.nil?
+
+          parent.full_path + '/' + path
+        end
+
+        def has_parent?
+          read_attribute(association(:parent).reflection.foreign_key)
         end
       end
 
@@ -81,7 +87,9 @@ module Gitlab
 
         include Routable
 
-        belongs_to :parent, class_name: "Namespace"
+        belongs_to :parent, class_name: 'Namespace', inverse_of: 'namespaces'
+        has_many :projects, inverse_of: :parent
+        has_many :namespaces, inverse_of: :parent
       end
 
       # Project is where the repository (etc.) is stored
@@ -93,9 +101,8 @@ module Gitlab
 
         FULLPATH_CONFIG_KEY = 'gitlab.fullpath'
 
-        belongs_to :namespace
+        belongs_to :parent, class_name: 'Namespace', foreign_key: :namespace_id, inverse_of: 'projects'
         delegate :disk_path, to: :storage
-        alias_method :parent, :namespace
 
         def add_fullpath_config
           entries = { FULLPATH_CONFIG_KEY => full_path }
@@ -150,14 +157,14 @@ module Gitlab
         end
 
         def perform(start_id, end_id)
-          Project.where(id: start_id..end_id).each do |project|
+          Project.includes(:parent).where(id: start_id..end_id).each do |project|
             safe_perform_one(project)
           end
         end
 
         def safe_perform_one(project, retry_count = 0)
           perform_one(project)
-        rescue GRPC::NotFound, GRPC::InvalidArgument
+        rescue GRPC::NotFound, GRPC::InvalidArgument, OrphanedNamespaceError
           nil
         rescue GRPC::BadStatus
           schedule_retry(project, retry_count + 1) if retry_count < MAX_RETRIES
