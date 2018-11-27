@@ -43,7 +43,7 @@ sudo apt-get install redis-server
 Verify that you can connect to the server with the `gitlab-runner` user:
 
 ```bash
-# Try connecting the the Redis server
+# Try connecting the Redis server
 sudo -u gitlab-runner -H redis-cli
 
 # Quit the session

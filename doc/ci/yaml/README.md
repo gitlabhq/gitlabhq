@@ -400,7 +400,7 @@ except master.
 > `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
 
 CAUTION: **Warning:**
-This an _alpha_ feature, and it it subject to change at any time without
+This an _alpha_ feature, and it is subject to change at any time without
 prior notice!
 
 Since GitLab 10.0 it is possible to define a more elaborate only/except job
@@ -1297,12 +1297,16 @@ GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `reports` keyword is used for collecting test reports from jobs and
 exposing them in GitLab's UI (merge requests, pipeline views). Read how to use
-this with [JUnit reports](#artifacts-reports-junit).
+this with [JUnit reports](#artifactsreportsjunit).
 
 NOTE: **Note:**
 The test reports are collected regardless of the job results (success or failure).
 You can use [`artifacts:expire_in`](#artifacts-expire_in) to set up an expiration
 date for their artifacts.
+
+NOTE: **Note:** 
+If you also want the ability to browse the report output files, include the
+[`artifacts:paths`](#artifactspaths) keyword.
 
 #### `artifacts:reports:junit`
 
@@ -1312,8 +1316,9 @@ GitLab 11.2. Requires GitLab Runner 11.2 and above.
 The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
 as artifacts. Although JUnit was originally developed in Java, there are many
 [third party ports](https://en.wikipedia.org/wiki/JUnit#Ports) for other
-languages like Javascript, Python, Ruby, etc.
+languages like JavaScript, Python, Ruby, etc.
 
+See [JUnit test reports](../junit_test_reports.md) for more details and examples.
 Below is an example of collecting a JUnit XML file from Ruby's RSpec test tool:
 
 ```yaml
@@ -1329,8 +1334,6 @@ rspec:
 
 The collected JUnit reports will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests.
-
-For more examples, see [JUnit test reports](../junit_test_reports.md).
 
 NOTE: **Note:**
 In case the JUnit tool you use exports to multiple XML files, you can specify
@@ -1532,7 +1535,7 @@ test:
 ```
 
 By default, a job will be retried on all failure cases. To have a better control
-on which failures to retry, `retry` can be a hash with with the following keys:
+on which failures to retry, `retry` can be a hash with the following keys:
 
 - `max`: The maximum number of retries.
 - `when`: The failure cases to retry.

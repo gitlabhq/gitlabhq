@@ -60,6 +60,7 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           hostname: null,
+          externalIp: null,
         },
       },
     };
@@ -111,6 +112,8 @@ export default class ClusterStore {
       } else if (appId === KNATIVE) {
         this.state.applications.knative.hostname =
           serverAppEntry.hostname || this.state.applications.knative.hostname;
+        this.state.applications.knative.externalIp =
+          serverAppEntry.external_ip || this.state.applications.knative.externalIp;
       }
     });
   }

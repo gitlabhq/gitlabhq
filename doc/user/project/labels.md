@@ -97,7 +97,7 @@ From the group issue list page and the group merge request list page, you can [f
 
 ## Subscribing to labels
 
-From the project label list page and the group label list page, you can subscribe to [notifications](../../workflow/notifications.md) of a given label, to alert you that that label has been assigned to an issue or merge request.
+From the project label list page and the group label list page, you can subscribe to [notifications](../../workflow/notifications.md) of a given label, to alert you that the label has been assigned to an issue or merge request.
 
 ![Labels subscriptions](img/labels_subscriptions.png)
 

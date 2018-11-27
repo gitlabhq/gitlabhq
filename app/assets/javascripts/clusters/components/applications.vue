@@ -168,6 +168,9 @@ export default {
     knativeInstalled() {
       return this.applications.knative.status === APPLICATION_STATUS.INSTALLED;
     },
+    knativeExternalIp() {
+      return this.applications.knative.externalIp;
+    },
   },
   created() {
     this.helmInstallIllustration = helmInstallIllustration;
@@ -408,12 +411,11 @@ export default {
         <div slot="description">
           <p>
             {{
-              s__(`ClusterIntegration|A Knative build extends Kubernetes
-              and utilizes existing Kubernetes primitives to provide you with
-              the ability to run on-cluster container builds from source.
-              For example, you can write a build that uses Kubernetes-native
-              resources to obtain your source code from a repository,
-              build it into container a image, and then run that image.`)
+              s__(`ClusterIntegration|Knative (pronounced kay-nay-tiv) extends
+              Kubernetes to provide a set of middleware components that are
+              essential to build modern, source-centric, and container-based
+              applications that can run anywhere: on premises, in the cloud, or
+              even in a third-party data center.`)
             }}
           </p>
 
@@ -443,6 +445,49 @@ export default {
                 class="form-control js-domainname"
               />
             </div>
+          </template>
+          <template v-if="knativeInstalled">
+            <div class="form-group">
+              <label for="knative-ip-address">
+                {{ s__('ClusterIntegration|Knative IP Address:') }}
+              </label>
+              <div v-if="knativeExternalIp" class="input-group">
+                <input
+                  id="knative-ip-address"
+                  :value="knativeExternalIp"
+                  type="text"
+                  class="form-control js-ip-address"
+                  readonly
+                />
+                <span class="input-group-append">
+                  <clipboard-button
+                    :text="knativeExternalIp"
+                    :title="s__('ClusterIntegration|Copy Knative IP Address to clipboard')"
+                    class="input-group-text js-clipboard-btn"
+                  />
+                </span>
+              </div>
+              <input v-else type="text" class="form-control js-ip-address" readonly value="?" />
+            </div>
+
+            <p v-if="!knativeExternalIp" class="settings-message js-no-ip-message">
+              {{
+                s__(`ClusterIntegration|The IP address is in
+              the process of being assigned. Please check your Kubernetes
+              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+              }}
+            </p>
+
+            <p>
+              {{
+                s__(`ClusterIntegration|Point a wildcard DNS to this
+              generated IP address in order to access
+              your application after it has been deployed.`)
+              }}
+              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                {{ __('More information') }}
+              </a>
+            </p>
           </template>
         </div>
       </application-row>

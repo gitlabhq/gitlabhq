@@ -75,7 +75,7 @@ The minimum key size is 1024 bits, defaulting to 2048. If you wish to generate a
 stronger RSA key pair, specify the `-b` flag with a higher bit value than the
 default.
 
-The old, default password encoding for SSH private keys keys is
+The old, default password encoding for SSH private keys is
 [insecure](https://latacora.singles/2018/08/03/the-default-openssh.html);
 it's only a single round of an MD5 hash. Since OpenSSH version 6.5, you should
 use the `-o` option to `ssh-keygen` to encode your private key in a new, more

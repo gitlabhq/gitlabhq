@@ -7,15 +7,14 @@
       - if @group&.persisted?
         - create_group_project = can?(current_user, :create_projects, @group)
         - create_group_subgroup = can?(current_user, :create_subgroup, @group)
+
         - if create_group_project || create_group_subgroup
           %li.dropdown-bold-header
             = _('This group')
           - if create_group_project
-            %li.header-new-group-project
-              = link_to _('New project'), new_project_path(namespace_id: @group.id)
+            %li= link_to _('New project'), new_project_path(namespace_id: @group.id)
           - if create_group_subgroup
-            %li
-              = link_to _('New subgroup'), new_group_path(parent_id: @group.id)
+            %li= link_to _('New subgroup'), new_group_path(parent_id: @group.id)
           %li.divider
           %li.dropdown-bold-header GitLab
 
@@ -23,25 +22,20 @@
         - create_project_issue = show_new_issue_link?(@project)
         - merge_project = merge_request_source_project_for_project(@project)
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)
+
         - if create_project_issue || merge_project || create_project_snippet
           %li.dropdown-bold-header
             = _('This project')
           - if create_project_issue
-            %li
-              = link_to _('New issue'), new_project_issue_path(@project)
+            %li= link_to _('New issue'), new_project_issue_path(@project)
           - if merge_project
-            %li
-              = link_to _('New merge request'), project_new_merge_request_path(merge_project)
+            %li= link_to _('New merge request'), project_new_merge_request_path(merge_project)
           - if create_project_snippet
-            %li.header-new-project-snippet
-              = link_to _('New snippet'), new_project_snippet_path(@project)
+            %li= link_to _('New snippet'), new_project_snippet_path(@project)
           %li.divider
           %li.dropdown-bold-header GitLab
       - if current_user.can_create_project?
-        %li
-          = link_to _('New project'), new_project_path, class: 'qa-global-new-project-link'
+        %li= link_to _('New project'), new_project_path, class: 'qa-global-new-project-link'
       - if current_user.can_create_group?
-        %li
-          = link_to _('New group'), new_group_path
-      %li
-        = link_to _('New snippet'), new_snippet_path
+        %li= link_to _('New group'), new_group_path
+      %li= link_to _('New snippet'), new_snippet_path

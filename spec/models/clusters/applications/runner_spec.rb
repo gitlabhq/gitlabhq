@@ -5,7 +5,7 @@ describe Clusters::Applications::Runner do
 
   include_examples 'cluster application core specs', :clusters_applications_runner
   include_examples 'cluster application status specs', :clusters_applications_runner
-  include_examples 'cluster application helm specs', :clusters_applications_knative
+  include_examples 'cluster application helm specs', :clusters_applications_runner
 
   it { is_expected.to belong_to(:runner) }
 
@@ -90,7 +90,7 @@ describe Clusters::Applications::Runner do
     context 'without a runner' do
       let(:project) { create(:project) }
       let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
-      let(:application) { create(:clusters_applications_runner, cluster: cluster) }
+      let(:application) { create(:clusters_applications_runner, runner: nil, cluster: cluster) }
 
       it 'creates a runner' do
         expect do

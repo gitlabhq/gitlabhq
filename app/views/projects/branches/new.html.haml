@@ -13,7 +13,7 @@
   .form-group.row
     = label_tag :branch_name, nil, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
+      = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'
       .form-text.text-muted.text-danger.js-branch-name-error
   .form-group.row
     = label_tag :ref, 'Create from', class: 'col-form-label col-sm-2'

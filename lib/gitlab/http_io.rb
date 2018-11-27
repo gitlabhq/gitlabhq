@@ -85,11 +85,11 @@ module Gitlab
         break if data.empty?
 
         chunk_bytes = [BUFFER_SIZE - chunk_offset, length].min
-        chunk_data = data.byteslice(0, chunk_bytes)
+        data_slice = data.byteslice(0, chunk_bytes)
 
-        out << chunk_data
-        @tell += chunk_data.bytesize
-        length -= chunk_data.bytesize
+        out << data_slice
+        @tell += data_slice.bytesize
+        length -= data_slice.bytesize
       end
 
       out = out.join

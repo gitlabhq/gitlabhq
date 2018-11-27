@@ -107,6 +107,7 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             hostname: null,
+            externalIp: null,
           },
           cert_manager: {
             title: 'Cert-Manager',

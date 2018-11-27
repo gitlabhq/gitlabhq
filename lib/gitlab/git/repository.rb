@@ -723,11 +723,11 @@ module Gitlab
         delete_refs(tmp_ref)
       end
 
-      def write_ref(ref_path, ref, old_ref: nil, shell: true)
+      def write_ref(ref_path, ref, old_ref: nil)
         ref_path = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref_path}" unless ref_path.start_with?("refs/") || ref_path == "HEAD"
 
         wrapped_gitaly_errors do
-          gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
+          gitaly_repository_client.write_ref(ref_path, ref, old_ref)
         end
       end
 
