@@ -239,4 +239,38 @@ describe('MergeRequestTabs', function() {
       expect($('.content-wrapper')).toContainElement('.container-limited');
     });
   });
+
+  describe('tabShown', function() {
+    const mainContent = document.createElement('div');
+    const tabContent = document.createElement('div');
+
+    beforeEach(function() {
+      spyOn(mainContent, 'getBoundingClientRect').and.returnValue({ top: 10 });
+      spyOn(tabContent, 'getBoundingClientRect').and.returnValue({ top: 100 });
+      spyOn(document, 'querySelector').and.callFake(function(selector) {
+        return selector === '.content-wrapper' ? mainContent : tabContent;
+      });
+      this.class.currentAction = 'commits';
+    });
+
+    it('calls window scrollTo with options if document has scrollBehavior', function() {
+      document.documentElement.style.scrollBehavior = '';
+
+      spyOn(window, 'scrollTo');
+
+      this.class.tabShown('commits', 'foobar');
+
+      expect(window.scrollTo.calls.first().args[0]).toEqual({ top: 39, behavior: 'smooth' });
+    });
+
+    it('calls window scrollTo with two args if document does not have scrollBehavior', function() {
+      spyOnProperty(document.documentElement, 'style', 'get').and.returnValue({});
+
+      spyOn(window, 'scrollTo');
+
+      this.class.tabShown('commits', 'foobar');
+
+      expect(window.scrollTo.calls.first().args).toEqual([0, 39]);
+    });
+  });
 });

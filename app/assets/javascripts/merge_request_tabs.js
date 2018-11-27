@@ -217,6 +217,28 @@ export default class MergeRequestTabs {
       }
 
       this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
+    } else if (action === this.currentAction) {
+      // ContentTop is used to handle anything at the top of the page before the main content
+      const mainContentContainer = document.querySelector('.content-wrapper');
+      const tabContentContainer = document.querySelector('.tab-content');
+
+      if (mainContentContainer && tabContentContainer) {
+        const mainContentTop = mainContentContainer.getBoundingClientRect().top;
+        const tabContentTop = tabContentContainer.getBoundingClientRect().top;
+
+        // 51px is the height of the navbar buttons, e.g. `Discussion | Commits | Changes`
+        const scrollDestination = tabContentTop - mainContentTop - 51;
+
+        // scrollBehavior is only available in browsers that support scrollToOptions
+        if ('scrollBehavior' in document.documentElement.style) {
+          window.scrollTo({
+            top: scrollDestination,
+            behavior: 'smooth',
+          });
+        } else {
+          window.scrollTo(0, scrollDestination);
+        }
+      }
     }
   }
 
