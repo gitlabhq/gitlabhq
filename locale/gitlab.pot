@@ -2669,6 +2669,12 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
+msgid "Environment variables"
+msgstr ""
+
+msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use environment variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -7081,9 +7087,6 @@ msgid "Users requesting access to"
 msgstr ""
 
 msgid "Variables"
-msgstr ""
-
-msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
 msgid "Various container registry settings."
