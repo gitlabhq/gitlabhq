@@ -6,9 +6,7 @@ module Clusters
       VERSION = '0.1.3'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
 
-      # This is required for helm version <= 2.10.x in order to support
-      # Setting up CRDs
-      ISTIO_CRDS = 'https://storage.googleapis.com/triggermesh-charts/istio-crds.yaml'.freeze
+      FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       self.table_name = 'clusters_applications_knative'
 
@@ -16,6 +14,16 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
+      include AfterCommitQueue
+
+      state_machine :status do
+        before_transition any => [:installed] do |application|
+          application.run_after_commit do
+            ClusterWaitForIngressIpAddressWorker.perform_in(
+              FETCH_IP_ADDRESS_DELAY, application.name, application.id)
+          end
+        end
+      end
 
       default_value_for :version, VERSION
 
@@ -36,19 +44,23 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: REPOSITORY,
-          preinstall: install_script
+          repository: REPOSITORY
         )
+      end
+
+      def schedule_status_update
+        return unless installed?
+        return if external_ip
+
+        ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
+      end
+
+      def ingress_service
+        cluster.kubeclient.get_service('knative-ingressgateway', 'istio-system')
       end
 
       def client
         cluster.platform_kubernetes.kubeclient.knative_client
-      end
-
-      private
-
-      def install_script
-        ["/usr/bin/kubectl apply -f #{ISTIO_CRDS}"]
       end
     end
   end

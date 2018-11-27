@@ -1451,6 +1451,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Knative IP Address to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -1557,6 +1560,9 @@ msgid "ClusterIntegration|Knative (pronounced kay-nay-tiv) extends Kubernetes to
 msgstr ""
 
 msgid "ClusterIntegration|Knative Domain Name:"
+msgstr ""
+
+msgid "ClusterIntegration|Knative IP Address:"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"

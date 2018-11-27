@@ -168,6 +168,9 @@ export default {
     knativeInstalled() {
       return this.applications.knative.status === APPLICATION_STATUS.INSTALLED;
     },
+    knativeExternalIp() {
+      return this.applications.knative.externalIp;
+    },
   },
   created() {
     this.helmInstallIllustration = helmInstallIllustration;
@@ -442,6 +445,49 @@ export default {
                 class="form-control js-domainname"
               />
             </div>
+          </template>
+          <template v-if="knativeInstalled">
+            <div class="form-group">
+              <label for="knative-ip-address">
+                {{ s__('ClusterIntegration|Knative IP Address:') }}
+              </label>
+              <div v-if="knativeExternalIp" class="input-group">
+                <input
+                  id="knative-ip-address"
+                  :value="knativeExternalIp"
+                  type="text"
+                  class="form-control js-ip-address"
+                  readonly
+                />
+                <span class="input-group-append">
+                  <clipboard-button
+                    :text="knativeExternalIp"
+                    :title="s__('ClusterIntegration|Copy Knative IP Address to clipboard')"
+                    class="input-group-text js-clipboard-btn"
+                  />
+                </span>
+              </div>
+              <input v-else type="text" class="form-control js-ip-address" readonly value="?" />
+            </div>
+
+            <p v-if="!knativeExternalIp" class="settings-message js-no-ip-message">
+              {{
+                s__(`ClusterIntegration|The IP address is in
+              the process of being assigned. Please check your Kubernetes
+              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+              }}
+            </p>
+
+            <p>
+              {{
+                s__(`ClusterIntegration|Point a wildcard DNS to this
+              generated IP address in order to access
+              your application after it has been deployed.`)
+              }}
+              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                {{ __('More information') }}
+              </a>
+            </p>
           </template>
         </div>
       </application-row>
