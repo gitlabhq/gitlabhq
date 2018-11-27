@@ -682,6 +682,18 @@ describe 'Issues' do
           expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
         end
       end
+
+      context 'suggestions', :js do
+        it 'displays list of related issues' do
+          create(:issue, project: project, title: 'test issue')
+
+          visit new_project_issue_path(project)
+
+          fill_in 'issue_title', with: issue.title
+
+          expect(page).to have_selector('.suggestion-item', count: 1)
+        end
+      end
     end
 
     describe 'new issue by email' do

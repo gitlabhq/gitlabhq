@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+module Resolvers
+  class IssuesResolver < BaseResolver
+    extend ActiveSupport::Concern
+
+    argument :search, GraphQL::STRING_TYPE,
+              required: false
+    argument :sort, Types::Sort,
+              required: false,
+              default_value: 'created_desc'
+
+    type Types::IssueType, null: true
+
+    alias_method :project, :object
+
+    def resolve(**args)
+      # Will need to be be made group & namespace aware with
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/54520
+      args[:project_id] = project.id
+
+      IssuesFinder.new(context[:current_user], args).execute
+    end
+  end
+end
