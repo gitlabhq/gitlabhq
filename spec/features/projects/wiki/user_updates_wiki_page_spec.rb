@@ -39,7 +39,7 @@ describe 'User updates wiki page' do
         end
 
         expect(current_path).to include('one/two/three-test')
-        expect(find('.wiki-pages')).to have_content('Three')
+        expect(find('.wiki-pages')).to have_content('three')
 
         first(:link, text: 'Three').click
 

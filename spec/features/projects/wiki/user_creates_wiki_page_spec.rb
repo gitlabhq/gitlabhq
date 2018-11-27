@@ -85,7 +85,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "test"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("Test").and have_content("Create Page")
+          expect(page).to have_content("test").and have_content("Create Page")
         end
 
         click_link("Home")
@@ -97,7 +97,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "api"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("Create").and have_content("Api")
+          expect(page).to have_content("Create").and have_content("api")
         end
 
         click_link("Home")
@@ -109,7 +109,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "raketasks"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("Create").and have_content("Rake")
+          expect(page).to have_content("Create").and have_content("rake")
         end
       end
 
@@ -200,7 +200,7 @@ describe "User creates wiki page" do
             click_button("Create page")
           end
 
-          expect(page).to have_content("Foo")
+          expect(page).to have_content("foo")
                      .and have_content("Last edited by #{user.name}")
                      .and have_content("My awesome wiki!")
         end
@@ -246,7 +246,7 @@ describe "User creates wiki page" do
             click_button("Create page")
           end
 
-          expect(page).to have_content("Hyphens in the name")
+          expect(page).to have_content("Create hyphens in the name")
                      .and have_content("Last edited by #{user.name}")
                      .and have_content("My awesome wiki!")
         end
@@ -293,7 +293,7 @@ describe "User creates wiki page" do
             click_button("Create page")
           end
 
-          expect(page).to have_content("Foo")
+          expect(page).to have_content("foo")
                      .and have_content("Last edited by #{user.name}")
                      .and have_content("My awesome wiki!")
         end
@@ -311,7 +311,7 @@ describe "User creates wiki page" do
       it 'renders a default sidebar when there is no customized sidebar' do
         visit(project_wikis_path(project))
 
-        expect(page).to have_content('Another')
+        expect(page).to have_content('another')
         expect(page).to have_content('More Pages')
       end
 

@@ -38,7 +38,7 @@ describe 'User views a wiki page' do
     it 'shows the history of a page that has a path', :js do
       expect(current_path).to include('one/two/three-test')
 
-      first(:link, text: 'Three').click
+      first(:link, text: 'three').click
       click_on('Page history')
 
       expect(current_path).to include('one/two/three-test')
@@ -50,11 +50,11 @@ describe 'User views a wiki page' do
 
     it 'shows an old version of a page', :js do
       expect(current_path).to include('one/two/three-test')
-      expect(find('.wiki-pages')).to have_content('Three')
+      expect(find('.wiki-pages')).to have_content('three')
 
-      first(:link, text: 'Three').click
+      first(:link, text: 'three').click
 
-      expect(find('.nav-text')).to have_content('Three')
+      expect(find('.nav-text')).to have_content('three')
 
       click_on('Edit')
 
