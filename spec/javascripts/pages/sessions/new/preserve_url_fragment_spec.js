@@ -19,8 +19,16 @@ describe('preserve_url_fragment', () => {
   it('adds the "redirect_fragment" query parameter to all OAuth and SAML login buttons', () => {
     preserveUrlFragment('#L65');
 
-    expect($('.omniauth-container #oauth-login-auth0').attr('href')).toBe('/users/auth/auth0?redirect_fragment=L65');
-    expect($('.omniauth-container #oauth-login-facebook').attr('href')).toBe('/users/auth/facebook?remember_me=1&redirect_fragment=L65');
-    expect($('.omniauth-container #oauth-login-saml').attr('href')).toBe('/users/auth/saml?redirect_fragment=L65');
+    expect($('.omniauth-container #oauth-login-auth0').attr('href')).toBe(
+      '/users/auth/auth0?redirect_fragment=L65',
+    );
+
+    expect($('.omniauth-container #oauth-login-facebook').attr('href')).toBe(
+      '/users/auth/facebook?remember_me=1&redirect_fragment=L65',
+    );
+
+    expect($('.omniauth-container #oauth-login-saml').attr('href')).toBe(
+      '/users/auth/saml?redirect_fragment=L65',
+    );
   });
 });

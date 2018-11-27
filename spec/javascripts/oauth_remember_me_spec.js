@@ -22,7 +22,7 @@ describe('OAuthRememberMe', () => {
     );
 
     expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
-      'http://example.com/?redirect_fragment=L1&remember_me=1'
+      'http://example.com/?redirect_fragment=L1&remember_me=1',
     );
   });
 
@@ -32,6 +32,8 @@ describe('OAuthRememberMe', () => {
 
     expect($('#oauth-container .oauth-login.twitter').attr('href')).toBe('http://example.com/');
     expect($('#oauth-container .oauth-login.github').attr('href')).toBe('http://example.com/');
-    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe('http://example.com/?redirect_fragment=L1');
+    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
+      'http://example.com/?redirect_fragment=L1',
+    );
   });
 });
