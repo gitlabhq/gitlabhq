@@ -2203,12 +2203,6 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
-    it 'creates the new reference with rugged' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
-
-      project.change_head(project.default_branch)
-    end
-
     it 'copies the gitattributes' do
       expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
       project.change_head(project.default_branch)

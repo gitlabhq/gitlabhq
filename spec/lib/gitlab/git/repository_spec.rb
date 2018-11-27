@@ -1469,6 +1469,19 @@ describe Gitlab::Git::Repository, :seed_helper do
         end
       end
     end
+
+    it 'writes the HEAD' do
+      repository.write_ref('HEAD', 'refs/heads/feature')
+
+      expect(repository.commit('HEAD')).to eq(repository.commit('feature'))
+      expect(repository.root_ref).to eq('feature')
+    end
+
+    it 'writes other refs' do
+      repository.write_ref('refs/heads/feature', SeedRepo::Commit::ID)
+
+      expect(repository.commit('feature').sha).to eq(SeedRepo::Commit::ID)
+    end
   end
 
   describe '#write_config' do
