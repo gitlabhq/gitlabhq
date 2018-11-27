@@ -235,7 +235,7 @@ gem 'asana', '~> 0.8.1'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 3.1.0'
+gem 'kubeclient', '~> 4.0.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 4.6'
