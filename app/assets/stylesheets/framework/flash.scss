@@ -32,15 +32,15 @@
     margin: 0;
   }
 
+  .flash-text,
+  .flash-action {
+    display: inline-block;
+  }
+
   .flash-alert {
     @extend .alert;
     background-color: $red-500;
     margin: 0;
-
-    .flash-text,
-    .flash-action {
-      display: inline-block;
-    }
 
     .flash-action {
       margin-left: 5px;
