@@ -1995,10 +1995,6 @@ ActiveRecord::Schema.define(version: 20181108091549) do
 
   add_index "shards", ["name"], name: "index_shards_on_name", unique: true, using: :btree
 
-  create_table "site_statistics", force: :cascade do |t|
-    t.integer "repositories_count", default: 0, null: false
-  end
-
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
