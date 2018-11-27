@@ -22,7 +22,7 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def show
     if @project.import_finished?
-      if continue_params && continue_params[:to]
+      if continue_params&.key?(:to)
         redirect_to continue_params[:to], notice: continue_params[:notice]
       else
         redirect_to project_path(@project), notice: finished_notice

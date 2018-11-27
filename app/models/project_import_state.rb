@@ -73,7 +73,7 @@ class ProjectImportState < ActiveRecord::Base
   alias_method :no_import?, :none?
 
   def in_progress?
-    started? || scheduled?
+    scheduled? || started?
   end
 
   def started?
