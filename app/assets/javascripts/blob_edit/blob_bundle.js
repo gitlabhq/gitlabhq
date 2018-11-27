@@ -16,9 +16,17 @@ export default () => {
     const filePath = editBlobForm.data('blobFilename');
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
+    const commitButton = $('.js-commit-button');
+
+    commitButton.on('click', () => {
+      window.onbeforeunload = null;
+    });
 
     new EditBlob(`${urlRoot}${assetsPath}`, filePath, currentAction, projectId);
     new NewCommitForm(editBlobForm);
+
+    // returning here blocks page navigation
+    window.onbeforeunload = () => '';
   }
 
   if (uploadBlobForm.length) {
