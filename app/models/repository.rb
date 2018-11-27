@@ -191,7 +191,7 @@ class Repository
       Gitlab::Git::TAG_REF_PREFIX + ref
     elsif branch_exists?(ref)
       Gitlab::Git::BRANCH_REF_PREFIX + ref
-    else
+    elsif Gitlab::Git.tag_ref?(ref) || Gitlab::Git.branch_ref?(ref)
       ref
     end
   end
