@@ -11,6 +11,14 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
 
     let(:options) { {} }
 
+    context 'when unique key is not set' do
+      let(:unique_key) { }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error ArgumentError
+      end
+    end
+
     context 'when the lease is not obtained yet' do
       before do
         stub_exclusive_lease(unique_key, 'uuid')
