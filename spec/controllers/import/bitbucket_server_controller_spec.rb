@@ -126,7 +126,7 @@ describe Import::BitbucketServerController do
     end
 
     it 'assigns repository categories' do
-      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id, import_status: 'finished', import_source: @created_repo.browse_url)
+      created_project = create(:project, :import_finished, import_type: 'bitbucket_server', creator_id: user.id, import_source: @created_repo.browse_url)
       repos = instance_double(BitbucketServer::Collection)
 
       expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])

@@ -24,7 +24,7 @@ module Gitlab
       def find_project(id)
         # If the project has been marked as failed we want to bail out
         # automatically.
-        Project.import_started.find_by(id: id)
+        Project.joins_import_state.where(import_state: { status: :started }).find_by(id: id)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end
