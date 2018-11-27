@@ -5,7 +5,7 @@ describe Gitlab::CryptoHelper do
     it 'generates SHA256 digest Base46 encoded' do
       digest = described_class.sha256('some-value')
 
-      expect(digest).to match %r{^[A-Za-z0-9+/=]+$}
+      expect(digest).to match %r{\A[A-Za-z0-9+/=]+\z}
       expect(digest).to eq digest.strip
     end
   end
@@ -14,7 +14,8 @@ describe Gitlab::CryptoHelper do
     it 'is Base64 encoded string without new line character' do
       encrypted = described_class.aes256_gcm_encrypt('some-value')
 
-      expect(encrypted).to match %r{^[A-Za-z0-9+/=]+$}
+      expect(encrypted).to match %r{\A[A-Za-z0-9+/=]+\z}
+      expect(encrypted).not_to include "\n"
     end
   end
 

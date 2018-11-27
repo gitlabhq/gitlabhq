@@ -46,7 +46,7 @@ module TokenAuthenticatableStrategies
       raise ArgumentError unless token.present?
 
       instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-      instance[token_field] = nil
+      fallback_strategy.set_token(instance, nil) if fallback?
       token
     end
 
