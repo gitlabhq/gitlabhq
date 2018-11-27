@@ -2,6 +2,36 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.8 (2018-11-27)
+
+### Security (24 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2571
+- Resolve reflected XSS in Ouath authorize window.
+- Fix XSS in merge request source branch name.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Don't expose confidential information in commit message list.
+- Provide email notification when a user changes their email address.
+- Restrict Personal Access Tokens to API scope on web requests.
+- Redact personal tokens in unsubscribe links.
+- Fix SSRF in project integrations.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Monkey kubeclient to not follow any redirects.
+- Configure mermaid to not render HTML content in diagrams.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
+
+
 ## 11.4.7 (2018-11-20)
 
 - No changes.

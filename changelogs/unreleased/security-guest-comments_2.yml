@@ -1,5 +1,0 @@
----
-title: Fixed ability of guest users to edit/delete comments on locked or confidential issues.
-merge_request:
-author:
-type: security
