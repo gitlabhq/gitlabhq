@@ -1379,6 +1379,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Closed"
+msgstr ""
+
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
@@ -4467,6 +4470,9 @@ msgstr ""
 msgid "Open source software to collaborate on code"
 msgstr ""
 
+msgid "Opened"
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
@@ -5856,6 +5862,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Similar issues"
+msgstr ""
+
 msgid "Size and domain settings for static websites"
 msgstr ""
 
@@ -6390,6 +6399,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
 msgid "They can be managed using the %{link}."
@@ -7838,6 +7850,9 @@ msgid "started"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "updated"
 msgstr ""
 
 msgid "username"
