@@ -89,7 +89,7 @@ We'll now create a VPC, a virtual networking environment that you'll control:
 ### Subnets
 
 Now, let's create some subnets in different Availability Zones. Make sure
-that each subnet is associated the the VPC we just created and
+that each subnet is associated to the VPC we just created and
 that CIDR blocks don't overlap. This will also
 allow us to enable multi AZ for redundancy.
 
@@ -168,7 +168,7 @@ The security group is basically the firewall:
 1. Select **Security Groups** from the left menu.
 1. Click **Create Security Group** and fill in the details. Give it a name,
    add a description, and choose the VPC we created previously
-1. Select the security group from the list and at the the bottom select the
+1. Select the security group from the list and at the bottom select the
    Inbound Rules tab. You will need to open the SSH, HTTP, and HTTPS ports. Set
    the source to `0.0.0.0/0`.
 

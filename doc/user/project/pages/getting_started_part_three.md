@@ -11,7 +11,7 @@ date: 2017-02-22
 
 Setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
 
-These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
+These steps assume you've already [set your site up](getting_started_part_two.md) and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
 ## Adding your custom domain to GitLab Pages
 

@@ -400,7 +400,7 @@ except master.
 > `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
 
 CAUTION: **Warning:**
-This an _alpha_ feature, and it it subject to change at any time without
+This an _alpha_ feature, and it is subject to change at any time without
 prior notice!
 
 Since GitLab 10.0 it is possible to define a more elaborate only/except job
@@ -1535,7 +1535,7 @@ test:
 ```
 
 By default, a job will be retried on all failure cases. To have a better control
-on which failures to retry, `retry` can be a hash with with the following keys:
+on which failures to retry, `retry` can be a hash with the following keys:
 
 - `max`: The maximum number of retries.
 - `when`: The failure cases to retry.

@@ -123,7 +123,7 @@ curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 ### Create new issue discussion
 
 Creates a new discussion to a single project issue. This is similar to creating
-a note but but another comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later.
 
 ```
 POST /projects/:id/issues/:issue_iid/discussions
@@ -329,7 +329,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitla
 ### Create new snippet discussion
 
 Creates a new discussion to a single project snippet. This is similar to creating
-a note but but another comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later.
 
 ```
 POST /projects/:id/snippets/:snippet_id/discussions
@@ -588,7 +588,7 @@ curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 ### Create new merge request discussion
 
 Creates a new discussion to a single project merge request. This is similar to creating
-a note but but another comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later.
 
 ```
 POST /projects/:id/merge_requests/:merge_request_iid/discussions
@@ -881,7 +881,7 @@ curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 ### Create new commit discussion
 
 Creates a new discussion to a single project commit. This is similar to creating
-a note but but another comments (replies) can be added to it later.
+a note but other comments (replies) can be added to it later.
 
 ```
 POST /projects/:id/commits/:commit_id/discussions
