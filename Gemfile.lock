@@ -1088,6 +1088,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.4)
   puma (~> 3.12)
   puma_worker_killer
+  rack (= 2.0.6)
   rack-attack (~> 4.4.1)
   rack-cors (~> 1.0.0)
   rack-oauth2 (~> 1.2.1)
