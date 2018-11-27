@@ -7,9 +7,14 @@ class MergeRequestSerializer < BaseSerializer
   def represent(merge_request, opts = {})
     entity =
       case opts[:serializer]
-      when 'basic', 'sidebar'
+      when 'sidebar_extras'
+        opts[:include_basic] = false
+        opts[:include_extras] = true
+        MergeRequestSidebarEntity
+      when 'basic'
         MergeRequestBasicEntity
-      else # It's 'widget'
+      else
+        # fallback to widget for old poll requests without `serializer` set
         MergeRequestWidgetEntity
       end
 

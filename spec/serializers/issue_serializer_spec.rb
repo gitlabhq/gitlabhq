@@ -18,7 +18,7 @@ describe IssueSerializer do
   end
 
   context 'sidebar issue serialization' do
-    let(:serializer) { 'sidebar' }
+    let(:serializer) { 'sidebar_extras' }
 
     it 'matches sidebar issue json schema' do
       expect(json_entity).to match_schema('entities/issue_sidebar')

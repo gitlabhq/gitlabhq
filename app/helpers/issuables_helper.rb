@@ -50,13 +50,13 @@ module IssuablesHelper
     end
   end
 
-  def issuable_json_path(issuable)
+  def issuable_json_path(issuable, url_params = {})
     project = issuable.project
 
     if issuable.is_a?(MergeRequest)
-      project_merge_request_path(project, issuable.iid, :json)
+      project_merge_request_path(project, issuable.iid, :json, url_params)
     else
-      project_issue_path(project, issuable.iid, :json)
+      project_issue_path(project, issuable.iid, :json, url_params)
     end
   end
 
@@ -420,7 +420,7 @@ module IssuablesHelper
 
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
-      endpoint: "#{issuable_json_path(issuable)}?serializer=sidebar",
+      endpoint: issuable_json_path(issuable, serializer: 'sidebar_extras'),
       toggleSubscriptionEndpoint: toggle_subscription_path(issuable),
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),

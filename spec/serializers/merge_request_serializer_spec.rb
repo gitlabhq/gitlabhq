@@ -18,10 +18,10 @@ describe MergeRequestSerializer do
   end
 
   context 'sidebar merge request serialization' do
-    let(:serializer) { 'sidebar' }
+    let(:serializer) { 'sidebar_extras' }
 
     it 'matches basic merge request json schema' do
-      expect(json_entity).to match_schema('entities/merge_request_basic')
+      expect(json_entity).to match_schema('entities/merge_request_sidebar')
     end
   end
 
