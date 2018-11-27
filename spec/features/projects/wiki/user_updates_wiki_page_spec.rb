@@ -41,9 +41,9 @@ describe 'User updates wiki page' do
         expect(current_path).to include('one/two/three-test')
         expect(find('.wiki-pages')).to have_content('three')
 
-        first(:link, text: 'Three').click
+        first(:link, text: 'three').click
 
-        expect(find('.nav-text')).to have_content('Three')
+        expect(find('.nav-text')).to have_content('three')
 
         click_on('Edit')
 

@@ -215,7 +215,7 @@ describe "User creates wiki page" do
           end
 
           # Commit message field should have correct value.
-          expect(page).to have_field("wiki[message]", with: "Create spaces in the name")
+          expect(page).to have_field("wiki[message]", with: "Create Spaces in the name")
 
           page.within(".wiki-form") do
             fill_in(:wiki_content, with: "My awesome wiki!")
@@ -246,7 +246,7 @@ describe "User creates wiki page" do
             click_button("Create page")
           end
 
-          expect(page).to have_content("Create hyphens in the name")
+          expect(page).to have_content("hyphens in the name")
                      .and have_content("Last edited by #{user.name}")
                      .and have_content("My awesome wiki!")
         end
