@@ -1,5 +1,5 @@
 ---
-title: User#find_by_any_email to respect confirmed flag on secondary emails
+title: Respect confirmed flag on secondary emails
 merge_request: 23181
 author:
 type: fixed
