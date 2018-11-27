@@ -10,22 +10,32 @@
       position: -webkit-sticky;
       position: sticky;
       top: 92px;
+      margin-left: -1px;
+      border-left: 1px solid $border-color;
       z-index: 102;
+
+      &.is-commit {
+        top: $header-height + 36px;
+
+        .with-performance-bar & {
+          top: $header-height + 36px + $performance-bar-height;
+        }
+      }
 
       &::before {
         content: '';
         position: absolute;
         top: -1px;
-        left: -10px;
+        left: -11px;
         width: 10px;
         height: calc(100% + 1px);
         background: $white-light;
-        border-right: 1px solid $border-color;
+        pointer-events: none;
       }
-    }
 
-    .with-performance-bar & {
-      top: 127px;
+      .with-performance-bar & {
+        top: 127px;
+      }
     }
 
     a:hover {
@@ -701,15 +711,14 @@
   }
 
   @include media-breakpoint-up(sm) {
-    top: 24px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: $header-height;
     background-color: $white-light;
+    z-index: 200;
 
-    &.diff-files-changed-merge-request {
-      position: sticky;
-      top: 90px;
-      z-index: 200;
-      margin: $gl-padding 0;
-      padding: 0;
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
     }
 
     &.is-stuck {
@@ -730,14 +739,6 @@
       .diff-stats-additions-deletions-collapsed {
         display: block !important;
       }
-    }
-  }
-}
-
-@include media-breakpoint-up(sm) {
-  .with-performance-bar {
-    .diff-files-changed.diff-files-changed-merge-request {
-      top: 76px + $performance-bar-height;
     }
   }
 }

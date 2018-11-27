@@ -11,6 +11,8 @@ import initDiffNotes from '~/diff_notes/diff_notes_bundle';
 import { fetchCommitMergeRequests } from '~/commit_merge_requests';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const hasPerfBar = document.querySelector('.with-performance-bar');
+  const performanceHeight = hasPerfBar ? 35 : 0;
   new Diff();
   new ZenMode();
   new ShortcutsNavigation();
@@ -18,8 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     container: '.js-commit-pipeline-graph',
   }).bindEvents();
   initNotes();
-  const stickyBarPaddingTop = 16;
-  initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
+  initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight + performanceHeight);
   $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
   fetchCommitMergeRequests();
   initDiffNotes();
