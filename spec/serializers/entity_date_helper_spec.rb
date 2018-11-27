@@ -96,5 +96,31 @@ describe EntityDateHelper do
         expect(milestone_remaining).to eq("<strong>2</strong> days elapsed")
       end
     end
+
+    context 'with Hash as param' do
+      context 'when due_date is in the past' do
+        it 'returns "Past due"' do
+          expect(date_helper_class.remaining_days_in_words(due_date: 2.days.ago.to_date)).to eq("<strong>Past due</strong>")
+        end
+      end
+
+      context 'when due_date is in the future' do
+        it 'returns days remaining' do
+          expect(date_helper_class.remaining_days_in_words(due_date: 12.days.from_now.to_date)).to eq("<strong>12</strong> days remaining")
+        end
+      end
+
+      context 'when start_date is in the future' do
+        it 'returns "Upcoming"' do
+          expect(date_helper_class.remaining_days_in_words(start_date: 2.days.from_now.to_date)).to eq("<strong>Upcoming</strong>")
+        end
+      end
+
+      context 'when start_date is in the past' do
+        it 'returns days elapsed' do
+          expect(date_helper_class.remaining_days_in_words(start_date: 2.days.ago.to_date)).to eq("<strong>2</strong> days elapsed")
+        end
+      end
+    end
   end
 end

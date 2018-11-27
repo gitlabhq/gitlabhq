@@ -30,19 +30,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  shared_examples "loads labels" do |action|
-    it "loads labels into the @labels variable" do
-      get action,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid
-          },
-          format: 'html'
-      expect(assigns(:labels)).not_to be_nil
-    end
-  end
-
   describe "GET show" do
     def go(extra_params = {})
       params = {
@@ -53,8 +40,6 @@ describe Projects::MergeRequestsController do
 
       get :show, params: params.merge(extra_params)
     end
-
-    it_behaves_like "loads labels", :show
 
     describe 'as html' do
       context 'when diff files were cleaned' do

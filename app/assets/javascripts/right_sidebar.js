@@ -79,11 +79,12 @@ Sidebar.prototype.sidebarToggleClicked = function(e, triggered) {
 Sidebar.prototype.toggleTodo = function(e) {
   var $btnText, $this, $todoLoading, ajaxType, url;
   $this = $(e.currentTarget);
-  ajaxType = $this.attr('data-delete-path') ? 'delete' : 'post';
-  if ($this.attr('data-delete-path')) {
-    url = '' + $this.attr('data-delete-path');
+  ajaxType = $this.data('deletePath') ? 'delete' : 'post';
+
+  if ($this.data('deletePath')) {
+    url = '' + $this.data('deletePath');
   } else {
-    url = '' + $this.data('url');
+    url = '' + $this.data('createPath');
   }
 
   $this.tooltip('hide');

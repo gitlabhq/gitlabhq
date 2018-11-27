@@ -7,9 +7,9 @@ class MergeRequestSerializer < BaseSerializer
   def represent(merge_request, opts = {})
     entity =
       case opts[:serializer]
-      when 'sidebar_extras'
-        opts[:include_basic] = false
-        opts[:include_extras] = true
+      when 'sidebar', 'sidebar_extras'
+        opts[:include_basic] = (opts[:serializer] == 'sidebar')
+        opts[:include_extras] = (opts[:serializer] == 'sidebar_extras')
         MergeRequestSidebarEntity
       when 'basic'
         MergeRequestBasicEntity

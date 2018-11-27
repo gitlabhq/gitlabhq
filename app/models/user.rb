@@ -1422,6 +1422,10 @@ class User < ActiveRecord::Base
     todos.where(id: ids)
   end
 
+  def pending_todo_for(target)
+    todos.find_by(target: target, state: :pending)
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 
