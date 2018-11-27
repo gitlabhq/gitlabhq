@@ -336,7 +336,7 @@ The prerequisites for a HA Redis setup are the following:
 1. To prevent database migrations from running on upgrade, run:
 
     ```
-    sudo touch /etc/gitlab/skip-auto-migrations
+    sudo touch /etc/gitlab/skip-auto-reconfigure
     ```
 
     Only the primary GitLab application server should handle migrations.
@@ -458,7 +458,7 @@ multiple machines with the Sentinel daemon.
 1. To prevent database migrations from running on upgrade, run:
 
     ```
-    sudo touch /etc/gitlab/skip-auto-migrations
+    sudo touch /etc/gitlab/skip-auto-reconfigure
     ```
 
     Only the primary GitLab application server should handle migrations.
