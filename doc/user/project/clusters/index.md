@@ -238,13 +238,10 @@ by GitLab before installing any of the above applications.
 ## Getting the external IP address
 
 NOTE: **Note:**
-You need a load balancer installed in your cluster in order to obtain the
-external IP address with the following procedure. It can be deployed using the
-[**Ingress** application](#installing-applications).
-
-NOTE: **Note:**
-Knative will include its own load balancer in the form of [Istio](https://istio.io).
-At this time, to determine the external IP address, you will need to follow the manual approach.
+With the following procedure, a load balancer must be installed in your cluster
+to obtain the external IP address. You can use either
+[Ingress](#installing-applications), or Knative's own load balancer
+([Istio](https://istio.io)) if using [Knative](#installing-applications).
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
@@ -253,7 +250,7 @@ address associated to your load balancer.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
-If you installed the Ingress [via the **Applications**](#installing-applications),
+If you [installed Ingress or Knative](#installing-applications),
 you should see the Ingress IP address on this same page within a few minutes.
 If you don't see this, GitLab might not be able to determine the IP address of
 your ingress application in which case you should manually determine it.
