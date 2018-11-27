@@ -8,7 +8,12 @@ import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
-import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
+import {
+  parseUrlPathname,
+  handleLocationHash,
+  isMetaClick,
+  parseBoolean,
+} from './lib/utils/common_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Diff from './diff';
@@ -440,7 +445,7 @@ export default class MergeRequestTabs {
 
   // Expand the issuable sidebar unless the user explicitly collapsed it
   expandView() {
-    if (Cookies.get('collapsed_gutter') === 'true') {
+    if (parseBoolean(Cookies.get('collapsed_gutter'))) {
       return;
     }
     const $gutterIcon = $('.js-sidebar-toggle i:visible');

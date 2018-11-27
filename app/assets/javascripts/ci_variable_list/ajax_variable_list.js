@@ -2,7 +2,7 @@ import _ from 'underscore';
 import axios from '../lib/utils/axios_utils';
 import { s__ } from '../locale';
 import Flash from '../flash';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 import statusCodes from '../lib/utils/http_status';
 import VariableList from './ci_variable_list';
 
@@ -101,7 +101,7 @@ export default class AjaxVariableList {
       // If we submitted a row that was destroyed, remove it so we don't try
       // to destroy it again which would cause a BE error
       const destroyInput = row.querySelector('.js-ci-variable-input-destroy');
-      if (convertPermissionToBoolean(destroyInput.value)) {
+      if (parseBoolean(destroyInput.value)) {
         row.remove();
         // Update the ID input so any future edits and `_destroy` will apply on the BE
       } else {

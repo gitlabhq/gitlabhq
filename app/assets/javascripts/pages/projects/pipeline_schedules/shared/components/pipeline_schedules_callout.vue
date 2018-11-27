@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../../../../../vue_shared/translate';
 import illustrationSvg from '../icons/intro_illustration.svg';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 Vue.use(Translate);
 
@@ -13,7 +14,7 @@ export default {
   data() {
     return {
       docsUrl: document.getElementById('pipeline-schedules-callout').dataset.docsUrl,
-      calloutDismissed: Cookies.get(cookieKey) === 'true',
+      calloutDismissed: parseBoolean(Cookies.get(cookieKey)),
     };
   },
   created() {

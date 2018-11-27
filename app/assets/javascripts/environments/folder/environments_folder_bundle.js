@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import environmentsFolderApp from './environments_folder_view.vue';
-import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
+import { parseBoolean } from '../../lib/utils/common_utils';
 import Translate from '../../vue_shared/translate';
 
 Vue.use(Translate);
@@ -18,8 +18,8 @@ export default () =>
         endpoint: environmentsData.endpoint,
         folderName: environmentsData.folderName,
         cssContainerClass: environmentsData.cssClass,
-        canCreateDeployment: convertPermissionToBoolean(environmentsData.canCreateDeployment),
-        canReadEnvironment: convertPermissionToBoolean(environmentsData.canReadEnvironment),
+        canCreateDeployment: parseBoolean(environmentsData.canCreateDeployment),
+        canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
     },
     render(createElement) {
