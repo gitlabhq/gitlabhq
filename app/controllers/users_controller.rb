@@ -14,6 +14,7 @@ class UsersController < ApplicationController
                                 calendar_activities: true
 
   skip_before_action :authenticate_user!
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
   before_action :authorize_read_user_profile!,
                 only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :snippets]
