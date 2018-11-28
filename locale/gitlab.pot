@@ -3646,7 +3646,7 @@ msgstr ""
 msgid "Job|The artifacts will be removed in"
 msgstr ""
 
-msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
+msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
@@ -6521,10 +6521,10 @@ msgstr ""
 msgid "This job is in pending state and is waiting to be picked by a runner"
 msgstr ""
 
-msgid "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:"
+msgid "This job is stuck because you don't have any active runners online with any of these tags assigned to them:"
 msgstr ""
 
-msgid "This job is stuck, because you don't have any active runners that can run this job."
+msgid "This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "This job is the most recent deployment to %{link}."

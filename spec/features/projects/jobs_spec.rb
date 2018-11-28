@@ -754,7 +754,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because no runners are active' do
           expect(page).to have_css('.js-stuck-no-active-runner')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners that can run this job.")
+          expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
 
@@ -764,7 +764,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_css('.js-stuck-with-tags')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners online with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because you don't have any active runners online with any of these tags assigned to them:")
         end
       end
 
@@ -774,7 +774,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_css('.js-stuck-with-tags')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners online with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because you don't have any active runners online with any of these tags assigned to them:")
         end
       end
 
@@ -783,7 +783,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because not runners are available' do
           expect(page).to have_css('.js-stuck-no-active-runner')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners that can run this job.")
+          expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
 
@@ -793,7 +793,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because runners are offline' do
           expect(page).to have_css('.js-stuck-no-runners')
-          expect(page).to have_content("This job is stuck, because the project doesn't have any runners online assigned to it.")
+          expect(page).to have_content("This job is stuck because the project doesn't have any runners online assigned to it.")
         end
       end
     end
