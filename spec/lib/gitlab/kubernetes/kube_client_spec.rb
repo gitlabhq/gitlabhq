@@ -99,6 +99,7 @@ describe Gitlab::Kubernetes::KubeClient do
       :create_secret,
       :create_service_account,
       :update_config_map,
+      :update_secret,
       :update_service_account
     ].each do |method|
       describe "##{method}" do
@@ -172,6 +173,84 @@ describe Gitlab::Kubernetes::KubeClient do
     it 'is delegated to the core client' do
       expect(client).to delegate_method(:watch_pod_log).to(:core_client)
     end
+  end
+
+  shared_examples 'create_or_update method' do
+    let(:get_method) { "get_#{resource_type}" }
+    let(:update_method) { "update_#{resource_type}" }
+    let(:create_method) { "create_#{resource_type}" }
+
+    context 'resource exists' do
+      before do
+        expect(client).to receive(get_method).and_return(resource)
+      end
+
+      it 'calls the update method' do
+        expect(client).to receive(update_method).with(resource)
+
+        subject
+      end
+    end
+
+    context 'resource does not exist' do
+      before do
+        expect(client).to receive(get_method).and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+      end
+
+      it 'calls the create method' do
+        expect(client).to receive(create_method).with(resource)
+
+        subject
+      end
+    end
+  end
+
+  describe '#create_or_update_cluster_role_binding' do
+    let(:resource_type) { 'cluster_role_binding' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_cluster_role_binding(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_role_binding' do
+    let(:resource_type) { 'role_binding' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_role_binding(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_service_account' do
+    let(:resource_type) { 'service_account' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_service_account(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_secret' do
+    let(:resource_type) { 'secret' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_secret(resource) }
+
+    it_behaves_like 'create_or_update method'
   end
 
   describe 'methods that do not exist on any client' do
