@@ -1032,16 +1032,16 @@ describe Repository do
     end
   end
 
-  describe '#resolve_ref' do
+  describe '#expand_ref' do
     let(:ref) { 'ref' }
 
-    subject { repository.resolve_ref(ref) }
+    subject { repository.expand_ref(ref) }
 
-    context 'when ref is full ref' do
+    context 'when ref is not tag or branch name' do
       let(:ref) { 'refs/heads/master' }
 
-      it 'returns the ref' do
-        is_expected.to eq(ref)
+      it 'returns nil' do
+        is_expected.to eq(nil)
       end
     end
 

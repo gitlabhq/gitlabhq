@@ -186,13 +186,11 @@ class Repository
     tag_exists?(ref) && branch_exists?(ref)
   end
 
-  def resolve_ref(ref)
+  def expand_ref(ref)
     if tag_exists?(ref)
       Gitlab::Git::TAG_REF_PREFIX + ref
     elsif branch_exists?(ref)
       Gitlab::Git::BRANCH_REF_PREFIX + ref
-    elsif Gitlab::Git.tag_ref?(ref) || Gitlab::Git.branch_ref?(ref)
-      ref
     end
   end
 
