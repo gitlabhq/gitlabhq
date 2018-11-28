@@ -11,8 +11,12 @@ module Clusters
     belongs_to :project, class_name: '::Project'
     has_one :platform_kubernetes, through: :cluster
 
+    before_validation :set_defaults
+
     validates :namespace, presence: true
     validates :namespace, uniqueness: { scope: :cluster_id }
+
+    validates :service_account_name, presence: true
 
     delegate :ca_pem, to: :platform_kubernetes, allow_nil: true
     delegate :api_url, to: :platform_kubernetes, allow_nil: true
@@ -28,38 +32,43 @@ module Clusters
       "#{namespace}-token"
     end
 
-    def configure_predefined_credentials
-      self.namespace = kubernetes_or_project_namespace
-      self.service_account_name = default_service_account_name
-    end
-
     def predefined_variables
       config = YAML.dump(kubeconfig)
 
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables
-          .append(key: 'KUBE_SERVICE_ACCOUNT', value: service_account_name)
-          .append(key: 'KUBE_NAMESPACE', value: namespace)
-          .append(key: 'KUBE_TOKEN', value: service_account_token, public: false)
+          .append(key: 'KUBE_SERVICE_ACCOUNT', value: service_account_name.to_s)
+          .append(key: 'KUBE_NAMESPACE', value: namespace.to_s)
+          .append(key: 'KUBE_TOKEN', value: service_account_token.to_s, public: false)
           .append(key: 'KUBECONFIG', value: config, public: false, file: true)
       end
     end
 
-    private
-
-    def kubernetes_or_project_namespace
-      platform_kubernetes&.namespace.presence || project_namespace
+    def set_defaults
+      self.namespace ||= default_platform_kubernetes_namespace
+      self.namespace ||= default_project_namespace
+      self.service_account_name ||= default_service_account_name
     end
 
+    private
+
     def default_service_account_name
+      return unless namespace
+
       "#{namespace}-service-account"
     end
 
-    def project_namespace
-      Gitlab::NamespaceSanitizer.sanitize(project_slug)
+    def default_platform_kubernetes_namespace
+      platform_kubernetes&.namespace.presence
+    end
+
+    def default_project_namespace
+      Gitlab::NamespaceSanitizer.sanitize(project_slug) if project_slug
     end
 
     def project_slug
+      return unless project
+
       "#{project.path}-#{project.id}".downcase
     end
 

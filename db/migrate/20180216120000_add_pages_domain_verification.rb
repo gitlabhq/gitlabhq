@@ -1,4 +1,4 @@
-class AddPagesDomainVerification < ActiveRecord::Migration
+class AddPagesDomainVerification < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

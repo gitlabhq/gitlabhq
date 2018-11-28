@@ -1,0 +1,5 @@
+---
+title: removes partially matching of No Label filter and makes it case-insensitive
+merge_request: 22622
+author: Jacopo Beschi @jacopo-beschi
+type: changed

@@ -61,13 +61,17 @@ For a list of supported languages on JUnit tests, check the
 [Wikipedia article](https://en.wikipedia.org/wiki/JUnit#Ports).
 
 To enable the JUnit reports in merge requests, you need to add
-[`artifacts:reports:junit`](yaml/README.md#artifacts-reports-junit)
+[`artifacts:reports:junit`](yaml/README.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 
 In the following examples, the job in the `test` stage runs and GitLab
 collects the JUnit test report from each job. After each job is executed, the
 XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
+
+NOTE: **Note:** 
+If you also want the ability to browse JUnit output files, include the
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword.
 
 ### Ruby example
 

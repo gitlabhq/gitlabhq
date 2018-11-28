@@ -9,7 +9,7 @@ GitLab will give you the option to choose one of these templates.
 If your favorite programming language or framework are missing we would love your
 help by sending a merge request with a new `.gitlab-ci.yml` to this project.
 
-There's also a collection of repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork an adjust them to your own needs.
+There's also a collection of repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs.
 
 ## Languages, frameworks, OSs
 
@@ -45,11 +45,11 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ## Test Reports
 
-[Collect test reports in Verify stage](../junit_test_reports.md).
+[Collect test reports in Verify stage](../junit_test_reports.md)
 
 ## Code Quality analysis
 
-**(Starter)** [Analyze your project's Code Quality](code_quality.md).
+**(Starter)** [Analyze your project's Code Quality](code_quality.md)
 
 ## Static Application Security Testing (SAST)
 
@@ -65,15 +65,15 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ## Dynamic Application Security Testing (DAST)
 
-Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md).
+Scan your app for vulnerabilities with GitLab [Dynamic Application Security Testing (DAST)](dast.md)
 
 ## Browser Performance Testing with Sitespeed.io
 
-Analyze your [browser performance with Sitespeed.io](browser_performance.md).
+Analyze your [browser performance with Sitespeed.io](browser_performance.md)
 
 ## GitLab CI/CD for Review Apps
 
-- [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html).
+- [Example project](https://gitlab.com/gitlab-examples/review-apps-nginx/) that shows how to use GitLab CI/CD for [Review Apps](../review_apps/index.html)
 - [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/)
 
 ## GitLab CI/CD for GitLab Pages

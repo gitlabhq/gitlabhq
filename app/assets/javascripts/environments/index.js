@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import environmentsComponent from './components/environments_app.vue';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
@@ -19,9 +19,9 @@ export default () =>
         newEnvironmentPath: environmentsData.newEnvironmentPath,
         helpPagePath: environmentsData.helpPagePath,
         cssContainerClass: environmentsData.cssClass,
-        canCreateEnvironment: convertPermissionToBoolean(environmentsData.canCreateEnvironment),
-        canCreateDeployment: convertPermissionToBoolean(environmentsData.canCreateDeployment),
-        canReadEnvironment: convertPermissionToBoolean(environmentsData.canReadEnvironment),
+        canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
+        canCreateDeployment: parseBoolean(environmentsData.canCreateDeployment),
+        canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
     },
     render(createElement) {

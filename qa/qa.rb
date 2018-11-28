@@ -329,6 +329,7 @@ module QA
     module Page
       autoload :Logging, 'qa/support/page/logging'
     end
+    autoload :Api, 'qa/support/api'
   end
 end
 

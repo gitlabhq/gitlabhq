@@ -4,6 +4,7 @@ import _ from 'underscore';
 import Sidebar from '../../right_sidebar';
 import Shortcuts from './shortcuts';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
+import { getSelectedFragment } from '~/lib/utils/common_utils';
 
 export default class ShortcutsIssuable extends Shortcuts {
   constructor(isMergeRequest) {
@@ -24,15 +25,41 @@ export default class ShortcutsIssuable extends Shortcuts {
 
   static replyWithSelectedText() {
     const $replyField = $('.js-main-target-form .js-vue-comment-form');
-    const documentFragment = window.gl.utils.getSelectedFragment();
 
-    if (!$replyField.length) {
+    if (!$replyField.length || $replyField.is(':hidden') /* Other tab selected in MR */) {
       return false;
     }
+
+    const documentFragment = getSelectedFragment(document.querySelector('#content-body'));
 
     if (!documentFragment) {
       $replyField.focus();
       return false;
+    }
+
+    // Sanity check: Make sure the selected text comes from a discussion : it can either contain a message...
+    let foundMessage = !!documentFragment.querySelector('.md, .wiki');
+
+    // ... Or come from a message
+    if (!foundMessage) {
+      if (documentFragment.originalNodes) {
+        documentFragment.originalNodes.forEach(e => {
+          let node = e;
+          do {
+            // Text nodes don't define the `matches` method
+            if (node.matches && node.matches('.md, .wiki')) {
+              foundMessage = true;
+            }
+            node = node.parentNode;
+          } while (node && !foundMessage);
+        });
+      }
+
+      // If there is no message, just select the reply field
+      if (!foundMessage) {
+        $replyField.focus();
+        return false;
+      }
     }
 
     const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));

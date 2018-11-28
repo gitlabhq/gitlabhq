@@ -64,7 +64,7 @@ applications:
 
 ## Configure GitLab CI/CD to deploy your application
 
-Now we need to add the the GitLab CI/CD configuration file
+Now we need to add the GitLab CI/CD configuration file
 ([`.gitlab-ci.yml`](../../yaml/README.md)) to our
 project's root. This is how GitLab figures out what commands need to be run whenever
 code is pushed to our repository. We will add the following `.gitlab-ci.yml`

@@ -2,6 +2,279 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.0 (2018-11-22)
+
+### Security (10 changes, 1 of them is from the community)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2556
+- Update moment to 2.22.2. !22648 (Takuya Noguchi)
+- Redact personal tokens in unsubscribe links.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Monkey kubeclient to not follow any redirects.
+- Prevent SSRF attacks in HipChat integration.
+- Prevent templated services from being imported.
+- Validate Wiki attachments are valid temporary files.
+- Fix XSS in merge request source branch name.
+
+### Removed (2 changes)
+
+- Remove Git circuit breaker. !22212
+- Remove Koding integration and documentation. !22334
+
+### Fixed (74 changes, 15 of them are from the community)
+
+- Hide all tables on Pipeline when no Jobs for the Pipeline. !18540 (Takuya Noguchi)
+- Fixing count on Milestones. !21446
+- Use case insensitve username lookups. !21728 (William George)
+- Correctly process Bamboo API result array. !21970 (Alex Lossent)
+- Fix 'merged with' UI being displayed when merge request has no merge commit. !22022
+- Fix broken file name navigation on MRs. !22109
+- Fix incorrect spacing between buttons when commenting on a MR. !22135
+- Vertical align Pipeline Graph in Commit Page. !22173 (Johann Hubert Sonntagbauer)
+- Reject invalid branch names in repository compare controller. !22186
+- Fix size of emojis of user status in user menu. !22194
+- Use the standard PIP_CACHE_DIR for Python dependency caching template. !22211 (Takuya Noguchi)
+- Fix bug with wiki attachments content disposition. !22220
+- Does not allow a SSH URI when importing new projects. !22309
+- fix duplicated key in license management job auto devops gitlab ci template. !22311 (Adam Lemanski)
+- Fix commit signature error when project is disabled. !22344
+- Show available clusters when installed or updated. !22356
+- Fix auto-corrected upload URLs in webhooks. !22361
+- Fix a bug displaying certain wiki pages. !22377
+- Fix prometheus graphs in firefox. !22400
+- Resolve assign-me quick action doesn't work if there is extra white space. !22402
+- Remove base64 encoding from files that contain plain text. !22425
+- Strip whitespace around GitHub personal access tokens. !22432
+- Fix 500 error when testing webhooks with redirect loops. !22447 (Heinrich Lee Yu)
+- Fix rendering of 'Protected' value on Runner details page. !22459
+- Fix bug stopping non-admin users from changing visibility level on group creation. !22468
+- Make Issue Board sidebar show project-specific labels based on selected Issue. !22475
+- Fix EOF detection with CI artifacts metadata. !22479
+- Fix transient spec error in the bar_chart component. !22495
+- Resolve LFS not correctly showing enabled. !22501
+- If user was not found, service hooks won't run on post receive background job. !22519
+- Fix broken "Show whitespace changes" button on MRs. !22539
+- Always show new issue button in boards' Open list. !22557 (Heinrich Lee Yu)
+- Add transparent background to markdown header tabs. !22565 (George Tsiolis)
+- Use gitlab_environment for ldap rake task. !22582
+- Add commit message to commit tree anchor title. !22585
+- Cache pipeline status per SHA. !22589
+- Change HELM_HOST in Auto-DevOps template to work behind proxy. !22596 (Sergej Nikolaev <kinolaev@gmail.com>)
+- Show user status for label events in system notes. !22609
+- Fix extra merge request versions created from forked merge requests. !22611
+- Remove PersonalAccessTokensFinder#find_by method. !22617
+- Fix search "all in GitLab" not working with relative URLs. !22644
+- Fix quick links button styles. !22657 (George Tsiolis)
+- Fix #53298: JupyterHub restarts should work without errors. !22671 (Amit Rathi)
+- Fix incompatibility with IE11 due to non-transpiled gitlab-ui components. !22695
+- Fix bug when links in tabs of the labels index pages ends with .html. !22716
+- Fixed label removal from issue. !22762
+- Align toggle sidebar button across all browsers and OSs. !22771
+- Disable replication lag check for Aurora PostgreSQL databases. !22786
+- Render unescaped link for failed pipeline status. !22807
+- Fix misaligned approvers dropdown. !22832
+- Fix bug with wiki page create message. !22849
+- Fix rendering of filter bar tokens for special values. !22865 (Heinrich Lee Yu)
+- Align sign in button. !22888 (George Tsiolis)
+- Fix error handling bugs in kubernetes integration. !22922
+- Fix deployment jobs using nil KUBE_TOKEN due to migration issue. !23009
+- Avoid returning deployment metrics url to MR widget when the deployment is not successful. !23010
+- Fix a race condition intermittently breaking GitLab startup. !23028
+- Adds margin after a deleted branch name in the activity feed. !23038
+- Ignore environment validation failure. !23100
+- Fixes broken borders for reports section in MR widget.
+- Adds CI favicon back to jobs page.
+- Redirect to the pipeline builds page when a build is canceled. (Eva Kadlecova)
+- Fixed diff stats not showing when performance bar is enabled.
+- Show expand all diffs button when a single diff file is collapsed.
+- Clear fetched file templates when changing template type in Web IDE.
+- Fix bug causing not all emails to show up in commit email selectbox.
+- Remove duplicate escape in job sidebar.
+- Fixing styling issues on the scheduled pipelines page.
+- Renders stuck block when runners are stuck.
+- Removes extra border from test reports in the merge request widget.
+- Only render link to branch when branch still exists in pipeline page.
+- Fixed source project not filtering in merge request creation compare form.
+- Do not reload self on hooks when creating deployment.
+- Fixes broken test in master.
+
+### Changed (38 changes, 12 of them are from the community)
+
+- Link button in markdown editor recognize URLs. !1983 (Johann Hubert Sonntagbauer)
+- Replace i to icons in vue components. !20748 (George Tsiolis)
+- Remove Linguist gem, reducing Rails memory usage by 128MB per process. !21008
+- Issue board card design. !21229
+- On deletion of a file in sub directory in web IDE redirect to the sub directory instead of project root. !21465 (George Thomas @thegeorgeous)
+- Change single-item breadcrumbs to page titles. !22155
+- Improving branch filter sorting by listing exact matches first and added support for begins_with (^) and ends_with ($) matching. !22166 (Jason Rutherford)
+- Remove legacy unencrypted webhook columns from the database. !22199
+- Show canary status in the performance bar. !22222
+- Add failure reason for execution timeout. !22224
+- Rename "scheduled" label/badge of delayed jobs to "delayed". !22245
+- Update the empty state on wiki-only projects to display an empty state that is more consistent with the rest of the system. !22262
+- Add IID headers to E-Mail notifications. !22263
+- Allow finding the common ancestor for multiple revisions through the API. !22295
+- Add status to Deployment. !22380
+- Add dynamic timer to delayed jobs. !22382
+- No longer require a deploy to start Prometheus monitoring. !22401
+- Secret Variables renamed to CI Variables in the codebase, to match UX. !22414 (Marcel Amirault @ravlen)
+- Automatically navigate to last board visited. !22430
+- Use merge request prefix symbol in event feed title. !22449 (George Tsiolis)
+- Update Ruby version in README. !22466 (J.D. Bean)
+- Reword error message for internal CI unknown pipeline status. !22474
+- Bump mermaid to 8.0.0-rc.8. !22509 (@blackst0ne)
+- Update Todo icons in collapsed sidebar for Issues and MRs. !22534
+- Support backward compatibility when introduce new failure reason. !22566
+- Add dynamic timer for delayed jobs in pipelines list. !22621
+- Truncate milestone title on collapsed sidebar. !22624 (George Tsiolis)
+- Standardize milestones filter in APIs to None / Any. !22637 (Heinrich Lee Yu)
+- Add dynamic timer for delayed jobs in job list. !22656
+- Allowing issues with single letter identifiers to be linked to external issue tracker (f.ex T-123). !22717 (Dídac Rodríguez Arbonès)
+- Update project and group labels empty state. !22745 (George Tsiolis)
+- Fix environment status in merge request widget. !22799
+- Paginate Bitbucket Server importer projects. !22825
+- Drop `allow_overflow` option in `TimeHelper.duration_in_numbers`. !52284
+- Add 'only history' option to notes filter.
+- Adds filtered dropdown with changed files in review.
+- Expose {closed,merged}_{at,by} in merge requests API index.
+- Make all legacy security reports to use raw format.
+
+### Performance (27 changes, 6 of them are from the community)
+
+- Add preload for routes and namespaces for issues controller. !21651
+- Enhance performance of counting local LFS objects. !22143
+- Use cached readme contents when available. !22325
+- Experimental support for running Puma multithreaded web-server. !22372
+- Enhance performance of counting local Uploads. !22522
+- Reduce SQL queries needed to load open merge requests. !22709
+- Significantly cut memory usage and SQL queries when reloading diffs. !22725
+- Optimize merge request refresh by using the database to check commit SHAs. !22731
+- Remove dind from license_management auto-devops job definition. !22732
+- Add index to find stuck merge requests. !22749
+- Allow Rails concurrency when running in Puma. !22751
+- Improve performance of rendering large reports. !22835
+- Improves performance of stuck import jobs detection. !22879
+- Rewrite SnippetsFinder to improve performance by a factor of 1500.
+- Enable more frozen string in lib/**/*.rb. (gfyoung)
+- Enable some frozen string in lib/gitlab. (gfyoung)
+- Enable even more frozen string in lib/**/*.rb. (gfyoung)
+- Improve performance of tree rendering in repositories with lots of items.
+- Remove gitlab-ui's tooltip from global.
+- Remove gitlab-ui's progress bar from global.
+- Remove gitlab-ui's pagination from global.
+- Remove gitlab-ui's modal from global.
+- Remove gitlab-ui's loading icon from global.
+- Enable frozen string for lib/gitlab/*.rb. (gfyoung)
+- Enable frozen string for lib/gitlab/ci. (gfyoung)
+- Enable frozen string for remaining lib/gitlab/ci/**/*.rb. (gfyoung)
+- Adds pagination to pipelines table in merge request page.
+
+### Added (33 changes, 11 of them are from the community)
+
+- Add endpoint to update a git submodule reference. !20949
+- Add license data to projects endpoint. !21606 (J.D. Bean (@jdbean))
+- Allow to configure when to retry failed CI jobs. !21758 (Markus Doits)
+- Add API endpoint to list issue related merge requests. !21806 (Helmut Januschka)
+- Add the Play button for delayed jobs in environment page. !22106
+- Switch between tree list & file list in diffs file browser. !22191
+- Re-arrange help-related user menu items into new Help menu. !22195
+- Adds trace of each access check when git push times out. !22265
+- Add email for milestone change. !22279
+- Show post-merge pipeline in merge request page. !22292
+- Add Applications API endpoints for listing and deleting entries. !22296 (Jean-Baptiste Vasseur)
+- Added `Any` option to milestones filter. !22351 (Heinrich Lee Yu)
+- Improve validation errors for external CI/CD configuration. !22394
+- Introduce new model to persist specific cluster information. !22404
+- Add background migration to populate Kubernetes namespaces. !22433
+- Add support for JSON logging for audit events. !22471
+- Adds option to override commit email with a noreply private email. !22560
+- Add None/Any option for assignee_id in Issues and Merge Requests API. !22598 (Heinrich Lee Yu)
+- Add None/Any option for assignee_id in search bar. !22599 (Heinrich Lee Yu)
+- Implement parallel job keyword. !22631
+- Add None / Any options to reactions filter. !22638 (Heinrich Lee Yu)
+- Make index.* render like README.* when it's present in a repository. !22639 (Jakub Jirutka)
+- Allow adding patches when creating a merge request via email. !22723 (Serdar Dogruyol)
+- Bump Gitaly to 0.129.0. !22868
+- Allow commenting on any diff line in Merge Requests. !22914
+- Add revert to commits API. !22919
+- Introduce Knative support. !43959 (Chris Baumbauer)
+- Reimplemented image commenting in merge request diffs.
+- Soft-archive old jobs.
+- Renders warning info when job is archieved.
+- Support licenses and performance.
+- Filter notes by comments or activity for issues and merge requests.
+- Bump Gitaly to 0.128.0.
+
+### Other (54 changes, 18 of them are from the community)
+
+- Remove .card-title from .card-header for BS4 migration. !19335 (Takuya Noguchi)
+- Update group settings/edit page to new design. !21115
+- Change markdown header tab anchor links to buttons. !21988 (George Tsiolis)
+- Replace tooltip in markdown component with gl-tooltip. !21989 (George Tsiolis)
+- Extend RBAC by having a service account restricted to project's namespace. !22011
+- Update images in group docs. !22031 (Marc Schwede)
+- Add gitlab:gitaly:check task for Gitaly health check. !22063
+- Add new sort option "most_stars" to "Group > Children" pages. !22121 (Rene Hennig)
+- Fix inaccessible dropdown for code-less projects. !22137
+- Rails5: fix user edit profile clear status spec. !22169 (Jasper Maes)
+- Rails 5: fix mysql milliseconds problems in scheduled build specs. !22170 (Jasper Maes)
+- Focus project slug on tab navigation. !22198
+- Redesign activity feed. !22217
+- Update used version of Runner Helm Chart to 0.1.34. !22274
+- Update environments empty state. !22297 (George Tsiolis)
+- Adds model and migrations to enable group level clusters. !22307
+- Use literal instead of constructor for creating regex. !22367
+- Remove prometheus configuration help text. !22413 (George Tsiolis)
+- Rails5: fix deployment model spec. !22428 (Jasper Maes)
+- Change to top level controller for clusters so that we can use it for project clusters (now) and group clusters (later). !22438
+- Remove empty spec describe blocks. !22451 (George Tsiolis)
+- Change branch font type in tag creation. !22454 (George Tsiolis)
+- Rails5: fix delete blob. !22456 (Jasper Maes)
+- Start tracking shards and pool repositories in the database. !22482
+- Allow kubeclient to call RoleBinding methods. !22524
+- Introduce new kubernetes helpers. !22525
+- Adds container to pager to enable scoping. !22529
+- Update used version of Runner Helm Chart to 0.1.35. !22541
+- Removes experimental labels from cluster views. !22550
+- Combine all datetime library functions into 'datetime_utility.js'. !22570
+- Upgrade Prometheus to 2.4.3 and Alertmanager to 0.15.2. !22600
+- Fix stage dropdown not rendering in different languages. !22604
+- Remove asset_sync gem from Gemfile and related code from codebase. !22610
+- Use key-value pair arrays for API query parameter logging instead of hashes. !22623
+- Replace deprecated uniq on a Relation with distinct. !22625 (Jasper Maes)
+- Remove mousetrap-rails gem. !22647 (Takuya Noguchi)
+- Fix IDE typos in props. !22685 (George Tsiolis)
+- Add scheduled flag to job entity. !22710
+- Remove `ci_enable_scheduled_build` feature flag. !22742
+- Add endpoints for simulating certain failure modes in the application. !22746
+- Bump KUBERNETES_VERSION for Auto DevOps to latest 1.10 series. !22757
+- Fix statement timeouts in RemoveRestrictedTodos migration. !22795
+- Rails5: fix mysql milliseconds issue in deployment model specs. !22850 (Jasper Maes)
+- Update GitLab-Workhorse to v7.1.0. !22883
+- Update JIRA service UI to accept email and API token.
+- Update wiki empty state. (George Tsiolis)
+- Only renders dropdown for review app changes when we have a list of files to show. Otherwise will render the regular review app button.
+- Associate Rakefile with Ruby icon in diffs.
+- Uses gitlab-ui components in jobs components.
+- Create new group: Rename form fields and update UI.
+- Transform job page into a single Vue+Vuex application.
+- Updates svg dependency.
+- Adds missing i18n to pipelines table.
+- Disables stop environment button while the deploy is in progress.
+
+
+## 11.4.7 (2018-11-20)
+
+- No changes.
+
+## 11.4.6 (2018-11-18)
+
+### Security (1 change)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+
+
 ## 11.4.5 (2018-11-04)
 
 ### Fixed (4 changes, 1 of them is from the community)
@@ -269,6 +542,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.10 (2018-11-18)
+
+### Security (1 change)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
 
 
 ## 11.3.9 (2018-10-31)

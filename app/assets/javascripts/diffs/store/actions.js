@@ -41,12 +41,14 @@ export const assignDiscussionsToDiff = (
 ) => {
   const diffPositionByLineCode = getDiffPositionByLineCode(state.diffFiles);
 
-  discussions.filter(discussion => discussion.diff_discussion).forEach(discussion => {
-    commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
-      discussion,
-      diffPositionByLineCode,
+  discussions
+    .filter(discussion => discussion.diff_discussion)
+    .forEach(discussion => {
+      commit(types.SET_LINE_DISCUSSIONS_FOR_FILE, {
+        discussion,
+        diffPositionByLineCode,
+      });
     });
-  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
@@ -97,12 +99,12 @@ export const setParallelDiffViewType = ({ commit }) => {
   historyPushState(url);
 };
 
-export const showCommentForm = ({ commit }, params) => {
-  commit(types.ADD_COMMENT_FORM_LINE, params);
+export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
+  commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: true });
 };
 
-export const cancelCommentForm = ({ commit }, params) => {
-  commit(types.REMOVE_COMMENT_FORM_LINE, params);
+export const cancelCommentForm = ({ commit }, { lineCode, fileHash }) => {
+  commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: false });
 };
 
 export const loadMoreLines = ({ commit }, options) => {
@@ -189,8 +191,8 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
+    .then(() => dispatch('updateResolvableDiscussonsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
-    .then(() => dispatch('startTaskList', null, { root: true }))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 

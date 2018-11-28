@@ -128,7 +128,7 @@ describe Gitlab::Git::Blob, :seed_helper do
     end
   end
 
-  shared_examples 'finding blobs by ID' do
+  describe '.raw' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
     let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
 
@@ -163,16 +163,6 @@ describe Gitlab::Git::Blob, :seed_helper do
 
         expect(blob).to be_nil
       end
-    end
-  end
-
-  describe '.raw' do
-    context 'when the blob_raw Gitaly feature is enabled' do
-      it_behaves_like 'finding blobs by ID'
-    end
-
-    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding blobs by ID'
     end
   end
 

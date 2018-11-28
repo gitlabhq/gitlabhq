@@ -1,8 +1,8 @@
 # Monitoring NGINX Ingress Controller
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13438) in GitLab 9.5
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13438) in GitLab 9.5.
 
-GitLab has support for automatically detecting and monitoring the Kubernetes NGINX ingress controller. This is provided by leveraging the built in Prometheus metrics included in [version 0.9.0](https://github.com/kubernetes/ingress/blob/master/controllers/nginx/Changelog.md#09-beta1) and above of the ingress.
+GitLab has support for automatically detecting and monitoring the Kubernetes NGINX ingress controller. This is provided by leveraging the built in Prometheus metrics included in [version 0.9.0](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#09-beta1) and above of the ingress.
 
 ## Requirements
 
@@ -38,7 +38,7 @@ When used in conjunction with the GitLab deployed Prometheus service, response m
 
 ### Manually setting up NGINX Ingress for Prometheus monitoring
 
-Version 0.9.0 and above of [NGINX ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx) have built-in support for exporting Prometheus metrics. To enable, a ConfigMap setting must be passed: `enable-vts-status: "true"`. Once enabled, a Prometheus metrics endpoint will start running on port 10254.
+Version 0.9.0 and above of [NGINX ingress](https://github.com/kubernetes/ingress-nginx) have built-in support for exporting Prometheus metrics. To enable, a ConfigMap setting must be passed: `enable-vts-status: "true"`. Once enabled, a Prometheus metrics endpoint will start running on port 10254.
 
 Next, the ingress needs to be annotated for Prometheus monitoring. Two new annotations need to be added:
 

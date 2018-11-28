@@ -1,8 +1,10 @@
 - @hide_top_links = true
 - page_title _("Issues")
-- @breadcrumb_link = issues_dashboard_path(assignee_id: current_user.id)
+- @breadcrumb_link = issues_dashboard_path(assignee_username: current_user.username)
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
+
+= render_if_exists "shared/gold_trial_callout"
 
 .page-title-holder
   %h1.page-title= _('Issues')
@@ -16,7 +18,7 @@
   .nav-controls
     = render 'shared/issuable/feed_buttons'
 
-= render 'shared/issuable/filter', type: :issues
+= render 'shared/issuable/search_bar', type: :issues
 
 - if current_user && @no_filters_set
   = render 'shared/dashboard/no_filter_selected'

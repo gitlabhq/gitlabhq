@@ -18,9 +18,7 @@ export default {
 <template>
   <div class="row empty-state">
     <div class="col-12">
-      <div class="svg-content">
-        <img :src="svgPath" />
-      </div>
+      <div class="svg-content"><img :src="svgPath" /></div>
     </div>
 
     <div class="col-12 text-center">

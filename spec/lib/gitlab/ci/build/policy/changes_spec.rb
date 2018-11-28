@@ -4,7 +4,7 @@ describe Gitlab::Ci::Build::Policy::Changes do
   set(:project) { create(:project) }
 
   describe '#satisfied_by?' do
-    describe 'paths matching matching' do
+    describe 'paths matching' do
       let(:pipeline) do
         build(:ci_empty_pipeline, project: project,
                                   ref: 'master',

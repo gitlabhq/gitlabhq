@@ -247,33 +247,17 @@ export default {
 <template>
   <div
     class="prometheus-graph"
-    @mouseover="showFlagContent = true"
-    @mouseleave="showFlagContent = false"
+    @mouseover="showFlagContent = true;"
+    @mouseleave="showFlagContent = false;"
   >
     <div class="prometheus-graph-header">
-      <h5 class="prometheus-graph-title">
-        {{ graphData.title }}
-      </h5>
-      <div class="prometheus-graph-widgets">
-        <slot></slot>
-      </div>
+      <h5 class="prometheus-graph-title">{{ graphData.title }}</h5>
+      <div class="prometheus-graph-widgets"><slot></slot></div>
     </div>
-    <div
-      :style="paddingBottomRootSvg"
-      class="prometheus-svg-container"
-    >
-      <svg
-        ref="baseSvg"
-        :viewBox="outerViewBox"
-      >
-        <g
-          :transform="axisTransform"
-          class="x-axis"
-        />
-        <g
-          class="y-axis"
-          transform="translate(70, 20)"
-        />
+    <div :style="paddingBottomRootSvg" class="prometheus-svg-container">
+      <svg ref="baseSvg" :viewBox="outerViewBox">
+        <g :transform="axisTransform" class="x-axis" />
+        <g class="y-axis" transform="translate(70, 20)" />
         <graph-axis
           :graph-width="graphWidth"
           :graph-height="graphHeight"
@@ -282,15 +266,8 @@ export default {
           :y-axis-label="yAxisLabel"
           :unit-of-display="unitOfDisplay"
         />
-        <svg
-          ref="graphData"
-          :viewBox="innerViewBox"
-          class="graph-data"
-        >
-          <slot
-            name="additionalSvgContent"
-            :graphDrawData="graphDrawData"
-          />
+        <svg ref="graphData" :viewBox="innerViewBox" class="graph-data">
+          <slot name="additionalSvgContent" :graphDrawData="graphDrawData" />
           <graph-path
             v-for="(path, index) in timeSeries"
             :key="index"
@@ -309,11 +286,11 @@ export default {
           />
           <rect
             ref="graphOverlay"
-            :width="(graphWidth - 70)"
-            :height="(graphHeight - 100)"
+            :width="graphWidth - 70"
+            :height="graphHeight - 100"
             class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            @mousemove="handleMouseOverGraph($event)"
+            @mousemove="handleMouseOverGraph($event);"
           />
         </svg>
       </svg>
@@ -331,10 +308,6 @@ export default {
         :current-coordinates="currentCoordinates"
       />
     </div>
-    <graph-legend
-      v-if="showLegend"
-      :legend-title="legendTitle"
-      :time-series="timeSeries"
-    />
+    <graph-legend v-if="showLegend" :legend-title="legendTitle" :time-series="timeSeries" />
   </div>
 </template>

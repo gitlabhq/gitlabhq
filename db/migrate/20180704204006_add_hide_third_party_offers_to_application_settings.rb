@@ -1,4 +1,4 @@
-class AddHideThirdPartyOffersToApplicationSettings < ActiveRecord::Migration
+class AddHideThirdPartyOffersToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

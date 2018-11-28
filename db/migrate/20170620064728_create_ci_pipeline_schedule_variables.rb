@@ -1,4 +1,4 @@
-class CreateCiPipelineScheduleVariables < ActiveRecord::Migration
+class CreateCiPipelineScheduleVariables < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

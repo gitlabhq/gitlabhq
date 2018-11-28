@@ -27,4 +27,5 @@ describe Gitlab::GitRefValidator do
   it { expect(described_class.validate('-branch')).to be_falsey }
   it { expect(described_class.validate('.tag')).to be_falsey }
   it { expect(described_class.validate('my branch')).to be_falsey }
+  it { expect(described_class.validate("\xA0\u0000\xB0")).to be_falsey }
 end

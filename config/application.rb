@@ -26,6 +26,9 @@ module Gitlab
     # setting disabled
     require_dependency Rails.root.join('lib/mysql_zero_date')
 
+    # This can be removed when we drop support for rails 4
+    require_dependency Rails.root.join('lib/rails4_migration_version')
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -65,6 +68,12 @@ module Gitlab
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
+
+    # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+    # the I18n.default_locale when a translation can not be found).
+    # We have to explicitly set default locale since 1.1.0 - see:
+    # https://github.com/svenfuchs/i18n/pull/415
+    config.i18n.fallbacks = [:en]
 
     # Translation for AR attrs is not working well for POROs like WikiPage
     config.gettext_i18n_rails.use_for_active_record_attributes = false

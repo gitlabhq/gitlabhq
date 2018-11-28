@@ -360,10 +360,6 @@ code {
   font-size: 95%;
 }
 
-.git-revision-dropdown-toggle {
-  @extend .monospace;
-}
-
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }

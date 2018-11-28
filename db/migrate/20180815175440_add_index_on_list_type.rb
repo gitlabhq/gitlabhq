@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class AddIndexOnListType < ActiveRecord::Migration
+class AddIndexOnListType < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

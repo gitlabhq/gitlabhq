@@ -87,7 +87,7 @@ export default {
       :class="{
         lazy: lazy,
         [avatarSizeClass]: true,
-        [cssClasses]: true
+        [cssClasses]: true,
       }"
       :src="resultantSrcAttribute"
       :width="size"
@@ -102,9 +102,7 @@ export default {
       boundary="window"
       class="js-user-avatar-image-toolip"
     >
-      <slot>
-        {{ tooltipText }}
-      </slot>
+      <slot> {{ tooltipText }} </slot>
     </gl-tooltip>
   </span>
 </template>

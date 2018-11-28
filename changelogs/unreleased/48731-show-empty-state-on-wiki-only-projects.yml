@@ -1,6 +1,0 @@
----
-title: Update the empty state on wiki-only projects to display an empty state that
-  is more consistent with the rest of the system.
-merge_request: 22262
-author:
-type: changed

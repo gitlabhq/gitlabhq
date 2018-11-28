@@ -83,9 +83,7 @@ export default {
 </script>
 
 <template>
-  <gl-link
-    :href="linkHref"
-    class="user-avatar-link">
+  <gl-link :href="linkHref" class="user-avatar-link">
     <user-avatar-image
       :img-src="imgSrc"
       :img-alt="imgAlt"
@@ -94,13 +92,14 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
     >
-      <slot></slot>
-    </user-avatar-image><span
+      <slot></slot> </user-avatar-image
+    ><span
       v-if="shouldShowUsername"
       v-gl-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
       class="js-user-avatar-link-username"
-    >{{ username }}</span><slot name="avatar-badge"></slot>
+      >{{ username }}</span
+    ><slot name="avatar-badge"></slot>
   </gl-link>
 </template>

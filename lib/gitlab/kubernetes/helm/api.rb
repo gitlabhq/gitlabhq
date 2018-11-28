@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
@@ -14,12 +16,16 @@ module Gitlab
           create_cluster_role_binding(command)
           create_config_map(command)
 
+          delete_pod!(command.pod_name)
           kubeclient.create_pod(command.pod_resource)
         end
 
         def update(command)
           namespace.ensure_exists!
+
           update_config_map(command)
+
+          delete_pod!(command.pod_name)
           kubeclient.create_pod(command.pod_resource)
         end
 
@@ -40,6 +46,8 @@ module Gitlab
 
         def delete_pod!(pod_name)
           kubeclient.delete_pod(pod_name, namespace.name)
+        rescue ::Kubeclient::ResourceNotFoundError
+          # no-op
         end
 
         def get_config_map(config_map_name)

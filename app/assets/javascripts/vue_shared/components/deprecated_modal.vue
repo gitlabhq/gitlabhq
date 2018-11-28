@@ -84,67 +84,41 @@ export default {
 
 <template>
   <div class="modal-open">
-    <div
-      :id="id"
-      :class="id ? '' : 'd-block'"
-      class="modal"
-      role="dialog"
-      tabindex="-1"
-    >
-      <div
-        :class="modalDialogClass"
-        class="modal-dialog"
-        role="document"
-      >
+    <div :id="id" :class="id ? '' : 'd-block'" class="modal" role="dialog" tabindex="-1">
+      <div :class="modalDialogClass" class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <slot name="header">
-              <h4 class="modal-title float-left">
-                {{ title }}
-              </h4>
+              <h4 class="modal-title float-left">{{ title }}</h4>
               <button
                 type="button"
                 class="close float-right"
                 data-dismiss="modal"
                 aria-label="Close"
-                @click="emitCancel($event)"
+                @click="emitCancel($event);"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
             </slot>
           </div>
           <div class="modal-body">
-            <slot
-              :text="text"
-              name="body"
-            >
+            <slot :text="text" name="body">
               <p>{{ text }}</p>
             </slot>
           </div>
-          <div
-            v-if="!hideFooter"
-            class="modal-footer"
-          >
+          <div v-if="!hideFooter" class="modal-footer">
             <button
               :class="btnCancelKindClass"
               type="button"
               class="btn"
               data-dismiss="modal"
-              @click="emitCancel($event)"
+              @click="emitCancel($event);"
             >
               {{ closeButtonLabel }}
             </button>
 
-            <slot
-              v-if="secondaryButtonLabel"
-              name="secondary-button"
-            >
-              <button
-                v-if="secondaryButtonLabel"
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-              >
+            <slot v-if="secondaryButtonLabel" name="secondary-button">
+              <button v-if="secondaryButtonLabel" type="button" class="btn" data-dismiss="modal">
                 {{ secondaryButtonLabel }}
               </button>
             </slot>
@@ -156,7 +130,7 @@ export default {
               type="button"
               class="btn js-primary-button"
               data-dismiss="modal"
-              @click="emitSubmit($event)"
+              @click="emitSubmit($event);"
             >
               {{ primaryButtonLabel }}
             </button>
@@ -164,10 +138,6 @@ export default {
         </div>
       </div>
     </div>
-    <div
-      v-if="!id"
-      class="modal-backdrop fade show"
-    >
-    </div>
+    <div v-if="!id" class="modal-backdrop fade show"></div>
   </div>
 </template>

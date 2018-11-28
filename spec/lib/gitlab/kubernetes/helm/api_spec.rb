@@ -40,11 +40,19 @@ describe Gitlab::Kubernetes::Helm::Api do
       allow(client).to receive(:create_config_map).and_return(nil)
       allow(client).to receive(:create_service_account).and_return(nil)
       allow(client).to receive(:create_cluster_role_binding).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
       allow(namespace).to receive(:ensure_exists!).once
     end
 
     it 'ensures the namespace exists before creating the POD' do
       expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.install(command)
+    end
+
+    it 'removes an existing pod before installing' do
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once.ordered
       expect(client).to receive(:create_pod).once.ordered
 
       subject.install(command)
@@ -180,10 +188,18 @@ describe Gitlab::Kubernetes::Helm::Api do
 
       allow(client).to receive(:update_config_map).and_return(nil)
       allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
     end
 
     it 'ensures the namespace exists before creating the pod' do
       expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.update(command)
+    end
+
+    it 'removes an existing pod before updating' do
+      expect(client).to receive(:delete_pod).with('upgrade-app-name', 'gitlab-managed-apps').once.ordered
       expect(client).to receive(:create_pod).once.ordered
 
       subject.update(command)
@@ -224,9 +240,18 @@ describe Gitlab::Kubernetes::Helm::Api do
 
   describe '#delete_pod!' do
     it 'deletes the POD from kubernetes cluster' do
-      expect(client).to receive(:delete_pod).with(command.pod_name, gitlab_namespace).once
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once
 
-      subject.delete_pod!(command.pod_name)
+      subject.delete_pod!('install-app-name')
+    end
+
+    context 'when the resource being deleted does not exist' do
+      it 'catches the error' do
+        expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps')
+          .and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+
+        subject.delete_pod!('install-app-name')
+      end
     end
   end
 

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class MakeSureFastForwardOptionExists < ActiveRecord::Migration
+class MakeSureFastForwardOptionExists < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

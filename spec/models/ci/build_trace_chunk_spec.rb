@@ -45,11 +45,11 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       is_expected.to eq(%w[redis database fog])
     end
 
-    it 'returns redis store as the the lowest precedence' do
+    it 'returns redis store as the lowest precedence' do
       expect(subject.first).to eq('redis')
     end
 
-    it 'returns fog store as the the highest precedence' do
+    it 'returns fog store as the highest precedence' do
       expect(subject.last).to eq('fog')
     end
   end

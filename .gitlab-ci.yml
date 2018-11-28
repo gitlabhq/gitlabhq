@@ -463,19 +463,19 @@ danger-review:
 
 rspec-pg:
   <<: *rspec-metadata-pg
-  parallel: 30
+  parallel: 50
 
 rspec-mysql:
   <<: *rspec-metadata-mysql
-  parallel: 30
+  parallel: 50
 
 rspec-pg-rails4:
   <<: *rspec-metadata-pg-rails4
-  parallel: 30
+  parallel: 50
 
 rspec-mysql-rails4:
   <<: *rspec-metadata-mysql-rails4
-  parallel: 30
+  parallel: 50
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -619,8 +619,14 @@ gitlab:assets:compile:
     paths:
       - webpack-report/
       - public/assets/
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
+    - //@gitlab/gitabhq
+    - //@gitlab/gitlab-ee
   tags:
-    - docker
+    - gitlab-org-delivery
+    - high-cpu
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
@@ -754,6 +760,7 @@ qa:selectors:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
     - yarn run webpack-prod
+  <<: *except-docs
 
 qa-frontend-node:6:
   <<: *qa-frontend-node

@@ -1,4 +1,4 @@
-class RemoveNilTypeServices < ActiveRecord::Migration
+class RemoveNilTypeServices < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

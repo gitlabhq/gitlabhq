@@ -210,10 +210,7 @@ export default {
             />
           </div>
 
-          <callout
-            v-if="shouldRenderCalloutMessage"
-            :message="job.callout_message"
-          />
+          <callout v-if="shouldRenderCalloutMessage" :message="job.callout_message" />
         </header>
         <!-- EO Header Section -->
 
@@ -245,23 +242,17 @@ export default {
           ref="sticky"
           class="js-archived-job prepend-top-default archived-sticky sticky-top"
         >
-          <icon
-            name="lock"
-            class="align-text-bottom"
-          />
+          <icon name="lock" class="align-text-bottom" />
 
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
-        <!--job log -->
-        <div
-          v-if="hasTrace"
-          class="build-trace-container"
-        >
+        <!-- job log -->
+        <div v-if="hasTrace" class="build-trace-container">
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,
               'sidebar-collapsed': !isSidebarOpen,
-              'has-archived-block': job.archived
+              'has-archived-block': job.archived,
             }"
             :erase-path="job.erase_path"
             :size="traceSize"
@@ -273,14 +264,11 @@ export default {
             @scrollJobLogTop="scrollTop"
             @scrollJobLogBottom="scrollBottom"
           />
-          <log
-            :trace="trace"
-            :is-complete="isTraceComplete"
-          />
+          <log :trace="trace" :is-complete="isTraceComplete" />
         </div>
         <!-- EO job log -->
 
-        <!--empty state -->
+        <!-- empty state -->
         <empty-state
           v-if="!hasTrace"
           class="js-job-empty-state"
@@ -290,9 +278,9 @@ export default {
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
         />
-      <!-- EO empty state -->
+        <!-- EO empty state -->
 
-      <!-- EO Body Section -->
+        <!-- EO Body Section -->
       </div>
     </template>
 
@@ -301,7 +289,7 @@ export default {
       class="js-job-sidebar"
       :class="{
         'right-sidebar-expanded': isSidebarOpen,
-        'right-sidebar-collapsed': !isSidebarOpen
+        'right-sidebar-collapsed': !isSidebarOpen,
       }"
       :runner-help-url="runnerHelpUrl"
     />

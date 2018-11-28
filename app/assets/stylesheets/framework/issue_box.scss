@@ -22,7 +22,7 @@
   margin-right: 10px;
   color: $white-light;
   font-size: $gl-font-size;
-  line-height: 25px;
+  line-height: $gl-line-height-24;
 
   &.status-box-closed,
   &.status-box-mr-closed {

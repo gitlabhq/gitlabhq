@@ -1,5 +1,5 @@
 # rubocop:disable Migration/UpdateLargeTable
-class MigrateBuildStageReferenceAgain < ActiveRecord::Migration
+class MigrateBuildStageReferenceAgain < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

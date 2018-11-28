@@ -78,17 +78,8 @@ export default {
 </script>
 
 <template>
-  <span
-    v-gl-tooltip.right
-    :title="tooltipTitle"
-    class="file-changed-icon ml-auto"
-  >
-    <icon
-      v-if="showIcon"
-      :name="changedIcon"
-      :size="size"
-      :css-classes="changedIconClass"
-    />
+  <span v-gl-tooltip.right :title="tooltipTitle" class="file-changed-icon ml-auto">
+    <icon v-if="showIcon" :name="changedIcon" :size="size" :css-classes="changedIconClass" />
   </span>
 </template>
 

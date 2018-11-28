@@ -1,4 +1,4 @@
-class AddForeignKeyFromNotificationSettingsToUsers < ActiveRecord::Migration
+class AddForeignKeyFromNotificationSettingsToUsers < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   class NotificationSetting < ActiveRecord::Base

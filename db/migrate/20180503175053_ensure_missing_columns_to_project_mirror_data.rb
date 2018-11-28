@@ -1,4 +1,4 @@
-class EnsureMissingColumnsToProjectMirrorData < ActiveRecord::Migration
+class EnsureMissingColumnsToProjectMirrorData < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

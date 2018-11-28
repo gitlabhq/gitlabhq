@@ -82,7 +82,7 @@ describe Gitlab::Git::MergeBase do
   end
 
   describe '#unknown_refs', :missing_ref do
-    it 'returns the the refs passed that are not part of the repository' do
+    it 'returns the refs passed that are not part of the repository' do
       expect(merge_base.unknown_refs).to contain_exactly('aaaa')
     end
 

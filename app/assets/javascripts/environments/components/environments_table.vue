@@ -41,48 +41,25 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="ci-table"
-    role="grid"
-  >
-    <div
-      class="gl-responsive-table-row table-row-header"
-      role="row"
-    >
-      <div
-        class="table-section section-15 environments-name"
-        role="columnheader"
-      >
-        {{ s__("Environments|Environment") }}
+  <div class="ci-table" role="grid">
+    <div class="gl-responsive-table-row table-row-header" role="row">
+      <div class="table-section section-15 environments-name" role="columnheader">
+        {{ s__('Environments|Environment') }}
       </div>
-      <div
-        class="table-section section-10 environments-deploy"
-        role="columnheader"
-      >
-        {{ s__("Environments|Deployment") }}
+      <div class="table-section section-10 environments-deploy" role="columnheader">
+        {{ s__('Environments|Deployment') }}
       </div>
-      <div
-        class="table-section section-15 environments-build"
-        role="columnheader"
-      >
-        {{ s__("Environments|Job") }}
+      <div class="table-section section-15 environments-build" role="columnheader">
+        {{ s__('Environments|Job') }}
       </div>
-      <div
-        class="table-section section-20 environments-commit"
-        role="columnheader"
-      >
-        {{ s__("Environments|Commit") }}
+      <div class="table-section section-20 environments-commit" role="columnheader">
+        {{ s__('Environments|Commit') }}
       </div>
-      <div
-        class="table-section section-10 environments-date"
-        role="columnheader"
-      >
-        {{ s__("Environments|Updated") }}
+      <div class="table-section section-10 environments-date" role="columnheader">
+        {{ s__('Environments|Updated') }}
       </div>
     </div>
-    <template
-      v-for="(model, i) in environments"
-      :model="model">
+    <template v-for="(model, i) in environments" :model="model">
       <div
         is="environment-item"
         :key="`environment-item-${i}`"
@@ -91,12 +68,8 @@ export default {
         :can-read-environment="canReadEnvironment"
       />
 
-      <template
-        v-if="shouldRenderFolderContent(model)"
-      >
-        <div
-          v-if="model.isLoadingFolderContent"
-          :key="`loading-item-${i}`">
+      <template v-if="shouldRenderFolderContent(model)">
+        <div v-if="model.isLoadingFolderContent" :key="`loading-item-${i}`">
           <gl-loading-icon :size="2" />
         </div>
 
@@ -112,11 +85,8 @@ export default {
 
           <div :key="`sub-div-${i}`">
             <div class="text-center prepend-top-10">
-              <a
-                :href="folderUrl(model)"
-                class="btn btn-default"
-              >
-                {{ s__("Environments|Show all") }}
+              <a :href="folderUrl(model)" class="btn btn-default">
+                {{ s__('Environments|Show all') }}
               </a>
             </div>
           </div>

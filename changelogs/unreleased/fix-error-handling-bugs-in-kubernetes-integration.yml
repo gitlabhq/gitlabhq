@@ -1,5 +1,0 @@
----
-title: Fix error handling bugs in kubernetes integration
-merge_request: 22922
-author:
-type: fixed

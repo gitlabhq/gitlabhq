@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Sherlock
     # Class for profiling code on a per line basis.

@@ -7,6 +7,11 @@ describe Clusters::Applications::Knative do
   include_examples 'cluster application status specs', :clusters_applications_knative
   include_examples 'cluster application helm specs', :clusters_applications_knative
 
+  before do
+    allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+    allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+  end
+
   describe '.installed' do
     subject { described_class.installed }
 
@@ -43,6 +48,48 @@ describe Clusters::Applications::Knative do
     end
 
     it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe 'make_installed with external_ip' do
+    before do
+      application.make_installed!
+    end
+
+    let(:application) { create(:clusters_applications_knative, :installing) }
+
+    it 'schedules a ClusterWaitForIngressIpAddressWorker' do
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_in)
+        .with(Clusters::Applications::Knative::FETCH_IP_ADDRESS_DELAY, 'knative', application.id)
+    end
+  end
+
+  describe '#schedule_status_update with external_ip' do
+    let(:application) { create(:clusters_applications_knative, :installed) }
+
+    before do
+      application.schedule_status_update
+    end
+
+    it 'schedules a ClusterWaitForIngressIpAddressWorker' do
+      expect(ClusterWaitForIngressIpAddressWorker).to have_received(:perform_async)
+        .with('knative', application.id)
+    end
+
+    context 'when the application is not installed' do
+      let(:application) { create(:clusters_applications_knative, :installing) }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context 'when there is already an external_ip' do
+      let(:application) { create(:clusters_applications_knative, :installed, external_ip: '111.222.222.111') }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+      end
+    end
   end
 
   describe '#install_command' do

@@ -67,13 +67,8 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="note-body"
-    :class="{ 'js-task-list-container': canEdit }"
-    class="note-body">
-    <div
-      class="note-text md"
-      v-html="note.note_html"></div>
+  <div ref="note-body" :class="{ 'js-task-list-container': canEdit }" class="note-body">
+    <div class="note-text md" v-html="note.note_html"></div>
     <note-form
       v-if="isEditing"
       ref="noteForm"
@@ -88,7 +83,8 @@ export default {
       v-if="canEdit"
       v-model="note.note"
       :data-update-url="note.path"
-      class="hidden js-task-list-field"></textarea>
+      class="hidden js-task-list-field"
+    ></textarea>
     <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
@@ -104,9 +100,6 @@ export default {
       :toggle-award-path="note.toggle_award_path"
       :can-award-emoji="note.current_user.can_award_emoji"
     />
-    <note-attachment
-      v-if="note.attachment"
-      :attachment="note.attachment"
-    />
+    <note-attachment v-if="note.attachment" :attachment="note.attachment" />
   </div>
 </template>

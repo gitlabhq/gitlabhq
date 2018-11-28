@@ -97,7 +97,7 @@ Follow the below instructions to ensure you use the most up to date requirements
 
 #### Check for InnoDB File-Per-Table Tablespaces
 
-We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequisite for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
+We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequisite for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
 
     # Login to MySQL
     mysql -u root -p
@@ -134,7 +134,7 @@ We need to check, enable and maybe convert your existing GitLab DB tables to the
 
 > You need **MySQL 5.5.3 or later** to perform this update.
 
-Whatever the results of your checks above, we now need to check if your GitLab database has been created using [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) (i.e. `innodb_file_per_table` was set to **1** at initial setup time).
+Whatever the results of your checks above, we now need to check if your GitLab database has been created using [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) (i.e. `innodb_file_per_table` was set to **1** at initial setup time).
 
 NOTE: **Note:**
 This setting is [enabled by default](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_file_per_table) since MySQL 5.6.6.
@@ -163,7 +163,7 @@ Now, if you have a **different result** returned by the 2 commands above, it mea
 
 - **Case 2: a result equals to "0" OR not the same result for both commands**
 
-Unfortunately, none or only some of your GitLab database tables use the GitLab requirement of [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html).
+Unfortunately, none or only some of your GitLab database tables use the GitLab requirement of [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html).
 
 Let's enable what we need on the running server:
 
@@ -297,8 +297,7 @@ GitLab database to `longtext` columns, which can persist values of up to 4GB
 (sometimes less if the value contains multibyte characters).
 
 Details can be found in the [PostgreSQL][postgres-text-type] and
-[MySQL][mysql-text-types] manuals.
+[MySQL](https://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html) manuals.
 
 [postgres-text-type]: http://www.postgresql.org/docs/9.2/static/datatype-character.html
-[mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html
 [ce-38152]: https://gitlab.com/gitlab-org/gitlab-ce/issues/38152

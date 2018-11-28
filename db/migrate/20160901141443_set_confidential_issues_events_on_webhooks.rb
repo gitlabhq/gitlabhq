@@ -1,5 +1,5 @@
 # rubocop:disable Migration/UpdateColumnInBatches
-class SetConfidentialIssuesEventsOnWebhooks < ActiveRecord::Migration
+class SetConfidentialIssuesEventsOnWebhooks < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

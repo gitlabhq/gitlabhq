@@ -1,6 +1,6 @@
 # This is ONLINE migration
 
-class AddContainerRegistryTokenExpireDelayToApplicationSettings < ActiveRecord::Migration
+class AddContainerRegistryTokenExpireDelayToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

@@ -37,7 +37,7 @@ export default {
 <template>
   <div
     :class="{
-      active: localActive
+      active: localActive,
     }"
     class="tab-pane"
     role="tabpanel"

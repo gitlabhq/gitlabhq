@@ -31,23 +31,12 @@ export default {
 </script>
 
 <template>
-  <small
-    class="edited-text"
-  >
+  <small class="edited-text">
     Edited
-    <time-ago-tooltip
-      v-if="updatedAt"
-      :time="updatedAt"
-      tooltip-placement="bottom"
-    />
-    <span
-      v-if="hasUpdatedBy"
-    >
+    <time-ago-tooltip v-if="updatedAt" :time="updatedAt" tooltip-placement="bottom" />
+    <span v-if="hasUpdatedBy">
       by
-      <a
-        :href="updatedByPath"
-        class="author-link"
-      >
+      <a :href="updatedByPath" class="author-link">
         <span>{{ updatedByName }}</span>
       </a>
     </span>

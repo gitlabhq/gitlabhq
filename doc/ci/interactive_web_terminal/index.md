@@ -1,4 +1,4 @@
-# Getting started with interactive web terminals
+# Getting started with interactive web terminals **[CORE ONLY]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
@@ -6,10 +6,9 @@ Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline.
 
 NOTE: **Note:**
-This is not available for the shared Runners on GitLab.com.
-To make use of this feature, you need to provide your
-[own Runner](https://docs.gitlab.com/runner/install/) and properly
-[configure it](#configuration).
+GitLab.com does not support interactive web terminal at the moment. Please
+follow [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/52611) for
+progress. 
 
 ## Configuration
 

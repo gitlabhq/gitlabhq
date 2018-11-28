@@ -87,23 +87,17 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      :status="status"
-      :show-disabled-button="showDisabledButton"
-    />
+    <status-icon :status="status" :show-disabled-button="showDisabledButton" />
 
     <div class="rebase-state-find-class-convention media media-body space-children">
       <template v-if="mr.rebaseInProgress || isMakingRequest">
-        <span class="bold">
-          Rebase in progress
-        </span>
+        <span class="bold"> Rebase in progress </span>
       </template>
       <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
         <span class="bold">
-          Fast-forward merge is not possible.
-          Rebase the source branch onto
-          <span class="label-branch">{{ mr.targetBranch }}</span>
-          to allow this merge request to be merged.
+          Fast-forward merge is not possible. Rebase the source branch onto
+          <span class="label-branch">{{ mr.targetBranch }}</span> to allow this merge request to be
+          merged.
         </span>
       </template>
       <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
@@ -120,19 +114,11 @@ js-toggle-container accept-action media space-children"
             <gl-loading-icon v-if="isMakingRequest" />
             Rebase
           </button>
-          <span
-            v-if="!rebasingError"
-            class="bold"
-          >
-            Fast-forward merge is not possible.
-            Rebase the source branch onto the target branch or merge target
-            branch into source branch to allow this merge request to be merged.
+          <span v-if="!rebasingError" class="bold">
+            Fast-forward merge is not possible. Rebase the source branch onto the target branch or
+            merge target branch into source branch to allow this merge request to be merged.
           </span>
-          <span
-            v-else
-            class="bold danger">
-            {{ rebasingError }}
-          </span>
+          <span v-else class="bold danger"> {{ rebasingError }} </span>
         </div>
       </template>
     </div>

@@ -21,4 +21,4 @@ To get started with NGINX monitoring, you should install and configure the [HAPr
 ## Specifying the Environment label
 
 In order to isolate and only display relevant metrics for a given environment
-however, GitLab needs a method to detect which labels are associated. To do this, GitLab will [look for an `environment` label](metrics.md#identifying-environments).
+however, GitLab needs a method to detect which labels are associated. To do this, GitLab will [look for an `environment` label](index.md#identifying-environments).

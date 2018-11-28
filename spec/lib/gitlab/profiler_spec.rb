@@ -43,31 +43,16 @@ describe Gitlab::Profiler do
 
     it 'uses the user for auth if given' do
       user = double(:user)
-      user_token = 'user'
 
-      allow(user).to receive_message_chain(:personal_access_tokens, :active, :pluck, :first).and_return(user_token)
-
-      expect(app).to receive(:get).with('/', nil, 'Private-Token' => user_token)
-      expect(app).to receive(:get).with('/api/v4/users')
+      expect(described_class).to receive(:with_user).with(user)
 
       described_class.profile('/', user: user)
     end
 
-    context 'when providing a user without a personal access token' do
-      it 'raises an error' do
-        user = double(:user)
-        allow(user).to receive_message_chain(:personal_access_tokens, :active, :pluck).and_return([])
-
-        expect { described_class.profile('/', user: user) }.to raise_error('Your user must have a personal_access_token')
-      end
-    end
-
     it 'uses the private_token for auth if both it and user are set' do
       user = double(:user)
-      user_token = 'user'
 
-      allow(user).to receive_message_chain(:personal_access_tokens, :active, :pluck, :first).and_return(user_token)
-
+      expect(described_class).to receive(:with_user).with(nil).and_call_original
       expect(app).to receive(:get).with('/', nil, 'Private-Token' => private_token)
       expect(app).to receive(:get).with('/api/v4/users')
 
@@ -206,6 +191,29 @@ describe Gitlab::Profiler do
           .to not_change { ActiveRecord::Base.logger }
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
+      end
+    end
+  end
+
+  describe '.with_user' do
+    context 'when the user is set' do
+      let(:user) { double(:user) }
+
+      it 'overrides auth in ApplicationController to use the given user' do
+        expect(described_class.with_user(user) { ApplicationController.new.current_user }).to eq(user)
+      end
+
+      it 'cleans up ApplicationController afterwards' do
+        expect { described_class.with_user(user) { } }
+          .to not_change { ActionController.instance_methods(false) }
+      end
+    end
+
+    context 'when the user is nil' do
+      it 'does not define methods on ApplicationController' do
+        expect(ApplicationController).not_to receive(:define_method)
+
+        described_class.with_user(nil) { }
       end
     end
   end

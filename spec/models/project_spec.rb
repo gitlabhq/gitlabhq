@@ -109,22 +109,6 @@ describe Project do
       end
     end
 
-    context 'Site Statistics' do
-      context 'when creating a new project' do
-        it 'tracks project in SiteStatistic' do
-          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
-        end
-      end
-
-      context 'when deleting a project' do
-        it 'untracks project in SiteStatistic' do
-          project = create(:project)
-
-          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
-        end
-      end
-    end
-
     context 'updating cd_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
@@ -2199,12 +2183,6 @@ describe Project do
     it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)
       expect(project.repository).to receive(:after_change_head)
-
-      project.change_head(project.default_branch)
-    end
-
-    it 'creates the new reference with rugged' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
 
       project.change_head(project.default_branch)
     end

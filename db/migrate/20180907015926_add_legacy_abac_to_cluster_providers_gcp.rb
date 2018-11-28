@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddLegacyAbacToClusterProvidersGcp < ActiveRecord::Migration
+class AddLegacyAbacToClusterProvidersGcp < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -2,7 +2,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class RemoveDevelopersCanPushFromProtectedBranches < ActiveRecord::Migration
+class RemoveDevelopersCanPushFromProtectedBranches < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # This is only required for `#down`

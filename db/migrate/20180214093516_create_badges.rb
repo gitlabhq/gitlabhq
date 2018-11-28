@@ -1,4 +1,4 @@
-class CreateBadges < ActiveRecord::Migration
+class CreateBadges < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

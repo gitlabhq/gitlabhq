@@ -11,7 +11,7 @@ module Projects
 
       begin
         remote_mirror.ensure_remote!
-        repository.fetch_remote(remote_mirror.remote_name, no_tags: true)
+        repository.fetch_remote(remote_mirror.remote_name, ssh_auth: remote_mirror, no_tags: true)
 
         opts = {}
         if remote_mirror.only_protected_branches?

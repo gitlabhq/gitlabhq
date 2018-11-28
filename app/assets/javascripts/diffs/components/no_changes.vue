@@ -19,29 +19,16 @@ export default {
 </script>
 
 <template>
-  <div
-    class="row empty-state nothing-here-block"
-  >
+  <div class="row empty-state nothing-here-block">
     <div class="col-xs-12">
-      <div class="svg-content">
-        <span
-          v-html="emptyImage"
-        ></span>
-      </div>
+      <div class="svg-content"><span v-html="emptyImage"></span></div>
     </div>
     <div class="col-xs-12">
       <div class="text-content text-center">
-        No changes between
-        <span class="ref-name">{{ sourceBranch }}</span>
-        and
+        No changes between <span class="ref-name">{{ sourceBranch }}</span> and
         <span class="ref-name">{{ targetBranch }}</span>
         <div class="text-center">
-          <a
-            :href="newBlobPath"
-            class="btn btn-success"
-          >
-            {{ __('Create commit') }}
-          </a>
+          <a :href="newBlobPath" class="btn btn-success"> {{ __('Create commit') }} </a>
         </div>
       </div>
     </div>

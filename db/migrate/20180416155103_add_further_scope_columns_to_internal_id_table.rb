@@ -1,4 +1,4 @@
-class AddFurtherScopeColumnsToInternalIdTable < ActiveRecord::Migration
+class AddFurtherScopeColumnsToInternalIdTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

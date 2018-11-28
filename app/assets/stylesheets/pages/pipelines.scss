@@ -141,10 +141,6 @@
     float: none;
   }
 
-  .api {
-    @extend .monospace;
-  }
-
   .branch-commit {
     .ref-name {
       font-weight: $gl-font-weight-bold;

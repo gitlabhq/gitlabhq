@@ -4,10 +4,9 @@ def rails5?
 end
 
 gem_versions = {}
-gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
-gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
-gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'    : '0.2'
+gem_versions['rails']                           = rails5? ? '5.0.7'  : '4.2.10'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1' : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
 source 'https://rubygems.org'
@@ -24,7 +23,11 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', gem_versions['default_value_for']
+if rails5?
+  gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
+else
+  gem 'default_value_for', '~> 3.0.0'
+end
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
@@ -226,13 +229,13 @@ gem 'slack-notifier', '~> 1.5.1'
 gem 'hangouts-chat', '~> 0.0.5'
 
 # Asana integration
-gem 'asana', '~> 0.6.0'
+gem 'asana', '~> 0.8.1'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 3.1.0'
+gem 'kubeclient', '~> 4.0.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 4.6'
@@ -317,7 +320,7 @@ group :development do
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
-  gem 'better_errors', '~> 2.1.0'
+  gem 'better_errors', '~> 2.5.0'
   gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
@@ -386,7 +389,7 @@ group :test do
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.
   gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
-  gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.2.5'
   gem 'rspec_junit_formatter'
 end
@@ -422,7 +425,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.123.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.1.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

@@ -46,24 +46,13 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      :show-disabled-button="true"
-      status="warning"
-    />
+    <status-icon :show-disabled-button="true" status="warning" />
 
     <div class="media-body space-children">
       <span class="bold js-branch-text">
-        <span class="capitalize">
-          {{ missingBranchName }}
-        </span> {{ s__("mrWidget|branch does not exist.") }}
-        {{ missingBranchNameMessage }}
-        <i
-          v-tooltip
-          :title="message"
-          :aria-label="message"
-          class="fa fa-question-circle"
-        >
-        </i>
+        <span class="capitalize"> {{ missingBranchName }} </span>
+        {{ s__('mrWidget|branch does not exist.') }} {{ missingBranchNameMessage }}
+        <i v-tooltip :title="message" :aria-label="message" class="fa fa-question-circle"> </i>
       </span>
     </div>
   </div>

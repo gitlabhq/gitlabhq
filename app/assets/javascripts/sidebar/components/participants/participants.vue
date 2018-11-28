@@ -88,21 +88,9 @@ export default {
       data-boundary="viewport"
       @click="onClickCollapsedIcon"
     >
-      <i
-        class="fa fa-users"
-        aria-hidden="true"
-      >
-      </i>
-      <gl-loading-icon
-        v-if="loading"
-        class="js-participants-collapsed-loading-icon"
-      />
-      <span
-        v-else
-        class="js-participants-collapsed-count"
-      >
-        {{ participantCount }}
-      </span>
+      <i class="fa fa-users" aria-hidden="true"> </i>
+      <gl-loading-icon v-if="loading" class="js-participants-collapsed-loading-icon" />
+      <span v-else class="js-participants-collapsed-count"> {{ participantCount }} </span>
     </div>
     <div class="title hide-collapsed">
       <gl-loading-icon
@@ -118,10 +106,7 @@ export default {
         :key="participant.id"
         class="participants-author js-participants-author"
       >
-        <a
-          :href="participant.web_url"
-          class="author-link"
-        >
+        <a :href="participant.web_url" class="author-link">
           <user-avatar-image
             :lazy="true"
             :img-src="participant.avatar_url"
@@ -133,10 +118,7 @@ export default {
         </a>
       </div>
     </div>
-    <div
-      v-if="hasMoreParticipants"
-      class="participants-more hide-collapsed"
-    >
+    <div v-if="hasMoreParticipants" class="participants-more hide-collapsed">
       <button
         type="button"
         class="btn-transparent btn-blank js-toggle-participants-button"

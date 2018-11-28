@@ -1,4 +1,4 @@
-class AddDevelopersCanMergeToProtectedBranches < ActiveRecord::Migration
+class AddDevelopersCanMergeToProtectedBranches < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,4 +1,4 @@
-class CreateNewClustersArchitectures < ActiveRecord::Migration
+class CreateNewClustersArchitectures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

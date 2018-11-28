@@ -163,7 +163,7 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-    backtrace_cleaner = Gitlab.rails5? ? env["action_dispatch.backtrace_cleaner"] : env
+    backtrace_cleaner = Gitlab.rails5? ? request.env["action_dispatch.backtrace_cleaner"] : env
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -181,11 +181,11 @@ class ApplicationController < ActionController::Base
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!(message = nil)
+  def access_denied!(message = nil, status = nil)
     # If we display a custom access denied message to the user, we don't want to
     # hide existence of the resource, rather tell them they cannot access it using
     # the provided message
-    status = message.present? ? :forbidden : :not_found
+    status ||= message.present? ? :forbidden : :not_found
 
     respond_to do |format|
       format.any { head status }

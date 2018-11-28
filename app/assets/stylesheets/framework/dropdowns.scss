@@ -802,11 +802,7 @@
 
 @include media-breakpoint-down(xs) {
   .navbar-gitlab {
-    li.header-projects,
-    li.header-groups,
-    li.header-more,
-    li.header-new,
-    li.header-user {
+    li.dropdown {
       position: static;
     }
   }

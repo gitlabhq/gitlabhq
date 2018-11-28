@@ -2,7 +2,7 @@
 #
 # It has been modified to handle no-downtime GitLab migrations. Several
 # indexes have been removed since they are not needed for GitLab.
-class AddMissingIndexesActsAsTaggableOnEngine < ActiveRecord::Migration
+class AddMissingIndexesActsAsTaggableOnEngine < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -97,11 +97,9 @@ export default {
       v-if="canComment"
       type="button"
       class="btn-transparent position-absolute image-diff-overlay-add-comment w-100 h-100 js-add-image-diff-note-button"
-      @click="clickedImage($event.offsetX, $event.offsetY)"
+      @click="clickedImage($event.offsetX, $event.offsetY);"
     >
-      <span class="sr-only">
-        {{ __('Add image comment') }}
-      </span>
+      <span class="sr-only"> {{ __('Add image comment') }} </span>
     </button>
     <button
       v-for="(discussion, index) in allDiscussions"
@@ -111,12 +109,9 @@ export default {
       :disabled="!shouldToggleDiscussion"
       class="js-image-badge"
       type="button"
-      @click="toggleDiscussion({ discussionId: discussion.id })"
+      @click="toggleDiscussion({ discussionId: discussion.id });"
     >
-      <icon
-        v-if="showCommentIcon"
-        name="image-comment-dark"
-      />
+      <icon v-if="showCommentIcon" name="image-comment-dark" />
       <template v-else>
         {{ index + 1 }}
       </template>
@@ -125,15 +120,13 @@ export default {
       v-if="currentCommentForm"
       :style="{
         left: `${currentCommentForm.x}px`,
-        top: `${currentCommentForm.y}px`
+        top: `${currentCommentForm.y}px`,
       }"
       :aria-label="__('Comment form position')"
       class="btn-transparent comment-indicator"
       type="button"
     >
-      <icon
-        name="image-comment-dark"
-      />
+      <icon name="image-comment-dark" />
     </button>
   </div>
 </template>

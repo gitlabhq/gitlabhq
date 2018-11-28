@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateConversationalDevelopmentIndexMetrics < ActiveRecord::Migration
+class CreateConversationalDevelopmentIndexMetrics < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

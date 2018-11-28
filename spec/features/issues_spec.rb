@@ -8,6 +8,17 @@ describe 'Issues' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
+  shared_examples_for 'empty state with filters' do
+    it 'user sees empty state with filters' do
+      create(:issue, author: user, project: project)
+
+      visit project_issues_path(project, milestone_title: "1.0")
+
+      expect(page).to have_content('Sorry, your filter produced no results')
+      expect(page).to have_content('To widen your search, change or remove filters above')
+    end
+  end
+
   describe 'while user is signed out' do
     describe 'empty state' do
       it 'user sees empty state' do
@@ -17,6 +28,8 @@ describe 'Issues' do
         expect(page).to have_content('The Issue Tracker is the place to add things that need to be improved or solved in a project.')
         expect(page).to have_content('You can register or sign in to create issues for this project.')
       end
+
+      it_behaves_like 'empty state with filters'
     end
   end
 
@@ -37,6 +50,8 @@ describe 'Issues' do
         expect(page).to have_content('Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable.')
         expect(page).to have_content('New issue')
       end
+
+      it_behaves_like 'empty state with filters'
     end
 
     describe 'Edit issue' do
@@ -665,6 +680,18 @@ describe 'Issues' do
 
         it 'fills in template' do
           expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
+        end
+      end
+
+      context 'suggestions', :js do
+        it 'displays list of related issues' do
+          create(:issue, project: project, title: 'test issue')
+
+          visit new_project_issue_path(project)
+
+          fill_in 'issue_title', with: issue.title
+
+          expect(page).to have_selector('.suggestion-item', count: 1)
         end
       end
     end

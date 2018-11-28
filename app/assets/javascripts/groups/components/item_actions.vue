@@ -53,8 +53,9 @@ export default {
       :aria-label="editBtnTitle"
       data-container="body"
       data-placement="bottom"
-      class="edit-group btn no-expand">
-      <icon name="settings"/>
+      class="edit-group btn no-expand"
+    >
+      <icon name="settings" />
     </a>
     <a
       v-if="group.canLeave"
@@ -65,8 +66,9 @@ export default {
       data-container="body"
       data-placement="bottom"
       class="leave-group btn no-expand"
-      @click.prevent="onLeaveGroup">
-      <icon name="leave"/>
+      @click.prevent="onLeaveGroup"
+    >
+      <icon name="leave" />
     </a>
   </div>
 </template>

@@ -28,7 +28,7 @@ export const receiveLatestPipelineError = ({ commit, dispatch }, err) => {
     dispatch(
       'setErrorMessage',
       {
-        text: __('An error occured whilst fetching the latest pipeline.'),
+        text: __('An error occurred whilst fetching the latest pipeline.'),
         action: () =>
           dispatch('forcePipelineRequest').then(() =>
             dispatch('setErrorMessage', null, { root: true }),
@@ -84,7 +84,7 @@ export const receiveJobsError = ({ commit, dispatch }, stage) => {
   dispatch(
     'setErrorMessage',
     {
-      text: __('An error occured whilst loading the pipelines jobs.'),
+      text: __('An error occurred whilst loading the pipelines jobs.'),
       action: payload =>
         dispatch('fetchJobs', payload).then(() =>
           dispatch('setErrorMessage', null, { root: true }),
@@ -123,7 +123,7 @@ export const receiveJobTraceError = ({ commit, dispatch }) => {
   dispatch(
     'setErrorMessage',
     {
-      text: __('An error occured whilst fetching the job trace.'),
+      text: __('An error occurred whilst fetching the job trace.'),
       action: () =>
         dispatch('fetchJobTrace').then(() => dispatch('setErrorMessage', null, { root: true })),
       actionText: __('Please try again'),

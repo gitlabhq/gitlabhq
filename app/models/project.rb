@@ -88,9 +88,6 @@ class Project < ActiveRecord::Base
 
   after_create :create_project_feature, unless: :project_feature
 
-  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
-
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
@@ -1394,7 +1391,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch

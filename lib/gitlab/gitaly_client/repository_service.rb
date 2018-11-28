@@ -69,7 +69,7 @@ module Gitlab
           no_tags: no_tags, timeout: timeout, no_prune: !prune
         )
 
-        if ssh_auth&.ssh_import?
+        if ssh_auth&.ssh_mirror_url?
           if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
             request.ssh_key = ssh_auth.ssh_private_key
           end
@@ -251,20 +251,15 @@ module Gitlab
         )
       end
 
-      def write_ref(ref_path, ref, old_ref, shell)
+      def write_ref(ref_path, ref, old_ref)
         request = Gitaly::WriteRefRequest.new(
           repository: @gitaly_repo,
           ref: ref_path.b,
-          revision: ref.b,
-          shell: shell
+          revision: ref.b
         )
         request.old_revision = old_ref.b unless old_ref.nil?
 
-        response = GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
-
-        raise Gitlab::Git::CommandError, encode!(response.error) if response.error.present?
-
-        true
+        GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
       end
 
       def set_config(entries)

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import { __, sprintf } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
-import { convertPermissionToBoolean } from './lib/utils/common_utils';
+import { parseBoolean } from './lib/utils/common_utils';
 
 class ImporterStatus {
   constructor({ jobsUrl, importUrl, ciCdOnly }) {
@@ -141,7 +141,7 @@ function initImporterStatus() {
     return new ImporterStatus({
       jobsUrl: data.jobsImportPath,
       importUrl: data.importPath,
-      ciCdOnly: convertPermissionToBoolean(data.ciCdOnly),
+      ciCdOnly: parseBoolean(data.ciCdOnly),
     });
   }
 }

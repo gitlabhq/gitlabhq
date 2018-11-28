@@ -1,4 +1,4 @@
-class AssureCommitsCountForMergeRequestDiff < ActiveRecord::Migration
+class AssureCommitsCountForMergeRequestDiff < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

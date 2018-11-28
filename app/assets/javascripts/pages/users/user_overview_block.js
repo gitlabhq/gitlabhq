@@ -10,6 +10,7 @@ export default class UserOverviewBlock {
       limit: DEFAULT_LIMIT,
       ...options.requestParams,
     };
+    this.postRenderCallback = options.postRenderCallback;
     this.loadData();
   }
 
@@ -43,5 +44,9 @@ export default class UserOverviewBlock {
     }
 
     loadingEl.classList.add('hide');
+
+    if (this.postRenderCallback) {
+      this.postRenderCallback.call(this);
+    }
   }
 }

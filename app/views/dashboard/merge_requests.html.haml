@@ -1,6 +1,8 @@
 - @hide_top_links = true
 - page_title _("Merge Requests")
-- @breadcrumb_link = merge_requests_dashboard_path(assignee_id: current_user.id)
+- @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
+
+= render_if_exists "shared/gold_trial_callout"
 
 .page-title-holder
   %h1.page-title= _('Merge Requests')
@@ -12,7 +14,7 @@
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests, display_count: !@no_filters_set
 
-= render 'shared/issuable/filter', type: :merge_requests
+= render 'shared/issuable/search_bar', type: :merge_requests
 
 - if current_user && @no_filters_set
   = render 'shared/dashboard/no_filter_selected'

@@ -61,14 +61,7 @@ export default {
     class="btn d-none d-sm-none d-md-block"
     @click="onClick"
   >
-    <icon
-      v-if="isLastDeployment"
-      name="repeat"
-    />
-    <icon
-      v-else
-      name="redo"
-    />
+    <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
     <gl-loading-icon v-if="isLoading" />
   </button>
 </template>

@@ -30,14 +30,10 @@ export default {
 </script>
 <template>
   <section class="mr-info-list mr-links">
-    <p v-if="relatedLinks.closing">
-      {{ closesText }} <span v-html="relatedLinks.closing"></span>
-    </p>
+    <p v-if="relatedLinks.closing">{{ closesText }} <span v-html="relatedLinks.closing"></span></p>
     <p v-if="relatedLinks.mentioned">
-      {{ s__("mrWidget|Mentions") }} <span v-html="relatedLinks.mentioned"></span>
+      {{ s__('mrWidget|Mentions') }} <span v-html="relatedLinks.mentioned"></span>
     </p>
-    <p v-if="relatedLinks.assignToMe">
-      <span v-html="relatedLinks.assignToMe"></span>
-    </p>
+    <p v-if="relatedLinks.assignToMe"><span v-html="relatedLinks.assignToMe"></span></p>
   </section>
 </template>

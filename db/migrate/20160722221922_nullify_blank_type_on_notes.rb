@@ -1,4 +1,4 @@
-class NullifyBlankTypeOnNotes < ActiveRecord::Migration
+class NullifyBlankTypeOnNotes < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

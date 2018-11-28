@@ -55,32 +55,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('ADD_COMMENT_FORM_LINE', () => {
-    it('should set a truthy reference for the given line code in diffLineCommentForms', () => {
-      const state = { diffLineCommentForms: {} };
-      const lineCode = 'FDE';
-
-      mutations[types.ADD_COMMENT_FORM_LINE](state, { lineCode });
-
-      expect(state.diffLineCommentForms[lineCode]).toBeTruthy();
-    });
-  });
-
-  describe('REMOVE_COMMENT_FORM_LINE', () => {
-    it('should remove given reference from diffLineCommentForms', () => {
-      const state = { diffLineCommentForms: {} };
-      const lineCode = 'FDE';
-
-      mutations[types.ADD_COMMENT_FORM_LINE](state, { lineCode });
-
-      expect(state.diffLineCommentForms[lineCode]).toBeTruthy();
-
-      mutations[types.REMOVE_COMMENT_FORM_LINE](state, { lineCode });
-
-      expect(state.diffLineCommentForms[lineCode]).toBeUndefined();
-    });
-  });
-
   describe('EXPAND_ALL_FILES', () => {
     it('should change the collapsed prop from diffFiles', () => {
       const diffFile = {
@@ -98,7 +72,9 @@ describe('DiffsStoreMutations', () => {
     it('should call utils.addContextLines with proper params', () => {
       const options = {
         lineNumbers: { oldLineNumber: 1, newLineNumber: 2 },
-        contextLines: [{ old_line: 1, new_line: 1, line_code: 'ff9200_1_1', discussions: [] }],
+        contextLines: [
+          { old_line: 1, new_line: 1, line_code: 'ff9200_1_1', discussions: [], hasForm: false },
+        ],
         fileHash: 'ff9200',
         params: {
           bottom: true,
@@ -381,6 +357,37 @@ describe('DiffsStoreMutations', () => {
       mutations[types.UPDATE_CURRENT_DIFF_FILE_ID](state, 'somefileid');
 
       expect(state.currentDiffFileId).toBe('somefileid');
+    });
+  });
+
+  describe('TOGGLE_LINE_HAS_FORM', () => {
+    it('sets hasForm on lines', () => {
+      const file = {
+        file_hash: 'hash',
+        parallel_diff_lines: [
+          { left: { line_code: '123', hasForm: false }, right: {} },
+          { left: {}, right: { line_code: '124', hasForm: false } },
+        ],
+        highlighted_diff_lines: [
+          { line_code: '123', hasForm: false },
+          { line_code: '124', hasForm: false },
+        ],
+      };
+      const state = {
+        diffFiles: [file],
+      };
+
+      mutations[types.TOGGLE_LINE_HAS_FORM](state, {
+        lineCode: '123',
+        hasForm: true,
+        fileHash: 'hash',
+      });
+
+      expect(file.highlighted_diff_lines[0].hasForm).toBe(true);
+      expect(file.highlighted_diff_lines[1].hasForm).toBe(false);
+
+      expect(file.parallel_diff_lines[0].left.hasForm).toBe(true);
+      expect(file.parallel_diff_lines[1].right.hasForm).toBe(false);
     });
   });
 });

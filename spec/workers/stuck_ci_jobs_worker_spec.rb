@@ -5,7 +5,7 @@ describe StuckCiJobsWorker do
 
   let!(:runner) { create :ci_runner }
   let!(:job) { create :ci_build, runner: runner }
-  let(:trace_lease_key) { "trace:archive:#{job.id}" }
+  let(:trace_lease_key) { "trace:write:lock:#{job.id}" }
   let(:trace_lease_uuid) { SecureRandom.uuid }
   let(:worker_lease_key) { StuckCiJobsWorker::EXCLUSIVE_LEASE_KEY }
   let(:worker_lease_uuid) { SecureRandom.uuid }

@@ -1,5 +1,0 @@
----
-title: Fix auto-corrected upload URLs in webhooks
-merge_request: 22361
-author:
-type: fixed

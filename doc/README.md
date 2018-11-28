@@ -14,58 +14,13 @@ Here you can access the complete documentation for GitLab, the single applicatio
 
 No matter how you use GitLab, we have documentation for you.
 
-<table>
-  <tbody>
-    <tr>
-      <td width="50%">
-        <a href="user/index.md"><strong>User documentation</strong></a>
-        <br/>
-        Discover features and concepts for GitLab users.
-      </td>
-      <td width="50%">
-        <a href="administration/index.md"><strong>Administrator documentation</strong></a>
-        <br/>
-        Everything GitLab administrators need to know.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="#contributing-to-gitlab"><strong>Contributing to GitLab</strong></a>
-        <br/>
-        At GitLab, everyone can contribute!
-      </td>
-      <td width="50%">
-        <a href="#new-to-git-and-gitlab"><strong>New to Git and GitLab?</strong></a>
-        <br/>
-        We have resources to get you started.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="#building-an-integration-with-gitlab"><strong>Building an integration with GitLab?</strong></a>
-        <br/>
-        Consult our automation and integration documentation.
-      </td>
-      <td width="50%">
-        <a href="#coming-to-gitlab-from-another-platform"><strong>Coming to GitLab from another platform?</strong></a>
-        <br/>
-        Consult our handy guides.
-      </td>
-    </tr>
-    <tr>
-      <td width="50%">
-        <a href="https://about.gitlab.com/install/"><strong>Install GitLab</strong></a>
-        <br/>
-        Installation options for different platforms.
-      </td>
-      <td width="50%">
-        <a href="#subscribe-to-gitlab"><strong>Subscribe to GitLab</strong></a>
-        <br/>
-        Get access to more features.
-      </td>
-    </tr>
-  </tbody>
-</table>
+| Essential Documentation                                                                                                                    | Essential Documentation                                                                                                    |
+|:-------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|
+| [**User Documentation**](user/index.md)<br/>Discover features and concepts for GitLab users.                                               | [**Administrator documentation**](administration/index.md)<br/>Everything GitLab self-managed administrators need to know. |
+| [**Contributing to GitLab**](#contributing-to-gitlab)<br/>At GitLab, everyone can contribute!                                              | [**New to Git and GitLab?**](#new-to-git-and-gitlab)<br/>We have resources to get you started.                             |
+| [**Building an integration with GitLab?**](#building-an-integration-with-gitlab)<br/>Consult our automation and integration documentation. | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Consult our handy guides.       |
+| [**Install GitLab**](https://about.gitlab.com/install/)<br/>Installation options for different platforms.                                  | [**Subscribe to GitLab**](#subscribe-to-gitlab)<br/>Get access to more features.                                           |
+| [**Update GitLab**](update/README.md)<br/>Update your GitLab self-managed instance to the latest version.                                  | [**GitLab Releases**](https://about.gitlab.com/releases/)<br/>What's new in GitLab.                                        |
 
 ## Popular Documentation
 
@@ -89,7 +44,7 @@ making the software lifecycle faster and radically improving the speed of busine
 
 GitLab provides solutions for [all the stages of the DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/):
 
-<img class="image-noshadow" src="img/devops-stages.png" alt="DevOps Stages">
+![DevOps Stages](img/devops-stages.png)
 
 The following sections provide links to documentation for each DevOps stage:
 
@@ -103,7 +58,7 @@ The following sections provide links to documentation for each DevOps stage:
 | [Release](#release)     | Application release and delivery features.                  |
 | [Configure](#configure) | Application and infrastructure configuration tools.         |
 | [Monitor](#monitor)     | Application monitoring and metrics features.                |
-| [Secure](#secure)       | Security capability feature.                                |
+| [Secure](#secure)       | Security capability features.                               |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -186,8 +141,6 @@ The following documentation relates to the DevOps **Create** stage:
   </a>
 </div>
 
----
-
 #### Repositories
 
 | Create Topics - Repositories                                                                                                                                                                                                                                                                            | Description                                                                     |
@@ -209,8 +162,6 @@ The following documentation relates to the DevOps **Create** stage:
   </a>
 </div>
 
----
-
 #### Merge Requests
 
 | Create Topics - Merge Requests                                                                              | Description                                                                                                                                       |
@@ -226,8 +177,6 @@ The following documentation relates to the DevOps **Create** stage:
     Back to Overview <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
-
----
 
 #### Integration and Automation
 
@@ -350,7 +299,7 @@ The following documentation relates to the DevOps **Monitor** stage:
 | [GitLab Prometheus](administration/monitoring/prometheus/index.md) **[CORE ONLY]**              | Configure the bundled Prometheus to collect various metrics from your GitLab instance.                                                   |
 | [Health check](user/admin_area/monitoring/health_check.md)                                      | GitLab provides liveness and readiness probes to indicate service health and reachability to required services.                          |
 | [Prometheus project integration](user/project/integrations/prometheus.md)                       | Configure the Prometheus integration per project and monitor your CI/CD environments.                                                    |
-| [Prometheus metrics](user/project/integrations/prometheus_library/metrics.md)                   | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
+| [Prometheus metrics](user/project/integrations/prometheus_library/index.md)                     | Let Prometheus collect metrics from various services, like Kubernetes, NGINX, NGINX ingress controller, HAProxy, and Amazon Cloud Watch. |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

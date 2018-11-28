@@ -1,4 +1,4 @@
-class CalculateConvDevIndexPercentages < ActiveRecord::Migration
+class CalculateConvDevIndexPercentages < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false
 

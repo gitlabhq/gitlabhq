@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateUserChatNamesTable < ActiveRecord::Migration
+class CreateUserChatNamesTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

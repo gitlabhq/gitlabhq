@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class ChangeProjectNamespaceIdNotNull < ActiveRecord::Migration
+class ChangeProjectNamespaceIdNotNull < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   class Project < ActiveRecord::Base

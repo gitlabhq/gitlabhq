@@ -1,5 +1,5 @@
 # rubocop:disable Migration/UpdateLargeTable
-class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
+class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration[4.2]
   include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 

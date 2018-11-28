@@ -14,11 +14,7 @@ export default {
 
 <template>
   <fieldset>
-    <label
-      class="sr-only"
-      for="issuable-title">
-      Title
-    </label>
+    <label class="sr-only" for="issuable-title"> Title </label>
     <input
       id="issuable-title"
       v-model="formState.title"
@@ -27,6 +23,7 @@ export default {
       placeholder="Title"
       aria-label="Title"
       @keydown.meta.enter="updateIssuable"
-      @keydown.ctrl.enter="updateIssuable" />
+      @keydown.ctrl.enter="updateIssuable"
+    />
   </fieldset>
 </template>

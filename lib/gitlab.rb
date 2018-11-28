@@ -53,4 +53,8 @@ module Gitlab
   def self.pre_release?
     VERSION.include?('pre')
   end
+
+  def self.version_info
+    Gitlab::VersionInfo.parse(Gitlab::VERSION)
+  end
 end

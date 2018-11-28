@@ -3,7 +3,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rescheduling of the revised RemoveRestrictedTodos background migration
-class RemoveRestrictedTodosWithCte < ActiveRecord::Migration
+class RemoveRestrictedTodosWithCte < ActiveRecord::Migration[4.2]
   DOWNTIME = false
   disable_ddl_transaction!
 

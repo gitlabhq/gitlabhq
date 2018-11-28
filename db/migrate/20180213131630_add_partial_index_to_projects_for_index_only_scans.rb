@@ -1,4 +1,4 @@
-class AddPartialIndexToProjectsForIndexOnlyScans < ActiveRecord::Migration
+class AddPartialIndexToProjectsForIndexOnlyScans < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

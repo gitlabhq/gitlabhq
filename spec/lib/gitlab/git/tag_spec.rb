@@ -3,7 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Tag, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
-  shared_examples 'Gitlab::Git::Repository#tags' do
+  describe '#tags' do
     describe 'first tag' do
       let(:tag) { repository.tags.first }
 
@@ -25,14 +25,6 @@ describe Gitlab::Git::Tag, :seed_helper do
     it { expect(repository.tags.size).to eq(SeedRepo::Repo::TAGS.size) }
   end
 
-  context 'when Gitaly tags feature is enabled' do
-    it_behaves_like 'Gitlab::Git::Repository#tags'
-  end
-
-  context 'when Gitaly tags feature is disabled', :skip_gitaly_mock do
-    it_behaves_like 'Gitlab::Git::Repository#tags'
-  end
-
   describe '.get_message' do
     let(:tag_ids) { %w[f4e6814c3e4e7a0de82a9e7cd20c626cc963a2f8 8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b] }
 
@@ -40,23 +32,16 @@ describe Gitlab::Git::Tag, :seed_helper do
       tag_ids.map { |id| described_class.get_message(repository, id) }
     end
 
-    shared_examples 'getting tag messages' do
-      it 'gets tag messages' do
-        expect(subject[0]).to eq("Release\n")
-        expect(subject[1]).to eq("Version 1.1.0\n")
-      end
+    it 'gets tag messages' do
+      expect(subject[0]).to eq("Release\n")
+      expect(subject[1]).to eq("Version 1.1.0\n")
     end
 
-    context 'when Gitaly tag_messages feature is enabled' do
-      it_behaves_like 'getting tag messages'
+    it 'gets messages in one batch', :request_store do
+      other_repository = double(:repository)
+      described_class.get_message(other_repository, tag_ids.first)
 
-      it 'gets messages in one batch', :request_store do
-        expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
-      end
-    end
-
-    context 'when Gitaly tag_messages feature is disabled', :disable_gitaly do
-      it_behaves_like 'getting tag messages'
+      expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
     end
   end
 

@@ -30,7 +30,7 @@ clients at your disposal.
 ### Installing the SSH client for Windows 8.1 and Windows 7
 
 The easiest way to install Git and the SSH client on Windows 8.1 and Windows 7
-is [Git for Windows](https://gitforwindows.com). It provides a BASH
+is [Git for Windows](https://gitforwindows.org). It provides a BASH
 emulation (Git Bash) used for running Git from the command line and the
 `ssh-keygen` command that is useful to create SSH keys as you'll learn below.
 
@@ -75,7 +75,7 @@ The minimum key size is 1024 bits, defaulting to 2048. If you wish to generate a
 stronger RSA key pair, specify the `-b` flag with a higher bit value than the
 default.
 
-The old, default password encoding for SSH private keys keys is
+The old, default password encoding for SSH private keys is
 [insecure](https://latacora.singles/2018/08/03/the-default-openssh.html);
 it's only a single round of an MD5 hash. Since OpenSSH version 6.5, you should
 use the `-o` option to `ssh-keygen` to encode your private key in a new, more

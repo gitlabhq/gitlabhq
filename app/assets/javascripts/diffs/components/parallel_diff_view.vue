@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
 
@@ -19,31 +19,24 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['commitId', 'shouldRenderParallelCommentRow']),
-    ...mapState({
-      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
-    }),
+    ...mapGetters('diffs', ['commitId']),
     diffLinesLength() {
       return this.diffLines.length;
     },
-    userColorScheme() {
-      return window.gon.user_color_scheme;
-    },
   },
+  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
 <template>
   <div
-    :class="userColorScheme"
+    :class="$options.userColorScheme"
     :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file"
   >
     <table>
       <tbody>
-        <template
-          v-for="(line, index) in diffLines"
-        >
+        <template v-for="(line, index) in diffLines">
           <parallel-diff-table-row
             :key="index"
             :file-hash="diffFile.file_hash"
@@ -52,7 +45,6 @@ export default {
             :is-bottom="index + 1 === diffLinesLength"
           />
           <parallel-diff-comment-row
-            v-if="shouldRenderParallelCommentRow(line)"
             :key="`dcr-${index}`"
             :line="line"
             :diff-file-hash="diffFile.file_hash"

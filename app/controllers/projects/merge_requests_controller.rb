@@ -213,7 +213,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rebase
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
-    render nothing: true, status: :ok
+    head :ok
   end
 
   protected

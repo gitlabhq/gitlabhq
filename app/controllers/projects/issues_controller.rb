@@ -38,6 +38,8 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
 
+  before_action :set_suggested_issues_feature_flags, only: [:new]
+
   respond_to :html
 
   def index
@@ -262,5 +264,10 @@ class Projects::IssuesController < Projects::ApplicationController
     # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
     # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
+  end
+
+  def set_suggested_issues_feature_flags
+    push_frontend_feature_flag(:graphql)
+    push_frontend_feature_flag(:issue_suggestions)
   end
 end

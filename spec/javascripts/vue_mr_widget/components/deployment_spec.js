@@ -252,5 +252,33 @@ describe('Deployment component', () => {
         );
       });
     });
+
+    describe('created', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          deployment: Object.assign({}, deploymentMockData, { status: 'created' }),
+          showMetrics: true,
+        });
+      });
+
+      it('renders information about created deployment', () => {
+        expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain('Will deploy to');
+      });
+    });
+
+    describe('canceled', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          deployment: Object.assign({}, deploymentMockData, { status: 'canceled' }),
+          showMetrics: true,
+        });
+      });
+
+      it('renders information about canceled deployment', () => {
+        expect(vm.$el.querySelector('.js-deployment-info').textContent).toContain(
+          'Failed to deploy to',
+        );
+      });
+    });
   });
 });

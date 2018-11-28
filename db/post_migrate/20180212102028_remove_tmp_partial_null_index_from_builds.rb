@@ -1,4 +1,4 @@
-class RemoveTmpPartialNullIndexFromBuilds < ActiveRecord::Migration
+class RemoveTmpPartialNullIndexFromBuilds < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

@@ -1,5 +1,0 @@
----
-title: Fix rendering of filter bar tokens for special values
-merge_request: 22865
-author: Heinrich Lee Yu
-type: fixed
