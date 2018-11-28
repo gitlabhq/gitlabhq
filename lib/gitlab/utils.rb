@@ -28,7 +28,7 @@ module Gitlab
         end
       end
 
-      truncated + ("\0" * (bytes - truncated.bytesize))
+      truncated + ('0' * (bytes - truncated.bytesize))
     end
 
     # Append path to host, making sure there's one single / in between
