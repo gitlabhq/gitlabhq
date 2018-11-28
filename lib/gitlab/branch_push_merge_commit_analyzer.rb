@@ -59,14 +59,8 @@ module Gitlab
 
       # @param child_commit [CommitDecorator]
       # @param first_parent [Boolean] whether `self` is the first parent of `child_commit`
-      def set_merge_commit(child_commit, first_parent:)
-        # If child commit is a direct ancestor, its first parent is also the direct ancestor.
-        # We assume direct ancestors matches the trail of the target branch over time,
-        # This assumption is correct most of the time, especially for gitlab managed merges,
-        # but there are exception cases which can't be solved (https://stackoverflow.com/a/49754723/474597)
-        @direct_ancestor = first_parent && child_commit.direct_ancestor?
-
-        @merge_commit = direct_ancestor? ? self : child_commit.merge_commit
+      def set_merge_commit(child_commit:)
+        @merge_commit ||= direct_ancestor? ? self : child_commit.merge_commit
       end
     end
 
@@ -97,6 +91,8 @@ module Gitlab
       head_commit.direct_ancestor = true
       head_commit.merge_commit = head_commit
 
+      mark_all_direct_ancestors(head_commit)
+
       # Analyzing a commit requires its child commit be analyzed first,
       # which is the case here since commits are ordered from child to parent.
       @id_to_commit.each_value do |commit|
@@ -105,12 +101,27 @@ module Gitlab
     end
 
     def analyze_parents(commit)
-      commit.parent_ids.each.with_index do |parent_commit_id, i|
+      commit.parent_ids.each do |parent_commit_id|
         parent_commit = get_commit(parent_commit_id)
 
-        next if parent_commit.nil? # parent commit may not be part of new commits
+        next unless parent_commit # parent commit may not be part of new commits
 
-        parent_commit.set_merge_commit(commit, first_parent: i == 0)
+        parent_commit.set_merge_commit(child_commit: commit)
+      end
+    end
+
+    # Mark all direct ancestors.
+    # If child commit is a direct ancestor, its first parent is also a direct ancestor.
+    # We assume direct ancestors matches the trail of the target branch over time,
+    # This assumption is correct most of the time, especially for gitlab managed merges,
+    # but there are exception cases which can't be solved (https://stackoverflow.com/a/49754723/474597)
+    def mark_all_direct_ancestors(commit)
+      loop do
+        commit = get_commit(commit.parent_ids.first)
+
+        break unless commit
+
+        commit.direct_ancestor = true
       end
     end
 

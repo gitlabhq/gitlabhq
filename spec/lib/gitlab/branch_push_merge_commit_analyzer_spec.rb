@@ -28,6 +28,25 @@ describe Gitlab::BranchPushMergeCommitAnalyzer do
       end
     end
 
+    context 'when one parent has two children' do
+      let(:oldrev) { '1adbdefe31288f3bbe4b614853de4908a0b6f792' }
+      let(:newrev) { '5f82584f0a907f3b30cfce5bb8df371454a90051' }
+
+      let(:expected_merge_commits) do
+        {
+          '5f82584f0a907f3b30cfce5bb8df371454a90051' => '5f82584f0a907f3b30cfce5bb8df371454a90051',
+          '8a994512e8c8f0dfcf22bb16df6e876be7a61036' => '5f82584f0a907f3b30cfce5bb8df371454a90051',
+          '689600b91aabec706e657e38ea706ece1ee8268f' => '689600b91aabec706e657e38ea706ece1ee8268f'
+        }
+      end
+
+      it 'returns correct merge commit SHA for each commit' do
+        expected_merge_commits.each do |commit, merge_commit|
+          expect(subject.get_merge_commit(commit)).to eq(merge_commit)
+        end
+      end
+    end
+
     context 'when relevant_commit_ids is provided' do
       let(:relevant_commit_id) { '8a994512e8c8f0dfcf22bb16df6e876be7a61036' }
       subject { described_class.new(commits, relevant_commit_ids: [relevant_commit_id]) }
