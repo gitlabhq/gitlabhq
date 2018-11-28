@@ -160,9 +160,7 @@ describe('Job App ', () => {
 
           setTimeout(() => {
             expect(vm.$el.querySelector('.js-job-stuck')).not.toBeNull();
-            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
-              "This job is stuck, because you don't have any active runners that can run this job.",
-            );
+            expect(vm.$el.querySelector('.js-job-stuck .js-stuck-no-active-runner')).not.toBeNull();
             done();
           }, 0);
         });
@@ -195,9 +193,7 @@ describe('Job App ', () => {
 
           setTimeout(() => {
             expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
-            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
-              "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
-            );
+            expect(vm.$el.querySelector('.js-job-stuck .js-stuck-with-tags')).not.toBeNull();
             done();
           }, 0);
         });
@@ -230,9 +226,7 @@ describe('Job App ', () => {
 
           setTimeout(() => {
             expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(job.tags[0]);
-            expect(vm.$el.querySelector('.js-job-stuck').textContent).toContain(
-              "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:",
-            );
+            expect(vm.$el.querySelector('.js-job-stuck .js-stuck-with-tags')).not.toBeNull();
             done();
           }, 0);
         });
