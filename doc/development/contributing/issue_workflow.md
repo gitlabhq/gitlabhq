@@ -175,7 +175,7 @@ Severity levels can be applied further depending on the facet of the impact; e.g
 | ~S1      | >50% users affected (possible company extinction level event)       | Significant impact on all of GitLab.com            |                              |
 | ~S2      | Many users or multiple paid customers affected (but not apocalyptic)| Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
 | ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
-| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on on GitLab.com                      | Degradation _may_ occur but it's not likely           |
+| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on GitLab.com                         | Degradation _may_ occur but it's not likely           |
 
 ## Label for community contributors
 

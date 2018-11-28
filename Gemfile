@@ -235,7 +235,7 @@ gem 'asana', '~> 0.8.1'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 3.1.0'
+gem 'kubeclient', '~> 4.0.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 4.6'
@@ -320,7 +320,7 @@ group :development do
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
-  gem 'better_errors', '~> 2.1.0'
+  gem 'better_errors', '~> 2.5.0'
   gem 'binding_of_caller', '~> 0.8.0'
 
   # thin instead webrick
@@ -425,7 +425,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.123.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.1.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

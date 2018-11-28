@@ -34,14 +34,14 @@ class RepositoryImportWorker
   attr_reader :project
 
   def start_import
-    return true if start(project)
+    return true if start(project.import_state)
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while importing.")
     false
   end
 
   def fail_import(message)
-    project.mark_import_as_failed(message)
+    project.import_state.mark_as_failed(message)
   end
 
   def template_import?

@@ -76,7 +76,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      in_lock(*lock_params) do # Write opetation is atomic
+      in_lock(*lock_params) do # Write operation is atomic
         unsafe_set_data!(data.byteslice(0, offset) + new_data)
       end
 
@@ -100,7 +100,7 @@ module Ci
     end
 
     def persist_data!
-      in_lock(*lock_params) do # Write opetation is atomic
+      in_lock(*lock_params) do # Write operation is atomic
         unsafe_persist_to!(self.class.persistable_store)
       end
     end

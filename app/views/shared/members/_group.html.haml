@@ -12,7 +12,7 @@
         - if group_link.expires?
           ·
           %span{ class: ('text-warning' if group_link.expires_soon?) }
-            Expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
+            = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(group_link.expires_at) }
   .controls.member-controls
     = form_tag project_group_link_path(@project, group_link), method: :put, remote: true, class: 'js-edit-member-form form-group row append-right-5' do
       = hidden_field_tag "group_link[group_access]", group_link.group_access
@@ -24,7 +24,7 @@
             = group_link.human_access
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
-          = dropdown_title("Change permissions")
+          = dropdown_title(_("Change permissions"))
           .dropdown-content
             %ul
               - Gitlab::Access.options.each do |role, role_id|
@@ -33,13 +33,13 @@
                     class: ("is-active" if group_link.group_access == role_id),
                     data: { id: role_id, el_id: dom_id }
       .prepend-left-5.clearable-input.member-form-control
-        = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{group.id}", disabled: !can_admin_member
+        = text_field_tag 'group_link[expires_at]', group_link.expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: _('Expiration date'), id: "member_expires_at_#{group.id}", disabled: !can_admin_member
         %i.clear-icon.js-clear-input
     - if can_admin_member
       = link_to project_group_link_path(@project, group_link),
         method: :delete,
-        data: { confirm: "Are you sure you want to remove #{group.name}?" },
+        data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } },
         class: 'btn btn-remove prepend-left-10' do
         %span.d-block.d-sm-none
-          Delete
+          = _("Delete")
         = icon('trash', class: 'd-none d-sm-block')

@@ -47,13 +47,13 @@ The source of these Yarn scripts can be found in `/scripts/frontend/prettier.js`
 ### Scripts during Conversion period
 
 ```
-node ./scripts/frontend/prettier.js check ./vendor/
+node ./scripts/frontend/prettier.js check-all ./vendor/
 ```
 
 This will go over all files in a specific folder check it.
 
 ```
-node ./scripts/frontend/prettier.js save ./vendor/
+node ./scripts/frontend/prettier.js save-all ./vendor/
 ```
 
 This will go over all files in a specific folder and save it.

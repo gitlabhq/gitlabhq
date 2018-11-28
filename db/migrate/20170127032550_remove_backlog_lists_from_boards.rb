@@ -1,4 +1,4 @@
-class RemoveBacklogListsFromBoards < ActiveRecord::Migration
+class RemoveBacklogListsFromBoards < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

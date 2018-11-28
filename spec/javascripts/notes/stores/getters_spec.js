@@ -117,17 +117,15 @@ describe('Getters Notes Store', () => {
 
   describe('allResolvableDiscussions', () => {
     it('should return only resolvable discussions in same order', () => {
-      const localGetters = {
-        allDiscussions: [
-          discussion3,
-          unresolvableDiscussion,
-          discussion1,
-          unresolvableDiscussion,
-          discussion2,
-        ],
-      };
+      state.discussions = [
+        discussion3,
+        unresolvableDiscussion,
+        discussion1,
+        unresolvableDiscussion,
+        discussion2,
+      ];
 
-      expect(getters.allResolvableDiscussions(state, localGetters)).toEqual([
+      expect(getters.allResolvableDiscussions(state)).toEqual([
         discussion3,
         discussion1,
         discussion2,
@@ -135,11 +133,9 @@ describe('Getters Notes Store', () => {
     });
 
     it('should return empty array if there are no resolvable discussions', () => {
-      const localGetters = {
-        allDiscussions: [unresolvableDiscussion, unresolvableDiscussion],
-      };
+      state.discussions = [unresolvableDiscussion, unresolvableDiscussion];
 
-      expect(getters.allResolvableDiscussions(state, localGetters)).toEqual([]);
+      expect(getters.allResolvableDiscussions(state)).toEqual([]);
     });
   });
 
@@ -236,7 +232,7 @@ describe('Getters Notes Store', () => {
     it('should return the ID of the discussion after the ID provided', () => {
       expect(getters.nextUnresolvedDiscussionId(state, localGetters)('123')).toBe('456');
       expect(getters.nextUnresolvedDiscussionId(state, localGetters)('456')).toBe('789');
-      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('789')).toBe(undefined);
+      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('789')).toBe('123');
     });
   });
 

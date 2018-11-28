@@ -44,9 +44,9 @@ export default {
           title: 'Get started with performance monitoring',
           description: `Stay updated about the performance and health
               of your environment by configuring Prometheus to monitor your deployments.`,
-          buttonText: 'Install Prometheus on clusters',
+          buttonText: 'Install on clusters',
           buttonPath: this.clustersPath,
-          secondaryButtonText: 'Configure existing Prometheus',
+          secondaryButtonText: 'Configure existing installation',
           secondaryButtonPath: this.settingsPath,
         },
         loading: {
@@ -88,26 +88,32 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-state">
-    <div class="state-svg svg-content"><img :src="currentState.svgUrl" /></div>
-    <h4 class="state-title">{{ currentState.title }}</h4>
-    <p class="state-description">
-      {{ currentState.description }}
-      <a v-if="showButtonDescription" :href="settingsPath"> Prometheus server </a>
-    </p>
-    <div class="state-button">
-      <a v-if="currentState.buttonPath" :href="currentState.buttonPath" class="btn btn-success">
-        {{ currentState.buttonText }}
-      </a>
+  <div class="row empty-state js-empty-state">
+    <div class="col-12">
+      <div class="state-svg svg-content"><img :src="currentState.svgUrl" /></div>
     </div>
-    <div class="state-button">
-      <a
-        v-if="currentState.secondaryButtonPath"
-        :href="currentState.secondaryButtonPath"
-        class="btn"
-      >
-        {{ currentState.secondaryButtonText }}
-      </a>
+
+    <div class="col-12">
+      <div class="text-content">
+        <h4 class="state-title text-center">{{ currentState.title }}</h4>
+        <p class="state-description">
+          {{ currentState.description }}
+          <a v-if="showButtonDescription" :href="settingsPath"> Prometheus server </a>
+        </p>
+
+        <div class="text-center">
+          <a v-if="currentState.buttonPath" :href="currentState.buttonPath" class="btn btn-success">
+            {{ currentState.buttonText }}
+          </a>
+          <a
+            v-if="currentState.secondaryButtonPath"
+            :href="currentState.secondaryButtonPath"
+            class="btn"
+          >
+            {{ currentState.secondaryButtonText }}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>

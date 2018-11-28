@@ -1,4 +1,4 @@
-class CreateMergeRequestDiffFiles < ActiveRecord::Migration
+class CreateMergeRequestDiffFiles < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   disable_ddl_transaction!

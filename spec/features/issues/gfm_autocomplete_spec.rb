@@ -9,7 +9,6 @@ describe 'GFM autocomplete', :js do
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
-  let!(:project_snippet) { create(:project_snippet, project: project, title: 'code snippet') }
 
   before do
     project.add_maintainer(user)
@@ -334,14 +333,55 @@ describe 'GFM autocomplete', :js do
     end
   end
 
-  it 'shows project snippets' do
-    page.within '.timeline-content-form' do
-      find('#note-body').native.send_keys('$')
-    end
+  shared_examples 'autocomplete suggestions' do
+    it 'suggests objects correctly' do
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys(object.class.reference_prefix)
+      end
 
-    page.within '.atwho-container' do
-      expect(page).to have_content(project_snippet.title)
+      page.within '.atwho-container' do
+        expect(page).to have_content(object.title)
+
+        find('ul li').click
+      end
+
+      expect(find('.new-note #note-body').value).to include(expected_body)
     end
+  end
+
+  context 'issues' do
+    let(:object) { issue }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'merge requests' do
+    let(:object) { create(:merge_request, source_project: project) }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'project snippets' do
+    let!(:object) { create(:project_snippet, project: project, title: 'code snippet') }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'label' do
+    let!(:object) { label }
+    let(:expected_body) { object.title }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'milestone' do
+    let!(:object) { create(:milestone, project: project) }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
   end
 
   private

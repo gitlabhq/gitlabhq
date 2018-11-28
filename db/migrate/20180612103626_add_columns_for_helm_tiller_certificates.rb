@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class AddColumnsForHelmTillerCertificates < ActiveRecord::Migration
+class AddColumnsForHelmTillerCertificates < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

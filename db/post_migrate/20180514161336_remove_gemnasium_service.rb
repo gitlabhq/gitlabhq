@@ -1,4 +1,4 @@
-class RemoveGemnasiumService < ActiveRecord::Migration
+class RemoveGemnasiumService < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

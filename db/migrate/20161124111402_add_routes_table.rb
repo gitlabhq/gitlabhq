@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/Timestamps
-class AddRoutesTable < ActiveRecord::Migration
+class AddRoutesTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

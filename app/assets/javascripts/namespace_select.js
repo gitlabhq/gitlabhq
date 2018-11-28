@@ -3,10 +3,11 @@
 import $ from 'jquery';
 import Api from './api';
 import { mergeUrlParams } from './lib/utils/url_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class NamespaceSelect {
   constructor(opts) {
-    const isFilter = opts.dropdown.dataset.isFilter === 'true';
+    const isFilter = parseBoolean(opts.dropdown.dataset.isFilter);
     const fieldName = opts.dropdown.dataset.fieldName || 'namespace_id';
 
     $(opts.dropdown).glDropdown({

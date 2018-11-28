@@ -10,19 +10,19 @@ describe 'Projects > Settings > User manages merge request settings' do
   end
 
   it 'shows "Merge commit" strategy' do
-    page.within '.merge-requests-feature' do
+    page.within '#js-merge-request-settings' do
       expect(page).to have_content 'Merge commit'
     end
   end
 
   it 'shows "Merge commit with semi-linear history " strategy' do
-    page.within '.merge-requests-feature' do
+    page.within '#js-merge-request-settings' do
       expect(page).to have_content 'Merge commit with semi-linear history'
     end
   end
 
   it 'shows "Fast-forward merge" strategy' do
-    page.within '.merge-requests-feature' do
+    page.within '#js-merge-request-settings' do
       expect(page).to have_content 'Fast-forward merge'
     end
   end

@@ -1,5 +1,4 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -21,9 +20,6 @@ import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
  *
  */
 export default {
-  directives: {
-    tooltip,
-  },
   components: {
     UserAvatarLink,
     Icon,

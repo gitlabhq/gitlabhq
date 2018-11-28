@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateU2fRegistrations < ActiveRecord::Migration
+class CreateU2fRegistrations < ActiveRecord::Migration[4.2]
   def change
     create_table :u2f_registrations do |t|
       t.text :certificate

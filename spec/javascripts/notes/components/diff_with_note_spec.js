@@ -17,7 +17,7 @@ describe('diff_with_note', () => {
   };
   const selectors = {
     get container() {
-      return vm.$refs.fileHolder;
+      return vm.$el;
     },
     get diffTable() {
       return this.container.querySelector('.diff-content table');
@@ -70,7 +70,6 @@ describe('diff_with_note', () => {
     it('shows image diff', () => {
       vm = mountComponentWithStore(Component, { props, store });
 
-      expect(selectors.container).toHaveClass('js-image-file');
       expect(selectors.diffTable).not.toExist();
     });
   });

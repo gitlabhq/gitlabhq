@@ -50,7 +50,6 @@ Style/FrozenStringLiteralComment:
     - 'danger/**/*'
     - 'db/**/*'
     - 'ee/**/*'
-    - 'lib/gitlab/**/*'
     - 'lib/tasks/**/*'
     - 'qa/**/*'
     - 'rubocop/**/*'

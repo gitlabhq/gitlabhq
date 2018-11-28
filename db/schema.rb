@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181121111200) do
+ActiveRecord::Schema.define(version: 20181126153547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -643,6 +643,17 @@ ActiveRecord::Schema.define(version: 20181121111200) do
     t.index ["user_id"], name: "index_clusters_on_user_id", using: :btree
   end
 
+  create_table "clusters_applications_cert_managers", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "email", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "status_reason"
+    t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", unique: true, using: :btree
+  end
+
   create_table "clusters_applications_helm", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -690,6 +701,7 @@ ActiveRecord::Schema.define(version: 20181121111200) do
     t.string "version", null: false
     t.string "hostname"
     t.text "status_reason"
+    t.string "external_ip"
     t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
   end
 
@@ -859,6 +871,7 @@ ActiveRecord::Schema.define(version: 20181121111200) do
     t.string "target_type"
     t.index ["action"], name: "index_events_on_action", using: :btree
     t.index ["author_id", "project_id"], name: "index_events_on_author_id_and_project_id", using: :btree
+    t.index ["project_id", "created_at"], name: "index_events_on_project_id_and_created_at", using: :btree
     t.index ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
     t.index ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
   end
@@ -1385,7 +1398,6 @@ ActiveRecord::Schema.define(version: 20181121111200) do
     t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
     t.index ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
     t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
-    t.index ["updated_at"], name: "index_notes_on_updated_at", using: :btree
   end
 
   create_table "notification_settings", force: :cascade do |t|
@@ -1880,10 +1892,6 @@ ActiveRecord::Schema.define(version: 20181121111200) do
     t.index ["name"], name: "index_shards_on_name", unique: true, using: :btree
   end
 
-  create_table "site_statistics", force: :cascade do |t|
-    t.integer "repositories_count", default: 0, null: false
-  end
-
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -2295,6 +2303,7 @@ ActiveRecord::Schema.define(version: 20181121111200) do
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
+  add_foreign_key "clusters_applications_cert_managers", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade

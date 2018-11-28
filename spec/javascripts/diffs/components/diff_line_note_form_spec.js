@@ -62,6 +62,7 @@ describe('DiffLineNoteForm', () => {
         component.$nextTick(() => {
           expect(component.cancelCommentForm).toHaveBeenCalledWith({
             lineCode: diffLines[0].line_code,
+            fileHash: component.diffFileHash,
           });
 
           expect(component.resetAutoSave).toHaveBeenCalled();

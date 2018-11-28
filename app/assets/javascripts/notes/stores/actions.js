@@ -11,7 +11,7 @@ import * as constants from '../constants';
 import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
-import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
+import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
 import { __ } from '~/locale';
 
@@ -39,12 +39,13 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchDiscussions = ({ commit }, { path, filter }) =>
+export const fetchDiscussions = ({ commit, dispatch }, { path, filter }) =>
   service
     .fetchDiscussions(path, filter)
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+      dispatch('updateResolvableDiscussonsCounts');
     });
 
 export const updateDiscussion = ({ commit, state }, discussion) => {
@@ -53,11 +54,18 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
   return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
-export const deleteNote = ({ commit, dispatch }, note) =>
+export const deleteNote = ({ commit, dispatch, state }, note) =>
   service.deleteNote(note.path).then(() => {
+    const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
+
     commit(types.DELETE_NOTE, note);
 
     dispatch('updateMergeRequestWidget');
+    dispatch('updateResolvableDiscussonsCounts');
+
+    if (isInMRPage()) {
+      dispatch('diffs/removeDiscussionsFromDiff', discussion);
+    }
   });
 
 export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
@@ -89,6 +97,7 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
 
         dispatch('updateMergeRequestWidget');
         dispatch('startTaskList');
+        dispatch('updateResolvableDiscussonsCounts');
       }
       return res;
     });
@@ -103,6 +112,8 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
       const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
       commit(mutationType, res);
+
+      dispatch('updateResolvableDiscussonsCounts');
 
       dispatch('updateMergeRequestWidget');
     });
@@ -384,6 +395,9 @@ export const startTaskList = ({ dispatch }) =>
         onSuccess: () => dispatch('startTaskList'),
       }),
   );
+
+export const updateResolvableDiscussonsCounts = ({ commit }) =>
+  commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

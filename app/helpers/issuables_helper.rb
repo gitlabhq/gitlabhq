@@ -362,6 +362,10 @@ module IssuablesHelper
     end
   end
 
+  def has_filter_bar_param?
+    finder.class.scalar_params.any? { |p| params[p].present? }
+  end
+
   private
 
   def sidebar_gutter_collapsed?

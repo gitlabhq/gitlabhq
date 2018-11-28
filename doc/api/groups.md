@@ -152,8 +152,10 @@ Parameters:
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `starred` | boolean | no | Limit by projects starred by the current user |
-| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
-| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `with_issues_enabled` | boolean | no | Limit by projects with issues feature enabled. Default is `false` |
+| `with_merge_requests_enabled` | boolean | no | Limit by projects with merge requests feature enabled. Default is `false` |
+| `with_shared` | boolean | no | Include projects shared to this group. Default is `true` |
+| `include_subgroups` | boolean | no | Include projects in subgroups of this group. Default is `false` |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:

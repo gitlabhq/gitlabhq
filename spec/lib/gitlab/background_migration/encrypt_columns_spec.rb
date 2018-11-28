@@ -65,5 +65,30 @@ describe Gitlab::BackgroundMigration::EncryptColumns, :migration, schema: 201809
 
       expect(hook).to have_attributes(values)
     end
+
+    it 'reloads the model column information' do
+      expect(model).to receive(:reset_column_information).and_call_original
+      expect(model).to receive(:define_attribute_methods).and_call_original
+
+      subject.perform(model, [:token, :url], 1, 1)
+    end
+
+    it 'fails if a source column is not present' do
+      columns = model.columns.reject { |c| c.name == 'url' }
+      allow(model).to receive(:columns) { columns }
+
+      expect do
+        subject.perform(model, [:token, :url], 1, 1)
+      end.to raise_error(/source column: url is missing/)
+    end
+
+    it 'fails if a destination column is not present' do
+      columns = model.columns.reject { |c| c.name == 'encrypted_url' }
+      allow(model).to receive(:columns) { columns }
+
+      expect do
+        subject.perform(model, [:token, :url], 1, 1)
+      end.to raise_error(/destination column: encrypted_url is missing/)
+    end
   end
 end

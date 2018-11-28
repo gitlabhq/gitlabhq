@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddMembersTable < ActiveRecord::Migration
+class AddMembersTable < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

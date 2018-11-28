@@ -1,6 +1,0 @@
----
-title: On deletion of a file in sub directory in web IDE redirect to the sub directory
-  instead of project root
-merge_request: 21465
-author: George Thomas @thegeorgeous
-type: changed

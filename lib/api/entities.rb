@@ -145,7 +145,9 @@ module API
       expose :import_status
 
       # TODO: Use `expose_nil` once we upgrade the grape-entity gem
-      expose :import_error, if: lambda { |status, _ops| status.import_error }
+      expose :import_error, if: lambda { |project, _ops| project.import_state&.last_error } do |project|
+        project.import_state.last_error
+      end
     end
 
     class BasicProjectDetails < ProjectIdentity
@@ -248,7 +250,10 @@ module API
       expose :creator_id
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
-      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
+
+      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
+        project.import_state&.last_error
+      end
 
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -1142,7 +1147,8 @@ module API
     end
 
     class JobArtifactFile < Grape::Entity
-      expose :filename, :size
+      expose :filename
+      expose :cached_size, as: :size
     end
 
     class JobArtifact < Grape::Entity

@@ -199,7 +199,7 @@ export default {
           />
           <p v-if="job.tags.length" class="build-detail-row js-job-tags">
             <span class="build-light-text"> {{ __('Tags:') }} </span>
-            <span v-for="(tag, i) in job.tags" :key="i" class="label label-primary">
+            <span v-for="(tag, i) in job.tags" :key="i" class="badge badge-primary">
               {{ tag }}
             </span>
           </p>

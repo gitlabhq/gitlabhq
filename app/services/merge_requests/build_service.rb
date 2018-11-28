@@ -10,6 +10,7 @@ module MergeRequests
       # TODO: this should handle all quick actions that don't have side effects
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
       merge_quick_actions_into_params!(merge_request, only: [:target_branch])
+      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch) if params.has_key?(:force_remove_source_branch)
       merge_request.assign_attributes(params)
 
       merge_request.author = current_user

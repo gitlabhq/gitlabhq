@@ -178,6 +178,14 @@ describe API::Files do
         expect(response).to have_gitlab_http_status(200)
       end
 
+      it 'forces attachment content disposition' do
+        url = route(file_path) + "/raw"
+
+        get api(url, current_user), params
+
+        expect(headers['Content-Disposition']).to match(/^attachment/)
+      end
+
       context 'when mandatory params are not given' do
         it_behaves_like '400 response' do
           let(:request) { get api(route("any%2Ffile"), current_user) }

@@ -109,22 +109,6 @@ describe Project do
       end
     end
 
-    context 'Site Statistics' do
-      context 'when creating a new project' do
-        it 'tracks project in SiteStatistic' do
-          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
-        end
-      end
-
-      context 'when deleting a project' do
-        it 'untracks project in SiteStatistic' do
-          project = create(:project)
-
-          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
-        end
-      end
-    end
-
     context 'updating cd_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
@@ -1702,6 +1686,16 @@ describe Project do
     end
   end
 
+  describe 'handling import URL' do
+    it 'returns the sanitized URL' do
+      project = create(:project, :import_started, import_url: 'http://user:pass@test.com')
+
+      project.import_state.finish
+
+      expect(project.reload.import_url).to eq('http://test.com')
+    end
+  end
+
   describe '#container_registry_url' do
     let(:project) { create(:project) }
 
@@ -1815,106 +1809,6 @@ describe Project do
     end
   end
 
-  describe '#human_import_status_name' do
-    context 'when import_state exists' do
-      it 'returns the humanized status name' do
-        project = create(:project)
-        create(:import_state, :started, project: project)
-
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-
-    context 'when import_state was not created yet' do
-      let(:project) { create(:project, :import_started) }
-
-      it 'ensures import_state is created and returns humanized status name' do
-        expect do
-          project.human_import_status_name
-        end.to change { ProjectImportState.count }.from(0).to(1)
-      end
-
-      it 'returns humanized status name' do
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-  end
-
-  describe 'Project import job' do
-    let(:project) { create(:project, import_url: generate(:url)) }
-
-    before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage, project.disk_path, project.import_url)
-        .and_return(true)
-
-      # Works around https://github.com/rspec/rspec-mocks/issues/910
-      allow(described_class).to receive(:find).with(project.id).and_return(project)
-      expect(project.repository).to receive(:after_import)
-        .and_call_original
-      expect(project.wiki.repository).to receive(:after_import)
-        .and_call_original
-    end
-
-    it 'imports a project' do
-      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
-
-      expect { project.import_schedule }.to change { project.import_jid }
-      expect(project.reload.import_status).to eq('finished')
-    end
-  end
-
-  describe 'project import state transitions' do
-    context 'state transition: [:started] => [:finished]' do
-      let(:after_import_service) { spy(:after_import_service) }
-      let(:housekeeping_service) { spy(:housekeeping_service) }
-
-      before do
-        allow(Projects::AfterImportService)
-          .to receive(:new) { after_import_service }
-
-        allow(after_import_service)
-          .to receive(:execute) { housekeeping_service.execute }
-
-        allow(Projects::HousekeepingService)
-          .to receive(:new) { housekeeping_service }
-      end
-
-      it 'resets project import_error' do
-        error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update(last_error: error_message)
-
-        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
-      end
-
-      it 'performs housekeeping when an import of a fresh project is completed' do
-        project = create(:project_empty_repo, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(after_import_service).to have_received(:execute)
-        expect(housekeeping_service).to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project repository does not exist' do
-        project = create(:project, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project does not have a valid import type' do
-        project = create(:project, :import_started, import_type: nil)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-    end
-  end
-
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
@@ -1990,6 +1884,42 @@ describe Project do
 
         expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
+      end
+    end
+  end
+
+  describe '#import_status' do
+    context 'with import_state' do
+      it 'returns the right status' do
+        project = create(:project, :import_started)
+
+        expect(project.import_status).to eq("started")
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.import_status).to eq('none')
+      end
+    end
+  end
+
+  describe '#human_import_status_name' do
+    context 'with import_state' do
+      it 'returns the right human import status' do
+        project = create(:project, :import_started)
+
+        expect(project.human_import_status_name).to eq('started')
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.human_import_status_name).to eq('none')
       end
     end
   end
@@ -2199,12 +2129,6 @@ describe Project do
     it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)
       expect(project.repository).to receive(:after_change_head)
-
-      project.change_head(project.default_branch)
-    end
-
-    it 'creates the new reference with rugged' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
 
       project.change_head(project.default_branch)
     end
@@ -3436,13 +3360,14 @@ describe Project do
 
   describe '#after_import' do
     let(:project) { create(:project) }
+    let(:import_state) { create(:import_state, project: project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
       expect(project.wiki.repository).to receive(:after_import)
-      expect(project).to receive(:import_finish)
+      expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)
-      expect(project).to receive(:remove_import_jid)
+      expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
 
@@ -3451,6 +3376,10 @@ describe Project do
 
     context 'branch protection' do
       let(:project) { create(:project, :repository) }
+
+      before do
+        create(:import_state, :started, project: project)
+      end
 
       it 'does not protect when branch protection is disabled' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -3504,37 +3433,6 @@ describe Project do
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#remove_import_jid', :clean_gitlab_redis_cache do
-    let(:project) {  }
-
-    context 'without an import JID' do
-      it 'does nothing' do
-        project = create(:project)
-
-        expect(Gitlab::SidekiqStatus)
-          .not_to receive(:unset)
-
-        project.remove_import_jid
-      end
-    end
-
-    context 'with an import JID' do
-      it 'unsets the import JID' do
-        project = create(:project)
-        create(:import_state, project: project, jid: '123')
-
-        expect(Gitlab::SidekiqStatus)
-          .to receive(:unset)
-          .with('123')
-          .and_call_original
-
-        project.remove_import_jid
-
-        expect(project.import_jid).to be_nil
-      end
     end
   end
 

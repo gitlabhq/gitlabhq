@@ -203,21 +203,6 @@
   stroke: $gray-darkest;
 }
 
-.prometheus-state {
-  max-width: 460px;
-  margin: 10px auto;
-  text-align: center;
-
-  .state-svg {
-    max-width: 80vw;
-    margin: 0 auto;
-  }
-
-  .state-button {
-    padding: $gl-padding / 2;
-  }
-}
-
 .prometheus-graphs {
   .environments {
     .dropdown-menu-toggle {

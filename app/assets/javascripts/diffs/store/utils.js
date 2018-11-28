@@ -209,9 +209,11 @@ export function prepareDiffData(diffData) {
         const line = file.parallel_diff_lines[u];
         if (line.left) {
           line.left = trimFirstCharOfLineContent(line.left);
+          line.left.hasForm = false;
         }
         if (line.right) {
           line.right = trimFirstCharOfLineContent(line.right);
+          line.right.hasForm = false;
         }
       }
     }
@@ -220,7 +222,7 @@ export function prepareDiffData(diffData) {
       const linesLength = file.highlighted_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.highlighted_diff_lines[u];
-        Object.assign(line, { ...trimFirstCharOfLineContent(line) });
+        Object.assign(line, { ...trimFirstCharOfLineContent(line), hasForm: false });
       }
       showingLines += file.parallel_diff_lines.length;
     }

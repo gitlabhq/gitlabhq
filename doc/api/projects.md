@@ -668,7 +668,7 @@ POST /projects
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |
@@ -706,7 +706,7 @@ POST /projects/user/:user_id
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |
@@ -742,7 +742,7 @@ PUT /projects/:id
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |

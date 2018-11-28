@@ -36,7 +36,7 @@ GET /issues?my_reaction_emoji=star
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels                         |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
@@ -149,7 +149,7 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
@@ -264,7 +264,7 @@ GET /projects/:id/issues?my_reaction_emoji=star
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
-| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
+| `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
@@ -658,7 +658,7 @@ POST /projects/:id/issues/:issue_iid/move
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"to_project_id": 5}' https://gitlab.example.com/api/v4/projects/4/issues/85/move
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form to_project_id=5 https://gitlab.example.com/api/v4/projects/4/issues/85/move
 ```
 
 Example response:

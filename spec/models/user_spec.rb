@@ -1137,12 +1137,38 @@ describe User do
       expect(described_class.find_by_any_email(user.email.upcase, confirmed: true)).to eq user
     end
 
-    it 'finds by secondary email' do
-      email = create(:email, email: 'foo@example.com')
-      user  = email.user
+    context 'finds by secondary email' do
+      let(:user) { email.user }
 
-      expect(described_class.find_by_any_email(email.email)).to eq user
-      expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
+      context 'primary email confirmed' do
+        context 'secondary email confirmed' do
+          let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+          it 'finds user respecting the confirmed flag' do
+            expect(described_class.find_by_any_email(email.email)).to eq user
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
+          end
+        end
+
+        context 'secondary email not confirmed' do
+          let!(:email) { create(:email, email: 'foo@example.com') }
+
+          it 'finds user respecting the confirmed flag' do
+            expect(described_class.find_by_any_email(email.email)).to eq user
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+          end
+        end
+      end
+
+      context 'primary email not confirmed' do
+        let(:user) { create(:user, confirmed_at: nil) }
+        let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
+
+        it 'finds user respecting the confirmed flag' do
+          expect(described_class.find_by_any_email(email.email)).to eq user
+          expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+        end
+      end
     end
 
     it 'returns nil when nothing found' do

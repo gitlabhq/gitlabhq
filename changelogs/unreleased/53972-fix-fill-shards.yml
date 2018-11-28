@@ -1,5 +1,0 @@
----
-title: Fix a race condition intermittently breaking GitLab startup
-merge_request: 23028
-author:
-type: fixed

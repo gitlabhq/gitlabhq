@@ -1,4 +1,4 @@
-class FixIdentities < ActiveRecord::Migration
+class FixIdentities < ActiveRecord::Migration[4.2]
   def up
     # Up until now, legacy 'ldap' references in the database were charitably
     # interpreted to point to the first LDAP server specified in the GitLab

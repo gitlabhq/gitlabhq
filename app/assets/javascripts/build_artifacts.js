@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
-import { convertPermissionToBoolean } from './lib/utils/common_utils';
+import { parseBoolean } from './lib/utils/common_utils';
 
 export default class BuildArtifacts {
   constructor() {
@@ -22,7 +22,7 @@ export default class BuildArtifacts {
   // eslint-disable-next-line class-methods-use-this
   setupEntryClick() {
     return $('.tree-holder').on('click', 'tr[data-link]', function() {
-      visitUrl(this.dataset.link, convertPermissionToBoolean(this.dataset.externalLink));
+      visitUrl(this.dataset.link, parseBoolean(this.dataset.externalLink));
     });
   }
   // eslint-disable-next-line class-methods-use-this

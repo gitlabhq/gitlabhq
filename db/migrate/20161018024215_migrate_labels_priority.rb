@@ -1,4 +1,4 @@
-class MigrateLabelsPriority < ActiveRecord::Migration
+class MigrateLabelsPriority < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

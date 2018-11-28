@@ -35,7 +35,7 @@ Parameters:
 | `sort`              | string   | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
 | `milestone`         | string   | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
-| `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
+| `labels`            | string   | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
 | `created_after`     | datetime | no       | Return merge requests created on or after the given time                                                               |
 | `created_before`    | datetime | no       | Return merge requests created on or before the given time                                                              |
 | `updated_after`     | datetime | no       | Return merge requests updated on or after the given time                                                               |
@@ -170,7 +170,7 @@ Parameters:
 | `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
-| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
+| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
@@ -294,7 +294,7 @@ Parameters:
 | `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                       |
 | `milestone`         | string         | no       | Return merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
-| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
+| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. `No+Label` (Deprecated) lists all merge requests with no labels. Predefined names are case-insensitive. |
 | `created_after`     | datetime       | no       | Return merge requests created on or after the given time                                                                       |
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |

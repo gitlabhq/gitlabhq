@@ -1,4 +1,4 @@
-class AddAccessLevelToCiRunners < ActiveRecord::Migration
+class AddAccessLevelToCiRunners < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

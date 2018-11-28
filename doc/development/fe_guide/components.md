@@ -6,7 +6,7 @@
 
 ## Dropdowns
 
-See also the [corresponding UX guide](../ux_guide/components.md#dropdowns).
+See also the [corresponding UX guide](https://design.gitlab.com/#/components/dropdowns).
 
 ### How to style a bootstrap dropdown
 1. Use the HTML structure provided by the [docs][bootstrap-dropdowns]
@@ -40,7 +40,7 @@ See also the [corresponding UX guide](../ux_guide/components.md#dropdowns).
 
 ## Modals
 
-See also the [corresponding UX guide](../ux_guide/components.md#modals).
+See also the [corresponding UX guide](https://design.gitlab.com/#/components/modals).
 
 We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
 

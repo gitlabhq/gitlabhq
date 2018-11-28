@@ -22,7 +22,6 @@
   .detail-page-header,
   .page-content-header,
   .commit-box,
-  .info-well,
   .commit-ci-menu,
   .files-changed-inner,
   .limited-header-width,
@@ -937,5 +936,39 @@
         padding-top: 0;
       }
     }
+  }
+}
+
+.issuable-suggestions svg {
+  vertical-align: sub;
+}
+
+.suggestion-item a {
+  color: initial;
+}
+
+.suggestion-confidential {
+  color: $orange-600;
+}
+
+.suggestion-state-open {
+  color: $green-500;
+}
+
+.suggestion-state-closed {
+  color: $blue-500;
+}
+
+.suggestion-help-hover {
+  cursor: help;
+}
+
+.suggestion-footer {
+  font-size: 12px;
+  line-height: 15px;
+
+  .avatar {
+    margin-top: -3px;
+    border: 0;
   }
 }

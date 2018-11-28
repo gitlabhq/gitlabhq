@@ -16,7 +16,7 @@ module QA
             Page::Main::Login.act { sign_in_using_credentials }
 
             project = Resource::Project.fabricate! do |p|
-              p.name = 'project-with-autodevops'
+              p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
               p.description = 'Project with Auto Devops'
             end
 

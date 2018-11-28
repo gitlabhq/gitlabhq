@@ -216,6 +216,9 @@ msgstr[1] ""
 msgid "1st contribution!"
 msgstr ""
 
+msgid "2FA"
+msgstr ""
+
 msgid "2FA enabled"
 msgstr ""
 
@@ -498,34 +501,7 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occured creating the new branch."
-msgstr ""
-
-msgid "An error occured whilst fetching the job trace."
-msgstr ""
-
-msgid "An error occured whilst fetching the latest pipeline."
-msgstr ""
-
-msgid "An error occured whilst loading all the files."
-msgstr ""
-
-msgid "An error occured whilst loading the file content."
-msgstr ""
-
-msgid "An error occured whilst loading the file."
-msgstr ""
-
-msgid "An error occured whilst loading the merge request changes."
-msgstr ""
-
-msgid "An error occured whilst loading the merge request version data."
-msgstr ""
-
-msgid "An error occured whilst loading the merge request."
-msgstr ""
-
-msgid "An error occured whilst loading the pipelines jobs."
+msgid "An error occurred creating the new branch."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -601,6 +577,33 @@ msgid "An error occurred while saving assignees"
 msgstr ""
 
 msgid "An error occurred while validating username"
+msgstr ""
+
+msgid "An error occurred whilst fetching the job trace."
+msgstr ""
+
+msgid "An error occurred whilst fetching the latest pipeline."
+msgstr ""
+
+msgid "An error occurred whilst loading all the files."
+msgstr ""
+
+msgid "An error occurred whilst loading the file content."
+msgstr ""
+
+msgid "An error occurred whilst loading the file."
+msgstr ""
+
+msgid "An error occurred whilst loading the merge request changes."
+msgstr ""
+
+msgid "An error occurred whilst loading the merge request version data."
+msgstr ""
+
+msgid "An error occurred whilst loading the merge request."
+msgstr ""
+
+msgid "An error occurred whilst loading the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred. Please try again."
@@ -801,6 +804,9 @@ msgstr ""
 msgid "Automatically marked as default internal user"
 msgstr ""
 
+msgid "Automatically resolved"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -808,6 +814,12 @@ msgid "Available group Runners : %{runners}"
 msgstr ""
 
 msgid "Available group Runners : %{runners}."
+msgstr ""
+
+msgid "Available shared Runners:"
+msgstr ""
+
+msgid "Available specific runners"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -913,6 +925,9 @@ msgid "Bitbucket Server Import"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blocked"
 msgstr ""
 
 msgid "Blog"
@@ -1154,6 +1169,9 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Change permissions"
+msgstr ""
+
 msgid "Change template"
 msgstr ""
 
@@ -1316,7 +1334,7 @@ msgstr ""
 msgid "CiVariable|All environments"
 msgstr ""
 
-msgid "CiVariable|Error occured while saving variables"
+msgid "CiVariable|Error occurred while saving variables"
 msgstr ""
 
 msgid "CiVariable|Protected"
@@ -1364,13 +1382,13 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Closed"
+msgstr ""
+
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
-msgstr ""
-
-msgid "ClusterIntegration|A Knative build extends Kubernetes and utilizes existing Kubernetes primitives to provide you with the ability to run on-cluster container builds from source. For example, you can write a build that uses Kubernetes-native resources to obtain your source code from a repository, build it into container a image, and then run that image."
 msgstr ""
 
 msgid "ClusterIntegration|API URL"
@@ -1397,13 +1415,13 @@ msgstr ""
 msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
 msgstr ""
 
-msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
-msgstr ""
-
-msgid "ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}"
-msgstr ""
-
 msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
+msgstr ""
+
+msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
@@ -1413,6 +1431,9 @@ msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluste
 msgstr ""
 
 msgid "ClusterIntegration|CA Certificate"
+msgstr ""
+
+msgid "ClusterIntegration|Cert-Manager"
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
@@ -1434,6 +1455,9 @@ msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
+msgstr ""
+
+msgid "ClusterIntegration|Copy Knative IP Address to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
@@ -1538,7 +1562,13 @@ msgstr ""
 msgid "ClusterIntegration|Knative"
 msgstr ""
 
+msgid "ClusterIntegration|Knative (pronounced kay-nay-tiv) extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
+msgstr ""
+
 msgid "ClusterIntegration|Knative Domain Name:"
+msgstr ""
+
+msgid "ClusterIntegration|Knative IP Address:"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"
@@ -1572,6 +1602,9 @@ msgid "ClusterIntegration|Learn more about Kubernetes"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about group Kubernetes clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Let's Encrypt"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -1734,6 +1767,9 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up to date."
 msgstr ""
 
 msgid "ClusterIntegration|check the pricing here"
@@ -2450,6 +2486,12 @@ msgstr ""
 msgid "Disable group Runners"
 msgstr ""
 
+msgid "Disable shared Runners"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
 msgid "Discard"
 msgstr ""
 
@@ -2591,6 +2633,9 @@ msgstr ""
 msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
+msgid "Enable shared Runners"
+msgstr ""
+
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
@@ -2598,6 +2643,9 @@ msgid "Enable usage ping"
 msgstr ""
 
 msgid "Enable usage ping to get an overview of how you are using GitLab from a feature perspective."
+msgstr ""
+
+msgid "Enabled"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -2786,6 +2834,9 @@ msgstr ""
 msgid "EventFilterBy|Filter by team"
 msgstr ""
 
+msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
+msgstr ""
+
 msgid "Every day (at 4:00am)"
 msgstr ""
 
@@ -2793,6 +2844,9 @@ msgid "Every month (on the 1st at 4:00am)"
 msgstr ""
 
 msgid "Every week (Sundays at 4:00am)"
+msgstr ""
+
+msgid "Everyone"
 msgstr ""
 
 msgid "Everyone can contribute"
@@ -2808,6 +2862,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Expires in %{expires_at}"
 msgstr ""
 
 msgid "Explain the problem. If appropriate, provide a link to the relevant issue or comment."
@@ -2907,6 +2964,9 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter by commit message"
+msgstr ""
+
+msgid "Filter by two-factor authentication"
 msgstr ""
 
 msgid "Filter..."
@@ -3050,6 +3110,9 @@ msgstr ""
 msgid "GitLab Import"
 msgstr ""
 
+msgid "GitLab Shared Runners execute code of different projects on the same Runner unless you configure GitLab Runner Autoscale with MaxBuilds 1 (which it is on GitLab.com)."
+msgstr ""
+
 msgid "GitLab User"
 msgstr ""
 
@@ -3077,6 +3140,9 @@ msgstr ""
 msgid "Gitea Import"
 msgstr ""
 
+msgid "Given access %{time_ago}"
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
@@ -3099,6 +3165,9 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr ""
 
 msgid "Got it!"
+msgstr ""
+
+msgid "Grant access"
 msgstr ""
 
 msgid "Graph"
@@ -3421,6 +3490,9 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
+msgstr ""
+
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
@@ -3515,6 +3587,9 @@ msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are sear
 msgstr ""
 
 msgid "Issues, merge requests, pushes and comments."
+msgstr ""
+
+msgid "It's you"
 msgstr ""
 
 msgid "Jan"
@@ -4252,12 +4327,6 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid "Not all comments are displayed because you're comparing two versions of the diff."
-msgstr ""
-
-msgid "Not all comments are displayed because you're viewing an old version of the diff."
-msgstr ""
-
 msgid "Not allowed to merge"
 msgstr ""
 
@@ -4395,9 +4464,6 @@ msgstr ""
 msgid "Only admins"
 msgstr ""
 
-msgid "Only comments from the following commit are shown below"
-msgstr ""
-
 msgid "Only mirror protected branches"
 msgstr ""
 
@@ -4417,6 +4483,9 @@ msgid "Open sidebar"
 msgstr ""
 
 msgid "Open source software to collaborate on code"
+msgstr ""
+
+msgid "Opened"
 msgstr ""
 
 msgid "OpenedNDaysAgo|Opened"
@@ -5375,6 +5444,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Requested %{time_ago}"
+msgstr ""
+
 msgid "Requests Profiles"
 msgstr ""
 
@@ -5382,6 +5454,9 @@ msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
+msgstr ""
+
+msgid "Resend invite"
 msgstr ""
 
 msgid "Reset health check access token"
@@ -5397,6 +5472,9 @@ msgid "Resolve conflicts on source branch"
 msgstr ""
 
 msgid "Resolve discussion"
+msgstr ""
+
+msgid "Resolved"
 msgstr ""
 
 msgid "Response metrics (AWS ELB)"
@@ -5477,6 +5555,9 @@ msgid "Runners"
 msgstr ""
 
 msgid "Runners API"
+msgstr ""
+
+msgid "Runners activated for this project"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
@@ -5662,6 +5743,9 @@ msgstr ""
 msgid "Send email"
 msgstr ""
 
+msgid "Send report"
+msgstr ""
+
 msgid "Send usage data"
 msgstr ""
 
@@ -5761,9 +5845,6 @@ msgstr ""
 msgid "Show latest version"
 msgstr ""
 
-msgid "Show latest version of the diff"
-msgstr ""
-
 msgid "Show parent pages"
 msgstr ""
 
@@ -5797,6 +5878,9 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "Similar issues"
 msgstr ""
 
 msgid "Size and domain settings for static websites"
@@ -5848,6 +5932,9 @@ msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, your filter produced no results"
 msgstr ""
 
 msgid "Sort by"
@@ -5956,6 +6043,9 @@ msgid "Source code"
 msgstr ""
 
 msgid "Source is not available"
+msgstr ""
+
+msgid "Source project cannot be found."
 msgstr ""
 
 msgid "Spam Logs"
@@ -6305,9 +6395,6 @@ msgstr ""
 msgid "There are no labels yet"
 msgstr ""
 
-msgid "There are no merge requests to show"
-msgstr ""
-
 msgid "There are no projects shared with this group yet"
 msgstr ""
 
@@ -6333,6 +6420,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
 msgid "They can be managed using the %{link}."
@@ -6443,7 +6533,7 @@ msgstr ""
 msgid "This job requires a manual action"
 msgstr ""
 
-msgid "This job will automatically run after it's timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
+msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -6726,10 +6816,16 @@ msgstr ""
 msgid "To start serving your jobs you can add Runners to your group"
 msgstr ""
 
+msgid "To start serving your jobs you can either add specific Runners to your project or use shared Runners"
+msgstr ""
+
 msgid "To this GitLab instance"
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
+msgstr ""
+
+msgid "To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "Today"
@@ -6990,6 +7086,9 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+msgid "Users requesting access to"
+msgstr ""
+
 msgid "Variables"
 msgstr ""
 
@@ -7048,6 +7147,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "View the documentation"
+msgstr ""
+
+msgid "Viewing commit"
 msgstr ""
 
 msgid "Visibility and access controls"
@@ -7240,6 +7342,9 @@ msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"
+msgstr ""
+
+msgid "Will deploy to"
 msgstr ""
 
 msgid "Withdraw Access Request"
@@ -7480,6 +7585,11 @@ msgstr ""
 
 msgid "disabled"
 msgstr ""
+
+msgid "discussion resolved"
+msgid_plural "discussions resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "done"
 msgstr ""
@@ -7766,6 +7876,9 @@ msgid "started"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "updated"
 msgstr ""
 
 msgid "username"

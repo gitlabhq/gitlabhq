@@ -20,6 +20,7 @@ describe('Applications', () => {
         applications: {
           helm: { title: 'Helm Tiller' },
           ingress: { title: 'Ingress' },
+          cert_manager: { title: 'Cert-Manager' },
           runner: { title: 'GitLab Runner' },
           prometheus: { title: 'Prometheus' },
           jupyter: { title: 'JupyterHub' },
@@ -34,6 +35,10 @@ describe('Applications', () => {
 
     it('renders a row for Ingress', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).toBeDefined();
+    });
+
+    it('renders a row for Cert-Manager', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).toBeDefined();
     });
 
     it('renders a row for Prometheus', () => {
@@ -65,6 +70,7 @@ describe('Applications', () => {
                 externalIp: '0.0.0.0',
               },
               helm: { title: 'Helm Tiller' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
@@ -89,6 +95,7 @@ describe('Applications', () => {
                 status: 'installed',
               },
               helm: { title: 'Helm Tiller' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '' },
@@ -109,6 +116,7 @@ describe('Applications', () => {
           applications: {
             helm: { title: 'Helm Tiller' },
             ingress: { title: 'Ingress' },
+            cert_manager: { title: 'Cert-Manager' },
             runner: { title: 'GitLab Runner' },
             prometheus: { title: 'Prometheus' },
             jupyter: { title: 'JupyterHub', hostname: '' },
@@ -128,6 +136,7 @@ describe('Applications', () => {
             applications: {
               helm: { title: 'Helm Tiller', status: 'installed' },
               ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
@@ -145,6 +154,7 @@ describe('Applications', () => {
             applications: {
               helm: { title: 'Helm Tiller', status: 'installed' },
               ingress: { title: 'Ingress', status: 'installed' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
@@ -162,6 +172,7 @@ describe('Applications', () => {
             applications: {
               helm: { title: 'Helm Tiller', status: 'installed' },
               ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
@@ -179,6 +190,7 @@ describe('Applications', () => {
             applications: {
               helm: { title: 'Helm Tiller' },
               ingress: { title: 'Ingress' },
+              cert_manager: { title: 'Cert-Manager' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'not_installable' },

@@ -14,5 +14,9 @@ describe GitlabSchema.types['Project'] do
     end
   end
 
+  describe 'nested issues' do
+    it { expect(described_class).to have_graphql_field(:issues) }
+  end
+
   it { is_expected.to have_graphql_field(:pipelines) }
 end

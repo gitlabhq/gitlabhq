@@ -25,7 +25,7 @@ export const getMergeRequestData = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occured whilst loading the merge request.'),
+            text: __('An error occurred whilst loading the merge request.'),
             action: payload =>
               dispatch('getMergeRequestData', payload).then(() =>
                 dispatch('setErrorMessage', null),
@@ -58,7 +58,7 @@ export const getMergeRequestChanges = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occured whilst loading the merge request changes.'),
+            text: __('An error occurred whilst loading the merge request changes.'),
             action: payload =>
               dispatch('getMergeRequestChanges', payload).then(() =>
                 dispatch('setErrorMessage', null),
@@ -92,7 +92,7 @@ export const getMergeRequestVersions = (
         })
         .catch(() => {
           dispatch('setErrorMessage', {
-            text: __('An error occured whilst loading the merge request version data.'),
+            text: __('An error occurred whilst loading the merge request version data.'),
             action: payload =>
               dispatch('getMergeRequestVersions', payload).then(() =>
                 dispatch('setErrorMessage', null),
