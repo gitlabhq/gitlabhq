@@ -9,9 +9,14 @@ module Gitlab
         #
         class Settings < ActiveRecord::Base
           include ::EachBatch
+          include ::CacheableAttributes
 
           self.table_name = 'application_settings'
           self.inheritance_column = :_type_disabled
+
+          after_commit do
+            ApplicationSetting.expire
+          end
 
           def runners_registration_token=(value)
             self.runners_registration_token_encrypted =

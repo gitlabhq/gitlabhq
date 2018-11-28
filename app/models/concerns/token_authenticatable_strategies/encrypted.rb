@@ -25,6 +25,9 @@ module TokenAuthenticatableStrategies
       #
       # In that case we are using insecure strategy, but this should only happen
       # in tests, because otherwise `encrypted_field` is going to exist.
+      #
+      # Another use case is when we are caching resources / columns, like we do
+      # in case of ApplicationSetting.
 
       return super if instance.has_attribute?(encrypted_field)
 
