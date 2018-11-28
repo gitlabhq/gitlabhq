@@ -604,6 +604,8 @@ If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runners will
 lose access to your GitLab server.
 
+You may also want to restore any TLS keys, certificates, or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
 Depending on your case, you might want to run the restore command with one or
 more of the following options:
 
