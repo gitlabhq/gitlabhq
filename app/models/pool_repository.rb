@@ -19,7 +19,7 @@ class PoolRepository < ActiveRecord::Base
   private
 
   def correct_disk_path
-    update(disk_path: storage.disk_path)
+    update!(disk_path: storage.disk_path)
   end
 
   def storage
