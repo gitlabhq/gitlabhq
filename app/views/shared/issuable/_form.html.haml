@@ -17,6 +17,8 @@
 
   = render 'shared/issuable/form/template_selector', issuable: issuable
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:work_in_progress?)
+- if Feature.enabled?(:issue_suggestions) && Feature.enabled?(:graphql)
+  #js-suggestions{ data: { project_path: @project.full_path } }
 
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 

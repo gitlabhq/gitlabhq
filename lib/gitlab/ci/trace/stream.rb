@@ -43,19 +43,14 @@ module Gitlab
         def append(data, offset)
           data = data.force_encoding(Encoding::BINARY)
 
-          stream.truncate(offset)
-          stream.seek(0, IO::SEEK_END)
+          stream.seek(offset, IO::SEEK_SET)
           stream.write(data)
+          stream.truncate(offset + data.bytesize)
           stream.flush()
         end
 
         def set(data)
-          data = data.force_encoding(Encoding::BINARY)
-
-          stream.seek(0, IO::SEEK_SET)
-          stream.write(data)
-          stream.truncate(data.bytesize)
-          stream.flush()
+          append(data, 0)
         end
 
         def raw(last_lines: nil)

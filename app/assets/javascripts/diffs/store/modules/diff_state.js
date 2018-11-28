@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import bp from '~/breakpoints';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { INLINE_DIFF_VIEW_TYPE, DIFF_VIEW_COOKIE_NAME, MR_TREE_SHOW_KEY } from '../../constants';
 
 const viewTypeFromQueryString = getParameterValues('view')[0];
@@ -17,12 +18,11 @@ export default () => ({
   diffFiles: [],
   mergeRequestDiffs: [],
   mergeRequestDiff: null,
-  diffLineCommentForms: {},
   diffViewType: viewTypeFromQueryString || viewTypeFromCookie || defaultViewType,
   tree: [],
   treeEntries: {},
   showTreeList:
-    storedTreeShow === null ? bp.getBreakpointSize() !== 'xs' : storedTreeShow === 'true',
+    storedTreeShow === null ? bp.getBreakpointSize() !== 'xs' : parseBoolean(storedTreeShow),
   currentDiffFileId: '',
   projectPath: '',
   commentForms: [],

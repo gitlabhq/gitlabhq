@@ -804,6 +804,9 @@ msgstr ""
 msgid "Automatically marked as default internal user"
 msgstr ""
 
+msgid "Automatically resolved"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -1377,6 +1380,9 @@ msgid "Clone repository"
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Closed"
 msgstr ""
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
@@ -4473,6 +4479,9 @@ msgstr ""
 msgid "Open source software to collaborate on code"
 msgstr ""
 
+msgid "Opened"
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
@@ -5459,6 +5468,9 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+msgid "Resolved"
+msgstr ""
+
 msgid "Response metrics (AWS ELB)"
 msgstr ""
 
@@ -5860,6 +5872,9 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-up restrictions"
+msgstr ""
+
+msgid "Similar issues"
 msgstr ""
 
 msgid "Size and domain settings for static websites"
@@ -6396,6 +6411,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
 msgid "They can be managed using the %{link}."
@@ -7559,6 +7577,11 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
+msgid "discussion resolved"
+msgid_plural "discussions resolved"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "done"
 msgstr ""
 
@@ -7844,6 +7867,9 @@ msgid "started"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "updated"
 msgstr ""
 
 msgid "username"

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 import { s__ } from '../locale';
 import setupToggleButtons from '../toggle_buttons';
 import CreateItemDropdown from '../create_item_dropdown';
@@ -150,7 +150,7 @@ export default class VariableList {
 
   removeRow(row) {
     const $row = $(row);
-    const isPersisted = convertPermissionToBoolean($row.attr('data-is-persisted'));
+    const isPersisted = parseBoolean($row.attr('data-is-persisted'));
 
     if (isPersisted) {
       $row.hide();

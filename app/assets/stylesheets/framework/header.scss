@@ -110,6 +110,10 @@
       }
     }
 
+    .navbar-collapse > ul.nav > li:not(.d-none) {
+      margin: 0 2px;
+    }
+
     &.menu-expanded {
       @include media-breakpoint-down(xs) {
         .title-container {
@@ -117,7 +121,7 @@
         }
 
         .navbar-collapse {
-          display: block;
+          display: flex;
         }
       }
     }
@@ -209,7 +213,7 @@
 
       > a {
         will-change: color;
-        margin: 4px 2px;
+        margin: 4px 0;
         padding: 6px 8px;
         height: 32px;
 
@@ -455,13 +459,10 @@
   color: $indigo-900;
   font-weight: $gl-font-weight-bold;
   line-height: 18px;
+  margin: 4px 0 4px 2px;
 
   &:hover {
     background-color: $white-light;
-  }
-
-  @include media-breakpoint-down(xs) {
-    margin-top: $gl-padding-4;
   }
 }
 
@@ -509,12 +510,7 @@
       margin-right: -10px;
 
       .nav > li:not(.d-none) {
-        display: table-cell !important;
-        width: 25%;
-
-        a {
-          margin-right: 8px;
-        }
+        flex: 1;
       }
     }
   }

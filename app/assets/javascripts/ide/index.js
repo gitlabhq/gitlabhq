@@ -4,7 +4,7 @@ import Translate from '~/vue_shared/translate';
 import ide from './components/ide.vue';
 import store from './stores';
 import router from './ide_router';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 
 Vue.use(Translate);
 
@@ -40,7 +40,7 @@ export function initIde(el, options = {}) {
         webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
       });
       this.setInitialData({
-        clientsidePreviewEnabled: convertPermissionToBoolean(el.dataset.clientsidePreviewEnabled),
+        clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
         ...extraInitialData(el),
       });
     },

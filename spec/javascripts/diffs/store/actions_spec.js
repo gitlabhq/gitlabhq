@@ -310,13 +310,13 @@ describe('DiffsStoreActions', () => {
 
   describe('showCommentForm', () => {
     it('should call mutation to show comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         showCommentForm,
         payload,
         {},
-        [{ type: types.ADD_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: true } }],
         [],
         done,
       );
@@ -325,13 +325,13 @@ describe('DiffsStoreActions', () => {
 
   describe('cancelCommentForm', () => {
     it('should call mutation to cancel comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         cancelCommentForm,
         payload,
         {},
-        [{ type: types.REMOVE_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: false } }],
         [],
         done,
       );

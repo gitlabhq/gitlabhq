@@ -1,5 +1,5 @@
 import { n__ } from '../locale';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+import { parseBoolean } from '../lib/utils/common_utils';
 
 export default class SecretValues {
   constructor({
@@ -16,7 +16,7 @@ export default class SecretValues {
     this.revealButton = this.container.querySelector('.js-secret-value-reveal-button');
 
     if (this.revealButton) {
-      const isRevealed = convertPermissionToBoolean(this.revealButton.dataset.secretRevealStatus);
+      const isRevealed = parseBoolean(this.revealButton.dataset.secretRevealStatus);
       this.updateDom(isRevealed);
 
       this.revealButton.addEventListener('click', this.onRevealButtonClicked.bind(this));
@@ -24,9 +24,7 @@ export default class SecretValues {
   }
 
   onRevealButtonClicked() {
-    const previousIsRevealed = convertPermissionToBoolean(
-      this.revealButton.dataset.secretRevealStatus,
-    );
+    const previousIsRevealed = parseBoolean(this.revealButton.dataset.secretRevealStatus);
     this.updateDom(!previousIsRevealed);
   }
 

@@ -50,7 +50,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
           find('.line-resolve-btn').click
 
           expect(page).to have_selector('.line-resolve-btn.is-active')
-          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
+          expect(find('.line-resolve-btn')['aria-label']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.diff-content' do
@@ -243,7 +243,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
           resolve_button.click
           wait_for_requests
 
-          expect(resolve_button['data-original-title']).to eq("Resolved by #{user.name}")
+          expect(resolve_button['aria-label']).to eq("Resolved by #{user.name}")
         end
       end
 
@@ -266,7 +266,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
           wait_for_requests
 
-          expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
+          expect(first('.line-resolve-btn')['aria-label']).to eq("Resolved by #{user.name}")
         end
 
         expect(page).to have_content('Last updated')
@@ -285,7 +285,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         wait_for_requests
 
         resolve_buttons.each do |button|
-          expect(button['data-original-title']).to eq("Resolved by #{user.name}")
+          expect(button['aria-label']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.line-resolve-all-container' do
@@ -357,13 +357,12 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
           resolve_button.click
           wait_for_requests
 
-          expect(resolve_button['data-original-title']).to eq("Resolved by #{user.name}")
+          expect(resolve_button['aria-label']).to eq("Resolved by #{user.name}")
         end
       end
 
-      it 'shows jump to next discussion button, apart from the last one' do
-        expect(page).to have_selector('.discussion-reply-holder', count: 2)
-        expect(page).to have_selector('.discussion-reply-holder .discussion-next-btn', count: 1)
+      it 'shows jump to next discussion button' do
+        expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
       end
 
       it 'displays next discussion even if hidden' do

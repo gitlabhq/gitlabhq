@@ -67,6 +67,9 @@ services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
 Any image found at [Docker Hub][hub] or your private Container Registry can be
 used as a service.
 
+Services inherit the same DNS servers, search domains, and additional hosts as
+the CI container itself.
+
 You can see some widely used services examples in the relevant documentation of
 [CI services examples](../services/README.md).
 

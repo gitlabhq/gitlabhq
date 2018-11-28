@@ -446,7 +446,9 @@ See also: [GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages doma
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
 
 NOTE: **Note:**
-GitLab Pages access control is not activated on GitLab.com.
+GitLab Pages access control is not activated on GitLab.com. You can check its
+progress on the
+[infrastructure issue tracker](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5576).
 
 You can enable Pages access control on your project, so that only
 [members of your project](../../permissions.md#project-members-permissions)

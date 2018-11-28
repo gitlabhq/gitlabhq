@@ -24,6 +24,7 @@ export default {
         noteData.resolved = false;
         noteData.resolve_path = note.resolve_path;
         noteData.resolve_with_issue_path = note.resolve_with_issue_path;
+        noteData.diff_discussion = false;
       }
 
       state.discussions.push(noteData);
@@ -97,33 +98,36 @@ export default {
   },
 
   [types.SET_INITIAL_DISCUSSIONS](state, discussionsData) {
-    const discussions = [];
+    const discussions = discussionsData.reduce((acc, d) => {
+      const discussion = { ...d };
+      const diffData = {};
 
-    discussionsData.forEach(discussion => {
       if (discussion.diff_file) {
-        Object.assign(discussion, {
-          file_hash: discussion.diff_file.file_hash,
-          truncated_diff_lines: discussion.truncated_diff_lines || [],
-        });
+        diffData.file_hash = discussion.diff_file.file_hash;
+        diffData.truncated_diff_lines = discussion.truncated_diff_lines || [];
       }
 
       // To support legacy notes, should be very rare case.
       if (discussion.individual_note && discussion.notes.length > 1) {
         discussion.notes.forEach(n => {
-          discussions.push({
+          acc.push({
             ...discussion,
+            ...diffData,
             notes: [n], // override notes array to only have one item to mimick individual_note
           });
         });
       } else {
         const oldNote = utils.findNoteObjectById(state.discussions, discussion.id);
 
-        discussions.push({
+        acc.push({
           ...discussion,
+          ...diffData,
           expanded: oldNote ? oldNote.expanded : discussion.expanded,
         });
       }
-    });
+
+      return acc;
+    }, []);
 
     Object.assign(state, { discussions });
   },
@@ -195,7 +199,9 @@ export default {
     const selectedDiscussion = state.discussions.find(disc => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
     if (note.diff_file) {
-      Object.assign(note, { file_hash: note.diff_file.file_hash });
+      Object.assign(note, {
+        file_hash: note.diff_file.file_hash,
+      });
     }
     Object.assign(selectedDiscussion, { ...note });
   },
@@ -228,5 +234,17 @@ export default {
 
   [types.DISABLE_COMMENTS](state, value) {
     state.commentsDisabled = value;
+  },
+  [types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS](state) {
+    state.resolvableDiscussionsCount = state.discussions.filter(
+      discussion => !discussion.individual_note && discussion.resolvable,
+    ).length;
+    state.unresolvedDiscussionsCount = state.discussions.filter(
+      discussion =>
+        !discussion.individual_note &&
+        discussion.resolvable &&
+        discussion.notes.some(note => !note.resolved),
+    ).length;
+    state.hasUnresolvedDiscussions = state.unresolvedDiscussionsCount > 1;
   },
 };

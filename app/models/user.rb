@@ -363,7 +363,7 @@ class User < ActiveRecord::Base
       from_users = from_users.confirmed if confirmed
 
       from_emails = joins(:emails).where(emails: { email: emails })
-      from_emails = from_emails.confirmed if confirmed
+      from_emails = from_emails.confirmed.merge(Email.confirmed) if confirmed
 
       items = [from_users, from_emails]
 

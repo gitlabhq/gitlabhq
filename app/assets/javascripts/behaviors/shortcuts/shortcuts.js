@@ -4,6 +4,7 @@ import Mousetrap from 'mousetrap';
 import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultStopCallback = Mousetrap.stopCallback;
 Mousetrap.stopCallback = (e, element, combo) => {
@@ -61,7 +62,7 @@ export default class Shortcuts {
   static onTogglePerfBar(e) {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
-    if (Cookies.get(performanceBarCookieName) === 'true') {
+    if (parseBoolean(Cookies.get(performanceBarCookieName))) {
       Cookies.set(performanceBarCookieName, 'false', { path: '/' });
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });

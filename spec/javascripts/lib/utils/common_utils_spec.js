@@ -346,6 +346,24 @@ describe('common_utils', () => {
     });
   });
 
+  describe('parseBoolean', () => {
+    it('returns true for "true"', () => {
+      expect(commonUtils.parseBoolean('true')).toEqual(true);
+    });
+
+    it('returns false for "false"', () => {
+      expect(commonUtils.parseBoolean('false')).toEqual(false);
+    });
+
+    it('returns false for "something"', () => {
+      expect(commonUtils.parseBoolean('something')).toEqual(false);
+    });
+
+    it('returns false for null', () => {
+      expect(commonUtils.parseBoolean(null)).toEqual(false);
+    });
+  });
+
   describe('convertPermissionToBoolean', () => {
     it('should convert a boolean in a string to a boolean', () => {
       expect(commonUtils.convertPermissionToBoolean('true')).toEqual(true);

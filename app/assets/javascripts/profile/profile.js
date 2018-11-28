@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import flash from '../flash';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class Profile {
   constructor({ form } = {}) {
@@ -80,7 +81,7 @@ export default class Profile {
 
   setRepoRadio() {
     const multiEditRadios = $('input[name="user[multi_file]"]');
-    if (this.newRepoActivated || this.newRepoActivated === 'true') {
+    if (parseBoolean(this.newRepoActivated)) {
       multiEditRadios.filter('[value=on]').prop('checked', true);
     } else {
       multiEditRadios.filter('[value=off]').prop('checked', true);

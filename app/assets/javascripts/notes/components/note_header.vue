@@ -73,7 +73,7 @@ export default {
         {{ __('Toggle discussion') }}
       </button>
     </div>
-    <a v-if="hasAuthor" :href="author.path">
+    <a v-if="hasAuthor" v-once :href="author.path">
       <span class="note-header-author-name">{{ author.name }}</span>
       <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
       <span class="note-headline-light"> @{{ author.username }} </span>

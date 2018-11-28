@@ -99,7 +99,7 @@ export default {
   methods: {
     ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
-      this.showCommentForm({ lineCode: this.line.line_code });
+      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {
@@ -160,7 +160,7 @@ export default {
     >
     <template v-else>
       <button
-        v-if="shouldShowCommentButton"
+        v-show="shouldShowCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button qa-diff-comment"
         title="Add a comment to this line"
