@@ -31,7 +31,7 @@
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-loader": "^8.0.4",
-    "bootstrap": "4.1.1",
+    "bootstrap": "4.1.3",
     "brace-expansion": "^1.1.8",
     "cache-loader": "^1.2.2",
     "chart.js": "1.0.2",
