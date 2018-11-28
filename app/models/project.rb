@@ -1737,7 +1737,8 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    return false if ref.nil? || repository.ambiguous_ref?(ref)
+    return false if ref.nil?
+    raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 
     if Gitlab::Git.branch_ref?(ref) || Gitlab::Git.tag_ref?(ref)
       resolved_ref = ref

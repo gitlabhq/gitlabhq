@@ -2583,8 +2583,8 @@ describe Project do
         project.repository.add_tag(project.creator, ref, 'master')
       end
 
-      it 'returns false' do
-        is_expected.to be_falsey
+      it 'raises an error' do
+        expect { subject }.to raise_error(Repository::AmbiguousRefError)
       end
     end
 

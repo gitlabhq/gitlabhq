@@ -26,6 +26,7 @@ class Repository
   delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
+  AmbiguousRefError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
   #
