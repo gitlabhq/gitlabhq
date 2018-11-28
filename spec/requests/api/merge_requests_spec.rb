@@ -359,6 +359,8 @@ describe API::MergeRequests do
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
+      expect(json_response['merge_error']).to eq(merge_request.merge_error)
+      expect(json_response).not_to include('rebase_in_progress')
     end
 
     it 'exposes description and title html when render_html is true' do
@@ -367,6 +369,14 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(200)
 
       expect(json_response).to include('title_html', 'description_html')
+    end
+
+    it 'exposes rebase_in_progress when include_rebase_in_progress is true' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), include_rebase_in_progress: true
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response).to include('rebase_in_progress')
     end
 
     context 'merge_request_metrics' do
@@ -1182,7 +1192,7 @@ describe API::MergeRequests do
   end
 
   describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
-    it 'enques a rebase of the merge request against the target branch' do
+    it 'enqueues a rebase of the merge request against the target branch' do
       Sidekiq::Testing.fake! do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
       end

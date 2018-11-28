@@ -408,6 +408,7 @@ Parameters:
 - `merge_request_iid` (required) - The internal ID of the merge request
 - `render_html` (optional) - If `true` response includes rendered HTML for title and description
 - `include_diverged_commits_count` (optional) - If `true` response includes the commits behind the target branch
+- `include_rebase_in_progress` (optional) - If `true` response includes whether a rebase operation is in progress
 
 ```json
 {
@@ -461,6 +462,7 @@ Parameters:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
@@ -505,7 +507,8 @@ Parameters:
     "head_sha": "2be7ddb704c7b6b83732fdd5b9f09d5a397b5f8f",
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
-  "diverged_commits_count": 2
+  "diverged_commits_count": 2,
+  "rebase_in_progress": false
 }
 ```
 
@@ -773,6 +776,7 @@ POST /projects/:id/merge_requests
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
@@ -900,6 +904,7 @@ Must include at least one non-required attribute from above.
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
@@ -1043,6 +1048,7 @@ Parameters:
   },
   "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
+  "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
@@ -1158,6 +1164,7 @@ Parameters:
   },
   "merge_when_pipeline_succeeds": false,
   "merge_status": "can_be_merged",
+  "merge_error": null,
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
@@ -1228,8 +1235,39 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 ```
 
 This is an asynchronous request. The API will return an empty `202 Accepted`
-response if the request is enqueued successfully. You should poll the
-[Get single MR](#get-single-mr) endpoint to determine success or failure.
+response if the request is enqueued successfully.
+
+You can poll the [Get single MR](#get-single-mr) endpoint with the
+`include_rebase_in_progress` parameter to check the status of the
+asynchronous request.
+
+If the rebase operation is ongoing, the response will include the following:
+
+```json
+{
+  "rebase_in_progress": true
+  "merge_error": null
+}
+```
+
+Once the rebase operation has completed successfully, the response will include
+the following:
+
+```json
+{
+  "rebase_in_progress": false,
+  "merge_error": null,
+}
+```
+
+If the rebase operation fails, the response will include the following:
+
+```json
+{
+  "rebase_in_progress": false,
+  "merge_error": "Rebase failed. Please rebase locally",
+}
+```
 
 ## Comments on merge requests
 
