@@ -174,7 +174,7 @@ describe Gitlab::LegacyGithubImport::Importer do
 
       described_class.new(project).execute
 
-      expect(project.import_error).to eq error.to_json
+      expect(project.import_state.last_error).to eq error.to_json
     end
   end
 

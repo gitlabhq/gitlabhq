@@ -30,6 +30,7 @@ class Project < ActiveRecord::Base
   include FeatureGate
   include OptionallySearch
   include FromUnion
+  include IgnorableColumn
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -55,6 +56,8 @@ class Project < ActiveRecord::Base
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
+  ignore_column :import_status, :import_jid, :import_error
+
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
@@ -62,6 +65,12 @@ class Project < ActiveRecord::Base
            to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
+
+  delegate :scheduled?, :started?, :in_progress?,
+    :failed?, :finished?,
+    prefix: :import, to: :import_state, allow_nil: true
+
+  delegate :no_import?, to: :import_state, allow_nil: true
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -451,8 +460,8 @@ class Project < ActiveRecord::Base
 
   scope :excluding_project, ->(project) { where.not(id: project) }
 
-  scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
-  scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
+  # We require an alias to the project_mirror_data_table in order to use import_state in our queries
+  scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :for_group, -> (group) { where(group: group) }
 
   class << self
@@ -628,6 +637,14 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def import_status
+    import_state&.status || 'none'
+  end
+
+  def human_import_status_name
+    import_state&.human_status_name || 'none'
+  end
+
   def add_import_job
     job_id =
       if forked?
@@ -659,7 +676,7 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    update(import_error: nil)
+    import_state.update(last_error: nil)
     remove_import_data
   end
 
@@ -719,130 +736,6 @@ class Project < ActiveRecord::Base
 
   def external_import?
     import_url.present?
-  end
-
-  def imported?
-    import_finished?
-  end
-
-  def import_in_progress?
-    import_started? || import_scheduled?
-  end
-
-  def import_state_args
-    {
-      status: self[:import_status],
-      jid: self[:import_jid],
-      last_error: self[:import_error]
-    }
-  end
-
-  def ensure_import_state(force: false)
-    return if !force && (self[:import_status] == 'none' || self[:import_status].nil?)
-    return unless import_state.nil?
-
-    if persisted?
-      create_import_state(import_state_args)
-
-      update_column(:import_status, 'none')
-    else
-      build_import_state(import_state_args)
-
-      self[:import_status] = 'none'
-    end
-  end
-
-  def human_import_status_name
-    ensure_import_state
-
-    import_state.human_status_name
-  end
-
-  def import_schedule
-    ensure_import_state(force: true)
-
-    import_state.schedule
-  end
-
-  def force_import_start
-    ensure_import_state(force: true)
-
-    import_state.force_start
-  end
-
-  def import_start
-    ensure_import_state(force: true)
-
-    import_state.start
-  end
-
-  def import_fail
-    ensure_import_state(force: true)
-
-    import_state.fail_op
-  end
-
-  def import_finish
-    ensure_import_state(force: true)
-
-    import_state.finish
-  end
-
-  def import_jid=(new_jid)
-    ensure_import_state(force: true)
-
-    import_state.jid = new_jid
-  end
-
-  def import_jid
-    ensure_import_state
-
-    import_state&.jid
-  end
-
-  def import_error=(new_error)
-    ensure_import_state(force: true)
-
-    import_state.last_error = new_error
-  end
-
-  def import_error
-    ensure_import_state
-
-    import_state&.last_error
-  end
-
-  def import_status=(new_status)
-    ensure_import_state(force: true)
-
-    import_state.status = new_status
-  end
-
-  def import_status
-    ensure_import_state
-
-    import_state&.status || 'none'
-  end
-
-  def no_import?
-    import_status == 'none'
-  end
-
-  def import_started?
-    # import? does SQL work so only run it if it looks like there's an import running
-    import_status == 'started' && import?
-  end
-
-  def import_scheduled?
-    import_status == 'scheduled'
-  end
-
-  def import_failed?
-    import_status == 'failed'
-  end
-
-  def import_finished?
-    import_status == 'finished'
   end
 
   def safe_import_url
@@ -1643,8 +1536,8 @@ class Project < ActiveRecord::Base
   def after_import
     repository.after_import
     wiki.repository.after_import
-    import_finish
-    remove_import_jid
+    import_state.finish
+    import_state.remove_jid
     update_project_counter_caches
     after_create_default_branch
     refresh_markdown_cache!
@@ -1684,30 +1577,9 @@ class Project < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def remove_import_jid
-    return unless import_jid
-
-    Gitlab::SidekiqStatus.unset(import_jid)
-
-    import_state.update_column(:jid, nil)
-  end
-
   # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
-  end
-
-  def mark_import_as_failed(error_message)
-    original_errors = errors.dup
-    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
-
-    import_fail
-
-    import_state.update_column(:last_error, sanitized_message)
-  rescue ActiveRecord::ActiveRecordError => e
-    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
-  ensure
-    @errors = original_errors
   end
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
@@ -1984,17 +1856,6 @@ class Project < ActiveRecord::Base
 
   def reference_counter(wiki: false)
     Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
-  end
-
-  # Refreshes the expiration time of the associated import job ID.
-  #
-  # This method can be used by asynchronous importers to refresh the status,
-  # preventing the StuckImportJobsWorker from marking the import as failed.
-  def refresh_import_jid_expiration
-    return unless import_jid
-
-    Gitlab::SidekiqStatus
-      .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
 
   def badges

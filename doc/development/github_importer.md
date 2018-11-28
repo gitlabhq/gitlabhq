@@ -131,7 +131,7 @@ our import as failed because of this.
 To prevent this from happening we periodically refresh the expiration time of
 the import process. This works by storing the JID of the import job in the
 database, then refreshing this JID's TTL at various stages throughout the import
-process. This is done by calling `Project#refresh_import_jid_expiration`. By
+process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
 refreshing this TTL we can ensure our import does not get marked as failed so
 long we're still performing work.
 

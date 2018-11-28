@@ -98,13 +98,11 @@ excluded_attributes:
     - :avatar
     - :import_type
     - :import_source
-    - :import_error
     - :mirror
     - :runners_token
     - :repository_storage
     - :repository_read_only
     - :lfs_enabled
-    - :import_jid
     - :created_at
     - :updated_at
     - :id
@@ -116,6 +114,9 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :description_html
     - :repository_languages
+  project_import_state:
+    - :last_error
+    - :jid
   prometheus_metrics:
     - :common
     - :identifier

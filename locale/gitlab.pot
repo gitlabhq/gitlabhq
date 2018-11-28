@@ -2834,6 +2834,9 @@ msgstr ""
 msgid "EventFilterBy|Filter by team"
 msgstr ""
 
+msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
+msgstr ""
+
 msgid "Every day (at 4:00am)"
 msgstr ""
 
@@ -3485,6 +3488,9 @@ msgid "Import repositories from GitHub"
 msgstr ""
 
 msgid "Import repository"
+msgstr ""
+
+msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
@@ -6037,6 +6043,9 @@ msgid "Source code"
 msgstr ""
 
 msgid "Source is not available"
+msgstr ""
+
+msgid "Source project cannot be found."
 msgstr ""
 
 msgid "Spam Logs"
