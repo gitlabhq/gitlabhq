@@ -436,32 +436,47 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :redis }
 
       context 'when data exists' do
-        let(:data) { 'Sample data in redis' }
-
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
         end
 
-        it 'persists the data' do
-          expect(build_trace_chunk.redis?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to eq(data)
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
-          expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
+        context 'when data size reached CHUNK_SIZE' do
+          let(:data) { 'a' * described_class::CHUNK_SIZE }
 
-          subject
+          it 'persists the data' do
+            expect(build_trace_chunk.redis?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to eq(data)
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
 
-          expect(build_trace_chunk.fog?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+            subject
+
+            expect(build_trace_chunk.fog?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+          end
+
+          it_behaves_like 'Atomic operation'
         end
 
-        it_behaves_like 'Atomic operation'
+        context 'when data size has not reached CHUNK_SIZE' do
+          let(:data) { 'Sample data in redis' }
+
+          it 'does not persist the data and the orignal data is intact' do
+            expect { subject }.to raise_error(described_class::FailedToPersistDataError)
+
+            expect(build_trace_chunk.redis?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to eq(data)
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
+          end
+        end
       end
 
       context 'when data does not exist' do
         it 'does not persist' do
-          expect { subject }.to raise_error('Can not persist empty data')
+          expect { subject }.to raise_error(described_class::FailedToPersistDataError)
         end
       end
     end
@@ -470,32 +485,47 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :database }
 
       context 'when data exists' do
-        let(:data) { 'Sample data in database' }
-
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
         end
 
-        it 'persists the data' do
-          expect(build_trace_chunk.database?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to eq(data)
-          expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
+        context 'when data size reached CHUNK_SIZE' do
+          let(:data) { 'a' * described_class::CHUNK_SIZE }
 
-          subject
+          it 'persists the data' do
+            expect(build_trace_chunk.database?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to eq(data)
+            expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
 
-          expect(build_trace_chunk.fog?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+            subject
+
+            expect(build_trace_chunk.fog?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+          end
+
+          it_behaves_like 'Atomic operation'
         end
 
-        it_behaves_like 'Atomic operation'
+        context 'when data size has not reached CHUNK_SIZE' do
+          let(:data) { 'Sample data in database' }
+
+          it 'does not persist the data and the orignal data is intact' do
+            expect { subject }.to raise_error(described_class::FailedToPersistDataError)
+
+            expect(build_trace_chunk.database?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to eq(data)
+            expect { Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk) }.to raise_error(Excon::Error::NotFound)
+          end
+        end
       end
 
       context 'when data does not exist' do
         it 'does not persist' do
-          expect { subject }.to raise_error('Can not persist empty data')
+          expect { subject }.to raise_error(described_class::FailedToPersistDataError)
         end
       end
     end
@@ -504,27 +534,37 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :fog }
 
       context 'when data exists' do
-        let(:data) { 'Sample data in fog' }
-
         before do
           build_trace_chunk.send(:unsafe_set_data!, data)
         end
 
-        it 'does not change data store' do
-          expect(build_trace_chunk.fog?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+        context 'when data size reached CHUNK_SIZE' do
+          let(:data) { 'a' * described_class::CHUNK_SIZE }
 
-          subject
+          it 'does not change data store' do
+            expect(build_trace_chunk.fog?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
 
-          expect(build_trace_chunk.fog?).to be_truthy
-          expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
-          expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+            subject
+
+            expect(build_trace_chunk.fog?).to be_truthy
+            expect(Ci::BuildTraceChunks::Redis.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
+            expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
+          end
+
+          it_behaves_like 'Atomic operation'
         end
 
-        it_behaves_like 'Atomic operation'
+        context 'when data size has not reached CHUNK_SIZE' do
+          let(:data) { 'Sample data in fog' }
+
+          it 'does not raise error' do
+            expect { subject }.not_to raise_error
+          end
+        end
       end
     end
   end
