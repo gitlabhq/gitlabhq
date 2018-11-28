@@ -38,8 +38,9 @@ module Clusters
 
         def execute
           ensure_project_namespace_exists if namespace_creator
-          kubeclient.create_service_account(service_account_resource)
-          kubeclient.create_secret(service_account_token_resource)
+
+          kubeclient.create_or_update_service_account(service_account_resource)
+          kubeclient.create_or_update_secret(service_account_token_resource)
           create_role_or_cluster_role_binding if rbac
         end
 
@@ -56,9 +57,9 @@ module Clusters
 
         def create_role_or_cluster_role_binding
           if namespace_creator
-            kubeclient.create_role_binding(role_binding_resource)
+            kubeclient.create_or_update_role_binding(role_binding_resource)
           else
-            kubeclient.create_cluster_role_binding(cluster_role_binding_resource)
+            kubeclient.create_or_update_cluster_role_binding(cluster_role_binding_resource)
           end
         end
 
