@@ -30,6 +30,7 @@ export default class MirrorRepos {
     this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
 
     this.initMirrorSSH();
+    this.updateProtectedBranches();
   }
 
   initMirrorSSH() {
