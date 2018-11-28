@@ -8,6 +8,7 @@ class EnvironmentStatus
   delegate :id, to: :environment
   delegate :name, to: :environment
   delegate :project, to: :environment
+  delegate :status, to: :deployment, allow_nil: true
   delegate :deployed_at, to: :deployment, allow_nil: true
 
   def self.for_merge_request(mr, user)
@@ -41,22 +42,6 @@ class EnvironmentStatus
   def changed_files
     merge_request.merge_request_diff
       .merge_request_diff_files.where(deleted_file: false)
-  end
-
-  ##
-  # Since frontend has not supported all statuses yet, BE has to
-  # proxy some status to a supported status.
-  def status
-    return unless deployment
-
-    case deployment.status
-    when 'created'
-      'running'
-    when 'canceled'
-      'failed'
-    else
-      deployment.status
-    end
   end
 
   private
