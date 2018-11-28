@@ -882,6 +882,28 @@ describe ProjectsController do
     end
   end
 
+  context 'private project with token authentication' do
+    let(:private_project) { create(:project, :private) }
+
+    it_behaves_like 'authenticates sessionless user', :show, :atom do
+      before do
+        default_params.merge!(id: private_project, namespace_id: private_project.namespace)
+
+        private_project.add_maintainer(user)
+      end
+    end
+  end
+
+  context 'public project with token authentication' do
+    let(:public_project) { create(:project, :public) }
+
+    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
+      before do
+        default_params.merge!(id: public_project, namespace_id: public_project.namespace)
+      end
+    end
+  end
+
   def project_moved_message(redirect_route, project)
     "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
