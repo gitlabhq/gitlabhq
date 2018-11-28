@@ -80,43 +80,6 @@ describe('noteable_discussion component', () => {
   });
 
   describe('computed', () => {
-    describe('hasMultipleUnresolvedDiscussions', () => {
-      it('is false if there are no unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is false if there is one unresolved discussion', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is true if there are two unresolved discussions', done => {
-        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
-        discussion.notes[0].resolved = false;
-        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-    });
-
     describe('isRepliesCollapsed', () => {
       it('should return false for diff discussions', done => {
         const diffDiscussion = getJSONFixture(diffDiscussionFixture)[0];

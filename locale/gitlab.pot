@@ -804,6 +804,9 @@ msgstr ""
 msgid "Automatically marked as default internal user"
 msgstr ""
 
+msgid "Automatically resolved"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -5465,6 +5468,9 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+msgid "Resolved"
+msgstr ""
+
 msgid "Response metrics (AWS ELB)"
 msgstr ""
 
@@ -7570,6 +7576,11 @@ msgstr ""
 
 msgid "disabled"
 msgstr ""
+
+msgid "discussion resolved"
+msgid_plural "discussions resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "done"
 msgstr ""

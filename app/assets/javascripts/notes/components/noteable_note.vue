@@ -177,7 +177,7 @@ export default {
     class="note timeline-entry note-wrapper"
   >
     <div class="timeline-entry-inner">
-      <div class="timeline-icon">
+      <div v-once class="timeline-icon">
         <user-avatar-link
           :link-href="author.path"
           :img-src="author.avatar_url"
@@ -190,6 +190,7 @@ export default {
       <div class="timeline-content">
         <div class="note-header">
           <note-header
+            v-once
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
