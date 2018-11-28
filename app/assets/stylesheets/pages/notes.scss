@@ -589,12 +589,6 @@ $note-form-margin-left: 72px;
   padding-bottom: 0;
 }
 
-.note-header-author-name {
-  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
-    display: none;
-  }
-}
-
 .note-headline-light {
   display: inline;
 
