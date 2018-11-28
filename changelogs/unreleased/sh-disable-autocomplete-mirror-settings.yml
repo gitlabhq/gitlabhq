@@ -1,0 +1,5 @@
+---
+title: Disable password autocomplete in mirror form fill
+merge_request: 23402
+author:
+type: fixed
