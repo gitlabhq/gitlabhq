@@ -23,13 +23,19 @@ export const receiveMergeRequestsError = ({ commit, dispatch }, { type, search }
 export const receiveMergeRequestsSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_MERGE_REQUESTS_SUCCESS, data);
 
-export const fetchMergeRequests = ({ dispatch, state: { state } }, { type, search = '' }) => {
+export const fetchMergeRequests = (
+  { dispatch, state: { state }, rootState: { currentProjectId } },
+  { type, search = '' },
+) => {
   dispatch('requestMergeRequests');
   dispatch('resetMergeRequests');
 
-  const scope = type ? scopes[type] : 'all';
+  const scope = type && scopes[type];
+  const request = scope
+    ? Api.mergeRequests({ scope, state, search })
+    : Api.projectMergeRequest(currentProjectId, '', { state, search });
 
-  return Api.mergeRequests({ scope, state, search })
+  return request
     .then(({ data }) => dispatch('receiveMergeRequestsSuccess', data))
     .catch(() => dispatch('receiveMergeRequestsError', { type, search }));
 };
