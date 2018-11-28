@@ -1,0 +1,5 @@
+---
+title: Fixed ability to comment on locked/confidential issues.
+merge_request:
+author:
+type: security

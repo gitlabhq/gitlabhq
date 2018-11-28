@@ -6,6 +6,7 @@ module NotesActions
   extend ActiveSupport::Concern
 
   included do
+    prepend_before_action :normalize_create_params, only: [:create]
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
@@ -245,6 +246,15 @@ module NotesActions
 
   def discussion_serializer
     DiscussionSerializer.new(project: project, noteable: noteable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
+
+  # Avoids checking permissions in the wrong object - this ensures that the object we checked permissions for
+  # is the object we're actually creating a note in.
+  def normalize_create_params
+    params[:note].try do |note|
+      note[:noteable_id] = params[:target_id]
+      note[:noteable_type] = params[:target_type].classify
+    end
   end
 
   def note_project
