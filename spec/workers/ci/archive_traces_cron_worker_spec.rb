@@ -46,13 +46,27 @@ describe Ci::ArchiveTracesCronWorker do
       let!(:build) { create(:ci_build, :success, :trace_live) }
 
       before do
-        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!).and_raise('Unexpected error')
+        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive_stream!).and_raise('Unexpected error')
       end
 
-      it 'puts a log' do
-        expect(Rails.logger).to receive(:error).with("Failed to archive stale live trace. id: #{build.id} message: Unexpected error")
+      it 'increments Prometheus counter, sends crash report to Sentry and ignore an error for continuing to archive' do
+        expect(Gitlab::Sentry)
+          .to receive(:track_exception)
+          .with(RuntimeError,
+                issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/51502',
+                extra: { job_id: build.id } ).once
 
-        subject
+        expect(Rails.logger)
+          .to receive(:error)
+          .with("Failed to archive trace. id: #{build.id} message: Unexpected error")
+          .and_call_original
+
+        expect(Gitlab::Metrics)
+          .to receive(:counter)
+          .with(:job_trace_archive_failed_total, "Counter of failed attempts of trace archiving")
+          .and_call_original
+
+        expect { subject }.not_to raise_error
       end
     end
   end
