@@ -93,24 +93,11 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-commit-list-container"
-  >
-    <header
-      class="multi-file-commit-panel-header d-flex mb-0"
-    >
-      <div
-        class="d-flex align-items-center flex-fill"
-      >
-        <icon
-          v-once
-          :name="iconName"
-          :size="18"
-          class="append-right-8"
-        />
-        <strong>
-          {{ titleText }}
-        </strong>
+  <div class="ide-commit-list-container">
+    <header class="multi-file-commit-panel-header d-flex mb-0">
+      <div class="d-flex align-items-center flex-fill">
+        <icon v-once :name="iconName" :size="18" class="append-right-8" />
+        <strong> {{ titleText }} </strong>
         <div class="d-flex ml-auto">
           <button
             ref="actionBtn"
@@ -119,7 +106,7 @@ export default {
             :aria-label="actionBtnText"
             :disabled="!filesLength"
             :class="{
-              'disabled-content': !filesLength
+              'disabled-content': !filesLength,
             }"
             type="button"
             class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
@@ -128,11 +115,7 @@ export default {
             data-boundary="viewport"
             @click="actionBtnClicked"
           >
-            <icon
-              :name="actionBtnIcon"
-              :size="16"
-              class="ml-auto mr-auto"
-            />
+            <icon :name="actionBtnIcon" :size="16" class="ml-auto mr-auto" />
           </button>
           <button
             v-if="!stagedList"
@@ -141,7 +124,7 @@ export default {
             :aria-label="__('Discard all changes')"
             :disabled="!filesLength"
             :class="{
-              'disabled-content': !filesLength
+              'disabled-content': !filesLength,
             }"
             type="button"
             class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
@@ -150,23 +133,13 @@ export default {
             data-boundary="viewport"
             @click="openDiscardModal"
           >
-            <icon
-              :size="16"
-              name="remove-all"
-              class="ml-auto mr-auto"
-            />
+            <icon :size="16" name="remove-all" class="ml-auto mr-auto" />
           </button>
         </div>
       </div>
     </header>
-    <ul
-      v-if="filesLength"
-      class="multi-file-commit-list list-unstyled append-bottom-0"
-    >
-      <li
-        v-for="file in fileList"
-        :key="file.key"
-      >
+    <ul v-if="filesLength" class="multi-file-commit-list list-unstyled append-bottom-0">
+      <li v-for="file in fileList" :key="file.key">
         <list-item
           :file="file"
           :action-component="itemActionComponent"
@@ -176,10 +149,7 @@ export default {
         />
       </li>
     </ul>
-    <p
-      v-else
-      class="multi-file-commit-list form-text text-muted text-center"
-    >
+    <p v-else class="multi-file-commit-list form-text text-muted text-center">
       {{ emptyStateText }}
     </p>
     <gl-modal

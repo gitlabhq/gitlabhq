@@ -48,10 +48,19 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
-        return Api.groupProjects(this.groupId, term, { with_issues_enabled: true }, projects => {
-          this.loading = false;
-          callback(projects);
-        });
+        return Api.groupProjects(
+          this.groupId,
+          term,
+          {
+            with_issues_enabled: true,
+            with_shared: false,
+            include_subgroups: true,
+          },
+          projects => {
+            this.loading = false;
+            callback(projects);
+          },
+        );
       },
       renderRow(project) {
         return `
@@ -72,23 +81,15 @@ export default {
 
 <template>
   <div>
-    <label class="label-bold prepend-top-10">
-      Project
-    </label>
-    <div
-      ref="projectsDropdown"
-      class="dropdown"
-    >
+    <label class="label-bold prepend-top-10"> Project </label>
+    <div ref="projectsDropdown" class="dropdown">
       <button
         class="dropdown-menu-toggle wide"
         type="button"
         data-toggle="dropdown"
         aria-expanded="false"
       >
-        {{ selectedProjectName }}
-        <icon
-          name="chevron-down"
-        />
+        {{ selectedProjectName }} <icon name="chevron-down" />
       </button>
       <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
         <div class="dropdown-title">
@@ -106,21 +107,11 @@ export default {
           </button>
         </div>
         <div class="dropdown-input">
-          <input
-            class="dropdown-input-field"
-            type="search"
-            placeholder="Search projects"
-          />
-          <icon
-            name="search"
-            class="dropdown-input-search"
-            data-hidden="true"
-          />
+          <input class="dropdown-input-field" type="search" placeholder="Search projects" />
+          <icon name="search" class="dropdown-input-search" data-hidden="true" />
         </div>
         <div class="dropdown-content"></div>
-        <div class="dropdown-loading">
-          <gl-loading-icon />
-        </div>
+        <div class="dropdown-loading"><gl-loading-icon /></div>
       </div>
     </div>
   </div>

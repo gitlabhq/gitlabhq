@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { sortTree } from '~/ide/stores/utils';
 import {
@@ -49,12 +48,30 @@ export default {
     Object.assign(state, { diffViewType });
   },
 
-  [types.ADD_COMMENT_FORM_LINE](state, { lineCode }) {
-    Vue.set(state.diffLineCommentForms, lineCode, true);
-  },
+  [types.TOGGLE_LINE_HAS_FORM](state, { lineCode, fileHash, hasForm }) {
+    const diffFile = state.diffFiles.find(f => f.file_hash === fileHash);
 
-  [types.REMOVE_COMMENT_FORM_LINE](state, { lineCode }) {
-    Vue.delete(state.diffLineCommentForms, lineCode);
+    if (!diffFile) return;
+
+    if (diffFile.highlighted_diff_lines) {
+      diffFile.highlighted_diff_lines.find(l => l.line_code === lineCode).hasForm = hasForm;
+    }
+
+    if (diffFile.parallel_diff_lines) {
+      const line = diffFile.parallel_diff_lines.find(l => {
+        const { left, right } = l;
+
+        return (left && left.line_code === lineCode) || (right && right.line_code === lineCode);
+      });
+
+      if (line.left && line.left.line_code === lineCode) {
+        line.left.hasForm = hasForm;
+      }
+
+      if (line.right && line.right.line_code === lineCode) {
+        line.right.hasForm = hasForm;
+      }
+    }
   },
 
   [types.ADD_CONTEXT_LINES](state, options) {
@@ -68,6 +85,7 @@ export default {
       ...line,
       line_code: line.line_code || `${fileHash}_${line.old_line}_${line.new_line}`,
       discussions: line.discussions || [],
+      hasForm: false,
     }));
 
     addContextLines({

@@ -96,26 +96,14 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="blockClass"
-    class="block"
-  >
+  <div :class="blockClass" class="block">
     <div class="issuable-sidebar-header">
-      <toggle-sidebar
-        :collapsed="collapsed"
-        @toggle="toggleSidebar"
-      />
+      <toggle-sidebar :collapsed="collapsed" @toggle="toggleSidebar" />
     </div>
-    <collapsed-calendar-icon
-      :text="collapsedText"
-      class="sidebar-collapsed-icon"
-    />
+    <collapsed-calendar-icon :text="collapsedText" class="sidebar-collapsed-icon" />
     <div class="title">
       {{ label }}
-      <gl-loading-icon
-        v-if="isLoading"
-        :inline="true"
-      />
+      <gl-loading-icon v-if="isLoading" :inline="true" />
       <div class="float-right">
         <button
           v-if="editable && !editing"
@@ -125,11 +113,7 @@ export default {
         >
           Edit
         </button>
-        <toggle-sidebar
-          v-if="showToggleSidebar"
-          :collapsed="collapsed"
-          @toggle="toggleSidebar"
-        />
+        <toggle-sidebar v-if="showToggleSidebar" :collapsed="collapsed" @toggle="toggleSidebar" />
       </div>
     </div>
     <div class="value">
@@ -142,32 +126,21 @@ export default {
         @newDateSelected="newDateSelected"
         @hidePicker="stopEditing"
       />
-      <span
-        v-else
-        class="value-content"
-      >
+      <span v-else class="value-content">
         <template v-if="selectedDate">
           <strong>{{ selectedDateWords }}</strong>
-          <span
-            v-if="selectedAndEditable"
-            class="no-value"
-          >
+          <span v-if="selectedAndEditable" class="no-value">
             -
             <button
               type="button"
               class="btn-blank btn-link btn-secondary-hover-link"
-              @click="newDateSelected(null)"
+              @click="newDateSelected(null);"
             >
               remove
             </button>
           </span>
         </template>
-        <span
-          v-else
-          class="no-value"
-        >
-          None
-        </span>
+        <span v-else class="no-value"> None </span>
       </span>
     </div>
   </div>

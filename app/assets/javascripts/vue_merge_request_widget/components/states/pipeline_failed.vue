@@ -11,14 +11,13 @@ export default {
 
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      :show-disabled-button="true"
-      status="warning"
-    />
+    <status-icon :show-disabled-button="true" status="warning" />
     <div class="media-body space-children">
       <span class="bold">
-        {{ s__(`mrWidget|The pipeline for this merge request failed.
-Please retry the job or push a new commit to fix the failure`) }}
+        {{
+          s__(`mrWidget|The pipeline for this merge request failed.
+Please retry the job or push a new commit to fix the failure`)
+        }}
       </span>
     </div>
   </div>

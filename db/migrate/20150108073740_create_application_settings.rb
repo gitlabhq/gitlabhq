@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateApplicationSettings < ActiveRecord::Migration
+class CreateApplicationSettings < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import initDismissableCallout from '~/dismissable_callout';
+import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
@@ -26,6 +26,7 @@ export default class Clusters {
       statusPath,
       installHelmPath,
       installIngressPath,
+      installCertManagerPath,
       installRunnerPath,
       installJupyterPath,
       installKnativePath,
@@ -48,6 +49,7 @@ export default class Clusters {
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
+      installCertManagerEndpoint: installCertManagerPath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
@@ -65,7 +67,7 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
-    initDismissableCallout('.js-cluster-security-warning');
+    Clusters.initDismissableCallout();
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
     this.initApplications(clusterType);
@@ -104,6 +106,12 @@ export default class Clusters {
         });
       },
     });
+  }
+
+  static initDismissableCallout() {
+    const callout = document.querySelector('.js-cluster-security-warning');
+
+    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
   }
 
   addListeners() {

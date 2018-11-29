@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ConsumeRemainingDiffFilesDeletionJobs < ActiveRecord::Migration
+class ConsumeRemainingDiffFilesDeletionJobs < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

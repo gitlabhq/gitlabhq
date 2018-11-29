@@ -24,6 +24,13 @@ export default class ClusterStore {
           requestReason: null,
           externalIp: null,
         },
+        cert_manager: {
+          title: s__('ClusterIntegration|Cert-Manager'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+        },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
           status: null,
@@ -53,6 +60,7 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           hostname: null,
+          externalIp: null,
         },
       },
     };
@@ -104,6 +112,8 @@ export default class ClusterStore {
       } else if (appId === KNATIVE) {
         this.state.applications.knative.hostname =
           serverAppEntry.hostname || this.state.applications.knative.hostname;
+        this.state.applications.knative.externalIp =
+          serverAppEntry.external_ip || this.state.applications.knative.externalIp;
       }
     });
   }

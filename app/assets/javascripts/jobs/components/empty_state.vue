@@ -42,31 +42,16 @@ export default {
 <template>
   <div class="row empty-state">
     <div class="col-12">
-      <div
-        :class="illustrationSizeClass"
-        class="svg-content"
-      >
-        <img :src="illustrationPath" />
-      </div>
+      <div :class="illustrationSizeClass" class="svg-content"><img :src="illustrationPath" /></div>
     </div>
 
     <div class="col-12">
       <div class="text-content">
-        <h4 class="js-job-empty-state-title text-center">
-          {{ title }}
-        </h4>
+        <h4 class="js-job-empty-state-title text-center">{{ title }}</h4>
 
-        <p
-          v-if="content"
-          class="js-job-empty-state-content"
-        >
-          {{ content }}
-        </p>
+        <p v-if="content" class="js-job-empty-state-content">{{ content }}</p>
 
-        <div
-          v-if="action"
-          class="text-center"
-        >
+        <div v-if="action" class="text-center">
           <gl-link
             :href="action.path"
             :data-method="action.method"

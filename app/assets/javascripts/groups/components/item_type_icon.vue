@@ -29,7 +29,5 @@ export default {
 </script>
 
 <template>
-  <span class="item-type-icon">
-    <icon :name="iconClass"/>
-  </span>
+  <span class="item-type-icon"> <icon :name="iconClass" /> </span>
 </template>

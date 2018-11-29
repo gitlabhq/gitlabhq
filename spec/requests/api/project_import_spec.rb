@@ -42,7 +42,7 @@ describe API::ProjectImport do
     end
 
     it 'does not schedule an import for a namespace that does not exist' do
-      expect_any_instance_of(Project).not_to receive(:import_schedule)
+      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
       expect(::Projects::CreateService).not_to receive(:new)
 
       post api('/projects/import', user), namespace: 'nonexistent', path: 'test-import2', file: fixture_file_upload(file)
@@ -52,7 +52,7 @@ describe API::ProjectImport do
     end
 
     it 'does not schedule an import if the user has no permission to the namespace' do
-      expect_any_instance_of(Project).not_to receive(:import_schedule)
+      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
       post(api('/projects/import', create(:user)),
            path: 'test-import3',
@@ -64,7 +64,7 @@ describe API::ProjectImport do
     end
 
     it 'does not schedule an import if the user uploads no valid file' do
-      expect_any_instance_of(Project).not_to receive(:import_schedule)
+      expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
       post api('/projects/import', user), path: 'test-import3', file: './random/test'
 
@@ -119,7 +119,7 @@ describe API::ProjectImport do
       let(:existing_project) { create(:project, namespace: user.namespace) }
 
       it 'does not schedule an import' do
-        expect_any_instance_of(Project).not_to receive(:import_schedule)
+        expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
 
         post api('/projects/import', user), path: existing_project.path, file: fixture_file_upload(file)
 
@@ -139,7 +139,7 @@ describe API::ProjectImport do
     end
 
     def stub_import(namespace)
-      expect_any_instance_of(Project).to receive(:import_schedule)
+      expect_any_instance_of(ProjectImportState).to receive(:schedule)
       expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original
     end
   end

@@ -51,6 +51,10 @@ module Clusters
 
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end
+
+      def ingress_service
+        cluster.kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+      end
     end
   end
 end

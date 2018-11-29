@@ -74,9 +74,7 @@ export default {
       css-classes="diff-file-changed-icon append-right-8"
     />
     <span class="diff-changed-file-content append-right-8">
-      <strong
-        class="diff-changed-file-name"
-      >
+      <strong class="diff-changed-file-name">
         <span
           v-for="(char, charIndex) in file.name.split('')"
           :key="charIndex + char"
@@ -87,9 +85,7 @@ export default {
         >
         </span>
       </strong>
-      <span
-        class="diff-changed-file-path prepend-top-5"
-      >
+      <span class="diff-changed-file-path prepend-top-5">
         <span
           v-for="(char, charIndex) in pathWithEllipsis.split('')"
           :key="charIndex + char"
@@ -101,13 +97,8 @@ export default {
         </span>
       </span>
     </span>
-    <span
-      v-if="file.changed || file.tempFile"
-      class="diff-changed-stats"
-    >
-      <changed-file-icon
-        :file="file"
-      />
+    <span v-if="file.changed || file.tempFile" class="diff-changed-stats">
+      <changed-file-icon :file="file" />
     </span>
   </button>
 </template>

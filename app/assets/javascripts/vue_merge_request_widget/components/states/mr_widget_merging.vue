@@ -19,12 +19,10 @@ export default {
   <div class="mr-widget-body mr-state-locked media">
     <status-icon status="loading" />
     <div class="media-body">
-      <h4>
-        {{ s__("mrWidget|This merge request is in the process of being merged") }}
-      </h4>
+      <h4>{{ s__('mrWidget|This merge request is in the process of being merged') }}</h4>
       <section class="mr-info-list">
         <p>
-          {{ s__("mrWidget|The changes will be merged into") }}
+          {{ s__('mrWidget|The changes will be merged into') }}
           <span class="label-branch">
             <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
           </span>

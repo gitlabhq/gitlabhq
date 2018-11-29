@@ -111,6 +111,6 @@ Promise.all(matchedFiles.map(checkFileWithPrettierConfig))
     if (didWarn) process.exit(1);
   })
   .catch(e => {
-    console.log(`\nAn error occured while processing files with prettier: ${e.message}\n`);
+    console.log(`\nAn error occurred while processing files with prettier: ${e.message}\n`);
     process.exit(1);
   });

@@ -79,48 +79,29 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="hasPipeline || hasCIError"
-    class="mr-widget-heading append-bottom-default"
-  >
+  <div v-if="hasPipeline || hasCIError" class="mr-widget-heading append-bottom-default">
     <div class="ci-widget media">
       <template v-if="hasCIError">
         <div
           class="add-border ci-status-icon ci-status-icon-failed ci-error
           js-ci-error append-right-default"
         >
-          <icon
-            :size="32"
-            name="status_failed_borderless"
-          />
+          <icon :size="32" name="status_failed_borderless" />
         </div>
-        <div
-          class="media-body"
-          v-html="errorText"
-        >
-        </div>
+        <div class="media-body" v-html="errorText"></div>
       </template>
       <template v-else-if="hasPipeline">
-        <a
-          :href="status.details_path"
-          class="align-self-start append-right-default"
-        >
-          <ci-icon
-            :status="status"
-            :size="32"
-            :borderless="true"
-            class="add-border"
-          />
+        <a :href="status.details_path" class="align-self-start append-right-default">
+          <ci-icon :status="status" :size="32" :borderless="true" class="add-border" />
         </a>
         <div class="ci-widget-container d-flex">
           <div class="ci-widget-content">
             <div class="media-body">
               <div class="font-weight-bold">
                 Pipeline
-                <a
-                  :href="pipeline.path"
-                  class="pipeline-id font-weight-normal pipeline-number"
-                >#{{ pipeline.id }}</a>
+                <a :href="pipeline.path" class="pipeline-id font-weight-normal pipeline-number"
+                  >#{{ pipeline.id }}</a
+                >
 
                 {{ pipeline.details.status.label }}
 
@@ -130,7 +111,8 @@ export default {
                     :href="pipeline.commit.commit_path"
                     class="commit-sha js-commit-link font-weight-normal"
                   >
-                    {{ pipeline.commit.short_id }}</a>
+                    {{ pipeline.commit.short_id }}</a
+                  >
                   on
                   <tooltip-on-truncate
                     :title="sourceBranch"
@@ -140,20 +122,12 @@ export default {
                   />
                 </template>
               </div>
-              <div
-                v-if="pipeline.coverage"
-                class="coverage"
-              >
-                Coverage {{ pipeline.coverage }}%
-              </div>
+              <div v-if="pipeline.coverage" class="coverage">Coverage {{ pipeline.coverage }}%</div>
             </div>
           </div>
           <div>
             <span class="mr-widget-pipeline-graph">
-              <span
-                v-if="hasStages"
-                class="stage-cell"
-              >
+              <span v-if="hasStages" class="stage-cell">
                 <div
                   v-for="(stage, i) in pipeline.details.stages"
                   :key="i"

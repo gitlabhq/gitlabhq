@@ -1,4 +1,4 @@
-class DropCiProjects < ActiveRecord::Migration
+class DropCiProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

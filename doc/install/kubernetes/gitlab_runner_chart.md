@@ -84,7 +84,7 @@ rbac:
   ##
   # serviceAccountName: default
 
-## Configuration for the Pods that that the runner launches for each new job
+## Configuration for the Pods that the runner launches for each new job
 ##
 runners:
   ## Default container image to use for builds when none is specified

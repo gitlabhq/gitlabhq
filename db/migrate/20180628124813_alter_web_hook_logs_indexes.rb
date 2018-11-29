@@ -3,7 +3,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AlterWebHookLogsIndexes < ActiveRecord::Migration
+class AlterWebHookLogsIndexes < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -12,7 +12,7 @@ class AlterWebHookLogsIndexes < ActiveRecord::Migration
   disable_ddl_transaction!
 
   # "created_at" comes first so the Sidekiq worker pruning old webhook logs can
-  # use a composite index index.
+  # use a composite index.
   #
   # We leave the old standalone index on "web_hook_id" in place so future code
   # that doesn't care about "created_at" can still use that index.

@@ -186,6 +186,23 @@ shared_examples 'merge requests list' do
       expect(json_response.length).to eq(0)
     end
 
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), labels: IssuesFinder::FILTER_ANY
+
+      expect_paginated_array_response
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
+    it 'returns an array of merge requests without a label when filtering by no label' do
+      get api(endpoint_path, user), labels: IssuesFinder::FILTER_NONE
+
+      response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+      expect_paginated_array_response
+      expect(response_ids).to contain_exactly(merge_request_closed.id, merge_request_merged.id, merge_request_locked.id)
+    end
+
     it 'returns an array of labeled merge requests that are merged for a milestone' do
       bug_label = create(:label, title: 'bug', color: '#FFAABB', project: project)
 

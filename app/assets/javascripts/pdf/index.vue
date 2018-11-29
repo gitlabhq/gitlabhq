@@ -56,9 +56,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="hasPDF"
-    class="pdf-viewer">
+  <div v-if="hasPDF" class="pdf-viewer">
     <page
       v-for="(page, index) in pages"
       :key="index"

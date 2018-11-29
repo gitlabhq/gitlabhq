@@ -393,6 +393,14 @@ $note-form-margin-left: 72px;
     border-top: 1px solid $border-color;
     border-radius: 0;
 
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      top: 91px;
+
+      .with-performance-bar & {
+        top: 126px;
+      }
+    }
+
     &:hover {
       background-color: $gray-light;
     }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UrlValidator do
@@ -5,6 +7,30 @@ describe UrlValidator do
   subject { validator.validate_each(badge, :link_url, badge.link_url) }
 
   include_examples 'url validator examples', described_class::DEFAULT_PROTOCOLS
+
+  describe 'validations' do
+    include_context 'invalid urls'
+
+    let(:validator) { described_class.new(attributes: [:link_url]) }
+
+    it 'returns error when url is nil' do
+      expect(validator.validate_each(badge, :link_url, nil)).to be_nil
+      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+    end
+
+    it 'returns error when url is empty' do
+      expect(validator.validate_each(badge, :link_url, '')).to be_nil
+      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+    end
+
+    it 'does not allow urls with CR or LF characters' do
+      aggregate_failures do
+        urls_with_CRLF.each do |url|
+          expect(validator.validate_each(badge, :link_url, url)[0]).to eq 'is blocked: URI is invalid'
+        end
+      end
+    end
+  end
 
   context 'by default' do
     let(:validator) { described_class.new(attributes: [:link_url]) }

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Clusters::Applications::Jupyter do
   include_examples 'cluster application core specs', :clusters_applications_jupyter
-  include_examples 'cluster application helm specs', :clusters_applications_knative
+  include_examples 'cluster application helm specs', :clusters_applications_jupyter
 
   it { is_expected.to belong_to(:oauth_application) }
 

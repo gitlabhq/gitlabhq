@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '../vue_shared/translate';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsStore from './store/groups_store';
@@ -38,7 +39,7 @@ export default (containerId = 'js-groups-tree', endpoint, action = '') => {
     },
     data() {
       const { dataset } = dataEl || this.$options.el;
-      const hideProjects = dataset.hideProjects === 'true';
+      const hideProjects = parseBoolean(dataset.hideProjects);
       const service = new GroupsService(endpoint || dataset.endpoint);
       const store = new GroupsStore(hideProjects);
 

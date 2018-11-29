@@ -30,48 +30,38 @@ describe MergeRequest do
   end
 
   describe '#squash_in_progress?' do
-    shared_examples 'checking whether a squash is in progress' do
-      let(:repo_path) do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          subject.source_project.repository.path
-        end
-      end
-      let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
-
-      before do
-        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
-      end
-
-      it 'returns true when there is a current squash directory' do
-        expect(subject.squash_in_progress?).to be_truthy
-      end
-
-      it 'returns false when there is no squash directory' do
-        FileUtils.rm_rf(squash_path)
-
-        expect(subject.squash_in_progress?).to be_falsey
-      end
-
-      it 'returns false when the squash directory has expired' do
-        time = 20.minutes.ago.to_time
-        File.utime(time, time, squash_path)
-
-        expect(subject.squash_in_progress?).to be_falsey
-      end
-
-      it 'returns false when the source project has been removed' do
-        allow(subject).to receive(:source_project).and_return(nil)
-
-        expect(subject.squash_in_progress?).to be_falsey
+    let(:repo_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        subject.source_project.repository.path
       end
     end
+    let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
 
-    context 'when Gitaly squash_in_progress is enabled' do
-      it_behaves_like 'checking whether a squash is in progress'
+    before do
+      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
     end
 
-    context 'when Gitaly squash_in_progress is disabled', :disable_gitaly do
-      it_behaves_like 'checking whether a squash is in progress'
+    it 'returns true when there is a current squash directory' do
+      expect(subject.squash_in_progress?).to be_truthy
+    end
+
+    it 'returns false when there is no squash directory' do
+      FileUtils.rm_rf(squash_path)
+
+      expect(subject.squash_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the squash directory has expired' do
+      time = 20.minutes.ago.to_time
+      File.utime(time, time, squash_path)
+
+      expect(subject.squash_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the source project has been removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+
+      expect(subject.squash_in_progress?).to be_falsey
     end
   end
 
@@ -2586,14 +2576,6 @@ describe MergeRequest do
 
         expect(subject.rebase_in_progress?).to be_falsey
       end
-    end
-
-    context 'when Gitaly rebase_in_progress is enabled' do
-      it_behaves_like 'checking whether a rebase is in progress'
-    end
-
-    context 'when Gitaly rebase_in_progress is enabled', :disable_gitaly do
-      it_behaves_like 'checking whether a rebase is in progress'
     end
   end
 

@@ -2,7 +2,7 @@
   = dropdown_toggle(member_sort_options_hash[@sort], { toggle: 'dropdown' })
   %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
     %li.dropdown-header
-      Sort by
+      = _("Sort by")
     - member_sort_options_hash.each do |value, title|
       %li
         = link_to filter_group_project_member_path(sort: value), class: ("is-active" if @sort == value) do

@@ -31,18 +31,10 @@ export default {
 
 <template>
   <div class="build-widget block">
-    <h4 class="title">
-      {{ __('Trigger') }}
-    </h4>
+    <h4 class="title">{{ __('Trigger') }}</h4>
 
-    <p
-      v-if="trigger.short_token"
-      class="js-short-token"
-    >
-      <span class="build-light-text">
-        {{ __('Token') }}
-      </span>
-      {{ trigger.short_token }}
+    <p v-if="trigger.short_token" class="js-short-token">
+      <span class="build-light-text"> {{ __('Token') }} </span> {{ trigger.short_token }}
     </p>
 
     <p v-if="hasVariables">
@@ -56,24 +48,13 @@ export default {
       </gl-button>
     </p>
 
-    <dl
-      v-if="areVariablesVisible"
-      class="js-build-variables trigger-build-variables"
-    >
-      <template
-        v-for="variable in trigger.variables"
-      >
-        <dt
-          :key="`${variable.key}-variable`"
-          class="js-build-variable trigger-build-variable"
-        >
+    <dl v-if="areVariablesVisible" class="js-build-variables trigger-build-variables">
+      <template v-for="variable in trigger.variables">
+        <dt :key="`${variable.key}-variable`" class="js-build-variable trigger-build-variable">
           {{ variable.key }}
         </dt>
 
-        <dd
-          :key="`${variable.key}-value`"
-          class="js-build-value trigger-build-value"
-        >
+        <dd :key="`${variable.key}-value`" class="js-build-value trigger-build-value">
           {{ variable.value }}
         </dd>
       </template>

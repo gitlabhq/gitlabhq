@@ -8,7 +8,7 @@ module Gitlab
     # Class that rewrites markdown links for uploads
     #
     # Using a pattern defined in `FileUploader` it copies files to a new
-    # project and rewrites all links to uploads in in a given text.
+    # project and rewrites all links to uploads in a given text.
     #
     #
     class UploadsRewriter

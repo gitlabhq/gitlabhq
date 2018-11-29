@@ -43,11 +43,5 @@ export default {
 </script>
 
 <template>
-  <time
-    v-gl-tooltip
-    :datetime="endDateString"
-    :title="endDateString"
-  >
-    {{ remainingTime }}
-  </time>
+  <time v-gl-tooltip :datetime="endDateString" :title="endDateString"> {{ remainingTime }} </time>
 </template>

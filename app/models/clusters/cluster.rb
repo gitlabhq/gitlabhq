@@ -10,6 +10,7 @@ module Clusters
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
+      Applications::CertManager.application_name => Applications::CertManager,
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
       Applications::Jupyter.application_name => Applications::Jupyter,
@@ -33,6 +34,7 @@ module Clusters
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
+    has_one :application_cert_manager, class_name: 'Clusters::Applications::CertManager'
     has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
     has_one :application_runner, class_name: 'Clusters::Applications::Runner'
     has_one :application_jupyter, class_name: 'Clusters::Applications::Jupyter'
@@ -100,6 +102,7 @@ module Clusters
       [
         application_helm || build_application_helm,
         application_ingress || build_application_ingress,
+        application_cert_manager || build_application_cert_manager,
         application_prometheus || build_application_prometheus,
         application_runner || build_application_runner,
         application_jupyter || build_application_jupyter,

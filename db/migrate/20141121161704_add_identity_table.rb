@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddIdentityTable < ActiveRecord::Migration
+class AddIdentityTable < ActiveRecord::Migration[4.2]
   def up
     create_table :identities do |t|
       t.string :extern_uid

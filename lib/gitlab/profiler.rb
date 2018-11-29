@@ -36,7 +36,6 @@ module Gitlab
     #
     # - private_token: instead of providing a user instance, the token can be
     #   given as a string. Takes precedence over the user option.
-    # rubocop: disable CodeReuse/ActiveRecord
     def self.profile(url, logger: nil, post_data: nil, user: nil, private_token: nil)
       app = ActionDispatch::Integration::Session.new(Rails.application)
       verb = :get
@@ -47,12 +46,11 @@ module Gitlab
         headers['Content-Type'] = 'application/json'
       end
 
-      if user
-        private_token ||= user.personal_access_tokens.active.pluck(:token).first
-        raise 'Your user must have a personal_access_token' unless private_token
+      if private_token
+        headers['Private-Token'] = private_token
+        user = nil # private_token overrides user
       end
 
-      headers['Private-Token'] = private_token if private_token
       logger = create_custom_logger(logger, private_token: private_token)
 
       RequestStore.begin!
@@ -70,7 +68,9 @@ module Gitlab
       app.get('/api/v4/users')
 
       result = with_custom_logger(logger) do
-        RubyProf.profile { app.public_send(verb, url, post_data, headers) } # rubocop:disable GitlabSecurity/PublicSend
+        with_user(user) do
+          RubyProf.profile { app.public_send(verb, url, post_data, headers) } # rubocop:disable GitlabSecurity/PublicSend
+        end
       end
 
       RequestStore.end!
@@ -79,7 +79,6 @@ module Gitlab
 
       result
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.create_custom_logger(logger, private_token: nil)
       return unless logger
@@ -130,13 +129,29 @@ module Gitlab
         ActionController::Base.logger = logger
       end
 
-      result = yield
+      yield.tap do
+        ActiveSupport::LogSubscriber.colorize_logging = original_colorize_logging
+        ActiveRecord::Base.logger = original_activerecord_logger
+        ActionController::Base.logger = original_actioncontroller_logger
+      end
+    end
 
-      ActiveSupport::LogSubscriber.colorize_logging = original_colorize_logging
-      ActiveRecord::Base.logger = original_activerecord_logger
-      ActionController::Base.logger = original_actioncontroller_logger
+    def self.with_user(user)
+      if user
+        API::Helpers::CommonHelpers.send(:define_method, :find_current_user!) { user } # rubocop:disable GitlabSecurity/PublicSend
+        ApplicationController.send(:define_method, :current_user) { user } # rubocop:disable GitlabSecurity/PublicSend
+        ApplicationController.send(:define_method, :authenticate_user!) { } # rubocop:disable GitlabSecurity/PublicSend
+      end
 
-      result
+      yield.tap do
+        remove_method(API::Helpers::CommonHelpers, :find_current_user!)
+        remove_method(ApplicationController, :current_user)
+        remove_method(ApplicationController, :authenticate_user!)
+      end
+    end
+
+    def self.remove_method(klass, meth)
+      klass.send(:remove_method, meth) if klass.instance_methods(false).include?(meth) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

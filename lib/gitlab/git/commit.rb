@@ -155,17 +155,9 @@ module Gitlab
         end
 
         def extract_signature_lazily(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              signatures = batch_signature_extraction(repository, commit_ids)
-
-              signatures.each do |commit_sha, signature_data|
-                loader.call({ repository: repository, commit_id: commit_sha }, signature_data)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            batch_signature_extraction(args[:key], commit_ids).each do |commit_id, signature_data|
+              loader.call(commit_id, signature_data)
             end
           end
         end
@@ -175,17 +167,9 @@ module Gitlab
         end
 
         def get_message(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              messages = get_messages(repository, commit_ids)
-
-              messages.each do |commit_sha, message|
-                loader.call({ repository: repository, commit_id: commit_sha }, message)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            get_messages(args[:key], commit_ids).each do |commit_id, message|
+              loader.call(commit_id, message)
             end
           end
         end

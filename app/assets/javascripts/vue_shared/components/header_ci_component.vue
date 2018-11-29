@@ -83,12 +83,9 @@ export default {
 <template>
   <header class="page-content-header ci-header-container">
     <section class="header-main-content">
-
       <ci-icon-badge :status="status" />
 
-      <strong>
-        {{ itemName }} #{{ itemId }}
-      </strong>
+      <strong> {{ itemName }} #{{ itemId }} </strong>
 
       <template v-if="shouldRenderTriggeredLabel">
         triggered
@@ -108,7 +105,6 @@ export default {
           :title="user.email"
           class="js-user-link commit-committer-link"
         >
-
           <user-avatar-image
             :img-src="user.avatar_url"
             :img-alt="userAvatarAltText"
@@ -118,19 +114,12 @@ export default {
 
           {{ user.name }}
         </gl-link>
-        <span
-          v-if="user.status_tooltip_html"
-          v-html="user.status_tooltip_html"></span>
+        <span v-if="user.status_tooltip_html" v-html="user.status_tooltip_html"></span>
       </template>
     </section>
 
-    <section
-      v-if="actions.length"
-      class="header-action-buttons"
-    >
-      <template
-        v-for="(action, i) in actions"
-      >
+    <section v-if="actions.length" class="header-action-buttons">
+      <template v-for="(action, i) in actions">
         <gl-link
           v-if="action.type === 'link'"
           :key="i"
@@ -159,7 +148,7 @@ export default {
           :class="action.cssClass"
           container-class="d-inline"
           :label="action.label"
-          @click="onClickAction(action)"
+          @click="onClickAction(action);"
         />
       </template>
     </section>
@@ -170,12 +159,7 @@ export default {
 sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
       @click="onClickSidebarButton"
     >
-      <i
-        class="fa fa-angle-double-left"
-        aria-hidden="true"
-        aria-labelledby="toggleSidebar"
-      >
-      </i>
+      <i class="fa fa-angle-double-left" aria-hidden="true" aria-labelledby="toggleSidebar"> </i>
     </gl-button>
   </header>
 </template>

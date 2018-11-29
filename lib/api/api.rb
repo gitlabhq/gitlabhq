@@ -50,6 +50,10 @@ module API
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
     end
 
+    rescue_from ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError do
+      rack_response({ 'message' => '409 Conflict: Resource lock' }.to_json, 409)
+    end
+
     rescue_from UploadedFile::InvalidPathError do |e|
       rack_response({ 'message' => e.message }.to_json, 400)
     end

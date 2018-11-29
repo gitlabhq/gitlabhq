@@ -1,4 +1,4 @@
-class RemoveValidSignatureFromGpgSignatures < ActiveRecord::Migration
+class RemoveValidSignatureFromGpgSignatures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

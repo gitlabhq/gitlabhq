@@ -14,9 +14,11 @@ module RelativePositioning
 
   class_methods do
     def move_to_end(objects)
-      parent_ids = objects.map(&:parent_ids).flatten.uniq
-      max_relative_position = in_parents(parent_ids).maximum(:relative_position) || START_POSITION
       objects = objects.reject(&:relative_position)
+
+      return if objects.empty?
+
+      max_relative_position = objects.first.max_relative_position
 
       self.transaction do
         objects.each do |object|
@@ -55,22 +57,21 @@ module RelativePositioning
     end
   end
 
-  def min_relative_position
-    self.class.in_parents(parent_ids).minimum(:relative_position)
+  def min_relative_position(&block)
+    calculate_relative_position('MIN', &block)
   end
 
-  def max_relative_position
-    self.class.in_parents(parent_ids).maximum(:relative_position)
+  def max_relative_position(&block)
+    calculate_relative_position('MAX', &block)
   end
 
   def prev_relative_position
     prev_pos = nil
 
     if self.relative_position
-      prev_pos = self.class
-        .in_parents(parent_ids)
-        .where('relative_position < ?', self.relative_position)
-        .maximum(:relative_position)
+      prev_pos = max_relative_position do |relation|
+        relation.where('relative_position < ?', self.relative_position)
+      end
     end
 
     prev_pos
@@ -80,10 +81,9 @@ module RelativePositioning
     next_pos = nil
 
     if self.relative_position
-      next_pos = self.class
-        .in_parents(parent_ids)
-        .where('relative_position > ?', self.relative_position)
-        .minimum(:relative_position)
+      next_pos = min_relative_position do |relation|
+        relation.where('relative_position > ?', self.relative_position)
+      end
     end
 
     next_pos
@@ -165,4 +165,22 @@ module RelativePositioning
     status
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def calculate_relative_position(calculation)
+    # When calculating across projects, this is much more efficient than
+    # MAX(relative_position) without the GROUP BY, due to index usage:
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/54276#note_119340977
+    relation = self.class
+                 .in_parents(parent_ids)
+                 .order(Gitlab::Database.nulls_last_order('position', 'DESC'))
+                 .limit(1)
+                 .group(self.class.parent_column)
+
+    relation = yield relation if block_given?
+
+    relation
+      .pluck(self.class.parent_column, "#{calculation}(relative_position) AS position")
+      .first&.
+      last
+  end
 end

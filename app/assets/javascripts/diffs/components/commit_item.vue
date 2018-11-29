@@ -1,5 +1,4 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -21,9 +20,6 @@ import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
  *
  */
 export default {
-  directives: {
-    tooltip,
-  },
   components: {
     UserAvatarLink,
     Icon,
@@ -73,10 +69,7 @@ export default {
           v-html="commit.title_html"
         ></a>
 
-        <span class="commit-row-message d-block d-sm-none">
-          &middot;
-          {{ commit.short_id }}
-        </span>
+        <span class="commit-row-message d-block d-sm-none"> &middot; {{ commit.short_id }} </span>
 
         <button
           v-if="commit.description_html"
@@ -84,21 +77,12 @@ export default {
           type="button"
           :aria-label="__('Toggle commit description')"
         >
-          <icon
-            :size="12"
-            name="ellipsis_h"
-          />
+          <icon :size="12" name="ellipsis_h" />
         </button>
 
         <div class="commiter">
-          <a
-            :href="authorUrl"
-            v-text="authorName"
-          ></a>
-          {{ s__('CommitWidget|authored') }}
-          <time-ago-tooltip
-            :time="commit.authored_date"
-          />
+          <a :href="authorUrl" v-text="authorName"></a> {{ s__('CommitWidget|authored') }}
+          <time-ago-tooltip :time="commit.authored_date" />
         </div>
 
         <pre
@@ -108,19 +92,13 @@ export default {
         ></pre>
       </div>
       <div class="commit-actions flex-row d-none d-sm-flex">
-        <div
-          v-if="commit.signature_html"
-          v-html="commit.signature_html"
-        ></div>
+        <div v-if="commit.signature_html" v-html="commit.signature_html"></div>
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
         />
         <div class="commit-sha-group">
-          <div
-            class="label label-monospace"
-            v-text="commit.short_id"
-          ></div>
+          <div class="label label-monospace" v-text="commit.short_id"></div>
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA to clipboard')"

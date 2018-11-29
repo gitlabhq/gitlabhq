@@ -5,7 +5,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
-import { getUrlParamsArray } from '~/lib/utils/common_utils';
+import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 
 const boardsStore = {
   disabled: false,
@@ -78,7 +78,7 @@ const boardsStore = {
     });
   },
   welcomeIsHidden() {
-    return Cookies.get('issue_board_welcome_hidden') === 'true';
+    return parseBoolean(Cookies.get('issue_board_welcome_hidden'));
   },
   removeList(id, type = 'blank') {
     const list = this.findList('id', id, type);

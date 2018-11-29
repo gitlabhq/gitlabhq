@@ -1,4 +1,4 @@
-class AddSpentAtToTimelogs < ActiveRecord::Migration
+class AddSpentAtToTimelogs < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

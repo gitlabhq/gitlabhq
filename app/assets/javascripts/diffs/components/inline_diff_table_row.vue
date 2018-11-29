@@ -102,11 +102,6 @@ export default {
       :is-hover="isHover"
       class="diff-line-num new_line qa-new-diff-line"
     />
-    <td
-      :class="line.type"
-      class="line_content"
-      v-html="line.rich_text"
-    >
-    </td>
+    <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
   </tr>
 </template>

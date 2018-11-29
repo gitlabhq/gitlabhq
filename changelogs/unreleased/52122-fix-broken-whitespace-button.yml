@@ -1,5 +1,0 @@
----
-title: Fix broken "Show whitespace changes" button on MRs.
-merge_request: 22539
-author:
-type: fixed

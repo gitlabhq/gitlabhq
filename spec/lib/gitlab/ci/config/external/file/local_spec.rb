@@ -37,7 +37,7 @@ describe Gitlab::Ci::Config::External::File::Local do
   end
 
   describe '#content' do
-    context 'with a a valid file' do
+    context 'with a valid file' do
       let(:local_file_content) do
         <<~HEREDOC
           before_script:

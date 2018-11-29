@@ -87,7 +87,7 @@ export default {
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
-      [cssClasses]: true
+      [cssClasses]: true,
     }"
     :src="resultantSrcAttribute"
     :width="size"

@@ -164,35 +164,21 @@ export default {
     :class="[
       rowJsClass,
       isInstalled && 'cluster-application-installed',
-      disabled && 'cluster-application-disabled'
+      disabled && 'cluster-application-disabled',
     ]"
     class="cluster-application-row gl-responsive-table-row gl-responsive-table-row-col-span"
   >
-    <div
-      class="gl-responsive-table-row-layout"
-      role="row"
-    >
-      <div
-        class="table-section append-right-8 section-align-top"
-        role="gridcell"
-      >
+    <div class="gl-responsive-table-row-layout" role="row">
+      <div class="table-section append-right-8 section-align-top" role="gridcell">
         <img
           v-if="hasLogo"
           :src="logoUrl"
           :alt="`${title} logo`"
           class="cluster-application-logo avatar s40"
         />
-        <identicon
-          v-else
-          :entity-id="identiconId"
-          :entity-name="title"
-          size-class="s40"
-        />
+        <identicon v-else :entity-id="identiconId" :entity-name="title" size-class="s40" />
       </div>
-      <div
-        class="table-section cluster-application-description section-wrap"
-        role="gridcell"
-      >
+      <div class="table-section cluster-application-description section-wrap" role="gridcell">
         <strong>
           <a
             v-if="titleLink"
@@ -203,12 +189,7 @@ export default {
           >
             {{ title }}
           </a>
-          <span
-            v-else
-            class="js-cluster-application-title"
-          >
-            {{ title }}
-          </span>
+          <span v-else class="js-cluster-application-title"> {{ title }} </span>
         </strong>
         <slot name="description"></slot>
         <div
@@ -219,16 +200,10 @@ export default {
             {{ generalErrorDescription }}
           </p>
           <ul v-if="statusReason || requestReason">
-            <li
-              v-if="statusReason"
-              class="js-cluster-application-status-error-message"
-            >
+            <li v-if="statusReason" class="js-cluster-application-status-error-message">
               {{ statusReason }}
             </li>
-            <li
-              v-if="requestReason"
-              class="js-cluster-application-request-error-message"
-            >
+            <li v-if="requestReason" class="js-cluster-application-request-error-message">
               {{ requestReason }}
             </li>
           </ul>
@@ -239,15 +214,8 @@ export default {
         class="table-section table-button-footer section-align-top"
         role="gridcell"
       >
-        <div
-          v-if="showManageButton"
-          class="btn-group table-action-buttons"
-        >
-          <a
-            :href="manageLink"
-            :class="{ disabled: disabled }"
-            class="btn"
-          >
+        <div v-if="showManageButton" class="btn-group table-action-buttons">
+          <a :href="manageLink" :class="{ disabled: disabled }" class="btn">
             {{ manageButtonLabel }}
           </a>
         </div>

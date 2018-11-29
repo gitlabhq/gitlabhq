@@ -130,63 +130,53 @@ describe ProjectWiki do
   end
 
   describe "#find_page" do
-    shared_examples 'finding a wiki page' do
+    before do
+      create_page("index page", "This is an awesome Gollum Wiki")
+    end
+
+    after do
+      subject.pages.each { |page| destroy_page(page.page) }
+    end
+
+    it "returns the latest version of the page if it exists" do
+      page = subject.find_page("index page")
+      expect(page.title).to eq("index page")
+    end
+
+    it "returns nil if the page does not exist" do
+      expect(subject.find_page("non-existent")).to eq(nil)
+    end
+
+    it "can find a page by slug" do
+      page = subject.find_page("index-page")
+      expect(page.title).to eq("index page")
+    end
+
+    it "returns a WikiPage instance" do
+      page = subject.find_page("index page")
+      expect(page).to be_a WikiPage
+    end
+
+    context 'pages with multibyte-character title' do
       before do
-        create_page("index page", "This is an awesome Gollum Wiki")
-      end
-
-      after do
-        subject.pages.each { |page| destroy_page(page.page) }
-      end
-
-      it "returns the latest version of the page if it exists" do
-        page = subject.find_page("index page")
-        expect(page.title).to eq("index page")
-      end
-
-      it "returns nil if the page does not exist" do
-        expect(subject.find_page("non-existent")).to eq(nil)
+        create_page("autre pagé", "C'est un génial Gollum Wiki")
       end
 
       it "can find a page by slug" do
-        page = subject.find_page("index-page")
-        expect(page.title).to eq("index page")
-      end
-
-      it "returns a WikiPage instance" do
-        page = subject.find_page("index page")
-        expect(page).to be_a WikiPage
-      end
-
-      context 'pages with multibyte-character title' do
-        before do
-          create_page("autre pagé", "C'est un génial Gollum Wiki")
-        end
-
-        it "can find a page by slug" do
-          page = subject.find_page("autre pagé")
-          expect(page.title).to eq("autre pagé")
-        end
-      end
-
-      context 'pages with invalidly-encoded content' do
-        before do
-          create_page("encoding is fun", "f\xFCr".b)
-        end
-
-        it "can find the page" do
-          page = subject.find_page("encoding is fun")
-          expect(page.content).to eq("fr")
-        end
+        page = subject.find_page("autre pagé")
+        expect(page.title).to eq("autre pagé")
       end
     end
 
-    context 'when Gitaly wiki_find_page is enabled' do
-      it_behaves_like 'finding a wiki page'
-    end
+    context 'pages with invalidly-encoded content' do
+      before do
+        create_page("encoding is fun", "f\xFCr".b)
+      end
 
-    context 'when Gitaly wiki_find_page is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding a wiki page'
+      it "can find the page" do
+        page = subject.find_page("encoding is fun")
+        expect(page.content).to eq("fr")
+      end
     end
   end
 
@@ -207,100 +197,80 @@ describe ProjectWiki do
   end
 
   describe '#find_file' do
-    shared_examples 'finding a wiki file' do
-      let(:image) { File.open(Rails.root.join('spec', 'fixtures', 'big-image.png')) }
+    let(:image) { File.open(Rails.root.join('spec', 'fixtures', 'big-image.png')) }
 
-      before do
-        subject.wiki # Make sure the wiki repo exists
+    before do
+      subject.wiki # Make sure the wiki repo exists
 
-        repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          subject.repository.path_to_repo
-        end
-
-        BareRepoOperations.new(repo_path).commit_file(image, 'image.png')
+      repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        subject.repository.path_to_repo
       end
 
-      it 'returns the latest version of the file if it exists' do
-        file = subject.find_file('image.png')
-        expect(file.mime_type).to eq('image/png')
-      end
-
-      it 'returns nil if the page does not exist' do
-        expect(subject.find_file('non-existent')).to eq(nil)
-      end
-
-      it 'returns a Gitlab::Git::WikiFile instance' do
-        file = subject.find_file('image.png')
-        expect(file).to be_a Gitlab::Git::WikiFile
-      end
-
-      it 'returns the whole file' do
-        file = subject.find_file('image.png')
-        image.rewind
-
-        expect(file.raw_data.b).to eq(image.read.b)
-      end
+      BareRepoOperations.new(repo_path).commit_file(image, 'image.png')
     end
 
-    context 'when Gitaly wiki_find_file is enabled' do
-      it_behaves_like 'finding a wiki file'
+    it 'returns the latest version of the file if it exists' do
+      file = subject.find_file('image.png')
+      expect(file.mime_type).to eq('image/png')
     end
 
-    context 'when Gitaly wiki_find_file is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding a wiki file'
+    it 'returns nil if the page does not exist' do
+      expect(subject.find_file('non-existent')).to eq(nil)
+    end
+
+    it 'returns a Gitlab::Git::WikiFile instance' do
+      file = subject.find_file('image.png')
+      expect(file).to be_a Gitlab::Git::WikiFile
+    end
+
+    it 'returns the whole file' do
+      file = subject.find_file('image.png')
+      image.rewind
+
+      expect(file.raw_data.b).to eq(image.read.b)
     end
   end
 
   describe "#create_page" do
-    shared_examples 'creating a wiki page' do
-      after do
-        destroy_page(subject.pages.first.page)
-      end
-
-      it "creates a new wiki page" do
-        expect(subject.create_page("test page", "this is content")).not_to eq(false)
-        expect(subject.pages.count).to eq(1)
-      end
-
-      it "returns false when a duplicate page exists" do
-        subject.create_page("test page", "content")
-        expect(subject.create_page("test page", "content")).to eq(false)
-      end
-
-      it "stores an error message when a duplicate page exists" do
-        2.times { subject.create_page("test page", "content") }
-        expect(subject.error_message).to match(/Duplicate page:/)
-      end
-
-      it "sets the correct commit message" do
-        subject.create_page("test page", "some content", :markdown, "commit message")
-        expect(subject.pages.first.page.version.message).to eq("commit message")
-      end
-
-      it 'sets the correct commit email' do
-        subject.create_page('test page', 'content')
-
-        expect(user.commit_email).not_to eq(user.email)
-        expect(commit.author_email).to eq(user.commit_email)
-        expect(commit.committer_email).to eq(user.commit_email)
-      end
-
-      it 'updates project activity' do
-        subject.create_page('Test Page', 'This is content')
-
-        project.reload
-
-        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
-      end
+    after do
+      destroy_page(subject.pages.first.page)
     end
 
-    context 'when Gitaly wiki_write_page is enabled' do
-      it_behaves_like 'creating a wiki page'
+    it "creates a new wiki page" do
+      expect(subject.create_page("test page", "this is content")).not_to eq(false)
+      expect(subject.pages.count).to eq(1)
     end
 
-    context 'when Gitaly wiki_write_page is disabled', :skip_gitaly_mock do
-      it_behaves_like 'creating a wiki page'
+    it "returns false when a duplicate page exists" do
+      subject.create_page("test page", "content")
+      expect(subject.create_page("test page", "content")).to eq(false)
+    end
+
+    it "stores an error message when a duplicate page exists" do
+      2.times { subject.create_page("test page", "content") }
+      expect(subject.error_message).to match(/Duplicate page:/)
+    end
+
+    it "sets the correct commit message" do
+      subject.create_page("test page", "some content", :markdown, "commit message")
+      expect(subject.pages.first.page.version.message).to eq("commit message")
+    end
+
+    it 'sets the correct commit email' do
+      subject.create_page('test page', 'content')
+
+      expect(user.commit_email).not_to eq(user.email)
+      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.committer_email).to eq(user.commit_email)
+    end
+
+    it 'updates project activity' do
+      subject.create_page('Test Page', 'This is content')
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
@@ -351,41 +321,31 @@ describe ProjectWiki do
   end
 
   describe "#delete_page" do
-    shared_examples 'deleting a wiki page' do
-      before do
-        create_page("index", "some content")
-        @page = subject.wiki.page(title: "index")
-      end
-
-      it "deletes the page" do
-        subject.delete_page(@page)
-        expect(subject.pages.count).to eq(0)
-      end
-
-      it 'sets the correct commit email' do
-        subject.delete_page(@page)
-
-        expect(user.commit_email).not_to eq(user.email)
-        expect(commit.author_email).to eq(user.commit_email)
-        expect(commit.committer_email).to eq(user.commit_email)
-      end
-
-      it 'updates project activity' do
-        subject.delete_page(@page)
-
-        project.reload
-
-        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
-      end
+    before do
+      create_page("index", "some content")
+      @page = subject.wiki.page(title: "index")
     end
 
-    context 'when Gitaly wiki_delete_page is enabled' do
-      it_behaves_like 'deleting a wiki page'
+    it "deletes the page" do
+      subject.delete_page(@page)
+      expect(subject.pages.count).to eq(0)
     end
 
-    context 'when Gitaly wiki_delete_page is disabled', :skip_gitaly_mock do
-      it_behaves_like 'deleting a wiki page'
+    it 'sets the correct commit email' do
+      subject.delete_page(@page)
+
+      expect(user.commit_email).not_to eq(user.email)
+      expect(commit.author_email).to eq(user.commit_email)
+      expect(commit.committer_email).to eq(user.commit_email)
+    end
+
+    it 'updates project activity' do
+      subject.delete_page(@page)
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 

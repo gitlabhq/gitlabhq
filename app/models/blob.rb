@@ -80,15 +80,9 @@ class Blob < SimpleDelegator
   end
 
   def self.lazy(project, commit_id, path)
-    BatchLoader.for({ project: project, commit_id: commit_id, path: path }).batch do |items, loader|
-      items_by_project = items.group_by { |i| i[:project] }
-
-      items_by_project.each do |project, items|
-        items = items.map { |i| i.values_at(:commit_id, :path) }
-
-        project.repository.blobs_at(items).each do |blob|
-          loader.call({ project: blob.project, commit_id: blob.commit_id, path: blob.path }, blob) if blob
-        end
+    BatchLoader.for([commit_id, path]).batch(key: project.repository) do |items, loader, args|
+      args[:key].blobs_at(items).each do |blob|
+        loader.call([blob.commit_id, blob.path], blob) if blob
       end
     end
   end

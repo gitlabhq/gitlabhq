@@ -43,18 +43,9 @@ export default {
       :parent-group="parentGroup"
       :action="action"
     />
-    <li
-      v-if="hasMoreChildren"
-      class="group-row">
-      <a
-        :href="parentGroup.relativePath"
-        class="group-row-contents has-more-items">
-        <i
-          class="fa fa-external-link"
-          aria-hidden="true"
-        >
-        </i>
-        {{ moreChildrenStats }}
+    <li v-if="hasMoreChildren" class="group-row">
+      <a :href="parentGroup.relativePath" class="group-row-contents has-more-items">
+        <i class="fa fa-external-link" aria-hidden="true"> </i> {{ moreChildrenStats }}
       </a>
     </li>
   </ul>

@@ -1,28 +1,32 @@
-# Integrate your server with GitHub
+# Integrate your GitLab instance with GitHub
 
-Import projects from GitHub and login to your GitLab instance with your GitHub account.
+You can integrate your GitLab instance with GitHub.com as well as GitHub Enterprise to enable users to import projects from GitHub and/or to login to your GitLab instance with your GitHub account.
 
-To enable the GitHub OmniAuth provider you must register your application with GitHub.
-GitHub will generate an application ID and secret key for you to use.
+## Enabling GitHub OAuth
+
+To enable GitHub OmniAuth provider, you must use GitHub's credentials for your GitLab instance.
+To get the credentials (a pair of Client ID and Client Secret), you must register an application as an OAuth App on GitHub.
 
 1.  Sign in to GitHub.
 
-1.  Navigate to your individual user settings or an organization's settings, depending on how you want the application registered. It does not matter if the application is registered as an individual or an organization - that is entirely up to you.
+1.  Navigate to your individual user or organization settings, depending on how you want the application registered. It does not matter if the application is registered as an individual or an organization - that is entirely up to you.
 
-1.  Select "OAuth applications" in the left menu.
+    - For individual accounts, select **Developer settings** from the left menu, then select **OAuth Apps**.
+    - For organization accounts, directly select **OAuth Apps** from the left menu.
 
-1.  If you already have applications listed, switch to the "Developer applications" tab.
-
-1.  Select "Register new application".
+1.  Select **Register an application** (if you don't have any OAuth App) or **New OAuth App** (if you already have OAuth Apps).
+    ![Register OAuth App](img/github_app_entry.png)
 
 1.  Provide the required details.
     - Application name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
-    - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
+    - Homepage URL: the URL to your GitLab installation. e.g., `https://gitlab.company.com`
     - Application description: Fill this in if you wish.
-    - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'. Please make sure the port is included if your GitLab instance is not configured on default port.
-1.  Select "Register application".
+    - Authorization callback URL: `http(s)://${YOUR_DOMAIN}`. Please make sure the port is included if your GitLab instance is not configured on default port.
+    ![Register OAuth App](img/github_register_app.png)
 
-1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
+1.  Select **Register application**.
+
+1.  You should now see a pair of **Client ID** and **Client Secret** near the top right of the page (see screenshot).
     Keep this page open as you continue configuration.
     ![GitHub app](img/github_app.png)
 
@@ -97,9 +101,9 @@ GitHub will generate an application ID and secret key for you to use.
 
     __Replace `https://github.example.com/` with your GitHub URL.__
 
-1.  Change 'YOUR_APP_ID' to the client ID from the GitHub application page from step 7.
+1.  Change `YOUR_APP_ID` to the Client ID from the GitHub application page from step 6.
 
-1.  Change 'YOUR_APP_SECRET' to the client secret from the GitHub application page  from step 7.
+1.  Change `YOUR_APP_SECRET` to the Client Secret from the GitHub application page from step 6.
 
 1.  Save the configuration file.
 

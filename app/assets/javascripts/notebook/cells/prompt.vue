@@ -22,9 +22,7 @@ export default {
 
 <template>
   <div class="prompt">
-    <span v-if="hasKeys">
-      {{ type }} [{{ count }}]:
-    </span>
+    <span v-if="hasKeys"> {{ type }} [{{ count }}]: </span>
   </div>
 </template>
 

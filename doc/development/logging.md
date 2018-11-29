@@ -75,7 +75,7 @@ To create a new file:
           module Import
             class Logger < ::Gitlab::JsonLogger
               def self.file_name_noext
-                'importer_json'
+                'importer'
               end
             end
            end
@@ -105,7 +105,7 @@ To create a new file:
 
     ```ruby
     # GOOD
-    logger.info("Unable to create project", project_id: project.id)
+    logger.info(message: "Unable to create project", project_id: project.id)
     ```
 
 1. Be sure to create a common base structure of your log messages. For example,
@@ -118,13 +118,13 @@ To create a new file:
 
     ```ruby
     # BAD
-    logger.info("Import error", error: 1)
-    logger.info("Import error", error: "I/O failure")
+    logger.info(message: "Import error", error: 1)
+    logger.info(message: "Import error", error: "I/O failure")
     ```
 
     ```ruby
     # GOOD
-    logger.info("Import error", error_code: 1, error: "I/O failure")
+    logger.info(message: "Import error", error_code: 1, error: "I/O failure")
     ```
 
 ## Additional steps with new log files

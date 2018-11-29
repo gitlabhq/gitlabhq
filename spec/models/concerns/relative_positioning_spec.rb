@@ -14,6 +14,14 @@ describe RelativePositioning do
       expect(issue.prev_relative_position).to eq nil
       expect(issue1.next_relative_position).to eq nil
     end
+
+    it 'does not perform any moves if all issues have their relative_position set' do
+      issue.update!(relative_position: 1)
+
+      expect(issue).not_to receive(:save)
+
+      Issue.move_to_end([issue])
+    end
   end
 
   describe '#max_relative_position' do

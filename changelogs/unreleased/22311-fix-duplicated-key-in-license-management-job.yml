@@ -1,5 +1,0 @@
----
-title: "fix duplicated key in license management job auto devops gitlab ci template"
-merge_request: 22311
-author: Adam Lemanski
-type: fixed

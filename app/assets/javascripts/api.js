@@ -10,10 +10,10 @@ const Api = {
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
-  mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
+  projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   mergeRequestsPath: '/api/:version/merge_requests',
-  mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
-  mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
@@ -99,34 +99,34 @@ const Api = {
   },
 
   // Return Merge Request for project
-  mergeRequest(projectPath, mergeRequestId, params = {}) {
-    const url = Api.buildUrl(Api.mergeRequestPath)
+  projectMergeRequest(projectPath, mergeRequestId, params = {}) {
+    const url = Api.buildUrl(Api.projectMergeRequestPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':mrid', mergeRequestId);
 
     return axios.get(url, { params });
+  },
+
+  projectMergeRequestChanges(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.projectMergeRequestChangesPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':mrid', mergeRequestId);
+
+    return axios.get(url);
+  },
+
+  projectMergeRequestVersions(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.projectMergeRequestVersionsPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':mrid', mergeRequestId);
+
+    return axios.get(url);
   },
 
   mergeRequests(params = {}) {
     const url = Api.buildUrl(Api.mergeRequestsPath);
 
     return axios.get(url, { params });
-  },
-
-  mergeRequestChanges(projectPath, mergeRequestId) {
-    const url = Api.buildUrl(Api.mergeRequestChangesPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':mrid', mergeRequestId);
-
-    return axios.get(url);
-  },
-
-  mergeRequestVersions(projectPath, mergeRequestId) {
-    const url = Api.buildUrl(Api.mergeRequestVersionsPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':mrid', mergeRequestId);
-
-    return axios.get(url);
   },
 
   newLabel(namespacePath, projectPath, data, callback) {

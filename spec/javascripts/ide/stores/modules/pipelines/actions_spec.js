@@ -77,7 +77,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occured whilst fetching the latest pipeline.',
+              text: 'An error occurred whilst fetching the latest pipeline.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: null,
@@ -223,7 +223,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occured whilst loading the pipelines jobs.',
+              text: 'An error occurred whilst loading the pipelines jobs.',
               action: jasmine.anything(),
               actionText: 'Please try again',
               actionPayload: { id: 1 },
@@ -360,7 +360,7 @@ describe('IDE pipelines actions', () => {
           {
             type: 'setErrorMessage',
             payload: {
-              text: 'An error occured whilst fetching the job trace.',
+              text: 'An error occurred whilst fetching the job trace.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: null,

@@ -225,6 +225,7 @@ twice, which can lead to confusion during deployments.
 | ----------- | :------------: | ----------- | --------------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
+| [Cert Manager](http://docs.cert-manager.io/en/latest/) | 11.6+ | Cert Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up to date. The email address used by Let's Encrypt registration will be taken from the GitLab user that installed Cert Manager on the cluster. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
 | [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found at [Nurtch Documentation](http://docs.nurtch.com/en/latest).  **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
@@ -237,13 +238,10 @@ by GitLab before installing any of the above applications.
 ## Getting the external IP address
 
 NOTE: **Note:**
-You need a load balancer installed in your cluster in order to obtain the
-external IP address with the following procedure. It can be deployed using the
-[**Ingress** application](#installing-applications).
-
-NOTE: **Note:**
-Knative will include its own load balancer in the form of [Istio](https://istio.io).
-At this time, to determine the external IP address, you will need to follow the manual approach.
+With the following procedure, a load balancer must be installed in your cluster
+to obtain the external IP address. You can use either
+[Ingress](#installing-applications), or Knative's own load balancer
+([Istio](https://istio.io)) if using [Knative](#installing-applications).
 
 In order to publish your web application, you first need to find the external IP
 address associated to your load balancer.
@@ -252,7 +250,7 @@ address associated to your load balancer.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
-If you installed the Ingress [via the **Applications**](#installing-applications),
+If you [installed Ingress or Knative](#installing-applications),
 you should see the Ingress IP address on this same page within a few minutes.
 If you don't see this, GitLab might not be able to determine the IP address of
 your ingress application in which case you should manually determine it.

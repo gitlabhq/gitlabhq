@@ -10,16 +10,9 @@ export default {
 </script>
 
 <template>
-  <span
-    v-once
-    class="file-row-stats"
-  >
-    <span class="cgreen">
-      +{{ file.addedLines }}
-    </span>
-    <span class="cred">
-      -{{ file.removedLines }}
-    </span>
+  <span v-once class="file-row-stats">
+    <span class="cgreen"> +{{ file.addedLines }} </span>
+    <span class="cred"> -{{ file.removedLines }} </span>
   </span>
 </template>
 

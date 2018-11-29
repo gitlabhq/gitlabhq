@@ -112,26 +112,14 @@ export default {
       data-toggle="dropdown"
       aria-expanded="false"
     >
-      <span>
-        {{ selectedVersionName }}
-      </span>
-      <icon
-        :size="12"
-        name="angle-down"
-        class="position-absolute"
-      />
+      <span> {{ selectedVersionName }} </span>
+      <icon :size="12" name="angle-down" class="position-absolute" />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
       <div class="dropdown-content">
         <ul>
-          <li
-            v-for="version in targetVersions"
-            :key="version.id"
-          >
-            <a
-              :class="{ 'is-active': isActive(version) }"
-              :href="href(version)"
-            >
+          <li v-for="version in targetVersions" :key="version.id">
+            <a :class="{ 'is-active': isActive(version) }" :href="href(version)">
               <div>
                 <strong>
                   {{ versionName(version) }}
@@ -141,9 +129,7 @@ export default {
                 </strong>
               </div>
               <div>
-                <small class="commit-sha">
-                  {{ version.truncated_commit_sha }}
-                </small>
+                <small class="commit-sha"> {{ version.truncated_commit_sha }} </small>
               </div>
               <div>
                 <small>

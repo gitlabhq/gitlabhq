@@ -177,23 +177,20 @@ export default {
     class="note timeline-entry note-wrapper"
   >
     <div class="timeline-entry-inner">
-      <div class="timeline-icon">
+      <div v-once class="timeline-icon">
         <user-avatar-link
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="author.name"
           :img-size="40"
         >
-          <slot
-            slot="avatar-badge"
-            name="avatar-badge"
-          >
-          </slot>
+          <slot slot="avatar-badge" name="avatar-badge"> </slot>
         </user-avatar-link>
       </div>
       <div class="timeline-content">
         <div class="note-header">
           <note-header
+            v-once
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"

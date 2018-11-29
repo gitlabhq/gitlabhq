@@ -7,7 +7,7 @@
 # On GitLab.com this would insert 611 project routes, and 0 namespace routes.
 # The exact number could vary per instance, so we take care of both just in
 # case.
-class GenerateMissingRoutes < ActiveRecord::Migration
+class GenerateMissingRoutes < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

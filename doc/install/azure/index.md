@@ -37,7 +37,7 @@ Once you have an Azure account, you can get started. Login to Azure using
 
 ![Azure Dashboard](img/azure-dashboard.png)
 
-The Dashboard gives you a quick overview of Azure resources, and from here you you can build VMs, 
+The Dashboard gives you a quick overview of Azure resources, and from here you can build VMs, 
 create SQL Databases, author websites, and perform lots of other cloud tasks.
 
 ## Create New VM

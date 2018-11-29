@@ -272,16 +272,11 @@ shared_examples_for 'common trace features' do
           include ExclusiveLeaseHelpers
 
           before do
-            stub_exclusive_lease_taken("trace:archive:#{trace.job.id}", timeout: 1.hour)
+            stub_exclusive_lease_taken("trace:write:lock:#{trace.job.id}", timeout: 1.minute)
           end
 
           it 'blocks concurrent archiving' do
-            expect(Rails.logger).to receive(:error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
-
-            subject
-
-            build.reload
-            expect(build.job_artifacts_trace).to be_nil
+            expect { subject }.to raise_error(::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
           end
         end
       end

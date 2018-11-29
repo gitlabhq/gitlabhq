@@ -28,13 +28,23 @@ describe ProjectImportOptions do
 
       worker_class.sidekiq_retries_exhausted_block.call(job)
 
-      expect(project.reload.import_error).to include("fork")
+      expect(project.import_state.reload.last_error).to include("fork")
     end
 
     it 'logs the appropriate error message for forked projects' do
       worker_class.sidekiq_retries_exhausted_block.call(job)
 
-      expect(project.reload.import_error).to include("import")
+      expect(project.import_state.reload.last_error).to include("import")
+    end
+
+    context 'when project does not have import_state' do
+      let(:project) { create(:project) }
+
+      it 'raises an error' do
+        expect do
+          worker_class.sidekiq_retries_exhausted_block.call(job)
+        end.to raise_error(NoMethodError)
+      end
     end
   end
 end

@@ -1,4 +1,4 @@
-class AddBinaryToMergeRequestDiffFiles < ActiveRecord::Migration
+class AddBinaryToMergeRequestDiffFiles < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

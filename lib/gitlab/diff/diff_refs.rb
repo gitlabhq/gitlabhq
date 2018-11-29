@@ -23,7 +23,7 @@ module Gitlab
       alias_method :eql?, :==
 
       def hash
-        [base_sha, start_sha, head_sha].hash
+        [self.class, base_sha, start_sha, head_sha].hash
       end
 
       # There is only one case in which we will have `start_sha` and `head_sha`,

@@ -37,22 +37,14 @@ export default {
 <template>
   <div
     :class="{
-      'has-labels':!isEmpty,
+      'has-labels': !isEmpty,
     }"
     class="hide-collapsed value issuable-show-labels js-value"
   >
-    <span
-      v-if="isEmpty"
-      class="text-secondary"
-    >
+    <span v-if="isEmpty" class="text-secondary">
       <slot>{{ __('None') }}</slot>
     </span>
-    <a
-      v-for="label in labels"
-      v-else
-      :key="label.id"
-      :href="labelFilterUrl(label)"
-    >
+    <a v-for="label in labels" v-else :key="label.id" :href="labelFilterUrl(label)">
       <span
         v-tooltip
         :style="labelStyle(label)"

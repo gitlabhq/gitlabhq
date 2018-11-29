@@ -396,4 +396,4 @@ settings are recommended:
 - `unknown_git` user will be used as the commit author if the GitLab user does not exist in
   Perforce Helix.
 
-Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_zdp_zz1_3l.html).
+Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).

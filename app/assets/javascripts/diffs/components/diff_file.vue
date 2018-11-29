@@ -119,7 +119,7 @@ export default {
   <div
     :id="file.file_hash"
     :class="{
-      'is-active': currentDiffFileId === file.file_hash
+      'is-active': currentDiffFileId === file.file_hash,
     }"
     class="diff-file file-holder"
   >
@@ -134,13 +134,11 @@ export default {
       @showForkMessage="showForkMessage"
     />
 
-    <div
-      v-if="forkMessageVisible"
-      class="js-file-fork-suggestion-section file-fork-suggestion">
+    <div v-if="forkMessageVisible" class="js-file-fork-suggestion-section file-fork-suggestion">
       <span class="file-fork-suggestion-note">
-        You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span>
-        files in this project directly. Please fork this project,
-        make your changes there, and submit a merge request.
+        You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span> files
+        in this project directly. Please fork this project, make your changes there, and submit a
+        merge request.
       </span>
       <a
         :href="file.fork_path"
@@ -162,27 +160,14 @@ export default {
       :class="{ hidden: isCollapsed || file.too_large }"
       :diff-file="file"
     />
-    <gl-loading-icon
-      v-if="showLoadingIcon"
-      class="diff-content loading"
-    />
-    <div
-      v-else-if="showExpandMessage"
-      class="nothing-here-block diff-collapsed"
-    >
+    <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />
+    <div v-else-if="showExpandMessage" class="nothing-here-block diff-collapsed">
       {{ __('This diff is collapsed.') }}
-      <a
-        class="click-to-expand js-click-to-expand"
-        href="#"
-        @click.prevent="handleToggle"
-      >
+      <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">
         {{ __('Click to expand it.') }}
       </a>
     </div>
-    <div
-      v-if="file.too_large"
-      class="nothing-here-block diff-collapsed js-too-large-diff"
-    >
+    <div v-if="file.too_large" class="nothing-here-block diff-collapsed js-too-large-diff">
       {{ __('This source diff could not be displayed because it is too large.') }}
       <span v-html="viewBlobLink"></span>
     </div>

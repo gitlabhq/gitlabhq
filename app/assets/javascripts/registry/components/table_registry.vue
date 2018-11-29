@@ -65,17 +65,14 @@ export default {
         <tr>
           <th>{{ s__('ContainerRegistry|Tag') }}</th>
           <th>{{ s__('ContainerRegistry|Tag ID') }}</th>
-          <th>{{ s__("ContainerRegistry|Size") }}</th>
-          <th>{{ s__("ContainerRegistry|Created") }}</th>
+          <th>{{ s__('ContainerRegistry|Size') }}</th>
+          <th>{{ s__('ContainerRegistry|Created') }}</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(item, i) in repo.list"
-          :key="i">
+        <tr v-for="(item, i) in repo.list" :key="i">
           <td>
-
             {{ item.tag }}
 
             <clipboard-button
@@ -86,11 +83,7 @@ export default {
             />
           </td>
           <td>
-            <span
-              v-tooltip
-              :title="item.revision"
-              data-placement="bottom"
-            >
+            <span v-tooltip :title="item.revision" data-placement="bottom">
               {{ item.shortRevision }}
             </span>
           </td>
@@ -103,11 +96,7 @@ export default {
           </td>
 
           <td>
-            <span
-              v-tooltip
-              :title="tooltipTitle(item.createdAt)"
-              data-placement="bottom"
-            >
+            <span v-tooltip :title="tooltipTitle(item.createdAt)" data-placement="bottom">
               {{ timeFormated(item.createdAt) }}
             </span>
           </td>
@@ -121,13 +110,9 @@ export default {
               type="button"
               class="js-delete-registry btn btn-danger d-none d-sm-block float-right"
               data-container="body"
-              @click="handleDeleteRegistry(item)"
+              @click="handleDeleteRegistry(item);"
             >
-              <i
-                class="fa fa-trash"
-                aria-hidden="true"
-              >
-              </i>
+              <i class="fa fa-trash" aria-hidden="true"> </i>
             </button>
           </td>
         </tr>

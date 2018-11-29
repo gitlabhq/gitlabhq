@@ -40,24 +40,13 @@ export default {
 </script>
 
 <template>
-  <a
-    :href="mergeRequestHref"
-    class="btn-link d-flex align-items-center"
-  >
+  <a :href="mergeRequestHref" class="btn-link d-flex align-items-center">
     <span class="d-flex append-right-default ide-search-list-current-icon">
-      <icon
-        v-if="isActive"
-        :size="18"
-        name="mobile-issue-close"
-      />
+      <icon v-if="isActive" :size="18" name="mobile-issue-close" />
     </span>
     <span>
-      <strong>
-        {{ item.title }}
-      </strong>
-      <span class="ide-merge-request-project-path d-block mt-1">
-        {{ pathWithID }}
-      </span>
+      <strong> {{ item.title }} </strong>
+      <span class="ide-merge-request-project-path d-block mt-1"> {{ pathWithID }} </span>
     </span>
   </a>
 </template>

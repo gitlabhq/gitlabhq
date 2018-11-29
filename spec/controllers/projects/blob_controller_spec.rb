@@ -152,7 +152,7 @@ describe Projects::BlobController do
             expect(match_line['meta_data']).to have_key('new_pos')
           end
 
-          it 'does not add top match line when when "since" is equal 1' do
+          it 'does not add top match line when "since" is equal 1' do
             do_get(since: 1, to: 10, offset: 10, from_merge_request: true)
 
             match_line = JSON.parse(response.body).first

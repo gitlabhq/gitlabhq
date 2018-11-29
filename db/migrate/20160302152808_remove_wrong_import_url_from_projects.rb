@@ -2,7 +2,7 @@
 # Loops through old importer projects that kept a token/password in the import URL
 # and encrypts the credentials into a separate field in project#import_data
 # #down method not supported
-class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
+class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration[4.2]
 
   class ProjectImportDataFake
     extend AttrEncrypted

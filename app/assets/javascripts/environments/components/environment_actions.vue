@@ -68,9 +68,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="btn-group"
-    role="group">
+  <div class="btn-group" role="group">
     <button
       v-tooltip
       :title="title"
@@ -82,34 +80,23 @@ export default {
       data-toggle="dropdown"
     >
       <span>
-        <icon name="play" />
-        <icon
-          name="chevron-down"
-        />
+        <icon name="play" /> <icon name="chevron-down" />
         <gl-loading-icon v-if="isLoading" />
       </span>
     </button>
 
     <ul class="dropdown-menu dropdown-menu-right">
-      <li
-        v-for="(action, i) in actions"
-        :key="i">
+      <li v-for="(action, i) in actions" :key="i">
         <button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           type="button"
           class="js-manual-action-link no-btn btn d-flex align-items-center"
-          @click="onClickAction(action)"
+          @click="onClickAction(action);"
         >
-          <span class="flex-fill">
-            {{ action.name }}
-          </span>
-          <span
-            v-if="action.scheduledAt"
-            class="text-secondary"
-          >
-            <icon name="clock" />
-            {{ remainingTime(action) }}
+          <span class="flex-fill"> {{ action.name }} </span>
+          <span v-if="action.scheduledAt" class="text-secondary">
+            <icon name="clock" /> {{ remainingTime(action) }}
           </span>
         </button>
       </li>

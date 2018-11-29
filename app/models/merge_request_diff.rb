@@ -313,7 +313,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
     # merge_request_diff_commits.reload is preferred way to reload associated
     # objects but it returns cached result for some reason in this case
-    commits = merge_request_diff_commits(true)
+    # we can circumvent that by specifying that we need an uncached reload
+    commits = self.class.uncached { merge_request_diff_commits.reload }
     self.commits_count = commits.size
   end
 

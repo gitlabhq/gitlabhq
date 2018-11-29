@@ -1,4 +1,4 @@
-class AddIndexOnNamespacesLowerName < ActiveRecord::Migration
+class AddIndexOnNamespacesLowerName < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false
   INDEX_NAME = 'index_on_namespaces_lower_name'

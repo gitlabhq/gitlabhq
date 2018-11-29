@@ -1,4 +1,4 @@
-class AddRetriedToCiBuild < ActiveRecord::Migration
+class AddRetriedToCiBuild < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

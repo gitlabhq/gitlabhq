@@ -63,6 +63,6 @@ class StuckImportJobsWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def error_message
-    "Import timed out. Import took longer than #{IMPORT_JOBS_EXPIRATION} seconds"
+    _("Import timed out. Import took longer than %{import_jobs_expiration} seconds") % { import_jobs_expiration: IMPORT_JOBS_EXPIRATION }
   end
 end

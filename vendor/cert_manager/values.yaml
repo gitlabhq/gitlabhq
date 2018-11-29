@@ -1,0 +1,5 @@
+# These options provide fully automated TLS.
+# See https://github.com/jetstack/cert-manager/blob/master/docs/reference/ingress-shim.rst#configuration
+ingressShim:
+  defaultIssuerKind: "ClusterIssuer"
+  defaultIssuerName: "letsencrypt-prod"

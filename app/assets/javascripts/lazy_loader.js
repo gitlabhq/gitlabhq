@@ -19,7 +19,7 @@ export default class LazyLoader {
   }
 
   searchLazyImages() {
-    requestIdleCallback(
+    window.requestIdleCallback(
       () => {
         const lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
@@ -91,7 +91,9 @@ export default class LazyLoader {
 
   onIntersection = entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
+      // We are using `intersectionRatio > 0` over `isIntersecting`, as some browsers did not ship the latter
+      // See: https://gitlab.com/gitlab-org/gitlab-ce/issues/54407
+      if (entry.intersectionRatio > 0) {
         this.intersectionObserver.unobserve(entry.target);
         this.lazyImages.push(entry.target);
       }
@@ -107,7 +109,7 @@ export default class LazyLoader {
   }
 
   scrollCheck() {
-    requestAnimationFrame(() => this.checkElementsInView());
+    window.requestAnimationFrame(() => this.checkElementsInView());
   }
 
   checkElementsInView() {
@@ -122,7 +124,7 @@ export default class LazyLoader {
         const imgBound = imgTop + imgBoundRect.height;
 
         if (scrollTop <= imgBound && visHeight >= imgTop) {
-          requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
             LazyLoader.loadImage(selectedImage);
           });
           return false;

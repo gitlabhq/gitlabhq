@@ -63,65 +63,54 @@ export default {
 
 <template>
   <div class="diff-file-container">
-    <div
-      v-if="diffMode === $options.diffModes.replaced"
-      class="diff-viewer">
+    <div v-if="diffMode === $options.diffModes.replaced" class="diff-viewer">
       <div class="image js-replaced-image">
-        <component
-          :is="imageViewComponent"
-          v-bind="$props"
-        >
-          <slot
-            slot="image-overlay"
-            name="image-overlay"
-          >
-          </slot>
+        <component :is="imageViewComponent" v-bind="$props">
+          <slot slot="image-overlay" name="image-overlay"> </slot>
         </component>
       </div>
       <div class="view-modes">
         <ul class="view-modes-menu">
           <li
             :class="{
-              active: mode === $options.imageViewMode.twoup
+              active: mode === $options.imageViewMode.twoup,
             }"
-            @click="changeMode($options.imageViewMode.twoup)">
+            @click="changeMode($options.imageViewMode.twoup);"
+          >
             {{ s__('ImageDiffViewer|2-up') }}
           </li>
           <li
             :class="{
-              active: mode === $options.imageViewMode.swipe
+              active: mode === $options.imageViewMode.swipe,
             }"
-            @click="changeMode($options.imageViewMode.swipe)">
+            @click="changeMode($options.imageViewMode.swipe);"
+          >
             {{ s__('ImageDiffViewer|Swipe') }}
           </li>
           <li
             :class="{
-              active: mode === $options.imageViewMode.onion
+              active: mode === $options.imageViewMode.onion,
             }"
-            @click="changeMode($options.imageViewMode.onion)">
+            @click="changeMode($options.imageViewMode.onion);"
+          >
             {{ s__('ImageDiffViewer|Onion skin') }}
           </li>
         </ul>
       </div>
     </div>
-    <div
-      v-else
-      class="diff-viewer"
-    >
+    <div v-else class="diff-viewer">
       <div class="image">
         <image-viewer
           :path="imagePath"
-          :inner-css-classes="['frame', {
-            'added': isNew,
-            'deleted': diffMode === $options.diffModes.deleted
-          }]"
+          :inner-css-classes="[
+            'frame',
+            {
+              added: isNew,
+              deleted: diffMode === $options.diffModes.deleted,
+            },
+          ]"
         >
-          <slot
-            v-if="isNew || isRenamed"
-            slot="image-overlay"
-            name="image-overlay"
-          >
-          </slot>
+          <slot v-if="isNew || isRenamed" slot="image-overlay" name="image-overlay"> </slot>
         </image-viewer>
       </div>
     </div>

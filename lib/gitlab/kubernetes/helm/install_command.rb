@@ -64,17 +64,17 @@ module Gitlab
           name_flag +
             optional_tls_flags +
             optional_version_flag +
-            optional_rbac_create_flag +
+            rbac_create_flag +
             namespace_flag +
             value_flag
         end
 
-        def optional_rbac_create_flag
-          return [] unless rbac?
-
-          # jupyterhub helm chart is using rbac.enabled
-          #   https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/master/jupyterhub
-          %w[--set rbac.create=true,rbac.enabled=true]
+        def rbac_create_flag
+          if rbac?
+            %w[--set rbac.create=true,rbac.enabled=true]
+          else
+            %w[--set rbac.create=false,rbac.enabled=false]
+          end
         end
 
         def optional_version_flag

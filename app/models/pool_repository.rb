@@ -1,22 +1,20 @@
 # frozen_string_literal: true
 
 class PoolRepository < ActiveRecord::Base
-  POOL_PREFIX = '@pools'
+  include Shardable
 
-  belongs_to :shard
-  validates :shard, presence: true
+  has_many :member_projects, class_name: 'Project'
 
-  # For now, only pool repositories are tracked in the database. However, we may
-  # want to add other repository types in the future
-  self.table_name = 'repositories'
+  after_create :correct_disk_path
 
-  has_many :pool_member_projects, class_name: 'Project', foreign_key: :pool_repository_id
+  private
 
-  def shard_name
-    shard&.name
+  def correct_disk_path
+    update!(disk_path: storage.disk_path)
   end
 
-  def shard_name=(name)
-    self.shard = Shard.by_name(name)
+  def storage
+    Storage::HashedProject
+      .new(self, prefix: Storage::HashedProject::POOL_PATH_PREFIX)
   end
 end

@@ -21,7 +21,7 @@ the milestone to the issue.
 Milestones can be used as releases.
 Set the milestone due date to represent the release date of your release. 
 (And leave the milestone start date blank.)
-Set the the milestone title to the version of your release,
+Set the milestone title to the version of your release,
 such as `Version 9.4`.
 Add an issue to your release by associating
 the milestone to the issue.

@@ -1,4 +1,4 @@
-class AddConfigSourceToPipelines < ActiveRecord::Migration
+class AddConfigSourceToPipelines < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

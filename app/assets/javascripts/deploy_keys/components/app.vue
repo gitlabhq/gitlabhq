@@ -123,26 +123,10 @@ export default {
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left">
-          <i
-            class="fa fa-angle-left"
-            aria-hidden="true"
-          >
-          </i>
-        </div>
-        <div class="fade-right">
-          <i
-            class="fa fa-angle-right"
-            aria-hidden="true"
-          >
-          </i>
-        </div>
+        <div class="fade-left"><i class="fa fa-angle-left" aria-hidden="true"> </i></div>
+        <div class="fade-right"><i class="fa fa-angle-right" aria-hidden="true"> </i></div>
 
-        <navigation-tabs
-          :tabs="tabs"
-          scope="deployKeys"
-          @onChangeTab="onChangeTab"
-        />
+        <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
       </div>
       <keys-panel
         :project-id="projectId"

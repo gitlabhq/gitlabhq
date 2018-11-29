@@ -251,7 +251,7 @@ module Gitlab
 
       def validate_variable_usage(errors, translation, required_variables)
         # We don't need to validate when the message is empty.
-        # In this case we fall back to the default, which has all the the
+        # In this case we fall back to the default, which has all the
         # required variables.
         return if translation.empty?
 

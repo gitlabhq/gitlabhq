@@ -394,7 +394,7 @@ This is especially useful whenever it's showing 500 internal server error.
 
 ### Shared contexts
 
-All shared contexts should be be placed under `spec/support/shared_contexts/`.
+All shared contexts should be placed under `spec/support/shared_contexts/`.
 Shared contexts can be placed in subfolder if they apply to a certain type of
 specs only (e.g. features, requests etc.) but shouldn't be if they apply to
 multiple type of specs.
@@ -404,7 +404,7 @@ Each file should include only one context and have a descriptive name, e.g.
 
 ### Shared examples
 
-All shared examples should be be placed under `spec/support/shared_examples/`.
+All shared examples should be placed under `spec/support/shared_examples/`.
 Shared examples can be placed in subfolder if they apply to a certain type of
 specs only (e.g. features, requests etc.) but shouldn't be if they apply to
 multiple type of specs.
@@ -416,7 +416,7 @@ Each file should include only one context and have a descriptive name, e.g.
 
 Helpers are usually modules that provide some methods to hide the complexity of
 specific RSpec examples. You can define helpers in RSpec files if they're not
-intended to be shared with other specs. Otherwise, they should be be placed
+intended to be shared with other specs. Otherwise, they should be placed
 under `spec/support/helpers/`. Helpers can be placed in subfolder if they apply
 to a certain type of specs only (e.g. features, requests etc.) but shouldn't be
 if they apply to multiple type of specs.
@@ -470,7 +470,7 @@ GitLab uses [factory_bot] as a test fixture replacement.
 
 ### Fixtures
 
-All fixtures should be be placed under `spec/fixtures/`.
+All fixtures should be placed under `spec/fixtures/`.
 
 ### Repositories
 

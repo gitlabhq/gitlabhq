@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
 
@@ -19,29 +19,23 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['commitId', 'shouldRenderInlineCommentRow']),
-    ...mapState({
-      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
-    }),
+    ...mapGetters('diffs', ['commitId']),
     diffLinesLength() {
       return this.diffLines.length;
     },
-    userColorScheme() {
-      return window.gon.user_color_scheme;
-    },
   },
+  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
 <template>
   <table
-    :class="userColorScheme"
+    :class="$options.userColorScheme"
     :data-commit-id="commitId"
-    class="code diff-wrap-lines js-syntax-highlight text-file js-diff-inline-view">
+    class="code diff-wrap-lines js-syntax-highlight text-file js-diff-inline-view"
+  >
     <tbody>
-      <template
-        v-for="(line, index) in diffLines"
-      >
+      <template v-for="(line, index) in diffLines">
         <inline-diff-table-row
           :key="line.line_code"
           :file-hash="diffFile.file_hash"
@@ -50,11 +44,9 @@ export default {
           :is-bottom="index + 1 === diffLinesLength"
         />
         <inline-diff-comment-row
-          v-if="shouldRenderInlineCommentRow(line)"
-          :key="index"
+          :key="`icr-${index}`"
           :diff-file-hash="diffFile.file_hash"
           :line="line"
-          :line-index="index"
         />
       </template>
     </tbody>

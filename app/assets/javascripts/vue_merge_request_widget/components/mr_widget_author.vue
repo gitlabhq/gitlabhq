@@ -39,15 +39,7 @@ export default {
     :title="author.name"
     class="author-link inline"
   >
-    <img
-      :src="avatarUrl"
-      class="avatar avatar-inline s16"
-    />
-    <span
-      v-if="showAuthorName"
-      class="author"
-    >
-      {{ author.name }}
-    </span>
+    <img :src="avatarUrl" class="avatar avatar-inline s16" />
+    <span v-if="showAuthorName" class="author"> {{ author.name }} </span>
   </a>
 </template>

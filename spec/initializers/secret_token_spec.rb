@@ -123,7 +123,7 @@ describe 'create_tokens' do
           create_tokens
         end
 
-        it 'sets the the keys to the values from the environment and secrets.yml' do
+        it 'sets the keys to the values from the environment and secrets.yml' do
           create_tokens
 
           expect(secrets.secret_key_base).to eq('secret_key_base')

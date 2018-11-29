@@ -1,4 +1,4 @@
-class StealEncryptColumns < ActiveRecord::Migration
+class StealEncryptColumns < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

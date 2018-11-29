@@ -174,7 +174,15 @@ describe RemoteMirror do
     end
 
     context 'with remote mirroring enabled' do
+      it 'defaults to disabling only protected branches' do
+        expect(remote_mirror.only_protected_branches?).to be_falsey
+      end
+
       context 'with only protected branches enabled' do
+        before do
+          remote_mirror.only_protected_branches = true
+        end
+
         context 'when it did not update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
             expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)

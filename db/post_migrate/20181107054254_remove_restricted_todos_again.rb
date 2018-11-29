@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rescheduling of the revised RemoveRestrictedTodosWithCte background migration
-class RemoveRestrictedTodosAgain < ActiveRecord::Migration
+class RemoveRestrictedTodosAgain < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

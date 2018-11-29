@@ -223,7 +223,7 @@ describe ProjectPolicy do
         expect_disallowed(*other_write_abilities)
       end
 
-      it 'does not disable other other abilities' do
+      it 'does not disable other abilities' do
         expect_allowed(*(regular_abilities - feature_write_abilities - other_write_abilities))
       end
     end
