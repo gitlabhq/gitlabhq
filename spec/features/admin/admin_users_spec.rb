@@ -205,74 +205,117 @@ describe "Admin::Users" do
     describe 'Impersonation' do
       let(:another_user) { create(:user) }
 
-      before do
-        visit admin_user_path(another_user)
-      end
-
       context 'before impersonating' do
-        it 'shows impersonate button for other users' do
-          expect(page).to have_content('Impersonate')
+        subject { visit admin_user_path(user_to_visit) }
+
+        let(:user_to_visit) { another_user }
+
+        context 'for other users' do
+          it 'shows impersonate button for other users' do
+            subject
+
+            expect(page).to have_content('Impersonate')
+          end
         end
 
-        it 'does not show impersonate button for admin itself' do
-          visit admin_user_path(current_user)
+        context 'for admin itself' do
+          let(:user_to_visit) { current_user }
 
-          expect(page).not_to have_content('Impersonate')
+          it 'does not show impersonate button for admin itself' do
+            subject
+
+            expect(page).not_to have_content('Impersonate')
+          end
         end
 
-        it 'does not show impersonate button for blocked user' do
-          another_user.block
+        context 'for blocked user' do
+          before do
+            another_user.block
+          end
 
-          visit admin_user_path(another_user)
+          it 'does not show impersonate button for blocked user' do
+            subject
 
-          expect(page).not_to have_content('Impersonate')
+            expect(page).not_to have_content('Impersonate')
+          end
+        end
 
-          another_user.activate
+        context 'when impersonation is disabled' do
+          before do
+            stub_config_setting(impersonation_enabled: false)
+          end
+
+          it 'does not show impersonate button' do
+            subject
+
+            expect(page).not_to have_content('Impersonate')
+          end
         end
       end
 
       context 'when impersonating' do
+        subject { click_link 'Impersonate' }
+
         before do
-          click_link 'Impersonate'
+          visit admin_user_path(another_user)
         end
 
         it 'logs in as the user when impersonate is clicked' do
+          subject
+
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)
         end
 
         it 'sees impersonation log out icon' do
-          icon = first('.fa.fa-user-secret')
+          subject
 
+          icon = first('.fa.fa-user-secret')
           expect(icon).not_to be nil
         end
 
+        context 'a user with an expired password' do
+          before do
+            another_user.update(password_expires_at: Time.now - 5.minutes)
+          end
+
+          it 'does not redirect to password change page' do
+            subject
+
+            expect(current_path).to eq('/')
+          end
+        end
+      end
+
+      context 'ending impersonation' do
+        subject { find(:css, 'li.impersonation a').click }
+
+        before do
+          visit admin_user_path(another_user)
+          click_link 'Impersonate'
+        end
+
         it 'logs out of impersonated user back to original user' do
-          find(:css, 'li.impersonation a').click
+          subject
 
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eq(current_user.username)
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do
-          find(:css, 'li.impersonation a').click
+          subject
 
           expect(current_path).to eq("/admin/users/#{another_user.username}")
         end
-      end
 
-      context 'when impersonating a user with an expired password' do
-        before do
-          another_user.update(password_expires_at: Time.now - 5.minutes)
-          click_link 'Impersonate'
-        end
+        context 'a user with an expired password' do
+          before do
+            another_user.update(password_expires_at: Time.now - 5.minutes)
+          end
 
-        it 'does not redirect to password change page' do
-          expect(current_path).to eq('/')
-        end
+          it 'is redirected back to the impersonated users page in the admin after stopping' do
+            subject
 
-        it 'is redirected back to the impersonated users page in the admin after stopping' do
-          find(:css, 'li.impersonation a').click
-
-          expect(current_path).to eq("/admin/users/#{another_user.username}")
+            expect(current_path).to eq("/admin/users/#{another_user.username}")
+          end
         end
       end
     end

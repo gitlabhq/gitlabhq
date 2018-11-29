@@ -3448,6 +3448,9 @@ msgstr ""
 msgid "ImageDiffViewer|Swipe"
 msgstr ""
 
+msgid "Impersonation has been disabled"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
