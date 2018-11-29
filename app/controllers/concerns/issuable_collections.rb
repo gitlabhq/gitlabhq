@@ -102,7 +102,7 @@ module IssuableCollections
     elsif @group
       options[:group_id] = @group.id
       options[:include_subgroups] = true
-      options[:use_cte_for_search] = true
+      options[:attempt_group_search_optimizations] = true
     end
 
     params.permit(finder_type.valid_params).merge(options)
