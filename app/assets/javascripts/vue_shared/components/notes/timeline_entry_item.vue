@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'TimelineEntry',
+  name: 'TimelineEntryItem',
 };
 </script>
 

@@ -4,6 +4,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import Autosize from 'autosize';
 import { __, sprintf } from '~/locale';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import {
@@ -30,6 +31,7 @@ export default {
     markdownField,
     userAvatarLink,
     loadingButton,
+    TimelineEntryItem,
   },
   mixins: [issuableStateMixin],
   props: {
@@ -309,137 +311,135 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="issuableTypeTitle" />
-    <div v-else-if="canCreateNote" class="notes notes-form timeline">
-      <div class="timeline-entry note-form">
-        <div class="timeline-entry-inner">
-          <div class="flash-container error-alert timeline-content"></div>
-          <div class="timeline-icon d-none d-sm-none d-md-block">
-            <user-avatar-link
-              v-if="author"
-              :link-href="author.path"
-              :img-src="author.avatar_url"
-              :img-alt="author.name"
-              :img-size="40"
-            />
-          </div>
-          <div class="timeline-content timeline-content-form">
-            <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
-              <div class="error-alert"></div>
+    <ul v-else-if="canCreateNote" class="notes notes-form timeline">
+      <timeline-entry-item class="note-form">
+        <div class="flash-container error-alert timeline-content"></div>
+        <div class="timeline-icon d-none d-sm-none d-md-block">
+          <user-avatar-link
+            v-if="author"
+            :link-href="author.path"
+            :img-src="author.avatar_url"
+            :img-alt="author.name"
+            :img-size="40"
+          />
+        </div>
+        <div class="timeline-content timeline-content-form">
+          <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
+            <div class="error-alert"></div>
 
-              <issue-warning
-                v-if="hasWarning(getNoteableData)"
-                :is-locked="isLocked(getNoteableData)"
-                :is-confidential="isConfidential(getNoteableData)"
+            <issue-warning
+              v-if="hasWarning(getNoteableData)"
+              :is-locked="isLocked(getNoteableData)"
+              :is-confidential="isConfidential(getNoteableData)"
+            />
+
+            <markdown-field
+              ref="markdownField"
+              :markdown-preview-path="markdownPreviewPath"
+              :markdown-docs-path="markdownDocsPath"
+              :quick-actions-docs-path="quickActionsDocsPath"
+              :markdown-version="markdownVersion"
+              :add-spacing-classes="false"
+            >
+              <textarea
+                id="note-body"
+                ref="textarea"
+                slot="textarea"
+                v-model="note"
+                :disabled="isSubmitting"
+                name="note[note]"
+                class="note-textarea js-vue-comment-form js-note-text
+js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
+                data-supports-quick-actions="true"
+                aria-label="Description"
+                placeholder="Write a comment or drag your files here…"
+                @keydown.up="editCurrentUserLastNote();"
+                @keydown.meta.enter="handleSave();"
+                @keydown.ctrl.enter="handleSave();"
+              >
+              </textarea>
+            </markdown-field>
+            <div class="note-form-actions">
+              <div
+                class="float-left btn-group
+append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
+              >
+                <button
+                  :disabled="isSubmitButtonDisabled"
+                  class="btn btn-create comment-btn js-comment-button js-comment-submit-button
+                    qa-comment-button"
+                  type="submit"
+                  @click.prevent="handleSave();"
+                >
+                  {{ __(commentButtonTitle) }}
+                </button>
+                <button
+                  :disabled="isSubmitButtonDisabled"
+                  name="button"
+                  type="button"
+                  class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  data-display="static"
+                  data-toggle="dropdown"
+                  aria-label="Open comment type dropdown"
+                >
+                  <i aria-hidden="true" class="fa fa-caret-down toggle-icon"> </i>
+                </button>
+
+                <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
+                  <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
+                    <button
+                      type="button"
+                      class="btn btn-transparent"
+                      @click.prevent="setNoteType('comment');"
+                    >
+                      <i aria-hidden="true" class="fa fa-check icon"> </i>
+                      <div class="description">
+                        <strong>Comment</strong>
+                        <p>Add a general comment to this {{ noteableDisplayName }}.</p>
+                      </div>
+                    </button>
+                  </li>
+                  <li class="divider droplab-item-ignore"></li>
+                  <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
+                    <button
+                      type="button"
+                      class="btn btn-transparent qa-discussion-option"
+                      @click.prevent="setNoteType('discussion');"
+                    >
+                      <i aria-hidden="true" class="fa fa-check icon"> </i>
+                      <div class="description">
+                        <strong>Start discussion</strong>
+                        <p>{{ startDiscussionDescription }}</p>
+                      </div>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <loading-button
+                v-if="canUpdateIssue"
+                :loading="isToggleStateButtonLoading"
+                :container-class="[
+                  actionButtonClassNames,
+                  'btn btn-comment btn-comment-and-close js-action-button',
+                ]"
+                :disabled="isToggleStateButtonLoading || isSubmitting"
+                :label="issueActionButtonTitle"
+                @click="handleSave(true);"
               />
 
-              <markdown-field
-                ref="markdownField"
-                :markdown-preview-path="markdownPreviewPath"
-                :markdown-docs-path="markdownDocsPath"
-                :quick-actions-docs-path="quickActionsDocsPath"
-                :markdown-version="markdownVersion"
-                :add-spacing-classes="false"
+              <button
+                v-if="note.length"
+                type="button"
+                class="btn btn-cancel js-note-discard"
+                @click="discard"
               >
-                <textarea
-                  id="note-body"
-                  ref="textarea"
-                  slot="textarea"
-                  v-model="note"
-                  :disabled="isSubmitting"
-                  name="note[note]"
-                  class="note-textarea js-vue-comment-form js-note-text
-js-gfm-input js-autosize markdown-area js-vue-textarea qa-comment-input"
-                  data-supports-quick-actions="true"
-                  aria-label="Description"
-                  placeholder="Write a comment or drag your files here…"
-                  @keydown.up="editCurrentUserLastNote();"
-                  @keydown.meta.enter="handleSave();"
-                  @keydown.ctrl.enter="handleSave();"
-                >
-                </textarea>
-              </markdown-field>
-              <div class="note-form-actions">
-                <div
-                  class="float-left btn-group
-append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
-                >
-                  <button
-                    :disabled="isSubmitButtonDisabled"
-                    class="btn btn-create comment-btn js-comment-button js-comment-submit-button
-                    qa-comment-button"
-                    type="submit"
-                    @click.prevent="handleSave();"
-                  >
-                    {{ __(commentButtonTitle) }}
-                  </button>
-                  <button
-                    :disabled="isSubmitButtonDisabled"
-                    name="button"
-                    type="button"
-                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
-                    data-display="static"
-                    data-toggle="dropdown"
-                    aria-label="Open comment type dropdown"
-                  >
-                    <i aria-hidden="true" class="fa fa-caret-down toggle-icon"> </i>
-                  </button>
-
-                  <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
-                    <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
-                      <button
-                        type="button"
-                        class="btn btn-transparent"
-                        @click.prevent="setNoteType('comment');"
-                      >
-                        <i aria-hidden="true" class="fa fa-check icon"> </i>
-                        <div class="description">
-                          <strong>Comment</strong>
-                          <p>Add a general comment to this {{ noteableDisplayName }}.</p>
-                        </div>
-                      </button>
-                    </li>
-                    <li class="divider droplab-item-ignore"></li>
-                    <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
-                      <button
-                        type="button"
-                        class="btn btn-transparent qa-discussion-option"
-                        @click.prevent="setNoteType('discussion');"
-                      >
-                        <i aria-hidden="true" class="fa fa-check icon"> </i>
-                        <div class="description">
-                          <strong>Start discussion</strong>
-                          <p>{{ startDiscussionDescription }}</p>
-                        </div>
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-
-                <loading-button
-                  v-if="canUpdateIssue"
-                  :loading="isToggleStateButtonLoading"
-                  :container-class="[
-                    actionButtonClassNames,
-                    'btn btn-comment btn-comment-and-close js-action-button',
-                  ]"
-                  :disabled="isToggleStateButtonLoading || isSubmitting"
-                  :label="issueActionButtonTitle"
-                  @click="handleSave(true);"
-                />
-
-                <button
-                  v-if="note.length"
-                  type="button"
-                  class="btn btn-cancel js-note-discard"
-                  @click="discard"
-                >
-                  Discard draft
-                </button>
-              </div>
-            </form>
-          </div>
+                Discard draft
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
-    </div>
+      </timeline-entry-item>
+    </ul>
   </div>
 </template>

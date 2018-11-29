@@ -1,13 +1,13 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import TimelineEntry from '~/vue_shared/components/notes/timeline_entry.vue';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
-describe(TimelineEntry.name, () => {
+describe(TimelineEntryItem.name, () => {
   let wrapper;
 
   const factory = (options = {}) => {
     const localVue = createLocalVue();
 
-    wrapper = shallowMount(TimelineEntry, {
+    wrapper = shallowMount(TimelineEntryItem, {
       localVue,
       ...options,
     });
