@@ -4,14 +4,17 @@ description: 'Read through the different methods to deploy GitLab on Kubernetes.
 
 # Installing GitLab on Kubernetes
 
-TIP: **If in doubt, choose Omnibus:**
-For nearly all GitLab installations we recommend using an Omnibus package. **GitLab can support up to 40,000 users on a single box Omnibus installation** with enough CPU and RAM. (See [requirements documentation](install/requirements.md)). Before starting to install GitLab in Kubernetes, please read [Choose the best installation method for your needs](install/README.md)
+TIP: **If in doubt, choose Omnibus GitLab:**
+Our [Omnibus GitLab packages](../README.md#install-gitlab-using-the-omnibus-gitlab-package-recommended)
+are mature, scalable, support [high availability](../../administration/high_availability/README.md)
+and are used today on GitLab.com. Our Helm charts are recommended for those who
+are familiar with Kubernetes.
 
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
-to take advantage of GitLab's Helm charts. [Helm] is a package
-management tool for Kubernetes, allowing apps to be easily managed via their
-Charts. A [Chart] is a detailed description of the application including how it
-should be deployed, upgraded, and configured.
+to take advantage of GitLab's Helm charts. [Helm](https://github.com/kubernetes/helm/blob/master/README.md)
+is a package management tool for Kubernetes, allowing apps to be easily managed via their
+Charts. A [Chart](https://github.com/kubernetes/charts) is a detailed description
+of the application including how it should be deployed, upgraded, and configured.
 
 ## GitLab Chart
 
@@ -40,24 +43,21 @@ Learn more about [gitlab-runner chart](gitlab_runner_chart.md).
 
 CAUTION: **Deprecated:**
 These charts are **deprecated**. We recommend using the [GitLab Chart](gitlab_chart.md)
-instead. (**Note:** Omnibus is still the recommended installation for most use cases - only the Omnibus Helm chart is deprecated.)
+instead.
 
 ### GitLab-Omnibus Chart
 
 This chart is based on the [GitLab Omnibus Docker images](https://docs.gitlab.com/omnibus/docker/).
 It deploys and configures nearly all features of GitLab, including:
 
-- a [GitLab Runner](https://docs.gitlab.com/runner/)
+- [A GitLab Runner](https://docs.gitlab.com/runner/)
 - [Container Registry](../../user/project/container_registry.html#gitlab-container-registry)
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
-- [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-- and an [NGINX load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx).
+- [Automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
+- [An NGINX load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)
 
 Learn more about the [gitlab-omnibus chart](gitlab_omnibus.md).
 
 ### Community Contributed Charts
 
 The community has also contributed GitLab [CE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce) and [EE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ee) charts to the [Helm Stable Repository](https://github.com/kubernetes/charts#repository-structure). These charts are [deprecated](https://github.com/kubernetes/charts/issues/1138) in favor of the [official Chart](gitlab_chart.md).
-
-[chart]: https://github.com/kubernetes/charts
-[helm]: https://github.com/kubernetes/helm/blob/master/README.md
