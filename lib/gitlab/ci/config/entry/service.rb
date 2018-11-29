@@ -8,7 +8,7 @@ module Gitlab
         # Entry that represents a configuration of Docker service.
         #
         class Service < Image
-          include Validatable
+          include ::Gitlab::Config::Entry::Validatable
 
           ALLOWED_KEYS = %i[name entrypoint command alias].freeze
 

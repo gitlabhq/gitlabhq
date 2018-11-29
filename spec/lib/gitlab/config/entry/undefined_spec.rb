@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Undefined do
+describe Gitlab::Config::Entry::Undefined do
   let(:entry) { described_class.new }
 
   describe '#leaf?' do

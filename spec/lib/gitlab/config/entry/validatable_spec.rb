@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Validatable do
+describe Gitlab::Config::Entry::Validatable do
   let(:entry) do
-    Class.new(Gitlab::Ci::Config::Entry::Node) do
-      include Gitlab::Ci::Config::Entry::Validatable
+    Class.new(Gitlab::Config::Entry::Node) do
+      include Gitlab::Config::Entry::Validatable
     end
   end
 
@@ -20,7 +20,7 @@ describe Gitlab::Ci::Config::Entry::Validatable do
 
     it 'returns validator' do
       expect(entry.validator.superclass)
-        .to be Gitlab::Ci::Config::Entry::Validator
+        .to be Gitlab::Config::Entry::Validator
     end
 
     it 'returns only one validator to mitigate leaks' do
