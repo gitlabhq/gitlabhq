@@ -158,6 +158,9 @@ msgstr ""
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
+msgid "%{user_name} profile page"
+msgstr ""
+
 msgid "+ %{count} more"
 msgstr ""
 
@@ -1089,6 +1092,9 @@ msgid "Browse files"
 msgstr ""
 
 msgid "Business metrics (Custom)"
+msgstr ""
+
+msgid "By %{user_name}"
 msgstr ""
 
 msgid "ByAuthor|by"
@@ -2582,6 +2588,9 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
+msgid "Edit comment"
+msgstr ""
+
 msgid "Edit environment"
 msgstr ""
 
@@ -2832,6 +2841,9 @@ msgid "EventFilterBy|Filter by push events"
 msgstr ""
 
 msgid "EventFilterBy|Filter by team"
+msgstr ""
+
+msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
 
 msgid "Every day (at 4:00am)"
@@ -3436,6 +3448,9 @@ msgstr ""
 msgid "ImageDiffViewer|Swipe"
 msgstr ""
 
+msgid "Impersonation has been disabled"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -3487,6 +3502,9 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
+msgstr ""
+
 msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
 msgstr ""
 
@@ -3536,6 +3554,9 @@ msgid "Integrations Settings"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
+msgstr ""
+
+msgid "Internal"
 msgstr ""
 
 msgid "Internal - The group and any internal projects can be viewed by any logged in user."
@@ -3640,7 +3661,7 @@ msgstr ""
 msgid "Job|The artifacts will be removed in"
 msgstr ""
 
-msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
+msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
@@ -4366,6 +4387,9 @@ msgstr ""
 msgid "Notes|Show history only"
 msgstr ""
 
+msgid "Nothing here."
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
@@ -4827,6 +4851,9 @@ msgstr ""
 msgid "Prioritized label"
 msgstr ""
 
+msgid "Private"
+msgstr ""
+
 msgid "Private - Project access must be granted explicitly to each user."
 msgstr ""
 
@@ -5251,6 +5278,9 @@ msgid "Protip:"
 msgstr ""
 
 msgid "Provider"
+msgstr ""
+
+msgid "Public"
 msgstr ""
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
@@ -6039,6 +6069,9 @@ msgstr ""
 msgid "Source is not available"
 msgstr ""
 
+msgid "Source project cannot be found."
+msgstr ""
+
 msgid "Spam Logs"
 msgstr ""
 
@@ -6512,10 +6545,10 @@ msgstr ""
 msgid "This job is in pending state and is waiting to be picked by a runner"
 msgstr ""
 
-msgid "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:"
+msgid "This job is stuck because you don't have any active runners online with any of these tags assigned to them:"
 msgstr ""
 
-msgid "This job is stuck, because you don't have any active runners that can run this job."
+msgid "This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "This job is the most recent deployment to %{link}."

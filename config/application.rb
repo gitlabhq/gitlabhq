@@ -103,6 +103,9 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    #
+    # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
+    #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
     config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate

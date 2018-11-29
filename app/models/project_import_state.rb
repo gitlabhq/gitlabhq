@@ -69,4 +69,33 @@ class ProjectImportState < ActiveRecord::Base
   ensure
     @errors = original_errors
   end
+
+  alias_method :no_import?, :none?
+
+  def in_progress?
+    scheduled? || started?
+  end
+
+  def started?
+    # import? does SQL work so only run it if it looks like there's an import running
+    status == 'started' && project.import?
+  end
+
+  def remove_jid
+    return unless jid
+
+    Gitlab::SidekiqStatus.unset(jid)
+
+    update_column(:jid, nil)
+  end
+
+  # Refreshes the expiration time of the associated import job ID.
+  #
+  # This method can be used by asynchronous importers to refresh the status,
+  # preventing the StuckImportJobsWorker from marking the import as failed.
+  def refresh_jid_expiration
+    return unless jid
+
+    Gitlab::SidekiqStatus.set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
+  end
 end

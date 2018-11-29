@@ -4,6 +4,9 @@ class DashboardController < Dashboard::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
+  prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
+
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests]

@@ -324,7 +324,7 @@ class Note < ActiveRecord::Base
   end
 
   def to_ability_name
-    for_personal_snippet? ? 'personal_snippet' : noteable_type.underscore
+    for_snippet? ? noteable.class.name.underscore : noteable_type.underscore
   end
 
   def can_be_discussion_note?
