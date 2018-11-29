@@ -715,6 +715,10 @@ module API
 
       expose :diff_refs, using: Entities::DiffRefs
 
+      # Allow the status of a rebase to be determined
+      expose :merge_error
+      expose :rebase_in_progress?, as: :rebase_in_progress, if: -> (_, options) { options[:include_rebase_in_progress] }
+
       expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
       def build_available?(options)
