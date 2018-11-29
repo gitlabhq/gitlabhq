@@ -595,7 +595,7 @@ failure.
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
-    [manual actions](#when-manual) below.
+    [manual actions](#whenmanual) below.
 
 For example:
 
