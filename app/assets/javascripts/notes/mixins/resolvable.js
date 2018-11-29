@@ -36,7 +36,7 @@ export default {
       const discussion = this.resolveAsThread;
       const endpoint = discussion ? this.discussion.resolve_path : `${this.note.path}/resolve`;
 
-      this.toggleResolveNote({ endpoint, isResolved, discussion })
+      return this.toggleResolveNote({ endpoint, isResolved, discussion })
         .then(() => {
           this.isResolving = false;
         })
