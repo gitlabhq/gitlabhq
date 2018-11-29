@@ -48,6 +48,21 @@ describe Ci::ArchiveTracesCronWorker do
         expect(build2.job_artifacts_trace).to be_exist
       end
     end
+
+    context 'when an unexpected exception happened during archiving' do
+      let!(:build) { create(:ci_build, :success, :trace_live) }
+
+      before do
+        allow(Gitlab::Sentry).to receive(:track_exception)
+        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!).and_raise('Unexpected error')
+      end
+
+      it 'puts a log' do
+        expect(Rails.logger).to receive(:error).with("Failed to archive trace. id: #{build.id} message: Unexpected error")
+
+        subject
+      end
+    end
   end
 
   context 'when a job was cancelled' do
