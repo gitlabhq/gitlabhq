@@ -5,10 +5,11 @@ describe ArchiveTraceWorker do
     subject { described_class.new.perform(job&.id) }
 
     context 'when job is found' do
-      let(:job) { create(:ci_build) }
+      let(:job) { create(:ci_build, :trace_live) }
 
       it 'executes service' do
-        expect_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!)
+        expect_any_instance_of(Ci::ArchiveTraceService)
+          .to receive(:execute).with(job)
 
         subject
       end
@@ -18,7 +19,8 @@ describe ArchiveTraceWorker do
       let(:job) { nil }
 
       it 'does not execute service' do
-        expect_any_instance_of(Gitlab::Ci::Trace).not_to receive(:archive!)
+        expect_any_instance_of(Ci::ArchiveTraceService)
+          .not_to receive(:execute)
 
         subject
       end

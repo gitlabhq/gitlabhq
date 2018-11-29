@@ -85,6 +85,12 @@ class WikiPage
 
   alias_method :to_param, :slug
 
+  def human_title
+    return 'Home' if title == 'home'
+
+    title
+  end
+
   # The formatted title of this page.
   def title
     if @attributes[:title]

@@ -148,7 +148,7 @@ module Projects
       Rails.logger.error(log_message)
 
       if @project
-        @project.mark_import_as_failed(message) if @project.persisted? && @project.import?
+        @project.import_state.mark_as_failed(message) if @project.persisted? && @project.import?
       end
 
       @project
@@ -181,7 +181,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_schedule if @project.import? && !@project.bare_repository_import?
+        @project.import_state.schedule if @project.import? && !@project.bare_repository_import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

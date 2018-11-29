@@ -58,14 +58,16 @@ describe Gitlab::GithubImport::StageMethods do
   end
 
   describe '#find_project' do
+    let(:import_state) { create(:import_state, project: project) }
+
     it 'returns a Project for an existing ID' do
-      project.update_column(:import_status, 'started')
+      import_state.update_column(:status, 'started')
 
       expect(worker.find_project(project.id)).to eq(project)
     end
 
     it 'returns nil for a project that failed importing' do
-      project.update_column(:import_status, 'failed')
+      import_state.update_column(:status, 'failed')
 
       expect(worker.find_project(project.id)).to be_nil
     end

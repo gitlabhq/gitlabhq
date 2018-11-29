@@ -9,13 +9,13 @@ describe RepositoryImportWorker do
 
   describe '#perform' do
     let(:project) { create(:project, :import_scheduled) }
+    let(:import_state) { project.import_state }
 
     context 'when worker was reset without cleanup' do
       it 'imports the project successfully' do
         jid = '12345678'
         started_project = create(:project)
-
-        create(:import_state, :started, project: started_project, jid: jid)
+        started_import_state = create(:import_state, :started, project: started_project, jid: jid)
 
         allow(subject).to receive(:jid).and_return(jid)
 
@@ -23,12 +23,12 @@ describe RepositoryImportWorker do
           .and_return({ status: :ok })
 
         # Works around https://github.com/rspec/rspec-mocks/issues/910
-        expect(Project).to receive(:find).with(project.id).and_return(project)
-        expect(project.repository).to receive(:expire_emptiness_caches)
-        expect(project.wiki.repository).to receive(:expire_emptiness_caches)
-        expect(project).to receive(:import_finish)
+        expect(Project).to receive(:find).with(started_project.id).and_return(started_project)
+        expect(started_project.repository).to receive(:expire_emptiness_caches)
+        expect(started_project.wiki.repository).to receive(:expire_emptiness_caches)
+        expect(started_import_state).to receive(:finish)
 
-        subject.perform(project.id)
+        subject.perform(started_project.id)
       end
     end
 
@@ -41,7 +41,7 @@ describe RepositoryImportWorker do
         expect(Project).to receive(:find).with(project.id).and_return(project)
         expect(project.repository).to receive(:expire_emptiness_caches)
         expect(project.wiki.repository).to receive(:expire_emptiness_caches)
-        expect(project).to receive(:import_finish)
+        expect(import_state).to receive(:finish)
 
         subject.perform(project.id)
       end
@@ -51,26 +51,27 @@ describe RepositoryImportWorker do
       it 'hide the credentials that were used in the import URL' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
 
-        project.update(import_jid: '123')
+        import_state.update(jid: '123')
         expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
 
         expect do
           subject.perform(project.id)
         end.to raise_error(RuntimeError, error)
-        expect(project.reload.import_jid).not_to be_nil
+        expect(import_state.reload.jid).not_to be_nil
       end
 
       it 'updates the error on Import/Export' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
 
-        project.update(import_jid: '123', import_type: 'gitlab_project')
+        project.update(import_type: 'gitlab_project')
+        import_state.update(jid: '123')
         expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
 
         expect do
           subject.perform(project.id)
         end.to raise_error(RuntimeError, error)
 
-        expect(project.reload.import_error).not_to be_nil
+        expect(import_state.reload.last_error).not_to be_nil
       end
     end
 
@@ -90,8 +91,8 @@ describe RepositoryImportWorker do
           .to receive(:async?)
           .and_return(true)
 
-        expect_any_instance_of(Project)
-          .not_to receive(:import_finish)
+        expect_any_instance_of(ProjectImportState)
+          .not_to receive(:finish)
 
         subject.perform(project.id)
       end
