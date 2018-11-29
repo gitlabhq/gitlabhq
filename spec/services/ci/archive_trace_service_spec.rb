@@ -11,6 +11,18 @@ describe Ci::ArchiveTraceService, '#execute' do
 
       expect(job.reload.job_artifacts_trace).to be_exist
     end
+
+    context 'when trace is already archived' do
+      let!(:job) { create(:ci_build, :success, :trace_artifact) }
+  
+      it 'ignores an exception' do
+        expect { subject }.not_to raise_error
+      end
+
+      it 'does not create an archived trace' do
+        expect { subject }.not_to change { Ci::JobArtifact.trace.count }
+      end
+    end
   end
 
   context 'when job is running' do
