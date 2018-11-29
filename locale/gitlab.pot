@@ -4067,6 +4067,9 @@ msgstr ""
 msgid "Metrics|Learn about environments"
 msgstr ""
 
+msgid "Metrics|No data to display"
+msgstr ""
+
 msgid "Metrics|No deployed environments"
 msgstr ""
 
