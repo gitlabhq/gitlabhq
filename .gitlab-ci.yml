@@ -962,6 +962,7 @@ review-deploy:
     GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
+    QA_DEBUG: "true"
   artifacts:
     paths:
       - ./qa/gitlab-qa-run-*
@@ -977,6 +978,7 @@ review-deploy:
 
 review-qa-smoke:
   <<: *review-qa-base
+  retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
