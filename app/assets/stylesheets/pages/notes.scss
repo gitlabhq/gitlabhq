@@ -152,6 +152,16 @@ $note-form-margin-left: 72px;
     display: block;
     position: relative;
 
+    .timeline-discussion-body {
+      margin-top: -8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      .discussion-resolved-text {
+        margin-bottom: 8px;
+      }
+    }
+
     .diff-content {
       overflow: visible;
       padding: 0;
