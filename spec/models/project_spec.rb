@@ -54,6 +54,7 @@ describe Project do
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
     it { is_expected.to have_one(:external_wiki_service) }
     it { is_expected.to have_one(:project_feature) }
+    it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
@@ -1615,6 +1616,30 @@ describe Project do
 
     context 'when group is internal project can not be public' do
       it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
+    end
+  end
+
+  describe '#track_project_repository' do
+    let(:project) { create(:project, :repository) }
+
+    it 'creates a project_repository' do
+      project.track_project_repository
+
+      expect(project.reload.project_repository).to be_present
+      expect(project.project_repository.disk_path).to eq(project.disk_path)
+      expect(project.project_repository.shard_name).to eq(project.repository_storage)
+    end
+
+    it 'updates the project_repository' do
+      project.track_project_repository
+
+      allow(project).to receive(:disk_path).and_return('@fancy/new/path')
+
+      expect do
+        project.track_project_repository
+      end.not_to change(ProjectRepository, :count)
+
+      expect(project.reload.project_repository.disk_path).to eq(project.disk_path)
     end
   end
 

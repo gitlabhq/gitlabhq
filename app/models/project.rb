@@ -186,6 +186,7 @@ class Project < ActiveRecord::Base
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :project_repository, inverse_of: :project
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
@@ -1204,6 +1205,13 @@ class Project < ActiveRecord::Base
     true
   rescue GRPC::Internal # if the path is too long
     false
+  end
+
+  def track_project_repository
+    return unless hashed_storage?(:repository)
+
+    project_repo = project_repository || build_project_repository
+    project_repo.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
   def create_repository(force: false)
