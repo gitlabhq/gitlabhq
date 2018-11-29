@@ -14,7 +14,7 @@ describe Ci::ArchiveTraceService, '#execute' do
 
     context 'when trace is already archived' do
       let!(:job) { create(:ci_build, :success, :trace_artifact) }
-  
+
       it 'ignores an exception' do
         expect { subject }.not_to raise_error
       end
