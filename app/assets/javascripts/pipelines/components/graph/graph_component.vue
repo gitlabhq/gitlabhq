@@ -18,23 +18,19 @@ export default {
       required: true,
     },
   },
-
   computed: {
     graph() {
       return this.pipeline.details && this.pipeline.details.stages;
     },
   },
-
   methods: {
     capitalizeStageName(name) {
       const escapedName = _.escape(name);
       return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
     },
-
     isFirstColumn(index) {
       return index === 0;
     },
-
     stageConnectorClass(index, stage) {
       let className;
 
@@ -48,7 +44,6 @@ export default {
 
       return className;
     },
-
     refreshPipelineGraph() {
       this.$emit('refreshPipelineGraph');
     },
