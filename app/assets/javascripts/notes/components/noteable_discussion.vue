@@ -1,8 +1,9 @@
 <script>
+import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
@@ -156,6 +157,37 @@ export default {
         (!discussion.diff_discussion && resolved && hasReplies && !isRepliesToggledByUser) || false
       );
     },
+    actionText() {
+      const commitId = this.discussion.commit_id ? truncateSha(this.discussion.commit_id) : '';
+      const linkStart = `<a href="${_.escape(this.discussion.discussion_path)}">`;
+      const linkEnd = '</a>';
+
+      let text = s__('MergeRequests|started a discussion');
+
+      if (this.discussion.for_commit) {
+        text = s__(
+          'MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}',
+        );
+      } else if (this.discussion.diff_discussion) {
+        if (this.discussion.active) {
+          text = s__('MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}');
+        } else {
+          text = s__(
+            'MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}',
+          );
+        }
+      }
+
+      return sprintf(
+        text,
+        {
+          commitId,
+          linkStart,
+          linkEnd,
+        },
+        false,
+      );
+    },
   },
   watch: {
     isReplying() {
@@ -291,24 +323,7 @@ Please check your network connection and try again.`;
               :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
             >
-              <template v-if="discussion.diff_discussion">
-                started a discussion on
-                <a :href="discussion.discussion_path">
-                  <template v-if="discussion.active"
-                    >the diff</template
-                  >
-                  <template v-else
-                    >an old version of the diff</template
-                  >
-                </a>
-              </template>
-              <template v-else-if="discussion.for_commit">
-                started a discussion on commit
-                <a :href="discussion.discussion_path">{{ truncateSha(discussion.commit_id) }}</a>
-              </template>
-              <template v-else
-                >started a discussion</template
-              >
+              <span v-html="actionText"></span>
             </note-header>
             <note-edited-text
               v-if="discussion.resolved"
