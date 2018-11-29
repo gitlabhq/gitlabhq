@@ -69,8 +69,6 @@ describe DeploymentPlatform do
       let(:group) { group_cluster.group }
 
       before do
-        stub_feature_flags(deploy_group_clusters: true)
-
         project.update!(group: group)
       end
 
@@ -118,7 +116,7 @@ describe DeploymentPlatform do
 
       context 'feature flag disabled' do
         before do
-          stub_feature_flags(deploy_group_clusters: false)
+          stub_feature_flags(group_clusters: false)
         end
 
         it 'returns nil' do

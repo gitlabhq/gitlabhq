@@ -412,6 +412,8 @@ describe Project do
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:group_clusters_enabled?).to(:group).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference_with_postfix' do
@@ -2126,6 +2128,29 @@ describe Project do
       it 'can be used with upto option' do
         expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
       end
+    end
+  end
+
+  describe '#root_ancestor' do
+    let(:project) { create(:project) }
+
+    subject { project.root_ancestor }
+
+    it { is_expected.to eq(project.namespace) }
+
+    context 'in a group' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'in a nested group', :nested_groups do
+      let(:root) { create(:group) }
+      let(:child) { create(:group, parent: root) }
+      let(:project) { create(:project, group: child) }
+
+      it { is_expected.to eq(root) }
     end
   end
 

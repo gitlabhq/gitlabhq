@@ -243,7 +243,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def root_ancestor
-    ancestors.reorder(nil).find_by(parent_id: nil)
+    self_and_ancestors.reorder(nil).find_by(parent_id: nil)
   end
 
   def subgroup?

@@ -721,6 +721,7 @@ describe Namespace do
       deep_nested_group = create(:group, parent: nested_group)
       very_deep_nested_group = create(:group, parent: deep_nested_group)
 
+      expect(root_group.root_ancestor).to eq(root_group)
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)

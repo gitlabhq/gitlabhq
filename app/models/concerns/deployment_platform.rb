@@ -25,7 +25,7 @@ module DeploymentPlatform
   end
 
   def find_group_cluster_platform_kubernetes_with_feature_guard(environment: nil)
-    return unless Feature.enabled?(:deploy_group_clusters, default_enabled: true)
+    return unless group_clusters_enabled?
 
     find_group_cluster_platform_kubernetes(environment: environment)
   end
