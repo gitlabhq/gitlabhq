@@ -12,7 +12,7 @@ class IssuableSidebarEntity < Grape::Entity
     expose :project_id do |issuable|
       issuable.project.id
     end
-    expose :discussion_locked?, as: :discussion_locked
+    expose :discussion_locked
     expose :reference do |issuable|
       issuable.to_reference(issuable.project, full: true)
     end

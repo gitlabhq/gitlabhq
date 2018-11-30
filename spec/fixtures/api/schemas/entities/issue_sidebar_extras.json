@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties" : {
+    "subscribed": { "type": "boolean" },
+    "time_estimate": { "type": "integer" },
+    "total_time_spent": { "type": "integer" },
+    "human_time_estimate": { "type": ["integer", "null"] },
+    "human_total_time_spent": { "type": ["integer", "null"] },
+    "participants": {
+      "type": "array",
+      "items": { "$ref": "../public_api/v4/user/basic.json" }
+    },
+    "assignees": {
+      "type": "array",
+      "items": { "$ref": "../public_api/v4/user/basic.json" }
+    }
+  }
+}
