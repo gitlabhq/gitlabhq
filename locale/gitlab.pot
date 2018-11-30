@@ -303,6 +303,9 @@ msgstr ""
 msgid "Abuse reports"
 msgstr ""
 
+msgid "Accept invitation"
+msgstr ""
+
 msgid "Accept terms"
 msgstr ""
 
@@ -2262,6 +2265,9 @@ msgstr ""
 msgid "December"
 msgstr ""
 
+msgid "Decline"
+msgstr ""
+
 msgid "Decline and sign out"
 msgstr ""
 
@@ -3373,6 +3379,9 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
+msgstr ""
+
 msgid "I accept the %{terms_link}"
 msgstr ""
 
@@ -3572,6 +3581,9 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Invitation"
 msgstr ""
 
 msgid "Invite"
@@ -4379,6 +4391,9 @@ msgid "Not now"
 msgstr ""
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
+msgstr ""
+
+msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
@@ -7648,6 +7663,9 @@ msgstr ""
 msgid "from"
 msgstr ""
 
+msgid "group"
+msgstr ""
+
 msgid "here"
 msgstr ""
 
@@ -7892,6 +7910,9 @@ msgid "password"
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "project"
 msgstr ""
 
 msgid "remaining"
