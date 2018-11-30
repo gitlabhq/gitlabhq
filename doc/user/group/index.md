@@ -262,7 +262,7 @@ Learn more about [Group-level file templates](https://docs.gitlab.com/ee/user/gr
 #### Group-level project templates **[PREMIUM]**
 
 Define project templates at a group-level by setting a group as a template source.
-[Learn more about group-level project templates.](custom_project_templates.md)
+[Learn more about group-level project templates](custom_project_templates.md).
 
 ### Advanced settings
 
