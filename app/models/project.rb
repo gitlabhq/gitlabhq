@@ -1740,7 +1740,7 @@ class Project < ActiveRecord::Base
     return false if ref.nil?
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 
-    resolved_ref = repository.expand_ref(ref)
+    resolved_ref = repository.expand_ref(ref) || ref
     ref_name = Gitlab::Git.ref_name(resolved_ref)
 
     if Gitlab::Git.branch_ref?(resolved_ref)

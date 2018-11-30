@@ -2625,7 +2625,27 @@ describe Project do
       end
     end
 
-    context 'when ref name is a full branch ref' do
+    context 'when ref is a full ref' do
+      let(:ref) { 'refs/heads/master' }
+
+      context 'when ref is not protected' do
+        it 'returns false' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, name: 'master', project: project)
+        end
+
+        it 'returns true' do
+          is_expected.to be_truthy
+        end
+      end
+    end
+
+    context 'when ref name is a full tag ref' do
       let(:ref) { 'refs/tags/something' }
 
       before do
