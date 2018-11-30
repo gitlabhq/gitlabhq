@@ -2567,30 +2567,7 @@ describe Project do
 
     subject { project.protected_for?(ref) }
 
-    context 'when ref is nil' do
-      let(:ref) { nil }
-
-      it 'returns false' do
-        is_expected.to be_falsey
-      end
-    end
-
-    context 'when ref is ambiguous' do
-      let(:ref) { 'ref' }
-
-      before do
-        project.repository.add_branch(project.creator, ref, 'master')
-        project.repository.add_tag(project.creator, ref, 'master')
-      end
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(Repository::AmbiguousRefError)
-      end
-    end
-
-    context 'when the ref is not protected' do
-      let(:ref) { 'master' }
-
+    shared_examples 'ref is not protected' do
       before do
         stub_application_setting(
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -2601,9 +2578,7 @@ describe Project do
       end
     end
 
-    context 'when the ref is a protected branch' do
-      let(:ref) { 'master' }
-
+    shared_examples 'ref is protected branch' do
       before do
         create(:protected_branch, name: 'master', project: project)
       end
@@ -2613,9 +2588,7 @@ describe Project do
       end
     end
 
-    context 'when the ref is a protected tag' do
-      let(:ref) { 'v1.0.0' }
-
+    shared_examples 'ref is protected tag' do
       before do
         create(:protected_tag, name: 'v1.0.0', project: project)
       end
@@ -2625,44 +2598,87 @@ describe Project do
       end
     end
 
-    context 'when ref is a full ref' do
-      let(:ref) { 'refs/heads/master' }
-
-      context 'when ref is not protected' do
-        it 'returns false' do
-          is_expected.to be_falsey
-        end
-      end
-
-      context 'when ref is protected' do
-        before do
-          create(:protected_branch, name: 'master', project: project)
-        end
-
-        it 'returns true' do
-          is_expected.to be_truthy
-        end
-      end
-    end
-
-    context 'when ref name is a full tag ref' do
-      let(:ref) { 'refs/tags/something' }
-
-      before do
-        project.repository.add_branch(project.creator, ref, 'master')
-      end
+    context 'when ref is nil' do
+      let(:ref) { nil }
 
       it 'returns false' do
         is_expected.to be_falsey
       end
+    end
 
-      context 'when ref is a protected branch' do
+    context 'when ref is ref name' do
+      context 'when ref is ambiguous' do
+        let(:ref) { 'ref' }
+
         before do
-          create(:protected_branch, name: 'refs/tags/something', project: project)
+          project.repository.add_branch(project.creator, 'ref', 'master')
+          project.repository.add_tag(project.creator, 'ref', 'master')
         end
 
-        it 'returns true' do
-          is_expected.to be_truthy
+        it 'raises an error' do
+          expect { subject }.to raise_error(Repository::AmbiguousRefError)
+        end
+      end
+
+      context 'when the ref is not protected' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+    end
+
+    context 'when ref is full ref' do
+      context 'when the ref is not protected' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'refs/tags/v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when branch ref name is a full tag ref' do
+        let(:ref) { 'refs/tags/something' }
+
+        before do
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
+
+        context 'when ref is not protected' do
+          it 'returns false' do
+            is_expected.to be_falsey
+          end
+        end
+
+        context 'when ref is a protected branch' do
+          before do
+            create(:protected_branch, name: 'refs/tags/something', project: project)
+          end
+
+          it 'returns true' do
+            is_expected.to be_truthy
+          end
         end
       end
     end
@@ -2883,7 +2899,7 @@ describe Project do
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
-                      ' Validate fork Source project is not a fork of the target project'
+        ' Validate fork Source project is not a fork of the target project'
 
       expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
