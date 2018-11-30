@@ -69,6 +69,6 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   end
 
   def serializer
-    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    MergeRequestSerializer.new(current_user: current_user, project: project)
   end
 end

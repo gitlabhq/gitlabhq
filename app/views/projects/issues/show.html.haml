@@ -88,6 +88,4 @@
   %section.issuable-discussion
     = render 'projects/issues/discussion'
 
--# `assignees` is required for populating selected assignee values in the select box
-  This is should be removed when sidebar is converted to Vue.
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

@@ -8,15 +8,16 @@
     "discussion_locked": { "type": ["boolean", "null"] },
     "reference": { "type": "string" },
     "current_user": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "user.json" }
-      ]
-    },
-    "todo": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "issuable_sidebar_todo.json" }
+      "allOf": [
+        { "$ref": "../public_api/v4/user/basic.json" },
+        { "type": "object",
+          "properties" : {
+            "todo": { "$ref": "issuable_sidebar_todo.json" },
+            "can_edit": { "type": "boolean" },
+            "can_move": { "type": "boolean" },
+            "can_admin_label": { "type": "boolean" }
+          }
+        }
       ]
     },
     "milestone": {
@@ -30,13 +31,15 @@
       "items": { "$ref": "label.json" }
     },
     "assignee": {
-      "$ref": "../public_api/v4/user/basic.json"
+      "allOf": [
+        { "$ref": "../public_api/v4/user/basic.json" },
+        { "type": "object",
+          "properties" : {
+            "can_merge": { "type": "boolean" }
+          }
+        }
+      ]
     },
-    "signed_in": { "type": "boolean" },
-    "can_edit": { "type": "boolean" },
-    "can_move": { "type": "boolean" },
-    "can_admin_label": { "type": "boolean" },
-    "can_merge": { "type": ["boolean", "null"] },
     "issuable_json_path": { "type": "string" },
     "namespace_path": { "type": "string" },
     "project_path": { "type": "string" },

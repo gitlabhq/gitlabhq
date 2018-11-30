@@ -7,10 +7,10 @@ class IssueSerializer < BaseSerializer
   def represent(issue, opts = {})
     entity =
       case opts[:serializer]
-      when 'sidebar', 'sidebar_extras'
-        opts[:include_basic] = (opts[:serializer] == 'sidebar')
-        opts[:include_extras] = (opts[:serializer] == 'sidebar_extras')
-        IssueSidebarEntity
+      when 'sidebar'
+        IssueSidebarBasicEntity
+      when 'sidebar_extras'
+        IssueSidebarExtrasEntity
       when 'board'
         IssueBoardEntity
       else

@@ -44,13 +44,10 @@ module EntityDateHelper
   # It returns "Upcoming" for upcoming entities
   # If due date is provided, it returns "# days|weeks|months remaining|ago"
   # If start date is provided and elapsed, with no due date, it returns "# days elapsed"
-  def remaining_days_in_words(entity)
-    start_date = entity.try(:start_date) || entity.try(:[], :start_date)
-    due_date = entity.try(:due_date) || entity.try(:[], :due_date)
-
-    if due_date && due_date.past?
+  def remaining_days_in_words(due_date, start_date = nil)
+    if due_date&.past?
       content_tag(:strong, 'Past due')
-    elsif start_date && start_date.future?
+    elsif start_date&.future?
       content_tag(:strong, 'Upcoming')
     elsif due_date
       is_upcoming = (due_date - Date.today).to_i > 0
@@ -66,7 +63,7 @@ module EntityDateHelper
       remaining_or_ago = is_upcoming ? _("remaining") : _("ago")
 
       "#{content} #{remaining_or_ago}".html_safe
-    elsif start_date && start_date.past?
+    elsif start_date&.past?
       days = (Date.today - start_date).to_i
       "#{content_tag(:strong, days)} #{'day'.pluralize(days)} elapsed".html_safe
     end

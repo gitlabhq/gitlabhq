@@ -24,42 +24,40 @@ module IssuablesHelper
   end
 
   def sidebar_milestone_tooltip_label(milestone)
-    if milestone && milestone[:due_date]
-      "#{milestone[:title]}<br/>#{sidebar_milestone_remaining_days(milestone)}"
-    else
-      _('Milestone') + (milestone ? "<br/>#{milestone[:title]}" : "")
-    end
+    return _('Milestone') unless milestone.present?
+
+    [milestone[:title], sidebar_milestone_remaining_days(milestone) || _('Milestone')].join('<br/>')
   end
 
   def sidebar_milestone_remaining_days(milestone)
-    due_date_remaining_days(due_date: milestone[:due_date], start_date: milestone[:start_date]) if milestone[:due_date]
+    due_date_with_remaining_days(milestone[:due_date], milestone[:start_date])
   end
 
   def sidebar_due_date_tooltip_label(due_date)
-    _('Due date') + (due_date ? "<br/>#{due_date_remaining_days(due_date)}" : "")
+    [_('Due date'), due_date_with_remaining_days(due_date)].compact.join('<br/>')
   end
 
-  def due_date_remaining_days(due_date, start_date = nil)
-    "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date: due_date, start_date: start_date)})"
+  def due_date_with_remaining_days(due_date, start_date = nil)
+    return unless due_date
+
+    "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
   end
 
   def sidebar_label_filter_path(base_path, label_name)
-    query_params = {label_name: [label_name]}.to_query
+    query_params = { label_name: [label_name] }.to_query
 
     "#{base_path}?#{query_params}"
   end
 
   def multi_label_name(current_labels, default_label)
-    if current_labels && current_labels.any?
-      title = current_labels.first.try(:title) || current_labels.first[:title]
+    return default_label if current_labels.blank?
 
-      if current_labels.size > 1
-        "#{title} +#{current_labels.size - 1} more"
-      else
-        title
-      end
+    title = current_labels.first.try(:title) || current_labels.first[:title]
+
+    if current_labels.size > 1
+      "#{title} +#{current_labels.size - 1} more"
     else
-      default_label
+      title
     end
   end
 
@@ -214,7 +212,7 @@ module IssuablesHelper
     first, last = labels.partition.with_index { |_, i| i < limit  }
 
     if labels && labels.any?
-      label_names = first.collect { |l| l[:title] }
+      label_names = first.collect { |label| label.fetch(:title) }
       label_names << "and #{last.size} more" unless last.empty?
 
       label_names.join(', ')
@@ -385,6 +383,23 @@ module IssuablesHelper
     params[:issuable_template] if issuable_templates(issuable).any? { |template| template[:name] == params[:issuable_template] }
   end
 
+  def issuable_todo_button_data(issuable, is_collapsed)
+    {
+      todo_text: _('Add todo'),
+      mark_text: _('Mark todo as done'),
+      todo_icon: sprite_icon('todo-add'),
+      mark_icon: sprite_icon('todo-done', css_class: 'todo-undone'),
+      issuable_id: issuable[:id],
+      issuable_type: issuable[:type],
+      create_path: issuable[:create_todo_path],
+      delete_path: issuable.dig(:current_user, :todo, :delete_path),
+      placement: is_collapsed ? 'left' : nil,
+      container: is_collapsed ? 'body' : nil,
+      boundary: 'viewport',
+      is_collapsed: is_collapsed
+    }
+  end
+
   def close_reopen_params(issuable, action)
     {
       issuable.model_name.to_s.underscore => { state_event: action }
@@ -401,16 +416,16 @@ module IssuablesHelper
     end
   end
 
-  def issuable_sidebar_options(sidebar_data)
+  def issuable_sidebar_options(issuable)
     {
-      endpoint: "#{sidebar_data[:issuable_json_path]}?serializer=sidebar_extras",
-      toggleSubscriptionEndpoint: sidebar_data[:toggle_subscription_path],
-      moveIssueEndpoint: sidebar_data[:move_issue_path],
-      projectsAutocompleteEndpoint: sidebar_data[:projects_autocomplete_path],
-      editable: sidebar_data[:can_edit],
-      currentUser: sidebar_data[:current_user],
+      endpoint: "#{issuable[:issuable_json_path]}?serializer=sidebar_extras",
+      toggleSubscriptionEndpoint: issuable[:toggle_subscription_path],
+      moveIssueEndpoint: issuable[:move_issue_path],
+      projectsAutocompleteEndpoint: issuable[:projects_autocomplete_path],
+      editable: issuable.dig(:current_user, :can_edit),
+      currentUser: issuable[:current_user],
       rootPath: root_path,
-      fullPath: sidebar_data[:project_full_path]
+      fullPath: issuable[:project_full_path]
     }
   end
 

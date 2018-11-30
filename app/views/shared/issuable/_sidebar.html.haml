@@ -1,6 +1,9 @@
+-# `assignees` is being passed in for populating selected assignee values in the select box and rendering the assignee link
+  This should be removed when this sidebar is converted to Vue since assignee data is also available in the `issuable_sidebar` hash
+
 - issuable_type = issuable_sidebar[:type]
-- signed_in = issuable_sidebar[:signed_in]
-- can_edit_issuable = issuable_sidebar[:can_edit]
+- signed_in = !!issuable_sidebar.dig(:current_user, :id)
+- can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
@@ -119,7 +122,7 @@
               = icon('chevron-down', 'aria-hidden': 'true')
             .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
               = render partial: "shared/issuable/label_page_default"
-              - if issuable_sidebar[:can_admin_label]
+              - if issuable_sidebar.dig(:current_user, :can_admin_label)
                 = render partial: "shared/issuable/label_page_create"
 
       = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
@@ -149,7 +152,7 @@
               = project_ref
           = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
 
-      - if issuable_sidebar[:can_move]
+      - if issuable_sidebar.dig(:current_user, :can_move)
         .block.js-sidebar-move-issue-block
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
             = custom_icon('icon_arrow_right')

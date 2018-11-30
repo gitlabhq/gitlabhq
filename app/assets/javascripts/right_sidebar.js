@@ -120,14 +120,14 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       .removeClass('is-loading')
       .enable()
       .attr('aria-label', $el.data(`${attrPrefix}Text`))
-      .attr('data-delete-path', deletePath)
-      .attr('title', $el.data(`${attrPrefix}Text`));
+      .attr('title', $el.data(`${attrPrefix}Text`))
+      .data('deletePath', deletePath);
 
     if ($el.hasClass('has-tooltip')) {
       $el.tooltip('_fixTitle');
     }
 
-    if ($el.data(`${attrPrefix}Icon`)) {
+    if (typeof $el.data('isCollapsed') !== 'undefined') {
       $elText.html($el.data(`${attrPrefix}Icon`));
     } else {
       $elText.text($el.data(`${attrPrefix}Text`));

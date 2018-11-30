@@ -10,15 +10,16 @@
     "confidential": { "type": "boolean" },
     "reference": { "type": "string" },
     "current_user": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "user.json" }
-      ]
-    },
-    "todo": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "issuable_sidebar_todo.json" }
+      "allOf": [
+        { "$ref": "../public_api/v4/user/basic.json" },
+        { "type": "object",
+          "properties" : {
+            "todo": { "$ref": "issuable_sidebar_todo.json" },
+            "can_edit": { "type": "boolean" },
+            "can_move": { "type": "boolean" },
+            "can_admin_label": { "type": "boolean" }
+          }
+        }
       ]
     },
     "milestone": {
@@ -31,10 +32,6 @@
       "type": "array",
       "items": { "$ref": "label.json" }
     },
-    "signed_in": { "type": "boolean" },
-    "can_edit": { "type": "boolean" },
-    "can_move": { "type": "boolean" },
-    "can_admin_label": { "type": "boolean" },
     "issuable_json_path": { "type": "string" },
     "namespace_path": { "type": "string" },
     "project_path": { "type": "string" },

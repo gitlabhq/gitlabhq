@@ -43,8 +43,8 @@ describe IssuablesHelper do
   end
 
   describe '#issuable_labels_tooltip' do
-    let (:label_entity) { LabelEntity.represent(label) }
-    let (:label2_entity) { LabelEntity.represent(label2) }
+    let(:label_entity) { LabelEntity.represent(label).as_json }
+    let(:label2_entity) { LabelEntity.represent(label2).as_json }
 
     it 'returns label text with no labels' do
       expect(issuable_labels_tooltip([])).to eq("Labels")
