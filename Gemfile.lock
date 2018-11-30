@@ -1017,7 +1017,7 @@ DEPENDENCIES
   google-api-client (~> 0.23)
   google-protobuf (~> 3.6)
   gpgme
-  grape (~> 1.1)
+  grape (~> 1.1.0)
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.0)
   grape_logging (~> 1.7)
