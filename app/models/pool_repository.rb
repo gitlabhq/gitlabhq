@@ -1,20 +1,11 @@
 # frozen_string_literal: true
 
 class PoolRepository < ActiveRecord::Base
-  belongs_to :shard
-  validates :shard, presence: true
+  include Shardable
 
   has_many :member_projects, class_name: 'Project'
 
   after_create :correct_disk_path
-
-  def shard_name
-    shard&.name
-  end
-
-  def shard_name=(name)
-    self.shard = Shard.by_name(name)
-  end
 
   private
 

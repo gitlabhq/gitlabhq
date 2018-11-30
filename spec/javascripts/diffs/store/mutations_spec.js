@@ -360,6 +360,16 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('Set highlighted row', () => {
+    it('sets highlighted row', () => {
+      const state = createState();
+
+      mutations[types.SET_HIGHLIGHTED_ROW](state, 'ABC_123');
+
+      expect(state.highlightedRow).toBe('ABC_123');
+    });
+  });
+
   describe('TOGGLE_LINE_HAS_FORM', () => {
     it('sets hasForm on lines', () => {
       const file = {

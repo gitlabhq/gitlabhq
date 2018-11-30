@@ -92,13 +92,47 @@ To add an existing Kubernetes cluster to your project:
       the `ca.crt` contents here.
     - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
-      scoped to a particular `namespace`. If you don't have a service token yet,
-      you can follow the
-      [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
-      to create one. You can also view or create service tokens in the
-      [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
-      (under **Config > Secrets**). **The account that will issue the service token
-      must have admin privileges on the cluster.**
+      scoped to a particular `namespace`.
+      **The token used should belong to a service account with
+      [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+      privileges.** To create this service account:
+
+      1. Create a `gitlab` service account in the `default` namespace:
+
+          ```bash
+          kubectl create -f - <<EOF
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: gitlab
+              namespace: default
+          EOF
+          ```
+      1. Create a cluster role binding to give the `gitlab` service account
+         `cluster-admin` privileges:
+
+          ```bash
+          kubectl create -f - <<EOF
+          kind: ClusterRoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          metadata:
+            name: gitlab-cluster-admin
+          subjects:
+          - kind: ServiceAccount
+            name: gitlab
+            namespace: default
+          roleRef:
+            kind: ClusterRole
+            name: cluster-admin
+            apiGroup: rbac.authorization.k8s.io
+          EOF
+          ```
+      NOTE: **Note:**
+      For GKE clusters, you will need the
+      `container.clusterRoleBindings.create` permission to create a cluster
+      role binding. You can follow the [Google Cloud
+      documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
+      to grant access.
     - **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
       - Each project should have a unique namespace.
@@ -142,8 +176,9 @@ Whether ABAC or RBAC is enabled, GitLab will create the necessary
 service accounts and privileges in order to install and run
 [GitLab managed applications](#installing-applications):
 
-- A `gitlab` service account with `cluster-admin` privileges will be created in the
-  `default` namespace, which will be used by GitLab to manage the newly created cluster.
+- If GitLab is creating the cluster, a `gitlab` service account with
+  `cluster-admin` privileges will be created in the `default` namespace,
+  which will be used by GitLab to manage the newly created cluster.
 
 - A project service account with [`edit`
   privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
