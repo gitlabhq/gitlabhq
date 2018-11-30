@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Loader do
+describe Gitlab::Config::Loader::Yaml do
   let(:loader) { described_class.new(yml) }
 
   context 'when yaml syntax is correct' do
@@ -31,7 +31,7 @@ describe Gitlab::Ci::Config::Loader do
     describe '#load!' do
       it 'raises error' do
         expect { loader.load! }.to raise_error(
-          Gitlab::Ci::Config::Loader::FormatError,
+          Gitlab::Config::Loader::FormatError,
           'Invalid configuration format'
         )
       end
@@ -43,7 +43,7 @@ describe Gitlab::Ci::Config::Loader do
 
     describe '#initialize' do
       it 'raises FormatError' do
-        expect { loader }.to raise_error(Gitlab::Ci::Config::Loader::FormatError, 'Unknown alias: bad_alias')
+        expect { loader }.to raise_error(Gitlab::Config::Loader::FormatError, 'Unknown alias: bad_alias')
       end
     end
   end

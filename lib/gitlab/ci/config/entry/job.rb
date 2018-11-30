@@ -7,9 +7,9 @@ module Gitlab
         ##
         # Entry that represents a concrete CI/CD job.
         #
-        class Job < Node
-          include Configurable
-          include Attributable
+        class Job < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
                             allow_failure type stage when start_in artifacts cache

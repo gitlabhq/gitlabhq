@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a hidden CI/CD key.
         #
-        class Hidden < Node
-          include Validatable
+        class Hidden < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, presence: true

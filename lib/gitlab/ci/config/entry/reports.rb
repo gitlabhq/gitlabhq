@@ -7,9 +7,9 @@ module Gitlab
         ##
         # Entry that represents a configuration of job artifacts.
         #
-        class Reports < Node
-          include Validatable
-          include Attributable
+        class Reports < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[junit codequality sast dependency_scanning container_scanning dast performance license_management].freeze
 
