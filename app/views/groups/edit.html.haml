@@ -37,6 +37,7 @@
   .settings-content
     = render 'shared/badges/badge_settings'
 
+= render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
 
 %section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
