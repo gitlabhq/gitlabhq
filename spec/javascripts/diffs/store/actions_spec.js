@@ -22,6 +22,7 @@ import actions, {
   expandAllFiles,
   toggleFileDiscussions,
   saveDiffDiscussion,
+  setHighlightedRow,
   toggleTreeOpen,
   scrollToFile,
   toggleShowTreeList,
@@ -89,6 +90,14 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('setHighlightedRow', () => {
+    it('should set lineHash and fileHash of highlightedRow', () => {
+      testAction(setHighlightedRow, 'ABC_123', {}, [
+        { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+      ]);
     });
   });
 
@@ -469,7 +478,7 @@ describe('DiffsStoreActions', () => {
 
   describe('scrollToLineIfNeededInline', () => {
     const lineMock = {
-      lineCode: 'ABC_123',
+      line_code: 'ABC_123',
     };
 
     it('should not call handleLocationHash when there is not hash', () => {
@@ -520,7 +529,7 @@ describe('DiffsStoreActions', () => {
     const lineMock = {
       left: null,
       right: {
-        lineCode: 'ABC_123',
+        line_code: 'ABC_123',
       },
     };
 

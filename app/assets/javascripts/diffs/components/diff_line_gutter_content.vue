@@ -72,6 +72,13 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
     }),
     ...mapGetters(['isLoggedIn']),
+    lineCode() {
+      return (
+        this.line.line_code ||
+        (this.line.left && this.line.line.left.line_code) ||
+        (this.line.right && this.line.right.line_code)
+      );
+    },
     lineHref() {
       return `#${this.line.line_code || ''}`;
     },
@@ -97,7 +104,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
+    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm', 'setHighlightedRow']),
     handleCommentButton() {
       this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
     },
@@ -168,7 +175,13 @@ export default {
       >
         <icon :size="12" name="comment" />
       </button>
-      <a v-if="lineNumber" :data-linenumber="lineNumber" :href="lineHref"> </a>
+      <a
+        v-if="lineNumber"
+        :data-linenumber="lineNumber"
+        :href="lineHref"
+        @click="setHighlightedRow(lineCode);"
+      >
+      </a>
       <diff-gutter-avatars v-if="shouldShowAvatarsOnGutter" :discussions="line.discussions" />
     </template>
   </div>
