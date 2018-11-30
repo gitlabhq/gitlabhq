@@ -9,7 +9,7 @@ module QA
         end
 
         view 'app/views/shared/_personal_access_tokens_created_container.html.haml' do
-          element :create_token_field, "text_field_tag 'created-personal-access-token'" # rubocop:disable QA/ElementWithPattern
+          element :create_token_field, "text_field_tag 'created-personal-access-token'"
         end
 
         def fill_token_name(name)
