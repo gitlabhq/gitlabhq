@@ -56,17 +56,89 @@ describe PipelineScheduleWorker do
         expect { subject }.not_to change { project.pipelines.count }
       end
     end
+
+    context 'when gitlab-ci.yml is corrupted' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(rspec: { variables: 'rspec' } ))
+      end
+
+      it 'creates a failed pipeline with the reason' do
+        expect { subject }.to change { project.pipelines.count }.by(1)
+        expect(Ci::Pipeline.last).to be_config_error
+        expect(Ci::Pipeline.last.yaml_errors).not_to be_nil
+      end
+    end
   end
 
   context 'when the schedule is not runnable by the user' do
-    it 'deactivates the schedule' do
-      subject
-
-      expect(pipeline_schedule.reload.active).to be_falsy
+    before do
+      expect(Gitlab::Sentry)
+        .to receive(:track_exception)
+        .with(Ci::CreatePipelineService::CreateError,
+              issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+              extra: { schedule_id: pipeline_schedule.id } ).once
     end
 
-    it 'does not schedule a pipeline' do
+    it 'does not deactivate the schedule' do
+      subject
+
+      expect(pipeline_schedule.reload.active).to be_truthy
+    end
+
+    it 'increments Prometheus counter' do
+      expect(Gitlab::Metrics)
+        .to receive(:counter)
+        .with(:pipeline_schedule_creation_failed_total, "Counter of failed attempts of pipeline schedule creation")
+        .and_call_original
+
+      subject
+    end
+
+    it 'logging a pipeline error' do
+      expect(Rails.logger)
+        .to receive(:error)
+        .with(a_string_matching("Insufficient permissions to create a new pipeline"))
+        .and_call_original
+
+      subject
+    end
+
+    it 'does not create a pipeline' do
       expect { subject }.not_to change { project.pipelines.count }
+    end
+
+    it 'does not raise an exception' do
+      expect { subject }.not_to raise_error
+    end
+  end
+
+  context 'when .gitlab-ci.yml is missing in the project' do
+    before do
+      stub_ci_pipeline_yaml_file(nil)
+      project.add_maintainer(user)
+
+      expect(Gitlab::Sentry)
+        .to receive(:track_exception)
+        .with(Ci::CreatePipelineService::CreateError,
+              issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+              extra: { schedule_id: pipeline_schedule.id } ).once
+    end
+
+    it 'logging a pipeline error' do
+      expect(Rails.logger)
+        .to receive(:error)
+        .with(a_string_matching("Missing .gitlab-ci.yml file"))
+        .and_call_original
+
+      subject
+    end
+
+    it 'does not create a pipeline' do
+      expect { subject }.not_to change { project.pipelines.count }
+    end
+
+    it 'does not raise an exception' do
+      expect { subject }.not_to raise_error
     end
   end
 end
