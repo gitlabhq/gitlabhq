@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
