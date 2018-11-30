@@ -1740,13 +1740,8 @@ class Project < ActiveRecord::Base
     return false if ref.nil?
     raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
 
-    if Gitlab::Git.branch_ref?(ref) || Gitlab::Git.tag_ref?(ref)
-      resolved_ref = ref
-      ref_name = Gitlab::Git.ref_name(ref)
-    else
-      resolved_ref = repository.expand_ref(ref)
-      ref_name = ref
-    end
+    resolved_ref = repository.expand_ref(ref)
+    ref_name = Gitlab::Git.ref_name(resolved_ref)
 
     if Gitlab::Git.branch_ref?(resolved_ref)
       ProtectedBranch.protected?(self, ref_name)

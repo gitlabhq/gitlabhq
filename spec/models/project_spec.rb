@@ -2624,6 +2624,28 @@ describe Project do
         is_expected.to be_truthy
       end
     end
+
+    context 'when ref name is a full branch ref' do
+      let(:ref) { 'refs/tags/something' }
+
+      before do
+        project.repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+
+      context 'when ref is a protected branch' do
+        before do
+          create(:protected_branch, name: 'refs/tags/something', project: project)
+        end
+
+        it 'returns true' do
+          is_expected.to be_truthy
+        end
+      end
+    end
   end
 
   describe '#update_project_statistics' do
