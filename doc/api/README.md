@@ -230,8 +230,7 @@ Impersonation tokens are used exactly like regular personal access tokens, and c
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/40385) in GitLab
 11.6.
 
-By default, impersonation is enabled. To disable impersonation, GitLab must be
-reconfigured:
+By default, impersonation is enabled. To disable impersonation:
 
 **For Omnibus installations**
 
@@ -577,7 +576,7 @@ When you try to access an API URL that does not exist you will receive 404 Not F
 ```
 HTTP/1.1 404 Not Found
 Content-Type: application/json
-{ f
+{
     "error": "404 Not Found"
 }
 ```
