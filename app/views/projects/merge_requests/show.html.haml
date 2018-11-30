@@ -86,7 +86,9 @@
     .mr-loading-status
       = spinner
 
-= render 'shared/issuable/sidebar', issuable: @merge_request, issuable_sidebar: @issuable_sidebar
+-# `assignees` is required for populating selected assignee values in the select box and rendering the assignee link
+  This is should be removed when sidebar is converted to Vue.
+= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees
 
 - if @merge_request.can_be_reverted?(current_user)
   = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title

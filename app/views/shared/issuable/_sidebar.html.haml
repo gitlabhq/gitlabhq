@@ -18,7 +18,7 @@
         .block.todo.hide-expanded
           = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar, is_collapsed: true
       .block.assignee.qa-assignee-block
-        = render "shared/issuable/sidebar_assignees", issuable: issuable, issuable_sidebar: issuable_sidebar
+        = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees
 
       = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
 
