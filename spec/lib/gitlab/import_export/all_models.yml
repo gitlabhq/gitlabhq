@@ -245,6 +245,7 @@ project:
 - protected_branches
 - protected_tags
 - project_members
+- project_repository
 - users
 - requesters
 - deploy_keys_projects

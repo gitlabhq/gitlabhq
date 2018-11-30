@@ -1,31 +1,35 @@
 import MonitoringStore from '~/monitoring/stores/monitoring_store';
 import MonitoringMock, { deploymentData, environmentData } from './mock_data';
 
-describe('MonitoringStore', function() {
-  this.store = new MonitoringStore();
-  this.store.storeMetrics(MonitoringMock.data);
+describe('MonitoringStore', () => {
+  const store = new MonitoringStore();
+  store.storeMetrics(MonitoringMock.data);
 
-  it('contains one group that contains two queries sorted by priority', () => {
-    expect(this.store.groups).toBeDefined();
-    expect(this.store.groups.length).toEqual(1);
-    expect(this.store.groups[0].metrics.length).toEqual(2);
+  it('contains two groups that contains, one of which has two queries sorted by priority', () => {
+    expect(store.groups).toBeDefined();
+    expect(store.groups.length).toEqual(2);
+    expect(store.groups[0].metrics.length).toEqual(2);
   });
 
   it('gets the metrics count for every group', () => {
-    expect(this.store.getMetricsCount()).toEqual(2);
+    expect(store.getMetricsCount()).toEqual(3);
   });
 
   it('contains deployment data', () => {
-    this.store.storeDeploymentData(deploymentData);
+    store.storeDeploymentData(deploymentData);
 
-    expect(this.store.deploymentData).toBeDefined();
-    expect(this.store.deploymentData.length).toEqual(3);
-    expect(typeof this.store.deploymentData[0]).toEqual('object');
+    expect(store.deploymentData).toBeDefined();
+    expect(store.deploymentData.length).toEqual(3);
+    expect(typeof store.deploymentData[0]).toEqual('object');
   });
 
   it('only stores environment data that contains deployments', () => {
-    this.store.storeEnvironmentsData(environmentData);
+    store.storeEnvironmentsData(environmentData);
 
-    expect(this.store.environmentsData.length).toEqual(2);
+    expect(store.environmentsData.length).toEqual(2);
+  });
+
+  it('removes the data if all the values from a query are not defined', () => {
+    expect(store.groups[1].metrics[0].queries[0].result.length).toEqual(0);
   });
 });

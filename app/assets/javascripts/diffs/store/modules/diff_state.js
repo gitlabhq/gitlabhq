@@ -26,4 +26,5 @@ export default () => ({
   currentDiffFileId: '',
   projectPath: '',
   commentForms: [],
+  highlightedRow: null,
 });

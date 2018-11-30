@@ -104,9 +104,21 @@
       border-bottom: 1px solid $white-normal;
       border-top: 1px solid $white-normal;
 
+      &:last-of-type {
+        border-bottom-color: $white-light;
+      }
+
       td,
       th {
         line-height: 21px;
+      }
+
+      th {
+        border-top-color: $gray-light;
+      }
+
+      td {
+        border-color: $border-color;
       }
 
       &:hover:not(.tree-truncated-warning) {

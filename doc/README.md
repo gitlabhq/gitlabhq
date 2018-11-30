@@ -3,6 +3,12 @@ comments: false
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
+<div class="display-none">
+  <em>Visit <a href="https://docs.gitlab.com/ce/">docs.gitlab.com</a> for optimized
+  navigation, discoverability, and readability.</em>
+</div>
+<!-- the div above will not display on the docs site but will display on /help -->
+
 # GitLab Documentation
 
 Welcome to [GitLab](https://about.gitlab.com/) Documentation.
