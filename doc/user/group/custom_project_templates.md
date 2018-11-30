@@ -15,7 +15,7 @@ private projects will be available only if the user has view [permissions](../pe
 in the project. That is, users with Owner, Maintainer, Developer, Reporter or Guest roles for projects,
 or for groups to which the project belongs.
 
-Projects below subgroups of the template group are **not** supported.
+Projects of nested subgroups of a selected template source cannot be used.
 
 Repository and database information that are copied over to each new project are
 identical to the data exported with [GitLab's Project Import/Export](../project/settings/import_export.md).
