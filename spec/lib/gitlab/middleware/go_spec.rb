@@ -135,6 +135,26 @@ describe Gitlab::Middleware::Go do
                     it_behaves_like 'unauthorized'
                   end
                 end
+
+                context 'using basic auth' do
+                  let(:personal_access_token) { create(:personal_access_token, user: current_user) }
+
+                  before do
+                    env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
+                  end
+
+                  context 'with api scope' do
+                    it_behaves_like 'authenticated'
+                  end
+
+                  context 'with read_user scope' do
+                    before do
+                      personal_access_token.update_attribute(:scopes, [:read_user])
+                    end
+
+                    it_behaves_like 'unauthorized'
+                  end
+                end
               end
             end
           end

@@ -169,18 +169,6 @@ module Gitlab
         AccessTokenValidationService.new(token).include_any_scope?(scopes)
       end
 
-      def abilities_for_scopes(scopes)
-        abilities_by_scope = {
-          api: full_authentication_abilities,
-          read_registry: [:read_container_image],
-          read_repository: [:download_code]
-        }
-
-        scopes.flat_map do |scope|
-          abilities_by_scope.fetch(scope.to_sym, [])
-        end.uniq
-      end
-
       # rubocop: disable CodeReuse/ActiveRecord
       def deploy_token_check(login, password)
         return unless password.present?
@@ -245,6 +233,18 @@ module Gitlab
       end
 
       public
+
+      def abilities_for_scopes(scopes)
+        abilities_by_scope = {
+          api: full_authentication_abilities,
+          read_registry: [:read_container_image],
+          read_repository: [:download_code]
+        }
+
+        scopes.flat_map do |scope|
+          abilities_by_scope.fetch(scope.to_sym, [])
+        end.uniq
+      end
 
       def build_authentication_abilities
         [
