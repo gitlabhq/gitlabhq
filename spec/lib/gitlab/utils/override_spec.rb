@@ -25,11 +25,21 @@ describe Gitlab::Utils::Override do
 
   let(:klass) { subject }
 
-  def good(mod)
+  def good(mod, bad_arity: false, negative_arity: false)
     mod.module_eval do
       override :good
-      def good
-        super.succ
+
+      if bad_arity
+        def good(num)
+        end
+      elsif negative_arity
+        def good(*args)
+          super.succ
+        end
+      else
+        def good
+          super.succ
+        end
       end
     end
 
@@ -56,10 +66,26 @@ describe Gitlab::Utils::Override do
       described_class.verify!
     end
 
+    it 'checks ok for overriding method using negative arity' do
+      good(subject, negative_arity: true)
+      result = instance.good
+
+      expect(result).to eq(1)
+      described_class.verify!
+    end
+
     it 'raises NotImplementedError when it is not overriding anything' do
       expect do
         bad(subject)
         instance.bad
+        described_class.verify!
+      end.to raise_error(NotImplementedError)
+    end
+
+    it 'raises NotImplementedError when overriding a method with different arity' do
+      expect do
+        good(subject, bad_arity: true)
+        instance.good(1)
         described_class.verify!
       end.to raise_error(NotImplementedError)
     end
