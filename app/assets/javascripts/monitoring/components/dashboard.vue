@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
+import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import Graph from './graph.vue';
 import EmptyState from './empty_state.vue';
@@ -12,6 +13,7 @@ import eventHub from '../event_hub';
 
 export default {
   components: {
+    MonitorAreaChart,
     Graph,
     GraphGroup,
     EmptyState,
@@ -102,6 +104,9 @@ export default {
     };
   },
   computed: {
+    graphComponent() {
+      return gon.features && gon.features.areaChart ? MonitorAreaChart : Graph;
+    },
     forceRedraw() {
       return this.elWidth;
     },
@@ -207,7 +212,8 @@ export default {
       :name="groupData.group"
       :show-panels="showPanels"
     >
-      <graph
+      <component
+        :is="graphComponent"
         v-for="(graphData, graphIndex) in groupData.metrics"
         :key="graphIndex"
         :graph-data="graphData"
@@ -220,7 +226,7 @@ export default {
       >
         <!-- EE content -->
         {{ null }}
-      </graph>
+      </component>
     </graph-group>
   </div>
   <empty-state
