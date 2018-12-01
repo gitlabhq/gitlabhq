@@ -3,10 +3,10 @@ require 'spec_helper'
 module Gitlab
   module Ci
     describe YamlProcessor do
-      subject { described_class.new(config) }
+      subject { described_class.new(config, user: nil) }
 
       describe '#build_attributes' do
-        subject { described_class.new(config).build_attributes(:rspec) }
+        subject { described_class.new(config, user: nil).build_attributes(:rspec) }
 
         describe 'attributes list' do
           let(:config) do

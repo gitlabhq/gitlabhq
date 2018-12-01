@@ -10,15 +10,17 @@ module Gitlab
           FILE_CLASSES = [
             External::File::Remote,
             External::File::Template,
-            External::File::Local
+            External::File::Local,
+            External::File::Project
           ].freeze
 
           AmbigiousSpecificationError = Class.new(StandardError)
 
-          def initialize(values, project:, sha:)
+          def initialize(values, project:, sha:, user:)
             @locations = Array.wrap(values.fetch(:include, []))
             @project = project
             @sha = sha
+            @user = user
           end
 
           def process
@@ -61,7 +63,7 @@ module Gitlab
 
           def context
             strong_memoize(:context) do
-              External::File::Base::Context.new(project, sha)
+              External::File::Base::Context.new(project, sha, user)
             end
           end
         end
