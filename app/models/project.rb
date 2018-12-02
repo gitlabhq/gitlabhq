@@ -552,9 +552,9 @@ class Project < ActiveRecord::Base
 
   # returns all ancestor-groups upto but excluding the given namespace
   # when no namespace is given, all ancestors upto the top are returned
-  def ancestors_upto(top = nil)
+  def ancestors_upto(top = nil, hierarchy_order: nil)
     Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
-      .base_and_ancestors(upto: top)
+      .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
   def lfs_enabled?

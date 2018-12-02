@@ -253,17 +253,21 @@ describe Clusters::Cluster do
     end
   end
 
-  describe '.ordered_group_clusters_for_project' do
+  describe '.ancestor_clusters_for_clusterable' do
     let(:group_cluster) { create(:cluster, :provided_by_gcp, :group) }
     let(:group) { group_cluster.group }
+    let(:hierarchy_order) { :desc }
+    let(:clusterable) { project }
 
-    subject { described_class.ordered_group_clusters_for_project(project.id) }
+    subject do
+      described_class.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: hierarchy_order)
+    end
 
     context 'when project does not belong to this group' do
       let(:project) { create(:project, group: create(:group)) }
 
       it 'returns nothing' do
-        expect(subject).to be_empty
+        is_expected.to be_empty
       end
     end
 
@@ -271,11 +275,11 @@ describe Clusters::Cluster do
       let(:project) { create(:project, group: group) }
 
       it 'returns the group cluster' do
-        expect(subject).to eq([group_cluster])
+        is_expected.to eq([group_cluster])
       end
     end
 
-    context 'when sub-group has configured kubernetes cluster', :postgresql do
+    context 'when sub-group has configured kubernetes cluster', :nested_groups do
       let(:sub_group_cluster) { create(:cluster, :provided_by_gcp, :group) }
       let(:sub_group) { sub_group_cluster.group }
       let(:project) { create(:project, group: sub_group) }
@@ -284,18 +288,26 @@ describe Clusters::Cluster do
         sub_group.update!(parent: group)
       end
 
-      it 'returns clusters in order, ascending the hierachy' do
-        expect(subject).to eq([group_cluster, sub_group_cluster])
+      it 'returns clusters in order, descending the hierachy' do
+        is_expected.to eq([group_cluster, sub_group_cluster])
+      end
+
+      context 'for a group' do
+        let(:clusterable) { sub_group }
+
+        it 'returns clusters in order for a group' do
+          is_expected.to eq([group_cluster])
+        end
       end
     end
 
-    context 'cluster_scope arg' do
+    context 'scope chaining' do
       let(:project) { create(:project, group: group) }
 
-      subject { described_class.none.ordered_group_clusters_for_project(project.id) }
+      subject { described_class.none.ancestor_clusters_for_clusterable(project) }
 
       it 'returns nothing' do
-        expect(subject).to be_empty
+        is_expected.to be_empty
       end
     end
   end

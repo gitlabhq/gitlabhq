@@ -35,13 +35,25 @@ describe Gitlab::GroupHierarchy, :postgresql do
         .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
 
-    context 'with depth option' do
+    describe 'hierarchy_order option' do
       let(:relation) do
-        described_class.new(Group.where(id: child2.id)).base_and_ancestors(depth: :asc)
+        described_class.new(Group.where(id: child2.id)).base_and_ancestors(hierarchy_order: hierarchy_order)
       end
 
-      it 'orders by depth' do
-        expect(relation.map(&:depth)).to eq([1, 2, 3])
+      context ':asc' do
+        let(:hierarchy_order) { :asc }
+
+        it 'orders by child to parent' do
+          expect(relation).to eq([child2, child1, parent])
+        end
+      end
+
+      context ':desc' do
+        let(:hierarchy_order) { :desc }
+
+        it 'orders by parent to child' do
+          expect(relation).to eq([parent, child1, child2])
+        end
       end
     end
   end

@@ -93,12 +93,8 @@ module Clusters
       where('NOT EXISTS (?)', subquery)
     end
 
-    # Returns an ordered list of group clusters order from clusters of closest
-    # group up to furthest ancestor group
-    def self.ordered_group_clusters_for_project(project_id)
-      project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups)
-        .base_and_ancestors(depth: :desc)
+    def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
+      hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order)
 
       hierarchy_groups.flat_map(&:clusters)
     end

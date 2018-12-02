@@ -32,8 +32,8 @@ module DeploymentPlatform
 
   # EE would override this and utilize environment argument
   def find_group_cluster_platform_kubernetes(environment: nil)
-    Clusters::Cluster.enabled.default_environment.ordered_group_clusters_for_project(id)
-      .last&.platform_kubernetes
+    Clusters::Cluster.enabled.default_environment.ancestor_clusters_for_clusterable(self)
+      .first&.platform_kubernetes
   end
 
   def find_kubernetes_service_integration

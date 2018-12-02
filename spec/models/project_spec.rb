@@ -2117,6 +2117,16 @@ describe Project do
     it 'includes ancestors upto but excluding the given ancestor' do
       expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
     end
+
+    describe 'with hierarchy_order' do
+      it 'returns ancestors ordered by descending hierarchy' do
+        expect(project.ancestors_upto(hierarchy_order: :desc)).to eq([parent, child, child2])
+      end
+
+      it 'can be used with upto option' do
+        expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
+      end
+    end
   end
 
   describe '#lfs_enabled?' do
