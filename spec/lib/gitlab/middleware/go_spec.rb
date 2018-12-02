@@ -140,6 +140,7 @@ describe Gitlab::Middleware::Go do
                   let(:personal_access_token) { create(:personal_access_token, user: current_user) }
 
                   before do
+                    env['REMOTE_ADDR'] = "192.168.0.1"
                     env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
                   end
 
