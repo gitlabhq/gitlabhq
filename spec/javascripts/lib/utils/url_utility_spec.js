@@ -1,4 +1,4 @@
-import UrlUtility, * as urlUtils from '~/lib/utils/url_utility';
+import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('URL utility', () => {
   describe('webIDEUrl', () => {
@@ -84,20 +84,6 @@ describe('URL utility', () => {
         const url = urlUtils.removeParams(['z', 'a'], '/home?z=11111&l=en_US&a=true#H2');
 
         expect(url).toBe('/home?l=en_US#H2');
-      });
-    });
-
-    describe('when no url is passed', () => {
-      it('should remove params from window.location.href', () => {
-        spyOnDependency(UrlUtility, 'windowLocation').and.callFake(() => {
-          const anchor = document.createElement('a');
-          anchor.href = 'https://mysite.com/?zip=11111&locale=en_US&ads=false#privacy';
-          return anchor;
-        });
-
-        const url = urlUtils.removeParams(['locale']);
-
-        expect(url).toBe('https://mysite.com/?zip=11111&ads=false#privacy');
       });
     });
   });

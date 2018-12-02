@@ -1,5 +1,3 @@
-import { windowLocation } from './common_utils';
-
 // Returns an array containing the value(s) of the
 // of the key passed as an argument
 export function getParameterValues(sParam) {
@@ -53,11 +51,11 @@ export function mergeUrlParams(params, url) {
  * @param {string} [url=windowLocation().href] - url from which the query param will be removed
  * @returns {string} A copy of the original url but without the query param
  */
-export function removeParams(params, url = windowLocation().href) {
+export function removeParams(params, url = window.location.href) {
   const [rootAndQuery, fragment] = url.split('#');
   const [root, query] = rootAndQuery.split('?');
 
-  if (query === undefined) {
+  if (!query) {
     return url;
   }
 

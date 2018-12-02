@@ -4,14 +4,6 @@ import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
 
-/**
- * Simply returns `window.location`. This function exists to provide a means to spy
- * `window.location` in unit tests.
- *
- * @returns {Location | string | any} The browser's `window.location`
- */
-export const windowLocation = () => window.location;
-
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
 

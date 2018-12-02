@@ -6,8 +6,8 @@ import { mergeUrlParams, setUrlFragment } from '~/lib/utils/url_utility';
  *
  * @param fragment {string} - url fragment to be preserved
  */
-export default function preserveUrlFragment(fragment) {
-  if (fragment && fragment !== '') {
+export default function preserveUrlFragment(fragment = '') {
+  if (fragment) {
     const normalFragment = fragment.replace(/^#/, '');
 
     // Append the fragment to all sign-in/sign-up form actions so it is preserved when the user is
