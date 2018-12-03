@@ -14,8 +14,8 @@ module Gitlab
       #
       # There are no guarantees with respect to the accuracy of the result or runtime.
       class TablesampleCountStrategy < ReltuplesCountStrategy
-        EXACT_COUNT_THRESHOLD = 100_000
-        TABLESAMPLE_ROW_TARGET = 100_000
+        EXACT_COUNT_THRESHOLD = 10_000
+        TABLESAMPLE_ROW_TARGET = 10_000
 
         def count
           estimates = size_estimates(check_statistics: false)
