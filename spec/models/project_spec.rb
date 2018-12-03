@@ -2574,7 +2574,7 @@ describe Project do
       end
 
       it 'returns false' do
-        is_expected.to be_falsey
+        is_expected.to be false
       end
     end
 
@@ -2584,7 +2584,7 @@ describe Project do
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
       end
     end
 
@@ -2594,7 +2594,7 @@ describe Project do
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
       end
     end
 
@@ -2602,7 +2602,7 @@ describe Project do
       let(:ref) { nil }
 
       it 'returns false' do
-        is_expected.to be_falsey
+        is_expected.to be false
       end
     end
 
@@ -2637,6 +2637,14 @@ describe Project do
 
         it_behaves_like 'ref is protected tag'
       end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
+      end
     end
 
     context 'when ref is full ref' do
@@ -2667,7 +2675,7 @@ describe Project do
 
         context 'when ref is not protected' do
           it 'returns false' do
-            is_expected.to be_falsey
+            is_expected.to be false
           end
         end
 
@@ -2677,8 +2685,16 @@ describe Project do
           end
 
           it 'returns true' do
-            is_expected.to be_truthy
+            is_expected.to be true
           end
+        end
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'refs/heads/something' }
+
+        it 'returns false' do
+          is_expected.to be false
         end
       end
     end
