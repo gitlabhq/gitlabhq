@@ -139,57 +139,17 @@ describe('pipeline graph job item', () => {
     });
   });
 
-  describe('tooltip placement', () => {
-    it('does not set tooltip boundary by default', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-      });
-
-      expect(component.tooltipBoundary).toBeNull();
-    });
-
-    it('sets tooltip boundary to viewport for small dropdowns', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-        dropdownLength: 1,
-      });
-
-      expect(component.tooltipBoundary).toEqual('viewport');
-    });
-
-    it('does not set tooltip boundary for large lists', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-        dropdownLength: 7,
-      });
-
-      expect(component.tooltipBoundary).toBeNull();
-    });
-  });
-
   describe('for delayed job', () => {
-    beforeEach(() => {
-      const fifteenMinutesInMilliseconds = 900000;
-      spyOn(Date, 'now').and.callFake(
-        () => new Date(delayedJobFixture.scheduled_at).getTime() - fifteenMinutesInMilliseconds,
-      );
-    });
-
-    it('displays remaining time in tooltip', done => {
+    it('displays remaining time in tooltip', () => {
       component = mountComponent(JobComponent, {
         job: delayedJobFixture,
       });
 
-      Vue.nextTick()
-        .then(() => {
-          expect(
-            component.$el
-              .querySelector('.js-pipeline-graph-job-link')
-              .getAttribute('data-original-title'),
-          ).toEqual('delayed job - delayed manual action (00:15:00)');
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(
+        component.$el
+          .querySelector('.js-pipeline-graph-job-link')
+          .getAttribute('data-original-title'),
+      ).toEqual(`delayed job - delayed manual action (${component.remainingTime})`);
     });
   });
 });
