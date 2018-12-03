@@ -95,7 +95,10 @@
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link{ type: 'button' }
-                    = _('No Label')
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
                 %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
