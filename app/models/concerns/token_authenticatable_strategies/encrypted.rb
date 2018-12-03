@@ -19,9 +19,15 @@ module TokenAuthenticatableStrategies
           .find_by(encrypted_field => encrypted_value)
       end
 
-      if migrating? || fallback?
+      if fallback? || migrating?
         token_authenticatable ||= fallback_strategy
           .find_token_authenticatable(token)
+      end
+
+      if migrating?
+        encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+        token_authenticatable ||= relation(unscoped)
+          .find_by(encrypted_field => encrypted_value)
       end
 
       token_authenticatable
