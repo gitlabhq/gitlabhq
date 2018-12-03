@@ -15,7 +15,7 @@ module Gitlab
           self.inheritance_column = :_type_disabled
 
           after_commit do
-            ApplicationSetting.expire
+            ::ApplicationSetting.expire
           end
 
           def runners_registration_token=(value)
