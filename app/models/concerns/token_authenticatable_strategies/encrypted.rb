@@ -11,26 +11,18 @@ module TokenAuthenticatableStrategies
     end
 
     def find_token_authenticatable(token, unscoped = false)
-      return unless token
+      return if token.blank?
+      return find_by_encrypted_token(token, unscoped) if fully_encrypted?
 
-      unless migrating?
-        encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-        token_authenticatable = relation(unscoped)
-          .find_by(encrypted_field => encrypted_value)
+      if fallback?
+        find_by_encrypted_token(token, unscoped) ||
+          find_by_plaintext_token(token, unscoped)
+      elsif migrating?
+        find_by_plaintext_token(token, unscoped) ||
+          find_by_encrypted_token(token, unscoped)
+      else
+        raise ArgumentError, 'Unknown encryption strategy!'
       end
-
-      if fallback? || migrating?
-        token_authenticatable ||= fallback_strategy
-          .find_token_authenticatable(token)
-      end
-
-      if migrating?
-        encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-        token_authenticatable ||= relation(unscoped)
-          .find_by(encrypted_field => encrypted_value)
-      end
-
-      token_authenticatable
     end
 
     def ensure_token(instance)
@@ -47,20 +39,20 @@ module TokenAuthenticatableStrategies
 
       return super if instance.has_attribute?(encrypted_field)
 
-      if fallback?
-        fallback_strategy.ensure_token(instance)
+      if fully_encrypted?
+        raise ArgumentError, 'Using encrypted strategy when encrypted field is missing!'
       else
-        raise ArgumentError, 'No fallback defined when encrypted field is missing!'
+        insecure_strategy.ensure_token(instance)
       end
     end
 
     def get_token(instance)
-      return fallback_strategy.get_token(instance) if migrating?
+      return insecure_strategy.get_token(instance) if migrating?
 
       encrypted_token = instance.read_attribute(encrypted_field)
       token = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
 
-      token || (fallback_strategy.get_token(instance) if fallback?)
+      token || (insecure_strategy.get_token(instance) if fallback?)
     end
 
     def set_token(instance, token)
@@ -72,16 +64,29 @@ module TokenAuthenticatableStrategies
       token
     end
 
+    def fully_encrypted?
+      !migrating? && !fallback?
+    end
+
     protected
 
-    def fallback_strategy
-      @fallback_strategy ||= TokenAuthenticatableStrategies::Insecure
+    def find_by_plaintext_token(token, unscoped)
+      insecure_strategy.find_token_authenticatable(token, unscoped)
+    end
+
+    def find_by_encrypted_token(token, unscoped)
+      encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      relation(unscoped).find_by(encrypted_field => encrypted_value)
+    end
+
+    def insecure_strategy
+      @insecure_strategy ||= TokenAuthenticatableStrategies::Insecure
         .new(klass, token_field, options)
     end
 
     def token_set?(instance)
       raw_token = instance.read_attribute(encrypted_field)
-      raw_token ||= (fallback_strategy.get_token(instance) if fallback?)
+      raw_token ||= (insecure_strategy.get_token(instance) if fallback?)
 
       raw_token.present?
     end

@@ -35,8 +35,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
           .to eq 'encrypted resource'
       end
 
-      it 'uses fallback strategy when encrypted token cannot be found' do
-        allow(subject.send(:fallback_strategy))
+      it 'uses insecure strategy when encrypted token cannot be found' do
+        allow(subject.send(:insecure_strategy))
           .to receive(:find_token_authenticatable)
           .and_return('plaintext resource')
 
