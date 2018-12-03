@@ -2,14 +2,24 @@
 
 module TokenAuthenticatableStrategies
   class Encrypted < Base
+    def initialize(*)
+      super
+
+      if migrating? && fallback?
+        raise ArgumentError, '`fallback` and `migration` options are not compatible!'
+      end
+    end
+
     def find_token_authenticatable(token, unscoped = false)
       return unless token
 
-      encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-      token_authenticatable = relation(unscoped)
-        .find_by(encrypted_field => encrypted_value)
+      unless migrating?
+        encrypted_value = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+        token_authenticatable = relation(unscoped)
+          .find_by(encrypted_field => encrypted_value)
+      end
 
-      if fallback?
+      if migrating? || fallback?
         token_authenticatable ||= fallback_strategy
           .find_token_authenticatable(token)
       end
@@ -39,6 +49,8 @@ module TokenAuthenticatableStrategies
     end
 
     def get_token(instance)
+      return fallback_strategy.get_token(instance) if migrating?
+
       encrypted_token = instance.read_attribute(encrypted_field)
       token = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
 
@@ -49,6 +61,7 @@ module TokenAuthenticatableStrategies
       raise ArgumentError unless token.present?
 
       instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
+      instance[token_field] = token if migrating?
       instance[token_field] = nil if fallback?
       token
     end
