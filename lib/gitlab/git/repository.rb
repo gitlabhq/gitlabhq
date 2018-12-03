@@ -69,6 +69,13 @@ module Gitlab
 
       attr_reader :storage, :gl_repository, :relative_path
 
+      # This remote name has to be stable for all types of repositories that
+      # can join an object pool. If it's structure ever changes, a migration
+      # has to be performed on the object pools to update the remote names.
+      # Else the pool can't be updated anymore and is left in an inconsistent
+      # state.
+      alias_method :object_pool_remote_name, :gl_repository
+
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
       def initialize(storage, relative_path, gl_repository)
