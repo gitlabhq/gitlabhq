@@ -287,6 +287,14 @@ entry.
 - Disables stop environment button while the deploy is in progress.
 
 
+## 11.4.9 (2018-12-03)
+
+### Fixed (2 changes)
+
+- Display impersonation token value only after creation. !22916
+- Correctly handle data-loss scenarios when encrypting columns. !23306
+
+
 ## 11.4.8 (2018-11-27)
 
 ### Security (24 changes)
