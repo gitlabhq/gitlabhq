@@ -53,7 +53,7 @@ from teams other than your own.
 
 #### Security requirements
 
-   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data][https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit] (this is a confidential document), it must be
+   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data](https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit) (this is a confidential document), it must be
       **approved by a [Security Engineer][team]**.
    1. If your merge request involves implementing, utilizing, or is otherwise related to any type of authentication, authorization, or session handling mechanism, it must be
       **approved by a [Security Engineer][team]**.

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Boolean do
+describe Gitlab::Config::Entry::Boolean do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do

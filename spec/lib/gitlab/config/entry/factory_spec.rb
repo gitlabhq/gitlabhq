@@ -1,9 +1,17 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Factory do
+describe Gitlab::Config::Entry::Factory do
   describe '#create!' do
+    class Script < Gitlab::Config::Entry::Node
+      include Gitlab::Config::Entry::Validatable
+
+      validations do
+        validates :config, array_of_strings: true
+      end
+    end
+
+    let(:entry) { Script }
     let(:factory) { described_class.new(entry) }
-    let(:entry) { Gitlab::Ci::Config::Entry::Script }
 
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
@@ -54,7 +62,7 @@ describe Gitlab::Ci::Config::Entry::Factory do
     context 'when not setting a value' do
       it 'raises error' do
         expect { factory.create! }.to raise_error(
-          Gitlab::Ci::Config::Entry::Factory::InvalidFactory
+          Gitlab::Config::Entry::Factory::InvalidFactory
         )
       end
     end

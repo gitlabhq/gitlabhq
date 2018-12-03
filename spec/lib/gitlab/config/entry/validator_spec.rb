@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Validator do
+describe Gitlab::Config::Entry::Validator do
   let(:validator) { Class.new(described_class) }
   let(:validator_instance) { validator.new(node) }
   let(:node) { spy('node') }

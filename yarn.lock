@@ -1933,10 +1933,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codesandbox-api@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.18.tgz#56b96b37533f80d20c21861e5e477d3557e613ca"
-  integrity sha512-DHLR8QQpMplNDF9GDbV8EevwmF9mlMBQwiWB8bZBnP2NQQbklthqjpBwNjah8qlDgfD7vQNNcwT8uIZ24WZb7Q==
+codesandbox-api@^0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.20.tgz#174bcd76c9f31521175c6bceabc37da6b1fbc30b"
+  integrity sha512-jhxZzAmjCKBZad8QWMeueiQVFE87igK6F2DBOEVFFJO6jgTXT8qjuzGYepr+B8bjgo/icN7bc/2xmEMBA63s2w==
 
 codesandbox-import-util-types@^1.2.11:
   version "1.2.11"
@@ -7261,12 +7261,12 @@ slugify@^1.3.1:
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.3.1.tgz#f572127e8535329fbc6c1edb74ab856b61ad7de2"
   integrity sha512-6BwyhjF5tG5P8s+0DPNyJmBSBePG6iMyhjvIW5zGdA3tFik9PtK+yNkZgTeiroCRGZYgkHftFA62tGVK1EI9Kw==
 
-smooshpack@^0.0.48:
-  version "0.0.48"
-  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-0.0.48.tgz#6fbeaaf59226a1fe500f56aa17185eed377d2823"
-  integrity sha512-BmaIr6fK6w7WBCI4V7tcZIg78WeE6X56zrhGSNk5vXavT1bQPXH+brZFq6Hwi833upY/yusG2FMVkf7TZsVv/w==
+smooshpack@^0.0.53:
+  version "0.0.53"
+  resolved "https://registry.yarnpkg.com/smooshpack/-/smooshpack-0.0.53.tgz#aa397ca43619912e8ac0aa32012846ff4feaa5e8"
+  integrity sha512-FVXvKvZOz5+Tk/zUJ/wxM+ftu1yZtFEmeQl4chCqbzK/reU0L/OdDiYpx+/27Jt2VX09j08oIzwoyQ5fHH4+WQ==
   dependencies:
-    codesandbox-api "^0.0.18"
+    codesandbox-api "^0.0.20"
     codesandbox-import-utils "^1.2.3"
     lodash.isequal "^4.5.0"
 
