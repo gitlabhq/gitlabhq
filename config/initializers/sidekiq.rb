@@ -20,6 +20,7 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
     chain.add Gitlab::SidekiqMiddleware::Shutdown
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
+    chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
   end
 

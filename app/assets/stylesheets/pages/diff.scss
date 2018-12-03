@@ -253,19 +253,6 @@
         right: 7px;
       }
 
-      .frame {
-        top: 0;
-        right: 0;
-        position: absolute;
-
-        &.deleted {
-          margin: 0;
-          display: block;
-          top: 13px;
-          right: 7px;
-        }
-      }
-
       .swipe-bar {
         display: block;
         height: 100%;
@@ -435,7 +422,7 @@
     .onion-skin.view {
       .swipe-wrap {
         top: 0;
-        right: 0;
+        left: 0;
       }
 
       .frame.deleted {

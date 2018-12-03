@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181108091549) do
+ActiveRecord::Schema.define(version: 20181123042307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1994,10 +1994,6 @@ ActiveRecord::Schema.define(version: 20181108091549) do
   end
 
   add_index "shards", ["name"], name: "index_shards_on_name", unique: true, using: :btree
-
-  create_table "site_statistics", force: :cascade do |t|
-    t.integer "repositories_count", default: 0, null: false
-  end
 
   create_table "snippets", force: :cascade do |t|
     t.string "title"

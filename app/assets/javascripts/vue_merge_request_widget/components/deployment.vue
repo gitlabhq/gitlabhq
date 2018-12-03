@@ -1,10 +1,10 @@
 <script>
+import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import FilteredSearchDropdown from '~/vue_shared/components/filtered_search_dropdown.vue';
 import { __ } from '~/locale';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
-import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 import { visitUrl } from '../../lib/utils/url_utility';
 import createFlash from '../../flash';
@@ -25,7 +25,7 @@ export default {
     ReviewAppLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -134,7 +134,7 @@ export default {
             </template>
             <span
               v-if="hasDeploymentTime"
-              v-tooltip
+              v-gl-tooltip
               :title="deployment.deployed_at_formatted"
               class="js-deploy-time"
             >
@@ -193,7 +193,7 @@ export default {
             </template>
             <span 
               v-if="deployment.stop_url"
-              v-tooltip 
+              v-gl-tooltip
               :title="deployInProgressTooltip"
               class="d-inline-block" 
               tabindex="0"
