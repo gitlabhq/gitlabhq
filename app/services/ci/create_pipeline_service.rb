@@ -4,6 +4,8 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
+    CreateError = Class.new(StandardError)
+
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
@@ -45,6 +47,14 @@ module Ci
       end
 
       pipeline
+    end
+
+    def execute!(*args, &block)
+      execute(*args, &block).tap do |pipeline|
+        unless pipeline.persisted?
+          raise CreateError, pipeline.errors.full_messages.join(',')
+        end
+      end
     end
 
     private

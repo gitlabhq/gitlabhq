@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Configurable do
+describe Gitlab::Config::Entry::Configurable do
   let(:entry) do
-    Class.new(Gitlab::Ci::Config::Entry::Node) do
-      include Gitlab::Ci::Config::Entry::Configurable
+    Class.new(Gitlab::Config::Entry::Node) do
+      include Gitlab::Config::Entry::Configurable
     end
   end
 
@@ -39,7 +39,7 @@ describe Gitlab::Ci::Config::Entry::Configurable do
 
       it 'creates a node factory' do
         expect(entry.nodes[:object])
-          .to be_an_instance_of Gitlab::Ci::Config::Entry::Factory
+          .to be_an_instance_of Gitlab::Config::Entry::Factory
       end
 
       it 'returns a duplicated factory object' do

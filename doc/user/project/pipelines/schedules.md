@@ -83,12 +83,12 @@ The next time a pipeline is scheduled, your credentials will be used.
 
 ![Schedules list](img/pipeline_schedules_ownership.png)
 
-> **Note:**
-When the owner of the schedule doesn't have the ability to create pipelines
-anymore, due to e.g., being blocked or removed from the project, or lacking
-the permission to run on protected branches or tags. When this happened, the
-schedule is deactivated. Another user can take ownership and activate it, so
-the schedule can be run again.
+NOTE: **Note:**
+If the owner of a pipeline schedule doesn't have the ability to create pipelines
+on the target branch, the schedule will stop creating new pipelines. This can
+happen if, for example, the owner is blocked or removed from the project, or
+the target branch or tag is protected. In this case, someone with sufficient
+privileges must take ownership of the schedule.
 
 ## Advanced admin configuration
 

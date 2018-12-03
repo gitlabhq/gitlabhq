@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Attributable do
+describe Gitlab::Config::Entry::Attributable do
   let(:node) do
     Class.new do
-      include Gitlab::Ci::Config::Entry::Attributable
+      include Gitlab::Config::Entry::Attributable
     end
   end
 
@@ -48,7 +48,7 @@ describe Gitlab::Ci::Config::Entry::Attributable do
     it 'raises an error' do
       expectation = expect do
         Class.new(String) do
-          include Gitlab::Ci::Config::Entry::Attributable
+          include Gitlab::Config::Entry::Attributable
 
           attributes :length
         end

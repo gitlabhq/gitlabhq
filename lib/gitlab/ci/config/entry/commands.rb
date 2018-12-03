@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a job script.
         #
-        class Commands < Node
-          include Validatable
+        class Commands < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, array_of_strings_or_string: true

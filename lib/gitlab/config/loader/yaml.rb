@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module Ci
-    class Config
-      class Loader
-        FormatError = Class.new(StandardError)
-
+  module Config
+    module Loader
+      class Yaml
         def initialize(config)
           @config = YAML.safe_load(config, [Symbol], [], true)
         rescue Psych::Exception => e
-          raise FormatError, e.message
+          raise Loader::FormatError, e.message
         end
 
         def valid?
@@ -18,7 +16,7 @@ module Gitlab
 
         def load!
           unless valid?
-            raise FormatError, 'Invalid configuration format'
+            raise Loader::FormatError, 'Invalid configuration format'
           end
 
           @config.deep_symbolize_keys

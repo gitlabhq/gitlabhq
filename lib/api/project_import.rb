@@ -23,7 +23,7 @@ module API
       forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
     end
 
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         requires :path, type: String, desc: 'The new project path and name'
         requires :file, type: File, desc: 'The project export file to be imported'

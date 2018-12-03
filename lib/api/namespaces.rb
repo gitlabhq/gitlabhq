@@ -28,7 +28,7 @@ module API
       params do
         requires :id, type: String, desc: "Namespace's ID or path"
       end
-      get ':id' do
+      get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         present user_namespace, with: Entities::Namespace, current_user: current_user
       end
     end

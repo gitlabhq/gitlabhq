@@ -4,7 +4,7 @@ module API
   class PagesDomains < Grape::API
     include PaginationParams
 
-    PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
+    PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
 
     before do
       authenticate!
@@ -54,7 +54,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         require_pages_enabled!
       end
