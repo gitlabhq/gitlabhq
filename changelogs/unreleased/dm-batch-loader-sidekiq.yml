@@ -1,5 +1,0 @@
----
-title: Clear BatchLoader context between Sidekiq jobs
-merge_request: 23308
-author:
-type: fixed
