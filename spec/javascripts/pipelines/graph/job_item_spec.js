@@ -140,28 +140,16 @@ describe('pipeline graph job item', () => {
   });
 
   describe('for delayed job', () => {
-    beforeEach(() => {
-      const fifteenMinutesInMilliseconds = 900000;
-      spyOn(Date, 'now').and.callFake(
-        () => new Date(delayedJobFixture.scheduled_at).getTime() - fifteenMinutesInMilliseconds,
-      );
-    });
-
-    it('displays remaining time in tooltip', done => {
+    it('displays remaining time in tooltip', () => {
       component = mountComponent(JobComponent, {
         job: delayedJobFixture,
       });
 
-      Vue.nextTick()
-        .then(() => {
-          expect(
-            component.$el
-              .querySelector('.js-pipeline-graph-job-link')
-              .getAttribute('data-original-title'),
-          ).toEqual('delayed job - delayed manual action (00:15:00)');
-        })
-        .then(done)
-        .catch(done.fail);
+      expect(
+        component.$el
+          .querySelector('.js-pipeline-graph-job-link')
+          .getAttribute('data-original-title'),
+      ).toEqual(`delayed job - delayed manual action (${component.remainingTime})`);
     });
   });
 });
