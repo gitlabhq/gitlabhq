@@ -1,57 +1,33 @@
 # Automatic CE->EE merge
 
-GitLab Community Edition is merged automatically every 3 hours into the
-Enterprise Edition (look for the [`CE Upstream` merge requests]).
+Whenever a commit is pushed to the CE `master` branch, it is automatically
+merged into the EE `master` branch. If the commit produces any conflicts, it is
+instead reverted from CE `master`. When this happens, a merge request will be
+set up automatically that can be used to reinstate the changes. This merge
+request will be assigned to the author of the conflicting commit, or the merge
+request author if the commit author could not be associated with a GitLab user.
+If no author could be found, the merge request is assigned to a random member of
+the Delivery team. It is then up to this team member to figure out who to assign
+the merge request to.
 
-This merge is done automatically in a
-[scheduled pipeline](https://gitlab.com/gitlab-org/release-tools/-/jobs/43201679).
-
-## What to do if you are pinged in a `CE Upstream` merge request to resolve a conflict?
-
-1. Please resolve the conflict as soon as possible or ask someone else to do it
-   - It's ok to resolve more conflicts than the one that you are asked to resolve.
-     In that case, it's a good habit to ask for a double-check on your resolution
-     by someone who is familiar with the code you touched.
-1. Once you have resolved your conflicts, push to the branch (no force-push)
-1. Assign the merge request to the next person that has to resolve a conflict
-1. If all conflicts are resolved after your resolution is pushed, keep the merge
-   request assigned to you: **you are now responsible for the merge request to be
-   green**
-1. If you are the last person to resolve the conflicts, the pipeline is green,
-   and you have merge rights, merge the MR, but **do not** choose to squash.
-   Otherwise, assign the MR to someone that can merge.
-1. If you need any help, you can ping the current [release managers], or ask in
-   the `#ce-to-ee` Slack channel
-
-A few notes about the automatic CE->EE merge job:
-
-- If a merge is already in progress, the job
-  [doesn't create a new one](https://gitlab.com/gitlab-org/release-tools/-/jobs/43157687).
-- If there is nothing to merge (i.e. EE is up-to-date with CE), the job doesn't
-  create a new one
-- The job posts messages to the `#ce-to-ee` Slack channel to inform what's the
-  current CE->EE merge status (e.g. "A new MR has been created", "A MR is still pending")
-
-[`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
-[release managers]: https://about.gitlab.com/release-managers/
+Because some commits can not be reverted if new commits depend on them, we also
+run a job periodically that processes a range of commits and tries to merge or
+revert them. This should ensure that all commits are either merged into EE
+`master`, or reverted, instead of just being left behind in CE.
 
 ## Always merge EE merge requests before their CE counterparts
 
 **In order to avoid conflicts in the CE->EE merge, you should always merge the
 EE version of your CE merge request first, if present.**
 
-The rationale for this is that as CE->EE merges are done automatically every few
-hours, it can happen that:
+The rationale for this is that as CE->EE merges are done automatically, it can
+happen that:
 
-1. A CE merge request that needs EE-specific changes is merged
-1. The automatic CE->EE merge happens
+1. A CE merge request that needs EE-specific changes is merged.
+1. The automatic CE->EE merge happens.
 1. Conflicts due to the CE merge request occur since its EE merge request isn't
-  merged yet
-1. The automatic merge bot will ping someone to resolve the conflict **that are
-  already resolved in the EE merge request that isn't merged yet**
-
-That's a waste of time, and that's why you should merge EE merge request before
-their CE counterpart.
+   merged yet.
+1. The CE changes are reverted.
 
 ## Avoiding CE->EE merge conflicts beforehand
 
@@ -69,136 +45,89 @@ detect if the current branch's changes will conflict during the CE->EE merge.
 The job reports what files are conflicting and how to set up a merge request
 against EE.
 
-#### How the job works
+## How to reinstate changes
 
-1. Generates the diff between your branch and current CE `master`
-1. Tries to apply it to current EE `master`
-1. If it applies cleanly, the job succeeds, otherwise...
-1. Detects a branch with the `ee-` prefix or `-ee` suffix in EE
-1. If it exists, generate the diff between this branch and current EE `master`
-1. Tries to apply it to current EE `master`
-1. If it applies cleanly, the job succeeds
+When a commit is reverted, the corresponding merge request to reinstate the
+changes will include all the details necessary to ensure the changes make it
+back into CE and EE. However, you still need to manually set up an EE merge
+request that resolves the conflicts.
 
-In the case where the job fails, it means you should create an `ee-<ce_branch>`
-or `<ce_branch>-ee` branch, push it to EE and open a merge request against EE
-`master`.
-At this point if you retry the failing job in your CE merge request, it should
-now pass.
+Each merge request used to reinstate changes will have the "reverted" label
+applied. Please do not remove this label, as it will be used to determine how
+many times commits are reverted and how long it takes to reinstate the changes.
 
-Notes:
+An example merge request can be found in [CE merge request
+23280](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23280).
 
-- This task is not a silver-bullet, its current goal is to bring awareness to
-  developers that their work needs to be ported to EE.
-- Community contributors shouldn't be required to submit merge requests against
-  EE, but reviewers should take actions by either creating such EE merge request
-  or asking a GitLab developer to do it **before the merge request is merged**.
-- If you branch is too far behind `master`, the job will fail. In that case you
-  should rebase your branch upon latest `master`.
-- Code reviews for merge requests often consist of multiple iterations of
-  feedback and fixes. There is no need to update your EE MR after each
-  iteration. Instead, create an EE MR as soon as you see the
-  `ee_compat_check` job failing. After you receive the final approval
-  from a Maintainer (but **before the CE MR is merged**) update the EE MR.
-  This helps to identify significant conflicts sooner, but also reduces the
-  number of times you have to resolve conflicts.
-- Please remember to
-  [always have your EE merge request merged before the CE version](#always-merge-ee-merge-requests-before-their-ce-counterparts).
-- You can use [`git rerere`](https://git-scm.com/docs/git-rerere)
-  to avoid resolving the same conflicts multiple times.
+## How it works
 
-### Cherry-picking from CE to EE
+The automatic merging is performed using a project called [Merge
+Train](https://gitlab.com/gitlab-org/merge-train/). For every commit to merge or
+revert, we generate patches using `git format-patch` which we then try to apply
+using `git am --3way`. If this succeeds we push the changes to EE, if this fails
+we decide what to do based on the failure reason:
 
-For avoiding merge conflicts, we use a method of creating equivalent branches
-for CE and EE. If the `ee-compat-check` job fails, this process is required.
+1. If the patch could not be applied because it was already applied, we just
+   skip it.
+1. If the patch caused conflicts, we revert the source commits.
 
-This method only requires that you have cloned both CE and EE into your computer.
-If you don't have them yet, please go ahead and clone them:
+Commits are reverted in reverse order, ensuring that if commit B depends on A,
+and both conflict, we first revert B followed by reverting A.
 
-- Clone CE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`
-- Clone EE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ee.git`
+## FAQ
 
-And the only additional setup we need is to add CE as remote of EE and vice-versa:
+### Why?
 
-- Open two terminal windows, one in CE, and another one in EE:
-  - In EE: `git remote add ce git@gitlab.com:gitlab-org/gitlab-ce.git`
-  - In CE: `git remote add ee git@gitlab.com:gitlab-org/gitlab-ee.git`
+We want to work towards being able to deploy continuously, but this requires
+that `master` is always stable and has all the changes we need. If CE `master`
+can not be merged into EE `master` due to merge conflicts, this prevents _any_
+change from CE making its way into EE. Since GitLab.com runs on EE, this
+effectively prevents us from deploying changes.
 
-That's all setup we need, so that we can cherry-pick a commit from CE to EE, and
-from EE to CE.
+Past experiences and data have shown that periodic CE to EE merge requests do
+not scale, and often take a very long time to complete. For example, [in this
+comment](https://gitlab.com/gitlab-org/release/framework/issues/49#note_114614619)
+we determined that the average time to close an upstream merge request is around
+5 hours, with peaks up to several days. Periodic merge requests are also
+frustrating to work with, because they often include many changes unrelated to
+your own changes.
 
-Now, every time you create an MR for CE and EE:
+Automatically merging or reverting commits allows us to keep merging changes
+from CE into EE, as we never have to wait hours for somebody to resolve a set of
+merge conflicts.
 
-1. Open two terminal windows, one in CE, and another one in EE
-1. In the CE terminal:
-   1. Create the CE branch, e.g., `branch-example`
-   1. Make your changes and push a commit (commit A)
-   1. Create the CE merge request in GitLab
-1. In the EE terminal:
-   1. Create the EE-equivalent branch ending with `-ee`, e.g.,
-      `git checkout -b branch-example-ee`
-   1. Fetch the CE branch: `git fetch ce branch-example`
-   1. Cherry-pick the commit A: `git cherry-pick commit-A-SHA`
-   1. If Git prompts you to fix the conflicts, do a `git status`
-      to check which files contain conflicts, fix them, save the files
-   1. Add the changes with `git add .` but **DO NOT commit** them
-   1. Continue cherry-picking: `git cherry-pick --continue`
-   1. Push to EE: `git push origin branch-example-ee`
-1. Create the EE-equivalent MR and link to the CE MR from the
-description "Ports [CE-MR-LINK] to EE"
-1. Once all the jobs are passing in both CE and EE, you've addressed the
-feedback from your own team, and got them approved, the merge requests can be merged.
-1. When both MRs are ready, the EE merge request will be merged first, and the
-CE-equivalent will be merged next.
+### Does the CE to EE merge take into account merge commits?
 
-**Important notes:**
+No. When merging CE changes into EE, merge commits are ignored.
 
-- The commit SHA can be easily found from the GitLab UI. From a merge request,
-open the tab **Commits** and click the copy icon to copy the commit SHA.
-- To cherry-pick a **commit range**, such as [A > B > C > D] use:
+### My changes are reverted, but I set up an EE MR to resolve conflicts
 
-    ```shell
-    git cherry-pick "oldest-commit-SHA^..newest-commit-SHA"
-    ```
+Most likely the automatic merge job ran before the EE merge request was merged.
+If this keeps happening, consider reporting a bug in the [Merge Train issue
+tracker](https://gitlab.com/gitlab-org/merge-train/issues).
 
-    For example, suppose the commit A is the oldest, and its SHA is `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
-    and the commit D is the newest, and its SHA is `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
-    The cherry-pick command will be:
+### My changes keep getting reverted, and this is really annoying!
 
-    ```shell
-    git cherry-pick "4f5e4018c09ed797fdf446b3752f82e46f5af502^..80e1c9e56783bd57bd7129828ec20b252ebc0538"
-    ```
+This is understandable, but the solution to this is fairly straightforward:
+simply set up an EE merge request for every CE merge request, and resolve your
+conflicts before the changes are reverted.
 
-- To cherry-pick a **merge commit**, use the flag `-m 1`. For example, suppose that the
-merge commit SHA is `138f5e2f20289bb376caffa0303adb0cac859ce1`:
+### Will we allow certain people to still merge changes, even if they conflict?
 
-    ```shell
-    git cherry-pick -m 1 138f5e2f20289bb376caffa0303adb0cac859ce1
-    ```
-- To cherry-pick multiple commits, such as B and D in a range [A > B > C > D], use:
+No.
 
-    ```shell
-    git cherry-pick commmit-B-SHA commit-D-SHA
-    ```
+### Some files I work with often conflict, how can I best deal with this?
 
-    For example, suppose commit B SHA = `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
-    and the commit D SHA = `80e1c9e56783bd57bd7129828ec20b252ebc0538`.
-    The cherry-pick command will be:
+If you find you keep running into merge conflicts, consider refactoring the file
+so that the EE specific changes are not intertwined with CE code. For Ruby code
+you can do this by moving the EE code to a separate module, which can then be
+injected into the appropriate classes or modules. See [Guidelines for
+implementing Enterprise Edition features](ee_features.md) for more information.
 
-    ```shell
-    git cherry-pick 4f5e4018c09ed797fdf446b3752f82e46f5af502 80e1c9e56783bd57bd7129828ec20b252ebc0538
-    ```
+### Will changelog entries be reverted automatically?
 
-    This case is particularly useful when you have a merge commit in a sequence of
-    commits and you want to cherry-pick all but the merge commit.
-
-- If you push more commits to the CE branch, you can safely repeat the procedure
-to cherry-pick them to the EE-equivalent branch. You can do that as many times as
-necessary, using the same CE and EE branches.
-- If you submitted the merge request to the CE repo and the `ee-compat-check` job passed,
-you are not required to submit the EE-equivalent MR, but it's still recommended. If the
-job failed, you are required to submit the EE MR so that you can fix the conflicts in EE
-before merging your changes into CE.
-
----
-
-[Return to Development documentation](README.md)
+Only if the changelog was added in the commit that was reverted. If a changelog
+entry was added in a separate commit, it is possible for it to be left behind.
+Since changelog entries are related to the changes in question, there is no real
+reason to commit the changelog separately, and as such this should not be a big
+problem.
