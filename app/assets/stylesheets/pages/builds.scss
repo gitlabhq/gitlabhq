@@ -228,6 +228,21 @@
     padding: 16px 0;
   }
 
+  .trigger-variables-table {
+    td {
+      font-size: 12px;
+      line-height: 16px;
+      border: 1px solid #dfdfdf;
+      padding: 4px 6px;
+      width: 50%;
+    }
+  }
+
+  .trigger-variables-btn-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .trigger-build-variables {
     margin: 0;
     overflow-x: auto;
@@ -243,7 +258,6 @@
   .trigger-build-value {
     padding: 2px 4px;
     color: $black;
-    background-color: $white-light;
   }
 
   .badge.badge-pill {
