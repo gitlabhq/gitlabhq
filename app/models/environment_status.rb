@@ -12,13 +12,13 @@ class EnvironmentStatus
   delegate :deployed_at, to: :deployment, allow_nil: true
 
   def self.for_merge_request(mr, user)
-    build_environments_status(mr, user, mr.diff_head_sha)
+    build_environments_status(mr, user, mr.actual_head_pipeline)
   end
 
   def self.after_merge_request(mr, user)
     return [] unless mr.merged?
 
-    build_environments_status(mr, user, mr.merge_commit_sha)
+    build_environments_status(mr, user, mr.merge_pipeline)
   end
 
   def initialize(environment, merge_request, sha)
@@ -61,13 +61,13 @@ class EnvironmentStatus
     }
   end
 
-  def self.build_environments_status(mr, user, sha)
-    Environment.where(project_id: [mr.source_project_id, mr.target_project_id])
-               .available
-               .with_deployment(sha).map do |environment|
+  def self.build_environments_status(mr, user, pipeline)
+    return [] unless pipeline
+
+    pipeline.environments.available.map do |environment|
       next unless Ability.allowed?(user, :read_environment, environment)
 
-      EnvironmentStatus.new(environment, mr, sha)
+      EnvironmentStatus.new(environment, mr, pipeline.sha)
     end.compact
   end
   private_class_method :build_environments_status

@@ -121,6 +121,8 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- deployments
+- environments
 pipeline_variables:
 - pipeline
 stages:

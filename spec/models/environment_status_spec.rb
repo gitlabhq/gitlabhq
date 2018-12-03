@@ -92,15 +92,11 @@ describe EnvironmentStatus do
   end
 
   describe '.build_environments_status' do
-    subject { described_class.send(:build_environments_status, merge_request, user, sha) }
+    subject { described_class.send(:build_environments_status, merge_request, user, pipeline) }
 
     let!(:build) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
     let(:environment) { build.deployment.environment }
     let(:user) { project.owner }
-
-    before do
-      build.deployment&.update!(sha: sha)
-    end
 
     context 'when environment is created on a forked project' do
       let(:project) { create(:project, :repository) }
@@ -155,6 +151,39 @@ describe EnvironmentStatus do
 
       context 'when user does not have a permission to see the environment' do
         let(:user) { create(:user) }
+
+        it 'does not return environment status' do
+          expect(subject.count).to eq(0)
+        end
+      end
+
+      context 'when multiple deployments with the same SHA in different environments' do
+        let(:pipeline2) { create(:ci_pipeline, sha: sha, project: project) }
+        let!(:build2) { create(:ci_build, :start_review_app, pipeline: pipeline2) }
+
+        it 'returns deployments related to the head pipeline' do
+          expect(subject.count).to eq(1)
+          expect(subject[0].environment).to eq(environment)
+          expect(subject[0].merge_request).to eq(merge_request)
+          expect(subject[0].sha).to eq(sha)
+        end
+      end
+
+      context 'when multiple deployments in the same pipeline for the same environments' do
+        let!(:build2) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
+
+        it 'returns unique entries' do
+          expect(subject.count).to eq(1)
+          expect(subject[0].environment).to eq(environment)
+          expect(subject[0].merge_request).to eq(merge_request)
+          expect(subject[0].sha).to eq(sha)
+        end
+      end
+
+      context 'when environment is stopped' do
+        before do
+          environment.stop!
+        end
 
         it 'does not return environment status' do
           expect(subject.count).to eq(0)
