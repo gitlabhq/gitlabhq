@@ -29,6 +29,8 @@ describe CommitStatus do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
 
+  it_behaves_like 'Unique enum values'
+
   describe '#author' do
     subject { commit_status.author }
 

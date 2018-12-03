@@ -21,6 +21,8 @@ describe List do
     end
   end
 
+  it_behaves_like 'Unique enum values'
+
   describe '#destroy' do
     it 'can be destroyed when list_type is set to label' do
       subject = create(:list)

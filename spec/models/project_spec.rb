@@ -375,6 +375,8 @@ describe Project do
     end
   end
 
+  it_behaves_like 'Unique enum values'
+
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }
     it { is_expected.to respond_to(:repo_exists?) }

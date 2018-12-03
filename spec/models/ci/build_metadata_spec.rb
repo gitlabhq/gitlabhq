@@ -15,6 +15,8 @@ describe Ci::BuildMetadata do
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:build_metadata) { build.metadata }
 
+  it_behaves_like 'Unique enum values'
+
   describe '#update_timeout_state' do
     subject { build_metadata }
 

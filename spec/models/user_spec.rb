@@ -159,6 +159,8 @@ describe User do
 
     it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
+    it_behaves_like 'Unique enum values'
+
     it_behaves_like 'an object with email-formated attributes', :email do
       subject { build(:user) }
     end

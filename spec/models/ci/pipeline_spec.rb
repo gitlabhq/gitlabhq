@@ -28,6 +28,8 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
+  it_behaves_like 'Unique enum values'
+
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)

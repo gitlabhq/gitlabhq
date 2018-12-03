@@ -6,6 +6,8 @@ RSpec.describe NotificationSetting do
     it { is_expected.to belong_to(:source) }
   end
 
+  it_behaves_like 'Unique enum values'
+
   describe "Validation" do
     subject { described_class.new(source_id: 1, source_type: 'Project') }
 

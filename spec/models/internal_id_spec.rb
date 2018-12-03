@@ -11,6 +11,8 @@ describe InternalId do
     it { is_expected.to validate_presence_of(:usage) }
   end
 
+  it_behaves_like 'Unique enum values'
+
   describe '.generate_next' do
     subject { described_class.generate_next(issue, scope, usage, init) }
 

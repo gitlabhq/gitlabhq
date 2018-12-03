@@ -11,6 +11,8 @@ describe PrometheusMetric do
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
 
+  it_behaves_like 'Unique enum values'
+
   describe 'common metrics' do
     using RSpec::Parameterized::TableSyntax
 

@@ -30,6 +30,8 @@ describe Clusters::Cluster do
 
   it { is_expected.to respond_to :project }
 
+  it_behaves_like 'Unique enum values'
+
   describe '.enabled' do
     subject { described_class.enabled }
 

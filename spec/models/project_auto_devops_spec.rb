@@ -10,6 +10,8 @@ describe ProjectAutoDevops do
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
+  it_behaves_like 'Unique enum values'
+
   describe '#has_domain?' do
     context 'when domain is defined' do
       let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: 'domain.com') }
