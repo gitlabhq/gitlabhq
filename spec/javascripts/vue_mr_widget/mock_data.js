@@ -222,3 +222,16 @@ export default {
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
   troubleshooting_docs_path: 'help',
 };
+
+export const mockStore = {
+  pipeline: { id: 0 },
+  mergePipeline: { id: 1 },
+  targetBranch: 'target-branch',
+  sourceBranch: 'source-branch',
+  sourceBranchLink: 'source-branch-link',
+  deployments: [{ id: 0, name: 'bogus' }, { id: 1, name: 'bogus-docs' }],
+  postMergeDeployments: [{ id: 0, name: 'prod' }, { id: 1, name: 'prod-docs' }],
+  troubleshootingDocsPath: 'troubleshooting-docs-path',
+  ciStatus: 'ci-status',
+  hasCI: true,
+};
