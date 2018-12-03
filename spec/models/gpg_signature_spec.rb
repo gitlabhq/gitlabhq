@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe GpgSignature do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
   let!(:project) { create(:project, :repository, path: 'sample-project') }

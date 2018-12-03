@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ResourceLabelEvent, type: :model do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   subject { build(:resource_label_event, issue: issue) }
   let(:issue) { create(:issue) }

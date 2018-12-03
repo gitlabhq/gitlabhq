@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let(:user) { create(:user) }
   set(:project) { create(:project) }

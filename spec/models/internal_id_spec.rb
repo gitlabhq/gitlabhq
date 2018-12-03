@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe InternalId do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let(:project) { create(:project) }
   let(:usage) { :issues }

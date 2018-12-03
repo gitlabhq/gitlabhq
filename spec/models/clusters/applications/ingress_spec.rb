@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Ingress do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let(:ingress) { create(:clusters_applications_ingress) }
 

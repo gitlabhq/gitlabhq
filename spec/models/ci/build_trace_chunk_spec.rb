@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   set(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }

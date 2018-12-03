@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::JobArtifact do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let(:artifact) { create(:ci_job_artifact, :archive) }
 

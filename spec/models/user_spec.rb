@@ -4,7 +4,7 @@ describe User do
   include ProjectForksHelper
   include TermsHelper
 
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   describe 'modules' do
     subject { described_class }

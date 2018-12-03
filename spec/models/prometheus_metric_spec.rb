@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe PrometheusMetric do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   subject { build(:prometheus_metric) }
   let(:other_project) { build(:project) }

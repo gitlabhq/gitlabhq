@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserCallout do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   let!(:callout) { create(:user_callout) }
 

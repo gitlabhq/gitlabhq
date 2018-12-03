@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe NotificationSetting do
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }

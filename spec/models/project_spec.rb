@@ -4,7 +4,7 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
 
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   describe 'associations' do
     it { is_expected.to belong_to(:group) }

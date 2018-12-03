@@ -4,7 +4,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
-  it_behaves_like 'Unique enum values'
+  it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to be_kind_of(Gitlab::Kubernetes) }
