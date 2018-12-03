@@ -10,7 +10,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
 
-    add_authentication_token_field :token, encrypted: true, fallback: true
+    add_authentication_token_field :token, encrypted: true, migrating: true
 
     enum access_level: {
       not_protected: 0,
