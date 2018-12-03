@@ -292,6 +292,22 @@ describe Clusters::Cluster do
         is_expected.to eq([group_cluster, sub_group_cluster])
       end
 
+      it 'avoids N+1 queries' do
+        another_project = create(:project)
+        control_count = ActiveRecord::QueryRecorder.new do
+          described_class.ancestor_clusters_for_clusterable(another_project, hierarchy_order: hierarchy_order)
+        end.count
+
+        cluster2 = create(:cluster, :provided_by_gcp, :group)
+        child2 = cluster2.group
+        child2.update!(parent: sub_group)
+        project = create(:project, group: child2)
+
+        expect do
+          described_class.ancestor_clusters_for_clusterable(project, hierarchy_order: hierarchy_order)
+        end.not_to exceed_query_limit(control_count)
+      end
+
       context 'for a group' do
         let(:clusterable) { sub_group }
 
