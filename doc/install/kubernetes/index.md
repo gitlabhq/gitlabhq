@@ -4,11 +4,12 @@ description: 'Read through the different methods to deploy GitLab on Kubernetes.
 
 # Installing GitLab on Kubernetes
 
-TIP: **If in doubt, choose Omnibus GitLab:**
-Our [Omnibus GitLab packages](../README.md#install-gitlab-using-the-omnibus-gitlab-package-recommended)
+NOTE: **Kubernetes experience required:**
+Our Helm charts are recommended for those who are familiar with Kubernetes.
+If you're not sure if Kubernetes is for you, our
+[Omnibus GitLab packages](../README.md#install-gitlab-using-the-omnibus-gitlab-package-recommended)
 are mature, scalable, support [high availability](../../administration/high_availability/README.md)
-and are used today on GitLab.com. Our Helm charts are recommended for those who
-are familiar with Kubernetes.
+and are used today on GitLab.com.
 
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
 to take advantage of GitLab's Helm charts. [Helm](https://github.com/kubernetes/helm/blob/master/README.md)
