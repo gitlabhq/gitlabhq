@@ -38,26 +38,3 @@ and you'd like to leverage the Runner's
 it can be deployed with the GitLab Runner chart.
 
 Learn more about [gitlab-runner chart](gitlab_runner_chart.md).
-
-## Deprecated Charts
-
-CAUTION: **Deprecated:**
-These charts are **deprecated**. We recommend using the [GitLab Chart](gitlab_chart.md)
-instead.
-
-### GitLab-Omnibus Chart
-
-This chart is based on the [GitLab Omnibus Docker images](https://docs.gitlab.com/omnibus/docker/).
-It deploys and configures nearly all features of GitLab, including:
-
-- [A GitLab Runner](https://docs.gitlab.com/runner/)
-- [Container Registry](../../user/project/container_registry.html#gitlab-container-registry)
-- [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
-- [Automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego)
-- [An NGINX load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)
-
-Learn more about the [gitlab-omnibus chart](gitlab_omnibus.md).
-
-### Community Contributed Charts
-
-The community has also contributed GitLab [CE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce) and [EE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ee) charts to the [Helm Stable Repository](https://github.com/kubernetes/charts#repository-structure). These charts are [deprecated](https://github.com/kubernetes/charts/issues/1138) in favor of the [official Chart](gitlab_chart.md).
