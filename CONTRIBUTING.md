@@ -181,4 +181,4 @@ This [documentation](doc/development/contributing/merge_request_workflow.md) has
 
 ## Style guides
 
-This [documentation](doc/development/contributing/design.md) has been moved.
+This [documentation](doc/development/contributing/style_guides.md) has been moved.
