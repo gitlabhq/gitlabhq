@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Ingress do
+  it_behaves_like 'Unique enum values'
+
   let(:ingress) { create(:clusters_applications_ingress) }
 
   include_examples 'cluster application core specs', :clusters_applications_ingress
   include_examples 'cluster application status specs', :clusters_applications_ingress
   include_examples 'cluster application helm specs', :clusters_applications_ingress
-  it_behaves_like 'Unique enum values'
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)

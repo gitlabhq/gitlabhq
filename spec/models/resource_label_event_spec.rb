@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe ResourceLabelEvent, type: :model do
+  it_behaves_like 'Unique enum values'
+
   subject { build(:resource_label_event, issue: issue) }
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }
-
-  it_behaves_like 'Unique enum values'
 
   describe 'associations' do
     it { is_expected.to belong_to(:user) }

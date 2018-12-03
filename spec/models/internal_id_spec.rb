@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe InternalId do
+  it_behaves_like 'Unique enum values'
+
   let(:project) { create(:project) }
   let(:usage) { :issues }
   let(:issue) { build(:issue, project: project) }
@@ -10,8 +12,6 @@ describe InternalId do
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
   end
-
-  it_behaves_like 'Unique enum values'
 
   describe '.generate_next' do
     subject { described_class.generate_next(issue, scope, usage, init) }

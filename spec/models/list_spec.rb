@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe List do
+  it_behaves_like 'Unique enum values'
+
   describe 'relationships' do
     it { is_expected.to belong_to(:board) }
     it { is_expected.to belong_to(:label) }
@@ -20,8 +22,6 @@ describe List do
       it { is_expected.not_to validate_presence_of(:position) }
     end
   end
-
-  it_behaves_like 'Unique enum values'
 
   describe '#destroy' do
     it 'can be destroyed when list_type is set to label' do

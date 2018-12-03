@@ -4,6 +4,8 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
 
+  it_behaves_like 'Unique enum values'
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -374,8 +376,6 @@ describe Project do
       expect(project.runners_token).to eq('my-token')
     end
   end
-
-  it_behaves_like 'Unique enum values'
 
   describe 'Respond to' do
     it { is_expected.to respond_to(:url_to_repo) }

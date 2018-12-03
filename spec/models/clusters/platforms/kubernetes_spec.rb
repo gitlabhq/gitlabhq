@@ -4,6 +4,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
+  it_behaves_like 'Unique enum values'
+
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to be_kind_of(Gitlab::Kubernetes) }
   it { is_expected.to be_kind_of(ReactiveCaching) }
@@ -17,8 +19,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:managed?).to(:cluster) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
-
-  it_behaves_like 'Unique enum values'
 
   describe 'before_validation' do
     context 'when namespace includes upper case' do

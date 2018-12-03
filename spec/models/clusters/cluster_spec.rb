@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Clusters::Cluster do
+  it_behaves_like 'Unique enum values'
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
@@ -29,8 +31,6 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
 
   it { is_expected.to respond_to :project }
-
-  it_behaves_like 'Unique enum values'
 
   describe '.enabled' do
     subject { described_class.enabled }

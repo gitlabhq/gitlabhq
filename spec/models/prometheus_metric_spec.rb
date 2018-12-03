@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe PrometheusMetric do
+  it_behaves_like 'Unique enum values'
+
   subject { build(:prometheus_metric) }
   let(:other_project) { build(:project) }
 
@@ -10,8 +12,6 @@ describe PrometheusMetric do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:query) }
   it { is_expected.to validate_presence_of(:group) }
-
-  it_behaves_like 'Unique enum values'
 
   describe 'common metrics' do
     using RSpec::Parameterized::TableSyntax

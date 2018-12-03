@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe GpgSignature do
+  it_behaves_like 'Unique enum values'
+
   let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
   let!(:project) { create(:project, :repository, path: 'sample-project') }
   let!(:commit) { create(:commit, project: project, sha: commit_sha) }
   let(:gpg_signature) { create(:gpg_signature, commit_sha: commit_sha) }
   let(:gpg_key) { create(:gpg_key) }
   let(:gpg_key_subkey) { create(:gpg_key_subkey) }
-
-  it_behaves_like 'Unique enum values'
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }

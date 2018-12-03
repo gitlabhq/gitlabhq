@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
+  it_behaves_like 'Unique enum values'
+
   let(:user) { create(:user) }
   set(:project) { create(:project) }
 
@@ -27,8 +29,6 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
-
-  it_behaves_like 'Unique enum values'
 
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do

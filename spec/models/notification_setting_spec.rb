@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe NotificationSetting do
+  it_behaves_like 'Unique enum values'
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:source) }
   end
-
-  it_behaves_like 'Unique enum values'
 
   describe "Validation" do
     subject { described_class.new(source_id: 1, source_type: 'Project') }

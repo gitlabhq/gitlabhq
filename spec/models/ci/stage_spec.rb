@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Ci::Stage, :models do
-  let(:stage) { create(:ci_stage_entity) }
-
   it_behaves_like 'Unique enum values'
+
+  let(:stage) { create(:ci_stage_entity) }
 
   describe 'associations' do
     before do

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectAutoDevops do
+  it_behaves_like 'Unique enum values'
+
   set(:project) { build(:project) }
 
   it { is_expected.to belong_to(:project) }
@@ -9,8 +11,6 @@ describe ProjectAutoDevops do
 
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
-
-  it_behaves_like 'Unique enum values'
 
   describe '#has_domain?' do
     context 'when domain is defined' do
