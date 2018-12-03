@@ -38,6 +38,10 @@ module Gitlab
         end
       end
 
+      def clear_migrated_values?
+        true
+      end
+
       private
 
       # Build a hash of { attribute => encrypted column name }
@@ -74,7 +78,9 @@ module Gitlab
 
         if instance.changed?
           instance.save!
-          instance.update_columns(to_clear)
+          if clear_migrated_values?
+            instance.update_columns(to_clear)
+          end
         end
       end
 

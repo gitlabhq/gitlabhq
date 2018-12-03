@@ -23,6 +23,10 @@ module Gitlab
 
         super(model, attributes, from, to)
       end
+
+      def clear_migrated_values?
+        false
+      end
     end
   end
 end

@@ -12,16 +12,18 @@ module TokenAuthenticatableStrategies
 
     def find_token_authenticatable(token, unscoped = false)
       return if token.blank?
-      return find_by_encrypted_token(token, unscoped) if fully_encrypted?
+
+      if fully_encrypted?
+        return find_by_encrypted_token(token, unscoped)
+      end
 
       if fallback?
         find_by_encrypted_token(token, unscoped) ||
           find_by_plaintext_token(token, unscoped)
       elsif migrating?
-        find_by_plaintext_token(token, unscoped) ||
-          find_by_encrypted_token(token, unscoped)
+        find_by_plaintext_token(token, unscoped)
       else
-        raise ArgumentError, 'Unknown encryption strategy!'
+        raise ArgumentError, 'Unknown encryption phase!'
       end
     end
 

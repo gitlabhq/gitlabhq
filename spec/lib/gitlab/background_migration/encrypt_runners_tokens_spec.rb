@@ -18,7 +18,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
       decrypted_token = ::Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
 
       expect(decrypted_token).to eq 'plain-text-token1'
-      expect(settings.first.runners_registration_token).to be_nil
+      expect(settings.first.runners_registration_token).to eq 'plain-text-token1'
     end
   end
 
@@ -33,7 +33,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
       migrate!(:namespace, 11, 22)
 
       expect(namespaces.all.reload).to all(
-        have_attributes(runners_token: nil, runners_token_encrypted: be_a(String))
+        have_attributes(runners_token: be_a(String), runners_token_encrypted: be_a(String))
       )
     end
   end
@@ -50,7 +50,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
       migrate!(:project, 111, 116)
 
       expect(projects.all.reload).to all(
-        have_attributes(runners_token: nil, runners_token_encrypted: be_a(String))
+        have_attributes(runners_token: be_a(String), runners_token_encrypted: be_a(String))
       )
     end
   end
@@ -66,7 +66,7 @@ describe Gitlab::BackgroundMigration::EncryptRunnersTokens, :migration, schema: 
       migrate!(:runner, 201, 203)
 
       expect(runners.all.reload).to all(
-        have_attributes(token: nil, token_encrypted: be_a(String))
+        have_attributes(token: be_a(String), token_encrypted: be_a(String))
       )
     end
   end

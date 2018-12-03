@@ -66,25 +66,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
           .with('some_field' => 'my-value')
           .and_return(nil)
 
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => encrypted)
-          .and_return(nil)
-
         expect(subject.find_token_authenticatable('my-value'))
           .to be_nil
-      end
-
-      it 'finds by encrypted value if cleartext is not present' do
-        allow(model).to receive(:find_by)
-          .with('some_field' => 'my-value')
-          .and_return(nil)
-
-        allow(model).to receive(:find_by)
-          .with('some_field_encrypted' => encrypted)
-          .and_return('encrypted resource')
-
-        expect(subject.find_token_authenticatable('my-value'))
-          .to eq 'encrypted resource'
       end
     end
   end
