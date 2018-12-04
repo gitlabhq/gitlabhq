@@ -404,7 +404,7 @@ Example response:
 
 [ce-5347]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5347
 
-## Download a single artifact file
+## Download a single artifact file by job ID
 
 > Introduced in GitLab 10.0
 
@@ -431,6 +431,41 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/
 ```
 
 Example response:
+
+| Status    | Description                          |
+|-----------|--------------------------------------|
+| 200       | Sends a single artifact file         |
+| 400       | Invalid path provided                |
+| 404       | Build not found or no file/artifacts |
+
+## Download a single artifact file from specific tag or branch
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23538) in GitLab 11.5.
+
+Download a single artifact file from a specific tag or branch from within the
+job's artifacts archive. The file is extracted from the archive and streamed to
+the client.
+
+```
+GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
+```
+
+Parameters:
+
+| Attribute       | Type           | Required | Description                                                                                                      |
+|-----------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `ref_name`      | string         | yes      | Branch or tag name in repository. HEAD or SHA references are not supported.                                      |
+| `artifact_path` | string         | yes      | Path to a file inside the artifacts archive.                                                                     |
+| `job`           | string         | yes      | The name of the job.                                                                                             |
+
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/raw/some/release/file.pdf?job=pdf"
+```
+
+Possible response status codes:
 
 | Status    | Description                          |
 |-----------|--------------------------------------|
