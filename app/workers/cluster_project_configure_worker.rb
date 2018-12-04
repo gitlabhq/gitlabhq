@@ -7,6 +7,6 @@ class ClusterProjectConfigureWorker
   def perform(project_id)
     project = Project.find(project_id)
 
-    ::Clusters::RefreshService.new.create_or_update_namespaces_for_project(project)
+    ::Clusters::RefreshService.create_or_update_namespaces_for_project(project)
   end
 end

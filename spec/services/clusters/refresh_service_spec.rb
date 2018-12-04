@@ -29,11 +29,11 @@ describe Clusters::RefreshService do
     end
   end
 
-  describe '#create_or_update_namespaces_for_cluster' do
+  describe '.create_or_update_namespaces_for_cluster' do
     let(:cluster) { create(:cluster, :provided_by_user, :project) }
     let(:project) { cluster.project }
 
-    subject { described_class.new.create_or_update_namespaces_for_cluster(cluster) }
+    subject { described_class.create_or_update_namespaces_for_cluster(cluster) }
 
     context 'cluster is project level' do
       include_examples 'creates a kubernetes namespace'
@@ -64,10 +64,10 @@ describe Clusters::RefreshService do
     end
   end
 
-  describe '#create_or_update_namespaces_for_project' do
+  describe '.create_or_update_namespaces_for_project' do
     let(:project) { create(:project) }
 
-    subject { described_class.new.create_or_update_namespaces_for_project(project) }
+    subject { described_class.create_or_update_namespaces_for_project(project) }
 
     it 'creates no kubernetes namespaces' do
       expect { subject }.not_to change(project.kubernetes_namespaces, :count)

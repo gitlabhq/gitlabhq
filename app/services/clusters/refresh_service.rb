@@ -2,27 +2,31 @@
 
 module Clusters
   class RefreshService
-    def create_or_update_namespaces_for_cluster(cluster)
-      cluster_namespaces = cluster.kubernetes_namespaces
-
-      # Create all namespaces that are missing for each project
-      cluster.all_projects.missing_kubernetes_namespace(cluster_namespaces).each do |project|
+    def self.create_or_update_namespaces_for_cluster(cluster)
+      projects_with_missing_kubernetes_namespaces_for_cluster(cluster).each do |project|
         create_or_update_namespace(cluster, project)
       end
     end
 
-    def create_or_update_namespaces_for_project(project)
-      project_namespaces = project.kubernetes_namespaces
-
-      # Create all namespaces that are missing for each cluster
-      project.all_clusters.missing_kubernetes_namespace(project_namespaces).each do |cluster|
+    def self.create_or_update_namespaces_for_project(project)
+      clusters_with_missing_kubernetes_namespaces_for_project(project).each do |cluster|
         create_or_update_namespace(cluster, project)
       end
     end
 
-    private
+    def self.projects_with_missing_kubernetes_namespaces_for_cluster(cluster)
+      cluster.all_projects.missing_kubernetes_namespace(cluster.kubernetes_namespaces)
+    end
 
-    def create_or_update_namespace(cluster, project)
+    private_class_method :projects_with_missing_kubernetes_namespaces_for_cluster
+
+    def self.clusters_with_missing_kubernetes_namespaces_for_project(project)
+      project.all_clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+    end
+
+    private_class_method :clusters_with_missing_kubernetes_namespaces_for_project
+
+    def self.create_or_update_namespace(cluster, project)
       kubernetes_namespace = cluster.find_or_initialize_kubernetes_namespace_for_project(project)
 
       ::Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
@@ -30,5 +34,7 @@ module Clusters
         kubernetes_namespace: kubernetes_namespace
       ).execute
     end
+
+    private_class_method :create_or_update_namespace
   end
 end
