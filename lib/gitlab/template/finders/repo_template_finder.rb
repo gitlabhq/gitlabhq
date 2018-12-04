@@ -26,6 +26,11 @@ module Gitlab
 
         def find(key)
           file_name = "#{key}#{@extension}"
+
+          # The key is untrusted input, so ensure we can't be directed outside
+          # of base_dir inside the repository
+          Gitlab::Utils.check_path_traversal!(file_name)
+
           directory = select_directory(file_name)
           raise FileNotFoundError if directory.nil?
 

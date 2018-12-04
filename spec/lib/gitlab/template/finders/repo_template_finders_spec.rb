@@ -25,6 +25,10 @@ describe Gitlab::Template::Finders::RepoTemplateFinder do
 
       expect(result).to eq('files/html/500.html')
     end
+
+    it 'does not permit path traversal requests' do
+      expect { finder.find('../foo') }.to raise_error(/Invalid path/)
+    end
   end
 
   describe '#list_files_for' do
