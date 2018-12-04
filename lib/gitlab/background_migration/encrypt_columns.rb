@@ -78,6 +78,7 @@ module Gitlab
 
         if instance.changed?
           instance.save!
+
           if clear_migrated_values?
             instance.update_columns(to_clear)
           end
