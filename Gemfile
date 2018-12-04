@@ -82,7 +82,7 @@ gem 'validates_hostname', '~> 1.0.6'
 gem 'browser', '~> 2.5'
 
 # GPG
-gem 'gpgme'
+gem 'gpgme', '~> 2.0.18'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes

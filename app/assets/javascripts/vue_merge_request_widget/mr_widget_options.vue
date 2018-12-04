@@ -6,7 +6,7 @@ import SmartInterval from '~/smart_interval';
 import createFlash from '../flash';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
-import WidgetPipeline from './components/mr_widget_pipeline.vue';
+import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import Deployment from './components/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
@@ -44,7 +44,7 @@ export default {
   components: {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
-    'mr-widget-pipeline': WidgetPipeline,
+    MrWidgetPipelineContainer,
     Deployment,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
@@ -296,23 +296,12 @@ export default {
 <template>
   <div class="mr-state-widget prepend-top-default">
     <mr-widget-header :mr="mr" />
-    <mr-widget-pipeline
+    <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
-      :pipeline="mr.pipeline"
-      :ci-status="mr.ciStatus"
-      :has-ci="mr.hasCI"
-      :source-branch="mr.sourceBranch"
-      :source-branch-link="mr.sourceBranchLink"
-      :troubleshooting-docs-path="mr.troubleshootingDocsPath"
+      class="mr-widget-workflow"
+      :mr="mr"
     />
-    <deployment
-      v-for="deployment in mr.deployments"
-      :key="`pre-merge-deploy-${deployment.id}`"
-      class="js-pre-merge-deploy"
-      :deployment="deployment"
-      :show-metrics="false"
-    />
-    <div class="mr-section-container">
+    <div class="mr-section-container mr-widget-workflow">
       <grouped-test-reports-app
         v-if="mr.testResultsPath"
         class="js-reports-container"
@@ -336,24 +325,11 @@ export default {
       </div>
       <div v-if="shouldRenderMergeHelp" class="mr-widget-footer"><mr-widget-merge-help /></div>
     </div>
-
-    <template v-if="shouldRenderMergedPipeline">
-      <mr-widget-pipeline
-        class="js-post-merge-pipeline prepend-top-default"
-        :pipeline="mr.mergePipeline"
-        :ci-status="mr.ciStatus"
-        :has-ci="mr.hasCI"
-        :source-branch="mr.targetBranch"
-        :source-branch-link="mr.targetBranch"
-        :troubleshooting-docs-path="mr.troubleshootingDocsPath"
-      />
-      <deployment
-        v-for="postMergeDeployment in mr.postMergeDeployments"
-        :key="`post-merge-deploy-${postMergeDeployment.id}`"
-        :deployment="postMergeDeployment"
-        :show-metrics="true"
-        class="js-post-deployment"
-      />
-    </template>
+    <mr-widget-pipeline-container
+      v-if="shouldRenderMergedPipeline"
+      class="js-post-merge-pipeline mr-widget-workflow"
+      :mr="mr"
+      :is-post-merge="true"
+    />
   </div>
 </template>

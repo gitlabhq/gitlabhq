@@ -32,7 +32,7 @@
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit _('Mirror repository'), class: 'btn btn-success', name: :update_remote_mirror
+          = f.submit _('Mirror repository'), class: 'btn btn-success js-mirror-submit', name: :update_remote_mirror
 
     .panel.panel-default
       .table-responsive

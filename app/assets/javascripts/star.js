@@ -23,11 +23,11 @@ export default class Star {
           if (isStarred) {
             $starSpan.removeClass('starred').text(s__('StarProject|Star'));
             $startIcon.remove();
-            $this.prepend(spriteIcon('star-o'));
+            $this.prepend(spriteIcon('star-o', 'icon'));
           } else {
             $starSpan.addClass('starred').text(__('Unstar'));
             $startIcon.remove();
-            $this.prepend(spriteIcon('star'));
+            $this.prepend(spriteIcon('star', 'icon'));
           }
         })
         .catch(() => Flash('Star toggle failed. Try again later.'));

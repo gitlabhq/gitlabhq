@@ -6,6 +6,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import MrWidgetIcon from './mr_widget_icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -13,6 +14,7 @@ export default {
     Icon,
     clipboardButton,
     TooltipOnTruncate,
+    MrWidgetIcon,
   },
   directives: {
     tooltip,
@@ -76,7 +78,7 @@ export default {
 </script>
 <template>
   <div class="mr-source-target append-bottom-default">
-    <div class="git-merge-icon-container append-right-default"><icon name="git-merge" /></div>
+    <mr-widget-icon name="git-merge" />
     <div class="git-merge-container d-flex">
       <div class="normal">
         <strong>

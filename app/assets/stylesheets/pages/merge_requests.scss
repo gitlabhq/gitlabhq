@@ -50,9 +50,19 @@
 .mr-widget-heading {
   position: relative;
   border: 1px solid $border-color;
-  border-radius: 4px;
+  border-radius: $border-radius-default;
+}
 
-  &:not(.deploy-heading)::before {
+.mr-widget-extension {
+  border-top: 1px solid $border-color;
+  background-color: $gray-light;
+}
+
+.mr-widget-workflow {
+  margin-top: $gl-padding;
+  position: relative;
+
+  &::before {
     content: '';
     border-left: 1px solid $theme-gray-200;
     position: absolute;
@@ -68,8 +78,8 @@
   border-top: 0;
 }
 
-.mr-widget-heading,
 .mr-widget-section,
+.mr-widget-content,
 .mr-widget-footer {
   padding: $gl-padding;
 }
@@ -560,19 +570,6 @@
     color: $gl-text-color;
   }
 
-  .git-merge-icon-container {
-    border: 1px solid $theme-gray-400;
-    border-radius: 50%;
-    height: 32px;
-    width: 32px;
-    color: $theme-gray-700;
-    line-height: 28px;
-
-    .ic-git-merge {
-      vertical-align: middle;
-      width: 31px;
-    }
-  }
 
   .git-merge-container {
     justify-content: space-between;
@@ -854,11 +851,6 @@
 }
 
 .deploy-heading {
-  margin-top: -19px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  background-color: $gray-light;
-
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
@@ -867,6 +859,10 @@
     min-width: 0;
     font-size: 12px;
     margin-left: 48px;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $border-color;
   }
 }
 

@@ -273,6 +273,8 @@ The `releases` directory will hold all our deployments:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
+    cd {{ $releases_dir }}
+    git reset --hard {{ $commit }}
 @endtask
 
 ...
@@ -349,6 +351,8 @@ At the end, our `Envoy.blade.php` file will look like this:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
+    cd {{ $releases_dir }}
+    git reset --hard {{ $commit }}
 @endtask
 
 @task('run_composer')
@@ -519,7 +523,7 @@ deploy_production:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 
-    - ~/.composer/vendor/bin/envoy run deploy
+    - ~/.composer/vendor/bin/envoy run deploy --commit="$CI_COMMIT_SHA"
   environment:
     name: production
     url: http://192.168.1.1
