@@ -28,7 +28,7 @@ the hardware requirements.
 ## Install GitLab using the Omnibus GitLab package (recommended)
 
 This installation method uses the Omnibus GitLab package, using our official
-deb/rpm repositories. This is the recommended way.
+deb/rpm repositories. This is recommended for most users.
 
 If you need additional flexibility and resilience, we recommend deploying
 GitLab as described in our [High Availability documentation](../administration/high_availability/README.md).
@@ -54,11 +54,9 @@ We recommend being familiar with Kubernetes before using it to deploy GitLab in
 production. The methods for management, observability, and some concepts are
 different than traditional deployments.
 
-When installing GitLab on kubernetes, there are a number of trade-offs that you
-need to be aware of that may not be immediately obvious and could prevent you
-getting the best experience from GitLab:
+When installing GitLab on Kubernetes, there are some trade-offs that you
+need to be aware of:
 
-- Configuration of features such as object storage and backups can be more challenging.
 - Administration and troubleshooting requires Kubernetes knowledge.
 - It can be more expensive for smaller installations. The default installation
   requires more resources than a single node Omnibus deployment, as most services
