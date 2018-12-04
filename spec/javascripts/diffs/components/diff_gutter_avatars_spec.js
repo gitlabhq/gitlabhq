@@ -106,7 +106,7 @@ describe('DiffGutterAvatars', () => {
           'toggleDiscussion',
           {
             discussionId: component.discussions[0].id,
-            shouldExpand: true,
+            forceExpanded: true,
           },
         ]);
 
@@ -114,7 +114,7 @@ describe('DiffGutterAvatars', () => {
           'toggleDiscussion',
           {
             discussionId: component.discussions[1].id,
-            shouldExpand: true,
+            forceExpanded: true,
           },
         ]);
       });

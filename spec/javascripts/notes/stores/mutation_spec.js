@@ -303,7 +303,7 @@ describe('Notes Store mutations', () => {
         discussions: [{ ...discussionMock, expanded: false }],
       };
 
-      mutations.TOGGLE_DISCUSSION(state, { discussionId: discussionMock.id, shouldExpand: true });
+      mutations.TOGGLE_DISCUSSION(state, { discussionId: discussionMock.id, forceExpanded: true });
 
       expect(state.discussions[0].expanded).toEqual(true);
     });
