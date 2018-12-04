@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-NO_CHANGELOG_LABELS = %w[backstage Documentation QA test].freeze
+NO_CHANGELOG_LABELS = %w[backstage ci-build Documentation meta QA test].freeze
 SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html).".freeze
 CREATE_CHANGELOG_MESSAGE = <<~MSG.freeze
 You can create one with:
