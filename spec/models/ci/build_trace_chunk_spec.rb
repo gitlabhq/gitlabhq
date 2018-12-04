@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
-  it_behaves_like 'having unique enum values'
-
   set(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
@@ -13,6 +11,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
   let(:build_trace_chunk) do
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
+
+  it_behaves_like 'having unique enum values'
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)

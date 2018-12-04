@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
-  it_behaves_like 'having unique enum values'
-
   let(:user) { create(:user) }
   set(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
   end
+
+  it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }

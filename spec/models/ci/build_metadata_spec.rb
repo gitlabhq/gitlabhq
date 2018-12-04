@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::BuildMetadata do
-  it_behaves_like 'having unique enum values'
-
   set(:user) { create(:user) }
   set(:group) { create(:group, :access_requestable) }
   set(:project) { create(:project, :repository, group: group, build_timeout: 2000) }
@@ -16,6 +14,8 @@ describe Ci::BuildMetadata do
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:build_metadata) { build.metadata }
+
+  it_behaves_like 'having unique enum values'
 
   describe '#update_timeout_state' do
     subject { build_metadata }

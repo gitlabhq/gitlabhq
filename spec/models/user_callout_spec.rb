@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe UserCallout do
-  it_behaves_like 'having unique enum values'
-
   let!(:callout) { create(:user_callout) }
+
+  it_behaves_like 'having unique enum values'
 
   describe 'relationships' do
     it { is_expected.to belong_to(:user) }

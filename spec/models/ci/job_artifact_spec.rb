@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::JobArtifact do
-  it_behaves_like 'having unique enum values'
-
   let(:artifact) { create(:ci_job_artifact, :archive) }
 
   describe "Associations" do
@@ -16,6 +14,8 @@ describe Ci::JobArtifact do
 
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
+
+  it_behaves_like 'having unique enum values'
 
   describe '.test_reports' do
     subject { described_class.test_reports }
