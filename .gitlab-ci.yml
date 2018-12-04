@@ -1043,6 +1043,7 @@ merge:master:
       - $MERGE_TRAIN_SSH_PUBLIC_KEY
       - $MERGE_TRAIN_SSH_PRIVATE_KEY
       - $MERGE_TRAIN_API_TOKEN
+      - $MERGE_FORCE_ENABLE
   script:
     - scripts/merge-train
   cache:
