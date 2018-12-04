@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Admin::Users" do
-  include Spec::Support::Helpers::Features::RowsHelpers
+  include Spec::Support::Helpers::Features::ListRowsHelpers
 
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
@@ -39,7 +39,7 @@ describe "Admin::Users" do
         create(:user, name: 'Dmitriy')
       end
 
-      it 'search users by name' do
+      it 'searches users by name' do
         visit admin_users_path(search_query: 'Foo')
 
         expect(page).to have_content('Foo Bar')
@@ -62,6 +62,16 @@ describe "Admin::Users" do
         sort_by('Name')
 
         expect(page).not_to have_content('Dmitriy')
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'searches with respect of sorting' do
+        visit admin_users_path(sort: 'Name')
+
+        fill_in :search_query, with: 'Foo'
+        click_button('Search users')
+
         expect(first_row.text).to include('Foo Bar')
         expect(second_row.text).to include('Foo Baz')
       end

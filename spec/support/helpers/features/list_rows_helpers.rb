@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 # These helpers allow you to access rows in the list
 #
 # Usage:
 #   describe "..." do
-#     include Spec::Support::Helpers::Features::RowsHelpers
+#   include Spec::Support::Helpers::Features::ListRowsHelpers
 #     ...
 #
 #     expect(first_row.text).to include("John Doe")
@@ -12,7 +13,7 @@ module Spec
   module Support
     module Helpers
       module Features
-        module RowsHelpers
+        module ListRowsHelpers
           def first_row
             page.all('ul.content-list > li')[0]
           end

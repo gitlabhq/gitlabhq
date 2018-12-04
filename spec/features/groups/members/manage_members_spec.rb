@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Groups > Members > Manage members' do
   include Select2Helper
-  include Spec::Support::Helpers::Features::RowsHelpers
+  include Spec::Support::Helpers::Features::ListRowsHelpers
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
