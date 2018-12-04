@@ -3,7 +3,7 @@
 module Clusters
   module Gcp
     module Kubernetes
-      class CreateServiceAccountService
+      class CreateOrUpdateServiceAccountService
         def initialize(kubeclient, service_account_name:, service_account_namespace:, token_name:, rbac:, namespace_creator: false, role_binding_name: nil)
           @kubeclient = kubeclient
           @service_account_name = service_account_name
