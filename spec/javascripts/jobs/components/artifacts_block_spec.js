@@ -11,6 +11,19 @@ describe('Artifacts block', () => {
   const timeago = getTimeago();
   const formatedDate = timeago.format(expireAt);
 
+  const expiredArtifact = {
+    expire_at: expireAt,
+    expired: true,
+  };
+
+  const nonExpiredArtifact = {
+    download_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/download',
+    browse_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/browse',
+    keep_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/keep',
+    expire_at: expireAt,
+    expired: false,
+  };
+
   afterEach(() => {
     vm.$destroy();
   });
@@ -18,100 +31,87 @@ describe('Artifacts block', () => {
   describe('with expired artifacts', () => {
     it('renders expired artifact date and info', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
+        artifact: expiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-artifacts-removed')).not.toBeNull();
       expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).toBeNull();
       expect(vm.$el.textContent).toContain(formatedDate);
+      expect(vm.$el.querySelector('.js-artifacts-removed').textContent.trim()).toEqual(
+        'The artifacts were removed',
+      );
     });
   });
 
   describe('with artifacts that will expire', () => {
     it('renders will expire artifact date and info', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: false,
-        willArtifactsExpire: true,
-        expireAt,
+        artifact: nonExpiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-artifacts-removed')).toBeNull();
       expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).not.toBeNull();
       expect(vm.$el.textContent).toContain(formatedDate);
+      expect(vm.$el.querySelector('.js-artifacts-will-be-removed').textContent.trim()).toEqual(
+        'The artifacts will be removed in',
+      );
     });
   });
 
-  describe('when the user can keep the artifacts', () => {
+  describe('with keep path', () => {
     it('renders the keep button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
-        keepArtifactsPath: '/keep',
+        artifact: nonExpiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-keep-artifacts')).not.toBeNull();
     });
   });
 
-  describe('when the user can not keep the artifacts', () => {
+  describe('without keep path', () => {
     it('does not render the keep button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
+        artifact: expiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-keep-artifacts')).toBeNull();
     });
   });
 
-  describe('when the user can download the artifacts', () => {
+  describe('with download path', () => {
     it('renders the download button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
-        downloadArtifactsPath: '/download',
+        artifact: nonExpiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-download-artifacts')).not.toBeNull();
     });
   });
 
-  describe('when the user can not download the artifacts', () => {
+  describe('without download path', () => {
     it('does not render the keep button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
+        artifact: expiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-download-artifacts')).toBeNull();
     });
   });
 
-  describe('when the user can browse the artifacts', () => {
+  describe('with browse path', () => {
     it('does not render the browse button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
-        browseArtifactsPath: '/browse',
+        artifact: nonExpiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-browse-artifacts')).not.toBeNull();
     });
   });
 
-  describe('when the user can not browse the artifacts', () => {
+  describe('without browse path', () => {
     it('does not render the browse button', () => {
       vm = mountComponent(Component, {
-        haveArtifactsExpired: true,
-        willArtifactsExpire: false,
-        expireAt,
+        artifact: expiredArtifact,
       });
 
       expect(vm.$el.querySelector('.js-browse-artifacts')).toBeNull();

@@ -32,18 +32,6 @@ describe AvatarsHelper do
       end
     end
 
-    context 'when providing a project path' do
-      it_behaves_like 'resource with a default avatar', 'project' do
-        let(:resource) { create(:project, name: 'foo') }
-        let(:helper_args) { [resource.full_path] }
-      end
-
-      it_behaves_like 'resource with a custom avatar', 'project' do
-        let(:resource) { create(:project, :public, avatar: File.open(uploaded_image_temp_path)) }
-        let(:helper_args) { [resource.full_path] }
-      end
-    end
-
     context 'when providing a group' do
       it_behaves_like 'resource with a default avatar', 'group' do
         let(:resource) { create(:group, name: 'foo') }
@@ -53,18 +41,6 @@ describe AvatarsHelper do
       it_behaves_like 'resource with a custom avatar', 'group' do
         let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
         let(:helper_args) { [resource] }
-      end
-    end
-
-    context 'when providing a group path' do
-      it_behaves_like 'resource with a default avatar', 'group' do
-        let(:resource) { create(:group, name: 'foo') }
-        let(:helper_args) { [resource.full_path] }
-      end
-
-      it_behaves_like 'resource with a custom avatar', 'group' do
-        let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-        let(:helper_args) { [resource.full_path] }
       end
     end
   end

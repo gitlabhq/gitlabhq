@@ -11,6 +11,10 @@
   padding: 0 2px;
   background-color: $blue-100;
   border-radius: $border-radius-default;
+
+  &.current-user {
+    background-color: $orange-100;
+  }
 }
 
 .gfm-color_chip {

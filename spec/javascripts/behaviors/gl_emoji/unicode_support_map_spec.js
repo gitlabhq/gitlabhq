@@ -13,7 +13,7 @@ describe('Unicode Support Map', () => {
       spyOn(JSON, 'stringify').and.returnValue(stringSupportMap);
     });
 
-    describe('if isLocalStorageAvailable is `true`', function () {
+    describe('if isLocalStorageAvailable is `true`', function() {
       beforeEach(() => {
         AccessorUtilities.isLocalStorageAccessSafe.and.returnValue(true);
 
@@ -36,7 +36,7 @@ describe('Unicode Support Map', () => {
       });
     });
 
-    describe('if isLocalStorageAvailable is `false`', function () {
+    describe('if isLocalStorageAvailable is `false`', function() {
       beforeEach(() => {
         AccessorUtilities.isLocalStorageAccessSafe.and.returnValue(false);
 

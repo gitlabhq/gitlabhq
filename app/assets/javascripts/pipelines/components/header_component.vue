@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import ciHeader from '../../vue_shared/components/header_ci_component.vue';
 import eventHub from '../event_hub';
 
@@ -6,6 +7,7 @@ export default {
   name: 'PipelineHeaderSection',
   components: {
     ciHeader,
+    GlLoadingIcon,
   },
   props: {
     pipeline: {
@@ -87,10 +89,6 @@ export default {
       item-name="Pipeline"
       @actionClicked="postAction"
     />
-    <gl-loading-icon
-      v-if="isLoading"
-      :size="2"
-      class="prepend-top-default append-bottom-default"
-    />
+    <gl-loading-icon v-if="isLoading" :size="2" class="prepend-top-default append-bottom-default" />
   </div>
 </template>

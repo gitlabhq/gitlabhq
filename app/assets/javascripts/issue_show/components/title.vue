@@ -69,23 +69,22 @@ export default {
     <h2
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
-        'issue-realtime-trigger-pulse': pulseAnimation
+        'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="title"
       v-html="titleHtml"
-    >
-    </h2>
+    ></h2>
     <button
-      v-tooltip
       v-if="showInlineEditButton && canUpdate"
+      v-tooltip
       type="button"
-      class="btn btn-default btn-edit btn-svg js-issuable-edit"
+      class="btn btn-default btn-edit btn-svg js-issuable-edit
+      qa-edit-button"
       title="Edit title and description"
       data-placement="bottom"
       data-container="body"
       @click="edit"
       v-html="pencilIcon"
-    >
-    </button>
+    ></button>
   </div>
 </template>

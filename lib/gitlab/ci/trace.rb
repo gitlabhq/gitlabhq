@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Trace
-      include ExclusiveLeaseGuard
+      include ::Gitlab::ExclusiveLeaseHelpers
 
-      LEASE_TIMEOUT = 1.hour
+      LOCK_TTL = 1.minute
+      LOCK_RETRIES = 2
+      LOCK_SLEEP = 0.001.seconds
 
       ArchiveError = Class.new(StandardError)
       AlreadyArchivedError = Class.new(StandardError)
@@ -80,7 +84,35 @@ module Gitlab
         stream&.close
       end
 
-      def write(mode)
+      def write(mode, &blk)
+        in_write_lock do
+          unsafe_write!(mode, &blk)
+        end
+      end
+
+      def erase!
+        ##
+        # Erase the archived trace
+        trace_artifact&.destroy!
+
+        ##
+        # Erase the live trace
+        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+        FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
+        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
+      ensure
+        @current_path = nil
+      end
+
+      def archive!
+        in_write_lock do
+          unsafe_archive!
+        end
+      end
+
+      private
+
+      def unsafe_write!(mode, &blk)
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             raise AlreadyArchivedError, 'Could not write to the archived trace'
@@ -99,28 +131,6 @@ module Gitlab
       ensure
         stream&.close
       end
-
-      def erase!
-        ##
-        # Erase the archived trace
-        trace_artifact&.destroy!
-
-        ##
-        # Erase the live trace
-        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
-        FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
-        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
-      ensure
-        @current_path = nil
-      end
-
-      def archive!
-        try_obtain_lease do
-          unsafe_archive!
-        end
-      end
-
-      private
 
       def unsafe_archive!
         raise AlreadyArchivedError, 'Could not archive again' if trace_artifact
@@ -142,6 +152,11 @@ module Gitlab
             job.erase_old_trace!
           end
         end
+      end
+
+      def in_write_lock(&blk)
+        lock_key = "trace:write:lock:#{job.id}"
+        in_lock(lock_key, ttl: LOCK_TTL, retries: LOCK_RETRIES, sleep_sec: LOCK_SLEEP, &blk)
       end
 
       def archive_stream!(stream)
@@ -223,16 +238,6 @@ module Gitlab
 
       def trace_artifact
         job.job_artifacts_trace
-      end
-
-      # For ExclusiveLeaseGuard concern
-      def lease_key
-        @lease_key ||= "trace:archive:#{job.id}"
-      end
-
-      # For ExclusiveLeaseGuard concern
-      def lease_timeout
-        LEASE_TIMEOUT
       end
     end
   end

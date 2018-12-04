@@ -13,6 +13,10 @@ FactoryBot.define do
       state :opened
     end
 
+    trait :locked do
+      discussion_locked true
+    end
+
     trait :closed do
       state :closed
       closed_at { Time.now }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class MultiCollectionPaginator
     attr_reader :first_collection, :second_collection, :per_page

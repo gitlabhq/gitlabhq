@@ -20,23 +20,13 @@ describe "User downloads artifacts" do
     end
 
     context "via job id" do
-      set(:url) { download_project_job_artifacts_path(project, job) }
+      let(:url) { download_project_job_artifacts_path(project, job) }
 
       it_behaves_like "downloading"
     end
 
     context "via branch name and job name" do
-      set(:url) { latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: job.name) }
-
-      it_behaves_like "downloading"
-    end
-
-    context "via clicking the `Download` button" do
-      set(:url) { project_job_path(project, job) }
-
-      before do
-        click_link("Download")
-      end
+      let(:url) { latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: job.name) }
 
       it_behaves_like "downloading"
     end

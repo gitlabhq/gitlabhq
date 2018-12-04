@@ -21,15 +21,20 @@ describe MergeRequests::BuildService do
   let(:commit_2) { double(:commit_2, sha: 'f00ba7', safe_message: 'This is a bad commit message!') }
   let(:commits) { nil }
 
+  let(:params) do
+    {
+      description: description,
+      source_branch: source_branch,
+      target_branch: target_branch,
+      source_project: source_project,
+      target_project: target_project,
+      milestone_id: milestone_id,
+      label_ids: label_ids
+    }
+  end
+
   let(:service) do
-    described_class.new(project, user,
-                                    description: description,
-                                    source_branch: source_branch,
-                                    target_branch: target_branch,
-                                    source_project: source_project,
-                                    target_project: target_project,
-                                    milestone_id: milestone_id,
-                                    label_ids: label_ids)
+    described_class.new(project, user, params)
   end
 
   before do
@@ -54,6 +59,19 @@ describe MergeRequests::BuildService do
                                                   .and_call_original
 
       merge_request
+    end
+
+    it 'does not assign force_remove_source_branch' do
+      expect(merge_request.force_remove_source_branch?).to be_falsey
+    end
+
+    context 'with force_remove_source_branch parameter' do
+      let(:mr_params) { params.merge(force_remove_source_branch: '1') }
+      let(:merge_request) { described_class.new(project, user, mr_params).execute }
+
+      it 'assigns force_remove_source_branch' do
+        expect(merge_request.force_remove_source_branch?).to be_truthy
+      end
     end
 
     context 'missing source branch' do
@@ -390,6 +408,14 @@ describe MergeRequests::BuildService do
 
       it 'sets target project correctly' do
         expect(merge_request.source_project).to eq(project)
+      end
+    end
+
+    context 'when specifying target branch in the description' do
+      let(:description) { "A merge request targeting another branch\n\n/target_branch with-codeowners" }
+
+      it 'sets the attribute from the quick actions' do
+        expect(merge_request.target_branch).to eq('with-codeowners')
       end
     end
   end

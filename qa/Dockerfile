@@ -3,10 +3,20 @@ LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
 ##
+# Add support for stretch-backports
+#
+RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
+
+##
 # Update APT sources and install some dependencies
 #
 RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
-RUN apt-get update && apt-get install -y wget git unzip xvfb
+RUN apt-get update && apt-get install -y wget unzip xvfb
+
+##
+# Install some packages from backports
+#
+RUN apt-get -y -t stretch-backports install git git-lfs
 
 ##
 # Install Docker

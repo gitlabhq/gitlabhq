@@ -9,6 +9,8 @@ class JobArtifactUploader < GitlabUploader
 
   storage_options Gitlab.config.artifacts
 
+  alias_method :upload, :model
+
   def cached_size
     return model.size if model.size.present? && !model.file_changed?
 

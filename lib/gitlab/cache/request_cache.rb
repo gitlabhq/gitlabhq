@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Cache
     # See https://docs.gitlab.com/ee/development/utilities.html#requestcache
@@ -26,8 +28,8 @@ module Gitlab
 
           define_method(method_name) do |*args|
             store =
-              if RequestStore.active?
-                RequestStore.store
+              if Gitlab::SafeRequestStore.active?
+                Gitlab::SafeRequestStore.store
               else
                 ivar_name = # ! and ? cannot be used as ivar name
                   "@cache_#{method_name.to_s.tr('!?', "\u2605\u2606")}"

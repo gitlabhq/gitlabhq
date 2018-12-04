@@ -112,4 +112,34 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
   end
+
+  context 'generated metadata' do
+    let(:tmpfile) { Tempfile.new('test-metadata') }
+    let(:generator) { CiArtifactMetadataGenerator.new(tmpfile) }
+    let(:entry_count) { 5 }
+
+    before do
+      tmpfile.binmode
+
+      (1..entry_count).each do |index|
+        generator.add_entry("public/test-#{index}.txt")
+      end
+
+      generator.write
+    end
+
+    after do
+      File.unlink(tmpfile.path)
+    end
+
+    describe '#find_entries!' do
+      it 'reads expected number of entries' do
+        stream = File.open(tmpfile.path)
+
+        metadata = described_class.new(stream, 'public', { recursive: true })
+
+        expect(metadata.find_entries!.count).to eq entry_count
+      end
+    end
+  end
 end

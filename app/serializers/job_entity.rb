@@ -7,9 +7,10 @@ class JobEntity < Grape::Entity
   expose :name
 
   expose :started?, as: :started
+  expose :archived?, as: :archived
 
   expose :build_path do |build|
-    build.target_url || path_to(:namespace_project_job, build)
+    build_path(build)
   end
 
   expose :retry_path, if: -> (*) { retryable? } do |build|
@@ -17,14 +18,24 @@ class JobEntity < Grape::Entity
   end
 
   expose :cancel_path, if: -> (*) { cancelable? } do |build|
-    path_to(:cancel_namespace_project_job, build)
+    path_to(
+      :cancel_namespace_project_job,
+      build,
+      { continue: { to: build_path(build) } }
+    )
   end
 
   expose :play_path, if: -> (*) { playable? } do |build|
     path_to(:play_namespace_project_job, build)
   end
 
+  expose :unschedule_path, if: -> (*) { scheduled? } do |build|
+    path_to(:unschedule_namespace_project_job, build)
+  end
+
   expose :playable?, as: :playable
+  expose :scheduled?, as: :scheduled
+  expose :scheduled_at, if: -> (*) { scheduled? }
   expose :created_at
   expose :updated_at
   expose :detailed_status, as: :status, with: DetailedStatusEntity
@@ -47,12 +58,20 @@ class JobEntity < Grape::Entity
     build.playable? && can?(request.current_user, :update_build, build)
   end
 
+  def scheduled?
+    build.scheduled?
+  end
+
   def detailed_status
     build.detailed_status(request.current_user)
   end
 
-  def path_to(route, build)
-    send("#{route}_path", build.project.namespace, build.project, build) # rubocop:disable GitlabSecurity/PublicSend
+  def path_to(route, build, params = {})
+    send("#{route}_path", build.project.namespace, build.project, build, params) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def build_path(build)
+    build.target_url || path_to(:namespace_project_job, build)
   end
 
   def failed?

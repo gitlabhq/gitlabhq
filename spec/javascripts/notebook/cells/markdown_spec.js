@@ -11,7 +11,7 @@ describe('Markdown component', () => {
   let cell;
   let json;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     json = getJSONFixture('blob/notebook/basic.json');
 
     // eslint-disable-next-line prefer-destructuring
@@ -34,18 +34,18 @@ describe('Markdown component', () => {
   });
 
   it('does not render the markdown text', () => {
-    expect(
-      vm.$el.querySelector('.markdown').innerHTML.trim(),
-    ).not.toEqual(cell.source.join(''));
+    expect(vm.$el.querySelector('.markdown').innerHTML.trim()).not.toEqual(cell.source.join(''));
   });
 
   it('renders the markdown HTML', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
-  it('sanitizes output', (done) => {
+  it('sanitizes output', done => {
     Object.assign(cell, {
-      source: ['[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n'],
+      source: [
+        '[XSS](data:text/html;base64,PHNjcmlwdD5hbGVydChkb2N1bWVudC5kb21haW4pPC9zY3JpcHQ+Cg==)\n',
+      ],
     });
 
     Vue.nextTick(() => {
@@ -60,7 +60,7 @@ describe('Markdown component', () => {
       json = getJSONFixture('blob/notebook/math.json');
     });
 
-    it('renders multi-line katex', (done) => {
+    it('renders multi-line katex', done => {
       vm = new Component({
         propsData: {
           cell: json.cells[0],
@@ -68,15 +68,13 @@ describe('Markdown component', () => {
       }).$mount();
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelector('.katex'),
-        ).not.toBeNull();
+        expect(vm.$el.querySelector('.katex')).not.toBeNull();
 
         done();
       });
     });
 
-    it('renders inline katex', (done) => {
+    it('renders inline katex', done => {
       vm = new Component({
         propsData: {
           cell: json.cells[1],
@@ -84,15 +82,13 @@ describe('Markdown component', () => {
       }).$mount();
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelector('p:first-child .katex'),
-        ).not.toBeNull();
+        expect(vm.$el.querySelector('p:first-child .katex')).not.toBeNull();
 
         done();
       });
     });
 
-    it('renders multiple inline katex', (done) => {
+    it('renders multiple inline katex', done => {
       vm = new Component({
         propsData: {
           cell: json.cells[1],
@@ -100,9 +96,7 @@ describe('Markdown component', () => {
       }).$mount();
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelectorAll('p:nth-child(2) .katex').length,
-        ).toBe(4);
+        expect(vm.$el.querySelectorAll('p:nth-child(2) .katex').length).toBe(4);
 
         done();
       });

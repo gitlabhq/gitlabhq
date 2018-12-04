@@ -29,10 +29,10 @@ export const diffModes = {
 };
 
 export const rightSidebarViews = {
-  pipelines: 'pipelines-list',
-  jobsDetail: 'jobs-detail',
-  mergeRequestInfo: 'merge-request-info',
-  clientSidePreview: 'clientside',
+  pipelines: { name: 'pipelines-list', keepAlive: true },
+  jobsDetail: { name: 'jobs-detail', keepAlive: false },
+  mergeRequestInfo: { name: 'merge-request-info', keepAlive: true },
+  clientSidePreview: { name: 'clientside', keepAlive: false },
 };
 
 export const stageKeys = {

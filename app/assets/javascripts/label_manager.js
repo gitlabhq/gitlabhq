@@ -1,4 +1,4 @@
-/* eslint-disable  class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, func-names, max-len */
+/* eslint-disable  class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, func-names */
 
 import $ from 'jquery';
 import Sortable from 'sortablejs';
@@ -47,7 +47,10 @@ export default class LabelManager {
   }
 
   toggleEmptyState($label, $btn, action) {
-    this.emptyState.classList.toggle('hidden', !!this.prioritizedLabels[0].querySelector(':scope > li'));
+    this.emptyState.classList.toggle(
+      'hidden',
+      !!this.prioritizedLabels[0].querySelector(':scope > li'),
+    );
   }
 
   toggleLabelPriority($label, action, persistState) {
@@ -80,16 +83,14 @@ export default class LabelManager {
       return;
     }
     if (action === 'remove') {
-      axios.delete(url)
-        .catch(rollbackLabelPosition);
+      axios.delete(url).catch(rollbackLabelPosition);
 
       // Restore empty message
       if (!$from.find('li').length) {
         $from.find('.empty-message').removeClass('hidden');
       }
     } else {
-      this.savePrioritySort($label, action)
-        .catch(rollbackLabelPosition);
+      this.savePrioritySort($label, action).catch(rollbackLabelPosition);
     }
   }
 
@@ -102,8 +103,7 @@ export default class LabelManager {
   }
 
   onPrioritySortUpdate() {
-    this.savePrioritySort()
-      .catch(() => flash(this.errorMessage));
+    this.savePrioritySort().catch(() => flash(this.errorMessage));
   }
 
   savePrioritySort() {

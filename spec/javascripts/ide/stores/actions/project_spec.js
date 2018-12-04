@@ -270,7 +270,10 @@ describe('IDE store project actions', () => {
     it('does not handle tree entry action, if entry is pending', done => {
       openBranch(store, { ...branch, basePath: 'foo/bar-pending' })
         .then(() => {
-          expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+          expect(store.dispatch).not.toHaveBeenCalledWith(
+            'handleTreeEntryAction',
+            jasmine.anything(),
+          );
         })
         .then(done)
         .catch(done.fail);

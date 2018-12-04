@@ -10,6 +10,7 @@ $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
+$toggle-sidebar-height: 48px;
 
 /*
  * Color schema
@@ -55,7 +56,7 @@ $blue-50: #f6fafe;
 $blue-100: #e4f0fb;
 $blue-200: #b8d6f4;
 $blue-300: #73afea;
-$blue-400: #2e87e0;
+$blue-400: #418cd8;
 $blue-500: #1f78d1;
 $blue-600: #1b69b6;
 $blue-700: #17599c;
@@ -67,7 +68,7 @@ $orange-50: #fffaf4;
 $orange-100: #fff1de;
 $orange-200: #fed69f;
 $orange-300: #fdbc60;
-$orange-400: #fca121;
+$orange-400: #fca429;
 $orange-500: #fc9403;
 $orange-600: #de7e00;
 $orange-700: #c26700;
@@ -78,7 +79,7 @@ $orange-950: #592800;
 $red-50: #fef6f5;
 $red-100: #fbe5e1;
 $red-200: #f2b4a9;
-$red-300: #e67664;
+$red-300: #ea8271;
 $red-400: #e05842;
 $red-500: #db3b21;
 $red-600: #c0341d;
@@ -194,6 +195,8 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-size-xs: 11px;
+$gl-font-size-small: 12px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
@@ -240,6 +243,7 @@ $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
 $gl-bar-padding: 3px;
 $input-horizontal-padding: 12px;
+$browserScrollbarSize: 10px;
 
 /*
  * Misc
@@ -267,6 +271,8 @@ $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
 $project-title-row-height: 24px;
+$gl-line-height: 16px;
+$gl-line-height-24: 24px;
 
 /*
 * Common component specific colors
@@ -314,7 +320,8 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 $monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
 $regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
 
 /*
 * Dropdowns
@@ -436,7 +443,7 @@ $ci-skipped-color: #888;
 * Boards
 */
 $issue-boards-font-size: 14px;
-$issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
+$issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
 /*
  The following heights are used in boards.scss and are used for calculation of the board height.
  They probably should be derived in a smarter way.
@@ -604,6 +611,7 @@ $perf-bar-development: #4c1210;
 $perf-bar-bucket-bg: #111;
 $perf-bar-bucket-box-shadow-from: rgba($white-light, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
+$perf-bar-canary-text: $orange-400;
 
 /*
 Issuable warning
@@ -634,5 +642,9 @@ Modals
 */
 $modal-body-height: 134px;
 
-
 $priority-label-empty-state-width: 114px;
+
+/*
+Issues Analytics
+*/
+$issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);

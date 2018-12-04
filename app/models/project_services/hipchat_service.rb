@@ -149,7 +149,7 @@ class HipchatService < Service
 
     context.merge!(options)
 
-    html = Banzai.post_process(Banzai.render(text, context), context)
+    html = Banzai.render_and_post_process(text, context)
     sanitized_html = sanitize(html, tags: HIPCHAT_ALLOWED_TAGS, attributes: %w[href title alt])
 
     sanitized_html.truncate(200, separator: ' ', omission: '...')

@@ -4,6 +4,7 @@ import { mapActions, mapState } from 'vuex';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 import createEmptyBadge from '../empty_badge';
 import Badge from './badge.vue';
 
@@ -14,6 +15,7 @@ export default {
   components: {
     Badge,
     LoadingButton,
+    GlLoadingIcon,
   },
   props: {
     isEditing: {
@@ -153,10 +155,7 @@ export default {
     @submit.prevent.stop="onSubmit"
   >
     <div class="form-group">
-      <label
-        for="badge-link-url"
-        class="label-bold"
-      >{{ s__('Badges|Link') }}</label>
+      <label for="badge-link-url" class="label-bold">{{ s__('Badges|Link') }}</label>
       <p v-html="helpText"></p>
       <input
         id="badge-link-url"
@@ -166,19 +165,12 @@ export default {
         required
         @input="debouncedPreview"
       />
-      <div class="invalid-feedback">
-        {{ s__('Badges|Please fill in a valid URL') }}
-      </div>
-      <span class="form-text text-muted">
-        {{ badgeLinkUrlExample }}
-      </span>
+      <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
+      <span class="form-text text-muted"> {{ badgeLinkUrlExample }} </span>
     </div>
 
     <div class="form-group">
-      <label
-        for="badge-image-url"
-        class="label-bold"
-      >{{ s__('Badges|Badge image URL') }}</label>
+      <label for="badge-image-url" class="label-bold">{{ s__('Badges|Badge image URL') }}</label>
       <p v-html="helpText"></p>
       <input
         id="badge-image-url"
@@ -188,12 +180,8 @@ export default {
         required
         @input="debouncedPreview"
       />
-      <div class="invalid-feedback">
-        {{ s__('Badges|Please fill in a valid URL') }}
-      </div>
-      <span class="form-text text-muted">
-        {{ badgeImageUrlExample }}
-      </span>
+      <div class="invalid-feedback">{{ s__('Badges|Please fill in a valid URL') }}</div>
+      <span class="form-text text-muted"> {{ badgeImageUrlExample }} </span>
     </div>
 
     <div class="form-group">
@@ -204,37 +192,22 @@ export default {
         :image-url="renderedImageUrl"
         :link-url="renderedLinkUrl"
       />
-      <p v-show="isRendering">
-        <gl-loading-icon
-          :inline="true"
-        />
+      <p v-show="isRendering"><gl-loading-icon :inline="true" /></p>
+      <p v-show="!renderedBadge && !isRendering" class="disabled-content">
+        {{ s__('Badges|No image to preview') }}
       </p>
-      <p
-        v-show="!renderedBadge && !isRendering"
-        class="disabled-content"
-      >{{ s__('Badges|No image to preview') }}</p>
     </div>
 
-    <div
-      v-if="isEditing"
-      class="row-content-block"
-    >
+    <div v-if="isEditing" class="row-content-block">
       <loading-button
         :loading="isSaving"
         :label="s__('Badges|Save changes')"
         type="submit"
         container-class="btn btn-success"
       />
-      <button
-        class="btn btn-cancel"
-        type="button"
-        @click="onCancel"
-      >{{ __('Cancel') }}</button>
+      <button class="btn btn-cancel" type="button" @click="onCancel">{{ __('Cancel') }}</button>
     </div>
-    <div
-      v-else
-      class="form-group"
-    >
+    <div v-else class="form-group">
       <loading-button
         :loading="isSaving"
         :label="s__('Badges|Add badge')"

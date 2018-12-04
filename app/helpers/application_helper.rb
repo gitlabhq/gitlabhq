@@ -173,17 +173,7 @@ module ApplicationHelper
     without = options.delete(:without)
     add_label = options.delete(:label)
 
-    exist_opts = {
-      state: params[:state],
-      scope: params[:scope],
-      milestone_title: params[:milestone_title],
-      assignee_id: params[:assignee_id],
-      author_id: params[:author_id],
-      search: params[:search],
-      label_name: params[:label_name]
-    }
-
-    options = exist_opts.merge(options)
+    options = request.query_parameters.merge(options)
 
     if without.present?
       without.each do |key|
@@ -292,7 +282,8 @@ module ApplicationHelper
       mergeRequests: merge_requests_project_autocomplete_sources_path(object),
       labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
       milestones: milestones_project_autocomplete_sources_path(object),
-      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+      snippets: snippets_project_autocomplete_sources_path(object)
     }
   end
 end

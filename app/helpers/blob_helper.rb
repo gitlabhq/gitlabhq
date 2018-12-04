@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module BlobHelper
-  def highlight(blob_name, blob_content, repository: nil, plain: false)
-    plain ||= blob_content.length > Blob::MAXIMUM_TEXT_HIGHLIGHT_SIZE
-    highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
+  def highlight(file_name, file_content, language: nil, plain: false)
+    highlighted = Gitlab::Highlight.highlight(file_name, file_content, plain: plain, language: language)
 
     raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end
@@ -150,7 +149,9 @@ module BlobHelper
   # example of Javascript) we tell the browser of the victim not to
   # execute untrusted data.
   def safe_content_type(blob)
-    if blob.text?
+    if blob.extension == 'svg'
+      blob.mime_type
+    elsif blob.text?
       'text/plain; charset=utf-8'
     elsif blob.image?
       blob.content_type
@@ -159,8 +160,10 @@ module BlobHelper
     end
   end
 
-  def licenses_for_select
-    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses).execute)
+  def content_disposition(blob, inline)
+    return 'attachment' if blob.extension == 'svg'
+
+    inline ? 'inline' : 'attachment'
   end
 
   def ref_project
@@ -173,29 +176,34 @@ module BlobHelper
 
     categories.each_with_object({}) do |category, hash|
       hash[category] = grouped[category].map do |item|
-        { name: item.name, id: item.id }
+        { name: item.name, id: item.key }
       end
     end
   end
   private :template_dropdown_names
 
-  def gitignore_names
-    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores).execute)
+  def licenses_for_select(project)
+    @licenses_for_select ||= template_dropdown_names(TemplateFinder.build(:licenses, project).execute)
   end
 
-  def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls).execute)
+  def gitignore_names(project)
+    @gitignore_names ||= template_dropdown_names(TemplateFinder.build(:gitignores, project).execute)
   end
 
-  def dockerfile_names
-    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles).execute)
+  def gitlab_ci_ymls(project)
+    @gitlab_ci_ymls ||= template_dropdown_names(TemplateFinder.build(:gitlab_ci_ymls, project).execute)
   end
 
-  def blob_editor_paths
+  def dockerfile_names(project)
+    @dockerfile_names ||= template_dropdown_names(TemplateFinder.build(:dockerfiles, project).execute)
+  end
+
+  def blob_editor_paths(project)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
-      'blob-language' => @blob && @blob.language.try(:ace_mode)
+      'blob-filename' => @blob && @blob.path,
+      'project-id' => project.id
     }
   end
 

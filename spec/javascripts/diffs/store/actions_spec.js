@@ -21,9 +21,13 @@ import actions, {
   loadCollapsedDiff,
   expandAllFiles,
   toggleFileDiscussions,
+  saveDiffDiscussion,
+  setHighlightedRow,
+  toggleTreeOpen,
+  scrollToFile,
+  toggleShowTreeList,
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
-import { reduceDiscussionsToLineCodes } from '~/notes/stores/utils';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
@@ -89,51 +93,59 @@ describe('DiffsStoreActions', () => {
     });
   });
 
+  describe('setHighlightedRow', () => {
+    it('should set lineHash and fileHash of highlightedRow', () => {
+      testAction(setHighlightedRow, 'ABC_123', {}, [
+        { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+      ]);
+    });
+  });
+
   describe('assignDiscussionsToDiff', () => {
     it('should merge discussions into diffs', done => {
       const state = {
         diffFiles: [
           {
-            fileHash: 'ABC',
-            parallelDiffLines: [
+            file_hash: 'ABC',
+            parallel_diff_lines: [
               {
                 left: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
                 right: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
               },
             ],
-            highlightedDiffLines: [
+            highlighted_diff_lines: [
               {
-                lineCode: 'ABC_1_1',
+                line_code: 'ABC_1_1',
                 discussions: [],
-                oldLine: 5,
-                newLine: null,
+                old_line: 5,
+                new_line: null,
               },
             ],
-            diffRefs: {
-              baseSha: 'abc',
-              headSha: 'def',
-              startSha: 'ghi',
+            diff_refs: {
+              base_sha: 'abc',
+              head_sha: 'def',
+              start_sha: 'ghi',
             },
-            newPath: 'file1',
-            oldPath: 'file2',
+            new_path: 'file1',
+            old_path: 'file2',
           },
         ],
       };
 
       const diffPosition = {
-        baseSha: 'abc',
-        headSha: 'def',
-        startSha: 'ghi',
-        newLine: null,
-        newPath: 'file1',
-        oldLine: 5,
-        oldPath: 'file2',
+        base_sha: 'abc',
+        head_sha: 'def',
+        start_sha: 'ghi',
+        new_line: null,
+        new_path: 'file1',
+        old_line: 5,
+        old_path: 'file2',
       };
 
       const singleDiscussion = {
@@ -142,17 +154,13 @@ describe('DiffsStoreActions', () => {
         diff_file: {
           file_hash: 'ABC',
         },
-        fileHash: 'ABC',
+        file_hash: 'ABC',
         resolvable: true,
-        position: {
-          formatter: diffPosition,
-        },
-        original_position: {
-          formatter: diffPosition,
-        },
+        position: diffPosition,
+        original_position: diffPosition,
       };
 
-      const discussions = reduceDiscussionsToLineCodes([singleDiscussion]);
+      const discussions = [singleDiscussion];
 
       testAction(
         assignDiscussionsToDiff,
@@ -162,27 +170,25 @@ describe('DiffsStoreActions', () => {
           {
             type: types.SET_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
-              fileHash: 'ABC',
-              discussions: [singleDiscussion],
+              discussion: singleDiscussion,
               diffPositionByLineCode: {
                 ABC_1_1: {
-                  baseSha: 'abc',
-                  headSha: 'def',
-                  startSha: 'ghi',
-                  newLine: null,
-                  newPath: 'file1',
-                  oldLine: 5,
-                  oldPath: 'file2',
-                  lineCode: 'ABC_1_1',
+                  base_sha: 'abc',
+                  head_sha: 'def',
+                  start_sha: 'ghi',
+                  new_line: null,
+                  new_path: 'file1',
+                  old_line: 5,
+                  old_path: 'file2',
+                  line_code: 'ABC_1_1',
+                  position_type: 'text',
                 },
               },
             },
           },
         ],
         [],
-        () => {
-          done();
-        },
+        done,
       );
     });
   });
@@ -192,11 +198,11 @@ describe('DiffsStoreActions', () => {
       const state = {
         diffFiles: [
           {
-            fileHash: 'ABC',
-            parallelDiffLines: [
+            file_hash: 'ABC',
+            parallel_diff_lines: [
               {
                 left: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [
                     {
                       id: 1,
@@ -204,14 +210,14 @@ describe('DiffsStoreActions', () => {
                   ],
                 },
                 right: {
-                  lineCode: 'ABC_1_1',
+                  line_code: 'ABC_1_1',
                   discussions: [],
                 },
               },
             ],
-            highlightedDiffLines: [
+            highlighted_diff_lines: [
               {
-                lineCode: 'ABC_1_1',
+                line_code: 'ABC_1_1',
                 discussions: [],
               },
             ],
@@ -219,7 +225,8 @@ describe('DiffsStoreActions', () => {
         ],
       };
       const singleDiscussion = {
-        fileHash: 'ABC',
+        id: '1',
+        file_hash: 'ABC',
         line_code: 'ABC_1_1',
       };
 
@@ -231,21 +238,20 @@ describe('DiffsStoreActions', () => {
           {
             type: types.REMOVE_LINE_DISCUSSIONS_FOR_FILE,
             payload: {
+              id: '1',
               fileHash: 'ABC',
               lineCode: 'ABC_1_1',
             },
           },
         ],
         [],
-        () => {
-          done();
-        },
+        done,
       );
     });
   });
 
   describe('startRenderDiffsQueue', () => {
-    it('should set all files to RENDER_FILE', done => {
+    it('should set all files to RENDER_FILE', () => {
       const state = {
         diffFiles: [
           {
@@ -268,16 +274,10 @@ describe('DiffsStoreActions', () => {
         });
       };
 
-      startRenderDiffsQueue({ state, commit: pseudoCommit })
-        .then(() => {
-          expect(state.diffFiles[0].renderIt).toBeTruthy();
-          expect(state.diffFiles[1].renderIt).toBeTruthy();
+      startRenderDiffsQueue({ state, commit: pseudoCommit });
 
-          done();
-        })
-        .catch(() => {
-          done.fail();
-        });
+      expect(state.diffFiles[0].renderIt).toBe(true);
+      expect(state.diffFiles[1].renderIt).toBe(true);
     });
   });
 
@@ -319,13 +319,13 @@ describe('DiffsStoreActions', () => {
 
   describe('showCommentForm', () => {
     it('should call mutation to show comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         showCommentForm,
         payload,
         {},
-        [{ type: types.ADD_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: true } }],
         [],
         done,
       );
@@ -334,13 +334,13 @@ describe('DiffsStoreActions', () => {
 
   describe('cancelCommentForm', () => {
     it('should call mutation to cancel comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         cancelCommentForm,
         payload,
         {},
-        [{ type: types.REMOVE_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: false } }],
         [],
         done,
       );
@@ -425,7 +425,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(true),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
       };
 
       const dispatch = jasmine.createSpy('dispatch');
@@ -443,7 +443,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(true),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(true),
       };
 
       const dispatch = jasmine.createSpy();
@@ -461,7 +461,7 @@ describe('DiffsStoreActions', () => {
       const getters = {
         getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ expanded: false, id: 1 }]),
         diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
-        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollapsedDiscussions: jasmine.createSpy().and.returnValue(false),
       };
 
       const dispatch = jasmine.createSpy();
@@ -478,7 +478,7 @@ describe('DiffsStoreActions', () => {
 
   describe('scrollToLineIfNeededInline', () => {
     const lineMock = {
-      lineCode: 'ABC_123',
+      line_code: 'ABC_123',
     };
 
     it('should not call handleLocationHash when there is not hash', () => {
@@ -529,7 +529,7 @@ describe('DiffsStoreActions', () => {
     const lineMock = {
       left: null,
       right: {
-        lineCode: 'ABC_123',
+        line_code: 'ABC_123',
       },
     };
 
@@ -580,6 +580,120 @@ describe('DiffsStoreActions', () => {
 
       expect(handleLocationHashSpy).toHaveBeenCalled();
       expect(handleLocationHashSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('saveDiffDiscussion', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
+    });
+
+    it('dispatches actions', done => {
+      const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
+        switch (name) {
+          case 'saveNote':
+            return Promise.resolve({
+              discussion: 'test',
+            });
+          case 'updateDiscussion':
+            return Promise.resolve('discussion');
+          default:
+            return Promise.resolve({});
+        }
+      });
+
+      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+        .then(() => {
+          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
+          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('toggleTreeOpen', () => {
+    it('commits TOGGLE_FOLDER_OPEN', done => {
+      testAction(
+        toggleTreeOpen,
+        'path',
+        {},
+        [{ type: types.TOGGLE_FOLDER_OPEN, payload: 'path' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('scrollToFile', () => {
+    let commit;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy();
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('updates location hash', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      expect(document.location.hash).toBe('#test');
+    });
+
+    it('commits UPDATE_CURRENT_DIFF_FILE_ID', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      expect(commit).toHaveBeenCalledWith(types.UPDATE_CURRENT_DIFF_FILE_ID, 'test');
+    });
+
+    it('resets currentDiffId after timeout', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            fileHash: 'test',
+          },
+        },
+      };
+
+      scrollToFile({ state, commit }, 'path');
+
+      jasmine.clock().tick(1000);
+
+      expect(commit.calls.argsFor(1)).toEqual([types.UPDATE_CURRENT_DIFF_FILE_ID, '']);
+    });
+  });
+
+  describe('toggleShowTreeList', () => {
+    it('commits toggle', done => {
+      testAction(toggleShowTreeList, null, {}, [{ type: types.TOGGLE_SHOW_TREE_LIST }], [], done);
+    });
+
+    it('updates localStorage', () => {
+      spyOn(localStorage, 'setItem');
+
+      toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
     });
   });
 });

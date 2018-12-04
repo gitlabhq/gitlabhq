@@ -65,6 +65,21 @@ describe DeleteInconsistentInternalIdRecords, :migration do
 
   context 'for deployments' do
     let(:scope) { :deployment }
+    let(:deployments) { table(:deployments) }
+    let(:internal_ids) { table(:internal_ids) }
+
+    before do
+      internal_ids.create!(project_id: project1.id, usage: 2, last_value: 2)
+      internal_ids.create!(project_id: project2.id, usage: 2, last_value: 2)
+      internal_ids.create!(project_id: project3.id, usage: 2, last_value: 2)
+    end
+
+    let(:create_models) do
+      3.times { |i| deployments.create!(project_id: project1.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+      3.times { |i| deployments.create!(project_id: project2.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+      3.times { |i| deployments.create!(project_id: project3.id, iid: i, environment_id: 1, ref: 'master', sha: 'a', tag: false) }
+    end
+
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 
@@ -79,17 +94,18 @@ describe DeleteInconsistentInternalIdRecords, :migration do
   end
 
   context 'for milestones (by group)' do
-    # milestones (by group) is a little different than all of the other models
-    let!(:group1) { create(:group) }
-    let!(:group2) { create(:group) }
-    let!(:group3) { create(:group) }
+    # milestones (by group) is a little different than most of the other models
+    let(:groups)  { table(:namespaces) }
+    let(:group1) { groups.create(name: 'Group 1', type: 'Group', path: 'group_1') }
+    let(:group2) { groups.create(name: 'Group 2', type: 'Group', path: 'group_2') }
+    let(:group3) { groups.create(name: 'Group 2', type: 'Group', path: 'group_3') }
 
     let(:internal_id_query) { ->(group) { InternalId.where(usage: InternalId.usages['milestones'], namespace: group) } }
 
     before do
-      3.times { create(:milestone, group: group1) }
-      3.times { create(:milestone, group: group2) }
-      3.times { create(:milestone, group: group3) }
+      3.times { create(:milestone, group_id: group1.id) }
+      3.times { create(:milestone, group_id: group2.id) }
+      3.times { create(:milestone, group_id: group3.id) }
 
       internal_id_query.call(group1).first.tap do |iid|
         iid.last_value = iid.last_value - 2

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 # Gitlab::Git::Commit is a wrapper around Gitaly::GitCommit
 module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
+      extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :raw_commit, :head
 
@@ -53,16 +56,13 @@ module Gitlab
           # Already a commit?
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
 
-          # A rugged reference?
-          commit_id = Gitlab::Git::Ref.dereference_object(commit_id)
-
           # Some weird thing?
           return nil unless commit_id.is_a?(String)
 
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = repo.wrapped_gitaly_errors do
+          commit = wrapped_gitaly_errors do
             repo.gitaly_commit_client.find_commit(commit_id)
           end
 
@@ -103,7 +103,7 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.between(base, head)
           end
         end
@@ -127,10 +127,8 @@ module Gitlab
         #        :topo, or any combination of them (in an array). Commit ordering types
         #        are documented here:
         #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
-        #
-        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
           end
         end
@@ -147,7 +145,7 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.list_commits_by_oid(oids)
           end
         end
@@ -157,17 +155,9 @@ module Gitlab
         end
 
         def extract_signature_lazily(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              signatures = batch_signature_extraction(repository, commit_ids)
-
-              signatures.each do |commit_sha, signature_data|
-                loader.call({ repository: repository, commit_id: commit_sha }, signature_data)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            batch_signature_extraction(args[:key], commit_ids).each do |commit_id, signature_data|
+              loader.call(commit_id, signature_data)
             end
           end
         end
@@ -177,17 +167,9 @@ module Gitlab
         end
 
         def get_message(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              messages = get_messages(repository, commit_ids)
-
-              messages.each do |commit_sha, message|
-                loader.call({ repository: repository, commit_id: commit_sha }, message)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            get_messages(args[:key], commit_ids).each do |commit_id, message|
+              loader.call(commit_id, message)
             end
           end
         end
@@ -328,7 +310,6 @@ module Gitlab
         entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
         return unless entry
 
-        # To be compatible with the rugged format
         entry = entry.to_h
         entry.delete(:data)
         entry[:name] = File.basename(path)
@@ -346,8 +327,8 @@ module Gitlab
           subject: message_split[0] ? message_split[0].chomp.b : "",
           body: raw_commit.message.b,
           parent_ids: raw_commit.parent_ids,
-          author: gitaly_commit_author_from_rugged(raw_commit.author),
-          committer: gitaly_commit_author_from_rugged(raw_commit.committer)
+          author: gitaly_commit_author_from_raw(raw_commit.author),
+          committer: gitaly_commit_author_from_raw(raw_commit.committer)
         )
       end
 
@@ -381,7 +362,7 @@ module Gitlab
         SERIALIZE_KEYS
       end
 
-      def gitaly_commit_author_from_rugged(author_or_committer)
+      def gitaly_commit_author_from_raw(author_or_committer)
         Gitaly::CommitAuthor.new(
           name: author_or_committer[:name].b,
           email: author_or_committer[:email].b,

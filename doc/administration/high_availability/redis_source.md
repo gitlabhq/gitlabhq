@@ -24,7 +24,7 @@ the Omnibus Redis HA documentation.
 
 ## Configuring your own Redis server
 
-This is the section where we install and setup the new Redis instances.
+This is the section where we install and set up the new Redis instances.
 
 ### Prerequisites
 
@@ -107,7 +107,7 @@ starting with `sentinel` prefix.
 Assuming that the Redis Sentinel is installed on the same instance as Redis
 master with IP `10.0.0.1` (some settings might overlap with the master):
 
-1. [Install Redis Sentinel](http://redis.io/topics/sentinel)
+1. [Install Redis Sentinel](https://redis.io/topics/sentinel)
 1. Edit `/etc/redis/sentinel.conf`:
 
     ```conf
@@ -204,7 +204,7 @@ In this example we consider that all servers have an internal network
 interface with IPs in the `10.0.0.x` range, and that they can connect
 to each other using these IPs.
 
-In a real world usage, you would also setup firewall rules to prevent
+In a real world usage, you would also set up firewall rules to prevent
 unauthorized access from other machines, and block traffic from the
 outside ([Internet][it]).
 
@@ -363,7 +363,7 @@ production:
       port: 26379 # point to sentinel, not to redis port
 ```
 
-When in doubt, please read [Redis Sentinel documentation](http://redis.io/topics/sentinel).
+When in doubt, please read [Redis Sentinel documentation](https://redis.io/topics/sentinel).
 
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [downloads]: https://about.gitlab.com/downloads

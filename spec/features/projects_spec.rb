@@ -193,6 +193,23 @@ describe 'Project' do
     end
   end
 
+  describe 'when the project repository is disabled', :js do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository_disabled, :repository, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+      project.add_maintainer(user)
+      visit project_path(project)
+    end
+
+    it 'does not show an error' do
+      wait_for_requests
+
+      expect(page).not_to have_selector('.flash-alert')
+    end
+  end
+
   describe 'removal', :js do
     let(:user)    { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }
@@ -302,6 +319,22 @@ describe 'Project' do
 
     it 'loads activity', :js do
       expect(page).to have_selector('.event-item')
+    end
+  end
+
+  context 'content is not cached after signing out', :js do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    it 'does not load activity', :js do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit project_path(project)
+      sign_out(user)
+
+      page.evaluate_script('window.history.back()')
+
+      expect(page).not_to have_selector('.event-item')
     end
   end
 

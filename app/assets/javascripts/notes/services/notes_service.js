@@ -5,8 +5,9 @@ import * as constants from '../constants';
 Vue.use(VueResource);
 
 export default {
-  fetchDiscussions(endpoint) {
-    return Vue.http.get(endpoint);
+  fetchDiscussions(endpoint, filter) {
+    const config = filter !== undefined ? { params: { notes_filter: filter } } : null;
+    return Vue.http.get(endpoint, config);
   },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);

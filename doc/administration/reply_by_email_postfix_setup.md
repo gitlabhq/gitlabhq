@@ -8,7 +8,7 @@ The instructions make the assumption that you will be using the email address `i
 ## Configure your server firewall
 
 1. Open up port 25 on your server so that people can send email into the server over SMTP.
-2. If the mail server is different from the server running GitLab, open up port 143 on your server so that GitLab can read email from the server over IMAP.
+1. If the mail server is different from the server running GitLab, open up port 143 on your server so that GitLab can read email from the server over IMAP.
 
 ## Install packages
 
@@ -245,7 +245,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
         220 gitlab.example.com ESMTP Postfix (Ubuntu)
         ```
 
-        If you get a `Connection refused` error instead, make sure your firewall is setup to allow inbound traffic on port 25.
+        If you get a `Connection refused` error instead, make sure your firewall is set up to allow inbound traffic on port 25.
 
     1. Send the `incoming` user a dummy email to test SMTP, by entering the following into the SMTP prompt:
 

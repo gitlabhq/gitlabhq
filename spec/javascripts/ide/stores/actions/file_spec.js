@@ -296,7 +296,7 @@ describe('IDE store file actions', () => {
           .getFileData({ state: store.state, commit() {}, dispatch }, { path: localFile.path })
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occured whilst loading the file.',
+              text: 'An error occurred whilst loading the file.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: {
@@ -408,7 +408,7 @@ describe('IDE store file actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occured whilst loading the file content.',
+              text: 'An error occurred whilst loading the file content.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: {

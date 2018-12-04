@@ -34,7 +34,7 @@ shared_examples 'issues move service' do |group|
       described_class.new(parent, user, params).execute(issue)
       issue.reload
 
-      expect(issue.labels).to contain_exactly(bug)
+      expect(issue.labels).to contain_exactly(bug, regression)
       expect(issue).to be_closed
     end
   end

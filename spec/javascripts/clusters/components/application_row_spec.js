@@ -112,6 +112,17 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
+    it('has disabled "Installed" when APPLICATION_STATUS.UPDATING', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        status: APPLICATION_STATUS.UPDATING,
+      });
+
+      expect(vm.installButtonLabel).toEqual('Installed');
+      expect(vm.installButtonLoading).toEqual(false);
+      expect(vm.installButtonDisabled).toEqual(true);
+    });
+
     it('has enabled "Install" when APPLICATION_STATUS.ERROR', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
@@ -215,7 +226,9 @@ describe('Application Row', () => {
         status: null,
         requestStatus: null,
       });
-      const generalErrorMessage = vm.$el.querySelector('.js-cluster-application-general-error-message');
+      const generalErrorMessage = vm.$el.querySelector(
+        '.js-cluster-application-general-error-message',
+      );
 
       expect(generalErrorMessage).toBeNull();
     });
@@ -227,10 +240,17 @@ describe('Application Row', () => {
         status: APPLICATION_STATUS.ERROR,
         statusReason,
       });
-      const generalErrorMessage = vm.$el.querySelector('.js-cluster-application-general-error-message');
-      const statusErrorMessage = vm.$el.querySelector('.js-cluster-application-status-error-message');
+      const generalErrorMessage = vm.$el.querySelector(
+        '.js-cluster-application-general-error-message',
+      );
+      const statusErrorMessage = vm.$el.querySelector(
+        '.js-cluster-application-status-error-message',
+      );
 
-      expect(generalErrorMessage.textContent.trim()).toEqual(`Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`);
+      expect(generalErrorMessage.textContent.trim()).toEqual(
+        `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
+      );
+
       expect(statusErrorMessage.textContent.trim()).toEqual(statusReason);
     });
 
@@ -242,10 +262,17 @@ describe('Application Row', () => {
         requestStatus: REQUEST_FAILURE,
         requestReason,
       });
-      const generalErrorMessage = vm.$el.querySelector('.js-cluster-application-general-error-message');
-      const requestErrorMessage = vm.$el.querySelector('.js-cluster-application-request-error-message');
+      const generalErrorMessage = vm.$el.querySelector(
+        '.js-cluster-application-general-error-message',
+      );
+      const requestErrorMessage = vm.$el.querySelector(
+        '.js-cluster-application-request-error-message',
+      );
 
-      expect(generalErrorMessage.textContent.trim()).toEqual(`Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`);
+      expect(generalErrorMessage.textContent.trim()).toEqual(
+        `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
+      );
+
       expect(requestErrorMessage.textContent.trim()).toEqual(requestReason);
     });
   });

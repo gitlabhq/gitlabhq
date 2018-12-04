@@ -17,7 +17,7 @@ const createComponent = (group = mockParentGroupItem, parentGroup = mockChildren
 describe('GroupItemComponent', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     Vue.component('group-folder', groupFolderComponent);
 
     vm = createComponent();
@@ -44,8 +44,8 @@ describe('GroupItemComponent', () => {
         const { rowClass } = vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
-        Object.keys(rowClass).forEach((className) => {
-          expect(classes.indexOf(className) > -1).toBeTruthy();
+        Object.keys(rowClass).forEach(className => {
+          expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });
       });
     });
@@ -57,11 +57,13 @@ describe('GroupItemComponent', () => {
 
         group.childrenCount = 5;
         newVm = createComponent(group);
+
         expect(newVm.hasChildren).toBeTruthy();
         newVm.$destroy();
 
         group.childrenCount = 0;
         newVm = createComponent(group);
+
         expect(newVm.hasChildren).toBeFalsy();
         newVm.$destroy();
       });
@@ -74,11 +76,13 @@ describe('GroupItemComponent', () => {
 
         group.avatarUrl = null;
         newVm = createComponent(group);
+
         expect(newVm.hasAvatar).toBeFalsy();
         newVm.$destroy();
 
         group.avatarUrl = '/uploads/group_avatar.png';
         newVm = createComponent(group);
+
         expect(newVm.hasAvatar).toBeTruthy();
         newVm.$destroy();
       });
@@ -91,11 +95,13 @@ describe('GroupItemComponent', () => {
 
         group.type = 'group';
         newVm = createComponent(group);
+
         expect(newVm.isGroup).toBeTruthy();
         newVm.$destroy();
 
         group.type = 'project';
         newVm = createComponent(group);
+
         expect(newVm.isGroup).toBeFalsy();
         newVm.$destroy();
       });
@@ -127,10 +133,11 @@ describe('GroupItemComponent', () => {
         spyOn(eventHub, '$emit');
 
         vm.onClickRowGroup(event);
+
         expect(eventHub.$emit).toHaveBeenCalledWith('toggleChildren', vm.group);
       });
 
-      it('should navigate page to group homepage if group does not have any children present', (done) => {
+      it('should navigate page to group homepage if group does not have any children present', done => {
         const group = Object.assign({}, mockParentGroupItem);
         group.childrenCount = 0;
         const newVm = createComponent(group);

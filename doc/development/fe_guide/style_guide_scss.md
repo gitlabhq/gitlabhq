@@ -183,9 +183,11 @@ Don't use ID selectors in CSS.
 ```
 
 ### Variables
+
 Before adding a new variable for a color or a size, guarantee:
-1. There isn't already one
-2. There isn't a similar one we can use instead.
+
+- There isn't already one
+- There isn't a similar one we can use instead.
 
 ## Linting
 

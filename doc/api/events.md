@@ -44,7 +44,7 @@ YYYY-MM-DD
 
 ### Event Time Period Limit
 
-GitLab removes events older than 1 year from the events table for performance reasons. The range of 1 year was chosen because user contribution calendars only show contributions of the past year.
+GitLab removes events older than 2 years from the events table for performance reasons.
 
 ## List currently authenticated user's events
 
@@ -71,7 +71,7 @@ Parameters:
 Example request:
 
 ```
-curl --header "PRIVATE-TOKEN 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/events&target_type=issue&action=created&after=2017-01-31&before=2017-03-01
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
 Example response:
@@ -276,7 +276,7 @@ Parameters:
 Example request:
 
 ```
-curl --header "PRIVATE-TOKEN 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:project_id/events&target_type=issue&action=created&after=2017-01-31&before=2017-03-01
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:project_id/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
 Example response:

@@ -151,6 +151,20 @@ For example:
 https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/browse?job=coverage
 ```
 
+There is also a URL to specific files, including html files that 
+are shown in [GitLab Pages](../../../administration/pages/index.md):
+
+```
+https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/file/<path>?job=<job_name>
+```
+
+For example, when a job `coverage` creates the artifact `htmlcov/index.html`,
+you can access it at:
+
+```
+https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
+```
+
 The latest builds are also exposed in the UI in various places. Specifically,
 look for the download button in:
 

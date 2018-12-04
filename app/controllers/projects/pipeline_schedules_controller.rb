@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 

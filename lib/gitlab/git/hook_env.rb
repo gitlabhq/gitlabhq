@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: JV: no RPC's here.
 
 module Gitlab
@@ -17,18 +19,18 @@ module Gitlab
       ].freeze
 
       def self.set(gl_repository, env)
-        return unless RequestStore.active?
+        return unless Gitlab::SafeRequestStore.active?
 
         raise "missing gl_repository" if gl_repository.blank?
 
-        RequestStore.store[:gitlab_git_env] ||= {}
-        RequestStore.store[:gitlab_git_env][gl_repository] = whitelist_git_env(env)
+        Gitlab::SafeRequestStore[:gitlab_git_env] ||= {}
+        Gitlab::SafeRequestStore[:gitlab_git_env][gl_repository] = whitelist_git_env(env)
       end
 
       def self.all(gl_repository)
-        return {} unless RequestStore.active?
+        return {} unless Gitlab::SafeRequestStore.active?
 
-        h = RequestStore.fetch(:gitlab_git_env) { {} }
+        h = Gitlab::SafeRequestStore.fetch(:gitlab_git_env) { {} }
         h.fetch(gl_repository, {})
       end
 

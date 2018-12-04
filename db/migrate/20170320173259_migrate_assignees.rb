@@ -1,6 +1,6 @@
 # rubocop:disable Migration/UpdateLargeTable
 # rubocop:disable Migration/UpdateColumnInBatches
-class MigrateAssignees < ActiveRecord::Migration
+class MigrateAssignees < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

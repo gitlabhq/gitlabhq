@@ -1,27 +1,27 @@
 <script>
-  import Modal from '~/vue_shared/components/gl_modal.vue';
-  import LoadingButton from '~/vue_shared/components/loading_button.vue';
-  import CodeBlock from '~/vue_shared/components/code_block.vue';
-  import { fieldTypes } from '../constants';
+import Modal from '~/vue_shared/components/gl_modal.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import CodeBlock from '~/vue_shared/components/code_block.vue';
+import { fieldTypes } from '../constants';
 
-  export default {
-    components: {
-      Modal,
-      LoadingButton,
-      CodeBlock,
+export default {
+  components: {
+    Modal,
+    LoadingButton,
+    CodeBlock,
+  },
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      modalData: {
-        type: Object,
-        required: true,
-      },
+    modalData: {
+      type: Object,
+      required: true,
     },
-    fieldTypes,
-  };
+  },
+  fieldTypes,
+};
 </script>
 <template>
   <modal
@@ -36,23 +36,13 @@
         :key="index"
         class="row prepend-top-10 append-bottom-10"
       >
-        <strong class="col-sm-3 text-right">
-          {{ field.text }}:
-        </strong>
+        <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 
         <div class="col-sm-9 text-secondary">
-          <code-block
-            v-if="field.type === $options.fieldTypes.codeBock"
-            :code="field.value"
-          />
+          <code-block v-if="field.type === $options.fieldTypes.codeBock" :code="field.value" />
 
           <template v-else-if="field.type === $options.fieldTypes.link">
-            <a
-              :href="field.value"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="js-modal-link"
-            >
+            <a :href="field.value" target="_blank" rel="noopener noreferrer" class="js-modal-link">
               {{ field.value }}
             </a>
           </template>
@@ -67,7 +57,6 @@
         </div>
       </div>
     </slot>
-    <div slot="footer">
-    </div>
+    <div slot="footer"></div>
   </modal>
 </template>

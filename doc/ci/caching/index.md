@@ -178,8 +178,8 @@ runs of jobs for things like dependencies and commonly used libraries
 so they don't have to be re-fetched from the public internet.
 
 NOTE: **Note:**
-For more examples, check the [GitLab CI Yml](https://gitlab.com/gitlab-org/gitlab-ci-yml)
-project.
+For more examples, check out our [GitLab CI/CD
+templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates).
 
 ### Caching Nodejs dependencies
 
@@ -190,7 +190,7 @@ Nodejs modules are installed in `node_modules/` and are cached per-branch:
 
 ```yaml
 #
-# https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Nodejs.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml
 #
 image: node:latest
 
@@ -217,7 +217,7 @@ are cached per-branch:
 
 ```yaml
 #
-# https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/PHP.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/PHP.gitlab-ci.yml
 #
 image: php:7.2
 
@@ -246,14 +246,14 @@ pip's cache is defined under `.cache/pip/` and both are cached per-branch:
 
 ```yaml
 #
-# https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Python.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
 #
 image: python:latest
 
 # Change pip's cache directory to be inside the project directory since we can
 # only cache local items.
 variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
@@ -262,7 +262,7 @@ variables:
 # them in a virtualenv and cache it as well.
 cache:
   paths:
-    - .cache/
+    - .cache/pip
     - venv/
 
 before_script:
@@ -286,7 +286,7 @@ jobs inherit it. Gems are installed in `vendor/ruby/` and are cached per-branch:
 
 ```yaml
 #
-# https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Ruby.gitlab-ci.yml
+# https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml
 #
 image: ruby:2.5
 

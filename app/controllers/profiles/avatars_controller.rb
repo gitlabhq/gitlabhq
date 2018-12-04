@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::AvatarsController < Profiles::ApplicationController
   def destroy
     @user = current_user

@@ -8,7 +8,7 @@ within the GitLab interface.
 
 ![Environment Dashboard](img/prometheus_dashboard.png)
 
-There are two ways to setup Prometheus integration, depending on where your apps are running:
+There are two ways to set up Prometheus integration, depending on where your apps are running:
 * For deployments on Kubernetes, GitLab can automatically [deploy and manage Prometheus](#managed-prometheus-on-kubernetes)
 * For other deployment targets, simply [specify the Prometheus server](#manual-configuration-of-prometheus).
 
@@ -56,7 +56,7 @@ The [NGINX Ingress](../clusters/index.md#installing-applications) that is deploy
 Integration with Prometheus requires the following:
 
 1. GitLab 9.0 or higher
-1. Prometheus must be configured to collect one of the [supported metrics](prometheus_library/metrics.md)
+1. Prometheus must be configured to collect one of the [supported metrics](prometheus_library/index.md)
 1. Each metric must be have a label to indicate the environment
 1. GitLab must have network connectivity to the Prometheus server
 
@@ -65,7 +65,7 @@ Integration with Prometheus requires the following:
 Installing and configuring Prometheus to monitor applications is fairly straight forward.
 
 1. [Install Prometheus](https://prometheus.io/docs/introduction/install/)
-1. Set up one of the [supported monitoring targets](prometheus_library/metrics.md)
+1. Set up one of the [supported monitoring targets](prometheus_library/index.md)
 1. Configure the Prometheus server to [collect their metrics](https://prometheus.io/docs/operating/configuration/#scrape_config)
 
 #### Configuration in GitLab

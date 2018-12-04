@@ -8,7 +8,7 @@ const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeri
 
 const defaultValuesComponent = {};
 
-const timeSeries = createTimeSeries(convertedMetrics[0].queries, 500, 300, 120);
+const { timeSeries } = createTimeSeries(convertedMetrics[0].queries, 500, 300, 120);
 
 defaultValuesComponent.timeSeries = timeSeries;
 

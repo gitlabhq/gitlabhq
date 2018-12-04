@@ -31,7 +31,7 @@ to deploy.
 
 TIP: **Tip:**
 For production deployments, we strongly recommend using the
-[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/README.md)
+[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/index.md)
 utilizing [external Postgres, Redis, and object storage](https://gitlab.com/charts/gitlab/tree/master/doc/advanced) services.
 
 ### Requirements
@@ -93,7 +93,7 @@ You can access the GitLab instance by visiting the domain name beginning with
 above, the URL would be `https://gitlab.example.com`.
 
 If you manually created the secret for initial root password, you
-can use that to sign in as `root` user. If not, Gitlab automatically
+can use that to sign in as `root` user. If not, GitLab automatically
 created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
 if you used the command above):
@@ -112,8 +112,7 @@ If your SMTP server requires authentication make sure to read the section on pro
 your password in the [secrets documentation](https://gitlab.com/charts/gitlab/blob/master/doc/installation/secrets.md#smtp-password).
 You can disable authentication settings with `--set global.smtp.authentication=""`.
 
-If your Kubernetes cluster is on GKE, be aware that SMTP ports [25, 465, and 587
-are blocked](https://cloud.google.com/compute/docs/tutorials/sending-mail/#using_standard_email_ports).
+If your Kubernetes cluster is on GKE, be aware that SMTP port [25 is blocked](https://cloud.google.com/compute/docs/tutorials/sending-mail/#using_standard_email_ports).
 
 ### Deploying the Community Edition
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::EmailsController < Profiles::ApplicationController
   before_action :find_email, only: [:destroy, :resend_confirmation_instructions]
 

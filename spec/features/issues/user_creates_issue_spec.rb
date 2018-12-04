@@ -47,15 +47,15 @@ describe "User creates issue" do
         textarea = first(".gfm-form textarea")
 
         page.within(form) do
-          click_link("Preview")
+          click_button("Preview")
 
           preview = find(".js-md-preview") # this element is findable only when the "Preview" link is clicked.
 
           expect(preview).to have_content("Nothing to preview.")
 
-          click_link("Write")
+          click_button("Write")
           fill_in("Description", with: "Bug fixed :smile:")
-          click_link("Preview")
+          click_button("Preview")
 
           expect(preview).to have_css("gl-emoji")
           expect(textarea).not_to be_visible

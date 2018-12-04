@@ -72,8 +72,15 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
     }),
     ...mapGetters(['isLoggedIn']),
+    lineCode() {
+      return (
+        this.line.line_code ||
+        (this.line.left && this.line.line.left.line_code) ||
+        (this.line.right && this.line.right.line_code)
+      );
+    },
     lineHref() {
-      return `#${this.line.lineCode || ''}`;
+      return `#${this.line.line_code || ''}`;
     },
     shouldShowCommentButton() {
       return (
@@ -97,9 +104,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
+    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm', 'setHighlightedRow']),
     handleCommentButton() {
-      this.showCommentForm({ lineCode: this.line.lineCode });
+      this.showCommentForm({ lineCode: this.line.line_code, fileHash: this.fileHash });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {
@@ -108,8 +115,8 @@ export default {
 
       this.isRequesting = true;
       const endpoint = this.contextLinesPath;
-      const oldLineNumber = this.line.metaData.oldPos || 0;
-      const newLineNumber = this.line.metaData.newPos || 0;
+      const oldLineNumber = this.line.meta_data.old_pos || 0;
+      const newLineNumber = this.line.meta_data.new_pos || 0;
       const offset = newLineNumber - oldLineNumber;
       const bottom = this.isBottom;
       const { fileHash } = this;
@@ -125,12 +132,12 @@ export default {
         to = lineNumber + UNFOLD_COUNT;
       } else {
         const diffFile = utils.findDiffFile(this.diffFiles, this.fileHash);
-        const indexForInline = utils.findIndexInInlineLines(diffFile.highlightedDiffLines, {
+        const indexForInline = utils.findIndexInInlineLines(diffFile.highlighted_diff_lines, {
           oldLineNumber,
           newLineNumber,
         });
-        const prevLine = diffFile.highlightedDiffLines[indexForInline - 2];
-        const prevLineNumber = (prevLine && prevLine.newLine) || 0;
+        const prevLine = diffFile.highlighted_diff_lines[indexForInline - 2];
+        const prevLineNumber = (prevLine && prevLine.new_line) || 0;
 
         if (since <= prevLineNumber + 1) {
           since = prevLineNumber + 1;
@@ -155,37 +162,27 @@ export default {
 
 <template>
   <div>
-    <span
-      v-if="isMatchLine"
-      class="context-cell"
-      role="button"
-      @click="handleLoadMoreLines"
-    >...</span>
-    <template
-      v-else
+    <span v-if="isMatchLine" class="context-cell" role="button" @click="handleLoadMoreLines"
+      >...</span
     >
+    <template v-else>
       <button
-        v-if="shouldShowCommentButton"
+        v-show="shouldShowCommentButton"
         type="button"
-        class="add-diff-note js-add-diff-note-button"
+        class="add-diff-note js-add-diff-note-button qa-diff-comment"
         title="Add a comment to this line"
         @click="handleCommentButton"
       >
-        <icon
-          :size="12"
-          name="comment"
-        />
+        <icon :size="12" name="comment" />
       </button>
       <a
         v-if="lineNumber"
         :data-linenumber="lineNumber"
         :href="lineHref"
+        @click="setHighlightedRow(lineCode);"
       >
       </a>
-      <diff-gutter-avatars
-        v-if="shouldShowAvatarsOnGutter"
-        :discussions="line.discussions"
-      />
+      <diff-gutter-avatars v-if="shouldShowAvatarsOnGutter" :discussions="line.discussions" />
     </template>
   </div>
 </template>

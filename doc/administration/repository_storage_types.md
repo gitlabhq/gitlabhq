@@ -41,11 +41,8 @@ Registry, etc.
 
 ## Hashed Storage
 
-> **Warning:** Hashed storage is in **Beta**. For the latest updates, check the
-> associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/3542)
-> and please report any problems you encounter.
 
-Hashed Storage is the new storage behavior we are rolling out with 10.0. Instead
+Hashed Storage is the new storage behavior we rolled out with 10.0. Instead
 of coupling project URL and the folder structure where the repository will be
 stored on disk, we are coupling a hash, based on the project's ID. This makes
 the folder structure immutable, and therefore eliminates any requirement to

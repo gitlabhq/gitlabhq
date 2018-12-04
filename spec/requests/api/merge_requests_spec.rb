@@ -81,6 +81,35 @@ describe API::MergeRequests do
       let(:user2) { create(:user) }
 
       it 'returns an array of all merge requests except unauthorized ones' do
+        get api('/merge_requests', user), scope: :all
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+          .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request_locked.id, merge_request2.id)
+      end
+
+      it "returns an array of no merge_requests when wip=yes" do
+        get api("/merge_requests", user), wip: 'yes'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
+      it "returns an array of no merge_requests when wip=no" do
+        get api("/merge_requests", user), wip: 'no'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+            .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request_locked.id, merge_request2.id)
+      end
+
+      it 'does not return unauthorized merge requests' do
         private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
@@ -112,6 +141,23 @@ describe API::MergeRequests do
         get api('/merge_requests', user), assignee_id: user2.id, scope: :all
 
         expect_response_ordered_exactly(merge_request3)
+      end
+
+      it 'returns an array of merge requests with no assignee' do
+        merge_request3 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), assignee_id: 'None', scope: :all
+
+        expect_response_ordered_exactly(merge_request3)
+      end
+
+      it 'returns an array of merge requests with any assignee' do
+        # This MR with no assignee should not be returned
+        create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), assignee_id: 'Any', scope: :all
+
+        expect_response_contain_exactly(merge_request, merge_request2, merge_request_closed, merge_request_merged, merge_request_locked)
       end
 
       it 'returns an array of merge requests assigned to me' do
@@ -244,6 +290,15 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(404)
     end
 
+    it "returns an array of no merge_requests when wip=yes" do
+      get api("/projects/#{project.id}/merge_requests", user), wip: 'yes'
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
     it 'returns merge_request by "iids" array' do
       get api(endpoint_path, user), iids: [merge_request.iid, merge_request_closed.iid]
 
@@ -304,6 +359,8 @@ describe API::MergeRequests do
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
+      expect(json_response['merge_error']).to eq(merge_request.merge_error)
+      expect(json_response).not_to include('rebase_in_progress')
     end
 
     it 'exposes description and title html when render_html is true' do
@@ -312,6 +369,14 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(200)
 
       expect(json_response).to include('title_html', 'description_html')
+    end
+
+    it 'exposes rebase_in_progress when include_rebase_in_progress is true' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), include_rebase_in_progress: true
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response).to include('rebase_in_progress')
     end
 
     context 'merge_request_metrics' do
@@ -1123,6 +1188,26 @@ describe API::MergeRequests do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge_when_pipeline_succeeds", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'PUT :id/merge_requests/:merge_request_iid/rebase' do
+    it 'enqueues a rebase of the merge request against the target branch' do
+      Sidekiq::Testing.fake! do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+      end
+
+      expect(response).to have_gitlab_http_status(202)
+      expect(RebaseWorker.jobs.size).to eq(1)
+    end
+
+    it 'returns 403 if the user cannot push to the branch' do
+      guest = create(:user)
+      project.add_guest(guest)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", guest)
+
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 

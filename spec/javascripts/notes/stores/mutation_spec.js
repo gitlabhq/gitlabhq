@@ -30,11 +30,13 @@ describe('Notes Store mutations', () => {
       expect(state).toEqual({
         discussions: [noteData],
       });
+
       expect(state.discussions.length).toBe(1);
     });
 
     it('should not add the same note to the notes array', () => {
       mutations.ADD_NEW_NOTE(state, note);
+
       expect(state.discussions.length).toBe(1);
     });
   });
@@ -76,7 +78,7 @@ describe('Notes Store mutations', () => {
   });
 
   describe('COLLAPSE_DISCUSSION', () => {
-    it('should collpase an expanded discussion', () => {
+    it('should collapse an expanded discussion', () => {
       const discussion = Object.assign({}, discussionMock, { expanded: true });
 
       const state = {
@@ -106,6 +108,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_NOTES_DATA(state, notesDataMock);
+
       expect(state.notesData).toEqual(notesDataMock);
     });
   });
@@ -117,6 +120,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_NOTEABLE_DATA(state, noteableDataMock);
+
       expect(state.noteableData).toEqual(noteableDataMock);
     });
   });
@@ -128,6 +132,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_USER_DATA(state, userDataMock);
+
       expect(state.userData).toEqual(userDataMock);
     });
   });
@@ -151,6 +156,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_INITIAL_DISCUSSIONS(state, [note, legacyNote]);
+
       expect(state.discussions[0].id).toEqual(note.id);
       expect(state.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
       expect(state.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
@@ -200,6 +206,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_LAST_FETCHED_AT(state, 'timestamp');
+
       expect(state.lastFetchedAt).toEqual('timestamp');
     });
   });
@@ -211,6 +218,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_TARGET_NOTE_HASH(state, 'hash');
+
       expect(state.targetNoteHash).toEqual('hash');
     });
   });
@@ -221,6 +229,7 @@ describe('Notes Store mutations', () => {
         discussions: [],
       };
       mutations.SHOW_PLACEHOLDER_NOTE(state, note);
+
       expect(state.discussions[0].isPlaceholderNote).toEqual(true);
     });
   });
@@ -261,6 +270,7 @@ describe('Notes Store mutations', () => {
         awardName: 'bath_tone3',
       };
       mutations.TOGGLE_AWARD(state, data);
+
       expect(state.discussions[0].award_emoji.length).toEqual(2);
     });
   });
@@ -316,6 +326,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.CLOSE_ISSUE(state);
+
       expect(state.noteableData.state).toEqual('closed');
     });
   });
@@ -333,6 +344,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.REOPEN_ISSUE(state);
+
       expect(state.noteableData.state).toEqual('reopened');
     });
   });
@@ -350,6 +362,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.TOGGLE_STATE_BUTTON_LOADING(state, true);
+
       expect(state.isToggleStateButtonLoading).toEqual(true);
     });
 
@@ -365,6 +378,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.TOGGLE_STATE_BUTTON_LOADING(state, false);
+
       expect(state.isToggleStateButtonLoading).toEqual(false);
     });
   });
@@ -376,6 +390,7 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.SET_NOTES_FETCHED_STATE(state, true);
+
       expect(state.isNotesFetched).toEqual(true);
     });
   });
@@ -410,6 +425,63 @@ describe('Notes Store mutations', () => {
       discussion.expanded = true;
 
       expect(state.discussions[0].expanded).toBe(true);
+    });
+  });
+
+  describe('DISABLE_COMMENTS', () => {
+    it('should set comments disabled state', () => {
+      const state = {};
+
+      mutations.DISABLE_COMMENTS(state, true);
+
+      expect(state.commentsDisabled).toEqual(true);
+    });
+  });
+
+  describe('UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', () => {
+    it('updates resolvableDiscussionsCount', () => {
+      const state = {
+        discussions: [
+          { individual_note: false, resolvable: true, notes: [] },
+          { individual_note: true, resolvable: true, notes: [] },
+          { individual_note: false, resolvable: false, notes: [] },
+        ],
+        resolvableDiscussionsCount: 0,
+      };
+
+      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
+
+      expect(state.resolvableDiscussionsCount).toBe(1);
+    });
+
+    it('updates unresolvedDiscussionsCount', () => {
+      const state = {
+        discussions: [
+          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
+          { individual_note: true, resolvable: true, notes: [{ resolved: false }] },
+          { individual_note: false, resolvable: false, notes: [{ resolved: false }] },
+        ],
+        unresolvedDiscussionsCount: 0,
+      };
+
+      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
+
+      expect(state.unresolvedDiscussionsCount).toBe(1);
+    });
+
+    it('updates hasUnresolvedDiscussions', () => {
+      const state = {
+        discussions: [
+          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
+          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
+          { individual_note: false, resolvable: false, notes: [{ resolved: false }] },
+        ],
+        hasUnresolvedDiscussions: 0,
+      };
+
+      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
+
+      expect(state.hasUnresolvedDiscussions).toBe(true);
     });
   });
 });

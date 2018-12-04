@@ -6,6 +6,7 @@ Read through GiLab's branching documentation:
 - [Default branch](#default-branch)
 - [Protected branches](../../protected_branches.md#protected-branches)
 - [Delete merged branches](#delete-merged-branches)
+- [Branch filter search box](#branch-filter-search-box)
 
 See also:
 
@@ -29,16 +30,30 @@ to learn more.
 
 ## Delete merged branches
 
-> [Introduced][ce-6449] in GitLab 8.14.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6449) in GitLab 8.14.
 
 ![Delete merged branches](img/delete_merged_branches.png)
 
 This feature allows merged branches to be deleted in bulk. Only branches that
-have been merged and [are not protected][protected] will be deleted as part of
+have been merged and [are not protected](../../protected_branches.md) will be deleted as part of
 this operation.
 
 It's particularly useful to clean up old branches that were not deleted
 automatically when a merge request was merged.
 
-[ce-6449]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6449 "Add button to delete all merged branches"
-[protected]: ../../protected_branches.md
+
+## Branch filter search box
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22166) in GitLab 11.5.
+
+![Branch filter search box](img/branch_filter_search_box.png)
+
+This feature allows you to search and select branches quickly. Search results appear in the following order:
+
+- Branches with names that matched search terms exactly.
+- Other branches with names that include search terms, sorted alphabetically.
+
+Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following:
+
+- `^feature` will only match branch names that begin with 'feature'.
+- `feature$` will only match branch names that end with 'feature'.

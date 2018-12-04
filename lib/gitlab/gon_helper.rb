@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/AbcSize
 
 module Gitlab
@@ -6,7 +8,10 @@ module Gitlab
 
     def add_gon_variables
       gon.api_version            = 'v4'
-      gon.default_avatar_url     = URI.join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
+      gon.default_avatar_url     =
+        Gitlab::Utils.append_path(
+          Gitlab.config.gitlab.url,
+          ActionController::Base.helpers.image_path('no_avatar.png'))
       gon.max_file_size          = Gitlab::CurrentSettings.max_attachment_size
       gon.asset_host             = ActionController::Base.asset_host
       gon.webpack_public_path    = webpack_public_path
@@ -29,6 +34,21 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
       end
+    end
+
+    # Exposes the state of a feature flag to the frontend code.
+    #
+    # name - The name of the feature flag, e.g. `my_feature`.
+    # args - Any additional arguments to pass to `Feature.enabled?`. This allows
+    #        you to check if a flag is enabled for a particular user.
+    def push_frontend_feature_flag(name, *args)
+      var_name = name.to_s.camelize(:lower)
+      enabled = Feature.enabled?(name, *args)
+
+      # Here the `true` argument signals gon that the value should be merged
+      # into any existing ones, instead of overwriting them. This allows you to
+      # use this method to push multiple feature flags.
+      gon.push({ features: { var_name => enabled } }, true)
     end
   end
 end

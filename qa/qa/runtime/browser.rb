@@ -51,6 +51,10 @@ module QA
             }
           )
 
+          if QA::Runtime::Env.accept_insecure_certs?
+            capabilities['acceptInsecureCerts'] = true
+          end
+
           options = Selenium::WebDriver::Chrome::Options.new
           options.add_argument("window-size=1240,1680")
 
@@ -112,6 +116,15 @@ module QA
 
         def perform(&block)
           visit(url)
+
+          if QA::Runtime::Env.qa_cookies
+            browser = Capybara.current_session.driver.browser
+            QA::Runtime::Env.qa_cookies.each do |cookie|
+              name, value = cookie.split("=")
+              value ||= ""
+              browser.manage.add_cookie name: name, value: value
+            end
+          end
 
           yield.tap { clear! } if block_given?
         end

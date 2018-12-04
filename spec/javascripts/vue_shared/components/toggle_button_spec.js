@@ -51,9 +51,11 @@ describe('Toggle Button', () => {
 
     it('sets aria-label representing toggle state', () => {
       vm.value = true;
+
       expect(vm.ariaLabel).toEqual('Toggle Status: ON');
 
       vm.value = false;
+
       expect(vm.ariaLabel).toEqual('Toggle Status: OFF');
     });
 

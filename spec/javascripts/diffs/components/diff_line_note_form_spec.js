@@ -13,10 +13,10 @@ describe('DiffLineNoteForm', () => {
 
   beforeEach(() => {
     diffFile = getDiffFileMock();
-    diffLines = diffFile.highlightedDiffLines;
+    diffLines = diffFile.highlighted_diff_lines;
 
     component = createComponentWithStore(Vue.extend(DiffLineNoteForm), store, {
-      diffFileHash: diffFile.fileHash,
+      diffFileHash: diffFile.file_hash,
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],
@@ -36,6 +36,7 @@ describe('DiffLineNoteForm', () => {
         spyOn(window, 'confirm').and.returnValue(false);
 
         component.handleCancelCommentForm(true, true);
+
         expect(window.confirm).toHaveBeenCalled();
       });
 
@@ -43,9 +44,11 @@ describe('DiffLineNoteForm', () => {
         spyOn(window, 'confirm').and.returnValue(false);
 
         component.handleCancelCommentForm(true, false);
+
         expect(window.confirm).not.toHaveBeenCalled();
 
         component.handleCancelCommentForm(false, true);
+
         expect(window.confirm).not.toHaveBeenCalled();
       });
 
@@ -58,8 +61,10 @@ describe('DiffLineNoteForm', () => {
         expect(window.confirm).not.toHaveBeenCalled();
         component.$nextTick(() => {
           expect(component.cancelCommentForm).toHaveBeenCalledWith({
-            lineCode: diffLines[0].lineCode,
+            lineCode: diffLines[0].line_code,
+            fileHash: component.diffFileHash,
           });
+
           expect(component.resetAutoSave).toHaveBeenCalled();
 
           done();
@@ -69,22 +74,21 @@ describe('DiffLineNoteForm', () => {
 
     describe('saveNoteForm', () => {
       it('should call saveNote action with proper params', done => {
-        let isPromiseCalled = false;
-        const formDataSpy = spyOnDependency(DiffLineNoteForm, 'getNoteFormData').and.returnValue({
-          postData: 1,
-        });
-        const saveNoteSpy = spyOn(component, 'saveNote').and.returnValue(
-          new Promise(() => {
-            isPromiseCalled = true;
-            done();
-          }),
+        const saveDiffDiscussionSpy = spyOn(component, 'saveDiffDiscussion').and.returnValue(
+          Promise.resolve(),
         );
+        spyOnProperty(component, 'formData').and.returnValue('formData');
 
-        component.handleSaveNote('note body');
-
-        expect(formDataSpy).toHaveBeenCalled();
-        expect(saveNoteSpy).toHaveBeenCalled();
-        expect(isPromiseCalled).toEqual(true);
+        component
+          .handleSaveNote('note body')
+          .then(() => {
+            expect(saveDiffDiscussionSpy).toHaveBeenCalledWith({
+              note: 'note body',
+              formData: 'formData',
+            });
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });

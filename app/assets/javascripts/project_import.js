@@ -5,4 +5,3 @@ export default function projectImport() {
     visitUrl(window.location.href);
   }, 5000);
 }
-

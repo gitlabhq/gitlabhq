@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Controller for viewing a file's raw
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
@@ -10,6 +12,6 @@ class Projects::RawController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at(@commit.id, @path)
 
-    send_blob(@blob, inline: (params[:inline] != 'false'))
+    send_blob(@repository, @blob, inline: (params[:inline] != 'false'))
   end
 end

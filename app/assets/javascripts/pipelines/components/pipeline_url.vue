@@ -1,14 +1,15 @@
 <script>
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
-import popover from '../../vue_shared/directives/popover';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import popover from '~/vue_shared/directives/popover';
 
 export default {
   components: {
-    userAvatarLink,
+    UserAvatarLink,
+    GlLink,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
     popover,
   },
   props: {
@@ -47,11 +48,9 @@ export default {
 </script>
 <template>
   <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
-    <a
-      :href="pipeline.path"
-      class="js-pipeline-url-link">
+    <gl-link :href="pipeline.path" class="js-pipeline-url-link">
       <span class="pipeline-id">#{{ pipeline.id }}</span>
-    </a>
+    </gl-link>
     <span>by</span>
     <user-avatar-link
       v-if="user"
@@ -60,44 +59,42 @@ export default {
       :tooltip-text="pipeline.user.name"
       class="js-pipeline-url-user"
     />
-    <span
-      v-if="!user"
-      class="js-pipeline-url-api api">
-      API
-    </span>
+    <span v-if="!user" class="js-pipeline-url-api api"> API </span>
     <div class="label-container">
       <span
-        v-tooltip
         v-if="pipeline.flags.latest"
+        v-gl-tooltip
         class="js-pipeline-url-latest badge badge-success"
-        title="Latest pipeline for this branch">
+        title="Latest pipeline for this branch"
+      >
         latest
       </span>
       <span
-        v-tooltip
         v-if="pipeline.flags.yaml_errors"
+        v-gl-tooltip
         :title="pipeline.yaml_errors"
-        class="js-pipeline-url-yaml badge badge-danger">
+        class="js-pipeline-url-yaml badge badge-danger"
+      >
         yaml invalid
       </span>
       <span
-        v-tooltip
         v-if="pipeline.flags.failure_reason"
+        v-gl-tooltip
         :title="pipeline.failure_reason"
-        class="js-pipeline-url-failure badge badge-danger">
+        class="js-pipeline-url-failure badge badge-danger"
+      >
         error
       </span>
-      <a
-        v-popover="popoverOptions"
+      <gl-link
         v-if="pipeline.flags.auto_devops"
+        v-popover="popoverOptions"
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
-        role="button">
+        role="button"
+      >
         Auto DevOps
-      </a>
-      <span
-        v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck badge badge-warning">
+      </gl-link>
+      <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
         stuck
       </span>
     </div>

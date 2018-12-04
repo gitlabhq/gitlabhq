@@ -77,11 +77,12 @@
     #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
-  .content-block.emoji-block
+  .content-block.emoji-block.emoji-block-sticky
     .row
-      .col-sm-8.js-noteable-awards
+      .col-md-12.col-lg-6.js-noteable-awards
         = render 'award_emoji/awards_block', awardable: @issue, inline: true
-      .col-sm-4.new-branch-col
+      .col-md-12.col-lg-6.new-branch-col
+        #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' unless @issue.confidential?
 
   %section.issuable-discussion

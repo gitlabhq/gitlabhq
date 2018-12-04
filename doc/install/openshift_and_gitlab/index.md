@@ -80,7 +80,7 @@ This will download the VirtualBox image and fire up the VM with some preconfigur
 values as you can see in the Vagrantfile. As you may have noticed, you need
 plenty of RAM (5GB in our example), so make sure you have enough.
 
-Now that OpenShift is setup, let's see how the web console looks like.
+Now that OpenShift is set up, let's see how the web console looks like.
 
 ### Explore the OpenShift web console
 
@@ -505,7 +505,7 @@ PaaS and managing your applications with the ease of containers.
 [RedHat]: https://www.redhat.com/en "RedHat website"
 [openshift]: https://www.openshift.org "OpenShift Origin website"
 [vm]: https://www.openshift.org/vm/ "OpenShift All-in-one VM"
-[vm-new]: https://atlas.hashicorp.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Atlas"
+[vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
 [template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
 [openshift.com]: https://openshift.com "OpenShift Online"
 [kubernetes]: http://kubernetes.io/ "Kubernetes website"

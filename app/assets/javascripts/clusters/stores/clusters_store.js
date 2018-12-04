@@ -1,5 +1,5 @@
 import { s__ } from '../../locale';
-import { INGRESS, JUPYTER } from '../constants';
+import { INGRESS, JUPYTER, KNATIVE } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -24,6 +24,13 @@ export default class ClusterStore {
           requestReason: null,
           externalIp: null,
         },
+        cert_manager: {
+          title: s__('ClusterIntegration|Cert-Manager'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+        },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
           status: null,
@@ -45,6 +52,15 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           hostname: null,
+        },
+        knative: {
+          title: s__('ClusterIntegration|Knative'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+          hostname: null,
+          externalIp: null,
         },
       },
     };
@@ -76,12 +92,8 @@ export default class ClusterStore {
     this.state.status = serverState.status;
     this.state.statusReason = serverState.status_reason;
 
-    serverState.applications.forEach((serverAppEntry) => {
-      const {
-        name: appId,
-        status,
-        status_reason: statusReason,
-      } = serverAppEntry;
+    serverState.applications.forEach(serverAppEntry => {
+      const { name: appId, status, status_reason: statusReason } = serverAppEntry;
 
       this.state.applications[appId] = {
         ...(this.state.applications[appId] || {}),
@@ -97,6 +109,11 @@ export default class ClusterStore {
           (this.state.applications.ingress.externalIp
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
+      } else if (appId === KNATIVE) {
+        this.state.applications.knative.hostname =
+          serverAppEntry.hostname || this.state.applications.knative.hostname;
+        this.state.applications.knative.externalIp =
+          serverAppEntry.external_ip || this.state.applications.knative.externalIp;
       }
     });
   }

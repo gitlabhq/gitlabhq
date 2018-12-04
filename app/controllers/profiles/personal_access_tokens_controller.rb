@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     set_index_vars

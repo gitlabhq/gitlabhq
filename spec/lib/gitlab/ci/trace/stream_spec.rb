@@ -257,7 +257,8 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
         let!(:last_result) { stream.html_with_state }
 
         before do
-          stream.append("5678", 4)
+          data_stream.seek(4, IO::SEEK_SET)
+          data_stream.write("5678")
           stream.seek(0)
         end
 
@@ -271,23 +272,27 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
     end
 
     context 'when stream is StringIO' do
+      let(:data_stream) do
+        StringIO.new("1234")
+      end
+
       let(:stream) do
-        described_class.new do
-          StringIO.new("1234")
-        end
+        described_class.new { data_stream }
       end
 
       it_behaves_like 'html_with_states'
     end
 
     context 'when stream is ChunkedIO' do
-      let(:stream) do
-        described_class.new do
-          Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
-            chunked_io.write("1234")
-            chunked_io.seek(0, IO::SEEK_SET)
-          end
+      let(:data_stream) do
+        Gitlab::Ci::Trace::ChunkedIO.new(build).tap do |chunked_io|
+          chunked_io.write("1234")
+          chunked_io.seek(0, IO::SEEK_SET)
         end
+      end
+
+      let(:stream) do
+        described_class.new { data_stream }
       end
 
       it_behaves_like 'html_with_states'

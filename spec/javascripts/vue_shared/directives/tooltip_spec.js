@@ -13,23 +13,44 @@ describe('Tooltip directive', () => {
 
   describe('with a single tooltip', () => {
     beforeEach(() => {
-      const SomeComponent = Vue.extend({
+      setFixtures('<div id="dummy-element"></div>');
+      vm = new Vue({
+        el: '#dummy-element',
         directives: {
           tooltip,
         },
-        template: `
-          <div
-            v-tooltip
-            title="foo">
-          </div>
-        `,
+        data() {
+          return {
+            tooltip: 'some text',
+          };
+        },
+        template: '<div v-tooltip :title="tooltip"></div>',
       });
-
-      vm = new SomeComponent().$mount();
     });
 
     it('should have tooltip plugin applied', () => {
       expect($(vm.$el).data('bs.tooltip')).toBeDefined();
+    });
+
+    it('displays the title as tooltip', () => {
+      $(vm.$el).tooltip('show');
+      const tooltipElement = document.querySelector('.tooltip-inner');
+
+      expect(tooltipElement.innerText).toContain('some text');
+    });
+
+    it('updates a visible tooltip', done => {
+      $(vm.$el).tooltip('show');
+      const tooltipElement = document.querySelector('.tooltip-inner');
+
+      vm.tooltip = 'other text';
+
+      Vue.nextTick()
+        .then(() => {
+          expect(tooltipElement).toContainText('other text');
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -58,7 +79,11 @@ describe('Tooltip directive', () => {
     });
 
     it('should have tooltip plugin applied to all instances', () => {
-      expect($(vm.$el).find('.js-look-for-tooltip').data('bs.tooltip')).toBeDefined();
+      expect(
+        $(vm.$el)
+          .find('.js-look-for-tooltip')
+          .data('bs.tooltip'),
+      ).toBeDefined();
     });
   });
 });

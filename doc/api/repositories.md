@@ -14,9 +14,10 @@ GET /projects/:id/repository/tree
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `path` (optional) - The path inside repository. Used to get contend of subdirectories
+- `path` (optional) - The path inside repository. Used to get content of subdirectories
 - `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
+- `per_page` (optional) - Number of results to show per page. If not specified, defaults to `20`
 
 ```json
 [
@@ -107,14 +108,18 @@ Get an archive of the repository. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
 ```
-GET /projects/:id/repository/archive
+GET /projects/:id/repository/archive[.format]
 ```
+
+`format` is an optional suffix for the archive format. Default is
+`tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, 'tbz2`, `tb2`,
+`bz2`, `tar`, and `zip`. For example, specifying `archive.zip`
+would send an archive in ZIP format.
 
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `sha` (optional) - The commit SHA to download. A tag, branch reference or sha can be used. This defaults to the tip of the default branch if not specified
-- `format` (optional) - The archive format. Default is `tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, `tbz2`, `tb2`, `bz2`, `tar`, `zip`
 
 ## Compare branches, tags or commits
 
@@ -216,7 +221,7 @@ GET /projects/:id/repository/merge_base
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `refs` | array | yes | The refs to find the common ancestor of, for now only 2 refs are supported |
+| `refs` | array | yes | The refs to find the common ancestor of, multiple refs can be passed |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"

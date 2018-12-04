@@ -2,7 +2,7 @@ import Vue from 'vue';
 import component from '~/jobs/components/jobs_container.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('Artifacts block', () => {
+describe('Jobs List block', () => {
   const Component = Vue.extend(component);
   let vm;
 
@@ -16,8 +16,7 @@ describe('Artifacts block', () => {
       text: 'passed',
       tooltip: 'passed',
     },
-    path: 'job/233432756',
-    id: '233432756',
+    id: 233432756,
     tooltip: 'build - passed',
     retried: true,
   };
@@ -33,8 +32,7 @@ describe('Artifacts block', () => {
       text: 'passed',
       tooltip: 'passed',
     },
-    path: 'job/2322756',
-    id: '2322756',
+    id: 2322756,
     tooltip: 'build - passed',
     active: true,
   };
@@ -50,8 +48,7 @@ describe('Artifacts block', () => {
       text: 'passed',
       tooltip: 'passed',
     },
-    path: 'job/232153',
-    id: '232153',
+    id: 232153,
     tooltip: 'build - passed',
   };
 
@@ -62,14 +59,16 @@ describe('Artifacts block', () => {
   it('renders list of jobs', () => {
     vm = mountComponent(Component, {
       jobs: [job, retried, active],
+      jobId: 12313,
     });
 
     expect(vm.$el.querySelectorAll('a').length).toEqual(3);
   });
 
-  it('renders arrow right when job is active', () => {
+  it('renders arrow right when job id matches `jobId`', () => {
     vm = mountComponent(Component, {
       jobs: [active],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('a .js-arrow-right')).not.toBeNull();
@@ -78,6 +77,7 @@ describe('Artifacts block', () => {
   it('does not render arrow right when job is not active', () => {
     vm = mountComponent(Component, {
       jobs: [job],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('a .js-arrow-right')).toBeNull();
@@ -86,6 +86,7 @@ describe('Artifacts block', () => {
   it('renders job name when present', () => {
     vm = mountComponent(Component, {
       jobs: [job],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('a').textContent.trim()).toContain(job.name);
@@ -95,6 +96,7 @@ describe('Artifacts block', () => {
   it('renders job id when job name is not available', () => {
     vm = mountComponent(Component, {
       jobs: [retried],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('a').textContent.trim()).toContain(retried.id);
@@ -103,14 +105,16 @@ describe('Artifacts block', () => {
   it('links to the job page', () => {
     vm = mountComponent(Component, {
       jobs: [job],
+      jobId: active.id,
     });
 
-    expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(job.path);
+    expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(job.status.details_path);
   });
 
   it('renders retry icon when job was retried', () => {
     vm = mountComponent(Component, {
       jobs: [retried],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('.js-retry-icon')).not.toBeNull();
@@ -119,6 +123,7 @@ describe('Artifacts block', () => {
   it('does not render retry icon when job was not retried', () => {
     vm = mountComponent(Component, {
       jobs: [job],
+      jobId: active.id,
     });
 
     expect(vm.$el.querySelector('.js-retry-icon')).toBeNull();

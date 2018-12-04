@@ -8,7 +8,7 @@ describe('Description field component', () => {
   let vm;
   let store;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const Component = Vue.extend(descriptionField);
     const el = document.createElement('div');
     store = new Store({
@@ -35,42 +35,32 @@ describe('Description field component', () => {
   });
 
   it('renders markdown field with description', () => {
-    expect(
-      vm.$el.querySelector('.md-area textarea').value,
-    ).toBe('test');
+    expect(vm.$el.querySelector('.md-area textarea').value).toBe('test');
   });
 
-  it('renders markdown field with a markdown description', (done) => {
+  it('renders markdown field with a markdown description', done => {
     store.formState.description = '**test**';
 
     Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.md-area textarea').value,
-      ).toBe('**test**');
+      expect(vm.$el.querySelector('.md-area textarea').value).toBe('**test**');
 
       done();
     });
   });
 
   it('focuses field when mounted', () => {
-    expect(
-      document.activeElement,
-    ).toBe(vm.$refs.textarea);
+    expect(document.activeElement).toBe(vm.$refs.textarea);
   });
 
   it('triggers update with meta+enter', () => {
     vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, true));
 
-    expect(
-      eventHub.$emit,
-    ).toHaveBeenCalled();
+    expect(eventHub.$emit).toHaveBeenCalled();
   });
 
   it('triggers update with ctrl+enter', () => {
     vm.$el.querySelector('.md-area textarea').dispatchEvent(keyboardDownEvent(13, false, true));
 
-    expect(
-      eventHub.$emit,
-    ).toHaveBeenCalled();
+    expect(eventHub.$emit).toHaveBeenCalled();
   });
 });

@@ -1,22 +1,35 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Clusters::Cluster do
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
+  it { is_expected.to have_many(:cluster_groups) }
+  it { is_expected.to have_many(:groups) }
   it { is_expected.to have_one(:provider_gcp) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
   it { is_expected.to have_one(:application_prometheus) }
   it { is_expected.to have_one(:application_runner) }
+  it { is_expected.to have_many(:kubernetes_namespaces) }
+  it { is_expected.to have_one(:kubernetes_namespace) }
+  it { is_expected.to have_one(:cluster_project) }
+
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
   it { is_expected.to delegate_method(:status_name).to(:provider) }
   it { is_expected.to delegate_method(:on_creation?).to(:provider) }
   it { is_expected.to delegate_method(:active?).to(:platform_kubernetes).with_prefix }
   it { is_expected.to delegate_method(:rbac?).to(:platform_kubernetes).with_prefix }
-  it { is_expected.to delegate_method(:installed?).to(:application_helm).with_prefix }
-  it { is_expected.to delegate_method(:installed?).to(:application_ingress).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
+
   it { is_expected.to respond_to :project }
 
   describe '.enabled' do
@@ -171,6 +184,53 @@ describe Clusters::Cluster do
         it { expect(cluster.update(enabled: false)).to be_truthy }
       end
     end
+
+    describe 'cluster_type validations' do
+      let(:instance_cluster) { create(:cluster, :instance) }
+      let(:group_cluster) { create(:cluster, :group) }
+      let(:project_cluster) { create(:cluster, :project) }
+
+      it 'validates presence' do
+        cluster = build(:cluster, :project, cluster_type: nil)
+
+        expect(cluster).not_to be_valid
+        expect(cluster.errors.full_messages).to include("Cluster type can't be blank")
+      end
+
+      context 'project_type cluster' do
+        it 'does not allow setting group' do
+          project_cluster.groups << build(:group)
+
+          expect(project_cluster).not_to be_valid
+          expect(project_cluster.errors.full_messages).to include('Cluster cannot have groups assigned')
+        end
+      end
+
+      context 'group_type cluster' do
+        it 'does not allow setting project' do
+          group_cluster.projects << build(:project)
+
+          expect(group_cluster).not_to be_valid
+          expect(group_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
+        end
+      end
+
+      context 'instance_type cluster' do
+        it 'does not allow setting group' do
+          instance_cluster.groups << build(:group)
+
+          expect(instance_cluster).not_to be_valid
+          expect(instance_cluster.errors.full_messages).to include('Cluster cannot have groups assigned')
+        end
+
+        it 'does not allow setting project' do
+          instance_cluster.projects << build(:project)
+
+          expect(instance_cluster).not_to be_valid
+          expect(instance_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
+        end
+      end
+    end
   end
 
   describe '#provider' do
@@ -222,6 +282,23 @@ describe Clusters::Cluster do
     end
   end
 
+  describe '#group' do
+    subject { cluster.group }
+
+    context 'when cluster belongs to a group' do
+      let(:cluster) { create(:cluster, :group) }
+      let(:group) { cluster.groups.first }
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'when cluster does not belong to any group' do
+      let(:cluster) { create(:cluster) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#applications' do
     set(:cluster) { create(:cluster) }
 
@@ -236,12 +313,14 @@ describe Clusters::Cluster do
     context 'when applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
+      let!(:cert_manager) { create(:clusters_applications_cert_managers, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
+      let!(:knative) { create(:clusters_applications_knative, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
+        is_expected.to contain_exactly(helm, ingress, cert_manager, prometheus, runner, jupyter, knative)
       end
     end
   end
@@ -265,6 +344,28 @@ describe Clusters::Cluster do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#allow_user_defined_namespace?' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { cluster.allow_user_defined_namespace? }
+
+    context 'project type cluster' do
+      it { is_expected.to be_truthy }
+    end
+
+    context 'group type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'instance type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

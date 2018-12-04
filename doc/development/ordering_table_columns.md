@@ -1,32 +1,49 @@
-# Ordering Table Columns
+# Ordering Table Columns in PostgreSQL
 
 Similar to C structures the space of a table is influenced by the order of
 columns. This is because the size of columns is aligned depending on the type of
-the column. Take the following column order for example:
+the following column. Let's consider an example:
 
-* id (integer, 4 bytes)
-* name (text, variable)
-* user_id (integer, 4 bytes)
+- `id` (integer, 4 bytes)
+- `name` (text, variable)
+- `user_id` (integer, 4 bytes)
 
-Integers are aligned to the word size. This means that on a 64 bit platform the
-actual size of each column would be: 8 bytes, variable, 8 bytes. This means that
-each row will require at least 16 bytes for the two integers, and a variable
-amount for the text field. If a table has a few rows this is not an issue, but
-once you start storing millions of rows you can save space by using a different
-order. For the above example a more ideal column order would be the following:
+The first column is a 4-byte integer. The next is text of variable length. The
+`text` data type requires 1-word alignment, and on 64-bit platform, 1 word is 8
+bytes. To meet the alignment requirements, four zeros are to be added right
+after the first column, so `id` occupies 4 bytes, then 4 bytes of alignment
+padding, and only next `name` is being stored. Therefore, in this case, 8 bytes
+will be spent for storing a 4-byte integer.
 
-* id (integer, 4 bytes)
-* user_id (integer, 4 bytes)
-* name (text, variable)
+The space between rows is also subject to alignment padding. The `user_id`
+column takes only 4 bytes, and on 64-bit platform, 4 zeroes will be added for
+alignment padding, to allow storing the next row beginning with the "clear" word.
 
-In this setup the `id` and `user_id` columns can be packed together, which means
-we only need 8 bytes to store _both_ of them. This in turn each row will require
-8 bytes less of space.
+As a result, the actual size of each column would be (ommiting variable length
+data and 24-byte tuple header): 8 bytes, variable, 8 bytes. This means that
+each row will require at least 16 bytes for the two 4-byte integers. If a table
+has a few rows this is not an issue. However, once you start storing millions of
+rows you can save space by using a different order. For the above example, the
+ideal column order would be the following:
+
+- `id` (integer, 4 bytes)
+- `user_id` (integer, 4 bytes)
+- `name` (text, variable)
+
+or 
+
+- `name` (text, variable)
+- `id` (integer, 4 bytes)
+- `user_id` (integer, 4 bytes)
+
+In these examples, the `id` and `user_id` columns are packed together, which
+means we only need 8 bytes to store _both_ of them. This in turn means each row
+will require 8 bytes less space.
 
 For GitLab we require that columns of new tables are ordered based to use the
 least amount of space. An easy way of doing this is to order them based on the
-type size in descending order with variable sizes (string and text columns for
-example) at the end.
+type size in descending order with variable sizes (`text`, `varchar`, arrays,
+`json`, `jsonb`, and so on) at the end.
 
 ## Type Sizes
 
@@ -36,7 +53,7 @@ of information we will list the sizes of common types here so it's easier to
 look them up. Here "word" refers to the word size, which is 4 bytes for a 32
 bits platform and 8 bytes for a 64 bits platform.
 
-| Type             | Size                                 | Aligned To |
+| Type             | Size                                 | Alignment needed |
 |:-----------------|:-------------------------------------|:-----------|
 | smallint         | 2 bytes                              | 1 word     |
 | integer          | 4 bytes                              | 1 word     |
@@ -58,7 +75,7 @@ always be at the end of a table.
 
 ## Real Example
 
-Let's use the "events" table as an example, which currently has the following
+Let's use the `events` table as an example, which currently has the following
 layout:
 
 | Column      | Type                        | Size     |
@@ -89,8 +106,8 @@ divided into fixed size chunks as follows:
 | 8 bytes    | updated_at        |
 | 8 bytes    | action, author_id |
 
-This means that excluding the variable sized data we need at least 48 bytes per
-row.
+This means that excluding the variable sized data and tuple header, we need at
+least 8 * 6 = 48 bytes per row.
 
 We can optimise this by using the following column order instead:
 
@@ -120,8 +137,8 @@ This would produce the following chunks:
 | variable   | title              |
 | variable   | data               |
 
-Here we only need 40 bytes per row excluding the variable sized data. 8 bytes
-being saved may not sound like much, but for tables as large as the "events"
-table it does begin to matter. For example, when storing 80 000 000 rows this
-translates to a space saving of at least 610 MB: all by just changing the order
-of a few columns.
+Here we only need 40 bytes per row excluding the variable sized data and 24-byte
+tuple header. 8 bytes being saved may not sound like much, but for tables as 
+large as the `events` table it does begin to matter. For example, when storing
+80 000 000 rows this translates to a space saving of at least 610 MB, all by
+just changing the order of a few columns.

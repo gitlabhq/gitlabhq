@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import * as constants from '../constants';
-import { reduceDiscussionsToLineCodes } from './utils';
 import { collapseSystemNotes } from './collapse_utils';
 
 export const discussions = state => collapseSystemNotes(state.discussions);
@@ -10,6 +9,8 @@ export const targetNoteHash = state => state.targetNoteHash;
 export const getNotesData = state => state.notesData;
 
 export const isNotesFetched = state => state.isNotesFetched;
+
+export const isLoading = state => state.isLoading;
 
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
@@ -28,9 +29,6 @@ export const notesById = state =>
     note.notes.every(n => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
-
-export const discussionsStructuredByLineCode = state =>
-  reduceDiscussionsToLineCodes(state.discussions);
 
 export const noteableType = state => {
   const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
@@ -55,40 +53,30 @@ export const getCurrentUserLastNote = state =>
 export const getDiscussionLastNote = state => discussion =>
   reverseNotes(discussion.notes).find(el => isLastNote(el, state));
 
-export const discussionCount = state => {
-  const filteredDiscussions = state.discussions.filter(n => !n.individual_note && n.resolvable);
+export const unresolvedDiscussionsCount = state => state.unresolvedDiscussionsCount;
+export const resolvableDiscussionsCount = state => state.resolvableDiscussionsCount;
+export const hasUnresolvedDiscussions = state => state.hasUnresolvedDiscussions;
 
-  return filteredDiscussions.length;
-};
+export const isDiscussionResolved = (state, getters) => discussionId =>
+  getters.resolvedDiscussionsById[discussionId] !== undefined;
 
-export const unresolvedDiscussions = (state, getters) => {
-  const resolvedMap = getters.resolvedDiscussionsById;
-
-  return state.discussions.filter(n => !n.individual_note && !resolvedMap[n.id]);
-};
-
-export const allDiscussions = (state, getters) => {
-  const resolved = getters.resolvedDiscussionsById;
-  const unresolved = getters.unresolvedDiscussions;
-
-  return Object.values(resolved).concat(unresolved);
-};
-
-export const allResolvableDiscussions = (state, getters) =>
-  getters.allDiscussions.filter(d => !d.individual_note && d.resolvable);
+export const allResolvableDiscussions = state =>
+  state.discussions.filter(d => !d.individual_note && d.resolvable);
 
 export const resolvedDiscussionsById = state => {
   const map = {};
 
-  state.discussions.filter(d => d.resolvable).forEach(n => {
-    if (n.notes) {
-      const resolved = n.notes.filter(note => note.resolvable).every(note => note.resolved);
+  state.discussions
+    .filter(d => d.resolvable)
+    .forEach(n => {
+      if (n.notes) {
+        const resolved = n.notes.filter(note => note.resolvable).every(note => note.resolved);
 
-      if (resolved) {
-        map[n.id] = n;
+        if (resolved) {
+          map[n.id] = n;
+        }
       }
-    }
-  });
+    });
 
   return map;
 };
@@ -126,8 +114,8 @@ export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
       const filenameComparison = a.diff_file.file_path.localeCompare(b.diff_file.file_path);
 
       // Get the line numbers, to compare within the same file
-      const aLines = [a.position.formatter.new_line, a.position.formatter.old_line];
-      const bLines = [b.position.formatter.new_line, b.position.formatter.old_line];
+      const aLines = [a.position.new_line, a.position.old_line];
+      const bLines = [b.position.new_line, b.position.old_line];
 
       return filenameComparison < 0 ||
         (filenameComparison === 0 &&
@@ -144,15 +132,12 @@ export const resolvedDiscussionCount = (state, getters) => {
   return Object.keys(resolvedMap).length;
 };
 
-export const discussionTabCounter = state => {
-  let all = [];
-
-  state.discussions.forEach(discussion => {
-    all = all.concat(discussion.notes.filter(note => !note.system && !note.placeholder));
-  });
-
-  return all.length;
-};
+export const discussionTabCounter = state =>
+  state.discussions.reduce(
+    (acc, discussion) =>
+      acc + discussion.notes.filter(note => !note.system && !note.placeholder).length,
+    0,
+  );
 
 // Returns the list of discussion IDs ordered according to given parameter
 // @param {Boolean} diffOrder - is ordered by diff?
@@ -179,8 +164,10 @@ export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, dif
 export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
   const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
   const currentIndex = idsOrdered.indexOf(discussionId);
+  const slicedIds = idsOrdered.slice(currentIndex + 1, currentIndex + 2);
 
-  return idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0];
+  // Get the first ID if there is none after the currentIndex
+  return slicedIds.length ? idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0] : idsOrdered[0];
 };
 
 // @param {Boolean} diffOrder - is ordered by diff?
@@ -190,6 +177,8 @@ export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
   }
   return getters.unresolvedDiscussionsIdsByDate[0];
 };
+
+export const commentsDisabled = state => state.commentsDisabled;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

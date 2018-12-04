@@ -352,10 +352,6 @@
 
   .mobile-git-clone {
     margin-top: $gl-padding-8;
-
-    .dropdown-menu-inner-content {
-      @extend .monospace;
-    }
   }
 }
 
@@ -727,7 +723,8 @@
   .scrolling-tabs-container {
     .scrolling-tabs {
       margin-top: $gl-padding-8;
-      margin-bottom: $gl-padding-8;
+      margin-bottom: $gl-padding-8 - $browserScrollbarSize;
+      padding-bottom: $browserScrollbarSize;
       flex-wrap: wrap;
       border-bottom: 0;
     }
@@ -735,7 +732,7 @@
     .fade-left,
     .fade-right {
       top: 0;
-      height: 100%;
+      height: calc(100% - #{$browserScrollbarSize});
 
       .fa {
         top: 50%;
@@ -828,6 +825,14 @@
       margin-right: 0;
     }
   }
+}
+
+.repository-language-bar-tooltip-language {
+  font-weight: $gl-font-weight-bold;
+}
+
+.repository-language-bar-tooltip-share {
+  color: $theme-gray-400;
 }
 
 pre.light-well {
@@ -1213,5 +1218,29 @@ pre.light-well {
 
   &:hover {
     opacity: 1;
+  }
+}
+
+.project-mirror-settings {
+  .btn-show-advanced {
+    min-width: 135px;
+
+    .label-show {
+      display: none;
+    }
+
+    .label-hide {
+      display: inline;
+    }
+
+    &.show-advanced {
+      .label-show {
+        display: inline;
+      }
+
+      .label-hide {
+        display: none;
+      }
+    }
   }
 }

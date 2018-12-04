@@ -13,7 +13,7 @@ class ExpireBuildInstanceArtifactsWorker
     return unless build&.project && !build.project.pending_delete
 
     Rails.logger.info "Removing artifacts for build #{build.id}..."
-    build.erase_artifacts!
+    build.erase_erasable_artifacts!
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

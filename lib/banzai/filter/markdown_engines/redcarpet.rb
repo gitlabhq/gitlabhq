@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # `Redcarpet` markdown engine for GitLab's Banzai markdown filter.
 # This module is used in Banzai::Filter::MarkdownFilter.
 # Used gem is `redcarpet` which is a ruby library for markdown processing.

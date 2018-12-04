@@ -51,6 +51,7 @@ describe('issue_comment_form component', () => {
         spyOn(vm, 'stopPolling');
 
         vm.handleSave();
+
         expect(vm.isSubmitting).toEqual(true);
         expect(vm.note).toEqual('');
         expect(vm.saveNote).toHaveBeenCalled();
@@ -77,10 +78,14 @@ describe('issue_comment_form component', () => {
         vm.handleSave();
 
         Vue.nextTick()
-          .then(() => expect(actionButton.disabled).toBeTruthy())
+          .then(() => {
+            expect(actionButton.disabled).toBeTruthy();
+          })
           .then(saveNotePromise)
           .then(Vue.nextTick)
-          .then(() => expect(actionButton.disabled).toBeFalsy())
+          .then(() => {
+            expect(actionButton.disabled).toBeFalsy();
+          })
           .then(done)
           .catch(done.fail);
       });
@@ -121,6 +126,7 @@ describe('issue_comment_form component', () => {
 
       it('should link to markdown docs', () => {
         const { markdownDocsPath } = notesDataMock;
+
         expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
           'Markdown',
         );
@@ -128,6 +134,7 @@ describe('issue_comment_form component', () => {
 
       it('should link to quick actions docs', () => {
         const { quickActionsDocsPath } = notesDataMock;
+
         expect(
           vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim(),
         ).toEqual('quick actions');
@@ -215,6 +222,7 @@ describe('issue_comment_form component', () => {
           expect(vm.$el.querySelector('.btn-comment-and-close').textContent.trim()).toEqual(
             'Comment & close issue',
           );
+
           expect(vm.$el.querySelector('.js-note-discard')).toBeDefined();
           done();
         });

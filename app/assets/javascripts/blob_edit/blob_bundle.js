@@ -13,11 +13,20 @@ export default () => {
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
     const assetsPath = editBlobForm.data('assetsPrefix');
-    const blobLanguage = editBlobForm.data('blobLanguage');
+    const filePath = editBlobForm.data('blobFilename');
     const currentAction = $('.js-file-title').data('currentAction');
+    const projectId = editBlobForm.data('project-id');
+    const commitButton = $('.js-commit-button');
 
-    new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage, currentAction);
+    commitButton.on('click', () => {
+      window.onbeforeunload = null;
+    });
+
+    new EditBlob(`${urlRoot}${assetsPath}`, filePath, currentAction, projectId);
     new NewCommitForm(editBlobForm);
+
+    // returning here blocks page navigation
+    window.onbeforeunload = () => '';
   }
 
   if (uploadBlobForm.length) {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Triggers < Grape::API
     include PaginationParams
@@ -5,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
       desc 'Trigger a GitLab project pipeline' do
         success Entities::Pipeline
       end

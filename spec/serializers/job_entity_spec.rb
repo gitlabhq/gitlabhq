@@ -109,6 +109,19 @@ describe JobEntity do
     end
   end
 
+  context 'when job is scheduled' do
+    let(:job) { create(:ci_build, :scheduled) }
+
+    it 'contains path to unschedule action' do
+      expect(subject).to include(:unschedule_path)
+    end
+
+    it 'contains scheduled_at' do
+      expect(subject[:scheduled]).to be_truthy
+      expect(subject[:scheduled_at]).to eq(job.scheduled_at)
+    end
+  end
+
   context 'when job is generic commit status' do
     let(:job) { create(:generic_commit_status, target_url: 'http://google.com') }
 

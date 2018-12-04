@@ -9,8 +9,8 @@
         = render 'ci/variables/variable_row', form_field: 'variables', variable: variable
       = render 'ci/variables/variable_row', form_field: 'variables'
     .prepend-top-20
-      %button.btn.btn-success.js-secret-variables-save-button{ type: 'button' }
-        %span.hide.js-secret-variables-save-loading-icon
+      %button.btn.btn-success.js-ci-variables-save-button{ type: 'button' }
+        %span.hide.js-ci-variables-save-loading-icon
           = icon('spinner spin')
         = _('Save variables')
       %button.btn.btn-info.btn-inverted.prepend-left-10.js-secret-value-reveal-button{ type: 'button', data: { secret_reveal_status: "#{@variables.size == 0}" } }

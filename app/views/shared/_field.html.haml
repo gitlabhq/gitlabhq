@@ -24,6 +24,6 @@
     - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control", disabled: disabled}
     - elsif type == 'password'
-      = form.password_field name, autocomplete: "new-password", class: "form-control", required: value.blank? && required, disabled: disabled
+      = form.password_field name, autocomplete: "new-password", placeholder: placeholder, class: "form-control", required: value.blank? && required, disabled: disabled
     - if help
       %span.form-text.text-muted= help

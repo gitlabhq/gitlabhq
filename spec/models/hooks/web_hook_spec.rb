@@ -57,6 +57,12 @@ describe WebHook do
     end
   end
 
+  describe 'encrypted attributes' do
+    subject { described_class.encrypted_attributes.keys }
+
+    it { is_expected.to contain_exactly(:token, :url) }
+  end
+
   describe 'execute' do
     let(:data) { { key: 'value' } }
     let(:hook_name) { 'project hook' }

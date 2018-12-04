@@ -1,7 +1,6 @@
 <script>
-
 // only allow classes in images.scss e.g. s12
-const validSizes = [8, 10, 12, 16, 18, 24, 32, 48, 72];
+const validSizes = [8, 10, 12, 14, 16, 18, 24, 32, 48, 72];
 let iconValidator = () => true;
 
 /*
@@ -9,7 +8,7 @@ let iconValidator = () => true;
 */
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line global-require
-  const data = require('@gitlab-org/gitlab-svgs/dist/icons.json');
+  const data = require('@gitlab/svgs/dist/icons.json');
   const { icons } = data;
   iconValidator = value => {
     if (icons.includes(value)) {
@@ -105,7 +104,8 @@ export default {
     :x="x"
     :y="y"
     :tabindex="tabIndex"
+    aria-hidden="true"
   >
-    <use v-bind="{ 'xlink:href':spriteHref }"/>
+    <use v-bind="{ 'xlink:href': spriteHref }" />
   </svg>
 </template>

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, one-var-declaration-per-line, max-len, vars-on-top, wrap-iife, no-unused-vars, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
+/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-unused-vars, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
 /* global fuzzaldrinPlus */
 
 import $ from 'jquery';

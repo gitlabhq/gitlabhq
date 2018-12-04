@@ -1,29 +1,16 @@
+# frozen_string_literal: true
+
 # Detect user based on identifier like
-# key-13 or user-36 or last commit
+# key-13 or user-36
 module Gitlab
   module Identifier
-    def identify(identifier, project = nil, newrev = nil)
-      if identifier.blank?
-        identify_using_commit(project, newrev)
-      elsif identifier =~ /\Auser-\d+\Z/
+    def identify(identifier)
+      if identifier =~ /\Auser-\d+\Z/
         # git push over http
         identify_using_user(identifier)
       elsif identifier =~ /\Akey-\d+\Z/
         # git push over ssh
         identify_using_ssh_key(identifier)
-      end
-    end
-
-    # Tries to identify a user based on a commit SHA.
-    def identify_using_commit(project, ref)
-      return if project.nil? && ref.nil?
-
-      commit = project.commit(ref)
-
-      return if !commit || !commit.author_email
-
-      identify_with_cache(:email, commit.author_email) do
-        commit.author
       end
     end
 

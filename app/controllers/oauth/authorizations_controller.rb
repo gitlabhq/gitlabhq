@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   layout 'profile'
 
-  # Overriden from Doorkeeper::AuthorizationsController to
+  # Overridden from Doorkeeper::AuthorizationsController to
   # include the call to session.delete
   def new
     if pre_auth.authorizable?

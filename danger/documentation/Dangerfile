@@ -11,24 +11,36 @@ def docs_paths_requiring_review(files)
   end
 end
 
-all_files = git.added_files + git.modified_files
-
-docs_paths_to_review = docs_paths_requiring_review(all_files)
+docs_paths_to_review = docs_paths_requiring_review(helper.all_changed_files)
 
 unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a ' \
-    'review from the docs team.'
+    'review from the Docs team.'
 
   markdown(<<~MARKDOWN)
-## Docs Review
+## Docs review
 
 The following files require a review from the Documentation team:
 
 * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-To make sure these changes are reviewed, mention `@gl-docsteam` in a separate
-comment, and explain what needs to be reviewed by the team. Please don't mention
-the team until your changes are ready for review.
+When your content is ready for review, mention a technical writer in a separate
+comment and explain what needs to be reviewed.
+
+You are welcome to mention them sooner if you have questions about writing or updating
+the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.
+
+Who to ping [based on DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages):
+
+| Tech writer  | Stage(s)                                                     |
+| ------------ | ------------------------------------------------------------ |
+| `@marcia`    | ~Create ~Release                                             |
+| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Packaging ~Secure |
+| `@eread`     | ~Manage ~Configure ~Geo ~Verify                              |
+| `@mikelewis` | ~Plan                                                        |
+
+If you are not sure which category the change falls within, or the change is not
+part of one of these categories, you can mention one of the usernames above.
   MARKDOWN
 
   unless gitlab.mr_labels.include?('Documentation')

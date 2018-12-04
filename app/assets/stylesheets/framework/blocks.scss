@@ -283,18 +283,20 @@
 
   .dismiss-button {
     position: absolute;
-    right: 6px;
-    top: 6px;
+    right: $gl-padding-8;
+    top: $gl-padding-8;
     cursor: pointer;
-    color: $blue-300;
+    color: $blue-500;
     z-index: 1;
     border: 0;
     background-color: transparent;
+    padding: $gl-padding-8;
+    line-height: 0;
 
     &:hover,
     &:focus {
       border: 0;
-      color: $blue-400;
+      color: $blue-700;
     }
   }
 
@@ -346,6 +348,7 @@
 
     @include media-breakpoint-down(xs) {
       width: 100%;
+      margin: $btn-side-margin 0;
     }
   }
 }

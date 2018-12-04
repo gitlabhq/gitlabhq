@@ -1,8 +1,15 @@
 <script>
 import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
+import { GlModal, GlModalDirective } from '@gitlab/ui';
 
 export default {
+  components: {
+    GlModal,
+  },
+  directives: {
+    'gl-modal': GlModalDirective,
+  },
   props: {
     deleteWikiUrl: {
       type: String,
@@ -47,14 +54,8 @@ export default {
 
 <template>
   <div class="d-inline-block">
-    <button
-      v-gl-modal="modalId"
-      type="button"
-      class="btn btn-danger"
-    >
-      {{ __('Delete') }}
-    </button>
-    <gl-ui-modal
+    <button v-gl-modal="modalId" type="button" class="btn btn-danger">{{ __('Delete') }}</button>
+    <gl-modal
       :title="title"
       :ok-title="s__('WikiPageConfirmDelete|Delete page')"
       :modal-id="modalId"
@@ -63,24 +64,10 @@ export default {
       @ok="onSubmit"
     >
       {{ message }}
-      <form
-        ref="form"
-        :action="deleteWikiUrl"
-        method="post"
-        class="js-requires-input"
-      >
-        <input
-          ref="method"
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          :value="csrfToken"
-          type="hidden"
-          name="authenticity_token"
-        />
+      <form ref="form" :action="deleteWikiUrl" method="post" class="js-requires-input">
+        <input ref="method" type="hidden" name="_method" value="delete" />
+        <input :value="csrfToken" type="hidden" name="authenticity_token" />
       </form>
-    </gl-ui-modal>
+    </gl-modal>
   </div>
 </template>

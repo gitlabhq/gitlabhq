@@ -164,27 +164,22 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-file-finder-overlay"
-    @mousedown.self="toggleFileFinder(false)"
-  >
-    <div
-      class="dropdown-menu diff-file-changes ide-file-finder show"
-    >
+  <div class="ide-file-finder-overlay" @mousedown.self="toggleFileFinder(false);">
+    <div class="dropdown-menu diff-file-changes ide-file-finder show">
       <div class="dropdown-input">
         <input
           ref="searchInput"
-          :placeholder="__('Search files')"
           v-model="searchText"
+          :placeholder="__('Search files')"
           type="search"
           class="dropdown-input-field"
           autocomplete="off"
-          @keydown="onKeydown($event)"
-          @keyup="onKeyup($event)"
+          @keydown="onKeydown($event);"
+          @keyup="onKeyup($event);"
         />
         <i
           :class="{
-            hidden: showClearInputButton
+            hidden: showClearInputButton,
           }"
           aria-hidden="true"
           class="fa fa-search dropdown-input-search"
@@ -192,7 +187,7 @@ export default {
         <i
           :aria-label="__('Clear search input')"
           :class="{
-            show: showClearInputButton
+            show: showClearInputButton,
           }"
           role="button"
           class="fa fa-times dropdown-input-clear"
@@ -200,17 +195,9 @@ export default {
         ></i>
       </div>
       <div>
-        <virtual-list
-          ref="virtualScrollList"
-          :size="listHeight"
-          :remain="listShowCount"
-          wtag="ul"
-        >
+        <virtual-list ref="virtualScrollList" :size="listHeight" :remain="listShowCount" wtag="ul">
           <template v-if="filteredBlobsLength">
-            <li
-              v-for="(file, index) in filteredBlobs"
-              :key="file.key"
-            >
+            <li v-for="(file, index) in filteredBlobs" :key="file.key">
               <item
                 :file="file"
                 :search-text="searchText"
@@ -223,10 +210,7 @@ export default {
               />
             </li>
           </template>
-          <li
-            v-else
-            class="dropdown-menu-empty-item"
-          >
+          <li v-else class="dropdown-menu-empty-item">
             <div class="append-right-default prepend-left-default prepend-top-8 append-bottom-8">
               <template v-if="loading">
                 {{ __('Loading...') }}

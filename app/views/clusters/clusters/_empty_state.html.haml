@@ -1,0 +1,14 @@
+.row.empty-state
+  .col-12
+    .svg-content= image_tag 'illustrations/clusters_empty.svg'
+  .col-12
+    .text-content
+      %h4.text-center= s_('ClusterIntegration|Integrate Kubernetes cluster automation')
+      %p
+        = s_('ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
+        = clusterable.empty_state_help_text
+        = clusterable.learn_more_link
+
+      - if clusterable.can_create_cluster?
+        .text-center
+          = link_to s_('ClusterIntegration|Add Kubernetes cluster'), clusterable.new_path, class: 'btn btn-success'

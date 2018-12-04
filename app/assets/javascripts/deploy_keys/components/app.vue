@@ -6,11 +6,13 @@ import eventHub from '../eventhub';
 import DeployKeysService from '../service';
 import DeployKeysStore from '../store';
 import KeysPanel from './keys_panel.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
     KeysPanel,
     NavigationTabs,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -95,8 +97,10 @@ export default {
         .catch(() => new Flash(s__('DeployKeys|Error enabling deploy key')));
     },
     disableKey(deployKey, callback) {
-      // eslint-disable-next-line no-alert
-      if (window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
+      if (
+        // eslint-disable-next-line no-alert
+        window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))
+      ) {
         this.service
           .disableKey(deployKey.id)
           .then(this.fetchKeys)
@@ -119,26 +123,10 @@ export default {
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
-        <div class="fade-left">
-          <i
-            class="fa fa-angle-left"
-            aria-hidden="true"
-          >
-          </i>
-        </div>
-        <div class="fade-right">
-          <i
-            class="fa fa-angle-right"
-            aria-hidden="true"
-          >
-          </i>
-        </div>
+        <div class="fade-left"><i class="fa fa-angle-left" aria-hidden="true"> </i></div>
+        <div class="fade-right"><i class="fa fa-angle-right" aria-hidden="true"> </i></div>
 
-        <navigation-tabs
-          :tabs="tabs"
-          scope="deployKeys"
-          @onChangeTab="onChangeTab"
-        />
+        <navigation-tabs :tabs="tabs" scope="deployKeys" @onChangeTab="onChangeTab" />
       </div>
       <keys-panel
         :project-id="projectId"

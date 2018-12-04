@@ -120,9 +120,13 @@ class IssuesFinder < IssuableFinder
     return @user_can_see_all_confidential_issues = true if current_user.full_private_access?
 
     @user_can_see_all_confidential_issues =
-      project? &&
-      project &&
-      project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
+      if project? && project
+        project.team.max_member_access(current_user.id) >= CONFIDENTIAL_ACCESS_LEVEL
+      elsif group
+        group.max_member_access_for_user(current_user) >= CONFIDENTIAL_ACCESS_LEVEL
+      else
+        false
+      end
   end
 
   def user_cannot_see_confidential_issues?
@@ -131,17 +135,17 @@ class IssuesFinder < IssuableFinder
     current_user.blank?
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
-    if assignee
-      items.assigned_to(assignee)
-    elsif no_assignee?
+    if filter_by_no_assignee?
       items.unassigned
+    elsif filter_by_any_assignee?
+      items.assigned
+    elsif assignee
+      items.assigned_to(assignee)
     elsif assignee_id? || assignee_username? # assignee not found
       items.none
     else
       items
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

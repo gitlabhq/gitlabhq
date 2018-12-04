@@ -61,13 +61,17 @@ For a list of supported languages on JUnit tests, check the
 [Wikipedia article](https://en.wikipedia.org/wiki/JUnit#Ports).
 
 To enable the JUnit reports in merge requests, you need to add
-[`artifacts:reports:junit`](yaml/README.md#artifacts-reports-junit)
+[`artifacts:reports:junit`](yaml/README.md#artifactsreportsjunit)
 in `.gitlab-ci.yml`, and specify the path(s) of the generated test reports.
 
 In the following examples, the job in the `test` stage runs and GitLab
 collects the JUnit test report from each job. After each job is executed, the
 XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
+
+NOTE: **Note:** 
+If you also want the ability to browse JUnit output files, include the
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword.
 
 ### Ruby example
 
@@ -138,6 +142,27 @@ java:
       junit:
         - target/surefire-reports/TEST-*.xml
         - target/failsafe-reports/TEST-*.xml
+```
+
+### C/C++ example
+
+There are a few tools that can produce JUnit reports in C/C++.
+
+#### GoogleTest
+
+In the following example, `gtest` is used to generate the test reports.
+If there are multiple gtest executables created for different architectures (`x86`, `x64` or `arm`), 
+you will be required to run each test providing a unique filename. The results
+will then be aggregated together.
+
+```yaml
+cpp:
+  stage: test
+  script:
+  - gtest.exe --gtest_output="xml:report.xml"
+  artifacts:
+    reports:
+      junit: report.xml
 ```
 
 ## Limitations

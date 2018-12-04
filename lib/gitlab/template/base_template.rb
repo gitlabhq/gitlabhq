@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Template
     class BaseTemplate
-      attr_reader :category
+      attr_accessor :category
 
       def initialize(path, project = nil, category: nil)
         @path = path
@@ -12,14 +14,21 @@ module Gitlab
       def name
         File.basename(@path, self.class.extension)
       end
-      alias_method :id, :name
+      alias_method :key, :name
 
       def content
         @finder.read(@path)
       end
 
+      # Present for compatibility with license templates, which can replace text
+      # like `[fullname]` with a user-specified string. This is a no-op for
+      # other templates
+      def resolve!(_placeholders = {})
+        self
+      end
+
       def to_json
-        { name: name, content: content }
+        { key: key, name: name, content: content }
       end
 
       def <=>(other)

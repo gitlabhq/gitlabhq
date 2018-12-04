@@ -16,7 +16,12 @@ shared_examples 'merge requests list' do
 
       create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
 
-      create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
+      merge_request = create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
+
+      merge_request.metrics.update!(merged_by: user,
+                                    latest_closed_by: user,
+                                    latest_closed_at: 1.hour.ago,
+                                    merged_at: 2.hours.ago)
 
       expect do
         get api(endpoint_path, user)
@@ -179,6 +184,23 @@ shared_examples 'merge requests list' do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), labels: IssuesFinder::FILTER_ANY
+
+      expect_paginated_array_response
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
+    it 'returns an array of merge requests without a label when filtering by no label' do
+      get api(endpoint_path, user), labels: IssuesFinder::FILTER_NONE
+
+      response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+      expect_paginated_array_response
+      expect(response_ids).to contain_exactly(merge_request_closed.id, merge_request_merged.id, merge_request_locked.id)
     end
 
     it 'returns an array of labeled merge requests that are merged for a milestone' do

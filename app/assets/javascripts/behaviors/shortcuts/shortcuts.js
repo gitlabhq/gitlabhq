@@ -4,6 +4,7 @@ import Mousetrap from 'mousetrap';
 import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultStopCallback = Mousetrap.stopCallback;
 Mousetrap.stopCallback = (e, element, combo) => {
@@ -61,7 +62,7 @@ export default class Shortcuts {
   static onTogglePerfBar(e) {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
-    if (Cookies.get(performanceBarCookieName) === 'true') {
+    if (parseBoolean(Cookies.get(performanceBarCookieName))) {
       Cookies.set(performanceBarCookieName, 'false', { path: '/' });
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });
@@ -88,22 +89,24 @@ export default class Shortcuts {
       return null;
     }
 
-    return axios.get(gon.shortcuts_path, {
-      responseType: 'text',
-    }).then(({ data }) => {
-      $.globalEval(data);
+    return axios
+      .get(gon.shortcuts_path, {
+        responseType: 'text',
+      })
+      .then(({ data }) => {
+        $.globalEval(data);
 
-      if (location && location.length > 0) {
-        const results = [];
-        for (let i = 0, len = location.length; i < len; i += 1) {
-          results.push($(location[i]).show());
+        if (location && location.length > 0) {
+          const results = [];
+          for (let i = 0, len = location.length; i < len; i += 1) {
+            results.push($(location[i]).show());
+          }
+          return results;
         }
-        return results;
-      }
 
-      $('.hidden-shortcut').show();
-      return $('.js-more-help-button').remove();
-    });
+        $('.hidden-shortcut').show();
+        return $('.js-more-help-button').remove();
+      });
   }
 
   focusFilter(e) {

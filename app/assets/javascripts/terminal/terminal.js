@@ -4,10 +4,14 @@ import * as fit from 'xterm/lib/addons/fit/fit';
 
 export default class GLTerminal {
   constructor(options = {}) {
-    this.options = Object.assign({}, {
-      cursorBlink: true,
-      screenKeys: true,
-    }, options);
+    this.options = Object.assign(
+      {},
+      {
+        cursorBlink: true,
+        screenKeys: true,
+      },
+      options,
+    );
 
     this.container = document.querySelector(options.selector);
 

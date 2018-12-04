@@ -87,7 +87,7 @@ describe MergeRequests::RebaseService do
           expect(merge_request.reload.rebase_commit_sha).to eq(head_sha)
         end
 
-        it 'logs correct author and commiter' do
+        it 'logs correct author and committer' do
           head_commit = merge_request.source_project.repository.commit(merge_request.source_branch)
 
           expect(head_commit.author_email).to eq('dmitriy.zaporozhets@gmail.com')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemCheck
   module Orphans
     class RepositoryCheck < SystemCheck::BaseCheck

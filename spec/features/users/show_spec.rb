@@ -8,6 +8,7 @@ describe 'User page' do
       visit(user_path(user))
 
       page.within '.nav-links' do
+        expect(page).to have_link('Overview')
         expect(page).to have_link('Activity')
         expect(page).to have_link('Groups')
         expect(page).to have_link('Contributed projects')
@@ -44,6 +45,7 @@ describe 'User page' do
       visit(user_path(user))
 
       page.within '.nav-links' do
+        expect(page).to have_link('Overview')
         expect(page).to have_link('Activity')
         expect(page).to have_link('Groups')
         expect(page).to have_link('Contributed projects')

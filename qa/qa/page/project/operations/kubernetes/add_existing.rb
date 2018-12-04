@@ -4,12 +4,13 @@ module QA
       module Operations
         module Kubernetes
           class AddExisting < Page::Base
-            view 'app/views/projects/clusters/user/_form.html.haml' do
-              element :cluster_name, 'text_field :name'
-              element :api_url, 'text_field :api_url'
-              element :ca_certificate, 'text_area :ca_cert'
-              element :token, 'text_field :token'
-              element :add_cluster_button, "submit s_('ClusterIntegration|Add Kubernetes cluster')"
+            view 'app/views/clusters/clusters/user/_form.html.haml' do
+              element :cluster_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
+              element :api_url, 'text_field :api_url' # rubocop:disable QA/ElementWithPattern
+              element :ca_certificate, 'text_area :ca_cert' # rubocop:disable QA/ElementWithPattern
+              element :token, 'text_field :token' # rubocop:disable QA/ElementWithPattern
+              element :add_cluster_button, "submit s_('ClusterIntegration|Add Kubernetes cluster')" # rubocop:disable QA/ElementWithPattern
+              element :rbac_checkbox
             end
 
             def set_cluster_name(name)
@@ -30,6 +31,10 @@ module QA
 
             def add_cluster!
               click_on 'Add Kubernetes cluster'
+            end
+
+            def check_rbac!
+              check_element :rbac_checkbox
             end
           end
         end

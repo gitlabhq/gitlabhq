@@ -34,11 +34,7 @@ export default {
       required: true,
       type: Object,
       validator(mediatorObject) {
-        return (
-          mediatorObject.service &&
-          mediatorObject.service.update &&
-          mediatorObject.store
-        );
+        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
       },
     },
   },
@@ -67,8 +63,7 @@ export default {
 
   methods: {
     toggleForm() {
-      this.mediator.store.isLockDialogOpen = !this.mediator.store
-        .isLockDialogOpen;
+      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
     },
 
     updateLockedAttribute(locked) {
@@ -79,9 +74,14 @@ export default {
         .then(() => window.location.reload())
         .catch(() =>
           Flash(
-            sprintf(__('Something went wrong trying to change the locked state of this %{issuableDisplayName}'), {
-              issuableDisplayName: this.issuableDisplayName,
-            }),
+            sprintf(
+              __(
+                'Something went wrong trying to change the locked state of this %{issuableDisplayName}',
+              ),
+              {
+                issuableDisplayName: this.issuableDisplayName,
+              },
+            ),
           ),
         );
     },
@@ -100,15 +100,13 @@ export default {
       data-boundary="viewport"
       @click="toggleForm"
     >
-      <icon
-        :name="lockIcon"
-        aria-hidden="true"
-        class="sidebar-item-icon is-active"
-      />
+      <icon :name="lockIcon" class="sidebar-item-icon is-active" />
     </div>
 
     <div class="title hide-collapsed">
-      {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
+      {{
+        sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName })
+      }}
       <button
         v-if="isEditable"
         class="float-right lock-edit"
@@ -127,30 +125,13 @@ export default {
         :issuable-type="issuableType"
       />
 
-      <div
-        v-if="isLocked"
-        class="value sidebar-item-value"
-      >
-        <icon
-          :size="16"
-          name="lock"
-          aria-hidden="true"
-          class="sidebar-item-icon inline is-active"
-        />
+      <div v-if="isLocked" class="value sidebar-item-value">
+        <icon :size="16" name="lock" class="sidebar-item-icon inline is-active" />
         {{ __('Locked') }}
       </div>
 
-      <div
-        v-else
-        class="no-value sidebar-item-value hide-collapsed"
-      >
-        <icon
-          :size="16"
-          name="lock-open"
-          aria-hidden="true"
-          class="sidebar-item-icon inline"
-        />
-        {{ __('Unlocked') }}
+      <div v-else class="no-value sidebar-item-value hide-collapsed">
+        <icon :size="16" name="lock-open" class="sidebar-item-icon inline" /> {{ __('Unlocked') }}
       </div>
     </div>
   </div>

@@ -77,6 +77,15 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
       end
+
+      it 'removes the quick action from note and explains it in the preview' do
+        preview_note("Awesome!\n\n/close")
+
+        expect(page).to have_content 'Awesome!'
+        expect(page).not_to have_content '/close'
+        issuable_name = issuable.is_a?(Issue) ? 'issue' : 'merge request'
+        expect(page).to have_content "Closes this #{issuable_name}."
+      end
     end
 
     context 'with a note containing only commands' do

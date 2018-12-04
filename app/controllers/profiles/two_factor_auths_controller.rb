@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_two_factor_requirement
 
@@ -30,7 +32,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       unless two_factor_grace_period_expired?
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] << " You need to do this before #{l(grace_period_deadline)}."
+        flash.now[:alert] = flash.now[:alert] + " You need to do this before #{l(grace_period_deadline)}."
       end
     end
 

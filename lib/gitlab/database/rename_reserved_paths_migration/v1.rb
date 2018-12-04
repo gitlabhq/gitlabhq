@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module can be included in migrations to make it easier to rename paths
 # of `Namespace` & `Project` models certain paths would become `reserved`.
 #

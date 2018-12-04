@@ -8,7 +8,6 @@ import '~/vue_shared/models/label';
 import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/stores/boards_store';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
 
@@ -118,11 +117,9 @@ describe('Issue card component', () => {
       });
 
       it('sets title', () => {
-        expect(
-          component.$el
-            .querySelector('.board-card-assignee img')
-            .getAttribute('data-original-title'),
-        ).toContain(`Assigned to ${user.name}`);
+        expect(component.$el.querySelector('.js-assignee-tooltip').textContent).toContain(
+          `${user.name}`,
+        );
       });
 
       it('sets users path', () => {
@@ -155,7 +152,7 @@ describe('Issue card component', () => {
       it('displays defaults avatar if users avatar is null', () => {
         expect(component.$el.querySelector('.board-card-assignee img')).not.toBeNull();
         expect(component.$el.querySelector('.board-card-assignee img').getAttribute('src')).toBe(
-          'default_avatar?width=20',
+          'default_avatar?width=24',
         );
       });
     });
@@ -164,7 +161,6 @@ describe('Issue card component', () => {
   describe('multiple assignees', () => {
     beforeEach(done => {
       component.issue.assignees = [
-        user,
         new ListAssignee({
           id: 2,
           name: 'user2',
@@ -188,11 +184,11 @@ describe('Issue card component', () => {
       Vue.nextTick(() => done());
     });
 
-    it('renders all four assignees', () => {
-      expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(4);
+    it('renders all three assignees', () => {
+      expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(3);
     });
 
-    describe('more than four assignees', () => {
+    describe('more than three assignees', () => {
       beforeEach(done => {
         component.issue.assignees.push(
           new ListAssignee({
@@ -208,12 +204,12 @@ describe('Issue card component', () => {
 
       it('renders more avatar counter', () => {
         expect(
-          component.$el.querySelector('.board-card-assignee .avatar-counter').innerText,
+          component.$el.querySelector('.board-card-assignee .avatar-counter').innerText.trim(),
         ).toEqual('+2');
       });
 
-      it('renders three assignees', () => {
-        expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(3);
+      it('renders two assignees', () => {
+        expect(component.$el.querySelectorAll('.board-card-assignee .avatar').length).toEqual(2);
       });
 
       it('renders 99+ avatar counter', done => {
@@ -229,7 +225,7 @@ describe('Issue card component', () => {
 
         Vue.nextTick(() => {
           expect(
-            component.$el.querySelector('.board-card-assignee .avatar-counter').innerText,
+            component.$el.querySelector('.board-card-assignee .avatar-counter').innerText.trim(),
           ).toEqual('99+');
           done();
         });

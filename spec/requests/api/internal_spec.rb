@@ -494,6 +494,24 @@ describe API::Internal do
       end
     end
 
+    context 'request times out' do
+      context 'git push' do
+        it 'responds with a gateway timeout' do
+          personal_project = create(:project, namespace: user.namespace)
+
+          expect_next_instance_of(Gitlab::GitAccess) do |access|
+            expect(access).to receive(:check).and_raise(Gitlab::GitAccess::TimeoutError, "Foo")
+          end
+          push(key, personal_project)
+
+          expect(response).to have_gitlab_http_status(503)
+          expect(json_response['status']).to be_falsey
+          expect(json_response['message']).to eq("Foo")
+          expect(user.reload.last_activity_on).to be_nil
+        end
+      end
+    end
+
     context "archived project" do
       before do
         project.add_developer(user)

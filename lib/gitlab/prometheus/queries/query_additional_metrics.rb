@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Prometheus
     module Queries
@@ -81,11 +83,8 @@ module Gitlab
         end
 
         def common_query_context(environment, timeframe_start:, timeframe_end:)
-          base_query_context(timeframe_start, timeframe_end).merge({
-            ci_environment_slug: environment.slug,
-            kube_namespace: environment.deployment_platform&.actual_namespace || '',
-            environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
-          })
+          base_query_context(timeframe_start, timeframe_end)
+            .merge(QueryVariables.call(environment))
         end
 
         def base_query_context(timeframe_start, timeframe_end)

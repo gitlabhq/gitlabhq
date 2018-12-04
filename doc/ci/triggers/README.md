@@ -2,7 +2,7 @@
 
 > **Notes**:
 >
-> - [Introduced][ci-229] in GitLab CE 7.14.
+> - [Introduced](https://about.gitlab.com/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
 > - GitLab 8.12 has a completely redesigned job permissions system. Read all
 >   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
 
@@ -154,10 +154,10 @@ This information is also exposed in the UI.
 
 Using trigger variables can be proven useful for a variety of reasons:
 
-* Identifiable jobs. Since the variable is exposed in the UI you can know
+- Identifiable jobs. Since the variable is exposed in the UI you can know
   why the rebuild was triggered if you pass a variable that explains the
   purpose.
-* Conditional job processing. You can have conditional jobs that run whenever
+- Conditional job processing. You can have conditional jobs that run whenever
   a certain variable is present.
 
 Consider the following `.gitlab-ci.yml` where we set three
@@ -221,7 +221,6 @@ removed with one of the future versions of GitLab. You are advised to
 [take ownership](#taking-ownership) of any legacy triggers.
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
-[ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
 [ee]: https://about.gitlab.com/pricing/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-variables-environment-variables

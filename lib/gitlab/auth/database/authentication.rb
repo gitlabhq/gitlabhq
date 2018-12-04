@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These calls help to authenticate to OAuth provider by providing username and password
 #
 

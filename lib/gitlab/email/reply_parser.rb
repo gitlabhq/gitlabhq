@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Inspired in great part by Discourse's Email::Receiver
 module Gitlab
   module Email

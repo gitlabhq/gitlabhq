@@ -62,8 +62,9 @@ describe('IDE branches search list', () => {
     });
 
     it('renders list', () => {
-      const elementText = Array.from(vm.$el.querySelectorAll('li strong'))
-        .map(x => x.textContent.trim());
+      const elementText = Array.from(vm.$el.querySelectorAll('li strong')).map(x =>
+        x.textContent.trim(),
+      );
 
       expect(elementText).toEqual(testBranches.map(x => x.name));
     });

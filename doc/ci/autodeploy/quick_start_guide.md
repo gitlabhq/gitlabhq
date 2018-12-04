@@ -11,7 +11,7 @@ We made a minimal [Ruby application](https://gitlab.com/gitlab-examples/minimal-
 
 Let’s start by forking our sample application. Go to [the project page](https://gitlab.com/gitlab-examples/minimal-ruby-app) and press the `Fork` button. Soon you should have a project under your namespace with the necessary files.
 
-## Setup your own cluster on Google Kubernetes Engine
+## Set up your own cluster on Google Kubernetes Engine
 
 If you do not already have a Google Cloud account, create one at https://console.cloud.google.com.
 
@@ -23,9 +23,9 @@ You need to have the Google Cloud SDK installed. e.g.
 On OSX, install [homebrew](https://brew.sh):
 
 1. Install Brew Caskroom: `brew install caskroom/cask/brew-cask`
-2. Install Google Cloud SDK: `brew cask install google-cloud-sdk`
-3. Add `kubectl`: `gcloud components install kubectl`
-4. Log in: `gcloud auth login`
+1. Install Google Cloud SDK: `brew cask install google-cloud-sdk`
+1. Add `kubectl`: `gcloud components install kubectl`
+1. Log in: `gcloud auth login`
 
 Now go back to the Google interface, find your cluster, and follow the instructions under `Connect to the cluster` and open the Kubernetes Dashboard. It will look something like `gcloud container clusters get-credentials ruby-autodeploy \ --zone europe-west2-c --project api-project-XXXXXXX` and then `kubectl proxy`.
 
@@ -71,7 +71,7 @@ Use this IP address to configure your DNS. This part heavily depends on your pre
 
 Use `nslookup minimal-ruby-app-staging.<yourdomain>` to confirm that domain is assigned to the cluster IP.
 
-## Setup Auto Deploy
+## Set up Auto Deploy
 
 Visit the home page of your GitLab.com project and press "Set up Auto Deploy" button.
 

@@ -34,20 +34,16 @@ export default {
 </script>
 
 <template>
-  <ide-tree-list
-    viewer-type="editor"
-  >
-    <template
-      slot="header"
-    >
+  <ide-tree-list viewer-type="editor">
+    <template slot="header">
       {{ __('Edit') }}
       <div class="ide-tree-actions ml-auto d-flex">
         <new-entry-button
           :label="__('New file')"
           :show-label="false"
-          class="d-flex border-0 p-0 mr-3"
+          class="d-flex border-0 p-0 mr-3 qa-new-file"
           icon="doc-new"
-          @click="openNewEntryModal({ type: 'blob' })"
+          @click="openNewEntryModal({ type: 'blob' });"
         />
         <upload
           :show-label="false"
@@ -60,7 +56,7 @@ export default {
           :show-label="false"
           class="d-flex border-0 p-0"
           icon="folder-new"
-          @click="openNewEntryModal({ type: 'tree' })"
+          @click="openNewEntryModal({ type: 'tree' });"
         />
       </div>
     </template>

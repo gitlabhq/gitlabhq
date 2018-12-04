@@ -1,22 +1,31 @@
 <script>
-import IssuesBlock from '~/reports/components/report_issues.vue';
-import {
-  STATUS_SUCCESS,
-  STATUS_FAILED,
-  STATUS_NEUTRAL,
-} from '~/reports/constants';
+import ReportItem from '~/reports/components/report_item.vue';
+import { STATUS_FAILED, STATUS_NEUTRAL, STATUS_SUCCESS } from '~/reports/constants';
+import SmartVirtualList from '~/vue_shared/components/smart_virtual_list.vue';
+
+const wrapIssueWithState = (status, isNew = false) => issue => ({
+  status: issue.status || status,
+  isNew,
+  issue,
+});
 
 /**
  * Renders block of issues
  */
-
 export default {
   components: {
-    IssuesBlock,
+    SmartVirtualList,
+    ReportItem,
   },
-  success: STATUS_SUCCESS,
-  failed: STATUS_FAILED,
-  neutral: STATUS_NEUTRAL,
+  // Typical height of a report item in px
+  typicalReportItemHeight: 32,
+  /*
+   The maximum amount of shown issues. This is calculated by
+   ( max-height of report-block-list / typicalReportItemHeight ) + some safety margin
+   We will use VirtualList if we have more items than this number.
+   For entries lower than this number, the virtual scroll list calculates the total height of the element wrongly.
+   */
+  maxShownReportItems: 20,
   props: {
     newIssues: {
       type: Array,
@@ -44,42 +53,34 @@ export default {
       default: '',
     },
   },
+  computed: {
+    issuesWithState() {
+      return [
+        ...this.newIssues.map(wrapIssueWithState(STATUS_FAILED, true)),
+        ...this.unresolvedIssues.map(wrapIssueWithState(STATUS_FAILED)),
+        ...this.neutralIssues.map(wrapIssueWithState(STATUS_NEUTRAL)),
+        ...this.resolvedIssues.map(wrapIssueWithState(STATUS_SUCCESS)),
+      ];
+    },
+  },
 };
 </script>
 <template>
-  <div class="report-block-container">
-
-    <issues-block
-      v-if="newIssues.length"
+  <smart-virtual-list
+    :length="issuesWithState.length"
+    :remain="$options.maxShownReportItems"
+    :size="$options.typicalReportItemHeight"
+    class="report-block-container"
+    wtag="ul"
+    wclass="report-block-list"
+  >
+    <report-item
+      v-for="(wrapped, index) in issuesWithState"
+      :key="index"
+      :issue="wrapped.issue"
+      :status="wrapped.status"
       :component="component"
-      :issues="newIssues"
-      class="js-mr-code-new-issues"
-      status="failed"
-      is-new
+      :is-new="wrapped.isNew"
     />
-
-    <issues-block
-      v-if="unresolvedIssues.length"
-      :component="component"
-      :issues="unresolvedIssues"
-      :status="$options.failed"
-      class="js-mr-code-new-issues"
-    />
-
-    <issues-block
-      v-if="neutralIssues.length"
-      :component="component"
-      :issues="neutralIssues"
-      :status="$options.neutral"
-      class="js-mr-code-non-issues"
-    />
-
-    <issues-block
-      v-if="resolvedIssues.length"
-      :component="component"
-      :issues="resolvedIssues"
-      :status="$options.success"
-      class="js-mr-code-resolved-issues"
-    />
-  </div>
+  </smart-virtual-list>
 </template>

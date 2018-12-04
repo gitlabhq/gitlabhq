@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreatePipelineStages < ActiveRecord::Migration
+class CreatePipelineStages < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

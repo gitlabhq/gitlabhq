@@ -9,6 +9,17 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to be_kind_of(ReactiveCaching) }
   it { is_expected.to respond_to :ca_pem }
 
+  it { is_expected.to validate_exclusion_of(:namespace).in_array(%w(gitlab-managed-apps)) }
+  it { is_expected.to validate_presence_of(:api_url) }
+  it { is_expected.to validate_presence_of(:token) }
+
+  it { is_expected.to delegate_method(:project).to(:cluster) }
+  it { is_expected.to delegate_method(:enabled?).to(:cluster) }
+  it { is_expected.to delegate_method(:managed?).to(:cluster) }
+  it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
+
+  it_behaves_like 'having unique enum values'
+
   describe 'before_validation' do
     context 'when namespace includes upper case' do
       let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
@@ -48,6 +59,18 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         let(:namespace) { 'namespace-123' }
 
         it { is_expected.to be_truthy }
+      end
+
+      context 'for group cluster' do
+        let(:namespace) { 'namespace-123' }
+        let(:cluster) { build(:cluster, :group, :provided_by_user) }
+        let(:kubernetes) { cluster.platform_kubernetes }
+
+        before do
+          kubernetes.namespace = namespace
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -90,12 +113,42 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         it { expect(kubernetes.save).to be_falsey }
       end
     end
+
+    describe 'when using reserved namespaces' do
+      subject { build(:cluster_platform_kubernetes, namespace: namespace) }
+
+      context 'when no namespace is manually assigned' do
+        let(:namespace) { nil }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when no reserved namespace is assigned' do
+        let(:namespace) { 'my-namespace' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when reserved namespace is assigned' do
+        let(:namespace) { 'gitlab-managed-apps' }
+
+        it { is_expected.not_to be_valid }
+      end
+    end
   end
 
   describe '#kubeclient' do
+    let(:cluster) { create(:cluster, :project) }
+    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: 'a-namespace', cluster: cluster) }
+
     subject { kubernetes.kubeclient }
 
-    let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: 'a-namespace') }
+    before do
+      create(:cluster_kubernetes_namespace,
+             cluster: kubernetes.cluster,
+             cluster_project: kubernetes.cluster.cluster_project,
+             project: kubernetes.cluster.cluster_project.project)
+    end
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::KubeClient) }
   end
@@ -117,71 +170,80 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   end
 
   describe '#actual_namespace' do
-    subject { kubernetes.actual_namespace }
-
-    let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
+    let(:cluster) { create(:cluster, :project) }
     let(:project) { cluster.project }
-    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
-    context 'when namespace is present' do
+    let(:platform) do
+      create(:cluster_platform_kubernetes,
+             cluster: cluster,
+             namespace: namespace)
+    end
+
+    subject { platform.actual_namespace }
+
+    context 'with a namespace assigned' do
       let(:namespace) { 'namespace-123' }
 
       it { is_expected.to eq(namespace) }
     end
 
-    context 'when namespace is not present' do
+    context 'with no namespace assigned' do
       let(:namespace) { nil }
 
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-  end
+      context 'when kubernetes namespace is present' do
+        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
 
-  describe '#default_namespace' do
-    subject { kubernetes.send(:default_namespace) }
+        before do
+          kubernetes_namespace
+        end
 
-    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
+        it { is_expected.to eq(kubernetes_namespace.namespace) }
+      end
 
-    context 'when cluster belongs to a project' do
-      let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-      let(:project) { cluster.project }
-
-      it { is_expected.to eq("#{project.path}-#{project.id}") }
-    end
-
-    context 'when cluster belongs to nothing' do
-      let!(:cluster) { create(:cluster, platform_kubernetes: kubernetes) }
-
-      it { is_expected.to be_nil }
+      context 'when kubernetes namespace is not present' do
+        it { is_expected.to eq("#{project.path}-#{project.id}") }
+      end
     end
   end
 
   describe '#predefined_variables' do
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-    let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
+    let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem) }
     let(:api_url) { 'https://kube.domain.com' }
     let(:ca_pem) { 'CA PEM DATA' }
-    let(:token) { 'token' }
 
-    let(:kubeconfig) do
-      config_file = expand_fixture_path('config/kubeconfig.yml')
-      config = YAML.load(File.read(config_file))
-      config.dig('users', 0, 'user')['token'] = token
-      config.dig('contexts', 0, 'context')['namespace'] = namespace
-      config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
-        Base64.strict_encode64(ca_pem)
-
-      YAML.dump(config)
-    end
+    subject { kubernetes.predefined_variables(project: cluster.project) }
 
     shared_examples 'setting variables' do
       it 'sets the variables' do
-        expect(kubernetes.predefined_variables).to include(
+        expect(subject).to include(
           { key: 'KUBE_URL', value: api_url, public: true },
-          { key: 'KUBE_TOKEN', value: token, public: false },
-          { key: 'KUBE_NAMESPACE', value: namespace, public: true },
-          { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true },
           { key: 'KUBE_CA_PEM', value: ca_pem, public: true },
           { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+        )
+      end
+    end
+
+    context 'kubernetes namespace is created with no service account token' do
+      let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
+
+      it_behaves_like 'setting variables'
+
+      it 'sets KUBE_TOKEN' do
+        expect(subject).to include(
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+        )
+      end
+    end
+
+    context 'kubernetes namespace is created with no service account token' do
+      let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster) }
+
+      it_behaves_like 'setting variables'
+
+      it 'sets KUBE_TOKEN' do
+        expect(subject).to include(
+          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
         )
       end
     end
@@ -194,6 +256,12 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
 
       it_behaves_like 'setting variables'
+
+      it 'sets KUBE_TOKEN' do
+        expect(subject).to include(
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+        )
+      end
     end
 
     context 'no namespace provided' do
@@ -201,11 +269,40 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it_behaves_like 'setting variables'
 
-      it 'sets the KUBE_NAMESPACE' do
-        kube_namespace = kubernetes.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
+      it 'sets KUBE_TOKEN' do
+        expect(subject).to include(
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+        )
+      end
+    end
 
-        expect(kube_namespace).not_to be_nil
-        expect(kube_namespace[:value]).to match(/\A#{Gitlab::PathRegex::PATH_REGEX_STR}-\d+\z/)
+    context 'group level cluster' do
+      let!(:cluster) { create(:cluster, :group, platform_kubernetes: kubernetes) }
+
+      let(:project) { create(:project, group: cluster.group) }
+
+      subject { kubernetes.predefined_variables(project: project) }
+
+      context 'no kubernetes namespace for the project' do
+        it_behaves_like 'setting variables'
+
+        it 'does not return KUBE_TOKEN' do
+          expect(subject).not_to include(
+            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          )
+        end
+      end
+
+      context 'kubernetes namespace exists for the project' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster, project: project) }
+
+        it_behaves_like 'setting variables'
+
+        it 'sets KUBE_TOKEN' do
+          expect(subject).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
       end
     end
   end
@@ -288,6 +385,29 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
 
       it { is_expected.to include(pods: []) }
+    end
+  end
+
+  describe '#update_kubernetes_namespace' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+    let(:platform) { cluster.platform }
+
+    context 'when namespace is updated' do
+      it 'should call ConfigureWorker' do
+        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id).once
+
+        platform.namespace = 'new-namespace'
+        platform.save
+      end
+    end
+
+    context 'when namespace is not updated' do
+      it 'should not call ConfigureWorker' do
+        expect(ClusterPlatformConfigureWorker).not_to receive(:perform_async)
+
+        platform.username = "new-username"
+        platform.save
+      end
     end
   end
 end

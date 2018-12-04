@@ -24,7 +24,11 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
   } else if (top > stickyTop && el.classList.contains('is-stuck')) {
     el.classList.remove('is-stuck');
 
-    if (insertPlaceholder && el.nextElementSibling && el.nextElementSibling.classList.contains('sticky-placeholder')) {
+    if (
+      insertPlaceholder &&
+      el.nextElementSibling &&
+      el.nextElementSibling.classList.contains('sticky-placeholder')
+    ) {
       el.nextElementSibling.remove();
     }
   }
@@ -42,11 +46,19 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
 export const stickyMonitor = (el, stickyTop, insertPlaceholder = true) => {
   if (!el) return;
 
-  if (typeof CSS === 'undefined' || !(CSS.supports('(position: -webkit-sticky) or (position: sticky)'))) return;
+  if (
+    typeof CSS === 'undefined' ||
+    !CSS.supports('(position: -webkit-sticky) or (position: sticky)')
+  )
+    return;
 
-  document.addEventListener('scroll', () => isSticky(el, window.scrollY, stickyTop, insertPlaceholder), {
-    passive: true,
-  });
+  document.addEventListener(
+    'scroll',
+    () => isSticky(el, window.scrollY, stickyTop, insertPlaceholder),
+    {
+      passive: true,
+    },
+  );
 };
 
 /**
@@ -55,6 +67,6 @@ export const stickyMonitor = (el, stickyTop, insertPlaceholder = true) => {
  * - If the current environment supports `position: sticky`, do nothing.
  * - Can receive an iterable element list (NodeList, jQuery collection, etc.) or single HTMLElement.
  */
-export const polyfillSticky = (el) => {
+export const polyfillSticky = el => {
   StickyFill.add(el);
 };

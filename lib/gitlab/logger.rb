@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Logger < ::Logger
     def self.file_name
@@ -30,7 +32,7 @@ module Gitlab
     end
 
     def self.build
-      RequestStore[self.cache_key] ||= new(self.full_log_path)
+      Gitlab::SafeRequestStore[self.cache_key] ||= new(self.full_log_path)
     end
 
     def self.full_log_path

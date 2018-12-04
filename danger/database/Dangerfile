@@ -39,8 +39,6 @@ def database_paths_requiring_review(files)
   to_review
 end
 
-all_files = git.added_files + git.modified_files
-
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb}).empty?
 geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb}).empty?
 
@@ -55,7 +53,7 @@ if geo_migration_created && !geo_db_schema_updated
   warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'Geo migrations', schema: gitlab.html_link("ee/db/geo/schema.rb"))
 end
 
-db_paths_to_review = database_paths_requiring_review(all_files)
+db_paths_to_review = database_paths_requiring_review(helper.all_changed_files)
 
 unless db_paths_to_review.empty?
   message 'This merge request adds or changes files that require a ' \

@@ -5,7 +5,7 @@
 # into EE.
 #
 # See discussion at https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3932
-class AddRebaseCommitShaToMergeRequests < ActiveRecord::Migration
+class AddRebaseCommitShaToMergeRequests < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

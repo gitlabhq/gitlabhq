@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import _ from 'underscore';
 import timeago from 'timeago.js';
 import dateFormat from 'dateformat';
 import { pluralize } from './text_utility';
@@ -13,7 +14,7 @@ window.timeago = timeago;
  *
  * @param {Boolean} abbreviated
  */
-const getMonthNames = abbreviated => {
+export const getMonthNames = abbreviated => {
   if (abbreviated) {
     return [
       s__('Jan'),
@@ -46,6 +47,8 @@ const getMonthNames = abbreviated => {
   ];
 };
 
+export const pad = (val, len = 2) => `0${val}`.slice(-len);
+
 /**
  * Given a date object returns the day of the week in English
  * @param {date} date
@@ -74,10 +77,10 @@ let timeagoInstance;
 /**
  * Sets a timeago Instance
  */
-export function getTimeago() {
+export const getTimeago = () => {
   if (!timeagoInstance) {
-    const localeRemaining = function getLocaleRemaining(number, index) {
-      return [
+    const localeRemaining = (number, index) =>
+      [
         [s__('Timeago|just now'), s__('Timeago|right now')],
         [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
         [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
@@ -93,9 +96,9 @@ export function getTimeago() {
         [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
         [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
       ][index];
-    };
-    const locale = function getLocale(number, index) {
-      return [
+
+    const locale = (number, index) =>
+      [
         [s__('Timeago|just now'), s__('Timeago|right now')],
         [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
         [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
@@ -111,7 +114,6 @@ export function getTimeago() {
         [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
         [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
       ][index];
-    };
 
     timeago.register(timeagoLanguageCode, locale);
     timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
@@ -119,7 +121,7 @@ export function getTimeago() {
   }
 
   return timeagoInstance;
-}
+};
 
 /**
  * For the given element, renders a timeago instance.
@@ -184,7 +186,7 @@ export const getDayDifference = (a, b) => {
  * @param  {Number} seconds
  * @return {String}
  */
-export function timeIntervalInWords(intervalInSeconds) {
+export const timeIntervalInWords = intervalInSeconds => {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
   const seconds = secondsInteger - minutes * 60;
@@ -196,9 +198,9 @@ export function timeIntervalInWords(intervalInSeconds) {
     text = `${seconds} ${pluralize('second', seconds)}`;
   }
   return text;
-}
+};
 
-export function dateInWords(date, abbreviated = false, hideYear = false) {
+export const dateInWords = (date, abbreviated = false, hideYear = false) => {
   if (!date) return date;
 
   const month = date.getMonth();
@@ -240,7 +242,7 @@ export function dateInWords(date, abbreviated = false, hideYear = false) {
   }
 
   return `${monthName} ${date.getDate()}, ${year}`;
-}
+};
 
 /**
  * Returns month name based on provided date.
@@ -369,4 +371,125 @@ window.gl.utils = {
   ...(window.gl.utils || {}),
   getTimeago,
   localTimeAgo,
+};
+
+/**
+ * Formats milliseconds as timestamp (e.g. 01:02:03).
+ * This takes durations longer than a day into account (e.g. two days would be 48:00:00).
+ *
+ * @param milliseconds
+ * @returns {string}
+ */
+export const formatTime = milliseconds => {
+  const remainingSeconds = Math.floor(milliseconds / 1000) % 60;
+  const remainingMinutes = Math.floor(milliseconds / 1000 / 60) % 60;
+  const remainingHours = Math.floor(milliseconds / 1000 / 60 / 60);
+  let formattedTime = '';
+  if (remainingHours < 10) formattedTime += '0';
+  formattedTime += `${remainingHours}:`;
+  if (remainingMinutes < 10) formattedTime += '0';
+  formattedTime += `${remainingMinutes}:`;
+  if (remainingSeconds < 10) formattedTime += '0';
+  formattedTime += remainingSeconds;
+  return formattedTime;
+};
+
+/**
+ * Formats dates in Pickaday
+ * @param {String} dateString Date in yyyy-mm-dd format
+ * @return {Date} UTC format
+ */
+export const parsePikadayDate = dateString => {
+  const parts = dateString.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1] - 1, 10);
+  const day = parseInt(parts[2], 10);
+
+  return new Date(year, month, day);
+};
+
+/**
+ * Used `onSelect` method in pickaday
+ * @param {Date} date UTC format
+ * @return {String} Date formated in yyyy-mm-dd
+ */
+export const pikadayToString = date => {
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  return `${year}-${month}-${day}`;
+};
+
+/**
+ * Accepts seconds and returns a timeObject { weeks: #, days: #, hours: #, minutes: # }
+ * Seconds can be negative or positive, zero or non-zero. Can be configured for any day
+ * or week length.
+ */
+export const parseSeconds = (seconds, { daysPerWeek = 5, hoursPerDay = 8 } = {}) => {
+  const DAYS_PER_WEEK = daysPerWeek;
+  const HOURS_PER_DAY = hoursPerDay;
+  const MINUTES_PER_HOUR = 60;
+  const MINUTES_PER_WEEK = DAYS_PER_WEEK * HOURS_PER_DAY * MINUTES_PER_HOUR;
+  const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
+
+  const timePeriodConstraints = {
+    weeks: MINUTES_PER_WEEK,
+    days: MINUTES_PER_DAY,
+    hours: MINUTES_PER_HOUR,
+    minutes: 1,
+  };
+
+  let unorderedMinutes = Math.abs(seconds / MINUTES_PER_HOUR);
+
+  return _.mapObject(timePeriodConstraints, minutesPerPeriod => {
+    const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
+
+    unorderedMinutes -= periodCount * minutesPerPeriod;
+
+    return periodCount;
+  });
+};
+
+/**
+ * Accepts a timeObject (see parseSeconds) and returns a condensed string representation of it
+ * (e.g. '1w 2d 3h 1m' or '1h 30m'). Zero value units are not included.
+ * If the 'fullNameFormat' param is passed it returns a non condensed string eg '1 week 3 days'
+ */
+export const stringifyTime = (timeObject, fullNameFormat = false) => {
+  const reducedTime = _.reduce(
+    timeObject,
+    (memo, unitValue, unitName) => {
+      const isNonZero = !!unitValue;
+
+      if (fullNameFormat && isNonZero) {
+        // Remove traling 's' if unit value is singular
+        const formatedUnitName = unitValue > 1 ? unitName : unitName.replace(/s$/, '');
+        return `${memo} ${unitValue} ${formatedUnitName}`;
+      }
+
+      return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
+    },
+    '',
+  ).trim();
+  return reducedTime.length ? reducedTime : '0m';
+};
+
+/**
+ * Accepts a time string of any size (e.g. '1w 2d 3h 5m' or '1w 2d') and returns
+ *  the first non-zero unit/value pair.
+ */
+export const abbreviateTime = timeStr =>
+  timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
+
+/**
+ * Calculates the milliseconds between now and a given date string.
+ * The result cannot become negative.
+ *
+ * @param endDate date string that the time difference is calculated for
+ * @return {number} number of milliseconds remaining until the given date
+ */
+export const calculateRemainingMilliseconds = endDate => {
+  const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
+  return Math.max(remainingMilliseconds, 0);
 };

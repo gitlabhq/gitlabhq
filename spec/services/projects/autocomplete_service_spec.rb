@@ -148,7 +148,7 @@ describe Projects::AutocompleteService do
     let!(:label1) { create(:label, project: project) }
     let!(:label2) { create(:label, project: project) }
     let!(:sub_group_label) { create(:group_label, group: sub_group) }
-    let!(:parent_group_label) { create(:group_label, group: group.parent) }
+    let!(:parent_group_label) { create(:group_label, group: group.parent, group_id: group.id) }
 
     before do
       create(:group_member, group: group, user: user)
@@ -156,7 +156,7 @@ describe Projects::AutocompleteService do
 
     it 'returns labels from project and ancestor groups' do
       service = described_class.new(project, user)
-      results = service.labels_as_hash
+      results = service.labels_as_hash(nil)
       expected_labels = [label1, label2, parent_group_label]
 
       expect_labels_to_equal(results, expected_labels)

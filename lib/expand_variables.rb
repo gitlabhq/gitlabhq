@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExpandVariables
   class << self
     def expand(value, variables)

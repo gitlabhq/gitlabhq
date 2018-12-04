@@ -17,6 +17,9 @@ This merge is done automatically in a
 1. If all conflicts are resolved after your resolution is pushed, keep the merge
    request assigned to you: **you are now responsible for the merge request to be
    green**
+1. If you are the last person to resolve the conflicts, the pipeline is green,
+   and you have merge rights, merge the MR, but **do not** choose to squash.
+   Otherwise, assign the MR to someone that can merge.
 1. If you need any help, you can ping the current [release managers], or ask in
    the `#ce-to-ee` Slack channel
 
@@ -63,7 +66,7 @@ EE version of your CE merge request.
 For each commit (except on `master`), the `ee_compat_check` CI job tries to
 detect if the current branch's changes will conflict during the CE->EE merge.
 
-The job reports what files are conflicting and how to setup a merge request
+The job reports what files are conflicting and how to set up a merge request
 against EE.
 
 #### How the job works

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, one-var-declaration-per-line, comma-dangle, no-param-reassign, no-return-assign, quotes, prefer-arrow-callback, wrap-iife, consistent-return, no-unused-vars, max-len, no-cond-assign, no-else-return, max-len */
+/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-unused-vars, no-cond-assign, no-else-return */
 import _ from 'underscore';
 
 export default {
@@ -26,12 +26,12 @@ export default {
     by_author = _.toArray(by_author);
     return {
       total: total,
-      by_author: by_author
+      by_author: by_author,
     };
   },
   add_date: function(date, collection) {
     collection[date] = {};
-    return collection[date].date = date;
+    return (collection[date].date = date);
   },
   add_author: function(author, by_author, by_email) {
     var data, normalized_email;
@@ -49,28 +49,28 @@ export default {
     return this.store_deletions(entry, total, by_author);
   },
   store_commits: function(total, by_author) {
-    this.add(total, "commits", 1);
-    return this.add(by_author, "commits", 1);
+    this.add(total, 'commits', 1);
+    return this.add(by_author, 'commits', 1);
   },
   add: function(collection, field, value) {
     if (collection[field] == null) {
       collection[field] = 0;
     }
-    return collection[field] += value;
+    return (collection[field] += value);
   },
   store_additions: function(entry, total, by_author) {
     if (entry.additions == null) {
       entry.additions = 0;
     }
-    this.add(total, "additions", entry.additions);
-    return this.add(by_author, "additions", entry.additions);
+    this.add(total, 'additions', entry.additions);
+    return this.add(by_author, 'additions', entry.additions);
   },
   store_deletions: function(entry, total, by_author) {
     if (entry.deletions == null) {
       entry.deletions = 0;
     }
-    this.add(total, "deletions", entry.deletions);
-    return this.add(by_author, "deletions", entry.deletions);
+    this.add(total, 'deletions', entry.deletions);
+    return this.add(by_author, 'deletions', entry.deletions);
   },
   get_total_data: function(parsed_log, field) {
     var log, total_data;
@@ -95,15 +95,18 @@ export default {
     }
     log = parsed_log.by_author;
     author_data = [];
-    _.each(log, (function(_this) {
-      return function(log_entry) {
-        var parsed_log_entry;
-        parsed_log_entry = _this.parse_log_entry(log_entry, field, date_range);
-        if (!_.isEmpty(parsed_log_entry.dates)) {
-          return author_data.push(parsed_log_entry);
-        }
-      };
-    })(this));
+    _.each(
+      log,
+      (function(_this) {
+        return function(log_entry) {
+          var parsed_log_entry;
+          parsed_log_entry = _this.parse_log_entry(log_entry, field, date_range);
+          if (!_.isEmpty(parsed_log_entry.dates)) {
+            return author_data.push(parsed_log_entry);
+          }
+        };
+      })(this),
+    );
     return _.sortBy(author_data, function(d) {
       return d[field];
     }).reverse();
@@ -120,16 +123,19 @@ export default {
     parsed_entry.additions = 0;
     parsed_entry.deletions = 0;
 
-    _.each(_.omit(log_entry, 'author_name', 'author_email'), (function(_this) {
-      return function(value, key) {
-        if (_this.in_range(value.date, date_range)) {
-          parsed_entry.dates[value.date] = value[field];
-          parsed_entry.commits += value.commits;
-          parsed_entry.additions += value.additions;
-          return parsed_entry.deletions += value.deletions;
-        }
-      };
-    })(this));
+    _.each(
+      _.omit(log_entry, 'author_name', 'author_email'),
+      (function(_this) {
+        return function(value, key) {
+          if (_this.in_range(value.date, date_range)) {
+            parsed_entry.dates[value.date] = value[field];
+            parsed_entry.commits += value.commits;
+            parsed_entry.additions += value.additions;
+            return (parsed_entry.deletions += value.deletions);
+          }
+        };
+      })(this),
+    );
     return parsed_entry;
   },
   in_range: function(date, date_range) {
@@ -139,5 +145,5 @@ export default {
     } else {
       return false;
     }
-  }
+  },
 };

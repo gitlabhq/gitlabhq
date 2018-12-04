@@ -5,6 +5,7 @@ import ListsDropdown from './lists_dropdown.vue';
 import { pluralize } from '../../../lib/utils/text_utility';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
+import boardsStore from '../../stores/boards_store';
 
 export default {
   components: {
@@ -14,7 +15,7 @@ export default {
   data() {
     return {
       modal: ModalStore.store,
-      state: gl.issueBoards.BoardsStore.state,
+      state: boardsStore.state,
     };
   },
   computed: {
@@ -41,19 +42,17 @@ export default {
       const req = this.buildUpdateRequest(list);
 
       // Post the data to the backend
-      gl.boardService
-        .bulkUpdate(issueIds, req)
-        .catch(() => {
-          Flash(__('Failed to update issues, please try again.'));
+      gl.boardService.bulkUpdate(issueIds, req).catch(() => {
+        Flash(__('Failed to update issues, please try again.'));
 
-          selectedIssues.forEach((issue) => {
-            list.removeIssue(issue);
-            list.issuesSize -= 1;
-          });
+        selectedIssues.forEach(issue => {
+          list.removeIssue(issue);
+          list.issuesSize -= 1;
         });
+      });
 
       // Add the issues on the frontend
-      selectedIssues.forEach((issue) => {
+      selectedIssues.forEach(issue => {
         list.addIssue(issue);
         list.issuesSize += 1;
       });
@@ -64,28 +63,15 @@ export default {
 };
 </script>
 <template>
-  <footer
-    class="form-actions add-issues-footer"
-  >
+  <footer class="form-actions add-issues-footer">
     <div class="float-left">
-      <button
-        :disabled="submitDisabled"
-        class="btn btn-success"
-        type="button"
-        @click="addIssues"
-      >
+      <button :disabled="submitDisabled" class="btn btn-success" type="button" @click="addIssues">
         {{ submitText }}
       </button>
-      <span class="inline add-issues-footer-to-list">
-        to list
-      </span>
-      <lists-dropdown/>
+      <span class="inline add-issues-footer-to-list"> to list </span>
+      <lists-dropdown />
     </div>
-    <button
-      class="btn btn-default float-right"
-      type="button"
-      @click="toggleModal(false)"
-    >
+    <button class="btn btn-default float-right" type="button" @click="toggleModal(false);">
       Cancel
     </button>
   </footer>

@@ -8,9 +8,6 @@ import { diffModes, imageViewMode } from '../constants';
 export default {
   components: {
     ImageViewer,
-    TwoUpViewer,
-    SwipeViewer,
-    OnionSkinViewer,
   },
   props: {
     diffMode: {
@@ -25,16 +22,34 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
       mode: imageViewMode.twoup,
     };
+  },
+  computed: {
+    imageViewComponent() {
+      switch (this.mode) {
+        case imageViewMode.twoup:
+          return TwoUpViewer;
+        case imageViewMode.swipe:
+          return SwipeViewer;
+        case imageViewMode.onion:
+          return OnionSkinViewer;
+        default:
+          return undefined;
+      }
+    },
+    isNew() {
+      return this.diffMode === diffModes.new;
+    },
+    isRenamed() {
+      return this.diffMode === diffModes.renamed;
+    },
+    imagePath() {
+      return this.isNew || this.isRenamed ? this.newPath : this.oldPath;
+    },
   },
   methods: {
     changeMode(newMode) {
@@ -48,62 +63,56 @@ export default {
 
 <template>
   <div class="diff-file-container">
-    <div
-      v-if="diffMode === $options.diffModes.replaced"
-      class="diff-viewer">
+    <div v-if="diffMode === $options.diffModes.replaced" class="diff-viewer">
       <div class="image js-replaced-image">
-        <two-up-viewer
-          v-if="mode === $options.imageViewMode.twoup"
-          v-bind="$props"/>
-        <swipe-viewer
-          v-else-if="mode === $options.imageViewMode.swipe"
-          v-bind="$props"/>
-        <onion-skin-viewer
-          v-else-if="mode === $options.imageViewMode.onion"
-          v-bind="$props"/>
+        <component :is="imageViewComponent" v-bind="$props">
+          <slot slot="image-overlay" name="image-overlay"> </slot>
+        </component>
       </div>
       <div class="view-modes">
         <ul class="view-modes-menu">
           <li
             :class="{
-              active: mode === $options.imageViewMode.twoup
+              active: mode === $options.imageViewMode.twoup,
             }"
-            @click="changeMode($options.imageViewMode.twoup)">
+            @click="changeMode($options.imageViewMode.twoup);"
+          >
             {{ s__('ImageDiffViewer|2-up') }}
           </li>
           <li
             :class="{
-              active: mode === $options.imageViewMode.swipe
+              active: mode === $options.imageViewMode.swipe,
             }"
-            @click="changeMode($options.imageViewMode.swipe)">
+            @click="changeMode($options.imageViewMode.swipe);"
+          >
             {{ s__('ImageDiffViewer|Swipe') }}
           </li>
           <li
             :class="{
-              active: mode === $options.imageViewMode.onion
+              active: mode === $options.imageViewMode.onion,
             }"
-            @click="changeMode($options.imageViewMode.onion)">
+            @click="changeMode($options.imageViewMode.onion);"
+          >
             {{ s__('ImageDiffViewer|Onion skin') }}
           </li>
         </ul>
       </div>
-      <div class="note-container"></div>
     </div>
-    <div
-      v-else-if="diffMode === $options.diffModes.new"
-      class="diff-viewer added">
-      <image-viewer
-        :path="newPath"
-        :project-path="projectPath"
-      />
-    </div>
-    <div
-      v-else
-      class="diff-viewer deleted">
-      <image-viewer
-        :path="oldPath"
-        :project-path="projectPath"
-      />
+    <div v-else class="diff-viewer">
+      <div class="image">
+        <image-viewer
+          :path="imagePath"
+          :inner-css-classes="[
+            'frame',
+            {
+              added: isNew,
+              deleted: diffMode === $options.diffModes.deleted,
+            },
+          ]"
+        >
+          <slot v-if="isNew || isRenamed" slot="image-overlay" name="image-overlay"> </slot>
+        </image-viewer>
+      </div>
     </div>
   </div>
 </template>

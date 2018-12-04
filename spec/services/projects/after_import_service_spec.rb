@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::AfterImportService do
+  include GitHelpers
+
   subject { described_class.new(project) }
 
   let(:project) { create(:project, :repository) }
@@ -53,7 +55,7 @@ describe Projects::AfterImportService do
     end
 
     def rugged
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository.rugged }
+      rugged_repo(repository)
     end
   end
 end

@@ -1,5 +1,5 @@
 ---
-last_updated: 2018-08-16
+last_updated: 2018-11-19
 author: Marcia Ramos
 author_gitlab: marcia
 level: beginner
@@ -11,7 +11,7 @@ date: 2017-02-22
 
 Setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
 
-These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
+These steps assume you've already [set your site up](getting_started_part_two.md) and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
 ## Adding your custom domain to GitLab Pages
 
@@ -183,7 +183,7 @@ you can use the following setup:
 - In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`
 - In GitLab, add the domain to GitLab Pages
 - In Cloudflare, create a DNS `TXT` record to verify your domain
-- In Cloudflare, create a DNS `CNAME` record poiting `www` to `domain.com`
+- In Cloudflare, create a DNS `CNAME` record pointing `www` to `domain.com`
 
 ## SSL/TLS Certificates
 
@@ -212,7 +212,7 @@ security measure, necessary just for big companies, like banks and shoppings sit
 with financial transactions.
 Now we have a different picture. [According to Josh Aas](https://letsencrypt.org/2015/10/29/phishing-and-malware.html), Executive Director at [ISRG](https://en.wikipedia.org/wiki/Internet_Security_Research_Group):
 
-> _We’ve since come to realize that HTTPS is important for almost all websites. It’s important for any website that allows people to log in with a password, any website that [tracks its users](https://www.washingtonpost.com/news/the-switch/wp/2013/12/10/nsa-uses-google-cookies-to-pinpoint-targets-for-hacking/) in any way, any website that [doesn’t want its content altered](http://arstechnica.com/tech-policy/2014/09/why-comcasts-javascript-ad-injections-threaten-security-net-neutrality/), and for any site that offers content people might not want others to know they are consuming. We’ve also learned that any site not secured by HTTPS [can be used to attack other sites](http://krebsonsecurity.com/2015/04/dont-be-fodder-for-chinas-great-cannon/)._
+> _We’ve since come to realize that HTTPS is important for almost all websites. It’s important for any website that allows people to log in with a password, any website that [tracks its users](https://www.washingtonpost.com/news/the-switch/wp/2013/12/10/nsa-uses-google-cookies-to-pinpoint-targets-for-hacking/) in any way, any website that [doesn’t want its content altered](http://arstechnica.com/tech-policy/2014/09/why-comcasts-javascript-ad-injections-threaten-security-net-neutrality/), and for any site that offers content people might not want others to know they are consuming. We’ve also learned that any site not secured by HTTPS [can be used to attack other sites](https://krebsonsecurity.com/2015/04/dont-be-fodder-for-chinas-great-cannon/)._
 
 Therefore, the reason why certificates are so important is that they encrypt
 the connection between the **client** (you, me, your visitors)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BitbucketImport
     class Importer
@@ -33,7 +35,7 @@ module Gitlab
       def handle_errors
         return unless errors.any?
 
-        project.update_column(:import_error, {
+        project.import_state.update_column(:last_error, {
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)

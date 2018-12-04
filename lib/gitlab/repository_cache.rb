@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Interface to the Redis-backed cache store
 module Gitlab
   class RepositoryCache
@@ -5,13 +7,13 @@ module Gitlab
 
     def initialize(repository, extra_namespace: nil, backend: Rails.cache)
       @repository = repository
-      @namespace = "#{repository.full_path}:#{repository.project.id}"
-      @namespace += ":#{extra_namespace}" if extra_namespace
+      @namespace = "project:#{repository.project.id}"
+      @namespace = "#{@namespace}:#{extra_namespace}" if extra_namespace
       @backend = backend
     end
 
     def cache_key(type)
-      "#{type}:#{namespace}"
+      "#{namespace}:#{type}"
     end
 
     def expire(key)
@@ -28,6 +30,22 @@ module Gitlab
 
     def read(key)
       backend.read(cache_key(key))
+    end
+
+    def write(key, value)
+      backend.write(cache_key(key), value)
+    end
+
+    def fetch_without_caching_false(key, &block)
+      value = read(key)
+      return value if value
+
+      value = yield
+
+      # Don't cache false values
+      write(key, value) if value
+
+      value
     end
   end
 end

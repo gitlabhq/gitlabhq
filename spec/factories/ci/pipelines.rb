@@ -54,6 +54,10 @@ FactoryBot.define do
         status :manual
       end
 
+      trait :scheduled do
+        status :scheduled
+      end
+
       trait :success do
         status :success
       end

@@ -6,6 +6,8 @@ class LfsObjectUploader < GitlabUploader
 
   storage_options Gitlab.config.lfs
 
+  alias_method :upload, :model
+
   def filename
     model.oid[4..-1]
   end

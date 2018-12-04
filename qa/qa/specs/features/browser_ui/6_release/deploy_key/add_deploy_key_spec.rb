@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :release do
+  context 'Release' do
     describe 'Deploy key creation' do
       it 'user adds a deploy key' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -11,7 +11,7 @@ module QA
         deploy_key_title = 'deploy key title'
         deploy_key_value = key.public_key
 
-        deploy_key = Factory::Resource::DeployKey.fabricate! do |resource|
+        deploy_key = Resource::DeployKey.fabricate! do |resource|
           resource.title = deploy_key_title
           resource.key = deploy_key_value
         end

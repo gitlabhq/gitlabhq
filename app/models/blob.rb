@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# Blob is a Rails-specific wrapper around Gitlab::Git::Blob objects
+# Blob is a Rails-specific wrapper around Gitlab::Git::Blob, SnippetBlob and Ci::ArtifactBlob
 class Blob < SimpleDelegator
+  include Presentable
+  include BlobLanguageFromGitAttributes
+
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
-
-  MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
   # Finding a viewer for a blob happens based only on extension and whether the
   # blob is binary or text, which means 1 blob should only be matched by 1 viewer,
@@ -79,15 +80,9 @@ class Blob < SimpleDelegator
   end
 
   def self.lazy(project, commit_id, path)
-    BatchLoader.for({ project: project, commit_id: commit_id, path: path }).batch do |items, loader|
-      items_by_project = items.group_by { |i| i[:project] }
-
-      items_by_project.each do |project, items|
-        items = items.map { |i| i.values_at(:commit_id, :path) }
-
-        project.repository.blobs_at(items).each do |blob|
-          loader.call({ project: blob.project, commit_id: blob.commit_id, path: blob.path }, blob) if blob
-        end
+    BatchLoader.for([commit_id, path]).batch(key: project.repository) do |items, loader, args|
+      args[:key].blobs_at(items).each do |blob|
+        loader.call([blob.commit_id, blob.path], blob) if blob
       end
     end
   end
@@ -119,10 +114,6 @@ class Blob < SimpleDelegator
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       super(project.repository) if project
     end
-  end
-
-  def no_highlighting?
-    raw_size && raw_size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
 
   def empty?
@@ -162,7 +153,7 @@ class Blob < SimpleDelegator
     if stored_externally?
       if rich_viewer
         rich_viewer.binary?
-      elsif Linguist::Language.find_by_extension(name).any?
+      elsif known_extension?
         false
       elsif _mime_type
         _mime_type.binary?

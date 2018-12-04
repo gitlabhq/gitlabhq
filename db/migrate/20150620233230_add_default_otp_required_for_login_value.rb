@@ -1,4 +1,4 @@
-class AddDefaultOtpRequiredForLoginValue < ActiveRecord::Migration
+class AddDefaultOtpRequiredForLoginValue < ActiveRecord::Migration[4.2]
   def up
     execute %q{UPDATE users SET otp_required_for_login = FALSE WHERE otp_required_for_login IS NULL}
 

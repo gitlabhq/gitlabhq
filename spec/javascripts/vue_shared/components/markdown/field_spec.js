@@ -11,7 +11,7 @@ function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
 describe('Markdown field component', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     vm = new Vue({
       components: {
         fieldComponent,
@@ -39,9 +39,7 @@ describe('Markdown field component', () => {
 
   describe('mounted', () => {
     it('renders textarea inside backdrop', () => {
-      expect(
-        vm.$el.querySelector('.zen-backdrop textarea'),
-      ).not.toBeNull();
+      expect(vm.$el.querySelector('.zen-backdrop textarea')).not.toBeNull();
     });
 
     describe('markdown preview', () => {
@@ -49,73 +47,70 @@ describe('Markdown field component', () => {
       let writeLink;
 
       beforeEach(() => {
-        spyOn(Vue.http, 'post').and.callFake(() => new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              json() {
-                return {
-                  body: '<p>markdown preview</p>',
-                };
-              },
-            });
-          });
-        }));
+        spyOn(Vue.http, 'post').and.callFake(
+          () =>
+            new Promise(resolve => {
+              setTimeout(() => {
+                resolve({
+                  json() {
+                    return {
+                      body: '<p>markdown preview</p>',
+                    };
+                  },
+                });
+              });
+            }),
+        );
 
         previewLink = vm.$el.querySelector('.nav-links .js-preview-link');
         writeLink = vm.$el.querySelector('.nav-links .js-write-link');
       });
 
-      it('sets preview link as active', (done) => {
+      it('sets preview link as active', done => {
         previewLink.click();
 
         Vue.nextTick(() => {
-          expect(
-            previewLink.parentNode.classList.contains('active'),
-          ).toBeTruthy();
+          expect(previewLink.parentNode.classList.contains('active')).toBeTruthy();
 
           done();
         });
       });
 
-      it('shows preview loading text', (done) => {
+      it('shows preview loading text', done => {
         previewLink.click();
 
         Vue.nextTick(() => {
-          expect(
-            vm.$el.querySelector('.md-preview').textContent.trim(),
-          ).toContain('Loading...');
+          expect(vm.$el.querySelector('.md-preview').textContent.trim()).toContain('Loading...');
 
           done();
         });
       });
 
-      it('renders markdown preview', (done) => {
+      it('renders markdown preview', done => {
         previewLink.click();
 
         setTimeout(() => {
-          expect(
-            vm.$el.querySelector('.md-preview').innerHTML,
-          ).toContain('<p>markdown preview</p>');
+          expect(vm.$el.querySelector('.md-preview').innerHTML).toContain(
+            '<p>markdown preview</p>',
+          );
 
           done();
         });
       });
 
-      it('renders GFM with jQuery', (done) => {
+      it('renders GFM with jQuery', done => {
         spyOn($.fn, 'renderGFM');
 
         previewLink.click();
 
         setTimeout(() => {
-          expect(
-            $.fn.renderGFM,
-          ).toHaveBeenCalled();
+          expect($.fn.renderGFM).toHaveBeenCalled();
 
           done();
         }, 0);
       });
 
-      it('clicking already active write or preview link does nothing', (done) => {
+      it('clicking already active write or preview link does nothing', done => {
         writeLink.click();
         Vue.nextTick()
           .then(() => assertMarkdownTabs(true, writeLink, previewLink, vm))
@@ -134,46 +129,40 @@ describe('Markdown field component', () => {
     });
 
     describe('markdown buttons', () => {
-      it('converts single words', (done) => {
+      it('converts single words', done => {
         const textarea = vm.$el.querySelector('textarea');
 
         textarea.setSelectionRange(0, 7);
         vm.$el.querySelector('.js-md').click();
 
         Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('**testing**');
+          expect(textarea.value).toContain('**testing**');
 
           done();
         });
       });
 
-      it('converts a line', (done) => {
+      it('converts a line', done => {
         const textarea = vm.$el.querySelector('textarea');
 
         textarea.setSelectionRange(0, 0);
-        vm.$el.querySelectorAll('.js-md')[4].click();
+        vm.$el.querySelectorAll('.js-md')[5].click();
 
         Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('*  testing');
+          expect(textarea.value).toContain('*  testing');
 
           done();
         });
       });
 
-      it('converts multiple lines', (done) => {
+      it('converts multiple lines', done => {
         const textarea = vm.$el.querySelector('textarea');
 
         textarea.setSelectionRange(0, 50);
-        vm.$el.querySelectorAll('.js-md')[4].click();
+        vm.$el.querySelectorAll('.js-md')[5].click();
 
         Vue.nextTick(() => {
-          expect(
-            textarea.value,
-          ).toContain('* testing\n* 123');
+          expect(textarea.value).toContain('* testing\n* 123');
 
           done();
         });

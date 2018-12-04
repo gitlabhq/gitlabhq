@@ -14,5 +14,5 @@
           %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
             = icon("search")
         = render 'shared/members/sort_dropdown'
-  %ul.content-list.members-list
+  %ul.content-list.members-list.qa-members-list
     = render partial: 'shared/members/member', collection: members, as: :member

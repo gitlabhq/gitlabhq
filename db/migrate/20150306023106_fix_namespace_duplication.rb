@@ -1,5 +1,5 @@
 # rubocop:disable all
-class FixNamespaceDuplication < ActiveRecord::Migration
+class FixNamespaceDuplication < ActiveRecord::Migration[4.2]
   def up
     #fixes path duplication
     select_all('SELECT MAX(id) max, COUNT(id) cnt, path FROM namespaces GROUP BY path HAVING COUNT(id) > 1').each do |nms|

@@ -1,0 +1,20 @@
+- subscribed = params[:subscribed]
+
+.top-area.adjust
+  %ul.nav-links.nav.nav-tabs
+    %li{ class: active_when(subscribed != 'true') }>
+      = link_to labels_filter_path do
+        = _('All')
+    - if current_user
+      %li{ class: active_when(subscribed == 'true') }>
+        = link_to labels_filter_path(subscribed: 'true') do
+          = _('Subscribed')
+  .nav-controls
+    = form_tag labels_filter_path, method: :get do
+      = hidden_field_tag :subscribed, params[:subscribed]
+      .input-group
+        = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
+        %span.input-group-append
+          %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
+            = icon("search")
+    = render 'shared/labels/sort_dropdown'

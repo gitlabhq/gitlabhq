@@ -19,7 +19,7 @@ module Clusters
       def set_initial_status
         return unless not_installable?
 
-        if cluster&.application_ingress_installed? && cluster.application_ingress.external_ip
+        if cluster&.application_ingress_available? && cluster.application_ingress.external_ip
           self.status = 'installable'
         end
       end
@@ -56,7 +56,11 @@ module Clusters
       def specification
         {
           "ingress" => {
-            "hosts" => [hostname]
+            "hosts" => [hostname],
+            "tls" => [{
+              "hosts" => [hostname],
+              "secretName" => "jupyter-cert"
+            }]
           },
           "hub" => {
             "extraEnv" => {
@@ -72,6 +76,11 @@ module Clusters
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url
+            }
+          },
+          "singleuser" => {
+            "extraEnv" => {
+              "GITLAB_CLUSTER_ID" => cluster.id
             }
           }
         }

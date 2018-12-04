@@ -1,7 +1,7 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
-import { s__ } from '../../locale';
+import { s__ } from '~/locale';
 
 /**
  * Renders the external url link in environments table.
@@ -11,7 +11,7 @@ export default {
     Icon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     externalUrl: {
@@ -28,12 +28,11 @@ export default {
 </script>
 <template>
   <a
-    v-tooltip
+    v-gl-tooltip
     :title="title"
     :aria-label="title"
     :href="externalUrl"
     class="btn external-url"
-    data-container="body"
     target="_blank"
     rel="noopener noreferrer nofollow"
   >

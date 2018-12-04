@@ -4,6 +4,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import initDiffsApp from '../diffs';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
+import initDiscussionFilters from '../notes/discussion_filters';
 import store from './stores';
 import MergeRequest from '../merge_request';
 
@@ -88,5 +89,6 @@ export default function initMrNotes() {
     },
   });
 
+  initDiscussionFilters(store);
   initDiffsApp(store);
 }

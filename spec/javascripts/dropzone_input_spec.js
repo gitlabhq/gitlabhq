@@ -7,12 +7,10 @@ const TEST_FILE = {
 };
 const TEST_UPLOAD_PATH = `${TEST_HOST}/upload/file`;
 const TEST_ERROR_MESSAGE = 'A big error occurred!';
-const TEMPLATE = (
-`<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}">
+const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}">
   <textarea class="js-gfm-input"></textarea>
   <div class="uploading-error-message"></div>
-</form>`
-);
+</form>`;
 
 describe('dropzone_input', () => {
   let form;

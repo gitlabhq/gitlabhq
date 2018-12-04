@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class BroadcastMessages < Grape::API
     include PaginationParams

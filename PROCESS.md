@@ -95,6 +95,12 @@ picked into the stable branches) up to the 19th of the month. Such merge
 requests should have the ~"feature flag" label assigned, and don't require a
 corresponding exception request to be created.
 
+In order to build the final package and present the feature for self-hosted
+customers, the feature flag should be removed. This should happen before the
+22nd, ideally _at least_ 2 days before. That means MRs with feature
+flags being picked at the 19th would have a quite tight schedule, so picking
+these _earlier_ is preferable.
+
 While rare, release managers may decide to reject picking a change into a stable
 branch, even when feature flags are used. This might be necessary if the changes
 are deemed problematic, too invasive, or there simply isn't enough time to
@@ -208,6 +214,7 @@ the stable branch are:
 * Fixes or improvements to automated QA scenarios
 * [Documentation updates](https://docs.gitlab.com/ee/development/documentation/workflow.html#documentation-shipped-late) for changes in the same release
 * New or updated translations (as long as they do not touch application code)
+* Changes that are behind a feature flag and have the ~"feature flag" label
 
 During the feature freeze all merge requests that are meant to go into the
 upcoming release should have the correct milestone assigned _and_ the

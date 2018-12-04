@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Badges < Grape::API
     include PaginationParams
@@ -20,7 +22,7 @@ module API
       params do
         requires :id, type: String, desc: "The ID of a #{source_type}"
       end
-      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Gets a list of #{source_type} badges viewable by the authenticated user." do
           detail 'This feature was introduced in GitLab 10.6.'
           success Entities::Badge

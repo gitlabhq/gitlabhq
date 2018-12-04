@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitAccess do
   include TermsHelper
+  include GitHelpers
 
   let(:user) { create(:user) }
 
@@ -736,21 +737,19 @@ describe Gitlab::GitAccess do
 
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          project.repository.add_branch(user, unprotected_branch, 'feature')
-          rugged = project.repository.rugged
-          target_branch = rugged.rev_parse('feature')
-          source_branch = project.repository.create_file(
-            user,
-            'filename',
-            'This is the file content',
-            message: 'This is a good commit message',
-            branch_name: unprotected_branch)
-          author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        project.repository.add_branch(user, unprotected_branch, 'feature')
+        rugged = rugged_repo(project.repository)
+        target_branch = rugged.rev_parse('feature')
+        source_branch = project.repository.create_file(
+          user,
+          'filename',
+          'This is the file content',
+          message: 'This is a good commit message',
+          branch_name: unprotected_branch)
+        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
-          merge_index = rugged.merge_commits(target_branch, source_branch)
-          Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
-        end
+        merge_index = rugged.merge_commits(target_branch, source_branch)
+        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
       end
     end
 
@@ -934,6 +933,16 @@ describe Gitlab::GitAccess do
 
         # There is still an N+1 query with protected branches
         expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(1)
+      end
+
+      it 'raises TimeoutError when #check_single_change_access raises a timeout error' do
+        message = "Push operation timed out\n\nTiming information for debugging purposes:\nRunning checks for ref: wow"
+
+        expect_next_instance_of(Gitlab::Checks::ChangeAccess) do |check|
+          expect(check).to receive(:exec).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
+        end
+
+        expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, message)
       end
     end
   end

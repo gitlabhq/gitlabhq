@@ -1,13 +1,13 @@
-- page_title "By #{@user.name}", "Snippets"
+- page_title _("By %{user_name}") % { user_name: @user.name }, _("Snippets")
 
 %ol.breadcrumb
   %li.breadcrumb-item
     = link_to snippets_path do
-      Snippets
+      = _("Snippets")
   %li.breadcrumb-item
     = @user.name
   .float-right.d-none.d-sm-block
     = link_to user_path(@user) do
-      #{@user.name} profile page
+      = _("%{user_name} profile page") % { user_name: @user.name }
 
 = render 'snippets'

@@ -1,4 +1,4 @@
-class MigrateRemainingMrMetricsPopulatingBackgroundMigration < ActiveRecord::Migration
+class MigrateRemainingMrMetricsPopulatingBackgroundMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -27,7 +27,7 @@ to enable it.
 1. First, ask your system administrator to enable GitLab Container Registry
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately. Currently there is a soft (10GB) size restriction for 
+   the Registry immediately. Currently there is a soft (10GB) size restriction for
    registry on GitLab.com, as part of the [repository size limit](repository/index.html#repository-size).
 1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
    and enable the **Container Registry** feature on your project. For new
@@ -119,12 +119,17 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 > Project Deploy Tokens were [introduced][ce-17894] in GitLab 10.7
 
 If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is either by using a [personal access tokens][pat] or a [project deploy token][pdt].
+There are two ways to do this:
+
+- By using a [personal access token](../profile/personal_access_tokens.md).
+- By using a [deploy token](../project/deploy_tokens/index.md).
+
 The minimal scope needed for both of them is `read_registry`.
 
-Example of using a personal access token:
-```
-docker login registry.example.com -u <your_username> -p <your_access_token>
+Example of using a token:
+
+```sh
+docker login registry.example.com -u <username> -p <token>
 ```
 
 ## Troubleshooting the GitLab Container Registry
@@ -134,12 +139,12 @@ docker login registry.example.com -u <your_username> -p <your_access_token>
 1. Check to make sure that the system clock on your Docker client and GitLab server have
    been synchronized (e.g. via NTP).
 
-2. If you are using an S3-backed Registry, double check that the IAM
+1. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See [the
    sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
-3. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
+1. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
@@ -216,7 +221,7 @@ needs to trust the mitmproxy SSL certificates for this to work.
 
 The following installation instructions assume you are running Ubuntu:
 
-1. Install mitmproxy (see http://docs.mitmproxy.org/en/stable/install.html)
+1. [Install mitmproxy](https://docs.mitmproxy.org/stable/overview-installation/).
 1. Run `mitmproxy --port 9000` to generate its certificates.
    Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:
@@ -245,7 +250,7 @@ This will run mitmproxy on port `9000`. In another window, run:
 curl --proxy http://localhost:9000 https://httpbin.org/status/200
 ```
 
-If everything is setup correctly, you will see information on the mitmproxy window and
+If everything is set up correctly, you will see information on the mitmproxy window and
 no errors from the curl commands.
 
 #### Running the Docker daemon with a proxy

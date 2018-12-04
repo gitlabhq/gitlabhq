@@ -9,8 +9,7 @@
     padding-left: $contextual-sidebar-width;
   }
 
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded
-    .issuable-sidebar-header {
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
     padding: 10px 0 15px;
   }
 }
@@ -75,7 +74,7 @@
 .nav-sidebar {
   transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
-  z-index: 400;
+  z-index: 600;
   width: $contextual-sidebar-width;
   top: $header-height;
   bottom: 0;
@@ -86,8 +85,7 @@
 
   &:not(.sidebar-collapsed-desktop) {
     @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
-      box-shadow: inset -1px 0 0 $border-color,
-        2px 1px 3px $dropdown-shadow-color;
+      box-shadow: inset -1px 0 0 $border-color, 2px 1px 3px $dropdown-shadow-color;
     }
   }
 
@@ -113,7 +111,7 @@
     }
 
     .avatar-container {
-      margin-right: 0;
+      margin: 0 auto;
     }
   }
 
@@ -324,15 +322,15 @@
   width: $contextual-sidebar-width - 1px;
   transition: width $sidebar-transition-duration;
   position: fixed;
+  height: $toggle-sidebar-height;
   bottom: 0;
-  padding: $gl-padding;
+  padding: 0 $gl-padding;
   background-color: $gray-light;
   border: 0;
   border-top: 1px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
-  line-height: 1;
 
   svg {
     margin-right: 8px;

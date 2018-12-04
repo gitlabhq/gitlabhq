@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::BitbucketController < Import::BaseController
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback

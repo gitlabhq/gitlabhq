@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     module Status
@@ -5,6 +7,7 @@ module Gitlab
         class Factory < Status::Factory
           def self.extended_statuses
             [[Status::SuccessWarning,
+              Status::Pipeline::Delayed,
               Status::Pipeline::Blocked]]
           end
 

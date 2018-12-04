@@ -27,7 +27,10 @@ class AutoWidthDropdownSelect {
 
         // We have to look at the parent because
         // `offsetParent` on a `display: none;` is `null`
-        const offsetParentWidth = $(this).parent().offsetParent().width();
+        const offsetParentWidth = $(this)
+          .parent()
+          .offsetParent()
+          .width();
         // Reset any width to let it naturally flow
         $dropdown.css('width', 'auto');
         if ($dropdown.outerWidth(false) > offsetParentWidth) {

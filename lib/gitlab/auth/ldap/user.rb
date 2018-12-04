@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # LDAP extension for User model
 #
 # * Find or create user from omniauth.auth data

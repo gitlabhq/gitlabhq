@@ -1,10 +1,12 @@
 <script>
 import { listen } from 'codesandbox-api';
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
     Icon,
+    GlLoadingIcon,
   },
   props: {
     manager: {
@@ -89,33 +91,25 @@ export default {
       :aria-label="s__('IDE|Back')"
       :disabled="backButtonDisabled"
       :class="{
-        'disabled-content': backButtonDisabled
+        'disabled-content': backButtonDisabled,
       }"
       type="button"
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="back"
     >
-      <icon
-        :size="24"
-        name="chevron-left"
-        class="m-auto"
-      />
+      <icon :size="24" name="chevron-left" class="m-auto" />
     </button>
     <button
       :aria-label="s__('IDE|Back')"
       :disabled="forwardButtonDisabled"
       :class="{
-        'disabled-content': forwardButtonDisabled
+        'disabled-content': forwardButtonDisabled,
       }"
       type="button"
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="forward"
     >
-      <icon
-        :size="24"
-        name="chevron-right"
-        class="m-auto"
-      />
+      <icon :size="24" name="chevron-right" class="m-auto" />
     </button>
     <button
       :aria-label="s__('IDE|Refresh preview')"
@@ -123,11 +117,7 @@ export default {
       class="ide-navigator-btn d-flex align-items-center d-transparent border-0 bg-transparent"
       @click="refresh"
     >
-      <icon
-        :size="18"
-        name="retry"
-        class="m-auto"
-      />
+      <icon :size="18" name="retry" class="m-auto" />
     </button>
     <div class="position-relative w-100 prepend-left-4">
       <input
@@ -136,10 +126,7 @@ export default {
         class="ide-navigator-location form-control bg-white"
         readonly
       />
-      <gl-loading-icon
-        v-if="loading"
-        class="position-absolute ide-preview-loading-icon"
-      />
+      <gl-loading-icon v-if="loading" class="position-absolute ide-preview-loading-icon" />
     </div>
   </header>
 </template>

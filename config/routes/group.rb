@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
@@ -27,7 +29,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         as: :group,
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     namespace :settings do
-      resource :ci_cd, only: [:show], controller: 'ci_cd'
+      resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        put :reset_registration_token
+      end
     end
 
     resource :variables, only: [:show, :update]
@@ -49,6 +53,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resource :avatar, only: [:destroy]
 
+    concerns :clusterable
+
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
       delete :leave, on: :collection
@@ -61,7 +67,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    # On CE only index and show actions are needed
     resources :boards, only: [:index, :show]
 
     resources :runners, only: [:index, :edit, :update, :destroy, :show] do

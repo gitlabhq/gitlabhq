@@ -18,9 +18,11 @@ describe('Registry List', () => {
 
   describe('with data', () => {
     const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify(reposServerResponse), {
-        status: 200,
-      }));
+      next(
+        request.respondWith(JSON.stringify(reposServerResponse), {
+          status: 200,
+        }),
+      );
     };
 
     beforeEach(() => {
@@ -32,21 +34,21 @@ describe('Registry List', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
     });
 
-    it('should render a list of repos', (done) => {
+    it('should render a list of repos', done => {
       setTimeout(() => {
         expect(vm.$store.state.repos.length).toEqual(reposServerResponse.length);
 
         Vue.nextTick(() => {
-          expect(
-            vm.$el.querySelectorAll('.container-image').length,
-          ).toEqual(reposServerResponse.length);
+          expect(vm.$el.querySelectorAll('.container-image').length).toEqual(
+            reposServerResponse.length,
+          );
           done();
         });
       }, 0);
     });
 
     describe('delete repository', () => {
-      it('should be possible to delete a repo', (done) => {
+      it('should be possible to delete a repo', done => {
         setTimeout(() => {
           Vue.nextTick(() => {
             expect(vm.$el.querySelector('.container-image-head .js-remove-repo')).toBeDefined();
@@ -57,12 +59,14 @@ describe('Registry List', () => {
     });
 
     describe('toggle repository', () => {
-      it('should open the container', (done) => {
+      it('should open the container', done => {
         setTimeout(() => {
           Vue.nextTick(() => {
             vm.$el.querySelector('.js-toggle-repo').click();
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.js-toggle-repo i').className).toEqual('fa fa-chevron-up');
+              expect(vm.$el.querySelector('.js-toggle-repo i').className).toEqual(
+                'fa fa-chevron-up',
+              );
               done();
             });
           });
@@ -73,9 +77,11 @@ describe('Registry List', () => {
 
   describe('without data', () => {
     const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 200,
-      }));
+      next(
+        request.respondWith(JSON.stringify([]), {
+          status: 200,
+        }),
+      );
     };
 
     beforeEach(() => {
@@ -87,11 +93,16 @@ describe('Registry List', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
     });
 
-    it('should render empty message', (done) => {
+    it('should render empty message', done => {
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('p').textContent.trim().replace(/[\r\n]+/g, ' '),
-        ).toEqual('No container images stored for this project. Add one by following the instructions above.');
+          vm.$el
+            .querySelector('p')
+            .textContent.trim()
+            .replace(/[\r\n]+/g, ' '),
+        ).toEqual(
+          'No container images stored for this project. Add one by following the instructions above.',
+        );
         done();
       }, 0);
     });
@@ -99,9 +110,11 @@ describe('Registry List', () => {
 
   describe('while loading data', () => {
     const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify(reposServerResponse), {
-        status: 200,
-      }));
+      next(
+        request.respondWith(JSON.stringify(reposServerResponse), {
+          status: 200,
+        }),
+      );
     };
 
     beforeEach(() => {
@@ -113,7 +126,7 @@ describe('Registry List', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
     });
 
-    it('should render a loading spinner', (done) => {
+    it('should render a loading spinner', done => {
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.fa-spinner')).not.toBe(null);
         done();

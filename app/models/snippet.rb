@@ -2,6 +2,7 @@
 
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
+  include Redactable
   include CacheMarkdownField
   include Noteable
   include Participable
@@ -17,6 +18,8 @@ class Snippet < ActiveRecord::Base
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content
+
+  redact_field :description
 
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with snippets.
   # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10392/diffs#note_28719102
@@ -60,6 +63,62 @@ class Snippet < ActiveRecord::Base
   attr_spammable :title, spam_title: true
   attr_spammable :content, spam_description: true
 
+  def self.with_optional_visibility(value = nil)
+    if value
+      where(visibility_level: value)
+    else
+      all
+    end
+  end
+
+  def self.only_global_snippets
+    where(project_id: nil)
+  end
+
+  def self.only_include_projects_visible_to(current_user = nil)
+    levels = Gitlab::VisibilityLevel.levels_for_user(current_user)
+
+    joins(:project).where('projects.visibility_level IN (?)', levels)
+  end
+
+  def self.only_include_projects_with_snippets_enabled(include_private: false)
+    column = ProjectFeature.access_level_attribute(:snippets)
+    levels = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+
+    levels << ProjectFeature::PRIVATE if include_private
+
+    joins(project: :project_feature)
+      .where(project_features: { column => levels })
+  end
+
+  def self.only_include_authorized_projects(current_user)
+    where(
+      'EXISTS (?)',
+      ProjectAuthorization
+        .select(1)
+        .where('project_id = snippets.project_id')
+        .where(user_id: current_user.id)
+    )
+  end
+
+  def self.for_project_with_user(project, user = nil)
+    return none unless project.snippets_visible?(user)
+
+    if user && project.team.member?(user)
+      project.snippets
+    else
+      project.snippets.public_to_user(user)
+    end
+  end
+
+  def self.visible_to_or_authored_by(user)
+    where(
+      'snippets.visibility_level IN (?) OR snippets.author_id = ?',
+      Gitlab::VisibilityLevel.levels_for_user(user),
+      user.id
+    )
+  end
+
   def self.reference_prefix
     '$'
   end
@@ -76,27 +135,6 @@ class Snippet < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
-  end
-
-  # Returns a collection of snippets that are either public or visible to the
-  # logged in user.
-  #
-  # This method does not verify the user actually has the access to the project
-  # the snippet is in, so it should be only used on a relation that's already scoped
-  # for project access
-  def self.public_or_visible_to_user(user = nil)
-    if user
-      authorized = user
-        .project_authorizations
-        .select(1)
-        .where('project_authorizations.project_id = snippets.project_id')
-
-      levels = Gitlab::VisibilityLevel.levels_for_user(user)
-
-      where('EXISTS (?) OR snippets.visibility_level IN (?) or snippets.author_id = (?)', authorized, levels, user.id)
-    else
-      public_to_user
-    end
   end
 
   def to_reference(from = nil, full: false)

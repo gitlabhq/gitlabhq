@@ -6,6 +6,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import MrWidgetIcon from './mr_widget_icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -13,6 +14,7 @@ export default {
     Icon,
     clipboardButton,
     TooltipOnTruncate,
+    MrWidgetIcon,
   },
   directives: {
     tooltip,
@@ -28,11 +30,17 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     commitsBehindText() {
-      return sprintf(s__('mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch'), {
-        commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
-        commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
-        commitsBehindLinkEnd: '</a>',
-      }, false);
+      return sprintf(
+        s__(
+          'mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch',
+        ),
+        {
+          commitsBehindLinkStart: `<a href="${_.escape(this.mr.targetBranchPath)}">`,
+          commitsBehind: n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount),
+          commitsBehindLinkEnd: '</a>',
+        },
+        false,
+      );
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -45,17 +53,24 @@ export default {
     },
     webIdePath() {
       if (this.mr.canPushToSourceBranch) {
-        return mergeUrlParams({
-          target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
-            this.mr.targetProjectFullPath : '',
-        }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
+        return mergeUrlParams(
+          {
+            target_project:
+              this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath
+                ? this.mr.targetProjectFullPath
+                : '',
+          },
+          webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`),
+        );
       }
 
       return null;
     },
     ideButtonTitle() {
       return !this.mr.canPushToSourceBranch
-        ? s__('mrWidget|You are not allowed to edit this project directly. Please fork to make changes.')
+        ? s__(
+            'mrWidget|You are not allowed to edit this project directly. Please fork to make changes.',
+          )
         : '';
     },
   },
@@ -63,13 +78,11 @@ export default {
 </script>
 <template>
   <div class="mr-source-target append-bottom-default">
-    <div class="git-merge-icon-container append-right-default">
-      <icon name="git-merge" />
-    </div>
+    <mr-widget-icon name="git-merge" />
     <div class="git-merge-container d-flex">
       <div class="normal">
         <strong>
-          {{ s__("mrWidget|Request to merge") }}
+          {{ s__('mrWidget|Request to merge') }}
           <tooltip-on-truncate
             :title="mr.sourceBranch"
             truncate-target="child"
@@ -80,89 +93,65 @@ export default {
             :title="__('Copy branch name to clipboard')"
             css-class="btn-default btn-transparent btn-clipboard"
           />
-          {{ s__("mrWidget|into") }}
+          {{ s__('mrWidget|into') }}
           <tooltip-on-truncate
             :title="mr.targetBranch"
             truncate-target="child"
             class="label-branch label-truncate"
           >
-            <a
-              :href="mr.targetBranchTreePath"
-              class="js-target-branch"
-            >
-              {{ mr.targetBranch }}
-            </a>
+            <a :href="mr.targetBranchTreePath" class="js-target-branch"> {{ mr.targetBranch }} </a>
           </tooltip-on-truncate>
         </strong>
         <div
           v-if="shouldShowCommitsBehindText"
           class="diverged-commits-count"
           v-html="commitsBehindText"
-        >
-        </div>
+        ></div>
       </div>
 
-      <div
-        v-if="mr.isOpen"
-        class="branch-actions"
-      >
-        <span
+      <div v-if="mr.isOpen" class="branch-actions d-flex">
+        <a
+          v-if="!mr.sourceBranchRemoved"
           v-tooltip
+          :href="webIdePath"
           :title="ideButtonTitle"
+          :class="{ disabled: !mr.canPushToSourceBranch }"
+          class="btn btn-default js-web-ide d-none d-md-inline-block append-right-8"
           data-placement="bottom"
           tabindex="0"
+          role="button"
         >
-          <a
-            v-if="!mr.sourceBranchRemoved"
-            :href="webIdePath"
-            :class="{ disabled: !mr.canPushToSourceBranch }"
-            class="btn btn-default inline js-web-ide d-none d-md-inline-block"
-            role="button"
-          >
-            {{ s__("mrWidget|Open in Web IDE") }}
-          </a>
-        </span>
+          {{ s__('mrWidget|Open in Web IDE') }}
+        </a>
         <button
           :disabled="mr.sourceBranchRemoved"
           data-target="#modal_merge_info"
           data-toggle="modal"
-          class="btn btn-default inline js-check-out-branch"
+          class="btn btn-default js-check-out-branch append-right-default"
           type="button"
         >
-          {{ s__("mrWidget|Check out branch") }}
+          {{ s__('mrWidget|Check out branch') }}
         </button>
-        <span class="dropdown prepend-left-10">
+        <span class="dropdown">
           <button
             type="button"
-            class="btn inline dropdown-toggle"
+            class="btn dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <icon name="download" />
-            <i
-              class="fa fa-caret-down"
-              aria-hidden="true">
-            </i>
+            <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li>
-              <a
-                :href="mr.emailPatchesPath"
-                class="js-download-email-patches"
-                download
-              >
-                {{ s__("mrWidget|Email patches") }}
+              <a :href="mr.emailPatchesPath" class="js-download-email-patches" download>
+                {{ s__('mrWidget|Email patches') }}
               </a>
             </li>
             <li>
-              <a
-                :href="mr.plainDiffPath"
-                class="js-download-plain-diff"
-                download
-              >
-                {{ s__("mrWidget|Plain diff") }}
+              <a :href="mr.plainDiffPath" class="js-download-plain-diff" download>
+                {{ s__('mrWidget|Plain diff') }}
               </a>
             </li>
           </ul>

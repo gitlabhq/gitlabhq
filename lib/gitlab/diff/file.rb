@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class File
@@ -26,6 +28,7 @@ module Gitlab
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
+        @unfolded = false
 
         # Ensure items are collected in the the batch
         new_blob_lazy
@@ -133,6 +136,24 @@ module Gitlab
       def diff_lines
         @diff_lines ||=
           Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
+      end
+
+      # Changes diff_lines according to the given position. That is,
+      # it checks whether the position requires blob lines into the diff
+      # in order to be presented.
+      def unfold_diff_lines(position)
+        return unless position
+
+        unfolder = Gitlab::Diff::LinesUnfolder.new(self, position)
+
+        if unfolder.unfold_required?
+          @diff_lines = unfolder.unfolded_diff_lines
+          @unfolded = true
+        end
+      end
+
+      def unfolded?
+        @unfolded
       end
 
       def highlighted_diff_lines

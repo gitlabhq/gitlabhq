@@ -59,6 +59,7 @@ describe('CreateMergeRequestDropdown', () => {
       expect(dropdown.createBranchPath).toBe(
         `${TEST_HOST}/branches?branch_name=contains%23hash&issue=42`,
       );
+
       expect(dropdown.createMrPath).toBe(
         `${TEST_HOST}/create_merge_request?branch_name=contains%23hash&ref=master`,
       );

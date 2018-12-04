@@ -80,7 +80,7 @@ FactoryBot.define do
 
     trait :merge_when_pipeline_succeeds do
       merge_when_pipeline_succeeds true
-      merge_user author
+      merge_user { author }
     end
 
     trait :remove_source_branch do
@@ -98,6 +98,20 @@ FactoryBot.define do
           project: merge_request.source_project,
           ref: merge_request.source_branch,
           sha: merge_request.diff_head_sha)
+      end
+    end
+
+    trait :deployed_review_app do
+      target_branch 'pages-deploy-target'
+
+      transient do
+        deployment { create(:deployment, :review_app) }
+      end
+
+      after(:build) do |merge_request, evaluator|
+        merge_request.source_branch = evaluator.deployment.ref
+        merge_request.source_project = evaluator.deployment.project
+        merge_request.target_project = evaluator.deployment.project
       end
     end
 

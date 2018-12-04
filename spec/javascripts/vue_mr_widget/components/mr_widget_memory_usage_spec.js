@@ -128,16 +128,10 @@ describe('MemoryUsage', () => {
     describe('computeGraphData', () => {
       it('should populate sparkline graph', () => {
         vm.computeGraphData(metrics, deployment_time);
-        const {
-          hasMetrics,
-          memoryMetrics,
-          deploymentTime,
-          memoryFrom,
-          memoryTo,
-        } = vm;
+        const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
 
         expect(hasMetrics).toBeTruthy();
-        expect(memoryMetrics.length > 0).toBeTruthy();
+        expect(memoryMetrics.length).toBeGreaterThan(0);
         expect(deploymentTime).toEqual(deployment_time);
         expect(memoryFrom).toEqual('9.13');
         expect(memoryTo).toEqual('4.28');
@@ -153,18 +147,13 @@ describe('MemoryUsage', () => {
         });
 
       it('should load metrics data using MRWidgetService', done => {
-        spyOn(MRWidgetService, 'fetchMetrics').and.returnValue(
-          returnServicePromise(true),
-        );
+        spyOn(MRWidgetService, 'fetchMetrics').and.returnValue(returnServicePromise(true));
         spyOn(vm, 'computeGraphData');
 
         vm.loadMetrics();
         setTimeout(() => {
           expect(MRWidgetService.fetchMetrics).toHaveBeenCalledWith(url);
-          expect(vm.computeGraphData).toHaveBeenCalledWith(
-            metrics,
-            deployment_time,
-          );
+          expect(vm.computeGraphData).toHaveBeenCalledWith(metrics, deployment_time);
           done();
         }, 333);
       });
@@ -183,15 +172,11 @@ describe('MemoryUsage', () => {
       vm.loadFailed = false;
 
       Vue.nextTick(() => {
-        expect(
-          el.querySelector('.js-usage-info.usage-info-loading'),
-        ).toBeDefined();
-        expect(
-          el.querySelector('.js-usage-info .usage-info-load-spinner'),
-        ).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(
-          messages.loadingMetrics,
-        );
+        expect(el.querySelector('.js-usage-info.usage-info-loading')).toBeDefined();
+
+        expect(el.querySelector('.js-usage-info .usage-info-load-spinner')).toBeDefined();
+
+        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadingMetrics);
         done();
       });
     });
@@ -203,9 +188,7 @@ describe('MemoryUsage', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelector('.memory-graph-container')).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(
-          messages.hasMetrics,
-        );
+        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.hasMetrics);
         done();
       });
     });
@@ -216,12 +199,9 @@ describe('MemoryUsage', () => {
       vm.loadFailed = true;
 
       Vue.nextTick(() => {
-        expect(
-          el.querySelector('.js-usage-info.usage-info-failed'),
-        ).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(
-          messages.loadFailed,
-        );
+        expect(el.querySelector('.js-usage-info.usage-info-failed')).toBeDefined();
+
+        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.loadFailed);
         done();
       });
     });
@@ -232,12 +212,9 @@ describe('MemoryUsage', () => {
       vm.loadFailed = false;
 
       Vue.nextTick(() => {
-        expect(
-          el.querySelector('.js-usage-info.usage-info-unavailable'),
-        ).toBeDefined();
-        expect(el.querySelector('.js-usage-info').innerText).toContain(
-          messages.metricsUnavailable,
-        );
+        expect(el.querySelector('.js-usage-info.usage-info-unavailable')).toBeDefined();
+
+        expect(el.querySelector('.js-usage-info').innerText).toContain(messages.metricsUnavailable);
         done();
       });
     });

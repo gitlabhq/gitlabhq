@@ -92,41 +92,6 @@ describe GlobalMilestone do
     end
   end
 
-  describe '.states_count' do
-    context 'when the projects have milestones' do
-      before do
-        create(:closed_milestone, title: 'Active Group Milestone', project: project3)
-        create(:active_milestone, title: 'Active Group Milestone', project: project1)
-        create(:active_milestone, title: 'Active Group Milestone', project: project2)
-        create(:closed_milestone, title: 'Closed Group Milestone', project: project1)
-        create(:closed_milestone, title: 'Closed Group Milestone', project: project2)
-        create(:closed_milestone, title: 'Closed Group Milestone', project: project3)
-      end
-
-      it 'returns the quantity of global milestones in each possible state' do
-        expected_count = { opened: 1, closed: 2, all: 2 }
-
-        count = described_class.states_count(Project.all)
-
-        expect(count).to eq(expected_count)
-      end
-    end
-
-    context 'when the projects do not have milestones' do
-      before do
-        project1
-      end
-
-      it 'returns 0 as the quantity of global milestones in each state' do
-        expected_count = { opened: 0, closed: 0, all: 0 }
-
-        count = described_class.states_count(Project.all)
-
-        expect(count).to eq(expected_count)
-      end
-    end
-  end
-
   describe '#initialize' do
     let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
     let(:milestone1_project2) { create(:milestone, title: "Milestone v1.2", project: project2) }

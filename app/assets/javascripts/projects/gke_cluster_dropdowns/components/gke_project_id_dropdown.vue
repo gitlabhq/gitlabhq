@@ -93,7 +93,7 @@ export default {
       }
 
       return sprintf(
-        s__('ClusterIntegration|An error occured while trying to fetch your projects: %{error}'),
+        s__('ClusterIntegration|An error occurred while trying to fetch your projects: %{error}'),
         { error: this.gapiError },
       );
     },
@@ -145,17 +145,12 @@ export default {
 
 <template>
   <div>
-    <div
-      class="js-gcp-project-id-dropdown dropdown"
-    >
-      <dropdown-hidden-input
-        :name="fieldName"
-        :value="selectedProject.projectId"
-      />
+    <div class="js-gcp-project-id-dropdown dropdown">
+      <dropdown-hidden-input :name="fieldName" :value="selectedProject.projectId" />
       <dropdown-button
         :class="{
           'border-danger': hasErrors,
-          'read-only': hasOneProject
+          'read-only': hasOneProject,
         }"
         :is-disabled="isDisabled"
         :is-loading="isLoading"
@@ -173,28 +168,18 @@ export default {
                 {{ s__('ClusterIntegration|No projects matched your search') }}
               </span>
             </li>
-            <li
-              v-for="result in results"
-              :key="result.project_number"
-            >
-              <button
-                type="button"
-                @click.prevent="setItem(result)"
-              >
-                {{ result.name }}
-              </button>
+            <li v-for="result in results" :key="result.project_number">
+              <button type="button" @click.prevent="setItem(result);">{{ result.name }}</button>
             </li>
           </ul>
         </div>
-        <div class="dropdown-loading">
-          <gl-loading-icon />
-        </div>
+        <div class="dropdown-loading"><gl-loading-icon /></div>
       </div>
     </div>
     <span
       :class="{
         'text-danger': hasErrors,
-        'text-muted': !hasErrors
+        'text-muted': !hasErrors,
       }"
       class="form-text"
       v-html="helpText"

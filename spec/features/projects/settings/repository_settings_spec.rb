@@ -132,6 +132,69 @@ describe 'Projects > Settings > Repository settings' do
       it 'shows push mirror settings', :js do
         expect(page).to have_selector('#mirror_direction')
       end
+
+      it 'creates a push mirror that mirrors all branches', :js do
+        expect(find('.js-mirror-protected-hidden', visible: false).value).to eq('0')
+
+        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        select 'SSH public key', from: 'Authentication method'
+
+        select_direction
+
+        Sidekiq::Testing.fake! do
+          click_button 'Mirror repository'
+        end
+
+        project.reload
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(project.remote_mirrors.first.only_protected_branches).to eq(false)
+      end
+
+      it 'creates a push mirror that only mirrors protected branches', :js do
+        find('#only_protected_branches').click
+
+        expect(find('.js-mirror-protected-hidden', visible: false).value).to eq('1')
+
+        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        select 'SSH public key', from: 'Authentication method'
+
+        select_direction
+
+        Sidekiq::Testing.fake! do
+          click_button 'Mirror repository'
+        end
+
+        project.reload
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(project.remote_mirrors.first.only_protected_branches).to eq(true)
+      end
+
+      it 'generates an SSH public key on submission', :js do
+        fill_in 'url', with: 'ssh://user@localhost/project.git'
+        select 'SSH public key', from: 'Authentication method'
+
+        select_direction
+
+        Sidekiq::Testing.fake! do
+          click_button 'Mirror repository'
+        end
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+        expect(page).to have_selector('[title="Copy SSH public key"]')
+      end
+
+      def select_direction(direction = 'push')
+        direction_select = find('#mirror_direction')
+
+        # In CE, this select box is disabled, but in EE, it is enabled
+        if direction_select.disabled?
+          expect(direction_select.value).to eq(direction)
+        else
+          direction_select.select(direction.capitalize)
+        end
+      end
     end
   end
 end

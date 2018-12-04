@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 

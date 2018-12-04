@@ -1177,10 +1177,8 @@ export const discussion1 = {
     file_path: 'about.md',
   },
   position: {
-    formatter: {
-      new_line: 50,
-      old_line: null,
-    },
+    new_line: 50,
+    old_line: null,
   },
   notes: [
     {
@@ -1197,10 +1195,8 @@ export const resolvedDiscussion1 = {
     file_path: 'about.md',
   },
   position: {
-    formatter: {
-      new_line: 50,
-      old_line: null,
-    },
+    new_line: 50,
+    old_line: null,
   },
   notes: [
     {
@@ -1217,10 +1213,8 @@ export const discussion2 = {
     file_path: 'README.md',
   },
   position: {
-    formatter: {
-      new_line: null,
-      old_line: 20,
-    },
+    new_line: null,
+    old_line: 20,
   },
   notes: [
     {
@@ -1237,10 +1231,8 @@ export const discussion3 = {
     file_path: 'README.md',
   },
   position: {
-    formatter: {
-      new_line: 21,
-      old_line: null,
-    },
+    new_line: 21,
+    old_line: null,
   },
   notes: [
     {
@@ -1252,3 +1244,18 @@ export const discussion3 = {
 export const unresolvableDiscussion = {
   resolvable: false,
 };
+
+export const discussionFiltersMock = [
+  {
+    title: 'Show all activity',
+    value: 0,
+  },
+  {
+    title: 'Show comments only',
+    value: 1,
+  },
+  {
+    title: 'Show system notes only',
+    value: 2,
+  },
+];

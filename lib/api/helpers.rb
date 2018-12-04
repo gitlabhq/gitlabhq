@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module Helpers
     include Gitlab::Utils
@@ -94,15 +96,9 @@ module API
       LabelsFinder.new(current_user, search_params).execute
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
-      if id =~ /^\d+$/
-        User.find_by(id: id)
-      else
-        User.find_by(username: id)
-      end
+      UserFinder.new(id).find_by_id_or_username
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
@@ -381,9 +377,10 @@ module API
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
       trace = exception.backtrace
 
-      message = "\n#{exception.class} (#{exception.message}):\n"
+      message = ["\n#{exception.class} (#{exception.message}):\n"]
       message << exception.annoted_source_code.to_s if exception.respond_to?(:annoted_source_code)
       message << "  " << trace.join("\n  ")
+      message = message.join
 
       API.logger.add Logger::FATAL, message
 
@@ -497,6 +494,7 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
+      header['Content-Disposition'] = "attachment; filename=#{blob.name.inspect}"
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 

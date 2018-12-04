@@ -31,6 +31,11 @@ describe 'Pipeline', :js do
              pipeline: pipeline, stage: 'deploy', name: 'manual-build')
     end
 
+    let!(:build_scheduled) do
+      create(:ci_build, :scheduled,
+             pipeline: pipeline, stage: 'deploy', name: 'delayed-job')
+    end
+
     let!(:build_external) do
       create(:generic_commit_status, status: 'success',
                                      pipeline: pipeline,
@@ -63,6 +68,10 @@ describe 'Pipeline', :js do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
+    it 'shows link to the pipeline ref' do
+      expect(page).to have_link(pipeline.ref)
+    end
+
     it_behaves_like 'showing user status' do
       let(:user_with_status) { pipeline.user }
 
@@ -79,10 +88,12 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to cancel the running build' do
+        it 'cancels the running build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
-          expect(page).not_to have_content('Cancel running')
+          page.within('#ci-badge-deploy') do
+            expect(page).to have_css('.js-icon-retry')
+          end
         end
       end
 
@@ -102,6 +113,27 @@ describe 'Pipeline', :js do
           find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
+        end
+      end
+
+      context 'when pipeline has a delayed job' do
+        it 'shows the scheduled icon and an unschedule action for the delayed job' do
+          page.within('#ci-badge-delayed-job') do
+            expect(page).to have_selector('.js-ci-status-icon-scheduled')
+            expect(page).to have_content('delayed-job')
+          end
+
+          page.within('#ci-badge-delayed-job .ci-action-icon-container.js-icon-time-out') do
+            expect(page).to have_selector('svg')
+          end
+        end
+
+        it 'unschedules the delayed job and shows play button as a manual job' do
+          find('#ci-badge-delayed-job .ci-action-icon-container').click
+
+          page.within('#ci-badge-delayed-job') do
+            expect(page).to have_css('.js-icon-play')
+          end
         end
       end
 
@@ -206,6 +238,20 @@ describe 'Pipeline', :js do
         end
 
         it { expect(page).not_to have_content('Cancel running') }
+      end
+    end
+
+    context 'when pipeline ref does not exist in repository anymore' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   ref: 'non-existent',
+                                   sha: project.commit.id,
+                                   user: user)
+      end
+
+      it 'does not render link to the pipeline ref' do
+        expect(page).not_to have_link(pipeline.ref)
+        expect(page).to have_content(pipeline.ref)
       end
     end
   end
@@ -315,6 +361,18 @@ describe 'Pipeline', :js do
       it { expect(build_manual.reload).to be_pending }
     end
 
+    context 'when user unschedules a delayed job' do
+      before do
+        within '.pipeline-holder' do
+          click_link('Unschedule')
+        end
+      end
+
+      it 'unschedules the delayed job and shows play button as a manual job' do
+        expect(page).to have_content('Trigger this manual action')
+      end
+    end
+
     context 'failed jobs' do
       it 'displays a tooltip with the failure reason' do
         page.within('.ci-table') do
@@ -330,54 +388,83 @@ describe 'Pipeline', :js do
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
+    subject { visit pipeline_failures_page }
+
     context 'with failed build' do
       before do
         failed_build.trace.set('4 examples, 1 failure')
-
-        visit pipeline_failures_page
       end
 
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'shows build failure logs' do
+        subject
+
         expect(page).to have_content('4 examples, 1 failure')
       end
 
       it 'shows the failure reason' do
+        subject
+
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
-      it 'shows retry button for failed build' do
-        page.within(find('.build-failures', match: :first)) do
-          expect(page).to have_link('Retry')
+      context 'when user does not have permission to retry build' do
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).not_to have_link('Retry')
+          end
+        end
+      end
+
+      context 'when user does have permission to retry build' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).to have_link('Retry')
+          end
         end
       end
     end
 
     context 'when missing build logs' do
-      before do
-        visit pipeline_failures_page
-      end
-
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'does not show trace' do
+        subject
+
         expect(page).to have_content('No job trace')
       end
     end
@@ -390,11 +477,9 @@ describe 'Pipeline', :js do
       end
 
       context 'when accessing failed jobs page' do
-        before do
-          visit pipeline_failures_page
-        end
-
         it 'fails to access the page' do
+          subject
+
           expect(page).to have_title('Access Denied')
         end
       end
@@ -403,11 +488,11 @@ describe 'Pipeline', :js do
     context 'without failures' do
       before do
         failed_build.update!(status: :success)
-
-        visit pipeline_failures_page
       end
 
       it 'displays the pipeline graph' do
+        subject
+
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.pipeline-visualization')

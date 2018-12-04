@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -23,22 +22,13 @@ export default {
     },
   },
   computed: {
-    ...mapState({
-      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
-    }),
-    leftLineCode() {
-      return this.line.left && this.line.left.lineCode;
-    },
-    rightLineCode() {
-      return this.line.right && this.line.right.lineCode;
-    },
     hasExpandedDiscussionOnLeft() {
-      return this.line.left && this.line.left.discussions
+      return this.line.left && this.line.left.discussions.length
         ? this.line.left.discussions.every(discussion => discussion.expanded)
         : false;
     },
     hasExpandedDiscussionOnRight() {
-      return this.line.right && this.line.right.discussions
+      return this.line.right && this.line.right.discussions.length
         ? this.line.right.discussions.every(discussion => discussion.expanded)
         : false;
     },
@@ -57,9 +47,10 @@ export default {
       );
     },
     showRightSideCommentForm() {
-      return (
-        this.line.right && this.line.right.type && this.diffLineCommentForms[this.rightLineCode]
-      );
+      return this.line.right && this.line.right.type && this.line.right.hasForm;
+    },
+    showLeftSideCommentForm() {
+      return this.line.left && this.line.left.hasForm;
     },
     className() {
       return (this.left && this.line.left.discussions.length > 0) ||
@@ -67,40 +58,47 @@ export default {
         ? ''
         : 'js-temp-notes-holder';
     },
+    shouldRender() {
+      const { line } = this;
+      const hasDiscussion =
+        (line.left && line.left.discussions && line.left.discussions.length) ||
+        (line.right && line.right.discussions && line.right.discussions.length);
+
+      if (
+        hasDiscussion &&
+        (this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight)
+      ) {
+        return true;
+      }
+
+      const hasCommentFormOnLeft = line.left && line.left.hasForm;
+      const hasCommentFormOnRight = line.right && line.right.hasForm;
+
+      return hasCommentFormOnLeft || hasCommentFormOnRight;
+    },
   },
 };
 </script>
 
 <template>
-  <tr
-    :class="className"
-    class="notes_holder"
-  >
-    <td class="notes_line old"></td>
-    <td class="notes_content parallel old">
-      <div
-        v-if="shouldRenderDiscussionsOnLeft"
-        class="content"
-      >
+  <tr v-if="shouldRender" :class="className" class="notes_holder">
+    <td class="notes_content parallel old" colspan="2">
+      <div v-if="shouldRenderDiscussionsOnLeft" class="content">
         <diff-discussions
           v-if="line.left.discussions.length"
           :discussions="line.left.discussions"
         />
       </div>
       <diff-line-note-form
-        v-if="diffLineCommentForms[leftLineCode]"
+        v-if="showLeftSideCommentForm"
         :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="line.left"
         line-position="left"
       />
     </td>
-    <td class="notes_line new"></td>
-    <td class="notes_content parallel new">
-      <div
-        v-if="shouldRenderDiscussionsOnRight"
-        class="content"
-      >
+    <td class="notes_content parallel new" colspan="2">
+      <div v-if="shouldRenderDiscussionsOnRight" class="content">
         <diff-discussions
           v-if="line.right.discussions.length"
           :discussions="line.right.discussions"

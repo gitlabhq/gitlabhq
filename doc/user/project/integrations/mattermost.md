@@ -4,9 +4,9 @@
 
 To enable Mattermost integration you must create an incoming webhook integration:
 
-1. Sign in to your Mattermost instance
-1. Visit incoming webhooks, that will be something like: https://mattermost.example/your_team_name/integrations/incoming_webhooks/add
-1. Choose a display name, description and channel, those can be overridden on GitLab
+1. Sign in to your Mattermost instance.
+1. Visit incoming webhooks, that will be something like: `https://mattermost.example.com/your_team_name/integrations/incoming_webhooks/add`.
+1. Choose a display name, description and channel, those can be overridden on GitLab.
 1. Save it, copy the **Webhook URL**, we'll need this later for GitLab.
 
 There might be some cases that Incoming Webhooks are blocked by admin, ask your mattermost admin to enable
@@ -38,7 +38,7 @@ At the end, fill in your Mattermost details:
 
 | Field | Description |
 | ----- | ----------- |
-| **Webhook**  | The incoming webhook URL which you have to setup on Mattermost, it will be something like: http://mattermost.example/hooks/5xo… |
+| **Webhook**  | The incoming webhook URL which you have to set up on Mattermost, it will be something like: http://mattermost.example/hooks/5xo… |
 | **Username** | Optional username which can be on messages sent to Mattermost. Fill this in if you want to change the username of the bot. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 

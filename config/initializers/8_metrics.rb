@@ -3,7 +3,6 @@
 # that we can stub it for testing, as it is only called when metrics are
 # enabled.
 #
-# rubocop:disable Metrics/AbcSize
 def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Gitlab::Shell)
 
@@ -48,16 +47,6 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Premailer::Adapter::Nokogiri)
   instrumentation.instrument_instance_methods(Premailer::Adapter::Nokogiri)
 
-  [
-    :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
-    :Tag, :TagCollection, :Tree
-  ].each do |name|
-    const = Rugged.const_get(name)
-
-    instrumentation.instrument_methods(const)
-    instrumentation.instrument_instance_methods(const)
-  end
-
   instrumentation.instrument_methods(Banzai::Renderer)
   instrumentation.instrument_methods(Banzai::Querying)
 
@@ -101,7 +90,6 @@ def instrument_classes(instrumentation)
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
-# rubocop:enable Metrics/AbcSize
 
 # With prometheus enabled by default this breaks all specs
 # that stubs methods using `any_instance_of` for the models reloaded here.
@@ -110,7 +98,11 @@ end
 # check: https://github.com/rspec/rspec-mocks#settings-mocks-or-stubs-on-any-instance-of-a-class
 #
 # Related issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/33587
-if Gitlab::Metrics.enabled? && !Rails.env.test?
+#
+# In development mode, we turn off eager loading when we're running
+# `rails generate migration` because eager loading short-circuits the
+# loading of our custom migration templates.
+if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && defined?(Rails::Generators))
   require 'pathname'
   require 'influxdb'
   require 'connection_pool'
@@ -170,7 +162,9 @@ if Gitlab::Metrics.enabled? && !Rails.env.test?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
+  Gitlab::Cluster::LifecycleEvents.on_worker_start do
+    Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
+  end
 
   module TrackNewRedisConnections
     def connect(*args)

@@ -1,23 +1,38 @@
-/* eslint-disable no-useless-escape, max-len, no-var, no-underscore-dangle, func-names, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
+/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-unused-vars, no-return-assign, object-shorthand, one-var, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import 'cropper';
 import _ from 'underscore';
 
-((global) => {
+(global => {
   // Matches everything but the file name
   const FILENAMEREGEX = /^.*[\\\/]/;
 
   class GitLabCrop {
-    constructor(input, { filename, previewImage, modalCrop, pickImageEl, uploadImageBtn, modalCropImg,
-        exportWidth = 200, exportHeight = 200, cropBoxWidth = 200, cropBoxHeight = 200 } = {}) {
+    constructor(
+      input,
+      {
+        filename,
+        previewImage,
+        modalCrop,
+        pickImageEl,
+        uploadImageBtn,
+        modalCropImg,
+        exportWidth = 200,
+        exportHeight = 200,
+        cropBoxWidth = 200,
+        cropBoxHeight = 200,
+      } = {},
+    ) {
       this.onUploadImageBtnClick = this.onUploadImageBtnClick.bind(this);
       this.onModalHide = this.onModalHide.bind(this);
       this.onModalShow = this.onModalShow.bind(this);
       this.onPickImageClick = this.onPickImageClick.bind(this);
       this.fileInput = $(input);
       this.modalCropImg = _.isString(this.modalCropImg) ? $(this.modalCropImg) : this.modalCropImg;
-      this.fileInput.attr('name', `${this.fileInput.attr('name')}-trigger`).attr('id', `${this.fileInput.attr('id')}-trigger`);
+      this.fileInput
+        .attr('name', `${this.fileInput.attr('name')}-trigger`)
+        .attr('id', `${this.fileInput.attr('id')}-trigger`);
       this.exportWidth = exportWidth;
       this.exportHeight = exportHeight;
       this.cropBoxWidth = cropBoxWidth;
@@ -59,7 +74,7 @@ import _ from 'underscore';
         btn = this;
         return _this.onActionBtnClick(btn);
       });
-      return this.croppedImageBlob = null;
+      return (this.croppedImageBlob = null);
     }
 
     onPickImageClick() {
@@ -94,9 +109,9 @@ import _ from 'underscore';
             width: cropBoxWidth,
             height: cropBoxHeight,
             left: (container.width - cropBoxWidth) / 2,
-            top: (container.height - cropBoxHeight) / 2
+            top: (container.height - cropBoxHeight) / 2,
           });
-        }
+        },
       });
     }
 
@@ -116,7 +131,7 @@ import _ from 'underscore';
       var data, result;
       data = $(btn).data();
       if (this.modalCropImg.data('cropper') && data.method) {
-        return result = this.modalCropImg.cropper(data.method, data.option);
+        return (result = this.modalCropImg.cropper(data.method, data.option));
       }
     }
 
@@ -127,7 +142,7 @@ import _ from 'underscore';
     readFile(input) {
       var _this, reader;
       _this = this;
-      reader = new FileReader;
+      reader = new FileReader();
       reader.onload = () => {
         _this.modalCropImg.attr('src', reader.result);
         return _this.modalCrop.modal('show');
@@ -145,7 +160,7 @@ import _ from 'underscore';
         array.push(binary.charCodeAt(i));
       }
       return new Blob([new Uint8Array(array)], {
-        type: 'image/png'
+        type: 'image/png',
       });
     }
 
@@ -157,11 +172,13 @@ import _ from 'underscore';
     }
 
     setBlob() {
-      this.dataURL = this.modalCropImg.cropper('getCroppedCanvas', {
-        width: 200,
-        height: 200
-      }).toDataURL('image/png');
-      return this.croppedImageBlob = this.dataURLtoBlob(this.dataURL);
+      this.dataURL = this.modalCropImg
+        .cropper('getCroppedCanvas', {
+          width: 200,
+          height: 200,
+        })
+        .toDataURL('image/png');
+      return (this.croppedImageBlob = this.dataURLtoBlob(this.dataURL));
     }
 
     getBlob() {

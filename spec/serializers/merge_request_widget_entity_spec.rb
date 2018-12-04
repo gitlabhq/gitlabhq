@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestWidgetEntity do
+  include ProjectForksHelper
+
   let(:project)  { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
@@ -46,6 +48,40 @@ describe MergeRequestWidgetEntity do
         pipeline.update(sha: "not up to date")
 
         expect(subject[:pipeline]).to be_nil
+      end
+    end
+  end
+
+  describe 'merge_pipeline' do
+    it 'returns nil' do
+      expect(subject[:merge_pipeline]).to be_nil
+    end
+
+    context 'when is merged' do
+      let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns merge_pipeline' do
+        pipeline.reload
+        pipeline_payload = PipelineDetailsEntity
+                             .represent(pipeline, request: request)
+                             .as_json
+
+        expect(subject[:merge_pipeline]).to eq(pipeline_payload)
+      end
+
+      context 'when user cannot read pipelines on target project' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'returns nil' do
+          expect(subject[:merge_pipeline]).to be_nil
+        end
       end
     end
   end
@@ -206,12 +242,12 @@ describe MergeRequestWidgetEntity do
 
   describe 'when source project is deleted' do
     let(:project) { create(:project, :repository) }
-    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
-    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }
+    let(:forked_project) { fork_project(project) }
+    let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
 
     it 'returns a blank rebase_path' do
       allow(merge_request).to receive(:should_be_rebased?).and_return(true)
-      fork_project.destroy
+      forked_project.destroy
       merge_request.reload
 
       entity = described_class.new(merge_request, request: request).as_json

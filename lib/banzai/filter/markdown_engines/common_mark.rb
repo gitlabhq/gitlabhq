@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # `CommonMark` markdown engine for GitLab's Banzai markdown filter.
 # This module is used in Banzai::Filter::MarkdownFilter.
 # Used gem is `commonmarker` which is a ruby wrapper for libcmark (CommonMark parser)

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import ideStatusBar from '~/ide/components/ide_status_bar.vue';
+import { rightSidebarViews } from '~/ide/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../helpers';
 import { projectData } from '../mock_data';
@@ -49,9 +50,11 @@ describe('ideStatusBar', () => {
       expect(vm.commitAgeUpdate).not.toHaveBeenCalled();
 
       jasmine.clock().tick(1100);
+
       expect(vm.commitAgeUpdate.calls.count()).toEqual(1);
 
       jasmine.clock().tick(1000);
+
       expect(vm.commitAgeUpdate.calls.count()).toEqual(2);
     });
   });
@@ -64,7 +67,7 @@ describe('ideStatusBar', () => {
 
   describe('pipeline status', () => {
     it('opens right sidebar on clicking icon', done => {
-      spyOn(vm, 'setRightPane');
+      spyOn(vm, 'openRightPane');
       Vue.set(vm.$store.state.pipelines, 'latestPipeline', {
         details: {
           status: {
@@ -75,12 +78,11 @@ describe('ideStatusBar', () => {
         },
       });
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelector('.ide-status-pipeline button').click();
 
-          expect(vm.setRightPane).toHaveBeenCalledWith('pipelines-list');
+          expect(vm.openRightPane).toHaveBeenCalledWith(rightSidebarViews.pipelines);
         })
         .then(done)
         .catch(done.fail);

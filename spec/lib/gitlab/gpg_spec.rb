@@ -96,7 +96,7 @@ describe Gitlab::Gpg do
       expect(described_class.current_home_dir).to eq default_home_dir
     end
 
-    it 'returns the explicitely set home dir' do
+    it 'returns the explicitly set home dir' do
       GPGME::Engine.home_dir = '/tmp/gpg'
 
       expect(described_class.current_home_dir).to eq '/tmp/gpg'
@@ -104,7 +104,7 @@ describe Gitlab::Gpg do
       GPGME::Engine.home_dir = GPGME::Engine.dirinfo('homedir')
     end
 
-    it 'returns the default value when explicitely setting the home dir to nil' do
+    it 'returns the default value when explicitly setting the home dir to nil' do
       GPGME::Engine.home_dir = nil
 
       expect(described_class.current_home_dir).to eq default_home_dir

@@ -14,14 +14,13 @@ Sidekiq.default_worker_options = { retry: 3 }
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
-  require 'rbtrace' if ENV['ENABLE_RBTRACE']
-
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
     chain.add Gitlab::SidekiqMiddleware::Shutdown
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
+    chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
   end
 
@@ -40,6 +39,10 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
+  if Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
+    Sidekiq::ReliableFetcher.setup_reliable_fetch!(config)
+  end
+
   # Sidekiq-cron: load recurring jobs from gitlab.yml
   # UGLY Hack to get nested hash from settingslogic
   cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
@@ -55,14 +58,12 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  Gitlab::SidekiqThrottler.execute!
-
   Gitlab::SidekiqVersioning.install!
 
-  config = Gitlab::Database.config ||
+  db_config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
-  config['pool'] = Sidekiq.options[:concurrency]
-  ActiveRecord::Base.establish_connection(config)
+  db_config['pool'] = Sidekiq.options[:concurrency]
+  ActiveRecord::Base.establish_connection(db_config)
   Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'

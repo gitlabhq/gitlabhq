@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # This object represents one step in the runtime decision of whether
   # an ability is allowed. It contains a Rule and a context (instance

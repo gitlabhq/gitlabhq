@@ -17,7 +17,7 @@ describe Gitlab::Git::AttributesAtRefParser, :seed_helper do
   end
 
   it 'handles missing blobs' do
-    expect { described_class.new(repository, 'non-existant-branch') }.not_to raise_error
+    expect { described_class.new(repository, 'non-existent-branch') }.not_to raise_error
   end
 
   describe '#attributes' do

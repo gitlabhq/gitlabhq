@@ -24,6 +24,12 @@ module QA
               ProtectedBranches.perform(&block)
             end
           end
+
+          def expand_deploy_tokens(&block)
+            expand_section(:deploy_tokens_settings) do
+              DeployTokens.perform(&block)
+            end
+          end
         end
       end
     end

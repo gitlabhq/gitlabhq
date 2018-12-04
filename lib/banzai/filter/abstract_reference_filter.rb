@@ -296,7 +296,7 @@ module Banzai
 
       # Returns projects for the given paths.
       def find_for_paths(paths)
-        if RequestStore.active?
+        if Gitlab::SafeRequestStore.active?
           cache = refs_cache
           to_query = paths - cache.keys
 
@@ -340,7 +340,7 @@ module Banzai
       end
 
       def refs_cache
-        RequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
+        Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
       end
 
       def parent_type

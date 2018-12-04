@@ -191,9 +191,7 @@ describe Gitlab::ImportExport::RelationFactory do
         "author" => {
           "name" => "Administrator"
         },
-        "events" => [
-
-        ]
+        "events" => []
       }
     end
 

@@ -13,7 +13,11 @@
       = pluralize @pipeline.total_size, "job"
       - if @pipeline.ref
         from
-        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+        - if @pipeline.ref_exists?
+          = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+        - else
+          %span.ref-name
+            = @pipeline.ref
       - if @pipeline.duration
         in
         = time_interval_in_words(@pipeline.duration)
@@ -30,5 +34,3 @@
     %span.js-details-content.hide
       = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
     = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
-
-  = render_if_exists "projects/pipelines/info_extension", pipeline: @pipeline

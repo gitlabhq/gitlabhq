@@ -5,7 +5,7 @@ class NotificationSetting < ActiveRecord::Base
 
   ignore_column :events
 
-  enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0, custom: 5 }
+  enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 

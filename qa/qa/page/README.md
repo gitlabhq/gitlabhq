@@ -70,15 +70,15 @@ module Page
   module Main
     class Login < Page::Base
       view 'app/views/devise/passwords/edit.html.haml' do
-        element :password_field, 'password_field :password'
-        element :password_confirmation, 'password_field :password_confirmation'
-        element :change_password_button, 'submit "Change your password"'
+        element :password_field
+        element :password_confirmation
+        element :change_password_button
       end
 
       view 'app/views/devise/sessions/_new_base.html.haml' do
-        element :login_field, 'text_field :login'
-        element :password_field, 'password_field :password'
-        element :sign_in_button, 'submit "Sign in"'
+        element :login_field
+        element :password_field
+        element :sign_in_button
       end
 
       # ...
@@ -86,20 +86,32 @@ module Page
 end
 ```
 
-It is possible to use `element` DSL method without value, with a String value
-or with a Regexp.
+The `view` DSL method declares the filename of the view where an
+`element` is implemented.
+
+The `element` DSL method in turn declares an element for which a corresponding
+`qa-element-name-dasherized` CSS class need to be added to the view file.
+
+You can also define a value (String or Regexp) to match to the actual view
+code but **this is deprecated** in favor of the above method for two reasons:
+
+- Consistency: there is only one way to define an element
+- Separation of concerns: QA uses dedicated CSS classes instead of reusing code
+  or classes used by other components (e.g. `js-*` classes etc.)
 
 ```ruby
 view 'app/views/my/view.html.haml' do
-  # Require `f.submit "Sign in"` to be present in `my/view.html.haml
-  element :my_button, 'f.submit "Sign in"'
-
-  # Match every line in `my/view.html.haml` against
-  # `/link_to .* "My Profile"/` regexp.
-  element :profile_link, /link_to .* "My Profile"/
-
   # Implicitly require `.qa-logout-button` CSS class to be present in the view
   element :logout_button
+
+  ## This is deprecated and forbidden by the `QA/ElementWithPattern` RuboCop cop.
+  # Require `f.submit "Sign in"` to be present in `my/view.html.haml
+  element :my_button, 'f.submit "Sign in"' # rubocop:disable QA/ElementWithPattern
+
+  ## This is deprecated and forbidden by the `QA/ElementWithPattern` RuboCop cop.
+  # Match every line in `my/view.html.haml` against
+  # `/link_to .* "My Profile"/` regexp.
+  element :profile_link, /link_to .* "My Profile"/ # rubocop:disable QA/ElementWithPattern
 end
 ```
 
@@ -119,4 +131,4 @@ If you need more information, ask for help on `#quality` channel on Slack
 (internal, GitLab Team only).
 
 If you are not a Team Member, and you still need help to contribute, please
-open an issue in GitLab QA issue tracker.
+open an issue in GitLab CE issue tracker with the `~QA` label.

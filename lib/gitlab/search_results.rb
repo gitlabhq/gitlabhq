@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Gitlab
   class SearchResults
     class FoundBlob
       include EncodingHelper
+      include Presentable
+      include BlobLanguageFromGitAttributes
 
-      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
+      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
@@ -13,6 +17,11 @@ module Gitlab
         @startline = opts.fetch(:startline, nil)
         @data = encode_utf8(opts.fetch(:data, nil))
         @per_page = opts.fetch(:per_page, 20)
+        @project = opts.fetch(:project, nil)
+        # Some caller does not have project object (e.g. elastic search),
+        # yet they can trigger many calls in one go,
+        # causing duplicated queries.
+        # Allow those to just pass project_id instead.
         @project_id = opts.fetch(:project_id, nil)
       end
 
@@ -20,8 +29,12 @@ module Gitlab
         filename
       end
 
-      def no_highlighting?
-        false
+      def project_id
+        @project_id || @project&.id
+      end
+
+      def present
+        super(presenter_class: BlobPresenter)
       end
     end
 

@@ -9,8 +9,38 @@ module Ci
     NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
-    DEFAULT_FILE_NAMES = { junit: 'junit.xml' }.freeze
-    TYPE_AND_FORMAT_PAIRS = { archive: :zip, metadata: :gzip, trace: :raw, junit: :gzip }.freeze
+    NON_ERASABLE_FILE_TYPES = %w[trace].freeze
+    DEFAULT_FILE_NAMES = {
+      archive: nil,
+      metadata: nil,
+      trace: nil,
+      junit: 'junit.xml',
+      codequality: 'gl-code-quality-report.json',
+      sast: 'gl-sast-report.json',
+      dependency_scanning: 'gl-dependency-scanning-report.json',
+      container_scanning: 'gl-container-scanning-report.json',
+      dast: 'gl-dast-report.json',
+      license_management: 'gl-license-management-report.json',
+      performance: 'performance.json'
+    }.freeze
+
+    TYPE_AND_FORMAT_PAIRS = {
+      archive: :zip,
+      metadata: :gzip,
+      trace: :raw,
+      junit: :gzip,
+
+      # All these file formats use `raw` as we need to store them uncompressed
+      # for Frontend to fetch the files and do analysis
+      # When they will be only used by backend, they can be `gzipped`.
+      codequality: :raw,
+      sast: :raw,
+      dependency_scanning: :raw,
+      container_scanning: :raw,
+      dast: :raw,
+      license_management: :raw,
+      performance: :raw
+    }.freeze
 
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
@@ -27,8 +57,18 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
+    scope :with_file_types, -> (file_types) do
+      types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
+
+      where(file_type: types)
+    end
+
     scope :test_reports, -> do
-      types = self.file_types.select { |file_type| TEST_REPORT_FILE_TYPES.include?(file_type) }.values
+      with_file_types(TEST_REPORT_FILE_TYPES)
+    end
+
+    scope :erasable, -> do
+      types = self.file_types.reject { |file_type| NON_ERASABLE_FILE_TYPES.include?(file_type) }.values
 
       where(file_type: types)
     end
@@ -39,7 +79,14 @@ module Ci
       archive: 1,
       metadata: 2,
       trace: 3,
-      junit: 4
+      junit: 4,
+      sast: 5, ## EE-specific
+      dependency_scanning: 6, ## EE-specific
+      container_scanning: 7, ## EE-specific
+      dast: 8, ## EE-specific
+      codequality: 9, ## EE-specific
+      license_management: 10, ## EE-specific
+      performance: 11 ## EE-specific
     }
 
     enum file_format: {
@@ -63,7 +110,8 @@ module Ci
     }
 
     FILE_FORMAT_ADAPTERS = {
-      gzip: Gitlab::Ci::Build::Artifacts::GzipFileAdapter
+      gzip: Gitlab::Ci::Build::Artifacts::Adapters::GzipStream,
+      raw: Gitlab::Ci::Build::Artifacts::Adapters::RawStream
     }.freeze
 
     def valid_file_format?

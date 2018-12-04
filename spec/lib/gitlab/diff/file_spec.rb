@@ -41,6 +41,52 @@ describe Gitlab::Diff::File do
     end
   end
 
+  describe '#unfold_diff_lines' do
+    let(:unfolded_lines) { double('expanded-lines') }
+    let(:unfolder) { instance_double(Gitlab::Diff::LinesUnfolder) }
+    let(:position) { instance_double(Gitlab::Diff::Position, old_line: 10) }
+
+    before do
+      allow(Gitlab::Diff::LinesUnfolder).to receive(:new) { unfolder }
+    end
+
+    context 'when unfold required' do
+      before do
+        allow(unfolder).to receive(:unfold_required?) { true }
+        allow(unfolder).to receive(:unfolded_diff_lines) { unfolded_lines }
+      end
+
+      it 'changes @unfolded to true' do
+        diff_file.unfold_diff_lines(position)
+
+        expect(diff_file).to be_unfolded
+      end
+
+      it 'updates @diff_lines' do
+        diff_file.unfold_diff_lines(position)
+
+        expect(diff_file.diff_lines).to eq(unfolded_lines)
+      end
+    end
+
+    context 'when unfold not required' do
+      before do
+        allow(unfolder).to receive(:unfold_required?) { false }
+      end
+
+      it 'keeps @unfolded false' do
+        diff_file.unfold_diff_lines(position)
+
+        expect(diff_file).not_to be_unfolded
+      end
+
+      it 'does not update @diff_lines' do
+        expect { diff_file.unfold_diff_lines(position) }
+          .not_to change(diff_file, :diff_lines)
+      end
+    end
+  end
+
   describe '#mode_changed?' do
     it { expect(diff_file.mode_changed?).to be_falsey }
   end

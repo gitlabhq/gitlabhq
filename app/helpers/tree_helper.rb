@@ -31,11 +31,21 @@ module TreeHelper
   # mode - File unix mode
   # name - File name
   def tree_icon(type, mode, name)
-    icon("#{file_type_icon_class(type, mode, name)} fw")
+    icon([file_type_icon_class(type, mode, name), 'fw'])
   end
 
-  def tree_hex_class(content)
-    "file_#{hexdigest(content.name)}"
+  # Using Rails `*_path` methods can be slow, especially when generating
+  # many paths, as with a repository tree that has thousands of items.
+  def fast_project_blob_path(project, blob_path)
+    ActionDispatch::Journey::Router::Utils.escape_path(
+      File.join(relative_url_root, project.path_with_namespace, 'blob', blob_path)
+    )
+  end
+
+  def fast_project_tree_path(project, tree_path)
+    ActionDispatch::Journey::Router::Utils.escape_path(
+      File.join(relative_url_root, project.path_with_namespace, 'tree', tree_path)
+    )
   end
 
   # Simple shortcut to File.join
@@ -141,5 +151,9 @@ module TreeHelper
 
   def selected_branch
     @branch_name || tree_edit_branch
+  end
+
+  def relative_url_root
+    Gitlab.config.gitlab.relative_url_root.presence || '/'
   end
 end

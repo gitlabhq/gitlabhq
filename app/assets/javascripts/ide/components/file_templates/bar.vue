@@ -47,10 +47,8 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex align-items-center ide-file-templates">
-    <strong class="append-right-default">
-      {{ __('File templates') }}
-    </strong>
+  <div class="d-flex align-items-center ide-file-templates qa-file-templates-bar">
+    <strong class="append-right-default"> {{ __('File templates') }} </strong>
     <dropdown
       :data="templateTypes"
       :label="selectedTemplateType.name || __('Choose a type...')"
@@ -63,16 +61,11 @@ export default {
       :is-async-data="true"
       :searchable="true"
       :title="__('File templates')"
-      class="mr-2"
+      class="mr-2 qa-file-template-dropdown"
       @click="selectTemplate"
     />
     <transition name="fade">
-      <button
-        v-show="updateSuccess"
-        type="button"
-        class="btn btn-default"
-        @click="undo"
-      >
+      <button v-show="updateSuccess" type="button" class="btn btn-default" @click="undo">
         {{ __('Undo') }}
       </button>
     </transition>

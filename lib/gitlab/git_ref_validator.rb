@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: JV: does not need to be migrated, works without a repo.
 
 module Gitlab
@@ -11,7 +13,11 @@ module Gitlab
       return false if ref_name.start_with?(*not_allowed_prefixes)
       return false if ref_name == 'HEAD'
 
-      Rugged::Reference.valid_name? "refs/heads/#{ref_name}"
+      begin
+        Rugged::Reference.valid_name?("refs/heads/#{ref_name}")
+      rescue ArgumentError
+        return false
+      end
     end
   end
 end

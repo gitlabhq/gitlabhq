@@ -56,7 +56,7 @@ GEM
       byebug (~> 9.1)
       pry (~> 0.10)
     public_suffix (3.0.1)
-    rack (2.0.3)
+    rack (2.0.6)
     rack-test (0.8.2)
       rack (>= 1.0, < 3)
     rake (12.3.0)
@@ -103,4 +103,4 @@ DEPENDENCIES
   selenium-webdriver (~> 3.8.0)
 
 BUNDLED WITH
-   1.16.4
+   1.17.1

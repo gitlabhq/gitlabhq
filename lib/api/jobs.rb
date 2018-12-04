@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Jobs < Grape::API
     include PaginationParams
@@ -7,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -149,7 +151,7 @@ module API
         present build, with: Entities::Job
       end
 
-      desc 'Trigger a manual job' do
+      desc 'Trigger a actionable job (manual, delayed, etc)' do
         success Entities::Job
         detail 'This feature was added in GitLab 8.11'
       end

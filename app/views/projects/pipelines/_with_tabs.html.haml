@@ -19,29 +19,22 @@
     #js-pipeline-graph-vue
 
   #js-tab-builds.tab-pane
-    - if pipeline.yaml_errors.present?
-      .bs-callout.bs-callout-danger
-        %h4 Found errors in your .gitlab-ci.yml:
-        %ul
-          - pipeline.yaml_errors.split(",").each do |error|
-            %li= error
-        You can also test your .gitlab-ci.yml in the #{link_to "Lint", project_ci_lint_path(@project)}
+    - if pipeline.legacy_stages.present?
+      .table-holder.pipeline-holder
+        %table.table.ci-table.pipeline
+          %thead
+            %tr
+              %th Status
+              %th Job ID
+              %th Name
+              %th
+              %th Coverage
+              %th
+          = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
-    - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
+    - elsif pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
       .bs-callout.bs-callout-warning
         \.gitlab-ci.yml not found in this commit
-
-    .table-holder.pipeline-holder
-      %table.table.ci-table.pipeline
-        %thead
-          %tr
-            %th Status
-            %th Job ID
-            %th Name
-            %th
-            %th Coverage
-            %th
-        = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page
@@ -68,12 +61,14 @@
               %td.responsive-table-cell.build-failure{ data: { column: _("Failure")} }
                 = build.present.callout_failure_message
               %td.responsive-table-cell.build-actions
-                = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
-                  = icon('repeat')
-            %tr.build-trace-row.responsive-table-border-end
-              %td
-              %td.responsive-table-cell.build-trace-container{ colspan: 4 }
-                %pre.build-trace.build-trace-rounded
-                  %code.bash.js-build-output
-                    = build_summary(build)
+                - if can?(current_user, :update_build, job)
+                  = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
+                    = icon('repeat')
+            - if can?(current_user, :read_build, job)
+              %tr.build-trace-row.responsive-table-border-end
+                %td
+                %td.responsive-table-cell.build-trace-container{ colspan: 4 }
+                  %pre.build-trace.build-trace-rounded
+                    %code.bash.js-build-output
+                      = build_summary(build)
   = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

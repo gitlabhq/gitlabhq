@@ -125,7 +125,7 @@ describe Projects::ImportService do
           project.import_type = 'bitbucket'
         end
 
-        it 'succeeds if repository import is successfull' do
+        it 'succeeds if repository import is successful' do
           expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
           expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
           expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return({})
@@ -235,7 +235,7 @@ describe Projects::ImportService do
         result = described_class.new(project, user).execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to include('Only allowed ports are 22, 80, 443')
+        expect(result[:message]).to include('Only allowed ports are 80, 443')
       end
     end
 

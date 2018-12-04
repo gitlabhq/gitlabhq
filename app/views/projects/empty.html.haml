@@ -9,7 +9,7 @@
 .project-empty-note-panel
   %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
-    %h4
+    %h4.append-bottom-20
       = _('The repository for this project is empty')
 
     - if @project.can_current_user_push_code?
@@ -36,7 +36,7 @@
   .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
     .fade-left= icon('angle-left')
     .fade-right= icon('angle-right')
-    .nav-links.scrolling-tabs
+    .nav-links.scrolling-tabs.quick-links
       = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
       = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 

@@ -33,7 +33,7 @@ You can follow the progress on that [in the issue on our issue tracker](https://
 
 In general, it's better to have a group- or user-based gate, and you should prefer
 it over the use of percentage gates. This would make debugging easier, as you
-filter for example logs and errors based on actors too. Futhermore, this allows
+filter for example logs and errors based on actors too. Furthermore, this allows
 for enabling for the `gitlab-org` group first, while the rest of the users
 aren't impacted.
 
@@ -69,6 +69,37 @@ For more information about rolling out changes using feature flags, refer to the
 [Rolling out changes using feature flags](rolling_out_changes_using_feature_flags.md)
 guide.
 
+### Frontend
+
+For frontend code you can use the method `push_frontend_feature_flag`, which is
+available to all controllers that inherit from `ApplicationController`. Using
+this method you can expose the state of a feature flag as follows:
+
+```ruby
+before_action do
+  push_frontend_feature_flag(:vim_bindings)
+end
+
+def index
+  # ...
+end
+
+def edit
+  # ...
+end
+```
+
+You can then check for the state of the feature flag in JavaScript as follows:
+
+```javascript
+if ( gon.features.vimBindings ) {
+  // ...
+}
+```
+
+The name of the feature flag in JavaScript will always be camelCased, meaning
+that checking for `gon.features.vim_bindings` would not work.
+
 ### Specs
 
 In the test environment `Feature.enabled?` is stubbed to always respond to `true`,
@@ -81,3 +112,8 @@ feature flag. You can stub a feature flag as follows:
 ```ruby
 stub_feature_flags(my_feature_flag: false)
 ```
+
+## Enabling a feature flag
+
+Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
+

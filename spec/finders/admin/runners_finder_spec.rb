@@ -29,6 +29,14 @@ describe Admin::RunnersFinder do
       end
     end
 
+    context 'filter by runner type' do
+      it 'calls the corresponding scope on Ci::Runner' do
+        expect(Ci::Runner).to receive(:project_type).and_call_original
+
+        described_class.new(params: { type_type: 'project_type' }).execute
+      end
+    end
+
     context 'sort' do
       context 'without sort param' do
         it 'sorts by created_at' do

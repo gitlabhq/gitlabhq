@@ -21,21 +21,21 @@ Before getting started, read through the following docs:
 Every document should include the following content in the following sequence:
 
 - **Feature name**: defines an intuitive name for the feature that clearly
-states what it is and is consistent with any relevant UI text.
+  states what it is and is consistent with any relevant UI text.
 - **Feature overview** and description: describe what it is, what it does, and in what context it should be used.
 - **Use cases**: describes real use case scenarios for that feature.
 - **Requirements**: describes what software and/or configuration is required to be able to
-use the feature and, if applicable, prerequisite knowledge for being able to follow/implement the tutorial.
-For example, familiarity with GitLab CI/CD, an account on a third-party service, dependencies installed, etc.
-Link each one to its most relevant resource; i.e., where the reader can go to begin to fullfil that requirement.
-(Another doc page, a third party application's site, etc.)
+  use the feature and, if applicable, prerequisite knowledge for being able to follow/implement the tutorial.
+  For example, familiarity with GitLab CI/CD, an account on a third-party service, dependencies installed, etc.
+  Link each one to its most relevant resource; i.e., where the reader can go to begin to fullfil that requirement.
+  (Another doc page, a third party application's site, etc.)
 - **Instructions**: clearly describes the steps to use the feature, leaving no gaps.
 - **Troubleshooting** guide (recommended but not required): if you know beforehand what issues
-one might have when setting it up, or when something is changed, or on upgrading, it's
-important to describe those too. Think of things that may go wrong and include them in the
-docs. This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask. Answering them beforehand only makes your
-document better and more approachable.
+  one might have when setting it up, or when something is changed, or on upgrading, it's
+  important to describe those too. Think of things that may go wrong and include them in the
+  docs. This is important to minimize requests for support, and to avoid doc comments with
+  questions that you know someone might ask. Answering them beforehand only makes your
+  document better and more approachable.
 
 For additional details, see the subsections below, as well as the [Documentation template for new docs](#Documentation-template-for-new-docs).
 
@@ -55,10 +55,11 @@ You should answer this question: what can you do with this feature/change? Use c
 are examples of how this feature or change can be used in real life.
 
 Examples:
-- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
-- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
-- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
-- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
+
+- CE and EE: [Issues](../../user/project/issues/index.md#use-cases)
+- CE and EE: [Merge Requests](../../user/project/merge_requests/index.md)
+- EE-only: [Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)
+- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.html)
 
 Note that if you don't have anything to add between the doc title (`<h1>`) and
 the header `## Overview`, you can omit the header, but keep the content of the
@@ -72,14 +73,14 @@ and for every **major** feature present in Community Edition.
 Your new document will be discoverable by the user only if:
 
 - Crosslinked from the higher-level index (e.g., Issue Boards docs
-should be linked from Issues; Prometheus docs should be linked from
-Monitoring; CI/CD tutorials should be linked from CI/CD examples).
+  should be linked from Issues; Prometheus docs should be linked from
+  Monitoring; CI/CD tutorials should be linked from CI/CD examples).
   - When referencing other GitLab products and features, link to their
-respective docs; when referencing third-party products or technologies,
-link out to their external sites, documentation, and resources.
+  respective docs; when referencing third-party products or technologies,
+  link out to their external sites, documentation, and resources.
 - The headings are clear. E.g., "App testing" is a bad heading, "Testing
-an application with GitLab CI/CD" is much better. Think of something
-someone will search for and use these keywords in the headings.
+  an application with GitLab CI/CD" is much better. Think of something
+  someone will search for and use these keywords in the headings.
 
 ## Documentation template for new docs
 
@@ -133,7 +134,7 @@ is simple and the document is short.
 - Be clear, concise, and stick to the goal of the doc: explain how to
 use that feature.
 - Use inclusive language and avoid jargons, as well as uncommon and
-fancy words. The docs should be clear and very easy to understand.
+fancy words. The docs should be clear and easy to understand.
 - Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
 - Always provide internal and external reference links.
 - Always link the doc from its higher-level index.
@@ -141,9 +142,49 @@ fancy words. The docs should be clear and very easy to understand.
 <!-- ## Troubleshooting
 
 Add a troubleshooting guide when possible/applicable. -->
-```
+
+---
 
 Notes:
 
-- (1): Apply the [tier badges](styleguide.md#product-badges) accordingly
-- (2): Apply the correct format for the [GitLab version introducing the feature](styleguide.md#gitlab-versions-and-tiers)
+- (1): Apply the [tier badges](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) accordingly
+- (2): Apply the correct format for the [GitLab version introducing the feature](https://docs.gitlab.com/ee/development/documentation/styleguide.html#gitlab-versions-and-tiers)
+```
+
+## Help and feedback section
+
+The "help and feedback" section (introduced by [!319](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/319)) displayed at the end of each document
+can be omitted from the doc by adding a key into the its frontmatter:
+
+```yaml
+---
+feedback: false
+---
+```
+
+The default is to leave it there. If you want to omit it from a document,
+you must check with a technical writer before doing so.
+
+### Disqus
+
+We also have integrated the docs site with Disqus (introduced by
+[!151](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/151)),
+allowing our users to post comments.
+
+To omit only the comments from the feedback section, use the following
+key on the frontmatter:
+
+```yaml
+---
+comments: false
+---
+```
+
+We are only hiding comments in main index pages, such as [the main documentation index](../../README.md), since its content is too broad to comment on. Before omitting Disqus,
+you must check with a technical writer.
+
+Note that once `feedback: false` is added to the frontmatter, it will automatically omit
+Disqus, therefore, don't add both keys to the same document.
+
+The click events in the feedback section are tracked with Google Tag Manager. The
+conversions can be viewed on Google Analytics by navigating to **Behavior > Events > Top events > docs**.

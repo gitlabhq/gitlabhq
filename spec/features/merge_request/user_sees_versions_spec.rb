@@ -66,7 +66,6 @@ describe 'Merge request > User sees versions', :js do
 
     it 'shows comments that were last relevant at that version' do
       expect(page).to have_content '5 changed files'
-      expect(page).to have_content 'Not all comments are displayed'
 
       position = Gitlab::Diff::Position.new(
         old_path: ".gitmodules",
@@ -110,8 +109,8 @@ describe 'Merge request > User sees versions', :js do
         diff_id: merge_request_diff3.id,
         start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       )
-      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
-      expect(page).to have_content 'Not all comments are displayed'
+      expect(page).to have_content '4 changed files'
+      expect(page).to have_content '15 additions 6 deletions'
 
       position = Gitlab::Diff::Position.new(
         old_path: ".gitmodules",
@@ -131,7 +130,8 @@ describe 'Merge request > User sees versions', :js do
     end
 
     it 'show diff between new and old version' do
-      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+      expect(page).to have_content '4 changed files'
+      expect(page).to have_content '15 additions 6 deletions'
     end
 
     it 'returns to latest version when "Show latest version" button is clicked' do
@@ -158,7 +158,7 @@ describe 'Merge request > User sees versions', :js do
 
     it 'has 0 chages between versions' do
       page.within '.mr-version-compare-dropdown' do
-        expect(find('.dropdown-toggle')).to have_content 'version 1'
+        expect(find('.dropdown-menu-toggle')).to have_content 'version 1'
       end
 
       page.within '.mr-version-dropdown' do
@@ -179,7 +179,7 @@ describe 'Merge request > User sees versions', :js do
 
     it 'sets the compared versions to be the same' do
       page.within '.mr-version-compare-dropdown' do
-        expect(find('.dropdown-toggle')).to have_content 'version 2'
+        expect(find('.dropdown-menu-toggle')).to have_content 'version 2'
       end
 
       page.within '.mr-version-dropdown' do

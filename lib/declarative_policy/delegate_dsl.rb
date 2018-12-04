@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # Used when the name of a delegate is mentioned in
   # the rule DSL.

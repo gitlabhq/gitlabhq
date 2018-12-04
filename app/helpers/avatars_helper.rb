@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module AvatarsHelper
-  def project_icon(project_id, options = {})
-    source_icon(Project, project_id, options)
+  def project_icon(project, options = {})
+    source_icon(project, options)
   end
 
-  def group_icon(group_id, options = {})
-    source_icon(Group, group_id, options)
+  def group_icon(group, options = {})
+    source_icon(group, options)
   end
 
   # Takes both user and email and returns the avatar_icon by
@@ -22,7 +22,7 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    user = User.find_by_any_email(email.try(:downcase))
+    user = User.find_by_any_email(email)
     if user
       avatar_icon_for_user(user, size, scale, only_path: only_path)
     else
@@ -110,16 +110,11 @@ module AvatarsHelper
 
   private
 
-  def source_icon(klass, source_id, options = {})
-    source =
-      if source_id.respond_to?(:avatar_url)
-        source_id
-      else
-        klass.find_by_full_path(source_id)
-      end
+  def source_icon(source, options = {})
+    avatar_url = source.try(:avatar_url)
 
-    if source.avatar_url
-      image_tag source.avatar_url, options
+    if avatar_url
+      image_tag avatar_url, options
     else
       source_identicon(source, options)
     end

@@ -32,10 +32,6 @@ export default {
       type: Object,
       required: true,
     },
-    updateAspectRatio: {
-      type: Boolean,
-      required: true,
-    },
     deploymentData: {
       type: Array,
       required: true,
@@ -86,6 +82,7 @@ export default {
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
+      graphDrawData: {},
       realPixelRatio: 1,
       seriesUnderMouse: [],
     };
@@ -108,17 +105,11 @@ export default {
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
     },
+    shouldRenderData() {
+      return this.graphData.queries.filter(s => s.result.length > 0).length > 0;
+    },
   },
   watch: {
-    updateAspectRatio() {
-      if (this.updateAspectRatio) {
-        this.graphHeight = 450;
-        this.graphWidth = 600;
-        this.measurements = measurements.large;
-        this.draw();
-        eventHub.$emit('toggleAspectRatio');
-      }
-    },
     hoverData() {
       this.positionFlag();
     },
@@ -132,26 +123,34 @@ export default {
     },
     draw() {
       const breakpointSize = bp.getBreakpointSize();
-      const query = this.graphData.queries[0];
+      const svgWidth = this.$refs.baseSvg.getBoundingClientRect().width;
+
       this.margin = measurements.large.margin;
+
       if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
         this.graphHeight = 300;
         this.margin = measurements.small.margin;
         this.measurements = measurements.small;
       }
-      this.unitOfDisplay = query.unit || '';
+
       this.yAxisLabel = this.graphData.y_label || 'Values';
-      this.legendTitle = query.label || 'Average';
-      this.graphWidth = this.$refs.baseSvg.clientWidth - this.margin.left - this.margin.right;
+      this.graphWidth = svgWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
       this.baseGraphHeight = this.graphHeight - 50;
       this.baseGraphWidth = this.graphWidth;
 
       // pixel offsets inside the svg and outside are not 1:1
-      this.realPixelRatio = this.$refs.baseSvg.clientWidth / this.baseGraphWidth;
+      this.realPixelRatio = svgWidth / this.baseGraphWidth;
 
-      this.renderAxesPaths();
-      this.formatDeployments();
+      // set the legends on the axes
+      const [query] = this.graphData.queries;
+      this.legendTitle = query ? query.label : 'Average';
+      this.unitOfDisplay = query ? query.unit : '';
+
+      if (this.shouldRenderData) {
+        this.renderAxesPaths();
+        this.formatDeployments();
+      }
     },
     handleMouseOverGraph(e) {
       let point = this.$refs.graphData.createSVGPoint();
@@ -160,7 +159,7 @@ export default {
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
       point.x += 7;
 
-      this.seriesUnderMouse = this.timeSeries.filter((series) => {
+      this.seriesUnderMouse = this.timeSeries.filter(series => {
         const mouseX = series.timeSeriesScaleX.invert(point.x);
         let minDistance = Infinity;
 
@@ -193,12 +192,12 @@ export default {
       });
     },
     renderAxesPaths() {
-      this.timeSeries = createTimeSeries(
+      ({ timeSeries: this.timeSeries, graphDrawData: this.graphDrawData } = createTimeSeries(
         this.graphData.queries,
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset,
-      );
+      ));
 
       if (_.findWhere(this.timeSeries, { renderCanary: true })) {
         this.timeSeries = this.timeSeries.map(series => ({ ...series, renderCanary: true }));
@@ -233,21 +232,18 @@ export default {
         .scale(axisYScale)
         .ticks(measurements.yTicks);
 
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.x-axis')
         .call(xAxis);
 
       const width = this.graphWidth;
-      d3
-        .select(this.$refs.baseSvg)
+      d3.select(this.$refs.baseSvg)
         .select('.y-axis')
         .call(yAxis)
         .selectAll('.tick')
         .each(function createTickLines(d, i) {
           if (i > 0) {
-            d3
-              .select(this)
+            d3.select(this)
               .select('line')
               .attr('x2', width)
               .attr('class', 'axis-tick');
@@ -261,33 +257,17 @@ export default {
 <template>
   <div
     class="prometheus-graph"
-    @mouseover="showFlagContent = true"
-    @mouseleave="showFlagContent = false"
+    @mouseover="showFlagContent = true;"
+    @mouseleave="showFlagContent = false;"
   >
     <div class="prometheus-graph-header">
-      <h5 class="prometheus-graph-title">
-        {{ graphData.title }}
-      </h5>
-      <div class="prometheus-graph-widgets">
-        <slot></slot>
-      </div>
+      <h5 class="prometheus-graph-title">{{ graphData.title }}</h5>
+      <div class="prometheus-graph-widgets"><slot></slot></div>
     </div>
-    <div
-      :style="paddingBottomRootSvg"
-      class="prometheus-svg-container"
-    >
-      <svg
-        ref="baseSvg"
-        :viewBox="outerViewBox"
-      >
-        <g
-          :transform="axisTransform"
-          class="x-axis"
-        />
-        <g
-          class="y-axis"
-          transform="translate(70, 20)"
-        />
+    <div :style="paddingBottomRootSvg" class="prometheus-svg-container">
+      <svg ref="baseSvg" :viewBox="outerViewBox">
+        <g :transform="axisTransform" class="x-axis" />
+        <g class="y-axis" transform="translate(70, 20)" />
         <graph-axis
           :graph-width="graphWidth"
           :graph-height="graphHeight"
@@ -296,11 +276,8 @@ export default {
           :y-axis-label="yAxisLabel"
           :unit-of-display="unitOfDisplay"
         />
-        <svg
-          ref="graphData"
-          :viewBox="innerViewBox"
-          class="graph-data"
-        >
+        <svg v-if="shouldRenderData" ref="graphData" :viewBox="innerViewBox" class="graph-data">
+          <slot name="additionalSvgContent" :graphDrawData="graphDrawData" />
           <graph-path
             v-for="(path, index) in timeSeries"
             :key="index"
@@ -319,15 +296,21 @@ export default {
           />
           <rect
             ref="graphOverlay"
-            :width="(graphWidth - 70)"
-            :height="(graphHeight - 100)"
+            :width="graphWidth - 70"
+            :height="graphHeight - 100"
             class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            @mousemove="handleMouseOverGraph($event)"
+            @mousemove="handleMouseOverGraph($event);"
           />
+        </svg>
+        <svg v-else :viewBox="innerViewBox" class="js-no-data-to-display">
+          <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle">
+            {{ s__('Metrics|No data to display') }}
+          </text>
         </svg>
       </svg>
       <graph-flag
+        v-if="shouldRenderData"
         :real-pixel-ratio="realPixelRatio"
         :current-x-coordinate="currentXCoordinate"
         :current-data="currentData"
@@ -341,10 +324,6 @@ export default {
         :current-coordinates="currentCoordinates"
       />
     </div>
-    <graph-legend
-      v-if="showLegend"
-      :legend-title="legendTitle"
-      :time-series="timeSeries"
-    />
+    <graph-legend v-if="showLegend" :legend-title="legendTitle" :time-series="timeSeries" />
   </div>
 </template>

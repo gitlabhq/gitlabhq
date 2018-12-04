@@ -84,7 +84,7 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :old_path_html do |diff_file|
-    old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
+    old_path, _ = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
     old_path
   end
 
@@ -114,6 +114,10 @@ class DiffFileEntity < Grape::Entity
     next unless diff_file.content_sha
 
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
+  end
+
+  expose :viewer, using: DiffViewerEntity do |diff_file|
+    diff_file.rich_viewer || diff_file.simple_viewer
   end
 
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|

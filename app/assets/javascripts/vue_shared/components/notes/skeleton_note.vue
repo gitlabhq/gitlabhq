@@ -1,25 +1,22 @@
-<template>
-  <li class="timeline-entry note">
-    <div class="timeline-entry-inner">
-      <div class="timeline-icon">
-      </div>
-      <div class="timeline-content">
-        <div class="note-header"></div>
-        <div class="note-body">
-          <skeleton-loading-container />
-        </div>
-      </div>
-    </div>
-  </li>
-</template>
-
 <script>
-import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { GlSkeletonLoading } from '@gitlab/ui';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 
 export default {
   name: 'SkeletonNote',
   components: {
-    skeletonLoadingContainer,
+    GlSkeletonLoading,
+    TimelineEntryItem,
   },
 };
 </script>
+
+<template>
+  <timeline-entry-item class="note note-wrapper">
+    <div class="timeline-icon"></div>
+    <div class="timeline-content">
+      <div class="note-header"></div>
+      <div class="note-body"><gl-skeleton-loading /></div>
+    </div>
+  </timeline-entry-item>
+</template>

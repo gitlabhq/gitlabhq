@@ -29,6 +29,7 @@
   - [pipeline_creation, 4]
   - [pipeline_default, 3]
   - [pipeline_cache, 3]
+  - [deployment, 3]
   - [pipeline_hooks, 2]
   - [gitlab_shell, 2]
   - [email_receiver, 2]

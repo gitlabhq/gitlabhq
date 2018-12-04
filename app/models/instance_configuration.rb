@@ -64,10 +64,10 @@ class InstanceConfiguration
   end
 
   def ssh_algorithm_md5(ssh_file_content)
-    OpenSSL::Digest::MD5.hexdigest(ssh_file_content).scan(/../).join(':')
+    Gitlab::SSHPublicKey.new(ssh_file_content).fingerprint
   end
 
   def ssh_algorithm_sha256(ssh_file_content)
-    OpenSSL::Digest::SHA256.hexdigest(ssh_file_content)
+    Gitlab::SSHPublicKey.new(ssh_file_content).fingerprint('SHA256')
   end
 end

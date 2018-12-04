@@ -98,6 +98,22 @@ describe 'Edit group settings' do
     end
   end
 
+  describe 'edit group path' do
+    it 'has a root URL label for top-level group' do
+      visit edit_group_path(group)
+
+      expect(find(:css, '.group-root-path').text).to eq(root_url)
+    end
+
+    it 'has a parent group URL label for a subgroup group', :postgresql do
+      subgroup = create(:group, parent: group)
+
+      visit edit_group_path(subgroup)
+
+      expect(find(:css, '.group-root-path').text).to eq(group_url(subgroup.parent) + '/')
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 
@@ -109,7 +125,7 @@ describe 'Edit group settings' do
 
   def save_group
     page.within('.gs-general') do
-      click_button 'Save group'
+      click_button 'Save changes'
     end
   end
 end

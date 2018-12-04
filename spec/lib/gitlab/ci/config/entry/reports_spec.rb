@@ -3,27 +3,56 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Reports do
   let(:entry) { described_class.new(config) }
 
+  describe 'validates ALLOWED_KEYS' do
+    let(:artifact_file_types) { Ci::JobArtifact.file_types }
+
+    described_class::ALLOWED_KEYS.each do |keyword, _|
+      it "expects #{keyword} to be an artifact file_type" do
+        expect(artifact_file_types).to include(keyword)
+      end
+    end
+  end
+
   describe 'validation' do
     context 'when entry config value is correct' do
-      let(:config) { { junit: %w[junit.xml] } }
+      using RSpec::Parameterized::TableSyntax
 
-      describe '#value' do
-        it 'returns artifacs configuration' do
-          expect(entry.value).to eq config
+      shared_examples 'a valid entry' do |keyword, file|
+        describe '#value' do
+          it 'returns artifacts configuration' do
+            expect(entry.value).to eq({ "#{keyword}": [file] } )
+          end
+        end
+
+        describe '#valid?' do
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
         end
       end
 
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
+      where(:keyword, :file) do
+        :junit | 'junit.xml'
+        :codequality | 'gl-code-quality-report.json'
+        :sast | 'gl-sast-report.json'
+        :dependency_scanning | 'gl-dependency-scanning-report.json'
+        :container_scanning | 'gl-container-scanning-report.json'
+        :dast | 'gl-dast-report.json'
+        :license_management | 'gl-license-management-report.json'
+        :performance | 'performance.json'
       end
 
-      context 'when value is not array' do
-        let(:config) { { junit: 'junit.xml' } }
+      with_them do
+        context 'when value is an array' do
+          let(:config) { { "#{keyword}": [file] } }
 
-        it 'converts to array' do
-          expect(entry.value).to eq({ junit: ['junit.xml'] } )
+          it_behaves_like 'a valid entry', params[:keyword], params[:file]
+        end
+
+        context 'when value is not array' do
+          let(:config) { { "#{keyword}": file } }
+
+          it_behaves_like 'a valid entry', params[:keyword], params[:file]
         end
       end
     end
@@ -31,11 +60,13 @@ describe Gitlab::Ci::Config::Entry::Reports do
     context 'when entry value is not correct' do
       describe '#errors' do
         context 'when value of attribute is invalid' do
-          let(:config) { { junit: 10 } }
+          where(key: described_class::ALLOWED_KEYS) do
+            let(:config) { { "#{key}": 10 } }
 
-          it 'reports error' do
-            expect(entry.errors)
-              .to include 'reports junit should be an array of strings or a string'
+            it 'reports error' do
+              expect(entry.errors)
+                .to include "reports #{key} should be an array of strings or a string"
+            end
           end
         end
 

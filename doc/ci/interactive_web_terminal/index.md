@@ -1,15 +1,14 @@
-# Getting started with interactive web terminals
+# Getting started with interactive web terminals **[CORE ONLY]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
-running one-of commands for their CI pipeline.
+running one-off commands for their CI pipeline.
 
 NOTE: **Note:**
-This is not available for the shared Runners on GitLab.com.
-To make use of this feature, you need to provide your
-[own Runner](https://docs.gitlab.com/runner/install/) and properly
-[configure it](#configuration).
+GitLab.com does not support interactive web terminal at the moment. Please
+follow [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/52611) for
+progress. 
 
 ## Configuration
 
@@ -17,13 +16,19 @@ Two things need to be configured for the interactive web terminal to work:
 
 - The Runner needs to have [`[session_server]` configured
   properly][session-server]
-- Web terminals need to be
+- If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
 ## Debugging a running job
 
 NOTE: **Note:** Not all executors are
 [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
+
+NOTE: **Note:** The `docker` executor does not keep running
+after the build script is finished. At that point, the terminal will automatically
+disconnect and will not wait for the user to finish. Please follow [this
+issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/3605) for updates on
+improving this behavior.
 
 Sometimes, when a job is running, things don't go as you would expect, and it
 would be helpful if one can have a shell to aid debugging. When a job is

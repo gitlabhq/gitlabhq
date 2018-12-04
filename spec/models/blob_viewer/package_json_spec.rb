@@ -40,13 +40,14 @@ describe BlobViewer::PackageJson do
   end
 
   context 'when package.json has "private": true' do
+    let(:homepage) { 'http://example.com' }
     let(:data) do
       <<-SPEC.strip_heredoc
       {
         "name": "module-name",
         "version": "10.3.1",
         "private": true,
-        "homepage": "myawesomepackage.com"
+        "homepage": #{homepage.to_json}
       }
       SPEC
     end
@@ -54,10 +55,22 @@ describe BlobViewer::PackageJson do
     subject { described_class.new(blob) }
 
     describe '#package_url' do
-      it 'returns homepage if any' do
-        expect(subject).to receive(:prepare!)
+      context 'when the homepage has a valid URL' do
+        it 'returns homepage URL' do
+          expect(subject).to receive(:prepare!)
 
-        expect(subject.package_url).to eq('myawesomepackage.com')
+          expect(subject.package_url).to eq(homepage)
+        end
+      end
+
+      context 'when the homepage has an invalid URL' do
+        let(:homepage) { 'javascript:alert()' }
+
+        it 'returns nil' do
+          expect(subject).to receive(:prepare!)
+
+          expect(subject.package_url).to be_nil
+        end
       end
     end
 

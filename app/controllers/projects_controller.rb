@@ -7,6 +7,8 @@ class ProjectsController < Projects::ApplicationController
   include PreviewMarkdown
   include SendFileUpload
 
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :redirect_git_extension, only: [:show]
@@ -16,6 +18,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
+  before_action :present_project, only: [:edit]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -275,7 +278,7 @@ class ProjectsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Render project landing depending of which features are available
-  # So if page is not availble in the list it renders the next page
+  # So if page is not available in the list it renders the next page
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
@@ -365,6 +368,7 @@ class ProjectsController < Projects::ApplicationController
         repository_access_level
         snippets_access_level
         wiki_access_level
+        pages_access_level
       ]
     ]
   end
@@ -432,5 +436,9 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
+  end
+
+  def present_project
+    @project = @project.present(current_user: current_user)
   end
 end

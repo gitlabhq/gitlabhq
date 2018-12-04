@@ -16,10 +16,13 @@ describe('Balsamiq integration spec', () => {
   });
 
   describe('successful response', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       endpoint = bmprPath;
 
-      balsamiqViewer.loadFile(endpoint).then(done).catch(done.fail);
+      balsamiqViewer
+        .loadFile(endpoint)
+        .then(done)
+        .catch(done.fail);
     });
 
     it('does not show loading icon', () => {
@@ -32,10 +35,13 @@ describe('Balsamiq integration spec', () => {
   });
 
   describe('error getting file', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       endpoint = 'invalid/path/to/file.bmpr';
 
-      balsamiqViewer.loadFile(endpoint).then(done.fail, null).catch(done);
+      balsamiqViewer
+        .loadFile(endpoint)
+        .then(done.fail, null)
+        .catch(done);
     });
 
     it('does not show loading icon', () => {

@@ -8,7 +8,7 @@ module Gitlab
   # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
   def self.rails5?
-    ENV["RAILS5"].in?(%w[1 true])
+    !%w[0 false].include?(ENV["RAILS5"])
   end
 
   class Application < Rails::Application
@@ -25,6 +25,9 @@ module Gitlab
     # to make sure that all connections have NO_ZERO_DATE
     # setting disabled
     require_dependency Rails.root.join('lib/mysql_zero_date')
+
+    # This can be removed when we drop support for rails 4
+    require_dependency Rails.root.join('lib/rails4_migration_version')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -66,6 +69,12 @@ module Gitlab
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
 
+    # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+    # the I18n.default_locale when a translation can not be found).
+    # We have to explicitly set default locale since 1.1.0 - see:
+    # https://github.com/svenfuchs/i18n/pull/415
+    config.i18n.fallbacks = [:en]
+
     # Translation for AR attrs is not working well for POROs like WikiPage
     config.gettext_i18n_rails.use_for_active_record_attributes = false
 
@@ -94,6 +103,9 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    #
+    # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
+    #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
     config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
@@ -144,7 +156,7 @@ module Gitlab
     config.assets.precompile << "errors.css"
 
     # Import gitlab-svgs directly from vendored directory
-    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
@@ -157,6 +169,9 @@ module Gitlab
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
+
+    # Nokogiri is significantly faster and uses less memory than REXML
+    ActiveSupport::XmlMini.backend = 'Nokogiri'
 
     # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
     # connect to the database.

@@ -156,11 +156,19 @@ describe 'Dropdown assignee', :js do
       expect_filtered_search_input_empty
     end
 
-    it 'selects `no assignee`' do
-      find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
+    it 'selects `None`' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: 'None').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
       expect_tokens([assignee_token('none')])
+      expect_filtered_search_input_empty
+    end
+
+    it 'selects `Any`' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: 'Any').click
+
+      expect(page).to have_css(js_dropdown_assignee, visible: false)
+      expect_tokens([assignee_token('any')])
       expect_filtered_search_input_empty
     end
   end

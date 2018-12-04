@@ -1,49 +1,45 @@
 <script>
-  import icon from '../../../vue_shared/components/icon.vue';
+import icon from '../../../vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+  },
+  props: {
+    isLocked: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
-    props: {
-      isLocked: {
-        type: Boolean,
-        default: false,
-        required: false,
-      },
-      isConfidential: {
-        type: Boolean,
-        default: false,
-        required: false,
-      },
+    isConfidential: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
-    computed: {
-      warningIcon() {
-        if (this.isConfidential) return 'eye-slash';
-        if (this.isLocked) return 'lock';
+  },
+  computed: {
+    warningIcon() {
+      if (this.isConfidential) return 'eye-slash';
+      if (this.isLocked) return 'lock';
 
-        return '';
-      },
-      isLockedAndConfidential() {
-        return this.isConfidential && this.isLocked;
-      },
+      return '';
     },
-  };
+    isLockedAndConfidential() {
+      return this.isConfidential && this.isLocked;
+    },
+  },
+};
 </script>
 <template>
   <div class="issuable-note-warning">
-    <icon
-      v-if="!isLockedAndConfidential"
-      :name="warningIcon"
-      :size="16"
-      class="icon inline"
-      aria-hidden="true"
-    />
+    <icon v-if="!isLockedAndConfidential" :name="warningIcon" :size="16" class="icon inline" />
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}
-      {{ __(`People without permission will never
-get a notification and won't be able to comment.`) }}
+      {{
+        __(`People without permission will never
+get a notification and won't be able to comment.`)
+      }}
     </span>
 
     <span v-else-if="isConfidential">
@@ -52,8 +48,7 @@ get a notification and won't be able to comment.`) }}
     </span>
 
     <span v-else-if="isLocked">
-      {{ __('This issue is locked.') }}
-      {{ __('Only project members can comment.') }}
+      {{ __('This issue is locked.') }} {{ __('Only project members can comment.') }}
     </span>
   </div>
 </template>

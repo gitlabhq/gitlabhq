@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GoogleApi
   class Auth
     attr_reader :access_token, :redirect_uri, :state
@@ -14,7 +16,7 @@ module GoogleApi
       client.auth_code.authorize_url(
         redirect_uri: redirect_uri,
         scope: scope,
-        state: state # This is used for arbitary redirection
+        state: state # This is used for arbitrary redirection
       )
     end
 

@@ -27,7 +27,7 @@ GitLab capitalizes the stages' names when shown in the [pipeline graphs](#pipeli
 
 There are three types of pipelines that often use the single shorthand of "pipeline". People often talk about them as if each one is "the" pipeline, but really, they're just pieces of a single, comprehensive pipeline.
 
-![Types of Pipelines](img/types-of-pipelines.svg)
+![Types of Pipelines](img/types-of-pipelines.png)
 
 1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`.
 1. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production.
@@ -43,7 +43,7 @@ Pipelines accommodate several development workflows:
 
 Example continuous delivery flow:
 
-![CD Flow](img/pipelines-goal.svg)
+![CD Flow](img/pipelines-goal.png)
 
 ## Jobs
 
@@ -193,6 +193,18 @@ stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
 
+### Delay a particular job in the pipeline graph
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
+
+When you do not want to run a job immediately, you can [delay the job to run after a certain period](yaml/README.md#when-delayed).
+This is especially useful for timed incremental rollout that new code is rolled out gradually.
+For example, if you start rolling out new code and users do not experience trouble, GitLab automatically completes the deployment from 0% to 100%.
+Alternatively, if you start rolling out and you noticed that a few users experience trouble with the version,
+you can stop the timed incremental rollout by canceling the pipeline, and [rolling](environments.md#rolling-back-changes) it back to the stable version.
+
+![Pipelines example](img/pipeline_incremental_rollout.png)
+
 ### Ordering of jobs in pipeline graphs
 
 **Regular pipeline graph**
@@ -211,6 +223,7 @@ by name. The order of severity is:
 - pending
 - running
 - manual
+- scheduled
 - canceled
 - success
 - skipped
@@ -281,7 +294,7 @@ runners will not use regular runners, they must be tagged accordingly.
 
 [jobs]: #jobs
 [jobs-yaml]: yaml/README.md#jobs
-[manual]: yaml/README.md#manual
+[manual]: yaml/README.md#whenmanual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Clusters::Applications::Jupyter do
   include_examples 'cluster application core specs', :clusters_applications_jupyter
+  include_examples 'cluster application helm specs', :clusters_applications_jupyter
 
   it { is_expected.to belong_to(:oauth_application) }
 
@@ -79,37 +80,21 @@ describe Clusters::Applications::Jupyter do
 
     subject { application.files }
 
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
-
     it 'should include valid values' do
       expect(values).to include('ingress')
       expect(values).to include('hub')
       expect(values).to include('rbac')
       expect(values).to include('proxy')
       expect(values).to include('auth')
+      expect(values).to include('singleuser')
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+    end
+
+    context 'when cluster belongs to a project' do
+      it 'sets GitLab project id' do
+        expect(values).to match(/GITLAB_CLUSTER_ID: '?#{application.cluster.id}/)
+      end
     end
   end
 end

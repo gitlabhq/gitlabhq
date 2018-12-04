@@ -66,5 +66,14 @@ describe ResourceEvents::MergeIntoNotesService do
       expect(notes.count).to eq 1
       expect(notes.first.discussion_id).to eq event.discussion_id
     end
+
+    it "preloads the note author's status" do
+      event = create_event(created_at: time)
+      create(:user_status, user: event.user)
+
+      notes = described_class.new(resource, user).execute
+
+      expect(notes.first.author.association(:status)).to be_loaded
+    end
   end
 end

@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
+/* eslint-disable object-shorthand, func-names, no-else-return, no-lonely-if */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -18,52 +18,56 @@ const CommentAndResolveBtn = Vue.extend({
     };
   },
   computed: {
-    showButton: function () {
+    showButton: function() {
       if (this.discussion) {
         return this.discussion.isResolvable();
       } else {
         return false;
       }
     },
-    isDiscussionResolved: function () {
+    isDiscussionResolved: function() {
       return this.discussion.isResolved();
     },
-    buttonText: function () {
+    buttonText: function() {
       if (this.isDiscussionResolved) {
         if (this.textareaIsEmpty) {
-          return "Unresolve discussion";
+          return 'Unresolve discussion';
         } else {
-          return "Comment & unresolve discussion";
+          return 'Comment & unresolve discussion';
         }
       } else {
         if (this.textareaIsEmpty) {
-          return "Resolve discussion";
+          return 'Resolve discussion';
         } else {
-          return "Comment & resolve discussion";
+          return 'Comment & resolve discussion';
         }
       }
-    }
+    },
   },
   created() {
     if (this.discussionId) {
       this.discussion = CommentsStore.state[this.discussionId];
     }
   },
-  mounted: function () {
+  mounted: function() {
     if (!this.discussionId) return;
 
-    const $textarea = $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`);
+    const $textarea = $(
+      `.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`,
+    );
     this.textareaIsEmpty = $textarea.val() === '';
 
     $textarea.on('input.comment-and-resolve-btn', () => {
       this.textareaIsEmpty = $textarea.val() === '';
     });
   },
-  destroyed: function () {
+  destroyed: function() {
     if (!this.discussionId) return;
 
-    $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`).off('input.comment-and-resolve-btn');
-  }
+    $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`).off(
+      'input.comment-and-resolve-btn',
+    );
+  },
 });
 
 Vue.component('comment-and-resolve-btn', CommentAndResolveBtn);

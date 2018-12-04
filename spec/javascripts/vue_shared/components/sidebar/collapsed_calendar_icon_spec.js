@@ -30,6 +30,7 @@ describe('collapsedCalendarIcon', () => {
     vm.$on('click', click);
 
     vm.$el.click();
+
     expect(click).toHaveBeenCalled();
   });
 });

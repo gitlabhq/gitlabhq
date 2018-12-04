@@ -158,6 +158,16 @@ describe API::Wikis do
       expect(json_response.size).to eq(1)
       expect(json_response['error']).to eq('file is missing')
     end
+
+    it 'responds with validation error on invalid temp file' do
+      payload[:file] = { tempfile: '/etc/hosts' }
+
+      post(api(url, user), payload)
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response.size).to eq(1)
+      expect(json_response['error']).to eq('file is invalid')
+    end
   end
 
   describe 'GET /projects/:id/wikis' do

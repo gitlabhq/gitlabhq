@@ -90,6 +90,11 @@ describe Projects::PipelinesController do
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
+        # Isolate from test preparation (Repository#exists? is also cached in RequestStore)
+        RequestStore.end!
+        RequestStore.clear!
+        RequestStore.begin!
+
         expect { get_pipelines_index_json }
           .to change { Gitlab::GitalyClient.get_request_count }.by(2)
       end

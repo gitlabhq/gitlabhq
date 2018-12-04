@@ -14,9 +14,9 @@ module Todos
       def execute
         ProjectFeature.where(project_id: project_ids).each do |project_features|
           target_types = []
-          target_types << Issue if private?(project_features.issues_access_level)
-          target_types << MergeRequest if private?(project_features.merge_requests_access_level)
-          target_types << Commit if private?(project_features.repository_access_level)
+          target_types << Issue.name if private?(project_features.issues_access_level)
+          target_types << MergeRequest.name if private?(project_features.merge_requests_access_level)
+          target_types << Commit.name if private?(project_features.repository_access_level)
 
           next if target_types.empty?
 

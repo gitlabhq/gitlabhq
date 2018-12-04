@@ -71,6 +71,7 @@ describe('Multi-file store tree actions', () => {
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
+
             expect(projectTree.tree.length).toBe(2);
             expect(projectTree.tree[0].type).toBe('tree');
             expect(projectTree.tree[0].tree[1].name).toBe('fileinfolder.js');
@@ -142,7 +143,7 @@ describe('Multi-file store tree actions', () => {
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
-              text: 'An error occured whilst loading all the files.',
+              text: 'An error occurred whilst loading all the files.',
               action: jasmine.any(Function),
               actionText: 'Please try again',
               actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::SnippetsController < Projects::ApplicationController
   include RendersNotes
   include ToggleAwardEmoji

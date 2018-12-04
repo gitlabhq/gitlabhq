@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe 'Dashboard Merge Requests' do
   include Spec::Support::Helpers::Features::SortingHelpers
-  include FilterItemSelectHelper
+  include FilteredSearchHelpers
   include ProjectForksHelper
 
   let(:current_user) { create :user }
+  let(:user) { current_user }
   let(:project) { create(:project) }
 
   let(:public_project) { create(:project, :public, :repository) }
@@ -36,7 +37,7 @@ describe 'Dashboard Merge Requests' do
 
   context 'no merge requests exist' do
     it 'shows an empty state' do
-      visit merge_requests_dashboard_path(assignee_id: current_user.id)
+      visit merge_requests_dashboard_path(assignee_username: current_user.username)
 
       expect(page).to have_selector('.empty-state')
     end
@@ -79,7 +80,7 @@ describe 'Dashboard Merge Requests' do
     end
 
     before do
-      visit merge_requests_dashboard_path(assignee_id: current_user.id)
+      visit merge_requests_dashboard_path(assignee_username: current_user.username)
     end
 
     it 'shows assigned merge requests' do
@@ -92,8 +93,8 @@ describe 'Dashboard Merge Requests' do
     end
 
     it 'shows authored merge requests', :js do
-      filter_item_select('Any Assignee', '.js-assignee-search')
-      filter_item_select(current_user.to_reference, '.js-author-search')
+      reset_filters
+      input_filtered_search("author:#{current_user.to_reference}")
 
       expect(page).to have_content(authored_merge_request.title)
       expect(page).to have_content(authored_merge_request_from_fork.title)
@@ -104,8 +105,7 @@ describe 'Dashboard Merge Requests' do
     end
 
     it 'shows error message without filter', :js do
-      filter_item_select('Any Assignee', '.js-assignee-search')
-      filter_item_select('Any Author', '.js-author-search')
+      reset_filters
 
       expect(page).to have_content('Please select at least one filter to see results')
     end
@@ -113,7 +113,7 @@ describe 'Dashboard Merge Requests' do
     it 'shows sorted merge requests' do
       sort_by('Created date')
 
-      visit merge_requests_dashboard_path(assignee_id: current_user.id)
+      visit merge_requests_dashboard_path(assignee_username: current_user.username)
 
       expect(find('.issues-filters')).to have_content('Created date')
     end

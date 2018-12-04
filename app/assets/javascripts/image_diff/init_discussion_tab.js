@@ -8,5 +8,6 @@ export default () => {
 
   const diffFileEls = document.querySelectorAll('.timeline-content .diff-file.js-image-file');
   [...diffFileEls].forEach(diffFileEl =>
-    imageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge));
+    imageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge),
+  );
 };

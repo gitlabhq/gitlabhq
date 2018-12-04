@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -9,7 +11,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -128,18 +130,13 @@ module API
         success Entities::Commit
       end
       params do
-        # For now we just support 2 refs passed, but `merge-base` supports
-        # multiple defining this as an Array instead of 2 separate params will
-        # make sure we don't need to deprecate this API in favor of one
-        # supporting multiple commits when this functionality gets added to
-        # Gitaly
         requires :refs, type: Array[String]
       end
       get ':id/repository/merge_base' do
         refs = params[:refs]
 
-        unless refs.size == 2
-          render_api_error!('Provide exactly 2 refs', 400)
+        if refs.size < 2
+          render_api_error!('Provide at least 2 refs', 400)
         end
 
         merge_base = Gitlab::Git::MergeBase.new(user_project.repository, refs)

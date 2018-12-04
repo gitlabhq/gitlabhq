@@ -56,38 +56,21 @@ export default {
 </script>
 <template>
   <div class="table-section section-15 pipelines-time-ago">
-    <div
-      class="table-mobile-header"
-      role="rowheader"
-    >
-      Duration
-    </div>
+    <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Duration') }}</div>
     <div class="table-mobile-content">
-      <p
-        v-if="hasDuration"
-        class="duration"
-      >
-        <span v-html="iconTimerSvg">
-        </span>
-        {{ durationFormated }}
+      <p v-if="hasDuration" class="duration">
+        <span v-html="iconTimerSvg"> </span> {{ durationFormated }}
       </p>
 
-      <p
-        v-if="hasFinishedTime"
-        class="finished-at d-none d-sm-none d-md-block"
-      >
-
-        <i
-          class="fa fa-calendar"
-          aria-hidden="true"
-        >
-        </i>
+      <p v-if="hasFinishedTime" class="finished-at d-none d-sm-none d-md-block">
+        <i class="fa fa-calendar" aria-hidden="true"> </i>
 
         <time
           v-tooltip
           :title="tooltipTitle(finishedTime)"
           data-placement="top"
-          data-container="body">
+          data-container="body"
+        >
           {{ timeFormated(finishedTime) }}
         </time>
       </p>

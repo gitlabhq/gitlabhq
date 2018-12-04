@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import $ from 'jquery';
 import _ from 'underscore';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
@@ -330,10 +331,14 @@ describe('Actions Notes Store', () => {
 
     beforeEach(() => {
       Vue.http.interceptors.push(interceptor);
+
+      $('body').attr('data-page', '');
     });
 
     afterEach(() => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+
+      $('body').attr('data-page', '');
     });
 
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', done => {
@@ -352,6 +357,39 @@ describe('Actions Notes Store', () => {
         [
           {
             type: 'updateMergeRequestWidget',
+          },
+          {
+            type: 'updateResolvableDiscussonsCounts',
+          },
+        ],
+        done,
+      );
+    });
+
+    it('dispatches removeDiscussionsFromDiff on merge request page', done => {
+      const note = { path: `${gl.TEST_HOST}`, id: 1 };
+
+      $('body').attr('data-page', 'projects:merge_requests:show');
+
+      testAction(
+        actions.deleteNote,
+        note,
+        store.state,
+        [
+          {
+            type: 'DELETE_NOTE',
+            payload: note,
+          },
+        ],
+        [
+          {
+            type: 'updateMergeRequestWidget',
+          },
+          {
+            type: 'updateResolvableDiscussonsCounts',
+          },
+          {
+            type: 'diffs/removeDiscussionsFromDiff',
           },
         ],
         done,
@@ -395,6 +433,12 @@ describe('Actions Notes Store', () => {
           [
             {
               type: 'updateMergeRequestWidget',
+            },
+            {
+              type: 'startTaskList',
+            },
+            {
+              type: 'updateResolvableDiscussonsCounts',
             },
           ],
           done,
@@ -469,6 +513,9 @@ describe('Actions Notes Store', () => {
           ],
           [
             {
+              type: 'updateResolvableDiscussonsCounts',
+            },
+            {
               type: 'updateMergeRequestWidget',
             },
           ],
@@ -491,6 +538,9 @@ describe('Actions Notes Store', () => {
           ],
           [
             {
+              type: 'updateResolvableDiscussonsCounts',
+            },
+            {
               type: 'updateMergeRequestWidget',
             },
           ],
@@ -507,6 +557,32 @@ describe('Actions Notes Store', () => {
       actions.updateMergeRequestWidget();
 
       expect(mrWidgetEventHub.$emit).toHaveBeenCalledWith('mr.discussion.updated');
+    });
+  });
+
+  describe('setCommentsDisabled', () => {
+    it('should set comments disabled state', done => {
+      testAction(
+        actions.setCommentsDisabled,
+        true,
+        null,
+        [{ type: 'DISABLE_COMMENTS', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateResolvableDiscussonsCounts', () => {
+    it('commits UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', done => {
+      testAction(
+        actions.updateResolvableDiscussonsCounts,
+        null,
+        {},
+        [{ type: 'UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS' }],
+        [],
+        done,
+      );
     });
   });
 });

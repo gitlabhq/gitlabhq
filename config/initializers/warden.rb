@@ -31,6 +31,11 @@ Rails.application.configure do |config|
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
     user ||= auth.user
+
+    # Rails CSRF protection may attempt to log out a user before that
+    # user even logs in
+    next unless user
+
     activity = Gitlab::Auth::Activity.new(opts)
     tracker = Gitlab::Auth::BlockedUserTracker.new(user, auth)
 

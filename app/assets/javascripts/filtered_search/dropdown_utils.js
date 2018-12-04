@@ -41,7 +41,7 @@ export default class DropdownUtils {
 
     // Removes the first character if it is a quotation so that we can search
     // with multiple words
-    if ((value[0] === '"' || value[0] === '\'') && title.indexOf(' ') !== -1) {
+    if ((value[0] === '"' || value[0] === "'") && title.indexOf(' ') !== -1) {
       value = value.slice(1);
     }
 
@@ -82,11 +82,13 @@ export default class DropdownUtils {
     // Reduce the colors to 4
     colors.length = Math.min(colors.length, 4);
 
-    const color = colors.map((c, i) => {
-      const percentFirst = Math.floor(spacing * i);
-      const percentSecond = Math.floor(spacing * (i + 1));
-      return `${c} ${percentFirst}%, ${c} ${percentSecond}%`;
-    }).join(', ');
+    const color = colors
+      .map((c, i) => {
+        const percentFirst = Math.floor(spacing * i);
+        const percentSecond = Math.floor(spacing * (i + 1));
+        return `${c} ${percentFirst}%, ${c} ${percentSecond}%`;
+      })
+      .join(', ');
 
     return `linear-gradient(${color})`;
   }
@@ -97,17 +99,16 @@ export default class DropdownUtils {
 
     data.forEach(DropdownUtils.mergeDuplicateLabels.bind(null, dataMap));
 
-    Object.keys(dataMap)
-      .forEach((key) => {
-        const label = dataMap[key];
+    Object.keys(dataMap).forEach(key => {
+      const label = dataMap[key];
 
-        if (label.multipleColors) {
-          label.color = DropdownUtils.duplicateLabelColor(label.multipleColors);
-          label.text_color = '#000000';
-        }
+      if (label.multipleColors) {
+        label.color = DropdownUtils.duplicateLabelColor(label.multipleColors);
+        label.text_color = '#000000';
+      }
 
-        results.push(label);
-      });
+      results.push(label);
+    });
 
     results.preprocessed = true;
 
@@ -118,8 +119,7 @@ export default class DropdownUtils {
     const { input, allowedKeys } = config;
     const updatedItem = item;
     const searchInput = DropdownUtils.getSearchQuery(input);
-    const { lastToken, tokens } =
-      FilteredSearchTokenizer.processTokens(searchInput, allowedKeys);
+    const { lastToken, tokens } = FilteredSearchTokenizer.processTokens(searchInput, allowedKeys);
     const lastKey = lastToken.key || lastToken || '';
     const allowMultiple = item.type === 'array';
     const itemInExistingTokens = tokens.some(t => t.key === item.hint);
@@ -143,7 +143,9 @@ export default class DropdownUtils {
     const dataValue = selected.getAttribute('data-value');
 
     if (dataValue) {
-      FilteredSearchDropdownManager.addWordToInput(filter, dataValue, true);
+      FilteredSearchDropdownManager.addWordToInput(filter, dataValue, true, {
+        capitalizeTokenValue: selected.hasAttribute('data-capitalize'),
+      });
     }
 
     // Return boolean based on whether it was set
@@ -152,7 +154,10 @@ export default class DropdownUtils {
 
   static getVisualTokenValues(visualToken) {
     const tokenName = visualToken && visualToken.querySelector('.name').textContent.trim();
-    let tokenValue = visualToken && visualToken.querySelector('.value') && visualToken.querySelector('.value').textContent.trim();
+    let tokenValue =
+      visualToken &&
+      visualToken.querySelector('.value') &&
+      visualToken.querySelector('.value').textContent.trim();
     if (tokenName === 'label' && tokenValue) {
       // remove leading symbol and wrapping quotes
       tokenValue = tokenValue.replace(/^~("|')?(.*)/, '$2').replace(/("|')$/, '');
@@ -172,7 +177,7 @@ export default class DropdownUtils {
       tokens.splice(inputIndex + 1);
     }
 
-    tokens.forEach((token) => {
+    tokens.forEach(token => {
       if (token.classList.contains('js-visual-token')) {
         const name = token.querySelector('.name');
         const value = token.querySelector('.value');
@@ -192,8 +197,9 @@ export default class DropdownUtils {
           values.push(name.innerText);
         }
       } else if (token.classList.contains('input-token')) {
-        const { isLastVisualTokenValid } =
-          FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+        const {
+          isLastVisualTokenValid,
+        } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         const input = FilteredSearchContainer.container.querySelector('.filtered-search');
         const inputValue = input && input.value;
@@ -207,9 +213,7 @@ export default class DropdownUtils {
       }
     });
 
-    return values
-      .map(value => value.trim())
-      .join(' ');
+    return values.map(value => value.trim()).join(' ');
   }
 
   static getSearchInput(filteredSearchInput) {
@@ -225,7 +229,9 @@ export default class DropdownUtils {
     // Replace all spaces inside quote marks with underscores
     // (will continue to match entire string until an end quote is found if any)
     // This helps with matching the beginning & end of a token:key
-    inputValue = inputValue.replace(/(('[^']*'{0,1})|("[^"]*"{0,1})|:\s+)/g, str => str.replace(/\s/g, '_'));
+    inputValue = inputValue.replace(/(('[^']*'{0,1})|("[^"]*"{0,1})|:\s+)/g, str =>
+      str.replace(/\s/g, '_'),
+    );
 
     // Get the right position for the word selected
     // Regex matches first space

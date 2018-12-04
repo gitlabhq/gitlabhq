@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'gitlab/popen'
 
 module Gitlab
@@ -46,5 +48,13 @@ module Gitlab
 
   def self.dev_env_or_com?
     Rails.env.development? || org? || com?
+  end
+
+  def self.pre_release?
+    VERSION.include?('pre')
+  end
+
+  def self.version_info
+    Gitlab::VersionInfo.parse(Gitlab::VERSION)
   end
 end

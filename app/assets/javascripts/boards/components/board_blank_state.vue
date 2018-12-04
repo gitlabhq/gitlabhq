@@ -2,8 +2,7 @@
 /* global ListLabel */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   data() {
@@ -19,7 +18,7 @@ export default {
       this.clearBlankState();
 
       this.predefinedLabels.forEach((label, i) => {
-        Store.addList({
+        boardsStore.addList({
           title: label.title,
           position: i,
           list_type: 'label',
@@ -30,68 +29,57 @@ export default {
         });
       });
 
-      Store.state.lists = _.sortBy(Store.state.lists, 'position');
+      boardsStore.state.lists = _.sortBy(boardsStore.state.lists, 'position');
 
       // Save the labels
-      gl.boardService.generateDefaultLists()
+      gl.boardService
+        .generateDefaultLists()
         .then(res => res.data)
-        .then((data) => {
-          data.forEach((listObj) => {
-            const list = Store.findList('title', listObj.title);
+        .then(data => {
+          data.forEach(listObj => {
+            const list = boardsStore.findList('title', listObj.title);
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
-            list.getIssues()
-              .catch(() => {
-                // TODO: handle request error
-              });
+            list.getIssues().catch(() => {
+              // TODO: handle request error
+            });
           });
         })
         .catch(() => {
-          Store.removeList(undefined, 'label');
+          boardsStore.removeList(undefined, 'label');
           Cookies.remove('issue_board_welcome_hidden', {
             path: '',
           });
-          Store.addBlankState();
+          boardsStore.addBlankState();
         });
     },
-    clearBlankState: Store.removeBlankState.bind(Store),
+    clearBlankState: boardsStore.removeBlankState.bind(boardsStore),
   },
 };
-
 </script>
 
 <template>
   <div class="board-blank-state">
-    <p>
-      Add the following default lists to your Issue Board with one click:
-    </p>
+    <p>Add the following default lists to your Issue Board with one click:</p>
     <ul class="board-blank-state-list">
-      <li
-        v-for="(label, index) in predefinedLabels"
-        :key="index"
-      >
-        <span
-          :style="{ backgroundColor: label.color }"
-          class="label-color">
-        </span>
+      <li v-for="(label, index) in predefinedLabels" :key="index">
+        <span :style="{ backgroundColor: label.color }" class="label-color"> </span>
         {{ label.title }}
       </li>
     </ul>
     <p>
-      Starting out with the default set of lists will get you
-      right on the way to making the most of your board.
+      Starting out with the default set of lists will get you right on the way to making the most of
+      your board.
     </p>
     <button
       class="btn btn-success btn-inverted btn-block"
       type="button"
-      @click.stop="addDefaultLists">
+      @click.stop="addDefaultLists"
+    >
       Add default lists
     </button>
-    <button
-      class="btn btn-default btn-block"
-      type="button"
-      @click.stop="clearBlankState">
+    <button class="btn btn-default btn-block" type="button" @click.stop="clearBlankState">
       Nevermind, I'll use my own
     </button>
   </div>

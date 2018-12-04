@@ -25,7 +25,8 @@ describe('IDE right pane', () => {
 
   describe('active', () => {
     it('renders merge request button as active', done => {
-      vm.$store.state.rightPane = rightSidebarViews.mergeRequestInfo;
+      vm.$store.state.rightPane.isOpen = true;
+      vm.$store.state.rightPane.currentView = rightSidebarViews.mergeRequestInfo.name;
       vm.$store.state.currentMergeRequestId = '123';
       vm.$store.state.currentProjectId = 'gitlab-ce';
       vm.$store.state.currentMergeRequestId = 1;
@@ -41,20 +42,21 @@ describe('IDE right pane', () => {
         },
       };
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-sidebar-link.active')).not.toBe(null);
-        expect(
-          vm.$el.querySelector('.ide-sidebar-link.active').getAttribute('data-original-title'),
-        ).toBe('Merge Request');
-
-        done();
-      });
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.$el.querySelector('.ide-sidebar-link.active')).not.toBe(null);
+          expect(
+            vm.$el.querySelector('.ide-sidebar-link.active').getAttribute('data-original-title'),
+          ).toBe('Merge Request');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
   describe('click', () => {
     beforeEach(() => {
-      spyOn(vm, 'setRightPane');
+      spyOn(vm, 'open');
     });
 
     it('sets view to merge request', done => {
@@ -63,7 +65,7 @@ describe('IDE right pane', () => {
       vm.$nextTick(() => {
         vm.$el.querySelector('.ide-sidebar-link').click();
 
-        expect(vm.setRightPane).toHaveBeenCalledWith(rightSidebarViews.mergeRequestInfo);
+        expect(vm.open).toHaveBeenCalledWith(rightSidebarViews.mergeRequestInfo);
 
         done();
       });

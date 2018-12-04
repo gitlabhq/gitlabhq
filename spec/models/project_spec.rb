@@ -2,11 +2,15 @@ require 'spec_helper'
 
 describe Project do
   include ProjectForksHelper
+  include GitHelpers
+
+  it_behaves_like 'having unique enum values'
 
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
+    it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
     it { is_expected.to have_many(:events) }
@@ -22,7 +26,6 @@ describe Project do
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks) }
     it { is_expected.to have_many(:protected_branches) }
-    it { is_expected.to have_one(:forked_project_link) }
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
@@ -32,6 +35,7 @@ describe Project do
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
     it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:discord_service) }
     it { is_expected.to have_one(:drone_ci_service) }
     it { is_expected.to have_one(:emails_on_push_service) }
     it { is_expected.to have_one(:pipelines_email_service) }
@@ -52,10 +56,11 @@ describe Project do
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
     it { is_expected.to have_one(:external_wiki_service) }
     it { is_expected.to have_one(:project_feature) }
+    it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
-    it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
@@ -76,7 +81,8 @@ describe Project do
     it { is_expected.to have_many(:lfs_objects_projects) }
     it { is_expected.to have_many(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
-    it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:forked_to_members).class_name('ForkNetworkMember') }
+    it { is_expected.to have_many(:forks).through(:forked_to_members) }
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
@@ -86,6 +92,10 @@ describe Project do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
+
+    it 'has an inverse relationship with merge requests' do
+      expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)
+    end
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -99,22 +109,6 @@ describe Project do
 
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
-      end
-    end
-
-    context 'Site Statistics' do
-      context 'when creating a new project' do
-        it 'tracks project in SiteStatistic' do
-          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
-        end
-      end
-
-      context 'when deleting a project' do
-        it 'untracks project in SiteStatistic' do
-          project = create(:project)
-
-          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
-        end
       end
     end
 
@@ -227,55 +221,93 @@ describe Project do
       end
     end
 
-    it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+    describe 'import_url' do
+      it 'does not allow an invalid URI as import_url' do
+        project = build(:project, import_url: 'invalid://')
 
-      expect(project2).not_to be_valid
-    end
+        expect(project).not_to be_valid
+      end
 
-    it 'does allow a valid URI as import_url' do
-      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      it 'does allow a SSH URI as import_url for persisted projects' do
+        project = create(:project)
+        project.import_url = 'ssh://test@gitlab.com/project.git'
 
-      expect(project2).to be_valid
-    end
+        expect(project).to be_valid
+      end
 
-    it 'allows an empty URI' do
-      project2 = build(:project, import_url: '')
+      it 'does not allow a SSH URI as import_url for new projects' do
+        project = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
 
-      expect(project2).to be_valid
-    end
+        expect(project).not_to be_valid
+      end
 
-    it 'does not produce import data on an empty URI' do
-      project2 = build(:project, import_url: '')
+      it 'does allow a valid URI as import_url' do
+        project = build(:project, import_url: 'http://gitlab.com/project.git')
 
-      expect(project2.import_data).to be_nil
-    end
+        expect(project).to be_valid
+      end
 
-    it 'does not produce import data on an invalid URI' do
-      project2 = build(:project, import_url: 'test://')
+      it 'allows an empty URI' do
+        project = build(:project, import_url: '')
 
-      expect(project2.import_data).to be_nil
-    end
+        expect(project).to be_valid
+      end
 
-    it "does not allow import_url pointing to localhost" do
-      project2 = build(:project, import_url: 'http://localhost:9000/t.git')
+      it 'does not produce import data on an empty URI' do
+        project = build(:project, import_url: '')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
-    end
+        expect(project.import_data).to be_nil
+      end
 
-    it "does not allow import_url with invalid ports" do
-      project2 = build(:project, import_url: 'http://github.com:25/t.git')
+      it 'does not produce import data on an invalid URI' do
+        project = build(:project, import_url: 'test://')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
-    end
+        expect(project.import_data).to be_nil
+      end
 
-    it "does not allow import_url with invalid user" do
-      project2 = build(:project, import_url: 'http://$user:password@github.com/t.git')
+      it "does not allow import_url pointing to localhost" do
+        project = build(:project, import_url: 'http://localhost:9000/t.git')
 
-      expect(project2).to be_invalid
-      expect(project2.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
+      end
+
+      it "does not allow import_url with invalid ports for new projects" do
+        project = build(:project, import_url: 'http://github.com:25/t.git')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+      end
+
+      it "does not allow import_url with invalid ports for persisted projects" do
+        project = create(:project)
+        project.import_url = 'http://github.com:25/t.git'
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+      end
+
+      it "does not allow import_url with invalid user" do
+        project = build(:project, import_url: 'http://$user:password@github.com/t.git')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+      end
+
+      include_context 'invalid urls'
+
+      it 'does not allow urls with CR or LF characters' do
+        project = build(:project)
+
+        aggregate_failures do
+          urls_with_CRLF.each do |url|
+            project.import_url = url
+
+            expect(project).not_to be_valid
+            expect(project.errors.full_messages.first).to match(/is blocked: URI is invalid/)
+          end
+        end
+      end
     end
 
     describe 'project pending deletion' do
@@ -505,28 +537,28 @@ describe Project do
   end
 
   describe "#readme_url" do
-    let(:project) { create(:project, :repository, path: "somewhere") }
-
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(project.readme_url).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(project.readme_url).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
-          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+          expect(project.readme_url).to eq("#{project.web_url}/blob/master/README.md")
         end
       end
     end
@@ -1358,7 +1390,7 @@ describe Project do
 
     context 'when checking on forked project' do
       let(:project)        { create(:project, :internal) }
-      let(:forked_project) { create(:project, forked_from_project: project) }
+      let(:forked_project) { fork_project(project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
@@ -1589,6 +1621,30 @@ describe Project do
     end
   end
 
+  describe '#track_project_repository' do
+    let(:project) { create(:project, :repository) }
+
+    it 'creates a project_repository' do
+      project.track_project_repository
+
+      expect(project.reload.project_repository).to be_present
+      expect(project.project_repository.disk_path).to eq(project.disk_path)
+      expect(project.project_repository.shard_name).to eq(project.repository_storage)
+    end
+
+    it 'updates the project_repository' do
+      project.track_project_repository
+
+      allow(project).to receive(:disk_path).and_return('@fancy/new/path')
+
+      expect do
+        project.track_project_repository
+      end.not_to change(ProjectRepository, :count)
+
+      expect(project.reload.project_repository.disk_path).to eq(project.disk_path)
+    end
+  end
+
   describe '#create_repository' do
     let(:project) { create(:project, :repository) }
     let(:shell) { Gitlab::Shell.new }
@@ -1671,6 +1727,16 @@ describe Project do
         .and_return(true)
 
       project.ensure_repository
+    end
+  end
+
+  describe 'handling import URL' do
+    it 'returns the sanitized URL' do
+      project = create(:project, :import_started, import_url: 'http://user:pass@test.com')
+
+      project.import_state.finish
+
+      expect(project.reload.import_url).to eq('http://test.com')
     end
   end
 
@@ -1787,106 +1853,6 @@ describe Project do
     end
   end
 
-  describe '#human_import_status_name' do
-    context 'when import_state exists' do
-      it 'returns the humanized status name' do
-        project = create(:project)
-        create(:import_state, :started, project: project)
-
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-
-    context 'when import_state was not created yet' do
-      let(:project) { create(:project, :import_started) }
-
-      it 'ensures import_state is created and returns humanized status name' do
-        expect do
-          project.human_import_status_name
-        end.to change { ProjectImportState.count }.from(0).to(1)
-      end
-
-      it 'returns humanized status name' do
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-  end
-
-  describe 'Project import job' do
-    let(:project) { create(:project, import_url: generate(:url)) }
-
-    before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage, project.disk_path, project.import_url)
-        .and_return(true)
-
-      # Works around https://github.com/rspec/rspec-mocks/issues/910
-      allow(described_class).to receive(:find).with(project.id).and_return(project)
-      expect(project.repository).to receive(:after_import)
-        .and_call_original
-      expect(project.wiki.repository).to receive(:after_import)
-        .and_call_original
-    end
-
-    it 'imports a project' do
-      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
-
-      expect { project.import_schedule }.to change { project.import_jid }
-      expect(project.reload.import_status).to eq('finished')
-    end
-  end
-
-  describe 'project import state transitions' do
-    context 'state transition: [:started] => [:finished]' do
-      let(:after_import_service) { spy(:after_import_service) }
-      let(:housekeeping_service) { spy(:housekeeping_service) }
-
-      before do
-        allow(Projects::AfterImportService)
-          .to receive(:new) { after_import_service }
-
-        allow(after_import_service)
-          .to receive(:execute) { housekeeping_service.execute }
-
-        allow(Projects::HousekeepingService)
-          .to receive(:new) { housekeeping_service }
-      end
-
-      it 'resets project import_error' do
-        error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update(last_error: error_message)
-
-        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
-      end
-
-      it 'performs housekeeping when an import of a fresh project is completed' do
-        project = create(:project_empty_repo, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(after_import_service).to have_received(:execute)
-        expect(housekeeping_service).to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project repository does not exist' do
-        project = create(:project, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project does not have a valid import type' do
-        project = create(:project, :import_started, import_type: nil)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-    end
-  end
-
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
@@ -1966,13 +1932,52 @@ describe Project do
     end
   end
 
+  describe '#import_status' do
+    context 'with import_state' do
+      it 'returns the right status' do
+        project = create(:project, :import_started)
+
+        expect(project.import_status).to eq("started")
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.import_status).to eq('none')
+      end
+    end
+  end
+
+  describe '#human_import_status_name' do
+    context 'with import_state' do
+      it 'returns the right human import status' do
+        project = create(:project, :import_started)
+
+        expect(project.human_import_status_name).to eq('started')
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.human_import_status_name).to eq('none')
+      end
+    end
+  end
+
   describe '#add_import_job' do
     let(:import_jid) { '123' }
 
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
-      let(:forked_from_project) { forked_project_link.forked_from_project }
-      let(:project) { forked_project_link.forked_to_project }
+      let(:forked_from_project) { create(:project, :repository) }
+      let(:project) { create(:project) }
+
+      before do
+        fork_project(forked_from_project, nil, target_project: project)
+      end
 
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
@@ -2172,12 +2177,6 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
-    it 'creates the new reference with rugged' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD', "refs/heads/#{project.default_branch}", shell: false)
-
-      project.change_head(project.default_branch)
-    end
-
     it 'copies the gitattributes' do
       expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
       project.change_head(project.default_branch)
@@ -2256,6 +2255,12 @@ describe Project do
 
       it 'returns nil if it is the root of the fork network' do
         expect(project.fork_source).to be_nil
+      end
+    end
+
+    describe '#forks' do
+      it 'includes direct forks of the project' do
+        expect(project.forks).to contain_exactly(forked_project)
       end
     end
 
@@ -2370,11 +2375,23 @@ describe Project do
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
-      context 'when user configured kubernetes from CI/CD > Clusters' do
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has not been executed' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters and KubernetesNamespace migration has been executed' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token) }
+        let!(:cluster) { kubernetes_namespace.cluster }
+        let(:project) { kubernetes_namespace.project }
+
+        it 'should return token from kubernetes namespace' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
       end
     end
   end
@@ -2401,10 +2418,10 @@ describe Project do
     end
   end
 
-  describe '#secret_variables_for' do
+  describe '#ci_variables_for' do
     let(:project) { create(:project) }
 
-    let!(:secret_variable) do
+    let!(:ci_variable) do
       create(:ci_variable, value: 'secret', project: project)
     end
 
@@ -2412,7 +2429,7 @@ describe Project do
       create(:ci_variable, :protected, value: 'protected', project: project)
     end
 
-    subject { project.reload.secret_variables_for(ref: 'ref') }
+    subject { project.reload.ci_variables_for(ref: 'ref') }
 
     before do
       stub_application_setting(
@@ -2421,13 +2438,13 @@ describe Project do
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
-        is_expected.to contain_exactly(secret_variable, protected_variable)
+        is_expected.to contain_exactly(ci_variable, protected_variable)
       end
     end
 
     context 'when the ref is not protected' do
-      it 'contains only the secret variables' do
-        is_expected.to contain_exactly(secret_variable)
+      it 'contains only the CI variables' do
+        is_expected.to contain_exactly(ci_variable)
       end
     end
 
@@ -2715,7 +2732,7 @@ describe Project do
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
-    it 'updates the project succesfully' do
+    it 'updates the project successfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
@@ -2934,88 +2951,6 @@ describe Project do
       end
     end
 
-    describe '#rename_repo' do
-      before do
-        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
-        # call. This makes testing a bit easier.
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
-      end
-
-      it 'renames a repository' do
-        stub_container_registry_config(enabled: false)
-
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-          .and_return(true)
-
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-          .and_return(true)
-
-        expect_any_instance_of(SystemHooksService)
-          .to receive(:execute_hooks_for)
-            .with(project, :rename)
-
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
-        expect(project).to receive(:expire_caches_before_rename)
-
-        project.rename_repo
-      end
-
-      context 'container registry with images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-          project.container_repositories << container_repository
-        end
-
-        subject { project.rename_repo }
-
-        it { expect { subject }.to raise_error(StandardError) }
-      end
-
-      context 'gitlab pages' do
-        before do
-          expect(project_storage).to receive(:rename_repo) { true }
-        end
-
-        it 'moves pages folder to new location' do
-          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      context 'attachments' do
-        before do
-          expect(project_storage).to receive(:rename_repo) { true }
-        end
-
-        it 'moves uploads folder to new location' do
-          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      it 'updates project full path in .git/config' do
-        allow(project_storage).to receive(:rename_repo).and_return(true)
-
-        project.rename_repo
-
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
-      end
-    end
-
     describe '#pages_path' do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
@@ -3106,91 +3041,6 @@ describe Project do
       end
     end
 
-    describe '#rename_repo' do
-      before do
-        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
-        # call. This makes testing a bit easier.
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-        stub_feature_flags(skip_hashed_storage_upgrade: false)
-      end
-
-      context 'migration to hashed storage' do
-        it 'calls HashedStorageMigrationService with correct options' do
-          project = create(:project, :repository, :legacy_storage)
-          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
-          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
-            expect(service).to receive(:execute).and_return(true)
-          end
-
-          project.rename_repo
-        end
-      end
-
-      it 'renames a repository' do
-        stub_container_registry_config(enabled: false)
-
-        expect(gitlab_shell).not_to receive(:mv_repository)
-
-        expect_any_instance_of(SystemHooksService)
-          .to receive(:execute_hooks_for)
-            .with(project, :rename)
-
-        expect(project).to receive(:expire_caches_before_rename)
-
-        project.rename_repo
-      end
-
-      context 'container registry with images' do
-        let(:container_repository) { create(:container_repository) }
-
-        before do
-          stub_container_registry_config(enabled: true)
-          stub_container_registry_tags(repository: :any, tags: ['tag'])
-          project.container_repositories << container_repository
-        end
-
-        subject { project.rename_repo }
-
-        it { expect { subject }.to raise_error(StandardError) }
-      end
-
-      context 'gitlab pages' do
-        it 'moves pages folder to new location' do
-          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
-
-          project.rename_repo
-        end
-      end
-
-      context 'attachments' do
-        it 'keeps uploads folder location unchanged' do
-          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
-
-          project.rename_repo
-        end
-
-        context 'when not rolled out' do
-          let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
-
-          it 'moves pages folder to hashed storage' do
-            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
-              expect(service).to receive(:execute)
-            end
-
-            project.rename_repo
-          end
-        end
-      end
-
-      it 'updates project full path in .git/config' do
-        project.rename_repo
-
-        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
-      end
-    end
-
     describe '#pages_path' do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
@@ -3204,6 +3054,14 @@ describe Project do
 
       it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
+      end
+
+      context 'when partially migrated' do
+        it 'returns true' do
+          project = create(:project, storage_version: 1, skip_disk_validation: true)
+
+          expect(project.migrate_to_hashed_storage!).to be_truthy
+        end
       end
     end
   end
@@ -3450,7 +3308,7 @@ describe Project do
       end
     end
 
-    context 'when explicitely enabled' do
+    context 'when explicitly enabled' do
       context 'when domain is empty' do
         before do
           create(:project_auto_devops, project: project, domain: nil)
@@ -3546,13 +3404,14 @@ describe Project do
 
   describe '#after_import' do
     let(:project) { create(:project) }
+    let(:import_state) { create(:import_state, project: project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
       expect(project.wiki.repository).to receive(:after_import)
-      expect(project).to receive(:import_finish)
+      expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)
-      expect(project).to receive(:remove_import_jid)
+      expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
 
@@ -3561,6 +3420,10 @@ describe Project do
 
     context 'branch protection' do
       let(:project) { create(:project, :repository) }
+
+      before do
+        create(:import_state, :started, project: project)
+      end
 
       it 'does not protect when branch protection is disabled' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -3614,37 +3477,6 @@ describe Project do
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#remove_import_jid', :clean_gitlab_redis_cache do
-    let(:project) {  }
-
-    context 'without an import JID' do
-      it 'does nothing' do
-        project = create(:project)
-
-        expect(Gitlab::SidekiqStatus)
-          .not_to receive(:unset)
-
-        project.remove_import_jid
-      end
-    end
-
-    context 'with an import JID' do
-      it 'unsets the import JID' do
-        project = create(:project)
-        create(:import_state, project: project, jid: '123')
-
-        expect(Gitlab::SidekiqStatus)
-          .to receive(:unset)
-          .with('123')
-          .and_call_original
-
-        project.remove_import_jid
-
-        expect(project.import_jid).to be_nil
-      end
     end
   end
 
@@ -3995,43 +3827,163 @@ describe Project do
     end
   end
 
-  describe '#update_root_ref' do
-    let(:project) { create(:project, :repository) }
+  context '#members_among' do
+    let(:users) { create_list(:user, 3) }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, namespace: group) }
 
-    it 'updates the default branch when HEAD has changed' do
-      stub_find_remote_root_ref(project, ref: 'feature')
-
-      expect { project.update_root_ref('origin') }
-        .to change { project.default_branch }
-        .from('master')
-        .to('feature')
+    before do
+      project.add_guest(users.first)
+      project.group.add_maintainer(users.last)
     end
 
-    it 'does not update the default branch when HEAD does not change' do
-      stub_find_remote_root_ref(project, ref: 'master')
+    context 'when users is an Array' do
+      it 'returns project members among the users' do
+        expect(project.members_among(users)).to eq([users.first, users.last])
+      end
 
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
+      it 'maintains input order' do
+        expect(project.members_among(users.reverse)).to eq([users.last, users.first])
+      end
+
+      it 'returns empty array if users is empty' do
+        result = project.members_among([])
+
+        expect(result).to be_empty
+      end
     end
 
-    it 'does not update the default branch when HEAD does not exist' do
-      stub_find_remote_root_ref(project, ref: 'foo')
+    context 'when users is a relation' do
+      it 'returns project members among the users' do
+        result = project.members_among(User.where(id: users.map(&:id)))
 
-      expect { project.update_root_ref('origin') }
-        .not_to change { project.default_branch }
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to eq([users.first, users.last])
+      end
+
+      it 'returns empty relation if users is empty' do
+        result = project.members_among(User.none)
+
+        expect(result).to be_a(ActiveRecord::Relation)
+        expect(result).to be_empty
+      end
+    end
+  end
+
+  describe "#find_or_initialize_services" do
+    subject { build(:project) }
+
+    it 'returns only enabled services' do
+      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+
+      services = subject.find_or_initialize_services
+
+      expect(services.count).to eq 1
+      expect(services).to include(PushoverService)
+    end
+  end
+
+  describe "#find_or_initialize_service" do
+    subject { build(:project) }
+
+    it 'avoids N+1 database queries' do
+      allow(Service).to receive(:available_services_names).and_return(%w(prometheus pushover))
+
+      control_count = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_service('prometheus') }.count
+
+      allow(Service).to receive(:available_services_names).and_call_original
+
+      expect { subject.find_or_initialize_service('prometheus') }.not_to exceed_query_limit(control_count)
     end
 
-    def stub_find_remote_root_ref(project, ref:)
-      allow(project.repository)
-        .to receive(:find_remote_root_ref)
-        .with('origin')
-        .and_return(ref)
+    it 'returns nil if service is disabled' do
+      allow(subject).to receive(:disabled_services).and_return(%w(prometheus))
+
+      expect(subject.find_or_initialize_service('prometheus')).to be_nil
+    end
+  end
+
+  describe '.find_without_deleted' do
+    it 'returns nil if the project is about to be removed' do
+      project = create(:project, pending_delete: true)
+
+      expect(described_class.find_without_deleted(project.id)).to be_nil
+    end
+
+    it 'returns a project when it is not about to be removed' do
+      project = create(:project)
+
+      expect(described_class.find_without_deleted(project.id)).to eq(project)
+    end
+  end
+
+  describe '.for_group' do
+    it 'returns the projects for a given group' do
+      group = create(:group)
+      project = create(:project, namespace: group)
+
+      expect(described_class.for_group(group)).to eq([project])
+    end
+  end
+
+  describe '.deployments' do
+    subject { project.deployments }
+
+    let(:project) { create(:project) }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is a deployment record with created status' do
+      let(:deployment) { create(:deployment, :created, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with running status' do
+      let(:deployment) { create(:deployment, :running, project: project) }
+
+      it 'does not return the record' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there is a deployment record with success status' do
+      let(:deployment) { create(:deployment, :success, project: project) }
+
+      it 'returns the record' do
+        is_expected.to eq([deployment])
+      end
+    end
+  end
+
+  describe '#snippets_visible?' do
+    it 'returns true when a logged in user can read snippets' do
+      project = create(:project, :public)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(true)
+    end
+
+    it 'returns true when an anonymous user can read snippets' do
+      project = create(:project, :public)
+
+      expect(project.snippets_visible?).to eq(true)
+    end
+
+    it 'returns false when a user can not read snippets' do
+      project = create(:project, :private)
+      user = create(:user)
+
+      expect(project.snippets_visible?(user)).to eq(false)
     end
   end
 
   def rugged_config
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.repository.rugged.config
-    end
+    rugged_repo(project.repository).config
   end
 end

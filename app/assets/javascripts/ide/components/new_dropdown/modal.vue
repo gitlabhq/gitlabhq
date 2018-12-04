@@ -99,33 +99,22 @@ export default {
     @open="focusInput"
     @closed="closedModal"
   >
-    <div
-      class="form-group row"
-    >
-      <label class="label-bold col-form-label col-sm-2">
-        {{ __('Name') }}
-      </label>
+    <div class="form-group row">
+      <label class="label-bold col-form-label col-sm-2"> {{ __('Name') }} </label>
       <div class="col-sm-10">
         <input
           ref="fieldName"
           v-model="entryName"
           type="text"
-          class="form-control"
+          class="form-control qa-full-file-path"
           placeholder="/dir/file_name"
         />
-        <ul
-          v-if="isCreatingNew"
-          class="prepend-top-default list-inline"
-        >
-          <li
-            v-for="(template, index) in templateTypes"
-            :key="index"
-            class="list-inline-item"
-          >
+        <ul v-if="isCreatingNew" class="prepend-top-default list-inline qa-template-list">
+          <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <button
               type="button"
               class="btn btn-missing p-1 pr-2 pl-2"
-              @click="createFromTemplate(template)"
+              @click="createFromTemplate(template);"
             >
               {{ template.name }}
             </button>

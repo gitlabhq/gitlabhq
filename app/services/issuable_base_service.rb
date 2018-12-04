@@ -3,6 +3,14 @@
 class IssuableBaseService < BaseService
   private
 
+  attr_accessor :params, :skip_milestone_email
+
+  def initialize(project, user = nil, params = {})
+    super
+
+    @skip_milestone_email = @params.delete(:skip_milestone_email)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -118,12 +126,12 @@ class IssuableBaseService < BaseService
     merge_quick_actions_into_params!(issuable)
   end
 
-  def merge_quick_actions_into_params!(issuable)
+  def merge_quick_actions_into_params!(issuable, only: nil)
     original_description = params.fetch(:description, issuable.description)
 
     description, command_params =
       QuickActions::InterpretService.new(project, current_user)
-        .execute(original_description, issuable)
+        .execute(original_description, issuable, only: only)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
     params[:description] = description if description

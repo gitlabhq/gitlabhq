@@ -14,7 +14,7 @@ describe 'User uses search filters', :js do
     visit(search_path)
   end
 
-  context' when filtering by group' do
+  context 'when filtering by group' do
     it 'shows group projects' do
       find('.js-search-group-dropdown').click
 
@@ -36,7 +36,7 @@ describe 'User uses search filters', :js do
     end
   end
 
-  context' when filtering by project' do
+  context 'when filtering by project' do
     it 'shows a project' do
       page.within('.project-filter') do
         find('.js-search-project-dropdown').click

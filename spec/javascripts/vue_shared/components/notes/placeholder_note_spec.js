@@ -26,6 +26,7 @@ describe('issue placeholder system note component', () => {
       expect(vm.$el.querySelector('.user-avatar-link').getAttribute('href')).toEqual(
         userDataMock.path,
       );
+
       expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(
         `${userDataMock.avatar_url}?width=40`,
       );
@@ -37,6 +38,7 @@ describe('issue placeholder system note component', () => {
       expect(vm.$el.querySelector('.note-header-info a').getAttribute('href')).toEqual(
         userDataMock.path,
       );
+
       expect(
         vm.$el.querySelector('.note-header-info .note-headline-light').textContent.trim(),
       ).toEqual(`@${userDataMock.username}`);

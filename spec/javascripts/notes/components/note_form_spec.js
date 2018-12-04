@@ -76,6 +76,7 @@ describe('issue_note_form component', () => {
 
     it('should link to markdown docs', () => {
       const { markdownDocsPath } = notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
         'Markdown',
       );
@@ -100,6 +101,7 @@ describe('issue_note_form component', () => {
 
           expect(vm.handleUpdate).toHaveBeenCalled();
         });
+
         it('should save note when ctrl+enter is pressed', () => {
           spyOn(vm, 'handleUpdate').and.callThrough();
           vm.$el.querySelector('textarea').value = 'Foo';

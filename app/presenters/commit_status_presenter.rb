@@ -8,7 +8,10 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     stuck_or_timeout_failure: 'There has been a timeout failure or the job got stuck. Check your timeout limits or try again',
     runner_system_failure: 'There has been a runner system failure, please try again',
     missing_dependency_failure: 'There has been a missing dependency failure',
-    runner_unsupported: 'Your runner is outdated, please upgrade your runner'
+    runner_unsupported: 'Your runner is outdated, please upgrade your runner',
+    stale_schedule: 'Delayed job could not be executed by some reason, please try again',
+    job_execution_timeout: 'The script exceeded the maximum execution time set for the job',
+    archived_failure: 'The job is archived and cannot be run'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -28,6 +31,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def unrecoverable?
-    script_failure? || missing_dependency_failure?
+    script_failure? || missing_dependency_failure? || archived_failure?
   end
 end

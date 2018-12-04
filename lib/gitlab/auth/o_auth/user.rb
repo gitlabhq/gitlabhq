@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # OAuth extension for User model
 #
 # * Find GitLab user based on omniauth uid and provider

@@ -29,7 +29,7 @@ directly in a filesystem level.
 
 1. Install Oracle JRE 1.8 or newer. On Debian-based Linux distributions you can
    follow [this article](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html).
-1. Download SubGit from https://subgit.com/download/.
+1. Download SubGit from <https://subgit.com/download/>.
 1. Unpack the downloaded SubGit zip archive to the `/opt` directory. The `subgit`
    command will be available at `/opt/subgit-VERSION/bin/subgit`.
 
@@ -71,7 +71,7 @@ edit $GIT_REPO_PATH/subgit/config
 ```
 
 For more information regarding the SubGit configuration options, refer to
-[SubGit's documentation](https://subgit.com/documentation.html) website.
+[SubGit's documentation](https://subgit.com/documentation/) website.
 
 ### Initial translation
 
@@ -97,7 +97,7 @@ subgit import $GIT_REPO_PATH
 ### SubGit licensing
 
 Running SubGit in a mirror mode requires a
-[registration](https://subgit.com/pricing.html). Registration is free for open
+[registration](https://subgit.com/pricing/). Registration is free for open
 source, academic and startup projects.
 
 We're currently working on deeper GitLab/SubGit integration. You may track our
@@ -179,5 +179,6 @@ git push --tags origin
 ```
 
 ## Contribute to this guide
+
 We welcome all contributions that would expand this guide with instructions on
 how to migrate from SVN and other version control systems.

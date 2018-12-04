@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 
+import { GlLoadingIcon } from '@gitlab/ui';
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
@@ -24,6 +25,7 @@ export default {
     DropdownSearchInput,
     DropdownFooter,
     DropdownCreateLabel,
+    GlLoadingIcon,
   },
   props: {
     showCreate: {
@@ -120,30 +122,18 @@ export default {
       :labels="context.labels"
       @onValueClick="handleCollapsedValueClick"
     />
-    <dropdown-title
-      :can-edit="canEdit"
-    />
-    <dropdown-value
-      :labels="context.labels"
-      :label-filter-base-path="labelFilterBasePath"
-    >
+    <dropdown-title :can-edit="canEdit" />
+    <dropdown-value :labels="context.labels" :label-filter-base-path="labelFilterBasePath">
       <slot></slot>
     </dropdown-value>
-    <div
-      v-if="canEdit"
-      class="selectbox js-selectbox"
-      style="display: none;"
-    >
+    <div v-if="canEdit" class="selectbox js-selectbox" style="display: none;">
       <dropdown-hidden-input
         v-for="label in context.labels"
         :key="label.id"
         :name="hiddenInputName"
         :value="label.id"
       />
-      <div
-        ref="dropdown"
-        class="dropdown"
-      >
+      <div ref="dropdown" class="dropdown">
         <dropdown-button
           :ability-name="abilityName"
           :field-name="hiddenInputName"
@@ -159,11 +149,9 @@ dropdown-menu-labels dropdown-menu-selectable"
         >
           <div class="dropdown-page-one">
             <dropdown-header v-if="showCreate" />
-            <dropdown-search-input/>
+            <dropdown-search-input />
             <div class="dropdown-content"></div>
-            <div class="dropdown-loading">
-              <gl-loading-icon />
-            </div>
+            <div class="dropdown-loading"><gl-loading-icon /></div>
             <dropdown-footer
               v-if="showCreate"
               :labels-web-url="labelsWebUrl"

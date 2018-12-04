@@ -7,7 +7,7 @@ describe Gitlab::Ci::Ansi2html do
     expect(convert_html("Hello")).to eq('Hello')
   end
 
-  it "strips non-color-changing controll sequences" do
+  it "strips non-color-changing control sequences" do
     expect(convert_html("Hello \e[2Kworld")).to eq('Hello world')
   end
 

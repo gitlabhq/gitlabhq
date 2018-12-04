@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Snippets::NotesController < ApplicationController
   include NotesActions
   include ToggleAwardEmoji

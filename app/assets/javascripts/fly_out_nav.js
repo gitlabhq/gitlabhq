@@ -11,9 +11,13 @@ let sidebar;
 
 export const mousePos = [];
 
-export const setSidebar = (el) => { sidebar = el; };
+export const setSidebar = el => {
+  sidebar = el;
+};
 export const getOpenMenu = () => currentOpenMenu;
-export const setOpenMenu = (menu = null) => { currentOpenMenu = menu; };
+export const setOpenMenu = (menu = null) => {
+  currentOpenMenu = menu;
+};
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 
@@ -21,9 +25,10 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
-export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
+export const isSidebarCollapsed = () =>
+  sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
 
-export const canShowActiveSubItems = (el) => {
+export const canShowActiveSubItems = el => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
     return false;
   }
@@ -31,7 +36,10 @@ export const canShowActiveSubItems = (el) => {
   return true;
 };
 
-export const canShowSubItems = () => bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md' || bp.getBreakpointSize() === 'lg';
+export const canShowSubItems = () =>
+  bp.getBreakpointSize() === 'sm' ||
+  bp.getBreakpointSize() === 'md' ||
+  bp.getBreakpointSize() === 'lg';
 
 export const getHideSubItemsInterval = () => {
   if (!currentOpenMenu || !mousePos.length) return 0;
@@ -41,11 +49,12 @@ export const getHideSubItemsInterval = () => {
   const currentMousePosY = currentMousePos.y;
   const [menuTop, menuBottom] = menuCornerLocs;
 
-  if (currentMousePosY < menuTop.y ||
-      currentMousePosY > menuBottom.y) return 0;
+  if (currentMousePosY < menuTop.y || currentMousePosY > menuBottom.y) return 0;
 
-  if (slope(prevMousePos, menuBottom) < slope(currentMousePos, menuBottom) &&
-    slope(prevMousePos, menuTop) > slope(currentMousePos, menuTop)) {
+  if (
+    slope(prevMousePos, menuBottom) < slope(currentMousePos, menuBottom) &&
+    slope(prevMousePos, menuTop) > slope(currentMousePos, menuTop)
+  ) {
     return HIDE_INTERVAL_TIMEOUT;
   }
 
@@ -56,11 +65,12 @@ export const calculateTop = (boundingRect, outerHeight) => {
   const windowHeight = window.innerHeight;
   const bottomOverflow = windowHeight - (boundingRect.top + outerHeight);
 
-  return bottomOverflow < 0 ? (boundingRect.top - outerHeight) + boundingRect.height :
-    boundingRect.top;
+  return bottomOverflow < 0
+    ? boundingRect.top - outerHeight + boundingRect.height
+    : boundingRect.top;
 };
 
-export const hideMenu = (el) => {
+export const hideMenu = el => {
   if (!el) return;
 
   const parentEl = el.parentNode;
@@ -101,7 +111,7 @@ export const moveSubItemsToPosition = (el, subItems) => {
   }
 };
 
-export const showSubLevelItems = (el) => {
+export const showSubLevelItems = el => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
   const isIconOnly = subItems && subItems.classList.contains('is-fly-out-only');
 
@@ -128,16 +138,20 @@ export const mouseEnterTopItems = (el, timeout = getHideSubItemsInterval()) => {
   }, timeout);
 };
 
-export const mouseLeaveTopItem = (el) => {
+export const mouseLeaveTopItem = el => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!canShowSubItems() || !canShowActiveSubItems(el) ||
-      (subItems && subItems === currentOpenMenu)) return;
+  if (
+    !canShowSubItems() ||
+    !canShowActiveSubItems(el) ||
+    (subItems && subItems === currentOpenMenu)
+  )
+    return;
 
   el.classList.remove(IS_OVER_CLASS);
 };
 
-export const documentMouseMove = (e) => {
+export const documentMouseMove = e => {
   mousePos.push({
     x: e.clientX,
     y: e.clientY,
@@ -146,7 +160,7 @@ export const documentMouseMove = (e) => {
   if (mousePos.length > 6) mousePos.shift();
 };
 
-export const subItemsMouseLeave = (relatedTarget) => {
+export const subItemsMouseLeave = relatedTarget => {
   clearTimeout(timeoutId);
 
   if (relatedTarget && !relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
@@ -174,7 +188,7 @@ export default () => {
 
   headerHeight = document.querySelector('.nav-sidebar').offsetTop;
 
-  items.forEach((el) => {
+  items.forEach(el => {
     const subItems = el.querySelector('.sidebar-sub-level-items');
 
     if (subItems) {

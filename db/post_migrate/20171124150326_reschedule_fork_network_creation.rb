@@ -1,4 +1,4 @@
-class RescheduleForkNetworkCreation < ActiveRecord::Migration
+class RescheduleForkNetworkCreation < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

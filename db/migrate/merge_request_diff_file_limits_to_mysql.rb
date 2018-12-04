@@ -1,4 +1,4 @@
-class MergeRequestDiffFileLimitsToMysql < ActiveRecord::Migration
+class MergeRequestDiffFileLimitsToMysql < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

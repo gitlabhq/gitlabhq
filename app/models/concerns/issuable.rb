@@ -9,6 +9,7 @@
 module Issuable
   extend ActiveSupport::Concern
   include Gitlab::SQL::Pattern
+  include Redactable
   include CacheMarkdownField
   include Participable
   include Mentionable
@@ -31,6 +32,8 @@ module Issuable
   included do
     cache_markdown_field :title, pipeline: :single_line
     cache_markdown_field :description, issuable_state_filter_enabled: true
+
+    redact_field :description
 
     belongs_to :author, class_name: "User"
     belongs_to :updated_by, class_name: "User"
@@ -76,6 +79,7 @@ module Issuable
     scope :recent, -> { reorder(id: :desc) }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
+    scope :any_milestone, -> { where('milestone_id IS NOT NULL') }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
     scope :opened, -> { with_state(:opened) }
     scope :only_opened, -> { with_state(:opened) }
@@ -86,6 +90,7 @@ module Issuable
     scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date ASC') }
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
+    scope :any_label, -> { joins(:label_links).group(:id) }
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
@@ -359,7 +364,7 @@ module Issuable
   end
 
   ##
-  # Overriden in MergeRequest
+  # Overridden in MergeRequest
   #
   def wipless_title_changed(old_title)
     old_title != title

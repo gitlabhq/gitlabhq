@@ -3,8 +3,8 @@ import Pikaday from 'pikaday';
 import dateFormat from 'dateformat';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
-import { timeFor } from './lib/utils/datetime_utility';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import { timeFor, parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
+import boardsStore from './boards/stores/boards_store';
 
 class DueDateSelect {
   constructor({ $dropdown, $loading } = {}) {
@@ -58,7 +58,7 @@ class DueDateSelect {
         $dueDateInput.val(calendar.toString(dateText));
 
         if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
-          gl.issueBoards.BoardsStore.detail.issue.dueDate = $dueDateInput.val();
+          boardsStore.detail.issue.dueDate = $dueDateInput.val();
           this.updateIssueBoardIssue();
         } else {
           this.saveDueDate(true);
@@ -79,7 +79,7 @@ class DueDateSelect {
       calendar.setDate(null);
 
       if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
-        gl.issueBoards.BoardsStore.detail.issue.dueDate = '';
+        boardsStore.detail.issue.dueDate = '';
         this.updateIssueBoardIssue();
       } else {
         $(`input[name='${this.fieldName}']`).val('');
@@ -123,7 +123,7 @@ class DueDateSelect {
       this.$loading.fadeOut();
     };
 
-    gl.issueBoards.BoardsStore.detail.issue
+    boardsStore.detail.issue
       .update(this.$dropdown.attr('data-issue-update'))
       .then(fadeOutLoader)
       .catch(fadeOutLoader);

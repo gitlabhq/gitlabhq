@@ -2,7 +2,7 @@
 
 GitLab supports [Google actions in email](https://developers.google.com/gmail/markup/actions/actions-overview).
 
-If correctly setup, emails that require an action will be marked in Gmail.
+If correctly set up, emails that require an action will be marked in Gmail.
 
 ![gmail_actions_button.png](img/gmail_action_buttons_for_gitlab.png)
 

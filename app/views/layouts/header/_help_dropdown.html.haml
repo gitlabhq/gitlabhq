@@ -1,0 +1,6 @@
+%ul
+  - if current_user_menu?(:help)
+    %li
+      = link_to _("Help"), help_path
+  - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
+    = render 'shared/user_dropdown_contributing_link'

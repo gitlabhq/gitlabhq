@@ -148,9 +148,14 @@ describe Event do
     let(:admin) { create(:admin) }
     let(:issue) { create(:issue, project: project, author: author, assignees: [assignee]) }
     let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignees: [assignee]) }
+    let(:project_snippet) { create(:project_snippet, :public, project: project, author: author) }
+    let(:personal_snippet) { create(:personal_snippet, :public, author: author) }
     let(:note_on_commit) { create(:note_on_commit, project: project) }
     let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
     let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
+    let(:note_on_project_snippet) { create(:note_on_project_snippet, author: author, noteable: project_snippet, project: project) }
+    let(:note_on_personal_snippet) { create(:note_on_personal_snippet, author: author, noteable: personal_snippet, project: nil) }
+    let(:milestone_on_project) { create(:milestone, project: project) }
     let(:event) { described_class.new(project: project, target: target, author_id: author.id) }
 
     before do
@@ -265,6 +270,125 @@ describe Event do
           expect(event.visible_to_user?(member)).to eq true
           expect(event.visible_to_user?(guest)).to eq false
           expect(event.visible_to_user?(admin)).to eq true
+        end
+      end
+    end
+
+    context 'milestone event' do
+      let(:target) { milestone_on_project }
+
+      it do
+        expect(event.visible_to_user?(nil)).to be_truthy
+        expect(event.visible_to_user?(non_member)).to be_truthy
+        expect(event.visible_to_user?(member)).to be_truthy
+        expect(event.visible_to_user?(guest)).to be_truthy
+        expect(event.visible_to_user?(admin)).to be_truthy
+      end
+
+      context 'on public project with private issue tracker and merge requests' do
+        let(:project) { create(:project, :public, :issues_private, :merge_requests_private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+
+      context 'on private project' do
+        let(:project) { create(:project, :private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+    end
+
+    context 'project snippet note event' do
+      let(:target) { note_on_project_snippet }
+
+      it do
+        expect(event.visible_to_user?(nil)).to be_truthy
+        expect(event.visible_to_user?(non_member)).to be_truthy
+        expect(event.visible_to_user?(author)).to be_truthy
+        expect(event.visible_to_user?(member)).to be_truthy
+        expect(event.visible_to_user?(guest)).to be_truthy
+        expect(event.visible_to_user?(admin)).to be_truthy
+      end
+
+      context 'on public project with private snippets' do
+        let(:project) { create(:project, :public, :snippets_private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+
+          # Normally, we'd expect the author of a comment to be able to view it.
+          # However, this doesn't seem to be the case for comments on snippets.
+          expect(event.visible_to_user?(author)).to be_falsy
+
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+
+      context 'on private project' do
+        let(:project) { create(:project, :private) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+
+          # Normally, we'd expect the author of a comment to be able to view it.
+          # However, this doesn't seem to be the case for comments on snippets.
+          expect(event.visible_to_user?(author)).to be_falsy
+
+          expect(event.visible_to_user?(member)).to be_truthy
+          expect(event.visible_to_user?(guest)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+    end
+
+    context 'personal snippet note event' do
+      let(:target) { note_on_personal_snippet }
+
+      it do
+        expect(event.visible_to_user?(nil)).to be_truthy
+        expect(event.visible_to_user?(non_member)).to be_truthy
+        expect(event.visible_to_user?(author)).to be_truthy
+        expect(event.visible_to_user?(admin)).to be_truthy
+      end
+
+      context 'on internal snippet' do
+        let(:personal_snippet) { create(:personal_snippet, :internal, author: author) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_truthy
+          expect(event.visible_to_user?(author)).to be_truthy
+          expect(event.visible_to_user?(admin)).to be_truthy
+        end
+      end
+
+      context 'on private snippet' do
+        let(:personal_snippet) { create(:personal_snippet, :private, author: author) }
+
+        it do
+          expect(event.visible_to_user?(nil)).to be_falsy
+          expect(event.visible_to_user?(non_member)).to be_falsy
+          expect(event.visible_to_user?(author)).to be_truthy
+
+          # It is very unexpected that a private personal snippet is not visible
+          # to an instance administrator. This should be fixed in the future.
+          expect(event.visible_to_user?(admin)).to be_falsy
         end
       end
     end

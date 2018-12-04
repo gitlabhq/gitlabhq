@@ -69,7 +69,7 @@ The easiest way to check if a method has been instrumented is to check its
 source location. For example:
 
 ```ruby
-method = Rugged::TagCollection.instance_method(:[])
+method = Banzai::Renderer.method(:render)
 
 method.source_location
 ```
@@ -82,7 +82,7 @@ method (along with its source location), this is easier than running the above
 Ruby code. In case of the above snippet you'd run the following:
 
 ```
-$ Rugged::TagCollection#[]
+$ Banzai::Renderer.render
 ```
 
 This will print out something along the lines of:
@@ -117,11 +117,11 @@ The block is executed and the execution time is stored as a set of fields in the
 currently running transaction. If no transaction is present the block is yielded
 without measuring anything.
 
-3 values are measured for a block:
+Three values are measured for a block:
 
-1. The real time elapsed, stored in NAME_real_time.
-2. The CPU time elapsed, stored in NAME_cpu_time.
-3. The call count, stored in NAME_call_count.
+- The real time elapsed, stored in NAME_real_time.
+- The CPU time elapsed, stored in NAME_cpu_time.
+- The call count, stored in NAME_call_count.
 
 Both the real and CPU timings are measured in milliseconds.
 

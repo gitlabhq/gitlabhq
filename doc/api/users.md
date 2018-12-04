@@ -59,6 +59,9 @@ GET /users?active=true
 GET /users?blocked=true
 ```
 
+NOTE: **Note:**
+Username search is case insensitive.
+
 ### For admins
 
 ```
@@ -67,8 +70,8 @@ GET /users
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `order_by` | string | no | Return projects ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
-| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by` | string | no | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
+| `sort` | string | no | Return users sorted in `asc` or `desc` order. Default is `desc` |
 | `two_factor` | string | no | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 
 ```json
@@ -199,6 +202,7 @@ Parameters:
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -230,6 +234,7 @@ Parameters:
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -286,6 +291,7 @@ Parameters:
 - `provider` (optional)          - External provider name
 - `bio` (optional)               - User's biography
 - `location` (optional)          - User's location
+- `public_email` (optional)      - The public email of the user
 - `admin` (optional)             - User is admin - true or false (default)
 - `can_create_group` (optional)  - User can create groups - true or false
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
@@ -303,26 +309,27 @@ PUT /users/:id
 
 Parameters:
 
-- `email`                       - Email
-- `username`                    - Username
-- `name`                        - Name
-- `password`                    - Password
-- `skype`                       - Skype ID
-- `linkedin`                    - LinkedIn
-- `twitter`                     - Twitter account
-- `website_url`                 - Website URL
-- `organization`                - Organization name
-- `projects_limit`              - Limit projects each user can create
-- `extern_uid`                  - External UID
-- `provider`                    - External provider name
-- `bio`                         - User's biography
-- `location` (optional)         - User's location
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
+- `email`                          - Email
+- `username`                       - Username
+- `name`                           - Name
+- `password`                       - Password
+- `skype`                          - Skype ID
+- `linkedin`                       - LinkedIn
+- `twitter`                        - Twitter account
+- `website_url`                    - Website URL
+- `organization`                   - Organization name
+- `projects_limit`                 - Limit projects each user can create
+- `extern_uid`                     - External UID
+- `provider`                       - External provider name
+- `bio`                            - User's biography
+- `location` (optional)            - User's location
+- `public_email` (optional)        - The public email of the user
+- `admin` (optional)               - User is admin - true or false (default)
+- `can_create_group` (optional)    - User can create groups - true or false
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
-- `external` (optional)         - Flags the user as external - true or false(default)
-- `avatar` (optional)           - Image file for user's avatar
-- `private_profile` (optional)  - User's profile is private - true or false
+- `external` (optional)            - Flags the user as external - true or false(default)
+- `avatar` (optional)              - Image file for user's avatar
+- `private_profile` (optional)     - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -367,6 +374,7 @@ GET /user
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -415,6 +423,7 @@ GET /user
   "is_admin": false,
   "bio": null,
   "location": null,
+  "public_email": "john@example.com",
   "skype": "",
   "linkedin": "",
   "twitter": "",
@@ -552,7 +561,7 @@ Parameters:
 
 ## List SSH keys for user
 
-Get a list of a specified user's SSH keys. Available only for admin
+Get a list of a specified user's SSH keys.
 
 ```
 GET /users/:id/keys
@@ -1063,7 +1072,6 @@ Example response:
 [
    {
       "active" : true,
-      "token" : "EsMo-vhKfXGwX9RKrwiy",
       "scopes" : [
          "api"
       ],
@@ -1080,7 +1088,6 @@ Example response:
          "read_user"
       ],
       "revoked" : true,
-      "token" : "ZcZRpLeEuQRprkRjYydY",
       "name" : "mytoken2",
       "created_at" : "2017-03-17T17:19:28.697Z",
       "id" : 3,
@@ -1116,7 +1123,6 @@ Example response:
 ```json
 {
    "active" : true,
-   "token" : "EsMo-vhKfXGwX9RKrwiy",
    "scopes" : [
       "api"
    ],
@@ -1132,6 +1138,8 @@ Example response:
 ## Create an impersonation token
 
 > Requires admin permissions.
+
+> Token values are returned once. Make sure you save it - you won't be able to access it again.
 
 It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform

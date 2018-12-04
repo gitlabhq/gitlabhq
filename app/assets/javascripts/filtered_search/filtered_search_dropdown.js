@@ -85,12 +85,14 @@ export default class FilteredSearchDropdown {
   }
 
   dispatchInputEvent() {
-    // Propogate input change to FilteredSearchDropdownManager
+    // Propagate input change to FilteredSearchDropdownManager
     // so that it can determine which dropdowns to open
-    this.input.dispatchEvent(new CustomEvent('input', {
-      bubbles: true,
-      cancelable: true,
-    }));
+    this.input.dispatchEvent(
+      new CustomEvent('input', {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
   }
 
   dispatchFormSubmitEvent() {
@@ -114,7 +116,7 @@ export default class FilteredSearchDropdown {
 
       if (!data) return;
 
-      const results = data.map((o) => {
+      const results = data.map(o => {
         const updated = o;
         updated.droplab_hidden = false;
         return updated;

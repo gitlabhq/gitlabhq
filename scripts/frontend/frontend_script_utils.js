@@ -13,7 +13,8 @@ const execGitCmd = args =>
   exec('git', args)
     .trim()
     .toString()
-    .split('\n');
+    .split('\n')
+    .filter(Boolean);
 
 module.exports = {
   getStagedFiles: fileExtensionFilter => {

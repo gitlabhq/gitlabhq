@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a set of jobs.
         #
-        class Jobs < Node
-          include Validatable
+        class Jobs < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, type: Hash
@@ -32,7 +34,7 @@ module Gitlab
               @config.each do |name, config|
                 node = hidden?(name) ? Entry::Hidden : Entry::Job
 
-                factory = Entry::Factory.new(node)
+                factory = ::Gitlab::Config::Entry::Factory.new(node)
                   .value(config || {})
                   .metadata(name: name)
                   .with(key: name, parent: self,

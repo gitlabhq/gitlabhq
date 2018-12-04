@@ -8,6 +8,8 @@ class LegacyArtifactUploader < GitlabUploader
 
   storage_options Gitlab.config.artifacts
 
+  alias_method :upload, :model
+
   def store_dir
     dynamic_segment
   end

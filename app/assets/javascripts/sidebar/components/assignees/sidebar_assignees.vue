@@ -69,7 +69,8 @@ export default {
         this.loading = false;
       }
 
-      this.mediator.saveAssignees(this.field)
+      this.mediator
+        .saveAssignees(this.field)
         .then(setLoadingFalse.bind(this))
         .catch(() => {
           setLoadingFalse();

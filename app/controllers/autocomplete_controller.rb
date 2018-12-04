@@ -20,7 +20,7 @@ class AutocompleteController < ApplicationController
   end
 
   def user
-    user = UserFinder.new(params).execute!
+    user = UserFinder.new(params[:id]).find_by_id!
 
     render json: UserSerializer.new.represent(user)
   end

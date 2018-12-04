@@ -117,9 +117,12 @@ pipelines:
 - retryable_builds
 - cancelable_statuses
 - manual_actions
+- scheduled_actions
 - artifacts
 - pipeline_schedule
 - merge_requests
+- deployments
+- environments
 pipeline_variables:
 - pipeline
 stages:
@@ -197,6 +200,7 @@ project:
 - last_event
 - services
 - campfire_service
+- discord_service
 - drone_ci_service
 - emails_on_push_service
 - pipelines_email_service
@@ -228,9 +232,8 @@ project:
 - mock_ci_service
 - mock_deployment_service
 - mock_monitoring_service
-- forked_project_link
+- forked_to_members
 - forked_from_project
-- forked_project_links
 - forks
 - merge_requests
 - fork_merge_requests
@@ -244,6 +247,7 @@ project:
 - protected_branches
 - protected_tags
 - project_members
+- project_repository
 - users
 - requesters
 - deploy_keys_projects
@@ -299,6 +303,7 @@ project:
 - ci_cd_settings
 - import_export_upload
 - repository_languages
+- pool_repository
 award_emoji:
 - awardable
 - user

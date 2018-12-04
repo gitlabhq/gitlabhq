@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Peek
   module Views
     class Gitaly < View
@@ -21,7 +23,6 @@ module Peek
 
       def details
         ::Gitlab::GitalyClient.list_call_details
-          .values
           .sort { |a, b| b[:duration] <=> a[:duration] }
           .map(&method(:format_call_details))
       end

@@ -131,7 +131,6 @@ class GroupDescendantsFinder
       .with_selects_for_list(archived: params[:archived])
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def subgroups
     return Group.none unless Group.supports_nested_groups?
 
@@ -145,7 +144,6 @@ class GroupDescendantsFinder
 
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/Finder
   def direct_child_projects
@@ -180,7 +178,7 @@ class GroupDescendantsFinder
   end
 
   def sort
-    params.fetch(:sort, 'id_asc')
+    params.fetch(:sort, 'created_desc')
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

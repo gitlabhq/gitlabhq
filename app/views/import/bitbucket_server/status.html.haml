@@ -38,9 +38,10 @@
           %td
             = link_to project.full_path, [project.namespace.becomes(Namespace), project]
           %td.job-status
-            - if project.import_status == 'finished'
+            - case project.import_status
+            - when 'finished'
               = icon('check', text: 'Done')
-            - elsif project.import_status == 'started'
+            - when 'started'
               = icon('spin', text: 'started')
             - else
               = project.human_import_status_name
@@ -83,5 +84,7 @@
     and go through the
     = link_to 'import flow', status_import_bitbucket_server_path
     again.
+
+= paginate_without_count(@collection)
 
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_bitbucket_server_path}", import_path: "#{import_bitbucket_server_path}" } }

@@ -21,8 +21,12 @@ export default class MRWidgetService {
     return axios.delete(this.endpoints.sourceBranchPath);
   }
 
-  fetchDeployments() {
-    return axios.get(this.endpoints.ciEnvironmentsStatusPath);
+  fetchDeployments(targetParam) {
+    return axios.get(this.endpoints.ciEnvironmentsStatusPath, {
+      params: {
+        environment_target: targetParam,
+      },
+    });
   }
 
   poll() {

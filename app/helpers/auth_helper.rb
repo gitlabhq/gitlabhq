@@ -24,6 +24,23 @@ module AuthHelper
     Gitlab::Auth::OAuth::Provider.label_for(name)
   end
 
+  def form_based_provider_priority
+    ['crowd', /^ldap/, 'kerberos']
+  end
+
+  def form_based_provider_with_highest_priority
+    @form_based_provider_with_highest_priority ||= begin
+      form_based_provider_priority.each do |provider_regexp|
+        highest_priority = form_based_providers.find {  |provider| provider.match?(provider_regexp) }
+        break highest_priority unless highest_priority.nil?
+      end
+    end
+  end
+
+  def form_based_auth_provider_has_active_class?(provider)
+    form_based_provider_with_highest_priority == provider
+  end
+
   def form_based_provider?(name)
     [LDAP_PROVIDER, 'crowd'].any? { |pattern| pattern === name.to_s }
   end

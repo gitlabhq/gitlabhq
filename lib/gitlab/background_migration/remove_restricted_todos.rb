@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 # rubocop:disable Style/Documentation
+# rubocop:disable Metrics/ClassLength
 
 module Gitlab
   module BackgroundMigration
@@ -49,11 +50,14 @@ module Gitlab
       private
 
       def remove_non_members_todos(project_id)
-        Todo.where(project_id: project_id)
-          .where('user_id NOT IN (?)', authorized_users(project_id))
-          .each_batch(of: 5000) do |batch|
-            batch.delete_all
-          end
+        if Gitlab::Database.postgresql?
+          batch_remove_todos_cte(project_id)
+        else
+          unauthorized_project_todos(project_id)
+            .each_batch(of: 5000) do |batch|
+              batch.delete_all
+            end
+        end
       end
 
       def remove_confidential_issue_todos(project_id)
@@ -63,7 +67,7 @@ module Gitlab
           .where('access_level >= ?', 20)
 
         confidential_issues = Issue.select(:id, :author_id).where(confidential: true, project_id: project_id)
-        confidential_issues.each_batch(of: 100) do |batch|
+        confidential_issues.each_batch(of: 100, order_hint: :confidential) do |batch|
           batch.each do |issue|
             assigned_users = IssueAssignee.select(:user_id).where(issue_id: issue.id)
 
@@ -86,10 +90,13 @@ module Gitlab
 
           next if target_types.empty?
 
-          Todo.where(project_id: project_id)
-            .where('user_id NOT IN (?)', authorized_users(project_id))
-            .where(target_type: target_types)
-            .delete_all
+          if Gitlab::Database.postgresql?
+            batch_remove_todos_cte(project_id, target_types)
+          else
+            unauthorized_project_todos(project_id)
+              .where(target_type: target_types)
+              .delete_all
+          end
         end
       end
 
@@ -99,6 +106,65 @@ module Gitlab
 
       def authorized_users(project_id)
         ProjectAuthorization.select(:user_id).where(project_id: project_id)
+      end
+
+      def unauthorized_project_todos(project_id)
+        Todo.where(project_id: project_id)
+          .where('user_id NOT IN (?)', authorized_users(project_id))
+      end
+
+      def batch_remove_todos_cte(project_id, target_types = nil)
+        loop do
+          count = remove_todos_cte(project_id, target_types)
+
+          break if count == 0
+        end
+      end
+
+      def remove_todos_cte(project_id, target_types = nil)
+        sql = []
+        sql << with_all_todos_sql(project_id, target_types)
+        sql << as_deleted_sql
+        sql << "SELECT count(*) FROM deleted"
+
+        result = Todo.connection.exec_query(sql.join(' '))
+        result.rows[0][0].to_i
+      end
+
+      def with_all_todos_sql(project_id, target_types = nil)
+        if target_types
+          table = Arel::Table.new(:todos)
+          in_target = table[:target_type].in(target_types)
+          target_types_sql = " AND #{in_target.to_sql}"
+        end
+
+        <<-SQL
+          WITH all_todos AS (
+          	SELECT id
+          	FROM "todos"
+          	WHERE "todos"."project_id" = #{project_id}
+            AND (user_id NOT IN (
+              SELECT "project_authorizations"."user_id"
+              FROM "project_authorizations"
+              WHERE "project_authorizations"."project_id" = #{project_id})
+              #{target_types_sql}
+            )
+        	),
+        SQL
+      end
+
+      def as_deleted_sql
+        <<-SQL
+          deleted AS (
+            DELETE FROM todos
+            WHERE id IN (
+              SELECT id
+              FROM all_todos
+              LIMIT 5000
+            )
+            RETURNING id
+          )
+        SQL
       end
     end
   end

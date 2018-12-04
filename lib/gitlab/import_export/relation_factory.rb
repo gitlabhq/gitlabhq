@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class RelationFactory
@@ -86,13 +88,14 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when 'Ci::Pipeline'                  then setup_pipeline
         end
 
         update_user_references
         update_project_references
         update_group_references
         remove_duplicate_assignees
+
+        setup_pipeline if @relation_name == 'Ci::Pipeline'
 
         reset_tokens!
         remove_encrypted_attributes!
@@ -210,7 +213,7 @@ module Gitlab
 
       def update_note_for_missing_author(author_name)
         @relation_hash['note'] = '*Blank note*' if @relation_hash['note'].blank?
-        @relation_hash['note'] += missing_author_note(@relation_hash['updated_at'], author_name)
+        @relation_hash['note'] = "#{@relation_hash['note']}#{missing_author_note(@relation_hash['updated_at'], author_name)}"
       end
 
       def admin_user?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Notes < Grape::API
     include PaginationParams
@@ -14,7 +16,7 @@ module API
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
-      resource parent_type.pluralize.to_sym, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         noteables_str = noteable_type.to_s.underscore.pluralize
 
         desc "Get a list of #{noteable_type.to_s.downcase} notes" do

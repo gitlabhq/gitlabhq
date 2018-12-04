@@ -52,11 +52,7 @@ export default {
       class="circle-path"
       r="3"
     />
-    <path
-      :d="generatedAreaPath"
-      :fill="areaColor"
-      class="metric-area"
-    />
+    <path :d="generatedAreaPath" :fill="areaColor" class="metric-area" />
     <path
       :d="generatedLinePath"
       :stroke="lineColor"

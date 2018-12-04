@@ -92,9 +92,8 @@ where `example.io` is the domain under which GitLab Pages will be served
 and `192.0.2.1` is the IPv4 address of your GitLab instance and `2001::1` is the
 IPv6 address. If you don't have IPv6, you can omit the AAAA record.
 
-> **Note:**
-You should not use the GitLab domain to serve user pages. For more information
-see the [security section](#security).
+NOTE: **Note:**
+You should not use the GitLab domain to serve user pages. For more information see the [security section](#security).
 
 [wiki-wildcard-dns]: https://en.wikipedia.org/wiki/Wildcard_DNS_record
 
@@ -107,12 +106,13 @@ since that is needed in all configurations.
 
 ### Wildcard domains
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
->
-> ---
->
-> URL scheme: `http://page.example.io`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+
+---
+
+URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
 other setups as described below. Nginx will proxy all requests to the daemon.
@@ -126,18 +126,18 @@ The Pages daemon doesn't listen to the outside world.
 
 1. [Reconfigure GitLab][reconfigure]
 
-
 Watch the [video tutorial][video-admin] for this configuration.
 
 ### Wildcard domains with TLS support
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Wildcard TLS certificate
->
-> ---
->
-> URL scheme: `https://page.example.io`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+
+---
+
+URL scheme: `https://page.example.io`
 
 Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
@@ -168,13 +168,14 @@ you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Secondary IP
->
-> ---
->
-> URL scheme: `http://page.example.io` and `http://domain.com`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Secondary IP
+
+---
+
+URL scheme: `http://page.example.io` and `http://domain.com`
 
 In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -197,14 +198,15 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Wildcard TLS certificate
-> - Secondary IP
->
-> ---
->
-> URL scheme: `https://page.example.io` and `https://domain.com`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+- Secondary IP
+
+---
+
+URL scheme: `https://page.example.io` and `https://domain.com`
 
 In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -239,6 +241,35 @@ If your userbase is private or otherwise trusted, you can disable the
 verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
+
+### Access control
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
+
+GitLab Pages access control can be configured per-project, and allows access to a Pages
+site to be controlled based on a user's membership to that project.
+
+Access control works by registering the Pages daemon as an OAuth application
+with GitLab. Whenever a request to access a private Pages site is made by an
+unauthenticated user, the Pages daemon redirects the user to GitLab. If
+authentication is successful, the user is redirected back to Pages with a token,
+which is persisted in a cookie. The cookies are signed with a secret key, so
+tampering can be detected.
+
+Each request to view a resource in a private site is authenticated by Pages
+using that token. For each request it receives, it makes a request to the GitLab
+API to check that the user is authorized to read that site.
+
+Pages access control is disabled by default. To enable it:
+
+1. Enable it in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_pages['access_control'] = true
+    ```
+
+1. [Reconfigure GitLab][reconfigure].
+1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
 
 ## Activate verbose logging for daemon
 
@@ -320,12 +351,12 @@ latest previous version.
 
 ---
 
-**GitLab 8.17 ([documentation][8-17-docs])**
+**GitLab 8.17 ([documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-17-stable/doc/administration/pages/index.md))**
 
 - GitLab Pages were ported to Community Edition in GitLab 8.17.
 - Documentation was refactored to be more modular and easy to follow.
 
-**GitLab 8.5 ([documentation][8-5-docs])**
+**GitLab 8.5 ([documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md))**
 
 - In GitLab 8.5 we introduced the [gitlab-pages][] daemon which is now the
   recommended way to set up GitLab Pages.
@@ -334,13 +365,10 @@ latest previous version.
 - Custom CNAME and TLS certificates support.
 - Documentation was moved to one place.
 
-**GitLab 8.3 ([documentation][8-3-docs])**
+**GitLab 8.3 ([documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md))**
 
 - GitLab Pages feature was introduced.
 
-[8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
-[8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
-[8-17-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-17-stable-ce/doc/administration/pages/index.md
 [backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80

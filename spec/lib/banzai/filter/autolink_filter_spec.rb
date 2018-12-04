@@ -76,7 +76,7 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.at_css('a')['href']).to eq link
     end
 
-    it 'autolinks multiple occurences of smb' do
+    it 'autolinks multiple occurrences of smb' do
       link1 = 'smb:///Volumes/shared/foo.pdf'
       link2 = 'smb:///Volumes/shared/bar.pdf'
 

@@ -59,9 +59,9 @@ describe('Header CI Component', () => {
     it('should render status badge', () => {
       expect(vm.$el.querySelector('.ci-failed')).toBeDefined();
       expect(vm.$el.querySelector('.ci-status-icon-failed svg')).toBeDefined();
-      expect(
-        vm.$el.querySelector('.ci-failed').getAttribute('href'),
-      ).toEqual(props.status.details_path);
+      expect(vm.$el.querySelector('.ci-failed').getAttribute('href')).toEqual(
+        props.status.details_path,
+      );
     });
 
     it('should render item name and id', () => {
@@ -73,7 +73,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render user icon and name', () => {
-      expect(vm.$el.querySelector('.js-user-link').textContent.trim()).toEqual(props.user.name);
+      expect(vm.$el.querySelector('.js-user-link').innerText.trim()).toContain(props.user.name);
     });
 
     it('should render provided actions', () => {
@@ -84,7 +84,7 @@ describe('Header CI Component', () => {
       expect(vm.$el.querySelector('.link').getAttribute('href')).toEqual(props.actions[0].path);
     });
 
-    it('should show loading icon', (done) => {
+    it('should show loading icon', done => {
       vm.actions[0].isLoading = true;
 
       Vue.nextTick(() => {
@@ -94,7 +94,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render sidebar toggle button', () => {
-      expect(vm.$el.querySelector('.js-sidebar-build-toggle')).toBeDefined();
+      expect(vm.$el.querySelector('.js-sidebar-build-toggle')).not.toBeNull();
     });
   });
 

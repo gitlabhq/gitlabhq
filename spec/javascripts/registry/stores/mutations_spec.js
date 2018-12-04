@@ -18,6 +18,7 @@ describe('Mutations Registry Store', () => {
     it('should set the main endpoint', () => {
       const expectedState = Object.assign({}, mockState, { endpoint: 'foo' });
       mutations[types.SET_MAIN_ENDPOINT](mockState, 'foo');
+
       expect(mockState).toEqual(expectedState);
     });
   });
@@ -25,6 +26,7 @@ describe('Mutations Registry Store', () => {
   describe('SET_REPOS_LIST', () => {
     it('should set a parsed repository list', () => {
       mutations[types.SET_REPOS_LIST](mockState, reposServerResponse);
+
       expect(mockState.repos).toEqual(parsedReposServerResponse);
     });
   });
@@ -32,6 +34,7 @@ describe('Mutations Registry Store', () => {
   describe('TOGGLE_MAIN_LOADING', () => {
     it('should set a parsed repository list', () => {
       mutations[types.TOGGLE_MAIN_LOADING](mockState);
+
       expect(mockState.isLoading).toEqual(true);
     });
   });
@@ -75,6 +78,7 @@ describe('Mutations Registry Store', () => {
       });
 
       mutations[types.TOGGLE_REGISTRY_LIST_LOADING](mockState, mockState.repos[0]);
+
       expect(mockState.repos[0].isLoading).toEqual(true);
     });
   });

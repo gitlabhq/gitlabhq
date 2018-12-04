@@ -114,33 +114,6 @@ describe 'Commits' do
             expect(page).to have_content 'canceled'
           end
         end
-
-        describe '.gitlab-ci.yml not found warning' do
-          context 'ci builds enabled' do
-            it "does not show warning" do
-              visit pipeline_path(pipeline)
-              expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-            end
-
-            it 'shows warning' do
-              stub_ci_pipeline_yaml_file(nil)
-              visit pipeline_path(pipeline)
-              expect(page).to have_content '.gitlab-ci.yml not found in this commit'
-            end
-          end
-
-          context 'ci builds disabled' do
-            before do
-              stub_ci_builds_disabled
-              stub_ci_pipeline_yaml_file(nil)
-              visit pipeline_path(pipeline)
-            end
-
-            it 'does not show warning' do
-              expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-            end
-          end
-        end
       end
 
       context "when logged as reporter" do
@@ -179,6 +152,39 @@ describe 'Commits' do
 
           expect(page).not_to have_link('Cancel running')
           expect(page).not_to have_link('Retry')
+        end
+      end
+    end
+
+    describe '.gitlab-ci.yml not found warning' do
+      before do
+        project.add_reporter(user)
+      end
+
+      context 'ci builds enabled' do
+        it 'does not show warning' do
+          visit pipeline_path(pipeline)
+
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
+        end
+
+        it 'shows warning' do
+          stub_ci_pipeline_yaml_file(nil)
+
+          visit pipeline_path(pipeline)
+
+          expect(page).to have_content '.gitlab-ci.yml not found in this commit'
+        end
+      end
+
+      context 'ci builds disabled' do
+        it 'does not show warning' do
+          stub_ci_builds_disabled
+          stub_ci_pipeline_yaml_file(nil)
+
+          visit pipeline_path(pipeline)
+
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
         end
       end
     end

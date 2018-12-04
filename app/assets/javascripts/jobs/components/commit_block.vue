@@ -1,64 +1,54 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   components: {
     ClipboardButton,
+    GlLink,
   },
   props: {
-    pipelineShortSha: {
-      type: String,
+    commit: {
+      type: Object,
       required: true,
     },
-    pipelineShaPath: {
-      type: String,
-      required: true,
-    },
-    mergeRequestReference: {
-      type: String,
+    mergeRequest: {
+      type: Object,
       required: false,
       default: null,
     },
-    mergeRequestPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    gitCommitTitlte: {
-      type: String,
+    isLastBlock: {
+      type: Boolean,
       required: true,
     },
   },
 };
 </script>
 <template>
-  <div class="block">
+  <div
+    :class="{
+      'block-last': isLastBlock,
+      block: !isLastBlock,
+    }"
+  >
     <p>
       {{ __('Commit') }}
 
-      <a
-        :href="pipelineShaPath"
-        class="js-commit-sha commit-sha link-commit"
-      >
-        {{ pipelineShortSha }}
-      </a>
+      <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">{{
+        commit.short_id
+      }}</gl-link>
 
       <clipboard-button
-        :text="pipelineShortSha"
+        :text="commit.short_id"
         :title="__('Copy commit SHA to clipboard')"
+        css-class="btn btn-clipboard btn-transparent"
       />
 
-      <a
-        v-if="mergeRequestPath && mergeRequestReference"
-        :href="mergeRequestPath"
-        class="js-link-commit link-commit"
+      <gl-link v-if="mergeRequest" :href="mergeRequest.path" class="js-link-commit link-commit"
+        >!{{ mergeRequest.iid }}</gl-link
       >
-        {{ mergeRequestReference }}
-      </a>
     </p>
 
-    <p class="build-light-text append-bottom-0">
-      {{ gitCommitTitlte }}
-    </p>
+    <p class="build-light-text append-bottom-0">{{ commit.title }}</p>
   </div>
 </template>

@@ -46,19 +46,21 @@ Example of response
       "status": "success",
       "tag": false,
       "user": {
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "bio": null,
-        "created_at": "2016-08-11T07:09:20.351Z",
         "id": 1,
-        "linkedin": "",
-        "location": null,
         "name": "Administrator",
-        "skype": "",
-        "state": "active",
-        "twitter": "",
         "username": "root",
-        "web_url": "http://localhost:3000/root",
-        "website_url": ""
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "http://gitlab.dev/root",
+        "created_at": "2015-12-21T13:14:24.077Z",
+        "bio": null,
+        "location": null,
+        "public_email": "",
+        "skype": "",
+        "linkedin": "",
+        "twitter": "",
+        "website_url": "",
+        "organization": ""
       }
     },
     "environment": {
@@ -103,19 +105,21 @@ Example of response
       "status": "success",
       "tag": false,
       "user": {
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "bio": null,
-        "created_at": "2016-08-11T07:09:20.351Z",
         "id": 1,
-        "linkedin": "",
-        "location": null,
         "name": "Administrator",
-        "skype": "",
-        "state": "active",
-        "twitter": "",
         "username": "root",
-        "web_url": "http://localhost:3000/root",
-        "website_url": ""
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "http://gitlab.dev/root",
+        "created_at": "2015-12-21T13:14:24.077Z",
+        "bio": null,
+        "location": null,
+        "public_email": "",
+        "skype": "",
+        "linkedin": "",
+        "twitter": "",
+        "website_url": "",
+        "organization": ""
       }
     },
     "environment": {
@@ -188,19 +192,20 @@ Example of response
     "started_at": null,
     "finished_at": "2016-08-11T11:32:35.145Z",
     "user": {
+      "id": 1,
       "name": "Administrator",
       "username": "root",
-      "id": 1,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-      "web_url": "http://localhost:3000/root",
-      "created_at": "2016-08-11T07:09:20.351Z",
+      "web_url": "http://gitlab.dev/root",
+      "created_at": "2015-12-21T13:14:24.077Z",
       "bio": null,
       "location": null,
       "skype": "",
       "linkedin": "",
       "twitter": "",
-      "website_url": ""
+      "website_url": "",
+      "organization": ""
     },
     "commit": {
       "id": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",

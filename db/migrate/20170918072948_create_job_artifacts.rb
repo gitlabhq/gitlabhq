@@ -1,4 +1,4 @@
-class CreateJobArtifacts < ActiveRecord::Migration
+class CreateJobArtifacts < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

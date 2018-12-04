@@ -298,6 +298,14 @@ module API
           desc: 'Title'
         }
       ],
+      'discord' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'Discord webhook. e.g. https://discordapp.com/api/webhooks/…'
+        }
+      ],
       'drone-ci' => [
         {
           required: true,
@@ -677,6 +685,7 @@ module API
       BuildkiteService,
       CampfireService,
       CustomIssueTrackerService,
+      DiscordService,
       DroneCiService,
       EmailsOnPushService,
       ExternalWikiService,
@@ -754,7 +763,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -833,7 +842,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end

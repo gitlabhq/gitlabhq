@@ -112,7 +112,7 @@ describe IssuePolicy do
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
-    let(:issue_locked) { create(:issue, project: project, discussion_locked: true, author: author, assignees: [assignee]) }
+    let(:issue_locked) { create(:issue, :locked, project: project, author: author, assignees: [assignee]) }
 
     before do
       project.add_guest(guest)

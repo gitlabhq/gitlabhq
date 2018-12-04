@@ -1,4 +1,4 @@
-class CreateUserSyncedAttributesMetadata < ActiveRecord::Migration
+class CreateUserSyncedAttributesMetadata < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

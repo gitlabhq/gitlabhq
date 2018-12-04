@@ -96,7 +96,7 @@ export default {
   <div
     :class="{
       'is-compact': isCompact,
-      'is-full': !isCompact
+      'is-full': !isCompact,
     }"
     :style="{
       height: componentHeight ? `${componentHeight}px` : null,
@@ -109,45 +109,31 @@ export default {
       @enter="enterTransition"
       @after-enter="afterEndTransition"
     >
-      <div
-        v-if="isCompact"
-        ref="compactEl"
-        class="commit-form-compact"
-      >
+      <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
         <button
           :disabled="!hasChanges"
           type="button"
-          class="btn btn-primary btn-sm btn-block"
+          class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
           @click="toggleIsSmall"
         >
           {{ __('Commit…') }}
         </button>
-        <p
-          class="text-center"
-          v-html="overviewText"
-        ></p>
+        <p class="text-center" v-html="overviewText"></p>
       </div>
-      <form
-        v-if="!isCompact"
-        ref="formEl"
-        @submit.prevent.stop="commitChanges"
-      >
-        <transition name="fade">
-          <success-message
-            v-show="lastCommitMsg"
-          />
-        </transition>
+      <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commitChanges">
+        <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>
         <commit-message-field
           :text="commitMessage"
           :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
+          @submit="commitChanges"
         />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button
             :loading="submitCommitLoading"
             :label="commitButtonText"
-            container-class="btn btn-success btn-sm float-left"
+            container-class="btn btn-success btn-sm float-left qa-commit-button"
             @click="commitChanges"
           />
           <button

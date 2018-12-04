@@ -1,9 +1,10 @@
 <script>
 import Timeago from 'timeago.js';
 import _ from 'underscore';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { humanize } from '~/lib/utils/text_utility';
+import Icon from '~/vue_shared/components/icon.vue';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -12,9 +13,10 @@ import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
 /**
- * Envrionment Item Component
+ * Environment Item Component
  *
  * Renders a table row for each environment.
  */
@@ -24,6 +26,7 @@ export default {
   components: {
     UserAvatarLink,
     CommitComponent,
+    Icon,
     ActionsComponent,
     ExternalUrlComponent,
     StopComponent,
@@ -33,7 +36,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -58,7 +61,7 @@ export default {
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *
@@ -69,21 +72,6 @@ export default {
         return true;
       }
       return false;
-    },
-
-    /**
-     * Verifies is the given environment has manual actions.
-     * Used to verify if we should render them or nor.
-     *
-     * @returns {Boolean|Undefined}
-     */
-    hasManualActions() {
-      return (
-        this.model &&
-        this.model.last_deployment &&
-        this.model.last_deployment.manual_actions &&
-        this.model.last_deployment.manual_actions.length > 0
-      );
     },
 
     /**
@@ -152,23 +140,20 @@ export default {
       return '';
     },
 
-    /**
-     * Returns the manual actions with the name parsed.
-     *
-     * @returns {Array.<Object>|Undefined}
-     */
-    manualActions() {
-      if (this.hasManualActions) {
-        return this.model.last_deployment.manual_actions.map(action => {
-          const parsedAction = {
-            name: humanize(action.name),
-            play_path: action.play_path,
-            playable: action.playable,
-          };
-          return parsedAction;
-        });
+    actions() {
+      if (!this.model || !this.model.last_deployment || !this.canCreateDeployment) {
+        return [];
       }
-      return [];
+
+      const { manualActions, scheduledActions } = convertObjectPropsToCamelCase(
+        this.model.last_deployment,
+        { deep: true },
+      );
+      const combinedActions = (manualActions || []).concat(scheduledActions || []);
+      return combinedActions.map(action => ({
+        ...action,
+        name: humanize(action.name),
+      }));
     },
 
     /**
@@ -441,12 +426,16 @@ export default {
 
     displayEnvironmentActions() {
       return (
-        this.hasManualActions ||
+        this.actions.length > 0 ||
         this.externalURL ||
         this.monitoringUrl ||
         this.canStopEnvironment ||
         this.canRetry
       );
+    },
+
+    folderIconName() {
+      return this.model.isOpen ? 'chevron-down' : 'chevron-right';
     },
   },
 
@@ -464,64 +453,28 @@ export default {
       'folder-row': model.isFolder,
     }"
     class="gl-responsive-table-row"
-    role="row">
+    role="row"
+  >
     <div
-      class="table-section section-wrap section-15"
+      v-gl-tooltip
+      :title="model.name"
+      class="table-section section-wrap section-15 text-truncate"
       role="gridcell"
     >
-      <div
-        v-if="!model.isFolder"
-        class="table-mobile-header"
-        role="rowheader"
-      >
-        {{ s__("Environments|Environment") }}
+      <div v-if="!model.isFolder" class="table-mobile-header" role="rowheader">
+        {{ s__('Environments|Environment') }}
       </div>
-      <span
-        v-if="!model.isFolder"
-        class="environment-name table-mobile-content">
-        <a
-          v-tooltip
-          :href="environmentPath"
-          :title="model.name"
-        >
-          {{ model.name }}
-        </a>
+      <span v-if="!model.isFolder" class="environment-name table-mobile-content">
+        <a class="qa-environment-link" :href="environmentPath"> {{ model.name }} </a>
       </span>
-      <span
-        v-else
-        class="folder-name"
-        role="button"
-        @click="onClickFolder">
+      <span v-else class="folder-name" role="button" @click="onClickFolder">
+        <icon :name="folderIconName" class="folder-icon" />
 
-        <span class="folder-icon">
-          <i
-            v-show="model.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-show="!model.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
+        <icon name="folder" class="folder-icon" />
 
-        <span class="folder-icon">
-          <i
-            class="fa fa-folder"
-            aria-hidden="true">
-          </i>
-        </span>
+        <span> {{ model.folderName }} </span>
 
-        <span>
-          {{ model.folderName }}
-        </span>
-
-        <span class="badge badge-pill">
-          {{ model.size }}
-        </span>
+        <span class="badge badge-pill"> {{ model.size }} </span>
       </span>
     </div>
 
@@ -529,9 +482,7 @@ export default {
       class="table-section section-10 deployment-column d-none d-sm-none d-md-block"
       role="gridcell"
     >
-      <span v-if="shouldRenderDeploymentID">
-        {{ deploymentInternalId }}
-      </span>
+      <span v-if="shouldRenderDeploymentID"> {{ deploymentInternalId }} </span>
 
       <span v-if="!model.isFolder && deploymentHasUser">
         by
@@ -545,61 +496,32 @@ export default {
       </span>
     </div>
 
-    <div
-      class="table-section section-15 d-none d-sm-none d-md-block"
-      role="gridcell"
-    >
-      <a
-        v-if="shouldRenderBuildName"
-        :href="buildPath"
-        class="build-link flex-truncate-parent"
-      >
+    <div class="table-section section-15 d-none d-sm-none d-md-block" role="gridcell">
+      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link flex-truncate-parent">
         <span class="flex-truncate-child">{{ buildName }}</span>
       </a>
     </div>
 
-    <div
-      v-if="!model.isFolder"
-      class="table-section section-20"
-      role="gridcell"
-    >
-      <div
-        role="rowheader"
-        class="table-mobile-header"
-      >
-        {{ s__("Environments|Commit") }}
-      </div>
-      <div
-        v-if="hasLastDeploymentKey"
-        class="js-commit-component table-mobile-content">
+    <div v-if="!model.isFolder" class="table-section section-20" role="gridcell">
+      <div role="rowheader" class="table-mobile-header">{{ s__('Environments|Commit') }}</div>
+      <div v-if="hasLastDeploymentKey" class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
           :commit-url="commitUrl"
           :short-sha="commitShortSha"
           :title="commitTitle"
-          :author="commitAuthor"/>
+          :author="commitAuthor"
+        />
       </div>
-      <div
-        v-if="!hasLastDeploymentKey"
-        class="commit-title table-mobile-content">
-        {{ s__("Environments|No deployments yet") }}
+      <div v-if="!hasLastDeploymentKey" class="commit-title table-mobile-content">
+        {{ s__('Environments|No deployments yet') }}
       </div>
     </div>
 
-    <div
-      v-if="!model.isFolder"
-      class="table-section section-10"
-      role="gridcell"
-    >
-      <div
-        role="rowheader"
-        class="table-mobile-header">
-        {{ s__("Environments|Updated") }}
-      </div>
-      <span
-        v-if="canShowDate"
-        class="environment-created-date-timeago table-mobile-content">
+    <div v-if="!model.isFolder" class="table-section section-10" role="gridcell">
+      <div role="rowheader" class="table-mobile-header">{{ s__('Environments|Updated') }}</div>
+      <span v-if="canShowDate" class="environment-created-date-timeago table-mobile-content">
         {{ createdDate }}
       </span>
     </div>
@@ -607,12 +529,9 @@ export default {
     <div
       v-if="!model.isFolder && displayEnvironmentActions"
       class="table-section section-30 table-button-footer"
-      role="gridcell">
-
-      <div
-        class="btn-group table-action-buttons"
-        role="group">
-
+      role="gridcell"
+    >
+      <div class="btn-group table-action-buttons" role="group">
         <external-url-component
           v-if="externalURL && canReadEnvironment"
           :external-url="externalURL"
@@ -623,10 +542,7 @@ export default {
           :monitoring-url="monitoringUrl"
         />
 
-        <actions-component
-          v-if="hasManualActions && canCreateDeployment"
-          :actions="manualActions"
-        />
+        <actions-component v-if="actions.length > 0" :actions="actions" />
 
         <terminal-button-component
           v-if="model && model.terminal_path"
@@ -639,10 +555,7 @@ export default {
           :retry-url="retryUrl"
         />
 
-        <stop-component
-          v-if="canStopEnvironment"
-          :environment="model"
-        />
+        <stop-component v-if="canStopEnvironment" :environment="model" />
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class MoveSlackServiceToWebhook < ActiveRecord::Migration
+class MoveSlackServiceToWebhook < ActiveRecord::Migration[4.2]
 
   DOWNTIME = true
   DOWNTIME_REASON = 'Move old fields "token" and "subdomain" to one single field "webhook"'

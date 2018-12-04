@@ -7,6 +7,7 @@ describe 'List issue resource label events', :js do
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }
   let!(:label)    { create(:label, project: project, title: 'foo') }
+  let!(:user_status) { create(:user_status, user: user) }
 
   context 'when user displays the issue' do
     let!(:note)     { create(:note_on_issue, author: user, project: project, noteable: issue, note: 'some note') }
@@ -21,6 +22,12 @@ describe 'List issue resource label events', :js do
       page.within('#notes') do
         expect(find("#note_#{note.id}")).to have_content 'some note'
         expect(find("#note_#{event.discussion_id}")).to have_content 'added foo label'
+      end
+    end
+
+    it 'shows the user status on the system note for the label' do
+      page.within("#note_#{event.discussion_id}") do
+        expect(page).to show_user_status user_status
       end
     end
   end

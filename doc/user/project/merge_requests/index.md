@@ -9,7 +9,7 @@ collaborate with other people on the same project.
 
 A Merge Request (**MR**) is the basis of GitLab as a code collaboration
 and version control platform.
-Is it simple as the name implies: a _request_ to _merge_ one branch into another.
+It is as simple as the name implies: a _request_ to _merge_ one branch into another.
 
 With GitLab merge requests, you can:
 
@@ -141,6 +141,15 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
 
+## Commenting on any file line in merge requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13950) in GitLab 11.5.
+
+GitLab provides a way of leaving comments in any part of the file being changed
+in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
+
+![Comment on any diff file line](img/comment-on-any-diff-line.png)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
@@ -166,9 +175,26 @@ administrator to do so.
 
 ![Create new merge requests by email](img/create_from_email.png)
 
+### Adding patches when creating a merge request via e-mail
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22723) in GitLab 11.5.
+
+You can add commits to the merge request being created by adding
+patches as attachments to the email. All attachments with a filename
+ending in `.patch` will be considered patches and they will be processed
+ordered by name.
+
+The combined size of the patches can be 2MB.
+
+If the source branch from the subject does not exist, it will be
+created from the repository's HEAD or the specified target branch to
+apply the patches. The target branch can be specified using the
+[`/target_branch` quick action](../quick_actions.md). If the source
+branch already exists, the patches will be applied on top of it.
+
 ## Find the merge request that introduced a change
 
-> **Note**: this feature was [implemented in GitLab 10.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383) in GitLab 10.5.
 
 When viewing the commit details page, GitLab will link to the merge request (or
 merge requests, if it's in more than one) containing that commit.
@@ -205,9 +231,10 @@ have been marked as a **Work In Progress**.
 
 ## Merge request diff file navigation
 
-The diff view has a persistent dropdown for file navigation. As you scroll through
-diffs with a large number of files and/or many changes in those files, you can
-easily jump to any changed file through the dropdown navigation.
+When reviewing changes in the **Changes** tab the diff can be navigated using
+the file tree or file list. As you scroll through large diffs with many
+changes, you can quickly jump to any changed file using the file tree or file
+list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
@@ -232,9 +259,66 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
 
+## Pipeline status in merge requests
+
+If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
+you will be able to see:
+
+- Both pre and post-merge pipelines and the environment information if any.
+- Which deployments are in progress.
+
+If there's an [environment](../../../ci/environments.md) and the application is
+successfully deployed to it, the deployed environment and the link to the
+Review App will be shown as well.
+
+### Post-merge pipeline status
+
+When a merge request is merged, you can see the post-merge pipeline status of
+the branch the merge request was merged into. For example, when a merge request
+is merged into the master branch and then triggers a deployment to the staging
+environment.
+
+Deployments that are ongoing will be shown, as well as the deploying/deployed state
+for environments. If it's the first time the branch is deployed, the link
+will return a `404` error until done. During the deployment, the stop button will
+be disabled. If the pipeline fails to deploy, the deployment info will be hidden.
+
+![Merge request pipeline](img/merge_request_pipeline.png)
+
+For more information, [read about pipelines](../../../ci/pipelines.md).
+
 ## Bulk editing merge requests
 
 Find out about [bulk editing merge requests](../../project/bulk_editing.md).
+
+## Troubleshooting
+
+Sometimes things don't go as expected in a merge request, here are some
+troubleshooting steps.
+
+### Merge request cannot retrieve the pipeline status
+
+This can occur for one of two reasons:
+
+* Sidekiq doesn't pick up the changes fast enough
+* Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+
+#### Sidekiq
+
+Sidekiq didn't process the CI state change fast enough. Please wait a few
+seconds and the status will update automatically.
+
+#### Bug
+
+Merge Request pipeline statuses can't be retrieved when the following occurs:
+
+1. A Merge Requst is created
+1. The Merge Request is closed
+1. Changes are made in the project
+1. The Merge Request is reopened
+
+To enable the pipeline status to be properly retrieved, close and reopen the
+Merge Request again.
 
 ## Tips
 

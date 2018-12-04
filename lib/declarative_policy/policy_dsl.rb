@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # The return value of a rule { ... } declaration.
   # Can call back to register rules with the containing

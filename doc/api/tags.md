@@ -134,7 +134,7 @@ Parameters:
     "description": "Amazing release. Wow"
   },
   "name": "v1.0.0",
-  "target: "2695effb5807a22ff3d138d593fd856244e155e7",
+  "target": "2695effb5807a22ff3d138d593fd856244e155e7",
   "message": null
 }
 ```

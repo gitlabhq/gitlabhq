@@ -1,4 +1,4 @@
-class RemoveNotificationSettingsForDeletedProjects < ActiveRecord::Migration
+class RemoveNotificationSettingsForDeletedProjects < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       DELETE FROM notification_settings

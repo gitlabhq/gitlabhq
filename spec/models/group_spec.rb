@@ -19,6 +19,8 @@ describe Group do
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
     it { is_expected.to have_many(:badges).class_name('GroupBadge') }
+    it { is_expected.to have_many(:cluster_groups).class_name('Clusters::Group') }
+    it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -169,22 +171,42 @@ describe Group do
     end
   end
 
-  describe '.visible_to_user' do
-    let!(:group) { create(:group) }
-    let!(:user)  { create(:user) }
+  describe '.public_or_visible_to_user' do
+    let!(:private_group)  { create(:group, :private)  }
+    let!(:internal_group) { create(:group, :internal) }
 
-    subject { described_class.visible_to_user(user) }
+    subject { described_class.public_or_visible_to_user(user) }
 
-    describe 'when the user has access to a group' do
-      before do
-        group.add_user(user, Gitlab::Access::MAINTAINER)
-      end
+    context 'when user is nil' do
+      let!(:user) { nil }
 
-      it { is_expected.to eq([group]) }
+      it { is_expected.to match_array([group]) }
     end
 
-    describe 'when the user does not have access to any groups' do
-      it { is_expected.to eq([]) }
+    context 'when user' do
+      let!(:user) { create(:user) }
+
+      context 'when user does not have access to any private group' do
+        it { is_expected.to match_array([internal_group, group]) }
+      end
+
+      context 'when user is a member of private group' do
+        before do
+          private_group.add_user(user, Gitlab::Access::DEVELOPER)
+        end
+
+        it { is_expected.to match_array([private_group, internal_group, group]) }
+      end
+
+      context 'when user is a member of private subgroup', :postgresql do
+        let!(:private_subgroup) { create(:group, :private, parent: private_group) }
+
+        before do
+          private_subgroup.add_user(user, Gitlab::Access::DEVELOPER)
+        end
+
+        it { is_expected.to match_array([private_subgroup, internal_group, group]) }
+      end
     end
   end
 
@@ -631,10 +653,10 @@ describe Group do
     end
   end
 
-  describe '#secret_variables_for' do
+  describe '#ci_variables_for' do
     let(:project) { create(:project, group: group) }
 
-    let!(:secret_variable) do
+    let!(:ci_variable) do
       create(:ci_group_variable, value: 'secret', group: group)
     end
 
@@ -642,11 +664,11 @@ describe Group do
       create(:ci_group_variable, :protected, value: 'protected', group: group)
     end
 
-    subject { group.secret_variables_for('ref', project) }
+    subject { group.ci_variables_for('ref', project) }
 
     shared_examples 'ref is protected' do
       it 'contains all the variables' do
-        is_expected.to contain_exactly(secret_variable, protected_variable)
+        is_expected.to contain_exactly(ci_variable, protected_variable)
       end
     end
 
@@ -656,8 +678,8 @@ describe Group do
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
 
-      it 'contains only the secret variables' do
-        is_expected.to contain_exactly(secret_variable)
+      it 'contains only the CI variables' do
+        is_expected.to contain_exactly(ci_variable)
       end
     end
 
@@ -690,9 +712,9 @@ describe Group do
       end
 
       it 'returns all variables belong to the group and parent groups' do
-        expected_array1 = [protected_variable, secret_variable]
+        expected_array1 = [protected_variable, ci_variable]
         expected_array2 = [variable_child, variable_child_2, variable_child_3]
-        got_array = group_child_3.secret_variables_for('ref', project).to_a
+        got_array = group_child_3.ci_variables_for('ref', project).to_a
 
         expect(got_array.shift(2)).to contain_exactly(*expected_array1)
         expect(got_array).to eq(expected_array2)

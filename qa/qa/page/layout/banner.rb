@@ -3,7 +3,7 @@ module QA
     module Layout
       class Banner < Page::Base
         view 'app/views/layouts/header/_read_only_banner.html.haml' do
-          element :flash_notice, ".flash-notice"
+          element :flash_notice, ".flash-notice" # rubocop:disable QA/ElementWithPattern
         end
 
         def has_notice?(message)

@@ -30,9 +30,7 @@ export default {
   },
   computed: {
     placeholderText() {
-      return this.tokens.length
-        ? ''
-        : this.placeholder;
+      return this.tokens.length ? '' : this.placeholder;
     },
   },
   watch: {
@@ -74,31 +72,16 @@ export default {
   <div class="filtered-search-wrapper">
     <div class="filtered-search-box">
       <div class="tokens-container list-unstyled">
-        <div
-          v-for="token in tokens"
-          :key="token.label"
-          class="filtered-search-token"
-        >
+        <div v-for="token in tokens" :key="token.label" class="filtered-search-token">
           <button
             class="selectable btn-blank"
             type="button"
-            @click.stop="removeToken(token)"
-            @keyup.delete="removeToken(token)"
+            @click.stop="removeToken(token);"
+            @keyup.delete="removeToken(token);"
           >
-            <div
-              class="value-container rounded"
-            >
-              <div
-                class="value"
-              >{{ token.label }}</div>
-              <div
-                class="remove-token inverted"
-              >
-                <icon
-                  :size="10"
-                  name="close"
-                />
-              </div>
+            <div class="value-container rounded">
+              <div class="value">{{ token.label }}</div>
+              <div class="remove-token inverted"><icon :size="10" name="close" /></div>
             </div>
           </button>
         </div>

@@ -93,7 +93,9 @@ export default class SmartInterval {
   destroy() {
     this.cancel();
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    $(document).off('visibilitychange').off('beforeunload');
+    $(document)
+      .off('visibilitychange')
+      .off('beforeunload');
   }
 
   /* private */
@@ -111,11 +113,12 @@ export default class SmartInterval {
 
   triggerCallback() {
     this.isLoading = true;
-    this.cfg.callback()
+    this.cfg
+      .callback()
       .then(() => {
         this.isLoading = false;
       })
-      .catch((err) => {
+      .catch(err => {
         this.isLoading = false;
         throw err;
       });
@@ -134,9 +137,9 @@ export default class SmartInterval {
 
   handleVisibilityChange(e) {
     this.state.pageVisibility = e.target.visibilityState;
-    const intervalAction = this.isPageVisible() ?
-      this.onVisibilityVisible :
-      this.onVisibilityHidden;
+    const intervalAction = this.isPageVisible()
+      ? this.onVisibilityVisible
+      : this.onVisibilityHidden;
 
     intervalAction.apply(this);
   }
@@ -162,7 +165,9 @@ export default class SmartInterval {
     this.setCurrentInterval(nextInterval);
   }
 
-  isPageVisible() { return this.state.pageVisibility === 'visible'; }
+  isPageVisible() {
+    return this.state.pageVisibility === 'visible';
+  }
 
   stopTimer() {
     const { state } = this;
@@ -170,4 +175,3 @@ export default class SmartInterval {
     state.intervalId = window.clearInterval(state.intervalId);
   }
 }
-

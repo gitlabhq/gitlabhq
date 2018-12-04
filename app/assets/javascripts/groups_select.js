@@ -10,20 +10,25 @@ export default function groupsSelect() {
     const $select = $(this);
     const allAvailable = $select.data('allAvailable');
     const skipGroups = $select.data('skipGroups') || [];
+    const parentGroupID = $select.data('parentId');
+    const groupsPath = parentGroupID
+      ? Api.subgroupsPath.replace(':id', parentGroupID)
+      : Api.groupsPath;
+
     $select.select2({
       placeholder: 'Search for a group',
       allowClear: $select.hasClass('allowClear'),
       multiple: $select.hasClass('multiselect'),
       minimumInputLength: 0,
       ajax: {
-        url: Api.buildUrl(Api.groupsPath),
+        url: Api.buildUrl(groupsPath),
         dataType: 'json',
         quietMillis: 250,
         transport(params) {
           axios[params.type.toLowerCase()](params.url, {
             params: params.data,
           })
-            .then((res) => {
+            .then(res => {
               const results = res.data || [];
               const headers = normalizeHeaders(res.headers);
               const currentPage = parseInt(headers['X-PAGE'], 10) || 0;
@@ -36,7 +41,8 @@ export default function groupsSelect() {
                   more,
                 },
               });
-            }).catch(params.error);
+            })
+            .catch(params.error);
         },
         data(search, page) {
           return {
@@ -68,7 +74,9 @@ export default function groupsSelect() {
         }
       },
       formatResult(object) {
-        return `<div class='group-result'> <div class='group-name'>${object.full_name}</div> <div class='group-path'>${object.full_path}</div> </div>`;
+        return `<div class='group-result'> <div class='group-name'>${
+          object.full_name
+        }</div> <div class='group-path'>${object.full_path}</div> </div>`;
       },
       formatSelection(object) {
         return object.full_name;

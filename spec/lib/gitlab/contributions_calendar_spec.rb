@@ -135,7 +135,7 @@ describe Gitlab::ContributionsCalendar do
       expect(calendar(contributor).events_by_date(today)).to contain_exactly(e1, e2, e3)
     end
 
-    context 'when the user cannot read read cross project' do
+    context 'when the user cannot read cross project' do
       before do
         allow(Ability).to receive(:allowed?).and_call_original
         expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }

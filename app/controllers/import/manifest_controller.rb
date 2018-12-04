@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::ManifestController < Import::BaseController
   before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_import_enabled

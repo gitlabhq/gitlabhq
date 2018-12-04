@@ -185,7 +185,17 @@ ul.related-merge-requests > li {
 }
 
 .new-branch-col {
-  padding-top: 10px;
+  font-size: 0;
+
+  .discussion-filter-container {
+    &:not(:only-child) {
+      margin-right: $gl-padding-8;
+    }
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
+  }
 }
 
 .create-mr-dropdown-wrap {
@@ -205,6 +215,10 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
   }
 
   .js-create-merge-request {
@@ -251,7 +265,6 @@ ul.related-merge-requests > li {
 
     .new-branch-col {
       padding-top: 0;
-      text-align: right;
       align-self: center;
     }
 
@@ -260,5 +273,11 @@ ul.related-merge-requests > li {
         display: inline-flex;
       }
     }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .new-branch-col {
+    text-align: right;
   }
 }

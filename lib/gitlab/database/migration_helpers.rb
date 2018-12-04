@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Database
     module MigrationHelpers
@@ -879,7 +881,7 @@ module Gitlab
         columns(table).find { |column| column.name == name }
       end
 
-      # This will replace the first occurance of a string in a column with
+      # This will replace the first occurrence of a string in a column with
       # the replacement
       # On postgresql we can use `regexp_replace` for that.
       # On mysql we find the location of the pattern, and overwrite it
@@ -937,7 +939,7 @@ database (#{dbname}) using a super user and running:
 
 For MySQL you instead need to run:
 
-    GRANT ALL PRIVILEGES ON *.* TO #{user}@'%'
+    GRANT ALL PRIVILEGES ON #{dbname}.* TO #{user}@'%'
 
 Both queries will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
@@ -1072,6 +1074,10 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
 
         connection.select_value(index_sql).to_i > 0
+      end
+
+      def mysql_compatible_index_length
+        Gitlab::Database.mysql? ? 20 : nil
       end
     end
   end

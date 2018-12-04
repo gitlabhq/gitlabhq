@@ -9,12 +9,10 @@ describe('Pipelines Blank State', () => {
   beforeEach(() => {
     Component = Vue.extend(component);
 
-    vm = mountComponent(Component,
-      {
-        svgPath: 'foo',
-        message: 'Blank State',
-      },
-    );
+    vm = mountComponent(Component, {
+      svgPath: 'foo',
+      message: 'Blank State',
+    });
   });
 
   it('should render svg', () => {
@@ -22,8 +20,6 @@ describe('Pipelines Blank State', () => {
   });
 
   it('should render message', () => {
-    expect(
-      vm.$el.querySelector('h4').textContent.trim(),
-    ).toEqual('Blank State');
+    expect(vm.$el.querySelector('h4').textContent.trim()).toEqual('Blank State');
   });
 });

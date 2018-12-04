@@ -324,7 +324,7 @@ describe SystemNoteService do
     end
 
     it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq  "canceled the automatic merge"
+      expect(subject.note).to eq "canceled the automatic merge"
     end
   end
 
@@ -429,6 +429,20 @@ describe SystemNoteService do
       it 'sets the note text' do
         expect(subject.note).to start_with("created branch [`1-mepmep`]")
       end
+    end
+  end
+
+  describe '.new_merge_request' do
+    subject { described_class.new_merge_request(noteable, project, author, merge_request) }
+
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it 'sets the new merge request note text' do
+      expect(subject.note).to eq("created merge request #{merge_request.to_reference} to address this issue")
     end
   end
 

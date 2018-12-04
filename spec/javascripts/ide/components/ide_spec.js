@@ -29,7 +29,7 @@ describe('ide component', () => {
     resetStore(vm.$store);
   });
 
-  it('does not render right right when no files open', () => {
+  it('does not render right when no files open', () => {
     expect(vm.$el.querySelector('.panel-right')).toBeNull();
   });
 
@@ -84,8 +84,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `t` key press', done => {
       Mousetrap.trigger('t');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -96,8 +95,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `command+p` key press', done => {
       Mousetrap.trigger('command+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -108,8 +106,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `ctrl+p` key press', done => {
       Mousetrap.trigger('ctrl+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })

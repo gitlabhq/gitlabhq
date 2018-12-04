@@ -25,7 +25,6 @@ module Projects
       end
 
       @project.fork_network_member.destroy
-      @project.forked_project_link.destroy
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

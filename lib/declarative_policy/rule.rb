@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   module Rule
     # A Rule is the object that results from the `rule` declaration,

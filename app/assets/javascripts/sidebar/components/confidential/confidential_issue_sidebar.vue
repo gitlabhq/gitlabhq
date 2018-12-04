@@ -56,11 +56,7 @@ export default {
         .update('issue', { confidential })
         .then(() => window.location.reload())
         .catch(() => {
-          Flash(
-            __(
-              'Something went wrong trying to change the confidentiality of this issue',
-            ),
-          );
+          Flash(__('Something went wrong trying to change the confidentiality of this issue'));
         });
     },
   },
@@ -78,10 +74,7 @@ export default {
       data-boundary="viewport"
       @click="toggleForm"
     >
-      <icon
-        :name="confidentialityIcon"
-        aria-hidden="true"
-      />
+      <icon :name="confidentialityIcon" aria-hidden="true" />
     </div>
     <div class="title hide-collapsed">
       {{ __('Confidentiality') }}
@@ -100,20 +93,11 @@ export default {
         :is-confidential="isConfidential"
         :update-confidential-attribute="updateConfidentialAttribute"
       />
-      <div
-        v-if="!isConfidential"
-        class="no-value sidebar-item-value">
-        <icon
-          :size="16"
-          name="eye"
-          aria-hidden="true"
-          class="sidebar-item-icon inline"
-        />
+      <div v-if="!isConfidential" class="no-value sidebar-item-value">
+        <icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
       </div>
-      <div
-        v-else
-        class="value sidebar-item-value hide-collapsed">
+      <div v-else class="value sidebar-item-value hide-collapsed">
         <icon
           :size="16"
           name="eye-slash"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
@@ -10,13 +12,16 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::PlantumlFilter,
+
+          # Must always be before the SanitizationFilter to prevent XSS attacks
+          Filter::SpacedLinkFilter,
+
           Filter::SanitizationFilter,
           Filter::SyntaxHighlightFilter,
 
           Filter::MathFilter,
           Filter::ColorFilter,
           Filter::MermaidFilter,
-          Filter::SpacedLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,

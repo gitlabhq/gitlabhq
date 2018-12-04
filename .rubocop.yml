@@ -3,7 +3,9 @@ inherit_gem:
     - rubocop-default.yml
 
 inherit_from: .rubocop_todo.yml
-require: ./rubocop/rubocop
+require:
+  - ./rubocop/rubocop
+  - rubocop-rspec
 
 AllCops:
   TargetRailsVersion: 4.2
@@ -35,6 +37,32 @@ Style/MutableConstant:
 Style/SafeNavigation:
   Enabled: false
 
+# Frozen String Literal
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'config.ru'
+    - 'Dangerfile'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'app/views/**/*'
+    - 'config/**/*'
+    - 'danger/**/*'
+    - 'db/**/*'
+    - 'ee/**/*'
+    - 'lib/tasks/**/*'
+    - 'qa/**/*'
+    - 'rubocop/**/*'
+    - 'scripts/**/*'
+    - 'spec/**/*'
+
+RSpec/FilePath:
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/javascripts/fixtures/*'
+    - 'ee/spec/javascripts/fixtures/*'
+    - 'spec/requests/api/v3/*'
+
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:
@@ -47,15 +75,20 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
     - 'config/**/*'
+    - 'ee/config/**/*'
     - 'lib/generators/**/*'
     - 'locale/unfound_translations.rb'
     - 'ee/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
+    - 'qa/qa/scenario/test/integration/ldap_no_tls.rb'
+    - 'qa/qa/scenario/test/integration/ldap_tls.rb'
+
   IgnoreExecutableScripts: true
   AllowedAcronyms:
     - EE
     - JSON
     - LDAP
+    - SAML
     - IO
     - HMAC
     - QA

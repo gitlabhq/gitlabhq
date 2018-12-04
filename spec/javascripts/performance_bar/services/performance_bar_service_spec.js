@@ -8,28 +8,34 @@ describe('PerformanceBarService', () => {
       }
 
       it('returns false when the request URL is the peek URL', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/peek' }, '/peek'))
-          .toBeFalsy();
+        expect(
+          fireCallback({ headers: { 'x-request-id': '123' }, url: '/peek' }, '/peek'),
+        ).toBeFalsy();
       });
 
       it('returns false when there is no request ID', () => {
-        expect(fireCallback({ headers: {}, url: '/request' }, '/peek'))
-          .toBeFalsy();
+        expect(fireCallback({ headers: {}, url: '/request' }, '/peek')).toBeFalsy();
       });
 
       it('returns false when the request is an API request', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/api/' }, '/peek'))
-          .toBeFalsy();
+        expect(
+          fireCallback({ headers: { 'x-request-id': '123' }, url: '/api/' }, '/peek'),
+        ).toBeFalsy();
       });
 
       it('returns false when the response is from the cache', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123', 'x-gitlab-from-cache': 'true' }, url: '/request' }, '/peek'))
-          .toBeFalsy();
+        expect(
+          fireCallback(
+            { headers: { 'x-request-id': '123', 'x-gitlab-from-cache': 'true' }, url: '/request' },
+            '/peek',
+          ),
+        ).toBeFalsy();
       });
 
       it('returns true when all conditions are met', () => {
-        expect(fireCallback({ headers: { 'x-request-id': '123' }, url: '/request' }, '/peek'))
-          .toBeTruthy();
+        expect(
+          fireCallback({ headers: { 'x-request-id': '123' }, url: '/request' }, '/peek'),
+        ).toBeTruthy();
       });
     });
 
@@ -39,8 +45,7 @@ describe('PerformanceBarService', () => {
       }
 
       it('gets the request ID from the headers', () => {
-        expect(requestId({ headers: { 'x-request-id': '123' } }, '/peek'))
-          .toEqual('123');
+        expect(requestId({ headers: { 'x-request-id': '123' } }, '/peek')).toEqual('123');
       });
     });
 
@@ -50,13 +55,13 @@ describe('PerformanceBarService', () => {
       }
 
       it('gets the request URL from the response object', () => {
-        expect(requestUrl({ headers: {}, url: '/request' }, '/peek'))
-          .toEqual('/request');
+        expect(requestUrl({ headers: {}, url: '/request' }, '/peek')).toEqual('/request');
       });
 
       it('gets the request URL from response.config if present', () => {
-        expect(requestUrl({ headers: {}, config: { url: '/config-url' }, url: '/request' }, '/peek'))
-          .toEqual('/config-url');
+        expect(
+          requestUrl({ headers: {}, config: { url: '/config-url' }, url: '/request' }, '/peek'),
+        ).toEqual('/config-url');
       });
     });
   });

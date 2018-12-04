@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Helper methods to do with Kubernetes network services & resources
   module Kubernetes

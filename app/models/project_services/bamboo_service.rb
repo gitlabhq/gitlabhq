@@ -80,24 +80,31 @@ class BambooService < CiService
 
   private
 
+  def get_build_result_index
+    # When Bamboo returns multiple results for a given changeset, arbitrarily assume the most relevant result to be the last one.
+    -1
+  end
+
   def read_build_page(response)
-    if response.code != 200 || response['results']['results']['size'] == '0'
-      # If actual build link can't be determined, send user to build summary page.
-      URI.join("#{bamboo_url}/", "browse/#{build_key}").to_s
-    else
-      # If actual build link is available, go to build result page.
-      result_key = response['results']['results']['result']['planResultKey']['key']
-      URI.join("#{bamboo_url}/", "browse/#{result_key}").to_s
-    end
+    key =
+      if response.code != 200 || response.dig('results', 'results', 'size') == '0'
+        # If actual build link can't be determined, send user to build summary page.
+        build_key
+      else
+        # If actual build link is available, go to build result page.
+        response.dig('results', 'results', 'result', get_build_result_index, 'planResultKey', 'key')
+      end
+
+    build_url("browse/#{key}")
   end
 
   def read_commit_status(response)
     return :error unless response.code == 200 || response.code == 404
 
-    status = if response.code == 404 || response['results']['results']['size'] == '0'
+    status = if response.code == 404 || response.dig('results', 'results', 'size') == '0'
                'Pending'
              else
-               response['results']['results']['result']['buildState']
+               response.dig('results', 'results', 'result', get_build_result_index, 'buildState')
              end
 
     if status.include?('Success')
@@ -112,7 +119,7 @@ class BambooService < CiService
   end
 
   def build_url(path)
-    URI.join("#{bamboo_url}/", path).to_s
+    Gitlab::Utils.append_path(bamboo_url, path)
   end
 
   def get_path(path, query_params = {})

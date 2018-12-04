@@ -1,4 +1,4 @@
-class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
+class FixupEnvironmentNameUniqueness < ActiveRecord::Migration[4.2]
   include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 

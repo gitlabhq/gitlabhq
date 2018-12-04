@@ -42,6 +42,7 @@ module DeploymentPlatform
     {
       name: 'kubernetes-template',
       projects: [self],
+      cluster_type: :project_type,
       provider_type: :user,
       platform_type: :kubernetes,
       platform_kubernetes_attributes: platform_kubernetes_attributes_from_service_template

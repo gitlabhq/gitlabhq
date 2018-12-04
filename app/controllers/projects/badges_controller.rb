@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BadgesController < Projects::ApplicationController
   layout 'project_settings'
   before_action :authorize_admin_project!, only: [:index]

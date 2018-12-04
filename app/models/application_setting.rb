@@ -4,6 +4,8 @@ class ApplicationSetting < ActiveRecord::Base
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
+  include IgnorableColumn
+  include ChronicDurationAttribute
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
@@ -26,7 +28,14 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
+
+  ignore_column :circuitbreaker_failure_count_threshold
+  ignore_column :circuitbreaker_failure_reset_time
+  ignore_column :circuitbreaker_storage_timeout
+  ignore_column :circuitbreaker_access_retries
+  ignore_column :circuitbreaker_check_interval
+  ignore_column :koding_url
+  ignore_column :koding_enabled
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -36,6 +45,8 @@ class ApplicationSetting < ActiveRecord::Base
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
   default_value_for :id, 1
+
+  chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
   validates :uuid, presence: true
 
@@ -94,10 +105,6 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :unique_ips_limit_enabled
 
-  validates :koding_url,
-            presence: true,
-            if: :koding_enabled
-
   validates :plantuml_url,
             presence: true,
             if: :plantuml_enabled
@@ -131,15 +138,6 @@ class ApplicationSetting < ActiveRecord::Base
             presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
 
-  validates :sidekiq_throttling_factor,
-            numericality: { greater_than: 0, less_than: 1 },
-            presence: { message: 'Throttling factor cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
-  validates :sidekiq_throttling_queues,
-            presence: { message: 'Queues to throttle cannot be empty if Sidekiq Throttling is enabled.' },
-            if: :sidekiq_throttling_enabled?
-
   validates :housekeeping_incremental_repack_period,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -159,17 +157,6 @@ class ApplicationSetting < ActiveRecord::Base
   validates :polling_interval_multiplier,
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
-
-  validates :circuitbreaker_failure_count_threshold,
-            :circuitbreaker_failure_reset_time,
-            :circuitbreaker_storage_timeout,
-            :circuitbreaker_check_interval,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-
-  validates :circuitbreaker_access_retries,
-            presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 1 }
 
   validates :gitaly_timeout_default,
             presence: true,
@@ -192,7 +179,19 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :diff_max_patch_bytes,
+            presence: true,
+            numericality: { only_integer: true,
+                            greater_than_or_equal_to: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+                            less_than_or_equal_to: Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND }
+
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
+  validates :commit_email_hostname, format: { with: /\A[^@]+\z/ }
+
+  validates :archive_builds_in_seconds,
+            allow_nil: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
@@ -260,8 +259,6 @@ class ApplicationSetting < ActiveRecord::Base
       housekeeping_gc_period: 200,
       housekeeping_incremental_repack_period: 10,
       import_sources: Settings.gitlab['import_sources'],
-      koding_enabled: false,
-      koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       mirror_available: true,
@@ -282,7 +279,6 @@ class ApplicationSetting < ActiveRecord::Base
       send_user_confirmation_email: false,
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       shared_runners_text: nil,
-      sidekiq_throttling_enabled: false,
       sign_in_text: nil,
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
@@ -304,8 +300,14 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_external: false,
       user_default_internal_regex: nil,
       user_show_add_ssh_key_message: true,
-      usage_stats_set_by_user_id: nil
+      usage_stats_set_by_user_id: nil,
+      diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+      commit_email_hostname: default_commit_email_hostname
     }
+  end
+
+  def self.default_commit_email_hostname
+    "users.noreply.#{Gitlab.config.gitlab.host}"
   end
 
   def self.create_from_defaults
@@ -326,10 +328,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def help_page_support_url_column_exists?
     ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
-  end
-
-  def sidekiq_throttling_column_exists?
-    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def disabled_oauth_sign_in_sources=(sources)
@@ -365,6 +363,10 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storages
     Array(read_attribute(:repository_storages))
+  end
+
+  def commit_email_hostname
+    super.presence || self.class.default_commit_email_hostname
   end
 
   def default_project_visibility=(level)
@@ -411,12 +413,6 @@ class ApplicationSetting < ActiveRecord::Base
     ensure_health_check_access_token!
   end
 
-  def sidekiq_throttling_enabled?
-    return false unless sidekiq_throttling_column_exists?
-
-    sidekiq_throttling_enabled
-  end
-
   def usage_ping_can_be_configured?
     Settings.gitlab.usage_ping_enabled
   end
@@ -461,6 +457,10 @@ class ApplicationSetting < ActiveRecord::Base
   def reset_memoized_terms
     @latest_terms = nil
     latest_terms
+  end
+
+  def archive_builds_older_than
+    archive_builds_in_seconds.seconds.ago if archive_builds_in_seconds
   end
 
   private

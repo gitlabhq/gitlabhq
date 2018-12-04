@@ -2,7 +2,6 @@
   "type": "object",
   "required": [
     "status",
-    "icon",
     "environment"
   ],
   "properties": {
@@ -20,7 +19,6 @@
         { "type": "null" }
       ]
     },
-    "icon": { "type": "string" },
     "environment": { "$ref": "../environment.json" }
   },
   "additionalProperties": false

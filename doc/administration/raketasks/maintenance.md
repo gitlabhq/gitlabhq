@@ -53,14 +53,15 @@ Git:              /usr/bin/git
 Runs the following rake tasks:
 
 - `gitlab:gitlab_shell:check`
+- `gitlab:gitaly:check`
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
 
-It will check that each component was setup according to the installation guide and suggest fixes for issues found.
+It will check that each component was set up according to the installation guide and suggest fixes for issues found.
 
-You may also have a look at our Trouble Shooting Guides:
-- [Trouble Shooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
-- [Trouble Shooting Guide (Omnibus Gitlab)](http://docs.gitlab.com/omnibus/README.html#troubleshooting)
+You may also have a look at our Troubleshooting Guides:
+- [Troubleshooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
+- [Troubleshooting Guide (Omnibus Gitlab)](http://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**
 
@@ -252,7 +253,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **DANGER**: 
+DANGER: **DANGER**:
 Don't run it while GitLab or Sidekiq is running
 
 ```bash

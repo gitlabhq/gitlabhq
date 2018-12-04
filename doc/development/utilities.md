@@ -171,8 +171,8 @@ class Commit
   extend Gitlab::Cache::RequestCache
 
   def author
-    User.find_by_any_email(author_email.downcase)
+    User.find_by_any_email(author_email)
   end
-  request_cache(:author) { author_email.downcase }
+  request_cache(:author) { author_email }
 end
 ```

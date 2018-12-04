@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rainbow/ext/string'
 require 'gitlab/utils/strong_memoize'
 
@@ -39,7 +41,7 @@ module Gitlab
           File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
         end
 
-      os_name.try(:squish!)
+      os_name.try(:squish)
     end
 
     # Prompt the user to input something

@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import _ from 'underscore';
 import bp from './breakpoints';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class ContextualSidebar {
   constructor() {
@@ -20,8 +21,11 @@ export default class ContextualSidebar {
   }
 
   bindEvents() {
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
+    document.addEventListener('click', e => {
+      if (
+        !e.target.closest('.nav-sidebar') &&
+        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
+      ) {
         this.toggleCollapsedSidebar(true);
       }
     });
@@ -75,7 +79,7 @@ export default class ContextualSidebar {
     if (breakpoint === 'sm' || breakpoint === 'md') {
       this.toggleCollapsedSidebar(true);
     } else if (breakpoint === 'lg') {
-      const collapse = Cookies.get('sidebar_collapsed') === 'true';
+      const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
       this.toggleCollapsedSidebar(collapse);
     }
   }

@@ -2,7 +2,7 @@
 
 module BlobLike
   extend ActiveSupport::Concern
-  include Linguist::BlobHelper
+  include Gitlab::BlobHelper
 
   def id
     raise NotImplementedError

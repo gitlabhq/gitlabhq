@@ -6,7 +6,7 @@ import SidebarStore from '~/sidebar/stores/sidebar_store';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
 
-describe('Sidebar Subscriptions', function () {
+describe('Sidebar Subscriptions', function() {
   let vm;
   let SidebarSubscriptions;
 

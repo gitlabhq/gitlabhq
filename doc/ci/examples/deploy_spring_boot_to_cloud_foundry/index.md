@@ -64,7 +64,7 @@ applications:
 
 ## Configure GitLab CI/CD to deploy your application
 
-Now we need to add the the GitLab CI/CD configuration file
+Now we need to add the GitLab CI/CD configuration file
 ([`.gitlab-ci.yml`](../../yaml/README.md)) to our
 project's root. This is how GitLab figures out what commands need to be run whenever
 code is pushed to our repository. We will add the following `.gitlab-ci.yml`
@@ -106,10 +106,10 @@ Now, since the steps defined in `.gitlab-ci.yml` require credentials to login
 to CF, you'll need to add your CF credentials as [environment
 variables](../../variables/README.md#predefined-variables-environment-variables)
 on GitLab CI/CD. To set the environment variables, navigate to your project's
-**Settings > CI/CD** and expand **Secret Variables**. Name the variables
+**Settings > CI/CD** and expand **Variables**. Name the variables
 `CF_USERNAME` and `CF_PASSWORD` and set them to the correct values.
 
-![Secret Variable Settings in GitLab](img/cloud_foundry_secret_variables.png)
+![Variable Settings in GitLab](img/cloud_foundry_variables.png)
 
 Once set up, GitLab CI/CD will deploy your app to CF at every push to your
 repository's deafult branch. To see the build logs or watch your builds running

@@ -3,6 +3,7 @@ import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
+import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
@@ -33,9 +34,20 @@ describe('noteable_discussion component', () => {
     expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
   });
 
+  it('should not render discussion header for non diff discussions', () => {
+    expect(vm.$el.querySelector('.discussion-header')).toBeNull();
+  });
+
   it('should render discussion header', () => {
-    expect(vm.$el.querySelector('.discussion-header')).not.toBeNull();
-    expect(vm.$el.querySelector('.notes').children.length).toEqual(discussionMock.notes.length);
+    const discussion = { ...discussionMock };
+    discussion.diff_file = mockDiffFile;
+    discussion.diff_discussion = true;
+    const diffDiscussionVm = new Component({
+      store,
+      propsData: { discussion },
+    }).$mount();
+
+    expect(diffDiscussionVm.$el.querySelector('.discussion-header')).not.toBeNull();
   });
 
   describe('actions', () => {
@@ -66,45 +78,6 @@ describe('noteable_discussion component', () => {
     });
   });
 
-  describe('computed', () => {
-    describe('hasMultipleUnresolvedDiscussions', () => {
-      it('is false if there are no unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is false if there is one unresolved discussion', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is true if there are two unresolved discussions', done => {
-        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
-        discussion.notes[0].resolved = false;
-        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
       it('expands next unresolved discussion', done => {
@@ -131,6 +104,29 @@ describe('noteable_discussion component', () => {
           .then(done)
           .catch(done.fail);
       });
+    });
+  });
+
+  describe('componentData', () => {
+    it('should return first note object for placeholder note', () => {
+      const data = {
+        isPlaceholderNote: true,
+        notes: [{ body: 'hello world!' }],
+      };
+
+      const note = vm.componentData(data);
+
+      expect(note).toEqual(data.notes[0]);
+    });
+
+    it('should return given note for nonplaceholder notes', () => {
+      const data = {
+        notes: [{ id: 12 }],
+      };
+
+      const note = vm.componentData(data);
+
+      expect(note).toEqual(data);
     });
   });
 });

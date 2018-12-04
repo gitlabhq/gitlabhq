@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
@@ -136,16 +138,25 @@ module Gitlab
         return if tree_hash[relation_key].blank?
 
         tree_array = [tree_hash[relation_key]].flatten
+        null_iid_pipelines = []
 
         # Avoid keeping a possible heavy object in memory once we are done with it
-        while relation_item = tree_array.shift
+        while relation_item = (tree_array.shift || null_iid_pipelines.shift)
+          if nil_iid_pipeline?(relation_key, relation_item) && tree_array.any?
+            # Move pipelines with NULL IIDs to the end
+            # so they don't clash with existing IIDs.
+            null_iid_pipelines << relation_item
+
+            next
+          end
+
           # The transaction at this level is less speedy than one single transaction
           # But we can't have it in the upper level or GC won't get rid of the AR objects
           # after we save the batch.
           Project.transaction do
             process_sub_relation(relation, relation_item)
 
-            # For every subrelation that hangs from Project, save the associated records alltogether
+            # For every subrelation that hangs from Project, save the associated records altogether
             # This effectively batches all records per subrelation item, only keeping those in memory
             # We have to keep in mind that more batch granularity << Memory, but >> Slowness
             if save
@@ -200,6 +211,10 @@ module Gitlab
 
       def excluded_keys_for_relation(relation)
         reader.attributes_finder.find_excluded_keys(relation)
+      end
+
+      def nil_iid_pipeline?(relation_key, relation_item)
+        relation_key == 'pipelines' && relation_item['iid'].nil?
       end
     end
   end

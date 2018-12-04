@@ -327,11 +327,15 @@ module IssuablesHelper
   end
 
   def issuable_button_visibility(issuable, closed)
+    return 'hidden' if issuable_button_hidden?(issuable, closed)
+  end
+
+  def issuable_button_hidden?(issuable, closed)
     case issuable
     when Issue
-      issue_button_visibility(issuable, closed)
+      issue_button_hidden?(issuable, closed)
     when MergeRequest
-      merge_request_button_visibility(issuable, closed)
+      merge_request_button_hidden?(issuable, closed)
     end
   end
 
@@ -358,6 +362,10 @@ module IssuablesHelper
     end
   end
 
+  def has_filter_bar_param?
+    finder.class.scalar_params.any? { |p| params[p].present? }
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -382,8 +390,8 @@ module IssuablesHelper
     {
       todo_text: "Add todo",
       mark_text: "Mark todo as done",
-      todo_icon: (is_collapsed ? icon('plus-square') : nil),
-      mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
+      todo_icon: (is_collapsed ? sprite_icon('todo-add') : nil),
+      mark_icon: (is_collapsed ? sprite_icon('todo-done', css_class: 'todo-undone') : nil),
       issuable_id: issuable.id,
       issuable_type: issuable.class.name.underscore,
       url: project_todos_path(@project),

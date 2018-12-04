@@ -1,16 +1,22 @@
 describe QA::Runtime::API::Request do
-  include Support::StubENV
-
-  before do
-    stub_env('PERSONAL_ACCESS_TOKEN', 'a_token')
-  end
-
   let(:client)  { QA::Runtime::API::Client.new('http://example.com') }
   let(:request) { described_class.new(client, '/users') }
 
+  before do
+    allow(client).to receive(:personal_access_token).and_return('a_token')
+  end
+
   describe '#url' do
-    it 'returns the full api request url' do
+    it 'returns the full API request url' do
       expect(request.url).to eq 'http://example.com/api/v4/users?private_token=a_token'
+    end
+
+    context 'when oauth_access_token is passed in the query string' do
+      let(:request) { described_class.new(client, '/users', { oauth_access_token: 'foo' }) }
+
+      it 'does not adds a private_token query string' do
+        expect(request.url).to eq 'http://example.com/api/v4/users?oauth_access_token=foo'
+      end
     end
   end
 

@@ -14,10 +14,14 @@ import testAction from '../../../../helpers/vuex_action_helper';
 
 describe('IDE merge requests actions', () => {
   let mockedState;
+  let mockedRootState;
   let mock;
 
   beforeEach(() => {
     mockedState = state();
+    mockedRootState = {
+      currentProjectId: 7,
+    };
     mock = new MockAdapter(axios);
   });
 
@@ -39,7 +43,7 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    it('should should commit error', done => {
+    it('should commit error', done => {
       testAction(
         receiveMergeRequestsError,
         { type: 'created', search: '' },
@@ -86,13 +90,16 @@ describe('IDE merge requests actions', () => {
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/merge_requests(.*)$/).replyOnce(200, mergeRequests);
+        mock.onGet(/\/api\/v4\/merge_requests\/?/).replyOnce(200, mergeRequests);
       });
 
       it('calls API with params', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
-        fetchMergeRequests({ dispatch() {}, state: mockedState }, { type: 'created' });
+        fetchMergeRequests(
+          { dispatch() {}, state: mockedState, rootState: mockedRootState },
+          { type: 'created' },
+        );
 
         expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
           params: {
@@ -107,7 +114,7 @@ describe('IDE merge requests actions', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
         fetchMergeRequests(
-          { dispatch() {}, state: mockedState },
+          { dispatch() {}, state: mockedState, rootState: mockedRootState },
           { type: 'created', search: 'testing search' },
         );
 
@@ -125,6 +132,49 @@ describe('IDE merge requests actions', () => {
           fetchMergeRequests,
           { type: 'created' },
           mockedState,
+          [],
+          [
+            { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
+            {
+              type: 'receiveMergeRequestsSuccess',
+              payload: mergeRequests,
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('success without type', () => {
+      beforeEach(() => {
+        mock.onGet(/\/api\/v4\/projects\/.+\/merge_requests\/?$/).replyOnce(200, mergeRequests);
+      });
+
+      it('calls API with project', () => {
+        const apiSpy = spyOn(axios, 'get').and.callThrough();
+
+        fetchMergeRequests(
+          { dispatch() {}, state: mockedState, rootState: mockedRootState },
+          { type: null, search: 'testing search' },
+        );
+
+        expect(apiSpy).toHaveBeenCalledWith(
+          jasmine.stringMatching(`projects/${mockedRootState.currentProjectId}/merge_requests`),
+          {
+            params: {
+              state: 'opened',
+              search: 'testing search',
+            },
+          },
+        );
+      });
+
+      it('dispatches success with received data', done => {
+        testAction(
+          fetchMergeRequests,
+          { type: null },
+          { ...mockedState, ...mockedRootState },
           [],
           [
             { type: 'requestMergeRequests' },

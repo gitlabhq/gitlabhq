@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
   include DiffForPath
   include DiffHelper
@@ -20,10 +22,22 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
+    notes_grouped_by_path = renderable_notes.group_by { |note| note.position.file_path }
+
+    @diffs.diff_files.each do |diff_file|
+      notes = notes_grouped_by_path.fetch(diff_file.file_path, [])
+      notes.each { |note| diff_file.unfold_diff_lines(note.position) }
+    end
 
     @diffs.write_cache
 
-    render json: DiffsSerializer.new(current_user: current_user).represent(@diffs, additional_attributes)
+    request = {
+      current_user: current_user,
+      project: @merge_request.project,
+      render: ->(partial, locals) { view_to_html_string(partial, locals) }
+    }
+
+    render json: DiffsSerializer.new(request).represent(@diffs, additional_attributes)
   end
 
   def define_diff_vars
@@ -99,5 +113,11 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@compare.diff_refs)
     @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes), @merge_request)
+  end
+
+  def renderable_notes
+    define_diff_comment_vars unless @notes
+
+    @notes
   end
 end

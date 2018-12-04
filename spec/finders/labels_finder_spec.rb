@@ -210,5 +210,15 @@ describe LabelsFinder do
         expect(finder.execute).to eq [project_label_1]
       end
     end
+
+    context 'filter by subscription' do
+      it 'returns labels user subscribed to' do
+        project_label_1.subscribe(user)
+
+        finder = described_class.new(user, subscribed: 'true')
+
+        expect(finder.execute).to eq [project_label_1]
+      end
+    end
   end
 end

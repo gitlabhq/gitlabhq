@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     #
@@ -13,10 +15,10 @@ module Gitlab
 
         @global = Entry::Global.new(@config)
         @global.compose!
-      rescue Loader::FormatError, Extendable::ExtensionError => e
+      rescue Gitlab::Config::Loader::FormatError,
+             Extendable::ExtensionError,
+             External::Processor::IncludeError => e
         raise Config::ConfigError, e.message
-      rescue ::Gitlab::Ci::External::Processor::FileError => e
-        raise ::Gitlab::Ci::YamlProcessor::ValidationError, e.message
       end
 
       def valid?
@@ -69,7 +71,7 @@ module Gitlab
       private
 
       def build_config(config, opts = {})
-        initial_config = Loader.new(config).load!
+        initial_config = Gitlab::Config::Loader::Yaml.new(config).load!
         project = opts.fetch(:project, nil)
 
         if project
@@ -81,7 +83,7 @@ module Gitlab
 
       def process_external_files(config, project, opts)
         sha = opts.fetch(:sha) { project.repository.root_ref_sha }
-        ::Gitlab::Ci::External::Processor.new(config, project, sha).perform
+        Config::External::Processor.new(config, project, sha).perform
       end
     end
   end

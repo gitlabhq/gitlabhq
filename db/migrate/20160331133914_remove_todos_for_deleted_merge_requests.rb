@@ -1,4 +1,4 @@
-class RemoveTodosForDeletedMergeRequests < ActiveRecord::Migration
+class RemoveTodosForDeletedMergeRequests < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       DELETE FROM todos

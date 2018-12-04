@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include GitHelpers
+
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -28,7 +30,7 @@ describe Repository do
 
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
-      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      storage_exceptions = [Gitlab::Git::CommandError, GRPC::Unavailable]
       known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
 
       expect(known_exception).not_to be_nil
@@ -36,49 +38,29 @@ describe Repository do
   end
 
   describe '#branch_names_contains' do
-    shared_examples '#branch_names_contains' do
-      set(:project) { create(:project, :repository) }
-      let(:repository) { project.repository }
+    set(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
 
-      subject { repository.branch_names_contains(sample_commit.id) }
+    subject { repository.branch_names_contains(sample_commit.id) }
 
-      it { is_expected.to include('master') }
-      it { is_expected.not_to include('feature') }
-      it { is_expected.not_to include('fix') }
+    it { is_expected.to include('master') }
+    it { is_expected.not_to include('feature') }
+    it { is_expected.not_to include('fix') }
 
-      describe 'when storage is broken', :broken_storage do
-        it 'should raise a storage error' do
-          expect_to_raise_storage_error do
-            broken_repository.branch_names_contains(sample_commit.id)
-          end
+    describe 'when storage is broken', :broken_storage do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.branch_names_contains(sample_commit.id)
         end
       end
-    end
-
-    context 'when gitaly is enabled' do
-      it_behaves_like '#branch_names_contains'
-    end
-
-    context 'when gitaly is disabled', :skip_gitaly_mock do
-      it_behaves_like '#branch_names_contains'
     end
   end
 
   describe '#tag_names_contains' do
-    shared_examples '#tag_names_contains' do
-      subject { repository.tag_names_contains(sample_commit.id) }
+    subject { repository.tag_names_contains(sample_commit.id) }
 
-      it { is_expected.to include('v1.1.0') }
-      it { is_expected.not_to include('v1.0.0') }
-    end
-
-    context 'when gitaly is enabled' do
-      it_behaves_like '#tag_names_contains'
-    end
-
-    context 'when gitaly is enabled', :skip_gitaly_mock do
-      it_behaves_like '#tag_names_contains'
-    end
+    it { is_expected.to include('v1.1.0') }
+    it { is_expected.not_to include('v1.0.0') }
   end
 
   describe 'tags_sorted_by' do
@@ -137,9 +119,7 @@ describe Repository do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
 
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
-          end
+          rugged_repo(repository).tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
 
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
@@ -151,9 +131,7 @@ describe Repository do
         it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
 
         after do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            repository.rugged.tags.delete(annotated_tag_name)
-          end
+          rugged_repo(repository).tags.delete(annotated_tag_name)
         end
       end
     end
@@ -188,61 +166,92 @@ describe Repository do
     end
   end
 
+  describe '#list_last_commits_for_tree' do
+    let(:path_to_commit) do
+      {
+        "encoding" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "files" => "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+        ".gitignore" => "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+        ".gitmodules" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "CHANGELOG" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "CONTRIBUTING.md" => "6d394385cf567f80a8fd85055db1ab4c5295806f",
+        "Gemfile.zip" => "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+        "LICENSE" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "MAINTENANCE.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "PROCESS.md" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "README.md" => "1a0b36b3cdad1d2ee32457c102a8c0b7056fa863",
+        "VERSION" => "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+        "gitlab-shell" => "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+        "six" => "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+      }
+    end
+
+    subject { repository.list_last_commits_for_tree(sample_commit.id, '.').id }
+
+    it 'returns the last commits for every entry in the current path' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.')
+
+      result.each do |key, value|
+        result[key] = value.id
+      end
+
+      expect(result).to include(path_to_commit)
+    end
+
+    it 'returns the last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size - 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns a limited number of last commits for every entry in the current path starting from the offset' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', limit: 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    it 'returns an empty hash when offset is out of bounds' do
+      result = repository.list_last_commits_for_tree(sample_commit.id, '.', offset: path_to_commit.size)
+
+      expect(result.size).to eq(0)
+    end
+  end
+
   describe '#last_commit_for_path' do
-    shared_examples 'getting last commit for path' do
-      subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
+    subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
-      it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+    it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
 
-      describe 'when storage is broken', :broken_storage do
-        it 'should raise a storage error' do
-          expect_to_raise_storage_error do
-            broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
-          end
+    describe 'when storage is broken', :broken_storage do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
         end
       end
-    end
-
-    context 'when Gitaly feature last_commit_for_path is enabled' do
-      it_behaves_like 'getting last commit for path'
-    end
-
-    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
-      it_behaves_like 'getting last commit for path'
     end
   end
 
   describe '#last_commit_id_for_path' do
-    shared_examples 'getting last commit ID for path' do
-      subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
+    subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
 
-      it "returns last commit id for a given path" do
-        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
-      end
+    it "returns last commit id for a given path" do
+      is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+    end
 
-      it "caches last commit id for a given path" do
-        cache = repository.send(:cache)
-        key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+    it "caches last commit id for a given path" do
+      cache = repository.send(:cache)
+      key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
 
-        expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
-        is_expected.to eq('c1acaa5')
-      end
+      expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
+      is_expected.to eq('c1acaa5')
+    end
 
-      describe 'when storage is broken', :broken_storage do
-        it 'should raise a storage error' do
-          expect_to_raise_storage_error do
-            broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
-          end
+    describe 'when storage is broken', :broken_storage do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
         end
       end
-    end
-
-    context 'when Gitaly feature last_commit_for_path is enabled' do
-      it_behaves_like 'getting last commit ID for path'
-    end
-
-    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
-      it_behaves_like 'getting last commit ID for path'
     end
   end
 
@@ -325,78 +334,57 @@ describe Repository do
 
   describe '#commits_by' do
     set(:project) { create(:project, :repository) }
+    let(:oids) { TestEnv::BRANCH_SHA.values }
 
-    shared_examples 'batch commits fetching' do
-      let(:oids) { TestEnv::BRANCH_SHA.values }
+    subject { project.repository.commits_by(oids: oids) }
 
-      subject { project.repository.commits_by(oids: oids) }
+    it 'finds each commit' do
+      expect(subject).not_to include(nil)
+      expect(subject.size).to eq(oids.size)
+    end
 
-      it 'finds each commit' do
+    it 'returns only Commit instances' do
+      expect(subject).to all( be_a(Commit) )
+    end
+
+    context 'when some commits are not found ' do
+      let(:oids) do
+        ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+      end
+
+      it 'returns only found commits' do
         expect(subject).not_to include(nil)
-        expect(subject.size).to eq(oids.size)
-      end
-
-      it 'returns only Commit instances' do
-        expect(subject).to all( be_a(Commit) )
-      end
-
-      context 'when some commits are not found ' do
-        let(:oids) do
-          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
-        end
-
-        it 'returns only found commits' do
-          expect(subject).not_to include(nil)
-          expect(subject.size).to eq(10)
-        end
-      end
-
-      context 'when no oids are passed' do
-        let(:oids) { [] }
-
-        it 'does not call #batch_by_oid' do
-          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
-
-          subject
-        end
+        expect(subject.size).to eq(10)
       end
     end
 
-    context 'when Gitaly list_commits_by_oid is enabled' do
-      it_behaves_like 'batch commits fetching'
-    end
+    context 'when no oids are passed' do
+      let(:oids) { [] }
 
-    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
-      it_behaves_like 'batch commits fetching'
+      it 'does not call #batch_by_oid' do
+        expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+        subject
+      end
     end
   end
 
   describe '#find_commits_by_message' do
-    shared_examples 'finding commits by message' do
-      it 'returns commits with messages containing a given string' do
-        commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    it 'returns commits with messages containing a given string' do
+      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-        expect(commit_ids).to include(
-          '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
-          '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
-          'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
-        )
-        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
-      end
-
-      it 'is case insensitive' do
-        commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
-
-        expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      end
+      expect(commit_ids).to include(
+        '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+        '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+        'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
+      )
+      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
     end
 
-    context 'when Gitaly commits_by_message feature is enabled' do
-      it_behaves_like 'finding commits by message'
-    end
+    it 'is case insensitive' do
+      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
 
-    context 'when Gitaly commits_by_message feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding commits by message'
+      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
     end
 
     describe 'when storage is broken', :broken_storage do
@@ -411,6 +399,24 @@ describe Repository do
       subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'regular blob' do
+      subject { repository.blob_at(repository.head_commit.sha, '.gitignore') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
+    end
+
+    context 'readme blob on HEAD' do
+      subject { repository.blob_at(repository.head_commit.sha, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::ReadmeBlob) }
+    end
+
+    context 'readme blob not on HEAD' do
+      subject { repository.blob_at(repository.find_branch('feature').target, 'README.md') }
+
+      it { is_expected.to be_an_instance_of(::Blob) }
     end
   end
 
@@ -1044,6 +1050,47 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
     end
+
+    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
+      let(:cache) { repository.send(:cache) }
+      let(:request_store_cache) { repository.send(:request_store_cache) }
+
+      context 'when it returns true' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(true)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(true)
+        end
+
+        it 'caches the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.to change { cache.read(:exists?) }.from(nil).to(true)
+        end
+      end
+
+      context 'when it returns false' do
+        before do
+          expect(repository.raw_repository).to receive(:exists?).once.and_return(false)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.exists?
+          end.to change { request_store_cache.read(:exists?) }.from(nil).to(false)
+        end
+
+        it 'does NOT cache the output in RepositoryCache' do
+          expect do
+            repository.exists?
+          end.not_to change { cache.read(:exists?) }.from(nil)
+        end
+      end
+    end
   end
 
   describe '#has_visible_content?' do
@@ -1220,34 +1267,23 @@ describe Repository do
 
   describe '#merge' do
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
-
     let(:message) { 'Test \r\n\r\n message' }
 
-    shared_examples '#merge' do
-      it 'merges the code and returns the commit id' do
-        expect(merge_commit).to be_present
-        expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
-      end
-
-      it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-        merge_commit_id = merge(repository, user, merge_request, message)
-
-        expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
-      end
-
-      it 'removes carriage returns from commit message' do
-        merge_commit_id = merge(repository, user, merge_request, message)
-
-        expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
-      end
+    it 'merges the code and returns the commit id' do
+      expect(merge_commit).to be_present
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
 
-    context 'with gitaly' do
-      it_behaves_like '#merge'
+    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+      merge_commit_id = merge(repository, user, merge_request, message)
+
+      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#merge'
+    it 'removes carriage returns from commit message' do
+      merge_commit_id = merge(repository, user, merge_request, message)
+
+      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
     end
 
     def merge(repository, user, merge_request, message)
@@ -1284,97 +1320,77 @@ describe Repository do
   end
 
   describe '#revert' do
-    shared_examples 'reverting a commit' do
-      let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
-      let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
-      let(:message) { 'revert message' }
+    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+    let(:message) { 'revert message' }
 
-      context 'when there is a conflict' do
-        it 'raises an error' do
-          expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-        end
-      end
-
-      context 'when commit was already reverted' do
-        it 'raises an error' do
-          repository.revert(user, update_image_commit, 'master', message)
-
-          expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-        end
-      end
-
-      context 'when commit can be reverted' do
-        it 'reverts the changes' do
-          expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
-        end
-      end
-
-      context 'reverting a merge commit' do
-        it 'reverts the changes' do
-          merge_commit
-          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
-
-          repository.revert(user, merge_commit, 'master', message)
-          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
-        end
+    context 'when there is a conflict' do
+      it 'raises an error' do
+        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
-    context 'when Gitaly revert feature is enabled' do
-      it_behaves_like 'reverting a commit'
+    context 'when commit was already reverted' do
+      it 'raises an error' do
+        repository.revert(user, update_image_commit, 'master', message)
+
+        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      end
     end
 
-    context 'when Gitaly revert feature is disabled', :disable_gitaly do
-      it_behaves_like 'reverting a commit'
+    context 'when commit can be reverted' do
+      it 'reverts the changes' do
+        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
+      end
+    end
+
+    context 'reverting a merge commit' do
+      it 'reverts the changes' do
+        merge_commit
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+        repository.revert(user, merge_commit, 'master', message)
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+      end
     end
   end
 
   describe '#cherry_pick' do
-    shared_examples 'cherry-picking a commit' do
-      let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
-      let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
-      let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
-      let(:message) { 'cherry-pick message' }
+    let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
+    let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+    let(:message) { 'cherry-pick message' }
 
-      context 'when there is a conflict' do
-        it 'raises an error' do
-          expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-        end
-      end
-
-      context 'when commit was already cherry-picked' do
-        it 'raises an error' do
-          repository.cherry_pick(user, pickable_commit, 'master', message)
-
-          expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-        end
-      end
-
-      context 'when commit can be cherry-picked' do
-        it 'cherry-picks the changes' do
-          expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
-        end
-      end
-
-      context 'cherry-picking a merge commit' do
-        it 'cherry-picks the changes' do
-          expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
-
-          cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
-          cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
-
-          expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
-          expect(cherry_pick_commit_message).to eq(message)
-        end
+    context 'when there is a conflict' do
+      it 'raises an error' do
+        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
-    context 'when Gitaly cherry_pick feature is enabled' do
-      it_behaves_like 'cherry-picking a commit'
+    context 'when commit was already cherry-picked' do
+      it 'raises an error' do
+        repository.cherry_pick(user, pickable_commit, 'master', message)
+
+        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      end
     end
 
-    context 'when Gitaly cherry_pick feature is disabled', :disable_gitaly do
-      it_behaves_like 'cherry-picking a commit'
+    context 'when commit can be cherry-picked' do
+      it 'cherry-picks the changes' do
+        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
+      end
+    end
+
+    context 'cherry-picking a merge commit' do
+      it 'cherry-picks the changes' do
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
+
+        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
+        cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
+
+        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
+        expect(cherry_pick_commit_message).to eq(message)
+      end
     end
   end
 
@@ -1472,12 +1488,12 @@ describe Repository do
         :size,
         :commit_count,
         :rendered_readme,
+        :readme_path,
         :contribution_guide,
         :changelog,
         :license_blob,
         :license_key,
         :gitignore,
-        :koding_yml,
         :gitlab_ci_yml,
         :branch_names,
         :tag_names,
@@ -1586,10 +1602,7 @@ describe Repository do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.branches.count
-      end
+      rugged_count = rugged_repo(repository).branches.count
 
       expect(repository.branch_count).to eq(rugged_count)
     end
@@ -1599,10 +1612,7 @@ describe Repository do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
 
-      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.raw_repository.rugged.tags.count
-      end
+      rugged_count = rugged_repo(repository).tags.count
 
       expect(repository.tag_count).to eq(rugged_count)
     end
@@ -1716,9 +1726,16 @@ describe Repository do
 
   describe '#expire_exists_cache' do
     let(:cache) { repository.send(:cache) }
+    let(:request_store_cache) { repository.send(:request_store_cache) }
 
     it 'expires the cache' do
       expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
+    end
+
+    it 'expires the request store cache', :request_store do
+      expect(request_store_cache).to receive(:expire).with(:exists?)
 
       repository.expire_exists_cache
     end
@@ -1830,40 +1847,65 @@ describe Repository do
     end
   end
 
-  describe '#koding_yml', :use_clean_rails_memory_store_caching do
-    it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head)
-        .with(:koding)
-        .and_return(Gitlab::Git::Tree.new(path: '.koding.yml'))
-        .once
-
-      2.times do
-        expect(repository.koding_yml).to be_an_instance_of(Gitlab::Git::Tree)
-      end
-    end
-  end
-
   describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
-      it 'returns nil' do
-        allow(repository).to receive(:tree).with(:head).and_return(nil)
+      let(:project) { create(:project) }
 
+      it 'returns nil' do
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
       context 'when no README exists' do
-        it 'returns nil' do
-          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+        let(:project) { create(:project, :empty_repo) }
 
+        it 'returns nil' do
           expect(repository.readme).to be_nil
         end
       end
 
       context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
         it 'returns the README' do
           expect(repository.readme).to be_an_instance_of(ReadmeBlob)
+        end
+      end
+    end
+  end
+
+  describe '#readme_path', :use_clean_rails_memory_store_caching do
+    context 'with a non-existing repository' do
+      let(:project) { create(:project) }
+
+      it 'returns nil' do
+        expect(repository.readme_path).to be_nil
+      end
+    end
+
+    context 'with an existing repository' do
+      context 'when no README exists' do
+        let(:project) { create(:project, :empty_repo) }
+
+        it 'returns nil' do
+          expect(repository.readme_path).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        let(:project) { create(:project, :repository) }
+
+        it 'returns the README' do
+          expect(repository.readme_path).to eq("README.md")
+        end
+
+        it 'caches the response' do
+          expect(repository).to receive(:readme).and_call_original.once
+
+          2.times do
+            expect(repository.readme_path).to eq("README.md")
+          end
         end
       end
     end
@@ -1892,7 +1934,7 @@ describe Repository do
         match[1].to_sym if match
       end.compact
 
-      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
+      expect(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS).to include(*methods)
     end
   end
 
@@ -2037,9 +2079,10 @@ describe Repository do
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(rendered_readme license_blob license_key license))
+        .with(%i(rendered_readme readme_path license_blob license_key license))
 
       expect(repository).to receive(:rendered_readme)
+      expect(repository).to receive(:readme_path)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
       expect(repository).to receive(:license)
@@ -2085,9 +2128,7 @@ describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    rugged = rugged_repo(repository)
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
@@ -2095,33 +2136,23 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    shared_examples '#ancestor?' do
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
-
-      it 'returns false for invalid commit IDs' do
-        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
-        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
-      end
+    it 'it is an ancestor' do
+      expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
     end
 
-    context 'with Gitaly enabled' do
-      it_behaves_like('#ancestor?')
+    it 'it is not an ancestor' do
+      expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
-      it_behaves_like('#ancestor?')
+    it 'returns false on nil-values' do
+      expect(repository.ancestor?(nil, commit.id)).to eq(false)
+      expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+      expect(repository.ancestor?(nil, nil)).to eq(false)
+    end
+
+    it 'returns false for invalid commit IDs' do
+      expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+      expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
     end
   end
 
@@ -2295,6 +2326,35 @@ describe Repository do
       it 'returns the contributors unsorted' do
         expect_contributors(author_a, author_b, author_c)
       end
+    end
+  end
+
+  describe '#merge_base' do
+    set(:project) { create(:project, :repository) }
+    subject(:repository) { project.repository }
+
+    it 'only makes one gitaly call' do
+      expect(Gitlab::GitalyClient).to receive(:call).once.and_call_original
+
+      repository.merge_base('master', 'fix')
+    end
+  end
+
+  describe '#cache' do
+    subject(:cache) { repository.send(:cache) }
+
+    it 'returns a RepositoryCache' do
+      expect(subject).to be_kind_of Gitlab::RepositoryCache
+    end
+
+    it 'when is_wiki it includes wiki as part of key' do
+      allow(repository).to receive(:is_wiki) { true }
+
+      expect(subject.namespace).to include('wiki')
+    end
+
+    it 'when is_wiki is false extra_namespace is nil' do
+      expect(subject.namespace).not_to include('wiki')
     end
   end
 end

@@ -4,7 +4,9 @@ export default class UserInternalRegexHandler {
   constructor() {
     this.regexPattern = $('[data-user-internal-regex-pattern]').data('user-internal-regex-pattern');
     if (this.regexPattern && this.regexPattern !== '') {
-      this.regexOptions = $('[data-user-internal-regex-options]').data('user-internal-regex-options');
+      this.regexOptions = $('[data-user-internal-regex-options]').data(
+        'user-internal-regex-options',
+      );
       this.external = $('#user_external');
       this.warningMessage = $('#warning_external_automatically_set');
       this.addListenerToEmailField();
@@ -13,7 +15,7 @@ export default class UserInternalRegexHandler {
   }
 
   addListenerToEmailField() {
-    $('#user_email').on('input', (event) => {
+    $('#user_email').on('input', event => {
       this.setExternalCheckbox(event.currentTarget.value);
     });
   }

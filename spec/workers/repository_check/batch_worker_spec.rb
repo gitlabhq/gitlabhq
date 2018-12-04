@@ -51,7 +51,7 @@ describe RepositoryCheck::BatchWorker do
 
   it 'does nothing when shard is unhealthy' do
     shard_name = 'broken'
-    create(:project, created_at: 1.week.ago, repository_storage: shard_name)
+    create(:project, :broken_storage, created_at: 1.week.ago)
 
     expect(subject.perform(shard_name)).to eq(nil)
   end

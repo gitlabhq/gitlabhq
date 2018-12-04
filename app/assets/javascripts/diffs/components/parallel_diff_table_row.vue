@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import $ from 'jquery';
 import DiffTableCell from './diff_table_cell.vue';
 import {
@@ -43,6 +43,15 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      isHighlighted(state) {
+        const lineCode =
+          (this.line.left && this.line.left.line_code) ||
+          (this.line.right && this.line.right.line_code);
+
+        return lineCode ? lineCode === state.diffs.highlightedRow : false;
+      },
+    }),
     isContextLine() {
       return this.line.left && this.line.left.type === CONTEXT_LINE_TYPE;
     },
@@ -57,7 +66,14 @@ export default {
         return OLD_NO_NEW_LINE_TYPE;
       }
 
-      return this.line.left ? this.line.left.type : EMPTY_CELL_TYPE;
+      const lineTypeClass = this.line.left ? this.line.left.type : EMPTY_CELL_TYPE;
+
+      return [
+        lineTypeClass,
+        {
+          hll: this.isHighlighted,
+        },
+      ];
     },
   },
   created() {
@@ -114,19 +130,19 @@ export default {
         :line-type="oldLineType"
         :is-bottom="isBottom"
         :is-hover="isLeftHover"
+        :is-highlighted="isHighlighted"
         :show-comment-button="true"
         :diff-view-type="parallelDiffViewType"
         line-position="left"
         class="diff-line-num old_line"
       />
       <td
-        :id="line.left.lineCode"
+        :id="line.left.line_code"
         :class="parallelViewLeftLineType"
         class="line_content parallel left-side"
         @mousedown.native="handleParallelLineMouseDown"
-        v-html="line.left.richText"
-      >
-      </td>
+        v-html="line.left.rich_text"
+      ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>
@@ -140,19 +156,24 @@ export default {
         :line-type="newLineType"
         :is-bottom="isBottom"
         :is-hover="isRightHover"
+        :is-highlighted="isHighlighted"
         :show-comment-button="true"
         :diff-view-type="parallelDiffViewType"
         line-position="right"
         class="diff-line-num new_line"
       />
       <td
-        :id="line.right.lineCode"
-        :class="line.right.type"
+        :id="line.right.line_code"
+        :class="[
+          line.right.type,
+          {
+            hll: isHighlighted,
+          },
+        ]"
         class="line_content parallel right-side"
         @mousedown.native="handleParallelLineMouseDown"
-        v-html="line.right.richText"
-      >
-      </td>
+        v-html="line.right.rich_text"
+      ></td>
     </template>
     <template v-else>
       <td class="diff-line-num old_line empty-cell"></td>

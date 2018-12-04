@@ -1,6 +1,6 @@
 # Rake tasks for developers
 
-## Setup db with developer seeds
+## Set up db with developer seeds
 
 Note that if your db user does not have advanced privileges you must create the db manually before running this command.
 

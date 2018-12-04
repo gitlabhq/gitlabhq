@@ -19,13 +19,13 @@
         ":value" => "label.id" }
       .dropdown
         %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-issue-board-sidebar{ type: "button",
-          "v-bind:data-selected" => "selectedLabels",
+          ":data-selected" => "selectedLabels",
+          ":data-labels" => "issue.assignableLabelsEndpoint",
           data: { toggle: "dropdown",
             field_name: "issue[label_names][]",
             show_no: "true",
             show_any: "true",
             project_id: @project&.try(:id),
-            labels: labels_filter_path(false),
             namespace_path: @namespace_path,
             project_path: @project.try(:path) } }
           %span.dropdown-toggle-text

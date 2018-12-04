@@ -52,4 +52,28 @@ describe Gitlab::Sentry do
       end
     end
   end
+
+  context '.track_acceptable_exception' do
+    let(:exception) { RuntimeError.new('boom') }
+
+    before do
+      allow(described_class).to receive(:enabled?).and_return(true)
+    end
+
+    it 'calls Raven.capture_exception' do
+      expected_extras = {
+        some_other_info: 'info',
+        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1'
+      }
+
+      expect(Raven).to receive(:capture_exception)
+                         .with(exception, extra: a_hash_including(expected_extras))
+
+      described_class.track_acceptable_exception(
+        exception,
+        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1',
+        extra: { some_other_info: 'info' }
+      )
+    end
+  end
 end

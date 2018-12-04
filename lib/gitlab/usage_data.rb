@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class UsageData
     class << self
@@ -10,6 +12,7 @@ module Gitlab
                           .merge(features_usage_data)
                           .merge(components_usage_data)
                           .merge(cycle_analytics_usage_data)
+                          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -57,8 +60,10 @@ module Gitlab
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_applications_helm: count(::Clusters::Applications::Helm.installed),
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.installed),
+            clusters_applications_cert_managers: count(::Clusters::Applications::CertManager.installed),
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.installed),
             clusters_applications_runner: count(::Clusters::Applications::Runner.installed),
+            clusters_applications_knative: count(::Clusters::Applications::Knative.installed),
             in_review_folder: count(::Environment.in_review_folder),
             groups: count(Group),
             issues: count(Issue),
@@ -106,6 +111,12 @@ module Gitlab
         }
       end
 
+      def usage_counters
+        {
+          web_ide_commits: Gitlab::WebIdeCommitsCounter.total_count
+        }
+      end
+
       def components_usage_data
         {
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
@@ -117,7 +128,6 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
         types = {
-          JiraService: :projects_jira_active,
           SlackService: :projects_slack_notifications_active,
           SlackSlashCommandsService: :projects_slack_slash_active,
           PrometheusService: :projects_prometheus_active
@@ -125,6 +135,23 @@ module Gitlab
 
         results = count(Service.unscoped.where(type: types.keys, active: true).group(:type), fallback: Hash.new(-1))
         types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
+          .merge(jira_usage)
+      end
+
+      def jira_usage
+        # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
+        # so we can just check for subdomains of atlassian.net
+        services = count(
+          Service.unscoped.where(type: :JiraService, active: true)
+            .group("CASE WHEN properties LIKE '%.atlassian.net%' THEN 'cloud' ELSE 'server' END"),
+          fallback: Hash.new(-1)
+        )
+
+        {
+          projects_jira_server_active: services['server'] || 0,
+          projects_jira_cloud_active: services['cloud'] || 0,
+          projects_jira_active: services['server'] == -1 ? -1 : services.values.sum
+        }
       end
 
       def count(relation, fallback: -1)

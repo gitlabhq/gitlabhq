@@ -1,4 +1,4 @@
-/* eslint-disable func-names, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, class-methods-use-this */
+/* eslint-disable func-names, consistent-return, no-var, one-var, no-else-return, prefer-arrow-callback, class-methods-use-this */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
@@ -8,7 +8,7 @@ export default class TreeView {
     this.initKeyNav();
     // Code browser tree slider
     // Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-    $(".tree-content-holder .tree-item").on('click', function(e) {
+    $('.tree-content-holder .tree-item').on('click', function(e) {
       var $clickedEl, path;
       $clickedEl = $(e.target);
       path = $('.tree-item-file-name a', this).attr('href');
@@ -27,33 +27,33 @@ export default class TreeView {
 
   initKeyNav() {
     var li, liSelected;
-    li = $("tr.tree-item");
+    li = $('tr.tree-item');
     liSelected = null;
     return $('body').keydown(function(e) {
       var next, path;
-      if ($("input:focus").length > 0 && (e.which === 38 || e.which === 40)) {
+      if ($('input:focus').length > 0 && (e.which === 38 || e.which === 40)) {
         return false;
       }
       if (e.which === 40) {
         if (liSelected) {
           next = liSelected.next();
           if (next.length > 0) {
-            liSelected.removeClass("selected");
-            liSelected = next.addClass("selected");
+            liSelected.removeClass('selected');
+            liSelected = next.addClass('selected');
           }
         } else {
-          liSelected = li.eq(0).addClass("selected");
+          liSelected = li.eq(0).addClass('selected');
         }
         return $(liSelected).focus();
       } else if (e.which === 38) {
         if (liSelected) {
           next = liSelected.prev();
           if (next.length > 0) {
-            liSelected.removeClass("selected");
-            liSelected = next.addClass("selected");
+            liSelected.removeClass('selected');
+            liSelected = next.addClass('selected');
           }
         } else {
-          liSelected = li.last().addClass("selected");
+          liSelected = li.last().addClass('selected');
         }
         return $(liSelected).focus();
       } else if (e.which === 13) {

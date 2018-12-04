@@ -97,6 +97,30 @@ describe Projects::CompareController do
         expect(assigns(:commits)).to eq([])
       end
     end
+
+    context 'when the target ref is invalid' do
+      let(:target_ref) { "master%' AND 2554=4423 AND '%'='" }
+      let(:source_ref) { "improve%2Fawesome" }
+
+      it 'shows a flash message and redirects' do
+        show_request
+
+        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when the source ref is invalid' do
+      let(:source_ref) { "master%' AND 2554=4423 AND '%'='" }
+      let(:target_ref) { "improve%2Fawesome" }
+
+      it 'shows a flash message and redirects' do
+        show_request
+
+        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(response).to have_http_status(302)
+      end
+    end
   end
 
   describe 'GET diff_for_path' do

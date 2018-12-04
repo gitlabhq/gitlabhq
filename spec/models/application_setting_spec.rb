@@ -25,6 +25,9 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
+    it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
+
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')
@@ -107,6 +110,14 @@ describe ApplicationSetting do
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
+    context '#commit_email_hostname' do
+      it 'returns configured gitlab hostname if commit_email_hostname is not defined' do
+        setting.update(commit_email_hostname: nil)
+
+        expect(setting.commit_email_hostname).to eq("users.noreply.#{Gitlab.config.gitlab.host}")
+      end
+    end
+
     context 'auto_devops_domain setting' do
       context 'when auto_devops_enabled? is true' do
         before do
@@ -137,19 +148,6 @@ describe ApplicationSetting do
           it 'is invalid' do
             expect(setting).to be_invalid
           end
-        end
-      end
-    end
-
-    context 'circuitbreaker settings' do
-      [:circuitbreaker_failure_count_threshold,
-       :circuitbreaker_check_interval,
-       :circuitbreaker_failure_reset_time,
-       :circuitbreaker_storage_timeout].each do |field|
-        it "Validates #{field} as number" do
-          is_expected.to validate_numericality_of(field)
-                           .only_integer
-                           .is_greater_than_or_equal_to(0)
         end
       end
     end
@@ -590,6 +588,41 @@ describe ApplicationSetting do
       subject { setting.user_default_internal_regex_enabled? }
 
       it { is_expected.to eq(result) }
+    end
+  end
+
+  context 'diff limit settings' do
+    describe '#diff_max_patch_bytes' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
+
+        it do
+          is_expected.to validate_numericality_of(:diff_max_patch_bytes)
+          .only_integer
+          .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+          .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
+        end
+      end
+    end
+  end
+
+  describe '#archive_builds_older_than' do
+    subject { setting.archive_builds_older_than }
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = 3600
+      end
+
+      it { is_expected.to be_within(1.minute).of(1.hour.ago) }
+    end
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = nil
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

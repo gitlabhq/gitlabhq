@@ -25,7 +25,7 @@ describe 'Environment' do
     end
 
     context 'without deployments' do
-      it 'does show no deployments' do
+      it 'does not show deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
@@ -33,7 +33,7 @@ describe 'Environment' do
     context 'with deployments' do
       context 'when there is no related deployable' do
         let(:deployment) do
-          create(:deployment, environment: environment, deployable: nil)
+          create(:deployment, :success, environment: environment, deployable: nil)
         end
 
         it 'does show deployment SHA' do
@@ -43,24 +43,74 @@ describe 'Environment' do
         end
       end
 
+      context 'when there is a successful deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :success, environment: environment, deployable: build)
+        end
+
+        it 'does show deployments' do
+          expect(page).to have_link("#{build.name} (##{build.id})")
+        end
+      end
+
+      context 'when there is a running deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :running, environment: environment, deployable: build)
+        end
+
+        it 'does not show deployments' do
+          expect(page).to have_content('You don\'t have any deployments right now.')
+        end
+      end
+
+      context 'when there is a failed deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :failed, environment: environment, deployable: build)
+        end
+
+        it 'does not show deployments' do
+          expect(page).to have_content('You don\'t have any deployments right now.')
+        end
+      end
+
       context 'with related deployable present' do
         let(:pipeline) { create(:ci_pipeline, project: project) }
         let(:build) { create(:ci_build, pipeline: pipeline) }
 
         let(:deployment) do
-          create(:deployment, environment: environment, deployable: build)
+          create(:deployment, :success, environment: environment, deployable: build)
         end
 
         it 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-          expect(page).to have_link('Re-deploy')
+          expect(page).not_to have_link('Re-deploy')
           expect(page).not_to have_terminal_button
+        end
+
+        context 'when user has ability to re-deploy' do
+          let(:permissions) do
+            create(:protected_branch, :developers_can_merge,
+                   name: build.ref, project: project)
+          end
+
+          it 'does show re-deploy' do
+            expect(page).to have_link('Re-deploy')
+          end
         end
 
         context 'with manual action' do
           let(:action) do
             create(:ci_build, :manual, pipeline: pipeline,
-                                       name: 'deploy to production')
+                                       name: 'deploy to production', environment: environment.name)
           end
 
           context 'when user has ability to trigger deployment' do
@@ -73,11 +123,15 @@ describe 'Environment' do
               expect(page).to have_link(action.name.humanize)
             end
 
-            it 'does allow to play manual action' do
+            it 'does allow to play manual action', :js do
               expect(action).to be_manual
+
+              find('button.dropdown').click
 
               expect { click_link(action.name.humanize) }
                 .not_to change { Ci::Pipeline.count }
+
+              wait_for_all_requests
 
               expect(page).to have_content(action.name)
               expect(action.reload).to be_pending
@@ -93,7 +147,7 @@ describe 'Environment' do
           context 'with external_url' do
             let(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
             let(:build) { create(:ci_build, pipeline: pipeline) }
-            let(:deployment) { create(:deployment, environment: environment, deployable: build) }
+            let(:deployment) { create(:deployment, :success, environment: environment, deployable: build) }
 
             it 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
@@ -111,8 +165,14 @@ describe 'Environment' do
 
                 context 'web terminal', :js do
                   before do
-                    # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
-                    allow_any_instance_of(Environment).to receive(:terminals) { nil }
+                    # Stub #terminals as it causes js-enabled feature specs to
+                    # render the page incorrectly
+                    #
+                    # In EE we have to stub EE::Environment since it overwrites
+                    # the "terminals" method.
+                    allow_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+                      .to receive(:terminals) { nil }
+
                     visit terminal_project_environment_path(project, environment)
                   end
 
@@ -154,7 +214,8 @@ describe 'Environment' do
               end
 
               let(:deployment) do
-                create(:deployment, environment: environment,
+                create(:deployment, :success,
+                                    environment: environment,
                                     deployable: build,
                                     on_stop: 'close_app')
               end
@@ -165,10 +226,10 @@ describe 'Environment' do
                          name: action.ref, project: project)
                 end
 
-                it 'allows to stop environment' do
+                it 'allows to stop environment', :js do
                   click_button('Stop')
                   click_button('Stop environment') # confirm modal
-
+                  wait_for_all_requests
                   expect(page).to have_content('close_app')
                 end
               end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Files management' do
       it 'user creates, edits and deletes a file via the Web' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -12,7 +12,7 @@ module QA
         file_content = 'QA Test - File content'
         commit_message_for_create = 'QA Test - Create new file'
 
-        Factory::Resource::File.fabricate! do |file|
+        Resource::File.fabricate! do |file|
           file.name = file_name
           file.content = file_content
           file.commit_message = commit_message_for_create

@@ -4,9 +4,9 @@ module QA
       module Wiki
         class Edit < Page::Base
           view 'app/views/projects/wikis/_main_links.html.haml' do
-            element :new_page_link, 'New page'
-            element :page_history_link, 'Page history'
-            element :edit_page_link, 'Edit'
+            element :new_page_link, 'New page' # rubocop:disable QA/ElementWithPattern
+            element :page_history_link, 'Page history' # rubocop:disable QA/ElementWithPattern
+            element :edit_page_link, 'Edit' # rubocop:disable QA/ElementWithPattern
           end
 
           def go_to_new_page

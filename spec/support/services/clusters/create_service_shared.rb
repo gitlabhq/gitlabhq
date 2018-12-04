@@ -30,10 +30,6 @@ shared_context 'invalid cluster create params' do
 end
 
 shared_examples 'create cluster service success' do
-  before do
-    stub_feature_flags(rbac_clusters: false)
-  end
-
   it 'creates a cluster object and performs a worker' do
     expect(ClusterProvisionWorker).to receive(:perform_async)
 

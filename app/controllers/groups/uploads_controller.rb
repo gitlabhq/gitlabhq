@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::UploadsController < Groups::ApplicationController
   include UploadsActions
   include WorkhorseRequest

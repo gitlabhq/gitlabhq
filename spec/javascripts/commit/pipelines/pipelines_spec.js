@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('Pipelines table in Commits and Merge requests', function () {
+describe('Pipelines table in Commits and Merge requests', function() {
   const jsonFixtureName = 'pipelines/pipelines.json';
   let pipeline;
   let PipelinesTable;
@@ -29,7 +29,7 @@ describe('Pipelines table in Commits and Merge requests', function () {
 
   describe('successful request', () => {
     describe('without pipelines', () => {
-      beforeEach(function () {
+      beforeEach(function() {
         mock.onGet('endpoint.json').reply(200, []);
 
         vm = mountComponent(PipelinesTable, {
@@ -41,7 +41,7 @@ describe('Pipelines table in Commits and Merge requests', function () {
         });
       });
 
-      it('should render the empty state', function (done) {
+      it('should render the empty state', function(done) {
         setTimeout(() => {
           expect(vm.$el.querySelector('.empty-state')).toBeDefined();
           expect(vm.$el.querySelector('.realtime-loading')).toBe(null);
@@ -63,7 +63,7 @@ describe('Pipelines table in Commits and Merge requests', function () {
         });
       });
 
-      it('should render a table with the received pipelines', (done) => {
+      it('should render a table with the received pipelines', done => {
         setTimeout(() => {
           expect(vm.$el.querySelectorAll('.ci-table .commit').length).toEqual(1);
           expect(vm.$el.querySelector('.realtime-loading')).toBe(null);
@@ -72,6 +72,29 @@ describe('Pipelines table in Commits and Merge requests', function () {
           done();
         }, 0);
       });
+
+      describe('with pagination', () => {
+        it('should make an API request when using pagination', done => {
+          setTimeout(() => {
+            spyOn(vm, 'updateContent');
+
+            vm.store.state.pageInfo = {
+              page: 1,
+              total: 10,
+              perPage: 2,
+              nextPage: 2,
+              totalPages: 5,
+            };
+
+            vm.$nextTick(() => {
+              vm.$el.querySelector('.js-next-button a').click();
+
+              expect(vm.updateContent).toHaveBeenCalledWith({ page: '2' });
+              done();
+            });
+          });
+        });
+      });
     });
 
     describe('pipeline badge counts', () => {
@@ -79,11 +102,11 @@ describe('Pipelines table in Commits and Merge requests', function () {
         mock.onGet('endpoint.json').reply(200, [pipeline]);
       });
 
-      it('should receive update-pipelines-count event', (done) => {
+      it('should receive update-pipelines-count event', done => {
         const element = document.createElement('div');
         document.body.appendChild(element);
 
-        element.addEventListener('update-pipelines-count', (event) => {
+        element.addEventListener('update-pipelines-count', event => {
           expect(event.detail.pipelines).toEqual([pipeline]);
           done();
         });
@@ -114,7 +137,7 @@ describe('Pipelines table in Commits and Merge requests', function () {
       });
     });
 
-    it('should render error state', function (done) {
+    it('should render error state', function(done) {
       setTimeout(() => {
         expect(vm.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
         expect(vm.$el.querySelector('.realtime-loading')).toBe(null);

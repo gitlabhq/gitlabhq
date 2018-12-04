@@ -8,7 +8,7 @@
  * @returns {String}
  */
 export const addDelimiter = text =>
-  (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
+  text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text;
 
 /**
  * Returns '99+' for numbers bigger than 99.
@@ -53,10 +53,7 @@ export const slugify = str => str.trim().toLowerCase();
  * @param {String} str
  * @returns {String}
  */
-export const slugifyWithHyphens = str => {
-  const regex = new RegExp(/\s+/, 'g');
-  return str.toLowerCase().replace(regex, '-');
-};
+export const slugifyWithHyphens = str => str.toLowerCase().replace(/\s+/g, '-');
 
 /**
  * Truncates given text
@@ -94,9 +91,7 @@ export function capitalizeFirstCharacter(text) {
  * @return {String}
  */
 export function getFirstCharacterCapitalized(text) {
-  return text
-    ? text.charAt(0).toUpperCase()
-    : '';
+  return text ? text.charAt(0).toUpperCase() : '';
 }
 
 /**
@@ -136,10 +131,9 @@ export const convertToSentenceCase = string => {
  * e.g. HelloWorld => Hello World
  *
  * @param {*} string
-*/
-export const splitCamelCase = string => (
+ */
+export const splitCamelCase = string =>
   string
-  .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
-  .replace(/([a-z\d])([A-Z])/g, '$1 $2')
-  .trim()
-);
+    .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+    .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+    .trim();

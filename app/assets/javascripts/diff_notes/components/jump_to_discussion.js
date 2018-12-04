@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue, brace-style, max-len, quotes */
+/* eslint-disable object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -14,24 +14,24 @@ const JumpToDiscussion = Vue.extend({
       required: true,
     },
   },
-  data: function () {
+  data: function() {
     return {
       discussions: CommentsStore.state,
       discussion: {},
     };
   },
   computed: {
-    buttonText: function () {
+    buttonText: function() {
       if (this.discussionId) {
         return 'Jump to next unresolved discussion';
       } else {
         return 'Jump to first unresolved discussion';
       }
     },
-    allResolved: function () {
+    allResolved: function() {
       return this.unresolvedDiscussionCount === 0;
     },
-    showButton: function () {
+    showButton: function() {
       if (this.discussionId) {
         if (this.unresolvedDiscussionCount > 1) {
           return true;
@@ -42,7 +42,7 @@ const JumpToDiscussion = Vue.extend({
         return this.unresolvedDiscussionCount >= 1;
       }
     },
-    lastResolvedId: function () {
+    lastResolvedId: function() {
       let lastId;
       for (const discussionId in this.discussions) {
         const discussion = this.discussions[discussionId];
@@ -52,13 +52,13 @@ const JumpToDiscussion = Vue.extend({
         }
       }
       return lastId;
-    }
+    },
   },
   created() {
     this.discussion = this.discussions[this.discussionId];
   },
   methods: {
-    jumpToNextUnresolvedDiscussion: function () {
+    jumpToNextUnresolvedDiscussion: function() {
       let discussionsSelector;
       let discussionIdsInScope;
       let firstUnresolvedDiscussionId;
@@ -68,9 +68,11 @@ const JumpToDiscussion = Vue.extend({
       let jumpToFirstDiscussion = !this.discussionId;
 
       const discussionIdsForElements = function(elements) {
-        return elements.map(function() {
-          return $(this).attr('data-discussion-id');
-        }).toArray();
+        return elements
+          .map(function() {
+            return $(this).attr('data-discussion-id');
+          })
+          .toArray();
       };
 
       const { discussions } = this;
@@ -110,7 +112,7 @@ const JumpToDiscussion = Vue.extend({
 
       if (!hasDiscussionsToJumpTo) {
         // If there are no discussions to jump to on the current page,
-        // switch to the notes tab and jump to the first disucssion there.
+        // switch to the notes tab and jump to the first discussion there.
         window.mrTabs.activateTab('show');
         activeTab = 'show';
         jumpToFirstDiscussion = true;
@@ -144,8 +146,7 @@ const JumpToDiscussion = Vue.extend({
             if (!discussion.isResolved()) {
               nextUnresolvedDiscussionId = discussionId;
               break;
-            }
-            else {
+            } else {
               continue;
             }
           }
@@ -175,9 +176,9 @@ const JumpToDiscussion = Vue.extend({
         // Resolved discussions are hidden in the diffs tab by default.
         // If they are marked unresolved on the notes tab, they will still be hidden on the diffs tab.
         // When jumping between unresolved discussions on the diffs tab, we show them.
-        $target.closest(".content").show();
+        $target.closest('.content').show();
 
-        const $notesHolder = $target.closest("tr.notes_holder");
+        const $notesHolder = $target.closest('tr.notes_holder');
 
         // Image diff discussions does not use notes_holder
         // so we should keep original $target value in those cases
@@ -194,7 +195,7 @@ const JumpToDiscussion = Vue.extend({
           prevEl = $target.prev();
 
           // If the discussion doesn't have 4 lines above it, we'll have to do with fewer.
-          if (!prevEl.hasClass("line_holder")) {
+          if (!prevEl.hasClass('line_holder')) {
             break;
           }
 
@@ -203,9 +204,9 @@ const JumpToDiscussion = Vue.extend({
       }
 
       $.scrollTo($target, {
-        offset: -150
+        offset: -150,
       });
-    }
+    },
   },
 });
 

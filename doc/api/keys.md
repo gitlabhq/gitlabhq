@@ -27,10 +27,16 @@ Parameters:
     "web_url": "http://localhost:3000/john_smith",
     "created_at": "2015-09-03T07:24:01.670Z",
     "bio": null,
+    "location": null,
+    "public_email": "john@example.com",
     "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
+    "organization": null,
+    "last_sign_in_at": "2015-09-03T07:24:01.670Z",
+    "confirmed_at": "2015-09-03T07:24:01.670Z",
+    "last_activity_on": "2015-09-03",
     "email": "john@example.com",
     "theme_id": 2,
     "color_scheme_id": 1,
@@ -40,6 +46,8 @@ Parameters:
     "can_create_group": true,
     "can_create_project": true,
     "two_factor_enabled": false
+    "external": false,
+    "private_profile": null
   }
 }
 ```

@@ -12,6 +12,7 @@ class EventsFinder
   # Arguments:
   #   source - which user or project to looks for events on
   #   current_user - only return events for projects visible to this user
+  #                  WARNING: does not consider project feature visibility!
   #   params:
   #     action: string
   #     target_type: string
@@ -57,7 +58,7 @@ class EventsFinder
   def by_target_type(events)
     return events unless Event::TARGET_TYPES[params[:target_type]]
 
-    events.where(target_type: Event::TARGET_TYPES[params[:target_type]])
+    events.where(target_type: Event::TARGET_TYPES[params[:target_type]].name)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

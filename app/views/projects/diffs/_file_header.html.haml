@@ -28,7 +28,7 @@
         = diff_file.file_path
 
       - if diff_file.deleted_file?
-        deleted
+        = _("deleted")
 
   = copy_file_path_button(diff_file.file_path)
 

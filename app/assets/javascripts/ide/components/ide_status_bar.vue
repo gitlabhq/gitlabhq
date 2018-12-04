@@ -50,7 +50,9 @@ export default {
     this.stopPipelinePolling();
   },
   methods: {
-    ...mapActions(['setRightPane']),
+    ...mapActions('rightPane', {
+      openRightPane: 'open',
+    }),
     ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
     startTimer() {
       this.intervalId = setInterval(() => {
@@ -77,18 +79,12 @@ export default {
 
 <template>
   <footer class="ide-status-bar">
-    <div
-      v-if="lastCommit"
-      class="ide-status-branch"
-    >
-      <span
-        v-if="latestPipeline && latestPipeline.details"
-        class="ide-status-pipeline"
-      >
+    <div v-if="lastCommit" class="ide-status-branch">
+      <span v-if="latestPipeline && latestPipeline.details" class="ide-status-pipeline">
         <button
           type="button"
           class="p-0 border-0 h-50"
-          @click="setRightPane($options.rightSidebarViews.pipelines)"
+          @click="openRightPane($options.rightSidebarViews.pipelines);"
         >
           <ci-icon
             v-tooltip
@@ -97,24 +93,21 @@ export default {
           />
         </button>
         Pipeline
-        <a
-          :href="latestPipeline.details.status.details_path"
-          class="monospace">#{{ latestPipeline.id }}</a>
-        {{ latestPipeline.details.status.text }}
-        for
+        <a :href="latestPipeline.details.status.details_path" class="monospace"
+          >#{{ latestPipeline.id }}</a
+        >
+        {{ latestPipeline.details.status.text }} for
       </span>
 
-      <icon
-        name="commit"
-      />
+      <icon name="commit" />
       <a
         v-tooltip
         :title="lastCommit.message"
         :href="getCommitPath(lastCommit.short_id)"
         class="commit-sha"
-      >{{ lastCommit.short_id }}</a>
-      by
-      {{ lastCommit.author_name }}
+        >{{ lastCommit.short_id }}</a
+      >
+      by {{ lastCommit.author_name }}
       <time
         v-tooltip
         :datetime="lastCommit.committed_date"
@@ -125,28 +118,11 @@ export default {
         {{ lastCommitFormatedAge }}
       </time>
     </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.name }}
-    </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.eol }}
-    </div>
-    <div
-      v-if="file && !file.binary"
-      class="ide-status-file">
+    <div v-if="file" class="ide-status-file">{{ file.name }}</div>
+    <div v-if="file" class="ide-status-file">{{ file.eol }}</div>
+    <div v-if="file && !file.binary" class="ide-status-file">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.fileLanguage }}
-    </div>
+    <div v-if="file" class="ide-status-file">{{ file.fileLanguage }}</div>
   </footer>
 </template>

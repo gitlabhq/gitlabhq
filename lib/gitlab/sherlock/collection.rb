@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Sherlock
     # A collection of transactions recorded by Sherlock.

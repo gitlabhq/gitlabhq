@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
 module ExtractsPath
@@ -50,7 +52,9 @@ module ExtractsPath
       # branches and tags
 
       # Append a trailing slash if we only get a ref and no file path
-      id += '/' unless id.ends_with?('/')
+      unless id.ends_with?('/')
+        id = [id, '/'].join
+      end
 
       valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
@@ -106,11 +110,6 @@ module ExtractsPath
   # resolved (e.g., when a user inserts an invalid path or ref).
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
-    # assign allowed options
-    allowed_options = ["filter_ref"]
-    @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
-    @options = HashWithIndifferentAccess.new(@options)
-
     @id = get_id
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
@@ -149,11 +148,11 @@ module ExtractsPath
 
   private
 
-  # overriden in subclasses, do not remove
+  # overridden in subclasses, do not remove
   def get_id
-    id = params[:id] || params[:ref]
-    id += "/" + params[:path] unless params[:path].blank?
-    id
+    id = [params[:id] || params[:ref]]
+    id << "/" + params[:path] unless params[:path].blank?
+    id.join
   end
 
   def ref_names

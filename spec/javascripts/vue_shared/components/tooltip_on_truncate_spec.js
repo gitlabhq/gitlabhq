@@ -79,9 +79,7 @@ describe('TooltipOnTruncate component', () => {
         },
       };
 
-      vm = mountTooltipOnTruncate(options, (h) => [
-        h('a', { style: STYLE_TRUNCATED }, TEST_TITLE),
-      ]);
+      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_TRUNCATED }, TEST_TITLE)]);
 
       vm.$nextTick()
         .then(() => {
@@ -99,9 +97,7 @@ describe('TooltipOnTruncate component', () => {
         },
       };
 
-      vm = mountTooltipOnTruncate(options, (h) => [
-        h('a', { style: STYLE_NORMAL }, TEST_TITLE),
-      ]);
+      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_NORMAL }, TEST_TITLE)]);
 
       vm.$nextTick()
         .then(() => {
@@ -118,11 +114,11 @@ describe('TooltipOnTruncate component', () => {
         style: STYLE_NORMAL,
         props: {
           title: TEST_TITLE,
-          truncateTarget: (el) => el.childNodes[1],
+          truncateTarget: el => el.childNodes[1],
         },
       };
 
-      vm = mountTooltipOnTruncate(options, (h) => [
+      vm = mountTooltipOnTruncate(options, h => [
         h('a', { style: STYLE_NORMAL }, TEST_TITLE),
         h('span', { style: STYLE_TRUNCATED }, TEST_TITLE),
       ]);
@@ -146,9 +142,7 @@ describe('TooltipOnTruncate component', () => {
         },
       };
 
-      vm = mountTooltipOnTruncate(options, (h) => [
-        h('a', { style: STYLE_TRUNCATED }, TEST_TITLE),
-      ]);
+      vm = mountTooltipOnTruncate(options, h => [h('a', { style: STYLE_TRUNCATED }, TEST_TITLE)]);
 
       vm.$nextTick()
         .then(() => {

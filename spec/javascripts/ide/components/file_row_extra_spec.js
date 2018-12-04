@@ -107,14 +107,14 @@ describe('IDE extra file row component', () => {
 
   describe('changes file icon', () => {
     it('hides when file is not changed', () => {
-      expect(vm.$el.querySelector('.ide-file-changed-icon')).toBe(null);
+      expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
     });
 
     it('shows when file is changed', done => {
       vm.file.changed = true;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-file-changed-icon')).not.toBe(null);
+        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
 
         done();
       });
@@ -124,7 +124,7 @@ describe('IDE extra file row component', () => {
       vm.file.staged = true;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-file-changed-icon')).not.toBe(null);
+        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
 
         done();
       });
@@ -134,7 +134,7 @@ describe('IDE extra file row component', () => {
       vm.file.tempFile = true;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.ide-file-changed-icon')).not.toBe(null);
+        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
 
         done();
       });

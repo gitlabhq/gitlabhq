@@ -31,17 +31,14 @@ describe Ci::ProcessPipelineService, '#execute' do
       succeed_pending
 
       expect(builds.success.count).to eq(2)
-      expect(process_pipeline).to be_truthy
 
       succeed_pending
 
       expect(builds.success.count).to eq(4)
-      expect(process_pipeline).to be_truthy
 
       succeed_pending
 
       expect(builds.success.count).to eq(5)
-      expect(process_pipeline).to be_falsey
     end
 
     it 'does not process pipeline if existing stage is running' do
@@ -238,6 +235,187 @@ describe Ci::ProcessPipelineService, '#execute' do
         succeed_running_or_pending
 
         expect(manual_actions).to be_many # production and clear cache
+      end
+    end
+  end
+
+  context 'when delayed jobs are defined' do
+    context 'when the scene is timed incremental rollout' do
+      before do
+        create_build('build', stage_idx: 0)
+        create_build('rollout10%', **delayed_options, stage_idx: 1)
+        create_build('rollout100%', **delayed_options, stage_idx: 2)
+        create_build('cleanup', stage_idx: 3)
+
+        allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+      end
+
+      context 'when builds are successful' do
+        it 'properly processes the pipeline' do
+          expect(process_pipeline).to be_truthy
+          expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+
+          enqueue_scheduled('rollout10%')
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
+
+          enqueue_scheduled('rollout100%')
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'success', 'cleanup': 'pending' })
+
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'success', 'cleanup': 'success' })
+          expect(pipeline.reload.status).to eq 'success'
+        end
+      end
+
+      context 'when build job fails' do
+        it 'properly processes the pipeline' do
+          expect(process_pipeline).to be_truthy
+          expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+
+          fail_running_or_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'failed' })
+          expect(pipeline.reload.status).to eq 'failed'
+        end
+      end
+
+      context 'when rollout 10% is unscheduled' do
+        it 'properly processes the pipeline' do
+          expect(process_pipeline).to be_truthy
+          expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+
+          unschedule
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'manual' })
+          expect(pipeline.reload.status).to eq 'manual'
+        end
+
+        context 'when user plays rollout 10%' do
+          it 'schedules rollout100%' do
+            process_pipeline
+            succeed_pending
+            unschedule
+            play_manual_action('rollout10%')
+            succeed_pending
+
+            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'success', 'rollout100%': 'scheduled' })
+            expect(pipeline.reload.status).to eq 'scheduled'
+          end
+        end
+      end
+
+      context 'when rollout 10% fails' do
+        it 'properly processes the pipeline' do
+          expect(process_pipeline).to be_truthy
+          expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+
+          enqueue_scheduled('rollout10%')
+          fail_running_or_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'failed' })
+          expect(pipeline.reload.status).to eq 'failed'
+        end
+
+        context 'when user retries rollout 10%' do
+          it 'does not schedule rollout10% again' do
+            process_pipeline
+            succeed_pending
+            enqueue_scheduled('rollout10%')
+            fail_running_or_pending
+            retry_build('rollout10%')
+
+            expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'pending' })
+            expect(pipeline.reload.status).to eq 'running'
+          end
+        end
+      end
+
+      context 'when rollout 10% is played immidiately' do
+        it 'properly processes the pipeline' do
+          expect(process_pipeline).to be_truthy
+          expect(builds_names_and_statuses).to eq({ 'build': 'pending' })
+
+          succeed_pending
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'scheduled' })
+
+          play_manual_action('rollout10%')
+
+          expect(builds_names_and_statuses).to eq({ 'build': 'success', 'rollout10%': 'pending' })
+          expect(pipeline.reload.status).to eq 'running'
+        end
+      end
+    end
+
+    context 'when only one scheduled job exists in a pipeline' do
+      before do
+        create_build('delayed', **delayed_options, stage_idx: 0)
+
+        allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+      end
+
+      it 'properly processes the pipeline' do
+        expect(process_pipeline).to be_truthy
+        expect(builds_names_and_statuses).to eq({ 'delayed': 'scheduled' })
+
+        expect(pipeline.reload.status).to eq 'scheduled'
+      end
+    end
+
+    context 'when there are two delayed jobs in a stage' do
+      before do
+        create_build('delayed1', **delayed_options, stage_idx: 0)
+        create_build('delayed2', **delayed_options, stage_idx: 0)
+        create_build('job', stage_idx: 1)
+
+        allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+      end
+
+      it 'blocks the stage until all scheduled jobs finished' do
+        expect(process_pipeline).to be_truthy
+        expect(builds_names_and_statuses).to eq({ 'delayed1': 'scheduled', 'delayed2': 'scheduled' })
+
+        enqueue_scheduled('delayed1')
+
+        expect(builds_names_and_statuses).to eq({ 'delayed1': 'pending', 'delayed2': 'scheduled' })
+        expect(pipeline.reload.status).to eq 'running'
+      end
+    end
+
+    context 'when a delayed job is allowed to fail' do
+      before do
+        create_build('delayed', **delayed_options, allow_failure: true, stage_idx: 0)
+        create_build('job', stage_idx: 1)
+
+        allow(Ci::BuildScheduleWorker).to receive(:perform_at)
+      end
+
+      it 'blocks the stage and continues after it failed' do
+        expect(process_pipeline).to be_truthy
+        expect(builds_names_and_statuses).to eq({ 'delayed': 'scheduled' })
+
+        enqueue_scheduled('delayed')
+        fail_running_or_pending
+
+        expect(builds_names_and_statuses).to eq({ 'delayed': 'failed', 'job': 'pending' })
+        expect(pipeline.reload.status).to eq 'pending'
       end
     end
   end
@@ -493,9 +671,9 @@ describe Ci::ProcessPipelineService, '#execute' do
 
   context 'when builds with auto-retries are configured' do
     before do
-      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('build:1', stage_idx: 0, user: user, options: { retry: { max: 2 } })
       create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
-      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
+      create_build('test:2', stage_idx: 1, user: user, options: { retry: { max: 1 } })
     end
 
     it 'automatically retries builds in a valid order' do
@@ -536,6 +714,13 @@ describe Ci::ProcessPipelineService, '#execute' do
     builds.pluck(:name)
   end
 
+  def builds_names_and_statuses
+    builds.each_with_object({}) do |b, h|
+      h[b.name.to_sym] = b.status
+      h
+    end
+  end
+
   def all_builds_names
     all_builds.pluck(:name)
   end
@@ -549,7 +734,7 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def succeed_pending
-    builds.pending.update_all(status: 'success')
+    builds.pending.map(&:success)
   end
 
   def succeed_running_or_pending
@@ -568,11 +753,27 @@ describe Ci::ProcessPipelineService, '#execute' do
     builds.find_by(name: name).play(user)
   end
 
+  def enqueue_scheduled(name)
+    builds.scheduled.find_by(name: name).enqueue
+  end
+
+  def retry_build(name)
+    Ci::Build.retry(builds.find_by(name: name), user)
+  end
+
   def manual_actions
     pipeline.manual_actions(true)
   end
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
+  end
+
+  def delayed_options
+    { when: 'delayed', options: { start_in: '1 minute' } }
+  end
+
+  def unschedule
+    pipeline.builds.scheduled.map(&:unschedule)
   end
 end

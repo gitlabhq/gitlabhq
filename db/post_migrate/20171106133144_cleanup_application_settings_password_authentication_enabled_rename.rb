@@ -1,4 +1,4 @@
-class CleanupApplicationSettingsPasswordAuthenticationEnabledRename < ActiveRecord::Migration
+class CleanupApplicationSettingsPasswordAuthenticationEnabledRename < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

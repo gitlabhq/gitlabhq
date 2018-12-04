@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Deployments RESTful API endpoints
   class Deployments < Grape::API
@@ -8,7 +10,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all deployments of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Deployment

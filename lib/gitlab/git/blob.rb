@@ -1,15 +1,16 @@
-# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+# frozen_string_literal: true
 
 module Gitlab
   module Git
     class Blob
-      include Linguist::BlobHelper
+      include Gitlab::BlobHelper
       include Gitlab::EncodingHelper
+      extend Gitlab::Git::WrapsGitalyErrors
 
       # This number is the maximum amount of data that we want to display to
-      # the user. We load as much as we can for encoding detection
-      # (Linguist) and LFS pointer parsing. All other cases where we need full
-      # blob data should use load_all_data!.
+      # the user. We load as much as we can for encoding detection and LFS
+      # pointer parsing. All other cases where we need full blob data should
+      # use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
       # These limits are used as a heuristic to ignore files which can't be LFS
@@ -75,7 +76,7 @@ module Gitlab
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set
         def batch_lfs_pointers(repository, blob_ids)
-          repository.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
           end
         end

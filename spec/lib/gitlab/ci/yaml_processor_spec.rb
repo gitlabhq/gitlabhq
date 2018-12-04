@@ -53,11 +53,11 @@ module Gitlab
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do
-              YAML.dump(rspec: { script: 'rspec', retry: 1 })
+              YAML.dump(rspec: { script: 'rspec', retry: { max: 1 } })
             end
 
             it 'includes retry count in build options attribute' do
-              expect(subject[:options]).to include(retry: 1)
+              expect(subject[:options]).to include(retry: { max: 1 })
             end
           end
 
@@ -118,6 +118,21 @@ module Gitlab
               it 'is not allowed to fail' do
                 expect(subject[:allow_failure]).to be false
               end
+            end
+          end
+        end
+
+        describe 'delayed job entry' do
+          context 'when delayed is defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rollout 10%',
+                                 when: 'delayed',
+                                 start_in: '1 day' })
+            end
+
+            it 'has the attributes' do
+              expect(subject[:when]).to eq 'delayed'
+              expect(subject[:options][:start_in]).to eq '1 day'
             end
           end
         end
@@ -626,6 +641,33 @@ module Gitlab
 
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
+          end
+        end
+      end
+
+      describe 'Parallel' do
+        context 'when job is parallelized' do
+          let(:parallel) { 5 }
+
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec',
+                               parallel: parallel })
+          end
+
+          it 'returns parallelized jobs' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+            build_options = builds.map { |build| build[:options] }
+
+            expect(builds.size).to eq(5)
+            expect(build_options).to all(include(:instance, parallel: parallel))
+          end
+
+          it 'does not have the original job' do
+            config_processor = Gitlab::Ci::YamlProcessor.new(config)
+            builds = config_processor.stage_builds_attributes('test')
+
+            expect(builds).not_to include(:rspec)
           end
         end
       end
@@ -1260,7 +1302,7 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", when: 1 } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure, always or manual")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure, always, manual or delayed")
         end
 
         it "returns errors if job artifacts:name is not an a string" do
@@ -1354,12 +1396,20 @@ module Gitlab
           end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
         end
 
-        it 'returns errors if pipeline variables expression is invalid' do
+        it 'returns errors if pipeline variables expression policy is invalid' do
           config = YAML.dump({ rspec: { script: 'test', only: { variables: ['== null'] } } })
 
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'jobs:rspec:only variables invalid expression syntax')
+        end
+
+        it 'returns errors if pipeline changes policy is invalid' do
+          config = YAML.dump({ rspec: { script: 'test', only: { changes: [1] } } })
+
+          expect { Gitlab::Ci::YamlProcessor.new(config) }
+            .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
+                            'jobs:rspec:only changes should be an array of strings')
         end
 
         it 'returns errors if extended hash configuration is invalid' do
@@ -1368,18 +1418,6 @@ module Gitlab
           expect { Gitlab::Ci::YamlProcessor.new(config) }
             .to raise_error(Gitlab::Ci::YamlProcessor::ValidationError,
                             'rspec: unknown key in `extends`')
-        end
-      end
-
-      describe "Validate configuration templates" do
-        templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
-
-        templates.each do |file|
-          it "does not return errors for #{file}" do
-            file = File.read(file)
-
-            expect { Gitlab::Ci::YamlProcessor.new(file) }.not_to raise_error
-          end
         end
       end
 

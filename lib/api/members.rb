@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Members < Grape::API
     include PaginationParams
@@ -10,7 +12,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Gets a list of group or project members viewable by the authenticated user.' do
           success Entities::Member
         end

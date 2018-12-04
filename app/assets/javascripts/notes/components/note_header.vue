@@ -14,7 +14,8 @@ export default {
     },
     createdAt: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     actionText: {
       type: String,
@@ -22,8 +23,9 @@ export default {
       default: '',
     },
     noteId: {
-      type: String,
-      required: true,
+      type: [String, Number],
+      required: false,
+      default: null,
     },
     includeToggle: {
       type: Boolean,
@@ -43,6 +45,9 @@ export default {
     noteTimestampLink() {
       return `#note_${this.noteId}`;
     },
+    hasAuthor() {
+      return this.author && Object.keys(this.author).length;
+    },
   },
   methods: {
     ...mapActions(['setTargetNoteHash']),
@@ -58,56 +63,39 @@ export default {
 
 <template>
   <div class="note-header-info">
-    <div
-      v-if="includeToggle"
-      class="discussion-actions">
+    <div v-if="includeToggle" class="discussion-actions">
       <button
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
         type="button"
-        @click="handleToggle">
-        <i
-          :class="toggleChevronClass"
-          class="fa"
-          aria-hidden="true">
-        </i>
+        @click="handleToggle"
+      >
+        <i :class="toggleChevronClass" class="fa" aria-hidden="true"> </i>
         {{ __('Toggle discussion') }}
       </button>
     </div>
-    <a
-      v-if="Object.keys(author).length"
-      :href="author.path"
-    >
+    <a v-if="hasAuthor" v-once :href="author.path">
       <span class="note-header-author-name">{{ author.name }}</span>
-      <span
-        v-if="author.status_tooltip_html"
-        v-html="author.status_tooltip_html"></span>
-      <span class="note-headline-light">
-        @{{ author.username }}
-      </span>
+      <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
+      <span class="note-headline-light"> @{{ author.username }} </span>
     </a>
-    <span v-else>
-      {{ __('A deleted user') }}
-    </span>
+    <span v-else> {{ __('A deleted user') }} </span>
     <span class="note-headline-light">
       <span class="note-headline-meta">
-        <template v-if="actionText">
-          {{ actionText }}
+        <span class="system-note-message"> <slot></slot> </span>
+        <template v-if="createdAt">
+          <span class="system-note-separator">
+            <template v-if="actionText">
+              {{ actionText }}
+            </template>
+          </span>
+          <a
+            :href="noteTimestampLink"
+            class="note-timestamp system-note-separator"
+            @click="updateTargetNoteHash"
+          >
+            <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
+          </a>
         </template>
-        <span class="system-note-message">
-          <slot></slot>
-        </span>
-        <span class="system-note-separator">
-          &middot;
-        </span>
-        <a
-          :href="noteTimestampLink"
-          class="note-timestamp system-note-separator"
-          @click="updateTargetNoteHash">
-          <time-ago-tooltip
-            :time="createdAt"
-            tooltip-placement="bottom"
-          />
-        </a>
         <i
           class="fa fa-spinner fa-spin editing-spinner"
           aria-label="Comment is being updated"

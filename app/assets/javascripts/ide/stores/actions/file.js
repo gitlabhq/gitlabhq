@@ -56,7 +56,10 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
   dispatch('scrollToTab');
 };
 
-export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
+export const getFileData = (
+  { state, commit, dispatch },
+  { path, makeFileActive = true, openFile = makeFileActive },
+) => {
   const file = state.entries[path];
 
   if (file.raw || (file.tempFile && !file.prevPath)) return Promise.resolve();
@@ -71,15 +74,15 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
       const normalizedHeaders = normalizeHeaders(headers);
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
-      commit(types.SET_FILE_DATA, { data, file });
-      if (makeFileActive) commit(types.TOGGLE_FILE_OPEN, path);
+      if (data) commit(types.SET_FILE_DATA, { data, file });
+      if (openFile) commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
       dispatch('setErrorMessage', {
-        text: __('An error occured whilst loading the file.'),
+        text: __('An error occurred whilst loading the file.'),
         action: payload =>
           dispatch('getFileData', payload).then(() => dispatch('setErrorMessage', null)),
         actionText: __('Please try again'),
@@ -121,7 +124,7 @@ export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) =
       })
       .catch(() => {
         dispatch('setErrorMessage', {
-          text: __('An error occured whilst loading the file content.'),
+          text: __('An error occurred whilst loading the file content.'),
           action: payload =>
             dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
           actionText: __('Please try again'),

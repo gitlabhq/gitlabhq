@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateProtectedTags < ActiveRecord::Migration
+class CreateProtectedTags < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

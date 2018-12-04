@@ -26,6 +26,7 @@ describe('FrequentItemsSearchInputComponent', () => {
         spyOn(vm.$refs.search, 'focus');
 
         vm.setFocus();
+
         expect(vm.$refs.search.focus).toHaveBeenCalled();
       });
     });

@@ -49,6 +49,14 @@ describe('IDE file templates mutations', () => {
 
       expect(state.selectedTemplateType).toBe('type');
     });
+
+    it('clears templates', () => {
+      state.templates = ['test'];
+
+      mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, 'type');
+
+      expect(state.templates).toEqual([]);
+    });
   });
 
   describe(types.SET_UPDATE_SUCCESS, () => {

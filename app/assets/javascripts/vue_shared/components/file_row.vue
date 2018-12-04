@@ -1,12 +1,14 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 
 export default {
   name: 'FileRow',
   components: {
     FileIcon,
     Icon,
+    ChangedFileIcon,
   },
   props: {
     file: {
@@ -22,10 +24,31 @@ export default {
       required: false,
       default: null,
     },
+    hideExtraOnTree: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showChangedIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    displayTextKey: {
+      type: String,
+      required: false,
+      default: 'name',
+    },
+    shouldTruncateStart: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       mouseOver: false,
+      truncateStart: 0,
     };
   },
   computed: {
@@ -48,6 +71,15 @@ export default {
         'is-open': this.file.opened,
       };
     },
+    outputText() {
+      const text = this.file[this.displayTextKey];
+
+      if (this.truncateStart === 0) {
+        return text;
+      }
+
+      return `...${text.substring(this.truncateStart, text.length)}`;
+    },
   },
   watch: {
     'file.active': function fileActiveWatch(active) {
@@ -60,10 +92,22 @@ export default {
     if (this.hasPathAtCurrentRoute()) {
       this.scrollIntoView(true);
     }
+
+    if (this.shouldTruncateStart) {
+      const { scrollWidth, offsetWidth } = this.$refs.textOutput;
+      const textOverflow = scrollWidth - offsetWidth;
+
+      if (textOverflow > 0) {
+        this.truncateStart = Math.ceil(textOverflow / 5) + 3;
+      }
+    }
   },
   methods: {
     toggleTreeOpen(path) {
       this.$emit('toggleTreeOpen', path);
+    },
+    clickedFile(path) {
+      this.$emit('clickFile', path);
     },
     clickFile() {
       // Manual Action if a tree is selected/opened
@@ -72,6 +116,8 @@ export default {
       }
 
       if (this.$router) this.$router.push(`/project${this.file.url}`);
+
+      if (this.isBlob) this.clickedFile(this.file.path);
     },
     scrollIntoView(isInit = false) {
       const block = isInit && this.isTree ? 'center' : 'nearest';
@@ -115,28 +161,25 @@ export default {
       class="file-row"
       role="button"
       @click="clickFile"
-      @mouseover="toggleHover(true)"
-      @mouseout="toggleHover(false)"
+      @mouseover="toggleHover(true);"
+      @mouseout="toggleHover(false);"
     >
-      <div
-        class="file-row-name-container"
-      >
-        <span
-          :style="levelIndentation"
-          class="file-row-name str-truncated"
-        >
+      <div class="file-row-name-container">
+        <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
           <file-icon
+            v-if="!showChangedIcon || file.type === 'tree'"
             :file-name="file.name"
             :loading="file.loading"
             :folder="isTree"
             :opened="file.opened"
             :size="16"
           />
-          {{ file.name }}
+          <changed-file-icon v-else :file="file" :size="16" class="append-right-5" />
+          {{ outputText }}
         </span>
         <component
-          v-if="extraComponent"
           :is="extraComponent"
+          v-if="extraComponent && !(hideExtraOnTree && file.type === 'tree')"
           :file="file"
           :mouse-over="mouseOver"
         />
@@ -148,8 +191,13 @@ export default {
         :key="childFile.key"
         :file="childFile"
         :level="level + 1"
+        :hide-extra-on-tree="hideExtraOnTree"
         :extra-component="extraComponent"
+        :show-changed-icon="showChangedIcon"
+        :display-text-key="displayTextKey"
+        :should-truncate-start="shouldTruncateStart"
         @toggleTreeOpen="toggleTreeOpen"
+        @clickFile="clickedFile"
       />
     </template>
   </div>

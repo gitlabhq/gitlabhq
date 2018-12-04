@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class extends an OpenStruct object by adding predicate methods to mimic
 # ActiveRecord access. We rely on the initial values being true or false to
 # determine whether to define a predicate method because for a newly-added

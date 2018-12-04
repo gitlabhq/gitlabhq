@@ -13,19 +13,33 @@ module Awardable
   end
 
   class_methods do
-    def awarded(user, name)
+    def awarded(user, name = nil)
       sql = <<~EOL
         EXISTS (
           SELECT TRUE
           FROM award_emoji
           WHERE user_id = :user_id AND
-                name = :name AND
+                #{"name = :name AND" if name.present?}
                 awardable_type = :awardable_type AND
                 awardable_id = #{self.arel_table.name}.id
         )
       EOL
 
       where(sql, user_id: user.id, name: name, awardable_type: self.name)
+    end
+
+    def not_awarded(user)
+      sql = <<~EOL
+        NOT EXISTS (
+          SELECT TRUE
+          FROM award_emoji
+          WHERE user_id = :user_id AND
+                awardable_type = :awardable_type AND
+                awardable_id = #{self.arel_table.name}.id
+        )
+      EOL
+
+      where(sql, user_id: user.id, awardable_type: self.name)
     end
 
     def order_upvotes_desc

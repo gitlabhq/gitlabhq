@@ -1,4 +1,4 @@
-class MigrateJiraToGem < ActiveRecord::Migration
+class MigrateJiraToGem < ActiveRecord::Migration[4.2]
   DOWNTIME = true
 
   DOWNTIME_REASON = <<-HEREDOC

@@ -11,6 +11,12 @@ module Issues
       move_issue_to_new_project(issue) || update(issue)
     end
 
+    def update(issue)
+      create_merge_request_from_quick_action
+
+      super
+    end
+
     def before_update(issue)
       spam_check(issue, current_user)
     end
@@ -47,6 +53,8 @@ module Issues
       if added_labels.present?
         notification_service.async.relabeled_issue(issue, added_labels, current_user)
       end
+
+      handle_milestone_change(issue)
 
       added_mentions = issue.mentioned_users - old_mentioned_users
 
@@ -90,6 +98,25 @@ module Issues
     end
 
     private
+
+    def create_merge_request_from_quick_action
+      create_merge_request_params = params.delete(:create_merge_request)
+      return unless create_merge_request_params
+
+      MergeRequests::CreateFromIssueService.new(project, current_user, create_merge_request_params).execute
+    end
+
+    def handle_milestone_change(issue)
+      return if skip_milestone_email
+
+      return unless issue.previous_changes.include?('milestone_id')
+
+      if issue.milestone.nil?
+        notification_service.async.removed_milestone_issue(issue, current_user)
+      else
+        notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+      end
+    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def get_issue_if_allowed(id, board_group_id = nil)

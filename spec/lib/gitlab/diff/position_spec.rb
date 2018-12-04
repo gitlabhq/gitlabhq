@@ -5,6 +5,34 @@ describe Gitlab::Diff::Position do
 
   let(:project) { create(:project, :repository) }
 
+  let(:args_for_img) do
+    {
+      old_path: "files/any.img",
+      new_path: "files/any.img",
+      base_sha: nil,
+      head_sha: nil,
+      start_sha: nil,
+      width: 100,
+      height: 100,
+      x: 1,
+      y: 100,
+      position_type: "image"
+    }
+  end
+
+  let(:args_for_text) do
+    {
+      old_path: "files/ruby/popen.rb",
+      new_path: "files/ruby/popen.rb",
+      old_line: nil,
+      new_line: 14,
+      base_sha: nil,
+      head_sha: nil,
+      start_sha: nil,
+      position_type: "text"
+    }
+  end
+
   describe "position for an added text file" do
     let(:commit) { project.commit("2ea1f3dec713d940208fb5ce4a38765ecb5d3f73") }
 
@@ -529,53 +557,49 @@ describe Gitlab::Diff::Position do
     end
   end
 
-  describe "#to_json" do
+  describe "#as_json" do
     shared_examples "diff position json" do
-      it "returns the position as JSON" do
-        expect(JSON.parse(diff_position.to_json)).to eq(hash.stringify_keys)
-      end
+      let(:diff_position) { described_class.new(args) }
 
-      it "works when nested under another hash" do
-        expect(JSON.parse(JSON.generate(pos: diff_position))).to eq('pos' => hash.stringify_keys)
+      it "returns the position as JSON" do
+        expect(diff_position.as_json).to eq(args.stringify_keys)
       end
     end
 
-    context "for text positon" do
-      let(:hash) do
-        {
-          old_path: "files/ruby/popen.rb",
-          new_path: "files/ruby/popen.rb",
-          old_line: nil,
-          new_line: 14,
-          base_sha: nil,
-          head_sha: nil,
-          start_sha: nil,
-          position_type: "text"
-        }
-      end
-
-      let(:diff_position) { described_class.new(hash) }
+    context "for text position" do
+      let(:args) { args_for_text }
 
       it_behaves_like "diff position json"
     end
 
-    context "for image positon" do
-      let(:hash) do
-        {
-          old_path: "files/any.img",
-          new_path: "files/any.img",
-          base_sha: nil,
-          head_sha: nil,
-          start_sha: nil,
-          width: 100,
-          height: 100,
-          x: 1,
-          y: 100,
-          position_type: "image"
-        }
+    context "for image position" do
+      let(:args) { args_for_img }
+
+      it_behaves_like "diff position json"
+    end
+  end
+
+  describe "#to_json" do
+    shared_examples "diff position json" do
+      let(:diff_position) { described_class.new(args) }
+
+      it "returns the position as JSON" do
+        expect(JSON.parse(diff_position.to_json)).to eq(args.stringify_keys)
       end
 
-      let(:diff_position) { described_class.new(hash) }
+      it "works when nested under another hash" do
+        expect(JSON.parse(JSON.generate(pos: diff_position))).to eq('pos' => args.stringify_keys)
+      end
+    end
+
+    context "for text position" do
+      let(:args) { args_for_text }
+
+      it_behaves_like "diff position json"
+    end
+
+    context "for image position" do
+      let(:args) { args_for_img }
 
       it_behaves_like "diff position json"
     end

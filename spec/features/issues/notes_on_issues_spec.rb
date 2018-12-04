@@ -3,6 +3,12 @@ require 'spec_helper'
 describe 'Create notes on issues', :js do
   let(:user) { create(:user) }
 
+  def submit_comment(text)
+    fill_in 'note[note]', with: text
+    click_button 'Comment'
+    wait_for_requests
+  end
+
   shared_examples 'notes with reference' do
     let(:issue) { create(:issue, project: project) }
     let(:note_text) { "Check #{mention.to_reference}" }
@@ -12,10 +18,7 @@ describe 'Create notes on issues', :js do
       sign_in(user)
       visit project_issue_path(project, issue)
 
-      fill_in 'note[note]', with: note_text
-      click_button 'Comment'
-
-      wait_for_requests
+      submit_comment(note_text)
     end
 
     it 'creates a note with reference and cross references the issue' do
@@ -73,5 +76,17 @@ describe 'Create notes on issues', :js do
       let(:project) { create(:project, :public, :repository) }
       let(:mention) { create(:merge_request, source_project: project) }
     end
+  end
+
+  it 'highlights the current user in a comment' do
+    project = create(:project)
+    issue = create(:issue, project: project)
+    project.add_developer(user)
+    sign_in(user)
+
+    visit project_issue_path(project, issue)
+    submit_comment("@#{user.username} note to self")
+
+    expect(page).to have_selector '.gfm-project_member.current-user', text: user.username
   end
 end

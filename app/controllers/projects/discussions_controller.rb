@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::DiscussionsController < Projects::ApplicationController
   include NotesHelper
   include RendersNotes

@@ -147,3 +147,9 @@ table {
     }
   }
 }
+
+.top-area + .content-list {
+  th {
+    border-top: 0;
+  }
+}

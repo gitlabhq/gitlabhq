@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MilestonesController < Projects::ApplicationController
   include Gitlab::Utils::StrongMemoize
   include MilestoneActions
@@ -9,7 +11,10 @@ class Projects::MilestonesController < Projects::ApplicationController
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels, :promote]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
+
+  # Allow to promote milestone
+  before_action :authorize_promote_milestone!, only: :promote
 
   respond_to :html
 
@@ -76,7 +81,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-    flash[:notice] = flash_notice_for(promoted_milestone, project.group)
+    flash[:notice] = flash_notice_for(promoted_milestone, project_group)
 
     respond_to do |format|
       format.html do
@@ -91,12 +96,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def flash_notice_for(milestone, group)
-    notice = ''.html_safe
-    notice << milestone.title
-    notice << ' promoted to '
-    notice << view_context.link_to('<u>group milestone</u>'.html_safe, group_milestone_path(group, milestone.iid))
-    notice << '.'
-    notice
+    ''.html_safe + "#{milestone.title} promoted to " + view_context.link_to('<u>group milestone</u>'.html_safe, group_milestone_path(group, milestone.iid)) + '.'
   end
 
   def destroy
@@ -111,6 +111,12 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   protected
+
+  def project_group
+    strong_memoize(:project_group) do
+      project.group
+    end
+  end
 
   def milestones
     strong_memoize(:milestones) do
@@ -128,13 +134,17 @@ class Projects::MilestonesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_milestone, @project)
   end
 
+  def authorize_promote_milestone!
+    return render_404 unless can?(current_user, :admin_milestone, project_group)
+  end
+
   def milestone_params
     params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 
   def search_params
-    if request.format.json? && @project.group && can?(current_user, :read_group, @project.group)
-      groups = @project.group.self_and_ancestors_ids
+    if request.format.json? && project_group && can?(current_user, :read_group, project_group)
+      groups = project_group.self_and_ancestors_ids
     end
 
     params.permit(:state).merge(project_ids: @project.id, group_ids: groups)

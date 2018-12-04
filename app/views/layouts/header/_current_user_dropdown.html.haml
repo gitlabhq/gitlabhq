@@ -5,19 +5,23 @@
     .user-name.bold
       = current_user.name
     = current_user.to_reference
+    - if current_user.status
+      .user-status.d-flex.align-items-center.prepend-top-2.has-tooltip{ title: current_user.status.message_html, data: { html: 'true', placement: 'bottom' } }
+        %span.user-status-emoji.d-flex.align-items-center
+          = emoji_icon current_user.status.emoji
+        %span.user-status-message.str-truncated
+          = current_user.status.message_html.html_safe
   %li.divider
+  - if can?(current_user, :update_user_status, current_user)
+    %li
+      .js-set-status-modal-trigger{ data: { has_status: current_user.status.present? ? 'true' : 'false' } }
   - if current_user_menu?(:profile)
     %li
       = link_to s_("CurrentUser|Profile"), current_user, class: 'profile-link', data: { user: current_user.username }
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Settings"), profile_path
-  - if current_user_menu?(:help)
-    %li
-      = link_to _("Help"), help_path
-  - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
-    %li.divider
-  = render 'shared/user_dropdown_contributing_link'
   - if current_user_menu?(:sign_out)
+    %li.divider
     %li
       = link_to _("Sign out"), destroy_user_session_path, class: "sign-out-link"

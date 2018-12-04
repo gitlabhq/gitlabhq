@@ -1,6 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import initDismissableCallout from '~/dismissable_callout';
+import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
@@ -9,7 +9,7 @@ import eventHub from './event_hub';
 import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
-import applications from './components/applications.vue';
+import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
 
 /**
@@ -26,10 +26,13 @@ export default class Clusters {
       statusPath,
       installHelmPath,
       installIngressPath,
+      installCertManagerPath,
       installRunnerPath,
       installJupyterPath,
+      installKnativePath,
       installPrometheusPath,
       managePrometheusPath,
+      clusterType,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -46,9 +49,11 @@ export default class Clusters {
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
+      installCertManagerEndpoint: installCertManagerPath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
+      installKnativeEndpoint: installKnativePath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -62,10 +67,10 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
-    initDismissableCallout('.js-cluster-security-warning');
+    Clusters.initDismissableCallout();
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
-    this.initApplications();
+    this.initApplications(clusterType);
 
     if (this.store.state.status !== 'created') {
       this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
@@ -77,23 +82,21 @@ export default class Clusters {
     }
   }
 
-  initApplications() {
+  initApplications(type) {
     const { store } = this;
     const el = document.querySelector('#js-cluster-applications');
 
     this.applications = new Vue({
       el,
-      components: {
-        applications,
-      },
       data() {
         return {
           state: store.state,
         };
       },
       render(createElement) {
-        return createElement('applications', {
+        return createElement(Applications, {
           props: {
+            type,
             applications: this.state.applications,
             helpPath: this.state.helpPath,
             ingressHelpPath: this.state.ingressHelpPath,
@@ -103,6 +106,12 @@ export default class Clusters {
         });
       },
     });
+  }
+
+  static initDismissableCallout() {
+    const callout = document.querySelector('.js-cluster-security-warning');
+
+    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
   }
 
   addListeners() {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::AvatarsController < Projects::ApplicationController
   include SendsBlob
 
@@ -6,7 +8,7 @@ class Projects::AvatarsController < Projects::ApplicationController
   def show
     @blob = @repository.blob_at_branch(@repository.root_ref, @project.avatar_in_git)
 
-    send_blob(@blob)
+    send_blob(@repository, @blob)
   end
 
   def destroy

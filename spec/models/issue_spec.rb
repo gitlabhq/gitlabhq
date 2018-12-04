@@ -84,15 +84,32 @@ describe Issue do
     end
   end
 
-  describe '#closed_at' do
-    it 'sets closed_at to Time.now when issue is closed' do
-      issue = create(:issue, state: 'opened')
+  describe '#close' do
+    subject(:issue) { create(:issue, state: 'opened') }
 
-      expect(issue.closed_at).to be_nil
+    it 'sets closed_at to Time.now when an issue is closed' do
+      expect { issue.close }.to change { issue.closed_at }.from(nil)
+    end
 
-      issue.close
+    it 'changes the state to closed' do
+      expect { issue.close }.to change { issue.state }.from('opened').to('closed')
+    end
+  end
 
-      expect(issue.closed_at).to be_present
+  describe '#reopen' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue, state: 'closed', closed_at: Time.now, closed_by: user) }
+
+    it 'sets closed_at to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_at }.to(nil)
+    end
+
+    it 'sets closed_by to nil when an issue is reopend' do
+      expect { issue.reopen }.to change { issue.closed_by }.from(user).to(nil)
+    end
+
+    it 'changes the state to opened' do
+      expect { issue.reopen }.to change { issue.state }.from('closed').to('opened')
     end
   end
 
@@ -248,45 +265,6 @@ describe Issue do
       let(:issue) { create(:issue, moved_to: moved_to_issue) }
 
       it { is_expected.to eq true }
-    end
-  end
-
-  describe '#related_branches' do
-    let(:user) { create(:admin) }
-
-    before do
-      allow(subject.project.repository).to receive(:branch_names)
-                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
-
-      # Without this stub, the `create(:merge_request)` above fails because it can't find
-      # the source branch. This seems like a reasonable compromise, in comparison with
-      # setting up a full repo here.
-      allow_any_instance_of(MergeRequest).to receive(:create_merge_request_diff)
-    end
-
-    it "selects the right branches when there are no referenced merge requests" do
-      expect(subject.related_branches(user)).to eq([subject.to_branch_name, "#{subject.iid}-branch"])
-    end
-
-    it "selects the right branches when there is a referenced merge request" do
-      merge_request = create(:merge_request, { description: "Closes ##{subject.iid}",
-                                               source_project: subject.project,
-                                               source_branch: "#{subject.iid}-branch" })
-      merge_request.create_cross_references!(user)
-
-      referenced_merge_requests = Issues::ReferencedMergeRequestsService
-                                    .new(subject.project, user)
-                                    .referenced_merge_requests(subject)
-
-      expect(referenced_merge_requests).not_to be_empty
-      expect(subject.related_branches(user)).to eq([subject.to_branch_name])
-    end
-
-    it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names)
-        .and_return(["#{subject.iid}-0-stable"])
-
-      expect(subject.related_branches(user)).to eq []
     end
   end
 

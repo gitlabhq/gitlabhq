@@ -23,17 +23,17 @@ describe 'Group milestones' do
 
       description.native.send_keys('')
 
-      click_link('Preview')
+      click_button('Preview')
 
       preview = find('.js-md-preview')
 
       expect(preview).to have_content('Nothing to preview.')
 
-      click_link('Write')
+      click_button('Write')
 
       description.native.send_keys(':+1: Nice')
 
-      click_link('Preview')
+      click_button('Preview')
 
       expect(preview).to have_css('gl-emoji')
       expect(find('#milestone_description', visible: false)).not_to be_visible
@@ -95,9 +95,9 @@ describe 'Group milestones' do
       end
 
       it 'counts milestones correctly' do
-        expect(find('.top-area .active .badge').text).to eq("2")
-        expect(find('.top-area .closed .badge').text).to eq("2")
-        expect(find('.top-area .all .badge').text).to eq("4")
+        expect(find('.top-area .active .badge').text).to eq("3")
+        expect(find('.top-area .closed .badge').text).to eq("3")
+        expect(find('.top-area .all .badge').text).to eq("6")
       end
 
       it 'lists legacy group milestones and group milestones' do

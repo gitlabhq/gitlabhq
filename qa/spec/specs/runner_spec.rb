@@ -62,6 +62,34 @@ describe QA::Specs::Runner do
       end
     end
 
+    context 'when SIGNUP_DISABLED is true' do
+      before do
+        allow(QA::Runtime::Env).to receive(:signup_disabled?).and_return(true)
+      end
+
+      subject { described_class.new }
+
+      it 'it includes default args and excludes the skip_signup_disabled tag' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
+
+        subject.perform
+      end
+    end
+
+    context 'when git protocol v2 is not supported' do
+      before do
+        allow(QA::Runtime::Env).to receive(:can_test?).with(:git_protocol_v2).and_return(false)
+      end
+
+      subject { described_class.new }
+
+      it 'it includes default args and excludes the requires_git_protocol_v2 tag' do
+        expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~requires_git_protocol_v2', *described_class::DEFAULT_TEST_PATH_ARGS])
+
+        subject.perform
+      end
+    end
+
     def expect_rspec_runner_arguments(arguments)
       expect(RSpec::Core::Runner).to receive(:run)
         .with(arguments, $stderr, $stdout)

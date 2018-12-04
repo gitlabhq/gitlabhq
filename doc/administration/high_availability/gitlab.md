@@ -118,7 +118,7 @@ need some extra configuration.
     gitlab_rails['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
     ```
 
-1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
+1. Run `touch /etc/gitlab/skip-auto-reconfigure` to prevent database migrations
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 

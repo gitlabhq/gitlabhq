@@ -2,6 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { PROJECT_BADGE } from '../constants';
 import Badge from './badge.vue';
 
@@ -10,6 +11,7 @@ export default {
   components: {
     Badge,
     Icon,
+    GlLoadingIcon,
   },
   props: {
     badge: {
@@ -48,20 +50,14 @@ export default {
       <span class="badge badge-pill">{{ badgeKindText }}</span>
     </div>
     <div class="table-section section-15 table-button-footer">
-      <div
-        v-if="canEditBadge"
-        class="table-action-buttons">
+      <div v-if="canEditBadge" class="table-action-buttons">
         <button
           :disabled="badge.isDeleting"
           class="btn btn-default append-right-8"
           type="button"
-          @click="editBadge(badge)"
+          @click="editBadge(badge);"
         >
-          <icon
-            :size="16"
-            :aria-label="__('Edit')"
-            name="pencil"
-          />
+          <icon :size="16" :aria-label="__('Edit')" name="pencil" />
         </button>
         <button
           :disabled="badge.isDeleting"
@@ -69,18 +65,11 @@ export default {
           type="button"
           data-toggle="modal"
           data-target="#delete-badge-modal"
-          @click="updateBadgeInModal(badge)"
+          @click="updateBadgeInModal(badge);"
         >
-          <icon
-            :size="16"
-            :aria-label="__('Delete')"
-            name="remove"
-          />
+          <icon :size="16" :aria-label="__('Delete')" name="remove" />
         </button>
-        <gl-loading-icon
-          v-show="badge.isDeleting"
-          :inline="true"
-        />
+        <gl-loading-icon v-show="badge.isDeleting" :inline="true" />
       </div>
     </div>
   </div>

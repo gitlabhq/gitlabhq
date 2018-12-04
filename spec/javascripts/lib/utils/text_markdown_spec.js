@@ -21,7 +21,14 @@ describe('init markdown', () => {
       textArea.selectionStart = 0;
       textArea.selectionEnd = 0;
 
-      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag: '*',
+        blockTag: null,
+        selected: '',
+        wrap: false,
+      });
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });
@@ -32,7 +39,14 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag: '*',
+        blockTag: null,
+        selected: '',
+        wrap: false,
+      });
 
       expect(textArea.value).toEqual(`${initialValue}\n* `);
     });
@@ -43,7 +57,14 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag: '*',
+        blockTag: null,
+        selected: '',
+        wrap: false,
+      });
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });
@@ -54,9 +75,153 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag: '*',
+        blockTag: null,
+        selected: '',
+        wrap: false,
+      });
 
       expect(textArea.value).toEqual(`${initialValue}* `);
+    });
+
+    it('places the cursor inside the tags', () => {
+      const start = 'lorem ';
+      const end = ' ipsum';
+      const tag = '*';
+
+      textArea.value = `${start}${end}`;
+      textArea.setSelectionRange(start.length, start.length);
+
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag,
+        blockTag: null,
+        selected: '',
+        wrap: true,
+      });
+
+      expect(textArea.value).toEqual(`${start}**${end}`);
+
+      // cursor placement should be between tags
+      expect(textArea.selectionStart).toBe(start.length + tag.length);
+    });
+  });
+
+  describe('with selection', () => {
+    const text = 'initial selected value';
+    const selected = 'selected';
+    beforeEach(() => {
+      textArea.value = text;
+      const selectedIndex = text.indexOf(selected);
+      textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
+    });
+
+    it('applies the tag to the selected value', () => {
+      const selectedIndex = text.indexOf(selected);
+      const tag = '*';
+
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag,
+        blockTag: null,
+        selected,
+        wrap: true,
+      });
+
+      expect(textArea.value).toEqual(text.replace(selected, `*${selected}*`));
+
+      // cursor placement should be after selection + 2 tag lengths
+      expect(textArea.selectionStart).toBe(selectedIndex + selected.length + 2 * tag.length);
+    });
+
+    it('replaces the placeholder in the tag', () => {
+      insertMarkdownText({
+        textArea,
+        text: textArea.value,
+        tag: '[{text}](url)',
+        blockTag: null,
+        selected,
+        wrap: false,
+      });
+
+      expect(textArea.value).toEqual(text.replace(selected, `[${selected}](url)`));
+    });
+
+    describe('and text to be selected', () => {
+      const tag = '[{text}](url)';
+      const select = 'url';
+
+      it('selects the text', () => {
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag,
+          blockTag: null,
+          selected,
+          wrap: false,
+          select,
+        });
+
+        const expectedText = text.replace(selected, `[${selected}](url)`);
+
+        expect(textArea.value).toEqual(expectedText);
+        expect(textArea.selectionStart).toEqual(expectedText.indexOf(select));
+        expect(textArea.selectionEnd).toEqual(expectedText.indexOf(select) + select.length);
+      });
+
+      it('selects the right text when multiple tags are present', () => {
+        const initialValue = `${tag} ${tag} ${selected}`;
+        textArea.value = initialValue;
+        const selectedIndex = initialValue.indexOf(selected);
+        textArea.setSelectionRange(selectedIndex, selectedIndex + selected.length);
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag,
+          blockTag: null,
+          selected,
+          wrap: false,
+          select,
+        });
+
+        const expectedText = initialValue.replace(selected, `[${selected}](url)`);
+
+        expect(textArea.value).toEqual(expectedText);
+        expect(textArea.selectionStart).toEqual(expectedText.lastIndexOf(select));
+        expect(textArea.selectionEnd).toEqual(expectedText.lastIndexOf(select) + select.length);
+      });
+
+      it('should support selected urls', () => {
+        const expectedUrl = 'http://www.gitlab.com';
+        const expectedSelectionText = 'text';
+        const expectedText = `text [${expectedSelectionText}](${expectedUrl}) text`;
+        const initialValue = `text ${expectedUrl} text`;
+
+        textArea.value = initialValue;
+        const selectedIndex = initialValue.indexOf(expectedUrl);
+        textArea.setSelectionRange(selectedIndex, selectedIndex + expectedUrl.length);
+
+        insertMarkdownText({
+          textArea,
+          text: textArea.value,
+          tag,
+          blockTag: null,
+          selected: expectedUrl,
+          wrap: false,
+          select,
+        });
+
+        expect(textArea.value).toEqual(expectedText);
+        expect(textArea.selectionStart).toEqual(expectedText.indexOf(expectedSelectionText, 1));
+        expect(textArea.selectionEnd).toEqual(
+          expectedText.indexOf(expectedSelectionText, 1) + expectedSelectionText.length,
+        );
+      });
     });
   });
 });

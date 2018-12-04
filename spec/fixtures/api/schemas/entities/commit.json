@@ -17,11 +17,10 @@
         "author": {
           "oneOf": [
             { "type": "null" },
-            { "type": "user.json" }
+            { "$ref": "user.json" }
           ]
         }
-      },
-      "additionalProperties": false
+      }
     }
   ]
 }

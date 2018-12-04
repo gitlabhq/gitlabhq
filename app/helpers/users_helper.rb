@@ -70,13 +70,17 @@ module UsersHelper
     end
   end
 
+  def impersonation_enabled?
+    Gitlab.config.gitlab.impersonation_enabled
+  end
+
   private
 
   def get_profile_tabs
     tabs = []
 
     if can?(current_user, :read_user_profile, @user)
-      tabs += [:activity, :groups, :contributed, :projects, :snippets]
+      tabs += [:overview, :activity, :groups, :contributed, :projects, :snippets]
     end
 
     tabs

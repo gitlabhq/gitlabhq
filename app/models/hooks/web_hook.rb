@@ -3,6 +3,16 @@
 class WebHook < ActiveRecord::Base
   include Sortable
 
+  attr_encrypted :token,
+                 mode:      :per_attribute_iv,
+                 algorithm: 'aes-256-gcm',
+                 key:       Settings.attr_encrypted_db_key_base_truncated
+
+  attr_encrypted :url,
+                 mode:      :per_attribute_iv,
+                 algorithm: 'aes-256-gcm',
+                 key:       Settings.attr_encrypted_db_key_base_truncated
+
   has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :url, presence: true, public_url: { allow_localhost: lambda(&:allow_local_requests?),

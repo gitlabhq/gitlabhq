@@ -34,7 +34,7 @@ module ResourceEvents
     def label_events_by_discussion_id
       return [] unless resource.respond_to?(:resource_label_events)
 
-      events = resource.resource_label_events.includes(:label, :user)
+      events = resource.resource_label_events.includes(:label, user: :status)
       events = since_fetch_at(events)
 
       events.group_by { |event| event.discussion_id }

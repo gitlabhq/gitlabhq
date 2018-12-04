@@ -9,7 +9,7 @@
       autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title')
 
   - if issuable.respond_to?(:work_in_progress?)
-    %p.form-text.text-muted
+    .form-text.text-muted
       .js-wip-explanation
         %a.js-toggle-wip{ href: '', tabindex: -1 }
           Remove the

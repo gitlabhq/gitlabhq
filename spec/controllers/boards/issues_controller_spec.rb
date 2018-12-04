@@ -30,6 +30,15 @@ describe Boards::IssuesController do
 
     context 'when list id is present' do
       context 'with valid list id' do
+        let(:group) { create(:group, :private, projects: [project]) }
+        let(:group_board) { create(:board, group: group) }
+        let!(:list3) { create(:list, board: group_board, label: development, position: 2) }
+        let(:sub_group_1) { create(:group, :private, parent: group) }
+
+        before do
+          group.add_maintainer(user)
+        end
+
         it 'returns issues that have the list label applied' do
           issue = create(:labeled_issue, project: project, labels: [planning])
           create(:labeled_issue, project: project, labels: [planning])
@@ -55,6 +64,39 @@ describe Boards::IssuesController do
           create_list(:labeled_issue, 25, project: project, labels: [development], assignees: [johndoe], relative_position: 1)
 
           expect { list_issues(user: user, board: board, list: list2) }.not_to exceed_query_limit(control_count)
+        end
+
+        it 'avoids N+1 database queries when adding a project', :request_store do
+          create(:labeled_issue, project: project, labels: [development])
+          control_count = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: group_board, list: list3) }.count
+
+          2.times do
+            p = create(:project, group: group)
+            create(:labeled_issue, project: p, labels: [development])
+          end
+
+          project_2 = create(:project, group: group)
+          create(:labeled_issue, project: project_2, labels: [development], assignees: [johndoe])
+
+          # because each issue without relative_position must be updated with
+          # a different value, we have 8 extra queries per issue
+          expect { list_issues(user: user, board: group_board, list: list3) }.not_to exceed_query_limit(control_count + (2 * 8 - 1))
+        end
+
+        it 'avoids N+1 database queries when adding a subgroup, project, and issue', :nested_groups do
+          create(:project, group: sub_group_1)
+          create(:labeled_issue, project: project, labels: [development])
+          control_count = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: group_board, list: list3) }.count
+          project_2 = create(:project, group: group)
+
+          2.times do
+            p = create(:project, group: sub_group_1)
+            create(:labeled_issue, project: p, labels: [development])
+          end
+
+          create(:labeled_issue, project: project_2, labels: [development], assignees: [johndoe])
+
+          expect { list_issues(user: user, board: group_board, list: list3) }.not_to exceed_query_limit(control_count + (2 * 8 - 1))
         end
       end
 
@@ -102,11 +144,14 @@ describe Boards::IssuesController do
       sign_in(user)
 
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
         board_id: board.to_param,
         list_id: list.try(:to_param)
       }
+
+      unless board.try(:parent)&.is_a?(Group)
+        params[:namespace_id] = project.namespace.to_param
+        params[:project_id] = project
+      end
 
       get :index, params.compact
     end
@@ -163,11 +208,22 @@ describe Boards::IssuesController do
       end
     end
 
-    context 'with unauthorized user' do
-      it 'returns a forbidden 403 response' do
-        create_issue user: guest, board: board, list: list1, title: 'New issue'
+    context 'with guest user' do
+      context 'in open list' do
+        it 'returns a successful 200 response' do
+          open_list = board.lists.create(list_type: :backlog)
+          create_issue user: guest, board: board, list: open_list, title: 'New issue'
 
-        expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'in label list' do
+        it 'returns a forbidden 403 response' do
+          create_issue user: guest, board: board, list: list1, title: 'New issue'
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 

@@ -45,6 +45,20 @@ shared_examples 'an email that contains a header with author username' do
   end
 end
 
+shared_examples 'an email with X-GitLab headers containing IDs' do
+  it 'has X-GitLab-*-ID header' do
+    is_expected.to have_header "X-GitLab-#{model.class.name}-ID", "#{model.id}"
+  end
+
+  it 'has X-GitLab-*-IID header if model has iid defined' do
+    if model.respond_to?(:iid)
+      is_expected.to have_header "X-GitLab-#{model.class.name}-IID", "#{model.iid}"
+    else
+      expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to eq nil
+    end
+  end
+end
+
 shared_examples 'an email with X-GitLab headers containing project details' do
   it 'has X-GitLab-Project headers' do
     aggregate_failures do
@@ -69,6 +83,7 @@ end
 
 shared_examples 'a thread answer email with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
 
   it 'has the characteristics of a threaded reply' do
     host = Gitlab.config.gitlab.host
@@ -85,6 +100,7 @@ end
 
 shared_examples 'an email starting a new thread with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a new thread email with reply-by-email enabled'
 
   it 'includes "Reply to this email directly or <View it on GitLab>"' do
@@ -109,6 +125,7 @@ end
 
 shared_examples 'an answer to an existing thread with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a thread answer email with reply-by-email enabled'
 
   context 'when reply-by-email is enabled with incoming address with %{key}' do

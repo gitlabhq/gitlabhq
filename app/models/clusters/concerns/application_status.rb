@@ -15,6 +15,9 @@ module Clusters
           state :scheduled, value: 1
           state :installing, value: 2
           state :installed, value: 3
+          state :updating, value: 4
+          state :updated, value: 5
+          state :update_errored, value: 6
 
           event :make_scheduled do
             transition [:installable, :errored] => :scheduled
@@ -32,6 +35,18 @@ module Clusters
             transition any => :errored
           end
 
+          event :make_updating do
+            transition [:installed, :updated, :update_errored] => :updating
+          end
+
+          event :make_updated do
+            transition [:updating] => :updated
+          end
+
+          event :make_update_errored do
+            transition any => :update_errored
+          end
+
           before_transition any => [:scheduled] do |app_status, _|
             app_status.status_reason = nil
           end
@@ -40,7 +55,27 @@ module Clusters
             status_reason = transition.args.first
             app_status.status_reason = status_reason if status_reason
           end
+
+          before_transition any => [:updating] do |app_status, _|
+            app_status.status_reason = nil
+          end
+
+          before_transition any => [:update_errored] do |app_status, transition|
+            status_reason = transition.args.first
+            app_status.status_reason = status_reason if status_reason
+          end
+
+          before_transition any => [:installed, :updated] do |app_status, _|
+            # When installing any application we are also performing an update
+            # of tiller (see Gitlab::Kubernetes::Helm::ClientCommand) so
+            # therefore we need to reflect that in the database.
+            app_status.cluster.application_helm.update!(version: Gitlab::Kubernetes::Helm::HELM_VERSION)
+          end
         end
+      end
+
+      def available?
+        installed? || updated?
       end
     end
   end

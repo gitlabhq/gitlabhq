@@ -86,6 +86,7 @@ describe('Report section', () => {
       });
     });
   });
+
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
@@ -96,6 +97,7 @@ describe('Report section', () => {
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
+
       expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report');
     });
   });
@@ -118,7 +120,7 @@ describe('Report section', () => {
         'Code quality improved on 1 point and degraded on 1 point',
       );
 
-      expect(vm.$el.querySelectorAll('.js-mr-code-resolved-issues li').length).toEqual(
+      expect(vm.$el.querySelectorAll('.report-block-container li').length).toEqual(
         resolvedIssues.length,
       );
     });
@@ -168,6 +170,7 @@ describe('Report section', () => {
         successText: 'Code quality improved on 1 point and degraded on 1 point',
         hasIssues: false,
       });
+
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
     });
   });

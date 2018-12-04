@@ -14,7 +14,7 @@ describe 'Tooltips on .timeago dates', :js do
                     updated_at: created_date, created_at: created_date)
 
       sign_in user
-      visit user_path(user)
+      visit user_activity_path(user)
       wait_for_requests()
 
       page.find('.js-timeago').hover

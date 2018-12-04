@@ -10,39 +10,182 @@ For information, see the [GitLab Release Process](https://gitlab.com/gitlab-org/
 
 Both EE and CE require some add-on components called gitlab-shell and Gitaly. These components are available from the [gitlab-shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
-## Physical office analogy
+## GitLab Omnibus Component by Component
 
-You can imagine GitLab as a physical office.
+This document is designed to be consumed by systems adminstrators and GitLab Support Engineers who want to understand more about the internals of GitLab and how they work together.
 
-**The repositories** are the goods GitLab handles.
-They can be stored in a warehouse.
-This can be either a hard disk, or something more complex, such as a NFS filesystem;
+When deployed, GitLab should be considered the amalgamation of the below processes. When troubleshooting or debugging, be as specific as possible as to which component you are referencing. That should increase clarity and reduce confusion.
 
-**Nginx** acts like the front-desk.
-Users come to Nginx and request actions to be done by workers in the office;
+### GitLab Process Descriptions
 
-**The database** is a series of metal file cabinets with information on:
- - The goods in the warehouse (metadata, issues, merge requests etc);
- - The users coming to the front desk (permissions)
+As of this writing, a fresh GitLab 11.3.0 install will show the following processes with `gitlab-ctl status`:
 
-**Redis** is a communication board with “cubby holes” that can contain tasks for office workers;
+```
+run: alertmanager: (pid 30829) 14207s; run: log: (pid 13906) 2432044s
+run: gitaly: (pid 30771) 14210s; run: log: (pid 13843) 2432046s
+run: gitlab-monitor: (pid 30788) 14209s; run: log: (pid 13868) 2432045s
+run: gitlab-workhorse: (pid 30758) 14210s; run: log: (pid 13855) 2432046s
+run: logrotate: (pid 30246) 3407s; run: log: (pid 13825) 2432047s
+run: nginx: (pid 30849) 14207s; run: log: (pid 13856) 2432046s
+run: node-exporter: (pid 30929) 14206s; run: log: (pid 13877) 2432045s
+run: postgres-exporter: (pid 30935) 14206s; run: log: (pid 13931) 2432044s
+run: postgresql: (pid 13133) 2432214s; run: log: (pid 13848) 2432046s
+run: prometheus: (pid 30807) 14209s; run: log: (pid 13884) 2432045s
+run: redis: (pid 30560) 14274s; run: log: (pid 13807) 2432047s
+run: redis-exporter: (pid 30946) 14205s; run: log: (pid 13869) 2432045s
+run: sidekiq: (pid 30953) 14205s; run: log: (pid 13810) 2432047s
+run: unicorn: (pid 30960) 14204s; run: log: (pid 13809) 2432047s
+``` 
 
-**Sidekiq** is a worker that primarily handles sending out emails.
-It takes tasks from the Redis communication board;
+### Layers
 
-**A Unicorn worker** is a worker that handles quick/mundane tasks.
-They work with the communication board (Redis).
-Their job description:
- - check permissions by checking the user session stored in a Redis “cubby hole”;
- - make tasks for Sidekiq;
- - fetch stuff from the warehouse or move things around in there;
+GitLab can be considered to have two layers from a process perspective:
 
-**GitLab-shell** is a third kind of worker that takes orders from a fax machine (SSH) instead of the front desk (HTTP).
-GitLab-shell communicates with Sidekiq via the “communication board” (Redis), and asks quick questions of the Unicorn workers either directly or via the front desk.
+- **Monitoring**: Anything from this layer is not required to deliver GitLab the application, but will allow administrators more insight into their infrastructure and what the service as a whole is doing.
+- **Core**: Any process that is vital for the delivery of GitLab as a platform. If any of these processes halt there will be a GitLab outage. For the Core layer, you can further divide into:
+  - **Processors**: These processes are responsible for actually performing operations and presenting the service.
+  - **Data**: These services store/expose structured data for the GitLab service.
 
-**Gitaly** is a back desk that is specialized on reaching the disks to perform git operations efficiently and keep a copy of the result of costly operations. All git operations go through Gitaly.
+### alertmanager
 
-**GitLab Enterprise Edition (the application)** is the collection of processes and business practices that the office is run by.
+- Omnibus configuration options
+- Layer: Monitoring
+
+[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue gitlab-ce#45740](https://gitlab.com/gitlab-org/gitlab-ce/issues/45740) about what we will be alerting on. 
+
+### gitaly
+
+- [Omnibus configuration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration) 
+- Layer: Core Service (Data)
+
+Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab. (Think GitLab.com or High Availablity Deployments) As of 11.3.0, This service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
+
+### gitlab-monitor
+
+- Omnibus configuration options
+- Layer: Monitoring 
+
+GitLab Monitor is a process disigned in house that allows us to export metrics about GitLab application internals to prometheus. You can read more [in the project's readme](https://gitlab.com/gitlab-org/gitlab-monitor)
+
+### gitlab-workhorse
+
+- Omnibus configuration options
+- Layer: Core Service (Processor)
+
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alieviate pressure from unicorn. You can read more about the [historical reasons for developing](https://about.gitlab.com/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+
+### logrotate
+
+- [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
+- Layer: Core Service
+
+GitLab is comprised of a large number of services that all log. We started bundling our own logrotate as of 7.4 to make sure we were logging responsibly. This is just a packaged version of the common opensource offering.
+
+### nginx
+
+- [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/nginx.html)
+- Layer: Core Service (Processor)
+
+Nginx as an ingress port for all HTTP requests and routes them to the approriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
+
+### node-exporter
+
+- [Omnibus configuration options](https://docs.gitlab.com/ee/administration/monitoring/prometheus/node_exporter.html)
+- Layer: Monitoring
+
+[Node Exporter](https://github.com/prometheus/node_exporter) is a Prometheus tool that gives us metrics on the underlying machine. (Think CPU/Disk/Load) It's just a packaged version of the common open source offering from the Prometheus project.
+
+### postgres-exporter
+
+- [Omnibus configuration options](https://docs.gitlab.com/ee/administration/monitoring/prometheus/postgres_exporter.html)
+- Layer: Monitoring
+
+[Postgres-exporter](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that will deliver data about Postgres to prometheus for use in Grafana Dashboards. 
+
+### postgresql
+
+- [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
+- Layer: Core Service (Data)
+
+GitLab packages the popular Database to provide storage for Application meta data and user information.  
+
+### prometheus
+
+- [Omnibus configuration options](https://docs.gitlab.com/ee/administration/monitoring/prometheus/)
+- Layer: Monitoring
+
+Prometheus is a time-series tool that helps GitLab administrators expose metrics about the individual processes used to provide GitLab the service.
+
+### redis
+
+- [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
+- Layer: Core Service (Data)
+
+Redis is packaged to provide a place to store: 
+
+- session data
+- temporary cache information
+- background job queues. 
+
+### redis-exporter
+
+- [Omnibus configuration options](https://docs.gitlab.com/ee/administration/monitoring/prometheus/redis_exporter.html)
+- Layer: Monitoring
+
+[Redis Exporter](https://github.com/oliver006/redis_exporter) is designed to give specific metrics about the Redis process to Prometheus so that we can graph these metrics in Graphana.
+
+### sidekiq
+
+- Omnibus configuration options
+- Layer: Core Service (Processor)
+
+Sidekiq is a Ruby background job processor that pulls jobs from the redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
+
+### unicorn
+
+- [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/unicorn.html)
+- Layer: Core Service (Processor)
+
+[Unicorn](https://bogomips.org/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version. 
+
+### Additional Processes
+
+### GitLab Pages
+
+TODO
+
+### Mattermost
+
+TODO
+
+## GitLab by Request Type
+
+GitLab provides two "interfaces" for end users to access the service:
+
+- Web HTTP Requests (Viewing the UI/API)
+- Git HTTP/SSH Requests (Pushing/Pulling Git Data)
+
+It's important to understand the distinction as some processes are used in both and others are exclusive to a specific request type.
+
+### GitLab Web HTTP Request Cycle
+
+When making a request to an HTTP Endpoint (Think `/users/sign_in`) the request will take the following path through the GitLab Service:
+
+- nginx - Acts as our first line reverse proxy
+- gitlab-workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on unicorn.
+- unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
+- Postgres/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retreive data.
+
+
+### GitLab Git Request Cycle
+
+Below we describe the different pathing that HTTP vs. SSH Git requests will take. There is some overlap with the Web Request Cycle but also some differences.
+
+### Web Request (80/443)
+TODO
+
+### SSH Request (22)
+TODO
 
 ## System Layout
 

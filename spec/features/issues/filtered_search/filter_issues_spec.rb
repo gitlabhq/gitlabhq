@@ -430,10 +430,10 @@ describe 'Filter issues', :js do
 
         expect_issues_list_count(2)
 
-        sort_toggle = find('.filtered-search-wrapper .dropdown-toggle')
+        sort_toggle = find('.filter-dropdown-container .dropdown-menu-toggle')
         sort_toggle.click
 
-        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Created date').click
+        find('.filter-dropdown-container .dropdown-menu li a', text: 'Created date').click
         wait_for_requests
 
         expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(new_issue.title)

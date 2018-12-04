@@ -4,7 +4,7 @@ describe Profiles::KeysController do
   let(:user) { create(:user) }
 
   describe "#get_keys" do
-    describe "non existant user" do
+    describe "non existent user" do
       it "does not generally work" do
         get :get_keys, username: 'not-existent'
 
@@ -62,7 +62,14 @@ describe Profiles::KeysController do
 
       it "responds with text/plain content type" do
         get :get_keys, username: user.username
+
         expect(response.content_type).to eq("text/plain")
+      end
+
+      it "responds with attachment content disposition" do
+        get :get_keys, username: user.username
+
+        expect(response.headers['Content-Disposition']).to eq('attachment')
       end
     end
   end

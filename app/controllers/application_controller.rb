@@ -12,8 +12,11 @@ class ApplicationController < ActionController::Base
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include SessionlessAuthentication
+  # this can be removed after switching to rails 5
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/51908
+  include InvalidUTF8ErrorHandler unless Gitlab.rails5?
 
-  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
@@ -25,6 +28,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
+  before_action :check_impersonation_availability
 
   around_action :set_locale
 
@@ -42,6 +46,8 @@ class ApplicationController < ActionController::Base
     :google_code_import_enabled?, :fogbugz_import_enabled?,
     :git_import_enabled?, :gitlab_project_import_enabled?,
     :manifest_import_enabled?
+
+  DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store".freeze
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -65,8 +71,7 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
-    Raven.capture_exception(exception) if sentry_enabled?
+  rescue_from GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
     log_exception(exception)
 
     headers['Retry-After'] = exception.retry_after if exception.respond_to?(:retry_after)
@@ -108,6 +113,15 @@ class ApplicationController < ActionController::Base
     request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
   end
 
+  def render(*args)
+    super.tap do
+      # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse
+      if response.content_type == 'text/html' && (400..599).cover?(response.status)
+        response.headers['X-GitLab-Custom-Error'] = '1'
+      end
+    end
+  end
+
   protected
 
   def append_info_to_payload(payload)
@@ -140,17 +154,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # This filter handles personal access tokens, and atom requests with rss tokens
-  def authenticate_sessionless_user!
-    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
-
-    sessionless_sign_in(user) if user
-  end
-
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-    backtrace_cleaner = Gitlab.rails5? ? env["action_dispatch.backtrace_cleaner"] : env
+    backtrace_cleaner = Gitlab.rails5? ? request.env["action_dispatch.backtrace_cleaner"] : env
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -168,11 +175,11 @@ class ApplicationController < ActionController::Base
     Ability.allowed?(object, action, subject)
   end
 
-  def access_denied!(message = nil)
+  def access_denied!(message = nil, status = nil)
     # If we display a custom access denied message to the user, we don't want to
     # hide existence of the resource, rather tell them they cannot access it using
     # the provided message
-    status = message.present? ? :forbidden : :not_found
+    status ||= message.present? ? :forbidden : :not_found
 
     respond_to do |format|
       format.any { head status }
@@ -233,6 +240,13 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
+
+    if current_user
+      # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
+      # concerns due to caching private data.
+      headers['Cache-Control'] = DEFAULT_GITLAB_CACHE_CONTROL
+      headers["Pragma"] = "no-cache" # HTTP 1.0 compatibility
+    end
   end
 
   def validate_user_service_ticket!
@@ -272,9 +286,10 @@ class ApplicationController < ActionController::Base
   end
 
   def event_filter
-    # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
-    filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
-    @event_filter ||= EventFilter.new(filters)
+    @event_filter ||=
+      EventFilter.new(params[:event_filter].presence || cookies[:event_filter]).tap do |new_event_filter|
+        cookies[:event_filter] = new_event_filter.filter
+      end
   end
 
   # JSON for infinite scroll via Pager object
@@ -405,23 +420,9 @@ class ApplicationController < ActionController::Base
     Gitlab::I18n.with_user_locale(current_user, &block)
   end
 
-  def sessionless_sign_in(user)
-    if user && can?(user, :log_in)
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in(user, store: false, message: :sessionless_sign_in)
-    end
-  end
-
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
-  end
-
-  def sessionless_user?
-    current_user && !session.keys.include?('warden.user.user.key')
   end
 
   def peek_request?
@@ -461,5 +462,29 @@ class ApplicationController < ActionController::Base
     ApplicationSettings::UpdateService
       .new(settings, current_user, application_setting_params)
       .execute
+  end
+
+  def check_impersonation_availability
+    return unless session[:impersonator_id]
+
+    unless Gitlab.config.gitlab.impersonation_enabled
+      stop_impersonation
+      access_denied! _('Impersonation has been disabled')
+    end
+  end
+
+  def stop_impersonation
+    impersonated_user = current_user
+
+    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
+
+    warden.set_user(impersonator, scope: :user)
+    session[:impersonator_id] = nil
+
+    impersonated_user
+  end
+
+  def impersonator
+    @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
   end
 end

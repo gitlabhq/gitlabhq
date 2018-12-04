@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::TodosController < Projects::ApplicationController
   include Gitlab::Utils::StrongMemoize
   include TodosActions

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
-    describe 'Git push over HTTP', :ldap do
+  context 'Create' do
+    describe 'Git push over HTTP', :ldap_no_tls do
       it 'user pushes code to the repository'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Repository::ProjectPush.fabricate! do |push|
+        Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'
           push.file_content = '# This is a test project'
           push.commit_message = 'Add README.md'

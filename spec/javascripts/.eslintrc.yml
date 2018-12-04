@@ -35,3 +35,5 @@ rules:
     - error
     - ignore:
       - 'fixtures/blob'
+  # Temporarily disabled to facilitate an upgrade to eslint-plugin-jasmine
+  jasmine/prefer-toHaveBeenCalledWith: off

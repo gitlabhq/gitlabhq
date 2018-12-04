@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Template
     class GitlabCiYmlTemplate < BaseTemplate
@@ -20,7 +22,7 @@ module Gitlab
         end
 
         def base_dir
-          Rails.root.join('vendor/gitlab-ci-yml')
+          Rails.root.join('lib/gitlab/ci/templates')
         end
 
         def finder(project = nil)

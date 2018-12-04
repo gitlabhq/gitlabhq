@@ -10,50 +10,52 @@ describe('Job log controllers', () => {
     vm.$destroy();
   });
 
-  describe('Truncate information', () => {
+  const props = {
+    rawPath: '/raw',
+    erasePath: '/erase',
+    size: 511952,
+    isScrollTopDisabled: false,
+    isScrollBottomDisabled: false,
+    isScrollingDown: true,
+    isTraceSizeVisible: true,
+  };
 
-    beforeEach(() => {
-      vm = mountComponent(Component, {
-        rawTracePath: '/raw',
-        canEraseJob: true,
-        size: 511952,
-        canScrollToTop: true,
-        canScrollToBottom: true,
+  describe('Truncate information', () => {
+    describe('with isTraceSizeVisible', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, props);
+      });
+
+      it('renders size information', () => {
+        expect(vm.$el.querySelector('.js-truncated-info').textContent).toContain('499.95 KiB');
+      });
+
+      it('renders link to raw trace', () => {
+        expect(vm.$el.querySelector('.js-raw-link').getAttribute('href')).toEqual('/raw');
       });
     });
-
-    it('renders size information', () => {
-      expect(vm.$el.querySelector('.js-truncated-info').textContent).toContain('499.95 KiB');
-    });
-
-    it('renders link to raw trace', () => {
-      expect(vm.$el.querySelector('.js-raw-link').getAttribute('href')).toEqual('/raw');
-    });
-
   });
 
   describe('links section', () => {
     describe('with raw trace path', () => {
       it('renders raw trace link', () => {
-        vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: true,
-          size: 511952,
-          canScrollToTop: true,
-          canScrollToBottom: true,
-        });
+        vm = mountComponent(Component, props);
 
-        expect(vm.$el.querySelector('.js-raw-link-controller').getAttribute('href')).toEqual('/raw');
+        expect(vm.$el.querySelector('.js-raw-link-controller').getAttribute('href')).toEqual(
+          '/raw',
+        );
       });
     });
 
     describe('without raw trace path', () => {
       it('does not render raw trace link', () => {
         vm = mountComponent(Component, {
-          canEraseJob: true,
+          erasePath: '/erase',
           size: 511952,
-          canScrollToTop: true,
-          canScrollToBottom: true,
+          isScrollTopDisabled: true,
+          isScrollBottomDisabled: true,
+          isScrollingDown: false,
+          isTraceSizeVisible: true,
         });
 
         expect(vm.$el.querySelector('.js-raw-link-controller')).toBeNull();
@@ -62,52 +64,23 @@ describe('Job log controllers', () => {
 
     describe('when is erasable', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: true,
-          size: 511952,
-          canScrollToTop: true,
-          canScrollToBottom: true,
-        });
+        vm = mountComponent(Component, props);
       });
 
-      it('renders erase job button', () => {
+      it('renders erase job link', () => {
         expect(vm.$el.querySelector('.js-erase-link')).not.toBeNull();
-      });
-
-      describe('on click', () => {
-        describe('when user confirms action', () => {
-          it('emits eraseJob event', () => {
-            spyOn(window, 'confirm').and.returnValue(true);
-            spyOn(vm, '$emit');
-
-            vm.$el.querySelector('.js-erase-link').click();
-
-            expect(vm.$emit).toHaveBeenCalledWith('eraseJob');
-          });
-        });
-
-        describe('when user does not confirm action', () => {
-          it('does not emit eraseJob event', () => {
-            spyOn(window, 'confirm').and.returnValue(false);
-            spyOn(vm, '$emit');
-
-            vm.$el.querySelector('.js-erase-link').click();
-
-            expect(vm.$emit).not.toHaveBeenCalledWith('eraseJob');
-          });
-        });
       });
     });
 
     describe('when it is not erasable', () => {
       it('does not render erase button', () => {
         vm = mountComponent(Component, {
-          rawTracePath: '/raw',
-          canEraseJob: false,
+          rawPath: '/raw',
           size: 511952,
-          canScrollToTop: true,
-          canScrollToBottom: true,
+          isScrollTopDisabled: true,
+          isScrollBottomDisabled: true,
+          isScrollingDown: false,
+          isTraceSizeVisible: true,
         });
 
         expect(vm.$el.querySelector('.js-erase-link')).toBeNull();
@@ -119,13 +92,7 @@ describe('Job log controllers', () => {
     describe('scroll top button', () => {
       describe('when user can scroll top', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
-            size: 511952,
-            canScrollToTop: true,
-            canScrollToBottom: true,
-          });
+          vm = mountComponent(Component, props);
         });
 
         it('renders enabled scroll top button', () => {
@@ -143,16 +110,20 @@ describe('Job log controllers', () => {
       describe('when user can not scroll top', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
-            canScrollToTop: false,
-            canScrollToBottom: true,
+            isScrollTopDisabled: true,
+            isScrollBottomDisabled: false,
+            isScrollingDown: false,
+            isTraceSizeVisible: true,
           });
         });
 
         it('renders disabled scroll top button', () => {
-          expect(vm.$el.querySelector('.js-scroll-top').getAttribute('disabled')).toEqual('disabled');
+          expect(vm.$el.querySelector('.js-scroll-top').getAttribute('disabled')).toEqual(
+            'disabled',
+          );
         });
 
         it('does not emit scrollJobLogTop event on click', () => {
@@ -167,13 +138,7 @@ describe('Job log controllers', () => {
     describe('scroll bottom button', () => {
       describe('when user can scroll bottom', () => {
         beforeEach(() => {
-          vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
-            size: 511952,
-            canScrollToTop: true,
-            canScrollToBottom: true,
-          });
+          vm = mountComponent(Component, props);
         });
 
         it('renders enabled scroll bottom button', () => {
@@ -191,17 +156,20 @@ describe('Job log controllers', () => {
       describe('when user can not scroll bottom', () => {
         beforeEach(() => {
           vm = mountComponent(Component, {
-            rawTracePath: '/raw',
-            canEraseJob: true,
+            rawPath: '/raw',
+            erasePath: '/erase',
             size: 511952,
-            canScrollToTop: true,
-            canScrollToBottom: false,
+            isScrollTopDisabled: false,
+            isScrollBottomDisabled: true,
+            isScrollingDown: false,
+            isTraceSizeVisible: true,
           });
         });
 
         it('renders disabled scroll bottom button', () => {
-          expect(vm.$el.querySelector('.js-scroll-bottom').getAttribute('disabled')).toEqual('disabled');
-
+          expect(vm.$el.querySelector('.js-scroll-bottom').getAttribute('disabled')).toEqual(
+            'disabled',
+          );
         });
 
         it('does not emit scrollJobLogBottom event on click', () => {
@@ -211,7 +179,30 @@ describe('Job log controllers', () => {
           expect(vm.$emit).not.toHaveBeenCalledWith('scrollJobLogBottom');
         });
       });
+
+      describe('while isScrollingDown is true', () => {
+        it('renders animate class for the scroll down button', () => {
+          vm = mountComponent(Component, props);
+
+          expect(vm.$el.querySelector('.js-scroll-bottom').className).toContain('animate');
+        });
+      });
+
+      describe('while isScrollingDown is false', () => {
+        it('does not render animate class for the scroll down button', () => {
+          vm = mountComponent(Component, {
+            rawPath: '/raw',
+            erasePath: '/erase',
+            size: 511952,
+            isScrollTopDisabled: true,
+            isScrollBottomDisabled: false,
+            isScrollingDown: false,
+            isTraceSizeVisible: true,
+          });
+
+          expect(vm.$el.querySelector('.js-scroll-bottom').className).not.toContain('animate');
+        });
+      });
     });
   });
 });
-

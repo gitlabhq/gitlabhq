@@ -6,5 +6,5 @@
     -# Don't show a flash message if the message is nil
     - if value
       %div{ class: "flash-#{key}" }
-        %div{ class: "#{container_class} #{extra_flash_class}" }
+        %div{ class: "#{(container_class unless fluid_layout)} #{(extra_flash_class unless @no_container)} #{@content_class}" }
           %span= value

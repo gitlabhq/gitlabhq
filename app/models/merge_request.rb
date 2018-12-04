@@ -6,6 +6,7 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
+  include Presentable
   include IgnorableColumn
   include TimeTrackable
   include ManualInverseAssociation
@@ -203,6 +204,12 @@ class MergeRequest < ActiveRecord::Base
     head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
+  def merge_pipeline
+    return unless merged?
+
+    target_project.pipeline_for(target_branch, merge_commit_sha)
+  end
+
   # Pattern used to extract `!123` merge request references from text
   #
   # This pattern supports cross-project references.
@@ -260,7 +267,7 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+  WIP_REGEX = /\A*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
 
   def self.work_in_progress?(title)
     !!(title =~ WIP_REGEX)
@@ -346,6 +353,15 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Returns true if there are commits that match at least one commit SHA.
+  def includes_any_commits?(shas)
+    if persisted?
+      merge_request_diff.commits_by_shas(shas).exists?
+    else
+      (commit_shas & shas).present?
+    end
+  end
+
   # Calls `MergeWorker` to proceed with the merge process and
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
@@ -391,6 +407,18 @@ class MergeRequest < ActiveRecord::Base
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
     merge_request_diff&.real_size || diffs.real_size
+  end
+
+  def modified_paths(past_merge_request_diff: nil)
+    diffs = if past_merge_request_diff
+              past_merge_request_diff
+            elsif compare
+              compare
+            else
+              self.merge_request_diff
+            end
+
+    diffs.modified_paths
   end
 
   def diff_base_commit
@@ -938,7 +966,6 @@ class MergeRequest < ActiveRecord::Base
 
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
-    return true unless head_pipeline
 
     actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end

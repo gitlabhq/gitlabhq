@@ -340,6 +340,27 @@ describe Projects::UpdateService do
         call_service
       end
     end
+
+    context 'when updating #pages_access_level' do
+      subject(:call_service) do
+        update_project(project, admin, project_feature_attributes: { pages_access_level: ProjectFeature::PRIVATE })
+      end
+
+      it 'updates the attribute' do
+        expect { call_service }
+          .to change { project.project_feature.pages_access_level }
+          .to(ProjectFeature::PRIVATE)
+      end
+
+      it 'calls Projects::UpdatePagesConfigurationService' do
+        expect(Projects::UpdatePagesConfigurationService)
+          .to receive(:new)
+          .with(project)
+          .and_call_original
+
+        call_service
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do

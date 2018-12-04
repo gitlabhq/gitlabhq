@@ -1,4 +1,5 @@
-/* global BoardService */
+import BoardService from '~/boards/services/board_service';
+
 export const listObj = {
   id: 300,
   position: 0,

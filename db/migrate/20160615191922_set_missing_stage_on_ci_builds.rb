@@ -1,6 +1,6 @@
 # rubocop:disable Migration/UpdateLargeTable
 # rubocop:disable Migration/UpdateColumnInBatches
-class SetMissingStageOnCiBuilds < ActiveRecord::Migration
+class SetMissingStageOnCiBuilds < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class AccessRequests < Grape::API
     include PaginationParams
@@ -10,7 +12,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Gets a list of access requests for a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
           success Entities::AccessRequester

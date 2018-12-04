@@ -13,18 +13,27 @@ describe QA::Runtime::API::Client do
     end
   end
 
-  describe '#get_personal_access_token' do
-    it 'returns specified token from env' do
-      stub_env('PERSONAL_ACCESS_TOKEN', 'a_token')
+  describe '#personal_access_token' do
+    context 'when QA::Runtime::Env.personal_access_token is present' do
+      before do
+        allow(QA::Runtime::Env).to receive(:personal_access_token).and_return('a_token')
+      end
 
-      expect(described_class.new.get_personal_access_token).to eq 'a_token'
+      it 'returns specified token from env' do
+        expect(described_class.new.personal_access_token).to eq 'a_token'
+      end
     end
 
-    it 'returns a created token' do
-      allow_any_instance_of(described_class)
-        .to receive(:create_personal_access_token).and_return('created_token')
+    context 'when QA::Runtime::Env.personal_access_token is nil' do
+      before do
+        allow(QA::Runtime::Env).to receive(:personal_access_token).and_return(nil)
+      end
 
-      expect(described_class.new.get_personal_access_token).to eq 'created_token'
+      it 'returns a created token' do
+        expect(subject).to receive(:create_personal_access_token).and_return('created_token')
+
+        expect(subject.personal_access_token).to eq 'created_token'
+      end
     end
   end
 end

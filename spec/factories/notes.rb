@@ -90,7 +90,7 @@ FactoryBot.define do
       noteable nil
       noteable_type 'Commit'
       noteable_id nil
-      commit_id RepoHelpers.sample_commit.id
+      commit_id { RepoHelpers.sample_commit.id }
     end
 
     trait :legacy_diff_note do

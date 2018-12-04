@@ -24,7 +24,7 @@
       %td= @runner.active? ? 'Yes' : 'No'
     %tr
       %td Protected
-      %td= @runner.active? ? _('Yes') : _('No')
+      %td= @runner.ref_protected? ? 'Yes' : 'No'
     %tr
       %td Can run untagged jobs
       %td= @runner.run_untagged? ? 'Yes' : 'No'

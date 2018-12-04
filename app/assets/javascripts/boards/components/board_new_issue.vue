@@ -1,15 +1,16 @@
 <script>
 import $ from 'jquery';
+import { GlButton } from '@gitlab/ui';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   name: 'BoardNewIssue',
   components: {
     ProjectSelect,
+    GlButton,
   },
   props: {
     groupId: {
@@ -61,13 +62,14 @@ export default {
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 
-      return this.list.newIssue(issue)
+      return this.list
+        .newIssue(issue)
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          Store.detail.issue = issue;
-          Store.detail.list = this.list;
+          boardsStore.detail.issue = issue;
+          boardsStore.detail.list = this.list;
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
@@ -94,50 +96,34 @@ export default {
 <template>
   <div class="board-new-issue-form">
     <div class="board-card">
-      <form @submit="submit($event)">
-        <div
-          v-if="error"
-          class="flash-container"
-        >
-          <div class="flash-alert">
-            An error occurred. Please try again.
-          </div>
+      <form @submit="submit($event);">
+        <div v-if="error" class="flash-container">
+          <div class="flash-alert">An error occurred. Please try again.</div>
         </div>
-        <label
-          :for="list.id + '-title'"
-          class="label-bold"
-        >
-          Title
-        </label>
+        <label :for="list.id + '-title'" class="label-bold"> Title </label>
         <input
+          :id="list.id + '-title'"
           ref="input"
           v-model="title"
-          :id="list.id + '-title'"
           class="form-control"
           type="text"
           name="issue_title"
           autocomplete="off"
         />
-        <project-select
-          v-if="groupId"
-          :group-id="groupId"
-        />
+        <project-select v-if="groupId" :group-id="groupId" />
         <div class="clearfix prepend-top-10">
-          <button
+          <gl-button
             ref="submit-button"
             :disabled="disabled"
-            class="btn btn-success float-left"
+            class="float-left"
+            variant="success"
             type="submit"
           >
             Submit issue
-          </button>
-          <button
-            class="btn btn-default float-right"
-            type="button"
-            @click="cancel"
-          >
+          </gl-button>
+          <gl-button class="float-right" type="button" variant="default" @click="cancel">
             Cancel
-          </button>
+          </gl-button>
         </div>
       </form>
     </div>

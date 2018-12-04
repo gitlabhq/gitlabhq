@@ -206,6 +206,19 @@ describe API::Helpers do
 
         expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
       end
+
+      context 'when impersonation is disabled' do
+        let(:personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
+
+        before do
+          stub_config_setting(impersonation_enabled: false)
+          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        end
+
+        it 'does not allow impersonation tokens' do
+          expect { current_user }.to raise_error Gitlab::Auth::ImpersonationDisabled
+        end
+      end
     end
   end
 
@@ -368,6 +381,14 @@ describe API::Helpers do
                 it_behaves_like 'successful sudo'
               end
 
+              context 'when providing username (case insensitive)' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.username.upcase
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
               context 'when providing user ID' do
                 before do
                   env[API::Helpers::SUDO_HEADER] = user.id.to_s
@@ -381,6 +402,14 @@ describe API::Helpers do
               context 'when providing username' do
                 before do
                   set_param(API::Helpers::SUDO_PARAM, user.username)
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing username (case insensitive)' do
+                before do
+                  set_param(API::Helpers::SUDO_PARAM, user.username.upcase)
                 end
 
                 it_behaves_like 'successful sudo'

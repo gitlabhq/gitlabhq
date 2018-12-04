@@ -22,9 +22,8 @@ However, it is not possible to resume an interrupted tar pipe:  if
 that happens then all data must be copied again.
 
 ```
-# As the git user
-tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
-  tar -C /mnt/gitlab/repositories -xf -
+sudo -u git sh -c 'tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
+  tar -C /mnt/gitlab/repositories -xf -'
 ```
 
 If you want to see progress, replace `-xf` with `-xvf`.
@@ -36,9 +35,8 @@ You can also use a tar pipe to copy data to another server. If your
 can pipe the data through SSH.
 
 ```
-# As the git user
-tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
-  ssh git@newserver tar -C /mnt/gitlab/repositories -xf -
+sudo -u git sh -c 'tar -C /var/opt/gitlab/git-data/repositories -cf - -- . |\
+  ssh git@newserver tar -C /mnt/gitlab/repositories -xf -'
 ```
 
 If you want to compress the data before it goes over the network
@@ -53,9 +51,8 @@ is either already installed on your system or easily installable
 via apt, yum etc.
 
 ```
-# As the 'git' user
-rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
-  /mnt/gitlab/repositories
+sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
+  /mnt/gitlab/repositories'
 ```
 
 The `/.` in the command above is very important, without it you can
@@ -68,9 +65,8 @@ If the 'git' user on your source system has SSH access to the target
 server you can send the repositories over the network with rsync.
 
 ```
-# As the 'git' user
-rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
-  git@newserver:/mnt/gitlab/repositories
+sudo -u git sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
+  git@newserver:/mnt/gitlab/repositories'
 ```
 
 ## Thousands of Git repositories: use one rsync per repository
@@ -125,7 +121,7 @@ sudo -u git -H sh -c 'bundle exec rake gitlab:list_repos > /home/git/transfer-lo
 
 Now we can start the transfer. The command below is idempotent, and
 the number of jobs done by GNU Parallel should converge to zero. If it
-does not some repositories listed in all-repos-1234.txt may have been
+does not, some repositories listed in `all-repos-1234.txt` may have been
 deleted/renamed before they could be copied.
 
 ```
@@ -155,8 +151,8 @@ cat /home/git/transfer-logs/* | sort | uniq -u |\
 
 Suppose you have already done one sync that started after 2015-10-1 12:00 UTC.
 Then you might only want to sync repositories that were changed via GitLab
-_after_ that time. You can use the 'SINCE' variable to tell 'rake
-gitlab:list_repos' to only print repositories with recent activity.
+_after_ that time. You can use the `SINCE` variable to tell `rake
+gitlab:list_repos` to only print repositories with recent activity.
 
 ```
 # Omnibus

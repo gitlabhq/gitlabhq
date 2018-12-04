@@ -12,11 +12,11 @@ module QA # rubocop:disable Naming/FileName
           end
 
           view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
-            element :enable_auto_devops_field, 'check_box :enabled'
-            element :domain_field, 'text_field :domain'
-            element :enable_auto_devops_button, "%strong= s_('CICD|Default to Auto DevOps pipeline')"
-            element :domain_input, "%strong= _('Domain')"
-            element :save_changes_button, "submit _('Save changes')"
+            element :enable_auto_devops_field, 'check_box :enabled' # rubocop:disable QA/ElementWithPattern
+            element :domain_field, 'text_field :domain' # rubocop:disable QA/ElementWithPattern
+            element :enable_auto_devops_button, "%strong= s_('CICD|Default to Auto DevOps pipeline')" # rubocop:disable QA/ElementWithPattern
+            element :domain_input, "%strong= _('Domain')" # rubocop:disable QA/ElementWithPattern
+            element :save_changes_button, "submit _('Save changes')" # rubocop:disable QA/ElementWithPattern
           end
 
           def expand_runners_settings(&block)
@@ -25,9 +25,9 @@ module QA # rubocop:disable Naming/FileName
             end
           end
 
-          def expand_secret_variables(&block)
+          def expand_ci_variables(&block)
             expand_section(:variables_settings) do
-              Settings::SecretVariables.perform(&block)
+              Settings::CiVariables.perform(&block)
             end
           end
 

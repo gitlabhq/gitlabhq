@@ -99,8 +99,8 @@ This worker will wrap up the import process by performing some housekeeping
 
 Advancing stages is done in one of two ways:
 
-1. Scheduling the worker for the next stage directly.
-2. Scheduling a job for `Gitlab::GithubImport::AdvanceStageWorker` which will
+- Scheduling the worker for the next stage directly.
+- Scheduling a job for `Gitlab::GithubImport::AdvanceStageWorker` which will
    advance the stage when all work of the current stage has been completed.
 
 The first approach should only be used by workers that perform all their work in
@@ -131,7 +131,7 @@ our import as failed because of this.
 To prevent this from happening we periodically refresh the expiration time of
 the import process. This works by storing the JID of the import job in the
 database, then refreshing this JID's TTL at various stages throughout the import
-process. This is done by calling `Project#refresh_import_jid_expiration`. By
+process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
 refreshing this TTL we can ensure our import does not get marked as failed so
 long we're still performing work.
 
@@ -147,7 +147,7 @@ We handle this by doing the following:
 
 1. Once we hit the rate limit all jobs will automatically reschedule themselves
    in such a way that they are not executed until the rate limit has been reset.
-2. We cache the mapping of GitHub users to GitLab users in Redis.
+1. We cache the mapping of GitHub users to GitLab users in Redis.
 
 More information on user caching can be found below.
 
@@ -157,21 +157,21 @@ When mapping GitHub users to GitLab users we need to (in the worst case)
 perform:
 
 1. One API call to get the user's Email address.
-2. Two database queries to see if a corresponding GitLab user exists. One query
+1. Two database queries to see if a corresponding GitLab user exists. One query
    will try to find the user based on the GitHub user ID, while the second query
    is used to find the user using their GitHub Email address.
 
 Because this process is quite expensive we cache the result of these lookups in
 Redis. For every user looked up we store three keys:
 
-1. A Redis key mapping GitHub usernames to their Email addresses.
-2. A Redis key mapping a GitHub Email addresses to a GitLab user ID.
-3. A Redis key mapping a GitHub user ID to GitLab user ID.
+- A Redis key mapping GitHub usernames to their Email addresses.
+- A Redis key mapping a GitHub Email addresses to a GitLab user ID.
+- A Redis key mapping a GitHub user ID to GitLab user ID.
 
 There are two types of lookups we cache:
 
-1. A positive lookup, meaning we found a GitLab user ID.
-2. A negative lookup, meaning we didn't find a GitLab user ID. Caching this
+- A positive lookup, meaning we found a GitLab user ID.
+- A negative lookup, meaning we didn't find a GitLab user ID. Caching this
    prevents us from performing the same work for users that we know don't exist
    in our GitLab database.
 

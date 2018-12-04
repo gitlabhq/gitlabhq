@@ -1,5 +1,4 @@
-/* eslint-disable func-names, no-var, no-return-assign, one-var,
- one-var-declaration-per-line, object-shorthand, vars-on-top */
+/* eslint-disable func-names, no-var, no-return-assign, one-var, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
@@ -65,7 +64,9 @@ export default class Project {
       const projectId = $(this).data('project-id');
       const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;
       Cookies.set(cookieKey, 'false');
-      $(this).parents('.auto-devops-implicitly-enabled-banner').remove();
+      $(this)
+        .parents('.auto-devops-implicitly-enabled-banner')
+        .remove();
       return e.preventDefault();
     });
     Project.projectSelectDropdown();

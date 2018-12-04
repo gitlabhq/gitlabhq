@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Variables < Grape::API
     include PaginationParams
@@ -9,7 +11,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
 
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
       desc 'Get project variables' do
         success Entities::Variable
       end

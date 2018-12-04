@@ -1,0 +1,5 @@
+---
+title: Gracefully handle references with null bytes
+merge_request: 23365
+author:
+type: fixed

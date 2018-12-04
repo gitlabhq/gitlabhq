@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Namespaces do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let!(:group1) { create(:group) }
+  let!(:group1) { create(:group, name: 'group.one') }
   let!(:group2) { create(:group, :nested) }
 
   describe "GET /namespaces" do

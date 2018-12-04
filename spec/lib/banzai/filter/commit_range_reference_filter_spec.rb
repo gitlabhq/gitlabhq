@@ -60,6 +60,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter do
       exp = act = "See #{commit1.id.reverse}...#{commit2.id}"
 
       allow(project.repository).to receive(:commit).with(commit1.id.reverse)
+      allow(project.repository).to receive(:commit).with(commit2.id)
       expect(reference_filter(act).to_html).to eq exp
     end
 

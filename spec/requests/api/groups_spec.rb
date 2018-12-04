@@ -155,7 +155,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:name).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:name).pluck(:name))
       end
 
       it "sorts in descending order when passed" do
@@ -164,7 +164,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(name: :desc).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(name: :desc).pluck(:name))
       end
 
       it "sorts by path in order_by param" do
@@ -173,7 +173,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:path).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:path).pluck(:name))
       end
 
       it "sorts by id in the order_by param" do
@@ -182,7 +182,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(:id).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(:id).pluck(:name))
       end
 
       it "sorts also by descending id with pagination fix" do
@@ -191,7 +191,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq(Group.visible_to_user(user1).order(id: :desc).pluck(:name))
+        expect(response_groups).to eq(groups_visible_to_user(user1).order(id: :desc).pluck(:name))
       end
 
       it "sorts identical keys by id for good pagination" do
@@ -210,6 +210,10 @@ describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
+      end
+
+      def groups_visible_to_user(user)
+        Group.where(id: user.authorized_groups.select(:id).reorder(nil))
       end
     end
 
@@ -486,7 +490,7 @@ describe API::Groups do
         expect(json_response.first['visibility']).not_to be_present
       end
 
-      it 'filters the groups projects' do
+      it "filters the groups projects" do
         public_project = create(:project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
@@ -496,6 +500,32 @@ describe API::Groups do
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(public_project.name)
+      end
+
+      it "returns projects excluding shared" do
+        create(:project_group_link, project: create(:project), group: group1)
+        create(:project_group_link, project: create(:project), group: group1)
+        create(:project_group_link, project: create(:project), group: group1)
+
+        get api("/groups/#{group1.id}/projects", user1), with_shared: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(2)
+      end
+
+      it "returns projects including those in subgroups", :nested_groups do
+        subgroup = create(:group, parent: group1)
+        create(:project, group: subgroup)
+        create(:project, group: subgroup)
+
+        get api("/groups/#{group1.id}/projects", user1), include_subgroups: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(4)
       end
 
       it "does not return a non existing group" do

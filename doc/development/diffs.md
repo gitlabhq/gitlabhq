@@ -2,12 +2,9 @@
 
 Currently we rely on different sources to present diffs, these include:
 
-- Rugged gem
 - Gitaly service
 - Database (through `merge_request_diff_files`)
 - Redis (cached highlighted diffs)
-
-We're constantly moving Rugged calls to Gitaly and the progress can be followed through [Gitaly repo](https://gitlab.com/gitlab-org/gitaly).
 
 ## Architecture overview
 
@@ -19,20 +16,21 @@ we fetch the comparison information using `Gitlab::Git::Compare`, which fetches 
 The diffs fetching process _limits_ single file diff sizes and the overall size of the whole diff through a series of constant values. Raw diff files are
 then persisted on `merge_request_diff_files` table.
 
-Even though diffs higher than 10kb are collapsed (`Gitlab::Git::Diff::COLLAPSE_LIMIT`), we still keep them on Postgres. However, diff files over _safety limits_
-(see the [Diff limits section](#diff-limits)) are _not_ persisted.
+Even though diffs larger than 10% of the value of `ApplicationSettings#diff_max_patch_bytes` are collapsed,
+we still keep them on Postgres. However, diff files larger than defined _safety limits_
+(see the [Diff limits section](#diff-limits)) are _not_ persisted in the database.
 
 In order to present diffs information on the Merge Request diffs page, we:
 
 1. Fetch all diff files from database `merge_request_diff_files`
-2. Fetch the _old_ and _new_ file blobs in batch to:
-   1. Highlight old and new file content
-   2. Know which viewer it should use for each file (text, image, deleted, etc)
-   3. Know if the file content changed
-   4. Know if it was stored externally
-   5. Know if it had storage errors
-3. If the diff file is cacheable (text-based), it's cached on Redis
-using `Gitlab::Diff::FileCollection::MergeRequestDiff`
+1. Fetch the _old_ and _new_ file blobs in batch to:
+   - Highlight old and new file content
+   - Know which viewer it should use for each file (text, image, deleted, etc)
+   - Know if the file content changed
+   - Know if it was stored externally
+   - Know if it had storage errors
+1. If the diff file is cacheable (text-based), it's cached on Redis
+   using `Gitlab::Diff::FileCollection::MergeRequestDiff`
 
 ### Note diffs
 
@@ -41,9 +39,9 @@ on `NoteDiffFile` (which is associated with the actual `DiffNote`). So instead
 of hitting the repository every time we need the diff of the file, we:
 
 1. Check whether we have the `NoteDiffFile#diff` persisted and use it
-2. Otherwise, if it's a current MR revision, use the persisted
-`MergeRequestDiffFile#diff`
-3. In the last scenario, go the the repository and fetch the diff
+1. Otherwise, if it's a current MR revision, use the persisted
+   `MergeRequestDiffFile#diff`
+1. In the last scenario, go the repository and fetch the diff
 
 ## Diff limits
 
@@ -102,23 +100,20 @@ Gitaly will only return the safe amount of data to be persisted on `merge_reques
 
 Limits that act onto each diff file of a collection. Files number, lines number and files size are considered.
 
-```ruby
-Gitlab::Git::Diff::COLLAPSE_LIMIT = 10.kilobytes
-```
+#### Expandable patches (collapsed)
 
-File diff will be collapsed (but be expandable) if it is larger than 10 kilobytes.
+Diff patches are collapsed when surpassing 10% of the value set in `ApplicationSettings#diff_max_patch_bytes`.
+That is, it's equivalent to 10kb if the maximum allowed value is 100kb.
+The diff will still be persisted and expandable if the patch size doesn't
+surpass `ApplicationSettings#diff_max_patch_bytes`.
 
 *Note:* Although this nomenclature (Collapsing) is also used on Gitaly, this limit is only used on GitLab (hardcoded - not sent to Gitaly).
 Gitaly will only return `Diff.Collapsed` (RPC) when surpassing collection limits.
 
-```ruby
-Gitlab::Git::Diff::SIZE_LIMIT = 100.kilobytes
-```
+#### Not expandable patches (too large)
 
-File diff will not be rendered if it's larger than 100 kilobytes.
-
-*Note:* This limit is currently hardcoded and applied on Gitaly and the RPC returns `Diff.TooLarge` when this limit is surpassed.
-Although we're still also applying it on GitLab, we should remove the redundancy from GitLab once we're confident with the Gitaly integration.
+The patch not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
+Users will see a `This source diff could not be displayed because it is too large` message.
 
 ```ruby
 Commit::DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000

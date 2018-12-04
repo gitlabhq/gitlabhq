@@ -46,27 +46,29 @@ export default {
 <template>
   <div class="controls">
     <a
-      v-tooltip
       v-if="group.canEdit"
+      v-tooltip
       :href="group.editPath"
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
       data-container="body"
       data-placement="bottom"
-      class="edit-group btn no-expand">
-      <icon name="settings"/>
+      class="edit-group btn no-expand"
+    >
+      <icon name="settings" />
     </a>
     <a
-      v-tooltip
       v-if="group.canLeave"
+      v-tooltip
       :href="group.leavePath"
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
       data-container="body"
       data-placement="bottom"
       class="leave-group btn no-expand"
-      @click.prevent="onLeaveGroup">
-      <icon name="leave"/>
+      @click.prevent="onLeaveGroup"
+    >
+      <icon name="leave" />
     </a>
   </div>
 </template>

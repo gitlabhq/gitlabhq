@@ -3,9 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Branch, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:rugged) do
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      repository.rugged
-    end
+    Rugged::Repository.new(File.join(TestEnv.repos_path, repository.relative_path))
   end
 
   subject { repository.branches }
@@ -74,9 +72,7 @@ describe Gitlab::Git::Branch, :seed_helper do
       Gitlab::Git.committer_hash(email: user.email, name: user.name)
     end
     let(:params) do
-      parents = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        [repository.rugged.head.target]
-      end
+      parents = [rugged.head.target]
       tree = parents.first.tree
 
       {

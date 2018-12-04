@@ -9,7 +9,7 @@ import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 describe('Filtered Search Visual Tokens', () => {
   const subject = FilteredSearchVisualTokens;
 
-  const findElements = (tokenElement) => {
+  const findElements = tokenElement => {
     const tokenNameElement = tokenElement.querySelector('.name');
     const tokenValueContainer = tokenElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
@@ -34,8 +34,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('getLastVisualTokenBeforeInput', () => {
     it('returns when there are no visual tokens', () => {
-      const { lastVisualToken, isLastVisualTokenValid }
-        = subject.getLastVisualTokenBeforeInput();
+      const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
 
       expect(lastVisualToken).toEqual(null);
       expect(isLastVisualTokenValid).toEqual(true);
@@ -47,8 +46,7 @@ describe('Filtered Search Visual Tokens', () => {
           bugLabelToken.outerHTML,
         );
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(true);
@@ -59,8 +57,7 @@ describe('Filtered Search Visual Tokens', () => {
           FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author'),
         );
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
@@ -73,8 +70,7 @@ describe('Filtered Search Visual Tokens', () => {
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
@@ -88,8 +84,7 @@ describe('Filtered Search Visual Tokens', () => {
           ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
         `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
@@ -105,8 +100,7 @@ describe('Filtered Search Visual Tokens', () => {
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(true);
@@ -119,8 +113,7 @@ describe('Filtered Search Visual Tokens', () => {
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = subject.getLastVisualTokenBeforeInput();
+        const { lastVisualToken, isLastVisualTokenValid } = subject.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
@@ -131,6 +124,7 @@ describe('Filtered Search Visual Tokens', () => {
   describe('getEndpointWithQueryParams', () => {
     it('returns `endpoint` string as is when second param `endpointQueryParams` is undefined, null or empty string', () => {
       const endpoint = 'foo/bar/labels.json';
+
       expect(subject.getEndpointWithQueryParams(endpoint)).toBe(endpoint);
       expect(subject.getEndpointWithQueryParams(endpoint, null)).toBe(endpoint);
       expect(subject.getEndpointWithQueryParams(endpoint, '')).toBe(endpoint);
@@ -141,8 +135,13 @@ describe('Filtered Search Visual Tokens', () => {
       const singleQueryParams = '{"foo":"true"}';
       const multipleQueryParams = '{"foo":"true","bar":"true"}';
 
-      expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(`${endpoint}?foo=true`);
-      expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(`${endpoint}?foo=true&bar=true`);
+      expect(subject.getEndpointWithQueryParams(endpoint, singleQueryParams)).toBe(
+        `${endpoint}?foo=true`,
+      );
+
+      expect(subject.getEndpointWithQueryParams(endpoint, multipleQueryParams)).toBe(
+        `${endpoint}?foo=true&bar=true`,
+      );
     });
   });
 
@@ -161,6 +160,7 @@ describe('Filtered Search Visual Tokens', () => {
       `);
 
       const selected = tokensContainer.querySelector('.js-visual-token .selected');
+
       expect(selected.classList.contains('selected')).toEqual(true);
 
       subject.unselectTokens();
@@ -240,11 +240,15 @@ describe('Filtered Search Visual Tokens', () => {
     beforeEach(() => {
       setFixtures(`
         <div class="test-area">
-        ${subject.createVisualTokenElementHTML()}
+        ${subject.createVisualTokenElementHTML('custom-token')}
         </div>
       `);
 
       tokenElement = document.querySelector('.test-area').firstElementChild;
+    });
+
+    it('should add class name to token element', () => {
+      expect(document.querySelector('.test-area .custom-token')).toBeDefined();
     });
 
     it('contains name div', () => {
@@ -269,7 +273,9 @@ describe('Filtered Search Visual Tokens', () => {
 
     describe('remove token', () => {
       it('contains remove-token button', () => {
-        expect(tokenElement.querySelector('.value-container .remove-token')).toEqual(jasmine.anything());
+        expect(tokenElement.querySelector('.value-container .remove-token')).toEqual(
+          jasmine.anything(),
+        );
       });
 
       it('contains fa-close icon', () => {
@@ -280,7 +286,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addVisualTokenElement', () => {
     it('renders search visual tokens', () => {
-      subject.addVisualTokenElement('search term', null, true);
+      subject.addVisualTokenElement('search term', null, { isSearchTerm: true });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);
@@ -307,7 +313,9 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('inserts visual token before input', () => {
-      tokensContainer.appendChild(FilteredSearchSpecHelper.createFilterVisualToken('assignee', '@root'));
+      tokensContainer.appendChild(
+        FilteredSearchSpecHelper.createFilterVisualToken('assignee', '@root'),
+      );
 
       subject.addVisualTokenElement('label', 'Frontend');
       const tokens = tokensContainer.querySelectorAll('.js-visual-token');
@@ -546,7 +554,7 @@ describe('Filtered Search Visual Tokens', () => {
       token = document.querySelector('.js-visual-token');
     });
 
-    it('tokenize\'s existing input', () => {
+    it("tokenize's existing input", () => {
       input.value = 'some text';
       spyOn(subject, 'tokenizeInput').and.callThrough();
 
@@ -619,7 +627,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(subject.getLastVisualTokenBeforeInput).not.toHaveBeenCalled();
     });
 
-    it('tokenize\'s input', () => {
+    it("tokenize's input", () => {
       tokensContainer.innerHTML = `
         ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
         ${FilteredSearchSpecHelper.createInputHTML()}
@@ -671,13 +679,17 @@ describe('Filtered Search Visual Tokens', () => {
       subject.moveInputToTheRight();
 
       const token = tokensContainer.children[1];
+
       expect(token.querySelector('.value').innerText).toEqual('~bug');
     });
   });
 
   describe('renderVisualTokenValue', () => {
     const keywordToken = FilteredSearchSpecHelper.createFilterVisualToken('search');
-    const milestoneToken = FilteredSearchSpecHelper.createFilterVisualToken('milestone', 'upcoming');
+    const milestoneToken = FilteredSearchSpecHelper.createFilterVisualToken(
+      'milestone',
+      'upcoming',
+    );
 
     let updateLabelTokenColorSpy;
     let updateUserTokenAppearanceSpy;
@@ -698,8 +710,9 @@ describe('Filtered Search Visual Tokens', () => {
     });
 
     it('renders a author token value element', () => {
-      const { tokenNameElement, tokenValueContainer, tokenValueElement } =
-        findElements(authorToken);
+      const { tokenNameElement, tokenValueContainer, tokenValueElement } = findElements(
+        authorToken,
+      );
       const tokenName = tokenNameElement.innerText;
       const tokenValue = 'new value';
 
@@ -708,13 +721,15 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueElement.innerText).toBe(tokenValue);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(1);
       const expectedArgs = [tokenValueContainer, tokenValueElement, tokenValue];
+
       expect(updateUserTokenAppearanceSpy.calls.argsFor(0)).toEqual(expectedArgs);
       expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
     });
 
     it('renders a label token value element', () => {
-      const { tokenNameElement, tokenValueContainer, tokenValueElement } =
-        findElements(bugLabelToken);
+      const { tokenNameElement, tokenValueContainer, tokenValueElement } = findElements(
+        bugLabelToken,
+      );
       const tokenName = tokenNameElement.innerText;
       const tokenValue = 'new value';
 
@@ -723,6 +738,7 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueElement.innerText).toBe(tokenValue);
       expect(updateLabelTokenColorSpy.calls.count()).toBe(1);
       const expectedArgs = [tokenValueContainer, tokenValue];
+
       expect(updateLabelTokenColorSpy.calls.argsFor(0)).toEqual(expectedArgs);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
@@ -738,6 +754,50 @@ describe('Filtered Search Visual Tokens', () => {
       expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
+
+    it('does not update user token appearance for `none` filter', () => {
+      const { tokenNameElement } = findElements(authorToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'none';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update user token appearance for `any` filter', () => {
+      const { tokenNameElement } = findElements(authorToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'any';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update label token color for `none` filter', () => {
+      const { tokenNameElement } = findElements(bugLabelToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'none';
+
+      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
+
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update label token color for `any` filter', () => {
+      const { tokenNameElement } = findElements(bugLabelToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'any';
+
+      subject.renderVisualTokenValue(bugLabelToken, tokenName, tokenValue);
+
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+    });
   });
 
   describe('updateUserTokenAppearance', () => {
@@ -747,96 +807,90 @@ describe('Filtered Search Visual Tokens', () => {
       spyOn(UsersCache, 'retrieve').and.callFake(username => usersCacheSpy(username));
     });
 
-    it('ignores special value "none"', (done) => {
-      usersCacheSpy = (username) => {
-        expect(username).toBe('none');
-        done.fail('Should not resolve "none"!');
-      };
-      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
-
-      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, 'none')
-      .then(done)
-      .catch(done.fail);
-    });
-
-    it('ignores error if UsersCache throws', (done) => {
+    it('ignores error if UsersCache throws', done => {
       spyOn(window, 'Flash');
       const dummyError = new Error('Earth rotated backwards');
       const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = (username) => {
+      usersCacheSpy = username => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.reject(dummyError);
       };
 
-      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(window.Flash.calls.count()).toBe(0);
-      })
-      .then(done)
-      .catch(done.fail);
+      subject
+        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+        .then(() => {
+          expect(window.Flash.calls.count()).toBe(0);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('does nothing if user cannot be found', (done) => {
+    it('does nothing if user cannot be found', done => {
       const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = (username) => {
+      usersCacheSpy = username => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(undefined);
       };
 
-      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueElement.innerText).toBe(tokenValue);
-      })
-      .then(done)
-      .catch(done.fail);
+      subject
+        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+        .then(() => {
+          expect(tokenValueElement.innerText).toBe(tokenValue);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('replaces author token with avatar and display name', (done) => {
+    it('replaces author token with avatar and display name', done => {
       const dummyUser = {
         name: 'Important Person',
         avatar_url: 'https://host.invalid/mypics/avatar.png',
       };
       const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = (username) => {
+      usersCacheSpy = username => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(dummyUser);
       };
 
-      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
-        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-        const avatar = tokenValueElement.querySelector('img.avatar');
-        expect(avatar.src).toBe(dummyUser.avatar_url);
-        expect(avatar.alt).toBe('');
-      })
-      .then(done)
-      .catch(done.fail);
+      subject
+        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+        .then(() => {
+          expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
+          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+          const avatar = tokenValueElement.querySelector('img.avatar');
+
+          expect(avatar.src).toBe(dummyUser.avatar_url);
+          expect(avatar.alt).toBe('');
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('escapes user name when creating token', (done) => {
+    it('escapes user name when creating token', done => {
       const dummyUser = {
         name: '<script>',
         avatar_url: `${gl.TEST_HOST}/mypics/avatar.png`,
       };
       const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
       const tokenValue = tokenValueElement.innerText;
-      usersCacheSpy = (username) => {
+      usersCacheSpy = username => {
         expect(`@${username}`).toBe(tokenValue);
         return Promise.resolve(dummyUser);
       };
 
-      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-        tokenValueElement.querySelector('.avatar').remove();
-        expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
-      })
-      .then(done)
-      .catch(done.fail);
+      subject
+        .updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+        .then(() => {
+          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+          tokenValueElement.querySelector('.avatar').remove();
+
+          expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -850,23 +904,31 @@ describe('Filtered Search Visual Tokens', () => {
     it('should set backgroundColor', () => {
       const originalBackgroundColor = bugLabelToken.style.backgroundColor;
       const token = subject.setTokenStyle(bugLabelToken, 'blue', 'white');
+
       expect(token.style.backgroundColor).toEqual('blue');
       expect(token.style.backgroundColor).not.toEqual(originalBackgroundColor);
     });
 
     it('should not set backgroundColor when it is a linear-gradient', () => {
-      const token = subject.setTokenStyle(bugLabelToken, 'linear-gradient(135deg, red, blue)', 'white');
+      const token = subject.setTokenStyle(
+        bugLabelToken,
+        'linear-gradient(135deg, red, blue)',
+        'white',
+      );
+
       expect(token.style.backgroundColor).toEqual(bugLabelToken.style.backgroundColor);
     });
 
     it('should set textColor', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'white', 'black');
+
       expect(token.style.color).toEqual('black');
       expect(token.style.color).not.toEqual(originalTextColor);
     });
 
     it('should add inverted class when textColor is #FFFFFF', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'black', '#FFFFFF');
+
       expect(token.style.color).toEqual('rgb(255, 255, 255)');
       expect(token.style.color).not.toEqual(originalTextColor);
       expect(token.querySelector('.remove-token').classList.contains('inverted')).toEqual(true);
@@ -890,14 +952,17 @@ describe('Filtered Search Visual Tokens', () => {
     describe('not preprocessed before', () => {
       it('returns preprocessed labels', () => {
         let labels = [];
+
         expect(labels.preprocessed).not.toEqual(true);
         labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
+
         expect(labels.preprocessed).toEqual(true);
       });
 
       it('overrides AjaxCache with preprocessed results', () => {
         spyOn(AjaxCache, 'override').and.callFake(() => {});
         FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
+
         expect(AjaxCache.override.calls.count()).toEqual(1);
       });
     });
@@ -915,8 +980,14 @@ describe('Filtered Search Visual Tokens', () => {
       labelData = getJSONFixture(jsonFixtureName);
     });
 
-    const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~doesnotexist');
-    const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken('label', '~"some space"');
+    const missingLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
+      'label',
+      '~doesnotexist',
+    );
+    const spaceLabelToken = FilteredSearchSpecHelper.createFilterVisualToken(
+      'label',
+      '~"some space"',
+    );
 
     beforeEach(() => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
@@ -928,11 +999,11 @@ describe('Filtered Search Visual Tokens', () => {
       const filteredSearchInput = document.querySelector('.filtered-search');
       filteredSearchInput.dataset.baseEndpoint = dummyEndpoint;
 
-      AjaxCache.internalStorage = { };
+      AjaxCache.internalStorage = {};
       AjaxCache.internalStorage[`${dummyEndpoint}/labels.json`] = labelData;
     });
 
-    const parseColor = (color) => {
+    const parseColor = color => {
       const dummyElement = document.createElement('div');
       dummyElement.style.color = color;
       return dummyElement.style.color;
@@ -944,16 +1015,16 @@ describe('Filtered Search Visual Tokens', () => {
       expect(tokenValueContainer.style.color).toBe(parseColor(label.text_color));
     };
 
-    const findLabel = tokenValue => labelData.find(
-      label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`,
-    );
+    const findLabel = tokenValue =>
+      labelData.find(label => tokenValue === `~${DropdownUtils.getEscapedText(label.title)}`);
 
-    it('updates the color of a label token', (done) => {
+    it('updates the color of a label token', done => {
       const { tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
 
-      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+      subject
+        .updateLabelTokenColor(tokenValueContainer, tokenValue)
         .then(() => {
           expectValueContainerStyle(tokenValueContainer, matchingLabel);
         })
@@ -961,12 +1032,13 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('updates the color of a label token with spaces', (done) => {
+    it('updates the color of a label token with spaces', done => {
       const { tokenValueContainer, tokenValueElement } = findElements(spaceLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
 
-      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+      subject
+        .updateLabelTokenColor(tokenValueContainer, tokenValue)
         .then(() => {
           expectValueContainerStyle(tokenValueContainer, matchingLabel);
         })
@@ -974,13 +1046,15 @@ describe('Filtered Search Visual Tokens', () => {
         .catch(done.fail);
     });
 
-    it('does not change color of a missing label', (done) => {
+    it('does not change color of a missing label', done => {
       const { tokenValueContainer, tokenValueElement } = findElements(missingLabelToken);
       const tokenValue = tokenValueElement.innerText;
       const matchingLabel = findLabel(tokenValue);
+
       expect(matchingLabel).toBe(undefined);
 
-      subject.updateLabelTokenColor(tokenValueContainer, tokenValue)
+      subject
+        .updateLabelTokenColor(tokenValueContainer, tokenValue)
         .then(() => {
           expect(tokenValueContainer.getAttribute('style')).toBe(null);
         })

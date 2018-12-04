@@ -42,17 +42,7 @@ class ProjectsFinder < UnionFinder
         init_collection
       end
 
-    collection = by_ids(collection)
-    collection = by_personal(collection)
-    collection = by_starred(collection)
-    collection = by_trending(collection)
-    collection = by_visibilty_level(collection)
-    collection = by_tags(collection)
-    collection = by_search(collection)
-    collection = by_archived(collection)
-    collection = by_custom_attributes(collection)
-    collection = by_deleted_status(collection)
-
+    collection = filter_projects(collection)
     sort(collection)
   end
 
@@ -64,6 +54,21 @@ class ProjectsFinder < UnionFinder
     else
       collection_without_user
     end
+  end
+
+  # EE would override this to add more filters
+  def filter_projects(collection)
+    collection = by_ids(collection)
+    collection = by_personal(collection)
+    collection = by_starred(collection)
+    collection = by_trending(collection)
+    collection = by_visibilty_level(collection)
+    collection = by_tags(collection)
+    collection = by_search(collection)
+    collection = by_archived(collection)
+    collection = by_custom_attributes(collection)
+    collection = by_deleted_status(collection)
+    collection
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -83,7 +88,6 @@ class ProjectsFinder < UnionFinder
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Builds a collection for an anonymous user.
-  # rubocop: disable CodeReuse/ActiveRecord
   def collection_without_user
     if private_only? || owned_projects? || min_access_level?
       Project.none
@@ -91,7 +95,6 @@ class ProjectsFinder < UnionFinder
       Project.public_to_user
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def owned_projects?
     params[:owned].present?

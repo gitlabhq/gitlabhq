@@ -81,22 +81,16 @@ preload_app true
 # fast LAN.
 check_client_connection false
 
+require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
+
 before_exec do |server|
-  # The following is necessary to ensure stale Prometheus metrics don't
-  # accumulate over time. It needs to be done in this hook as opposed to
-  # inside an init script to ensure metrics files aren't deleted after new
-  # unicorn workers start after a SIGUSR2 is received.
-  if ENV['prometheus_multiproc_dir']
-    old_metrics = Dir[File.join(ENV['prometheus_multiproc_dir'], '*.db')]
-    FileUtils.rm_rf(old_metrics)
-  end
+  # Signal application hooks that we're about to restart
+  Gitlab::Cluster::LifecycleEvents.do_master_restart
 end
 
 before_fork do |server, worker|
-  # the following is highly recommended for Rails + "preload_app true"
-  # as there's no need for the master process to hold a connection
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.connection.disconnect!
+  # Signal application hooks that we're about to fork
+  Gitlab::Cluster::LifecycleEvents.do_before_fork
 
   # The following is only recommended for memory/DB-constrained
   # installations.  It is not needed if your system can house
@@ -124,25 +118,10 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
-  # Unicorn clears out signals before it forks, so rbtrace won't work
-  # unless it is enabled after the fork.
-  require 'rbtrace' if ENV['ENABLE_RBTRACE']
+  # Signal application hooks of worker start
+  Gitlab::Cluster::LifecycleEvents.do_worker_start
 
   # per-process listener ports for debugging/admin/migrations
   # addr = "127.0.0.1:#{9293 + worker.nr}"
   # server.listen(addr, :tries => -1, :delay => 5, :tcp_nopush => true)
-
-  # the following is *required* for Rails + "preload_app true",
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.establish_connection
-
-  # reset prometheus client, this will cause any opened metrics files to be closed
-  defined?(::Prometheus::Client.reinitialize_on_pid_change) &&
-    Prometheus::Client.reinitialize_on_pid_change
-
-  # if preload_app is true, then you may also want to check and
-  # restart any other shared sockets/descriptors such as Memcached,
-  # and Redis.  TokyoCabinet file handles are safe to reuse
-  # between any number of forked children (assuming your kernel
-  # correctly implements pread()/pwrite() system calls)
 end

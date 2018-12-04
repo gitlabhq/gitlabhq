@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GitlabController < Import::BaseController
   MAX_PROJECT_PAGES = 15
   PER_PAGE_PROJECTS = 100

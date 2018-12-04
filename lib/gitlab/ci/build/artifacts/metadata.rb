@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'zlib'
 require 'json'
 
@@ -59,9 +61,12 @@ module Gitlab
 
             until gz.eof?
               begin
-                path = read_string(gz).force_encoding('UTF-8')
-                meta = read_string(gz).force_encoding('UTF-8')
+                path = read_string(gz)&.force_encoding('UTF-8')
+                meta = read_string(gz)&.force_encoding('UTF-8')
 
+                # We might hit an EOF while reading either value, so we should
+                # abort if we don't get any data.
+                next unless path && meta
                 next unless path.valid_encoding? && meta.valid_encoding?
                 next unless path =~ match_pattern
                 next if path =~ INVALID_PATH_PATTERN

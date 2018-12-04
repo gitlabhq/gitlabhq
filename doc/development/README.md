@@ -7,8 +7,8 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Get started!
 
-- Setup GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
-- [GitLab contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+- Set up GitLab's development environment with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md)
+- [GitLab contributing guide](contributing/index.md)
 - [Architecture](architecture.md) of GitLab
 - [Rake tasks](rake_tasks.md) for development
 
@@ -23,13 +23,14 @@ description: 'Learn how to contribute to GitLab.'
 
 ## UX and frontend guides
 
-- [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
+- [GitLab Design System](https://design.gitlab.com/) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
 - [Emoji guide](fe_guide/emojis.md)
 
 ## Backend guides
 
 - [GitLab utilities](utilities.md)
+- [Logging](logging.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [GraphQL API styleguide](api_graphql_styleguide.md) Use this
@@ -50,6 +51,8 @@ description: 'Learn how to contribute to GitLab.'
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
+- [DeclarativePolicy framework](policies.md)
+- [Switching to Rails 5](switching_to_rails5.md)
 
 ## Performance guides
 

@@ -31,9 +31,9 @@ describe('Environment', () => {
     mock.restore();
   });
 
-  describe('successfull request', () => {
+  describe('successful request', () => {
     describe('without environments', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         mock.onGet(mockData.endpoint).reply(200, { environments: [] });
 
         component = mountComponent(EnvironmentsComponent, mockData);
@@ -44,30 +44,34 @@ describe('Environment', () => {
       });
 
       it('should render the empty state', () => {
-        expect(
-          component.$el.querySelector('.js-new-environment-button').textContent,
-        ).toContain('New environment');
+        expect(component.$el.querySelector('.js-new-environment-button').textContent).toContain(
+          'New environment',
+        );
 
-        expect(
-          component.$el.querySelector('.js-blank-state-title').textContent,
-        ).toContain('You don\'t have any environments right now.');
+        expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain(
+          "You don't have any environments right now",
+        );
       });
     });
 
     describe('with paginated environments', () => {
-      beforeEach((done) => {
-        mock.onGet(mockData.endpoint).reply(200, {
-          environments: [environment],
-          stopped_count: 1,
-          available_count: 0,
-        }, {
-          'X-nExt-pAge': '2',
-          'x-page': '1',
-          'X-Per-Page': '1',
-          'X-Prev-Page': '',
-          'X-TOTAL': '37',
-          'X-Total-Pages': '2',
-        });
+      beforeEach(done => {
+        mock.onGet(mockData.endpoint).reply(
+          200,
+          {
+            environments: [environment],
+            stopped_count: 1,
+            available_count: 0,
+          },
+          {
+            'X-nExt-pAge': '2',
+            'x-page': '1',
+            'X-Per-Page': '1',
+            'X-Prev-Page': '',
+            'X-TOTAL': '37',
+            'X-Total-Pages': '2',
+          },
+        );
 
         component = mountComponent(EnvironmentsComponent, mockData);
 
@@ -78,28 +82,27 @@ describe('Environment', () => {
 
       it('should render a table with environments', () => {
         expect(component.$el.querySelectorAll('table')).not.toBeNull();
-        expect(
-          component.$el.querySelector('.environment-name').textContent.trim(),
-        ).toEqual(environment.name);
+        expect(component.$el.querySelector('.environment-name').textContent.trim()).toEqual(
+          environment.name,
+        );
       });
 
       describe('pagination', () => {
         it('should render pagination', () => {
-          expect(
-            component.$el.querySelectorAll('.gl-pagination li').length,
-          ).toEqual(5);
+          expect(component.$el.querySelectorAll('.gl-pagination li').length).toEqual(5);
         });
 
-        it('should make an API request when page is clicked', (done) => {
+        it('should make an API request when page is clicked', done => {
           spyOn(component, 'updateContent');
           setTimeout(() => {
             component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
+
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
             done();
           }, 0);
         });
 
-        it('should make an API request when using tabs', (done) => {
+        it('should make an API request when using tabs', done => {
           setTimeout(() => {
             spyOn(component, 'updateContent');
             component.$el.querySelector('.js-environments-tab-stopped').click();
@@ -113,7 +116,7 @@ describe('Environment', () => {
   });
 
   describe('unsuccessfull request', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       mock.onGet(mockData.endpoint).reply(500, {});
 
       component = mountComponent(EnvironmentsComponent, mockData);
@@ -124,15 +127,16 @@ describe('Environment', () => {
     });
 
     it('should render empty state', () => {
-      expect(
-        component.$el.querySelector('.js-blank-state-title').textContent,
-      ).toContain('You don\'t have any environments right now.');
+      expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain(
+        "You don't have any environments right now",
+      );
     });
   });
 
   describe('expandable folders', () => {
     beforeEach(() => {
-      mock.onGet(mockData.endpoint).reply(200,
+      mock.onGet(mockData.endpoint).reply(
+        200,
         {
           environments: [folder],
           stopped_count: 0,
@@ -153,23 +157,18 @@ describe('Environment', () => {
       component = mountComponent(EnvironmentsComponent, mockData);
     });
 
-    it('should open a closed folder', (done) => {
+    it('should open a closed folder', done => {
       setTimeout(() => {
         component.$el.querySelector('.folder-name').click();
 
         Vue.nextTick(() => {
-          expect(
-            component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
-          ).toContain('display: none');
-          expect(
-            component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
-          ).not.toContain('display: none');
+          expect(component.$el.querySelector('.folder-icon.ic-chevron-right')).toBe(null);
           done();
         });
       }, 0);
     });
 
-    it('should close an opened folder', (done) => {
+    it('should close an opened folder', done => {
       setTimeout(() => {
         // open folder
         component.$el.querySelector('.folder-name').click();
@@ -179,19 +178,14 @@ describe('Environment', () => {
           component.$el.querySelector('.folder-name').click();
 
           Vue.nextTick(() => {
-            expect(
-              component.$el.querySelector('.folder-icon i.fa-caret-down').getAttribute('style'),
-            ).toContain('display: none');
-            expect(
-              component.$el.querySelector('.folder-icon i.fa-caret-right').getAttribute('style'),
-            ).not.toContain('display: none');
+            expect(component.$el.querySelector('.folder-icon.ic-chevron-down')).toBe(null);
             done();
           });
         });
       }, 0);
     });
 
-    it('should show children environments and a button to show all environments', (done) => {
+    it('should show children environments and a button to show all environments', done => {
       setTimeout(() => {
         // open folder
         component.$el.querySelector('.folder-name').click();
@@ -200,7 +194,9 @@ describe('Environment', () => {
           // wait for next async request
           setTimeout(() => {
             expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
-            expect(component.$el.querySelector('.text-center > a.btn').textContent).toContain('Show all');
+            expect(component.$el.querySelector('.text-center > a.btn').textContent).toContain(
+              'Show all',
+            );
             done();
           });
         });
@@ -210,7 +206,8 @@ describe('Environment', () => {
 
   describe('methods', () => {
     beforeEach(() => {
-      mock.onGet(mockData.endpoint).reply(200,
+      mock.onGet(mockData.endpoint).reply(
+        200,
         {
           environments: [],
           stopped_count: 0,
@@ -224,8 +221,9 @@ describe('Environment', () => {
     });
 
     describe('updateContent', () => {
-      it('should set given parameters', (done) => {
-        component.updateContent({ scope: 'stopped', page: '3' })
+      it('should set given parameters', done => {
+        component
+          .updateContent({ scope: 'stopped', page: '3' })
           .then(() => {
             expect(component.page).toEqual('3');
             expect(component.scope).toEqual('stopped');

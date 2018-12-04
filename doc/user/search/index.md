@@ -2,27 +2,27 @@
 
 ## Issues and merge requests
 
-To search through issues and merge requests in multiple projects, you can use the left-sidebar.
+To search through issues and merge requests in multiple projects, you can use the **Issues** or **Merge Requests** links
+in the top-right part of your screen.
 
-Click the menu bar, then **Issues** or **Merge Requests**, which work in the same way,
-therefore, the following notes are valid for both.
+Both of them work in the same way, therefore, the following notes are valid for both.
 
 The number displayed on their right represents the number of issues and merge requests assigned to you.
 
-![menu bar - issues and MRs assigned to you](img/left_menu_bar.png)
+![issues and MRs dashboard links](img/dashboard_links.png)
 
 When you click **Issues**, you'll see the opened issues assigned to you straight away:
 
 ![Issues assigned to you](img/issues_assigned_to_you.png)
 
-You can filter them by **Author**, **Assignee**, **Milestone**, and **Labels**,
-searching through **Open**, **Closed**, and **All** issues.
+You can search through **Open**, **Closed**, or **All** issues.
 
-Of course, you can combine all filters together.
+You can also filter the results using the search and filter field. This works in the same way as the ones found in the
+per project pages described below.
 
 ### Issues and MRs assigned to you or created by you
 
-You'll find a shortcut to issues and merge requests create by you or assigned to you
+You'll also find shortcuts to issues and merge requests created by you or assigned to you
 on the search field on the top-right of your screen:
 
 ![shortcut to your issues and mrs](img/issues_mrs_shortcut.png)
@@ -39,6 +39,16 @@ label, weight, and 'my-reaction' (based on your emoji votes). When done, press *
 The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab,
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
+
+### Filtering by **None** / **Any**
+
+Some filter fields like milestone and assignee, allow you to filter by **None** or **Any**.
+
+![filter by none any](img/issues_filter_none_any.png)
+
+Selecting **None** returns results that have an empty value for that field. E.g.: no milestone, no assignee.
+
+Selecting **Any** does the opposite. It returns results that have a non-empty value for that field.
 
 ### Searching for specific terms
 

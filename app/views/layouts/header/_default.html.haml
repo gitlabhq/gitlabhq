@@ -5,7 +5,7 @@
 - else
   - search_path_url = search_path
 
-%header.navbar.navbar-gitlab.qa-navbar.navbar-expand-sm
+%header.navbar.navbar-gitlab.qa-navbar.navbar-expand-sm.js-navbar
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
@@ -53,6 +53,12 @@
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
+          %li.nav-item.header-help.dropdown
+            = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
+              = sprite_icon('question', size: 16)
+              = sprite_icon('angle-down', css_class: 'caret-down')
+            .dropdown-menu.dropdown-menu-right
+              = render 'layouts/header/help_dropdown'
           - if header_link?(:user_dropdown)
             %li.nav-item.header-user.dropdown
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
@@ -74,3 +80,6 @@
         %span.sr-only= _('Toggle navigation')
         = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
+
+- if can?(current_user, :update_user_status, current_user)
+  .js-set-status-modal-wrapper{ data: { current_emoji: current_user.status.present? ? current_user.status.emoji : '', current_message: current_user.status.present? ? current_user.status.message : '' } }

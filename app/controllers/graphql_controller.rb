@@ -3,6 +3,7 @@
 class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
+  prepend_before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
 
   before_action :check_graphql_feature_flag!
 

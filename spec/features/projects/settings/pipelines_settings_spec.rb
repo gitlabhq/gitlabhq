@@ -137,5 +137,29 @@ describe "Projects > Settings > Pipelines settings" do
         end
       end
     end
+
+    describe 'runners registration token' do
+      let!(:token) { project.runners_token }
+
+      before do
+        visit project_settings_ci_cd_path(project)
+      end
+
+      it 'has a registration token' do
+        expect(page.find('#registration_token')).to have_content(token)
+      end
+
+      describe 'reload registration token' do
+        let(:page_token) { find('#registration_token').text }
+
+        before do
+          click_button 'Reset runners registration token'
+        end
+
+        it 'changes registration token' do
+          expect(page_token).not_to eq token
+        end
+      end
+    end
   end
 end

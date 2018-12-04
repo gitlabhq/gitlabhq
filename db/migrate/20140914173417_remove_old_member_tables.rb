@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveOldMemberTables < ActiveRecord::Migration
+class RemoveOldMemberTables < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

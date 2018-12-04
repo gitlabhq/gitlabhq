@@ -1,67 +1,67 @@
 <script>
-  import DeprecatedModal from './deprecated_modal.vue';
+import DeprecatedModal from './deprecated_modal.vue';
 
-  export default {
-    name: 'RecaptchaModal',
+export default {
+  name: 'RecaptchaModal',
 
-    components: {
-      DeprecatedModal,
+  components: {
+    DeprecatedModal,
+  },
+
+  props: {
+    html: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+
+  data() {
+    return {
+      script: {},
+      scriptSrc: 'https://www.google.com/recaptcha/api.js',
+    };
+  },
+
+  watch: {
+    html() {
+      this.appendRecaptchaScript();
+    },
+  },
+
+  mounted() {
+    window.recaptchaDialogCallback = this.submit.bind(this);
+  },
+
+  methods: {
+    appendRecaptchaScript() {
+      this.removeRecaptchaScript();
+
+      const script = document.createElement('script');
+      script.src = this.scriptSrc;
+      script.classList.add('js-recaptcha-script');
+      script.async = true;
+      script.defer = true;
+
+      this.script = script;
+
+      document.body.appendChild(script);
     },
 
-    props: {
-      html: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    removeRecaptchaScript() {
+      if (this.script instanceof Element) this.script.remove();
     },
 
-    data() {
-      return {
-        script: {},
-        scriptSrc: 'https://www.google.com/recaptcha/api.js',
-      };
+    close() {
+      this.removeRecaptchaScript();
+      this.$emit('close');
     },
 
-    watch: {
-      html() {
-        this.appendRecaptchaScript();
-      },
+    submit() {
+      this.$el.querySelector('form').submit();
     },
-
-    mounted() {
-      window.recaptchaDialogCallback = this.submit.bind(this);
-    },
-
-    methods: {
-      appendRecaptchaScript() {
-        this.removeRecaptchaScript();
-
-        const script = document.createElement('script');
-        script.src = this.scriptSrc;
-        script.classList.add('js-recaptcha-script');
-        script.async = true;
-        script.defer = true;
-
-        this.script = script;
-
-        document.body.appendChild(script);
-      },
-
-      removeRecaptchaScript() {
-        if (this.script instanceof Element) this.script.remove();
-      },
-
-      close() {
-        this.removeRecaptchaScript();
-        this.$emit('close');
-      },
-
-      submit() {
-        this.$el.querySelector('form').submit();
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>
@@ -73,14 +73,8 @@
     @cancel="close"
   >
     <div slot="body">
-      <p>
-        {{ __('We want to be sure it is you, please confirm you are not a robot.') }}
-      </p>
-      <div
-        ref="recaptcha"
-        v-html="html"
-      >
-      </div>
+      <p>{{ __('We want to be sure it is you, please confirm you are not a robot.') }}</p>
+      <div ref="recaptcha" v-html="html"></div>
     </div>
   </deprecated-modal>
 </template>

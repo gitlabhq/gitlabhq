@@ -34,50 +34,6 @@ class GlobalMilestone
     new(title, child_milestones)
   end
 
-  def self.states_count(projects, group = nil)
-    legacy_group_milestones_count = legacy_group_milestone_states_count(projects)
-    group_milestones_count = group_milestones_states_count(group)
-
-    legacy_group_milestones_count.merge(group_milestones_count) do |k, legacy_group_milestones_count, group_milestones_count|
-      legacy_group_milestones_count + group_milestones_count
-    end
-  end
-
-  def self.group_milestones_states_count(group)
-    return STATE_COUNT_HASH unless group
-
-    params = { group_ids: [group.id], state: 'all' }
-
-    relation = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
-    grouped_by_state = relation.reorder(nil).group(:state).count
-
-    {
-      opened: grouped_by_state['active'] || 0,
-      closed: grouped_by_state['closed'] || 0,
-      all: grouped_by_state.values.sum
-    }
-  end
-
-  # Counts the legacy group milestones which must be grouped by title
-  def self.legacy_group_milestone_states_count(projects)
-    return STATE_COUNT_HASH unless projects
-
-    params = { project_ids: projects.map(&:id), state: 'all' }
-
-    relation = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
-    project_milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
-
-    opened = count_by_state(project_milestones_by_state_and_title, 'active')
-    closed = count_by_state(project_milestones_by_state_and_title, 'closed')
-    all = project_milestones_by_state_and_title.map { |(_, title), _| title }.uniq.count
-
-    {
-      opened: opened,
-      closed: closed,
-      all: all
-    }
-  end
-
   def self.count_by_state(milestones_by_state_and_title, state)
     milestones_by_state_and_title.count do |(milestone_state, _), _|
       milestone_state == state

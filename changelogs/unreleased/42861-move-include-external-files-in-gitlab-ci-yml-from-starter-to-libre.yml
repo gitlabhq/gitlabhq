@@ -1,5 +1,0 @@
----
-title: Move including external files in .gitlab-ci.yml from Starter to Libre
-merge_request: 21603
-author:
-type: changed

@@ -4,6 +4,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import boardNewIssue from '~/boards/components/board_new_issue.vue';
+import boardsStore from '~/boards/stores/boards_store';
 
 import '~/boards/models/list';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
@@ -27,7 +28,7 @@ describe('Issue boards new issue form', () => {
     return vm.submit(dummySubmitEvent);
   };
 
-  beforeEach((done) => {
+  beforeEach(done => {
     setFixtures('<div class="test-container"></div>');
 
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
@@ -36,8 +37,7 @@ describe('Issue boards new issue form', () => {
     mock.onAny().reply(boardsMockInterceptor);
 
     gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
-    gl.IssueBoardsApp = new Vue();
+    boardsStore.create();
 
     list = new List(listObj);
 
@@ -60,7 +60,7 @@ describe('Issue boards new issue form', () => {
     mock.restore();
   });
 
-  it('calls submit if submit button is clicked', (done) => {
+  it('calls submit if submit button is clicked', done => {
     spyOn(vm, 'submit').and.callFake(e => e.preventDefault());
     vm.title = 'Testing Title';
 
@@ -69,7 +69,6 @@ describe('Issue boards new issue form', () => {
         vm.$el.querySelector('.btn-success').click();
 
         expect(vm.submit.calls.count()).toBe(1);
-        expect(vm.$refs['submit-button']).toBe(vm.$el.querySelector('.btn-success'));
       })
       .then(done)
       .catch(done.fail);
@@ -79,7 +78,7 @@ describe('Issue boards new issue form', () => {
     expect(vm.$el.querySelector('.btn-success').disabled).toBe(true);
   });
 
-  it('enables submit button if title is not empty', (done) => {
+  it('enables submit button if title is not empty', done => {
     vm.title = 'Testing Title';
 
     Vue.nextTick()
@@ -91,7 +90,7 @@ describe('Issue boards new issue form', () => {
       .catch(done.fail);
   });
 
-  it('clears title after clicking cancel', (done) => {
+  it('clears title after clicking cancel', done => {
     vm.$el.querySelector('.btn-default').click();
 
     Vue.nextTick()
@@ -102,7 +101,7 @@ describe('Issue boards new issue form', () => {
       .catch(done.fail);
   });
 
-  it('does not create new issue if title is empty', (done) => {
+  it('does not create new issue if title is empty', done => {
     submitIssue()
       .then(() => {
         expect(list.newIssue).not.toHaveBeenCalled();
@@ -112,7 +111,7 @@ describe('Issue boards new issue form', () => {
   });
 
   describe('submit success', () => {
-    it('creates new issue', (done) => {
+    it('creates new issue', done => {
       vm.title = 'submit title';
 
       Vue.nextTick()
@@ -124,7 +123,7 @@ describe('Issue boards new issue form', () => {
         .catch(done.fail);
     });
 
-    it('enables button after submit', (done) => {
+    it('enables button after submit', done => {
       vm.title = 'submit issue';
 
       Vue.nextTick()
@@ -136,7 +135,7 @@ describe('Issue boards new issue form', () => {
         .catch(done.fail);
     });
 
-    it('clears title after submit', (done) => {
+    it('clears title after submit', done => {
       vm.title = 'submit issue';
 
       Vue.nextTick()
@@ -148,26 +147,26 @@ describe('Issue boards new issue form', () => {
         .catch(done.fail);
     });
 
-    it('sets detail issue after submit', (done) => {
-      expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe(undefined);
+    it('sets detail issue after submit', done => {
+      expect(boardsStore.detail.issue.title).toBe(undefined);
       vm.title = 'submit issue';
 
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(gl.issueBoards.BoardsStore.detail.issue.title).toBe('submit issue');
+          expect(boardsStore.detail.issue.title).toBe('submit issue');
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('sets detail list after submit', (done) => {
+    it('sets detail list after submit', done => {
       vm.title = 'submit issue';
 
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {
-          expect(gl.issueBoards.BoardsStore.detail.list.id).toBe(list.id);
+          expect(boardsStore.detail.list.id).toBe(list.id);
         })
         .then(done)
         .catch(done.fail);
@@ -180,7 +179,7 @@ describe('Issue boards new issue form', () => {
       vm.title = 'error';
     });
 
-    it('removes issue', (done) => {
+    it('removes issue', done => {
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {
@@ -190,7 +189,7 @@ describe('Issue boards new issue form', () => {
         .catch(done.fail);
     });
 
-    it('shows error', (done) => {
+    it('shows error', done => {
       Vue.nextTick()
         .then(submitIssue)
         .then(() => {

@@ -55,11 +55,7 @@ export default {
 <template>
   <div class="frequent-items-list-container">
     <ul class="list-unstyled">
-      <li
-        v-if="isListEmpty"
-        :class="{ 'section-failure': isFetchFailed }"
-        class="section-empty"
-      >
+      <li v-if="isListEmpty" :class="{ 'section-failure': isFetchFailed }" class="section-empty">
         {{ listEmptyMessage }}
       </li>
       <frequent-items-list-item

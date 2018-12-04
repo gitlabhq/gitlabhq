@@ -49,7 +49,7 @@ Raphael.prototype.textWrap = function testWrap(t, width) {
   const s = [];
   for (let j = 0, len = words.length; j < len; j += 1) {
     const word = words[j];
-    if (x + (word.length * letterWidth) > width) {
+    if (x + word.length * letterWidth > width) {
       s.push('\n');
       x = 0;
     }

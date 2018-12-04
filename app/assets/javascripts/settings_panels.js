@@ -1,21 +1,27 @@
 import $ from 'jquery';
+import { __ } from './locale';
 
 function expandSection($section) {
-  $section.find('.js-settings-toggle').text('Collapse');
-  $section.find('.settings-content').off('scroll.expandSection').scrollTop(0);
+  $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Collapse'));
+  $section
+    .find('.settings-content')
+    .off('scroll.expandSection')
+    .scrollTop(0);
   $section.addClass('expanded');
   if (!$section.hasClass('no-animate')) {
-    $section.addClass('animating')
+    $section
+      .addClass('animating')
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
 }
 
 function closeSection($section) {
-  $section.find('.js-settings-toggle').text('Expand');
+  $section.find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').text(__('Expand'));
   $section.find('.settings-content').on('scroll.expandSection', () => expandSection($section));
   $section.removeClass('expanded');
   if (!$section.hasClass('no-animate')) {
-    $section.addClass('animating')
+    $section
+      .addClass('animating')
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
 }

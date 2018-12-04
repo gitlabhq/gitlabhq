@@ -1,4 +1,4 @@
-/* eslint-disable func-names, wrap-iife, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* eslint-disable func-names, no-var, object-shorthand, one-var, no-else-return */
 
 import $ from 'jquery';
 import Api from './api';
@@ -14,30 +14,33 @@ export default function projectSelect() {
     this.orderBy = $(select).data('orderBy') || 'id';
     this.withIssuesEnabled = $(select).data('withIssuesEnabled');
     this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
+    this.withShared =
+      $(select).data('withShared') === undefined ? true : $(select).data('withShared');
+    this.includeProjectsInSubgroups = $(select).data('includeProjectsInSubgroups') || false;
     this.allowClear = $(select).data('allowClear') || false;
 
-    placeholder = "Search for project";
+    placeholder = 'Search for project';
     if (this.includeGroups) {
-      placeholder += " or group";
+      placeholder += ' or group';
     }
 
     $(select).select2({
       placeholder: placeholder,
       minimumInputLength: 0,
-      query: (function (_this) {
-        return function (query) {
+      query: (function(_this) {
+        return function(query) {
           var finalCallback, projectsCallback;
-          finalCallback = function (projects) {
+          finalCallback = function(projects) {
             var data;
             data = {
-              results: projects
+              results: projects,
             };
             return query.callback(data);
           };
           if (_this.includeGroups) {
-            projectsCallback = function (projects) {
+            projectsCallback = function(projects) {
               var groupsCallback;
-              groupsCallback = function (groups) {
+              groupsCallback = function(groups) {
                 var data;
                 data = groups.concat(projects);
                 return finalCallback(data);
@@ -48,17 +51,28 @@ export default function projectSelect() {
             projectsCallback = finalCallback;
           }
           if (_this.groupId) {
-            return Api.groupProjects(_this.groupId, query.term, {
-              with_issues_enabled: _this.withIssuesEnabled,
-              with_merge_requests_enabled: _this.withMergeRequestsEnabled,
-            }, projectsCallback);
+            return Api.groupProjects(
+              _this.groupId,
+              query.term,
+              {
+                with_issues_enabled: _this.withIssuesEnabled,
+                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+                with_shared: _this.withShared,
+                include_subgroups: _this.includeProjectsInSubgroups,
+              },
+              projectsCallback,
+            );
           } else {
-            return Api.projects(query.term, {
-              order_by: _this.orderBy,
-              with_issues_enabled: _this.withIssuesEnabled,
-              with_merge_requests_enabled: _this.withMergeRequestsEnabled,
-              membership: !_this.allProjects,
-            }, projectsCallback);
+            return Api.projects(
+              query.term,
+              {
+                order_by: _this.orderBy,
+                with_issues_enabled: _this.withIssuesEnabled,
+                with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+                membership: !_this.allProjects,
+              },
+              projectsCallback,
+            );
           }
         };
       })(this),
@@ -69,7 +83,7 @@ export default function projectSelect() {
           url: project.web_url,
         });
       },
-      text: function (project) {
+      text: function(project) {
         return project.name_with_namespace || project.name;
       },
 
@@ -79,7 +93,7 @@ export default function projectSelect() {
 
       allowClear: this.allowClear,
 
-      dropdownCssClass: "ajax-project-dropdown"
+      dropdownCssClass: 'ajax-project-dropdown',
     });
     if (simpleFilter) return select;
     return new ProjectSelectComboButton(select);

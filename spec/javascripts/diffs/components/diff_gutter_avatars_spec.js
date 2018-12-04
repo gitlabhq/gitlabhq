@@ -23,6 +23,7 @@ describe('DiffGutterAvatars', () => {
 
       it('should return false when all discussions are not expanded', () => {
         component.discussions[0].expanded = false;
+
         expect(component.discussionsExpanded).toEqual(false);
       });
     });
@@ -56,6 +57,7 @@ describe('DiffGutterAvatars', () => {
 
       it('should return empty string if there is no discussion', () => {
         component.discussions = [];
+
         expect(component.moreText).toEqual('');
       });
     });

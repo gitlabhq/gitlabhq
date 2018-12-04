@@ -28,7 +28,7 @@ describe 'User comments on a diff', :js do
             click_button('Comment')
           end
 
-          page.within('.files > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(3)') do
             expect(page).to have_content('Line is wrong')
 
             find('.js-btn-vue-toggle-comments').click
@@ -49,7 +49,7 @@ describe 'User comments on a diff', :js do
 
           wait_for_requests
 
-          page.within('.files > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
@@ -63,7 +63,7 @@ describe 'User comments on a diff', :js do
           wait_for_requests
 
           # Hide the comment.
-          page.within('.files > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(3)') do
             find('.js-btn-vue-toggle-comments').click
 
             expect(page).not_to have_content('Line is wrong')
@@ -71,21 +71,21 @@ describe 'User comments on a diff', :js do
 
           # At this moment a user should see only one comment.
           # The other one should be hidden.
-          page.within('.files > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
           # Show the comment.
-          page.within('.files > div:nth-child(3)') do
+          page.within('.diff-files-holder > div:nth-child(3)') do
             find('.js-btn-vue-toggle-comments').click
           end
 
           # Now both the comments should be shown.
-          page.within('.files > div:nth-child(3) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(3) .note-body > .note-text') do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.files > div:nth-child(2) .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(2) .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
 
@@ -95,11 +95,11 @@ describe 'User comments on a diff', :js do
 
           wait_for_requests
 
-          page.within('.files > div:nth-child(3) .parallel .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(3) .parallel .note-body > .note-text') do
             expect(page).to have_content('Line is wrong')
           end
 
-          page.within('.files > div:nth-child(2) .parallel .note-body > .note-text') do
+          page.within('.diff-files-holder > div:nth-child(2) .parallel .note-body > .note-text') do
             expect(page).to have_content('Line is correct')
           end
         end

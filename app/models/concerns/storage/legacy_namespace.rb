@@ -5,8 +5,10 @@ module Storage
     extend ActiveSupport::Concern
 
     def move_dir
-      if any_project_has_container_registry_tags?
-        raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      proj_with_tags = first_project_with_container_registry_tags
+
+      if proj_with_tags
+        raise Gitlab::UpdatePathError.new("Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry")
       end
 
       parent_was = if parent_changed? && parent_id_was.present?
@@ -92,7 +94,7 @@ module Storage
         if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
           Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
-          # Remove namespace directroy async with delay so
+          # Remove namespace directory async with delay so
           # GitLab has time to remove all projects first
           run_after_commit do
             GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)

@@ -21,10 +21,9 @@ export default {
   },
   methods: {
     onToggleSubscription() {
-      this.mediator.toggleSubscription()
-        .catch(() => {
-          Flash(__('Error occurred when toggling the notification subscription'));
-        });
+      this.mediator.toggleSubscription().catch(() => {
+        Flash(__('Error occurred when toggling the notification subscription'));
+      });
     },
   },
 };

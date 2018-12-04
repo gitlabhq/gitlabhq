@@ -1,4 +1,5 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require_dependency 'active_model'
 
 describe Gitlab::Ci::Config::Entry::Policy do
   let(:entry) { described_class.new(config) }
@@ -57,7 +58,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
   end
 
   context 'when using complex policy' do
-    context 'when specifiying refs policy' do
+    context 'when specifying refs policy' do
       let(:config) { { refs: ['master'] } }
 
       it 'is a correct configuraton' do
@@ -121,6 +122,23 @@ describe Gitlab::Ci::Config::Entry::Policy do
 
       it 'reports an error about invalid expression' do
         expect(entry.errors).to include /invalid expression syntax/
+      end
+    end
+
+    context 'when specifying a valid changes policy' do
+      let(:config) { { changes: %w[some/* paths/**/*.rb] } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(config)
+      end
+    end
+
+    context 'when changes policy is invalid' do
+      let(:config) { { changes: [1, 2] } }
+
+      it 'returns errors' do
+        expect(entry.errors).to include /changes should be an array of strings/
       end
     end
 

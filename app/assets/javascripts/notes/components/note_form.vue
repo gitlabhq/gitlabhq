@@ -20,7 +20,7 @@ export default {
       default: '',
     },
     noteId: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: '',
     },
@@ -48,13 +48,19 @@ export default {
       required: false,
       default: '',
     },
+    resolveDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       updatedNoteBody: this.noteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
-      isResolving: false,
+      isResolving: this.resolveDiscussion,
+      isUnresolving: !this.resolveDiscussion,
       resolveAsThread: true,
     };
   },
@@ -102,6 +108,18 @@ export default {
   },
   methods: {
     ...mapActions(['toggleResolveNote']),
+    shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState) {
+      // shouldBeResolved() checks the actual resolution state,
+      // considering batchComments (EEP), if applicable/enabled.
+      const newResolvedStateAfterUpdate =
+        this.shouldBeResolved && this.shouldBeResolved(shouldResolve);
+
+      const shouldToggleState =
+        newResolvedStateAfterUpdate !== undefined &&
+        beforeSubmitDiscussionState !== newResolvedStateAfterUpdate;
+
+      return shouldResolve || shouldToggleState;
+    },
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
@@ -109,7 +127,7 @@ export default {
       this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
         this.isSubmitting = false;
 
-        if (shouldResolve) {
+        if (this.shouldToggleResolved(shouldResolve, beforeSubmitDiscussionState)) {
           this.resolveHandler(beforeSubmitDiscussionState);
         }
       });
@@ -134,27 +152,14 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="editNoteForm"
-    class="note-edit-form current-note-edit-form js-discussion-note-form">
-    <div
-      v-if="conflictWhileEditing"
-      class="js-conflict-edit-warning alert alert-danger">
+  <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
+    <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
       This comment has changed since you started editing, please review the
-      <a
-        :href="noteHash"
-        target="_blank"
-        rel="noopener noreferrer">
-        updated comment
-      </a>
-      to ensure information is not lost.
+      <a :href="noteHash" target="_blank" rel="noopener noreferrer">updated comment</a> to ensure
+      information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form
-      :data-line-code="lineCode"
-      class="edit-note common-note-form js-quick-submit gfm-form"
-    >
-
+    <form :data-line-code="lineCode" class="edit-note common-note-form js-quick-submit gfm-form">
       <issue-warning
         v-if="hasWarning(getNoteableData)"
         :is-locked="isLocked(getNoteableData)"
@@ -166,43 +171,45 @@ export default {
         :markdown-docs-path="markdownDocsPath"
         :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
-        :add-spacing-classes="false">
+        :add-spacing-classes="false"
+      >
         <textarea
           id="note_note"
           ref="textarea"
           slot="textarea"
-          :data-supports-quick-actions="!isEditing"
           v-model="updatedNoteBody"
+          :data-supports-quick-actions="!isEditing"
           name="note[note]"
-          class="note-textarea js-gfm-input js-note-text
-js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
+          class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
-          @keydown.meta.enter="handleUpdate()"
-          @keydown.ctrl.enter="handleUpdate()"
-          @keydown.up="editMyLastNote()"
-          @keydown.esc="cancelHandler(true)">
-        </textarea>
+          @keydown.meta.enter="handleUpdate();"
+          @keydown.ctrl.enter="handleUpdate();"
+          @keydown.up="editMyLastNote();"
+          @keydown.esc="cancelHandler(true);"
+        ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
           :disabled="isDisabled"
           type="button"
-          class="js-vue-issue-save btn btn-success js-comment-button "
-          @click="handleUpdate()">
+          class="js-vue-issue-save btn btn-success js-comment-button"
+          @click="handleUpdate();"
+        >
           {{ saveButtonTitle }}
         </button>
         <button
           v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true)"
+          @click.prevent="handleUpdate(true);"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
-          @click="cancelHandler()">
+          @click="cancelHandler();"
+        >
           Cancel
         </button>
       </div>

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, max-len, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len */
+/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -30,24 +30,24 @@ export default class NewBranchForm {
     startsWith = {
       pattern: /^(\/|\.)/g,
       prefix: "can't start with",
-      conjunction: "or"
+      conjunction: 'or',
     };
     endsWith = {
       pattern: /(\/|\.|\.lock)$/g,
       prefix: "can't end in",
-      conjunction: "or"
+      conjunction: 'or',
     };
     invalid = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g,
       prefix: "can't contain",
-      conjunction: ", "
+      conjunction: ', ',
     };
     single = {
       pattern: /^@+$/g,
       prefix: "can't be",
-      conjunction: "or"
+      conjunction: 'or',
     };
-    return this.restrictions = [startsWith, invalid, endsWith, single];
+    return (this.restrictions = [startsWith, invalid, endsWith, single]);
   }
 
   validate() {
@@ -73,7 +73,7 @@ export default class NewBranchForm {
             return "'" + value + "'";
         }
       });
-      return restriction.prefix + " " + (formatted.join(restriction.conjunction));
+      return restriction.prefix + ' ' + formatted.join(restriction.conjunction);
     };
     validator = (function(_this) {
       return function(errors, restriction) {
@@ -88,7 +88,7 @@ export default class NewBranchForm {
     })(this);
     errors = this.restrictions.reduce(validator, []);
     if (errors.length > 0) {
-      errorMessage = $("<span/>").text(errors.join(', '));
+      errorMessage = $('<span/>').text(errors.join(', '));
       return this.branchNameError.append(errorMessage);
     }
   }

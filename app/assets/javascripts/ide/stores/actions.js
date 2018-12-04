@@ -184,10 +184,6 @@ export const burstUnusedSeal = ({ state, commit }) => {
   }
 };
 
-export const setRightPane = ({ commit }, view) => {
-  commit(types.SET_RIGHT_PANE, view);
-};
-
 export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
 
 export const setErrorMessage = ({ commit }, errorMessage) =>

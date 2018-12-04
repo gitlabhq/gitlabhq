@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
+  context 'Create' do
     describe 'Wiki management' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -18,7 +18,7 @@ module QA
       end
 
       it 'user creates, edits, clones, and pushes to the wiki' do
-        wiki = Factory::Resource::Wiki.fabricate! do |resource|
+        wiki = Resource::Wiki.fabricate! do |resource|
           resource.title = 'Home'
           resource.content = '# My First Wiki Content'
           resource.message = 'Update home'
@@ -34,13 +34,13 @@ module QA
 
         validate_content('My Second Wiki Content')
 
-        Factory::Repository::WikiPush.fabricate! do |push|
+        Resource::Repository::WikiPush.fabricate! do |push|
           push.wiki = wiki
           push.file_name = 'Home.md'
           push.file_content = '# My Third Wiki Content'
           push.commit_message = 'Update Home.md'
         end
-        Page::Menu::Side.act { click_wiki }
+        Page::Project::Menu.act { click_wiki }
 
         expect(page).to have_content('My Third Wiki Content')
       end

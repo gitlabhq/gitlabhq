@@ -26,6 +26,8 @@ module Ci
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
+    has_many :deployments, through: :builds
+    has_many :environments, -> { distinct }, through: :deployments
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
@@ -35,6 +37,7 @@ module Ci
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
@@ -57,15 +60,9 @@ module Ci
 
     after_create :keep_around_commits, unless: :importing?
 
-    enum_with_nil source: {
-      unknown: nil,
-      push: 1,
-      web: 2,
-      trigger: 3,
-      schedule: 4,
-      api: 5,
-      external: 6
-    }
+    # We use `Ci::PipelineEnums.sources` here so that EE can more easily extend
+    # this `Hash` with new values.
+    enum_with_nil source: ::Ci::PipelineEnums.sources
 
     enum_with_nil config_source: {
       unknown_source: nil,
@@ -73,14 +70,13 @@ module Ci
       auto_devops_source: 2
     }
 
-    enum failure_reason: {
-      unknown_failure: 0,
-      config_error: 1
-    }
+    # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
+    # extend this `Hash` with new values.
+    enum failure_reason: ::Ci::PipelineEnums.failure_reasons
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :skipped] => :pending
+        transition [:created, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
       end
 
@@ -106,6 +102,10 @@ module Ci
 
       event :block do
         transition any - [:manual] => :manual
+      end
+
+      event :delay do
+        transition any - [:scheduled] => :scheduled
       end
 
       # IMPORTANT
@@ -176,22 +176,31 @@ module Ci
     #
     # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
     #       pipelines to.
-    def self.newest_first(ref = nil)
+    # limit - This limits a backlog search, default to 100.
+    def self.newest_first(ref: nil, limit: 100)
       relation = order(id: :desc)
+      relation = relation.where(ref: ref) if ref
 
-      ref ? relation.where(ref: ref) : relation
+      if limit
+        ids = relation.limit(limit).select(:id)
+        # MySQL does not support limit in subquery
+        ids = ids.pluck(:id) if Gitlab::Database.mysql?
+        relation = relation.where(id: ids)
+      end
+
+      relation
     end
 
     def self.latest_status(ref = nil)
-      newest_first(ref).pluck(:status).first
+      newest_first(ref: ref).pluck(:status).first
     end
 
     def self.latest_successful_for(ref)
-      newest_first(ref).success.take
+      newest_first(ref: ref).success.take
     end
 
     def self.latest_successful_for_refs(refs)
-      relation = newest_first(refs).success
+      relation = newest_first(ref: refs).success
 
       relation.each_with_object({}) do |pipeline, hash|
         hash[pipeline.ref] ||= pipeline
@@ -233,6 +242,10 @@ module Ci
       end
     end
 
+    def self.latest_successful_ids_per_project
+      success.group(:project_id).select('max(id) as id')
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -261,6 +274,12 @@ module Ci
     def legacy_stage(name)
       stage = Ci::LegacyStage.new(self, name: name)
       stage unless stage.statuses_count.zero?
+    end
+
+    def ref_exists?
+      project.repository.ref_exists?(git_ref)
+    rescue Gitlab::Git::Repository::NoRepository
+      false
     end
 
     ##
@@ -506,10 +525,6 @@ module Ci
       yaml_errors.present?
     end
 
-    def environments
-      builds.where.not(environment: nil).success.pluck(:environment).uniq
-    end
-
     # Manually set the notes for a Ci::Pipeline
     # There is no ActiveRecord relation between Ci::Pipeline and notes
     # as they are related to a commit sha. This method helps importing
@@ -544,6 +559,7 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
                 "Unknown status `#{latest_builds_status}`"
@@ -627,6 +643,22 @@ module Ci
       end
     end
 
+    def branch_updated?
+      strong_memoize(:branch_updated) do
+        push_details.branch_updated?
+      end
+    end
+
+    def modified_paths
+      strong_memoize(:modified_paths) do
+        push_details.modified_paths
+      end
+    end
+
+    def default_branch?
+      ref == project.default_branch
+    end
+
     private
 
     def ci_yaml_from_repo
@@ -648,6 +680,22 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def push_details
+      strong_memoize(:push_details) do
+        Gitlab::Git::Push.new(project, before_sha, sha, git_ref)
+      end
+    end
+
+    def git_ref
+      if branch?
+        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+      elsif tag?
+        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
+      else
+        raise ArgumentError, 'Invalid pipeline type!'
+      end
     end
 
     def latest_builds_status

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::GpgKeysController < Profiles::ApplicationController
   before_action :set_gpg_key, only: [:destroy, :revoke]
 

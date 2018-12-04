@@ -39,10 +39,9 @@ describe('Mini Pipeline Graph Dropdown', () => {
     });
 
     it('should call getBuildsList', () => {
-      const getBuildsListSpy = spyOn(
-        MiniPipelineGraph.prototype,
-        'getBuildsList',
-      ).and.callFake(function () {});
+      const getBuildsListSpy = spyOn(MiniPipelineGraph.prototype, 'getBuildsList').and.callFake(
+        function() {},
+      );
 
       new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
@@ -61,10 +60,11 @@ describe('Mini Pipeline Graph Dropdown', () => {
       new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
       document.querySelector('.js-builds-dropdown-button').click();
+
       expect(ajaxSpy.calls.allArgs()[0][0]).toEqual('foobar');
     });
 
-    it('should not close when user uses cmd/ctrl + click', (done) => {
+    it('should not close when user uses cmd/ctrl + click', done => {
       mock.onGet('foobar').reply(200, {
         html: `<li>
           <a class="mini-pipeline-graph-dropdown-item" href="#">
@@ -90,7 +90,7 @@ describe('Mini Pipeline Graph Dropdown', () => {
         .catch(done.fail);
     });
 
-    it('should close the dropdown when request returns an error', (done) => {
+    it('should close the dropdown when request returns an error', done => {
       mock.onGet('foobar').networkError();
 
       new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();

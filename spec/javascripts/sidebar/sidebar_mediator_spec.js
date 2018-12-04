@@ -25,20 +25,23 @@ describe('Sidebar mediator', function() {
     expect(this.mediator.store.assignees[0]).toEqual(Mock.mediator.currentUser);
   });
 
-  it('saves assignees', (done) => {
-    this.mediator.saveAssignees('issue[assignee_ids]')
-      .then((resp) => {
+  it('saves assignees', done => {
+    this.mediator
+      .saveAssignees('issue[assignee_ids]')
+      .then(resp => {
         expect(resp.status).toEqual(200);
         done();
       })
       .catch(done.fail);
   });
 
-  it('fetches the data', (done) => {
-    const mockData = Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
+  it('fetches the data', done => {
+    const mockData =
+      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
     spyOn(this.mediator, 'processFetchedData').and.callThrough();
 
-    this.mediator.fetch()
+    this.mediator
+      .fetch()
       .then(() => {
         expect(this.mediator.processFetchedData).toHaveBeenCalledWith(mockData);
       })
@@ -47,7 +50,8 @@ describe('Sidebar mediator', function() {
   });
 
   it('processes fetched data', () => {
-    const mockData = Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
+    const mockData =
+      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
     this.mediator.processFetchedData(mockData);
 
     expect(this.mediator.store.assignees).toEqual(mockData.assignees);
@@ -68,12 +72,13 @@ describe('Sidebar mediator', function() {
     expect(this.mediator.store.setMoveToProjectId).toHaveBeenCalledWith(projectId);
   });
 
-  it('fetches autocomplete projects', (done) => {
+  it('fetches autocomplete projects', done => {
     const searchTerm = 'foo';
     spyOn(this.mediator.service, 'getProjectsAutocomplete').and.callThrough();
     spyOn(this.mediator.store, 'setAutocompleteProjects').and.callThrough();
 
-    this.mediator.fetchAutocompleteProjects(searchTerm)
+    this.mediator
+      .fetchAutocompleteProjects(searchTerm)
       .then(() => {
         expect(this.mediator.service.getProjectsAutocomplete).toHaveBeenCalledWith(searchTerm);
         expect(this.mediator.store.setAutocompleteProjects).toHaveBeenCalled();
@@ -82,13 +87,14 @@ describe('Sidebar mediator', function() {
       .catch(done.fail);
   });
 
-  it('moves issue', (done) => {
+  it('moves issue', done => {
     const moveToProjectId = 7;
     this.mediator.store.setMoveToProjectId(moveToProjectId);
     spyOn(this.mediator.service, 'moveIssue').and.callThrough();
     const visitUrl = spyOnDependency(SidebarMediator, 'visitUrl');
 
-    this.mediator.moveIssue()
+    this.mediator
+      .moveIssue()
       .then(() => {
         expect(this.mediator.service.moveIssue).toHaveBeenCalledWith(moveToProjectId);
         expect(visitUrl).toHaveBeenCalledWith('/root/some-project/issues/5');
@@ -97,11 +103,12 @@ describe('Sidebar mediator', function() {
       .catch(done.fail);
   });
 
-  it('toggle subscription', (done) => {
+  it('toggle subscription', done => {
     this.mediator.store.setSubscribedState(false);
     spyOn(this.mediator.service, 'toggleSubscription').and.callThrough();
 
-    this.mediator.toggleSubscription()
+    this.mediator
+      .toggleSubscription()
       .then(() => {
         expect(this.mediator.service.toggleSubscription).toHaveBeenCalled();
         expect(this.mediator.store.subscribed).toEqual(true);

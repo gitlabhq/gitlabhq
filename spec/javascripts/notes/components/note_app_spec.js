@@ -121,6 +121,13 @@ describe('note_app', () => {
       ).toEqual('Write a comment or drag your files here…');
     });
 
+    it('should not render form when commenting is disabled', () => {
+      store.state.commentsDisabled = true;
+      vm = mountComponent();
+
+      expect(vm.$el.querySelector('.js-main-target-form')).toEqual(null);
+    });
+
     it('should render form comment button as disabled', () => {
       expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
         'disabled',
@@ -223,6 +230,7 @@ describe('note_app', () => {
 
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
         'Markdown',
       );
@@ -230,6 +238,7 @@ describe('note_app', () => {
 
     it('should render quick action docs url', () => {
       const { quickActionsDocsPath } = mockData.notesDataMock;
+
       expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual(
         'quick actions',
       );

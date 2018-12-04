@@ -65,6 +65,10 @@ module Ci
       event :block do
         transition any - [:manual] => :manual
       end
+
+      event :delay do
+        transition any - [:scheduled] => :scheduled
+      end
     end
 
     def update_status
@@ -77,6 +81,7 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'manual' then block
+        when 'scheduled' then delay
         when 'skipped', nil then skip
         else
           raise HasStatus::UnknownStatusError,

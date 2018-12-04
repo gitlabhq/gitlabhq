@@ -1,84 +1,86 @@
 <script>
-  import lockedWarning from './locked_warning.vue';
-  import titleField from './fields/title.vue';
-  import descriptionField from './fields/description.vue';
-  import editActions from './edit_actions.vue';
-  import descriptionTemplate from './fields/description_template.vue';
+import lockedWarning from './locked_warning.vue';
+import titleField from './fields/title.vue';
+import descriptionField from './fields/description.vue';
+import editActions from './edit_actions.vue';
+import descriptionTemplate from './fields/description_template.vue';
 
-  export default {
-    components: {
-      lockedWarning,
-      titleField,
-      descriptionField,
-      descriptionTemplate,
-      editActions,
+export default {
+  components: {
+    lockedWarning,
+    titleField,
+    descriptionField,
+    descriptionTemplate,
+    editActions,
+  },
+  props: {
+    canDestroy: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      canDestroy: {
-        type: Boolean,
-        required: true,
-      },
-      formState: {
-        type: Object,
-        required: true,
-      },
-      issuableTemplates: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      markdownPreviewPath: {
-        type: String,
-        required: true,
-      },
-      markdownDocsPath: {
-        type: String,
-        required: true,
-      },
-      markdownVersion: {
-        type: Number,
-        required: false,
-        default: 0,
-      },
-      projectPath: {
-        type: String,
-        required: true,
-      },
-      projectNamespace: {
-        type: String,
-        required: true,
-      },
-      showDeleteButton: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      enableAutocomplete: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+    formState: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      hasIssuableTemplates() {
-        return this.issuableTemplates.length;
-      },
+    issuableTemplates: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
-  };
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
+    },
+    markdownDocsPath: {
+      type: String,
+      required: true,
+    },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectNamespace: {
+      type: String,
+      required: true,
+    },
+    showDeleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  computed: {
+    hasIssuableTemplates() {
+      return this.issuableTemplates.length;
+    },
+  },
+};
 </script>
 
 <template>
   <form>
     <locked-warning v-if="formState.lockedWarningVisible" />
     <div class="row">
-      <div
-        v-if="hasIssuableTemplates"
-        class="col-sm-4 col-lg-3">
+      <div v-if="hasIssuableTemplates" class="col-sm-4 col-lg-3">
         <description-template
           :form-state="formState"
           :issuable-templates="issuableTemplates"
@@ -92,10 +94,7 @@
           'col-12': !hasIssuableTemplates,
         }"
       >
-        <title-field
-          :form-state="formState"
-          :issuable-templates="issuableTemplates"
-        />
+        <title-field :form-state="formState" :issuable-templates="issuableTemplates" />
       </div>
     </div>
     <description-field
@@ -110,6 +109,7 @@
       :form-state="formState"
       :can-destroy="canDestroy"
       :show-delete-button="showDeleteButton"
+      :issuable-type="issuableType"
     />
   </form>
 </template>

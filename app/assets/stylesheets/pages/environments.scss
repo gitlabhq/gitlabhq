@@ -44,11 +44,6 @@
       margin: 0;
     }
 
-    .icon-play {
-      height: 13px;
-      width: 12px;
-    }
-
     .external-url,
     .dropdown-new {
       color: $gl-text-color-secondary;
@@ -90,6 +85,7 @@
       margin-right: 3px;
       color: $gl-text-color-secondary;
       display: inline-block;
+      vertical-align: text-top;
 
       .fa:nth-child(1) {
         margin-right: 3px;
@@ -205,21 +201,6 @@
 .divider-line {
   stroke-width: 1;
   stroke: $gray-darkest;
-}
-
-.prometheus-state {
-  max-width: 460px;
-  margin: 10px auto;
-  text-align: center;
-
-  .state-svg {
-    max-width: 80vw;
-    margin: 0 auto;
-  }
-
-  .state-button {
-    padding: $gl-padding / 2;
-  }
 }
 
 .prometheus-graphs {
@@ -365,7 +346,7 @@
     }
 
     .arrow-shadow {
-      content: "";
+      content: '';
       position: absolute;
       width: 7px;
       height: 7px;

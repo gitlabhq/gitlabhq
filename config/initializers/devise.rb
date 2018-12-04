@@ -103,6 +103,9 @@ Devise.setup do |config|
   # Send a notification email when the user's password is changed
   config.send_password_change_notification = true
 
+  # Send a notification email when the user's email is changed
+  config.send_email_changed_notification = true
+
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
   config.password_length = 8..128

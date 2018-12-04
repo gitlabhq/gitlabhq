@@ -2,6 +2,7 @@
 
 class Tree
   include Gitlab::MarkupHelper
+  include Gitlab::Utils::StrongMemoize
 
   attr_accessor :repository, :sha, :path, :entries
 
@@ -16,32 +17,36 @@ class Tree
     @entries = Gitlab::Git::Tree.where(git_repo, @sha, @path, recursive)
   end
 
+  def readme_path
+    strong_memoize(:readme_path) do
+      available_readmes = blobs.select do |blob|
+        Gitlab::FileDetector.type_of(blob.name) == :readme
+      end
+
+      previewable_readmes = available_readmes.select do |blob|
+        previewable?(blob.name)
+      end
+
+      plain_readmes = available_readmes.select do |blob|
+        plain?(blob.name)
+      end
+
+      # Prioritize previewable over plain readmes
+      entry = previewable_readmes.first || plain_readmes.first
+      next nil unless entry
+
+      if path == '/'
+        entry.name
+      else
+        File.join(path, entry.name)
+      end
+    end
+  end
+
   def readme
-    return @readme if defined?(@readme)
-
-    available_readmes = blobs.select do |blob|
-      Gitlab::FileDetector.type_of(blob.name) == :readme
+    strong_memoize(:readme) do
+      repository.blob_at(sha, readme_path) if readme_path
     end
-
-    previewable_readmes = available_readmes.select do |blob|
-      previewable?(blob.name)
-    end
-
-    plain_readmes = available_readmes.select do |blob|
-      plain?(blob.name)
-    end
-
-    # Prioritize previewable over plain readmes
-    readme_tree = previewable_readmes.first || plain_readmes.first
-
-    # Return if we can't preview any of them
-    if readme_tree.nil?
-      return @readme = nil
-    end
-
-    readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
-
-    @readme = repository.blob_at(sha, readme_path)
   end
 
   def trees

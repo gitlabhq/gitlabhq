@@ -15,16 +15,22 @@ export default {
     },
     estimateText() {
       return sprintf(
-        s__('estimateCommand|%{slash_command} will update the estimated time with the latest command.'), {
+        s__(
+          'estimateCommand|%{slash_command} will update the estimated time with the latest command.',
+        ),
+        {
           slash_command: '<code>/estimate</code>',
-        }, false,
+        },
+        false,
       );
     },
     spendText() {
       return sprintf(
-        s__('spendCommand|%{slash_command} will update the sum of the time spent.'), {
+        s__('spendCommand|%{slash_command} will update the sum of the time spent.'),
+        {
           slash_command: '<code>/spend</code>',
-        }, false,
+        },
+        false,
       );
     },
   },
@@ -34,22 +40,11 @@ export default {
 <template>
   <div class="time-tracking-help-state">
     <div class="time-tracking-info">
-      <h4>
-        {{ __('Track time with quick actions') }}
-      </h4>
-      <p>
-        {{ __('Quick actions can be used in the issues description and comment boxes.') }}
-      </p>
-      <p v-html="estimateText">
-      </p>
-      <p v-html="spendText">
-      </p>
-      <a
-        :href="href"
-        class="btn btn-default learn-more-button"
-      >
-        {{ __('Learn more') }}
-      </a>
+      <h4>{{ __('Track time with quick actions') }}</h4>
+      <p>{{ __('Quick actions can be used in the issues description and comment boxes.') }}</p>
+      <p v-html="estimateText"></p>
+      <p v-html="spendText"></p>
+      <a :href="href" class="btn btn-default learn-more-button"> {{ __('Learn more') }} </a>
     </div>
   </div>
 </template>

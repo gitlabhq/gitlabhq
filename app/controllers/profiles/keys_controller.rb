@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::KeysController < Profiles::ApplicationController
   skip_before_action :authenticate_user!, only: [:get_keys]
 
@@ -36,14 +38,15 @@ class Profiles::KeysController < Profiles::ApplicationController
   def get_keys
     if params[:username].present?
       begin
-        user = User.find_by_username(params[:username])
+        user = UserFinder.new(params[:username]).find_by_username
         if user.present?
-          render text: user.all_ssh_keys.join("\n"), content_type: "text/plain"
+          headers['Content-Disposition'] = 'attachment'
+          render plain: user.all_ssh_keys.join("\n")
         else
           return render_404
         end
       rescue => e
-        render text: e.message
+        render html: e.message
       end
     else
       return render_404

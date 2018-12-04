@@ -3,7 +3,7 @@
   - restricted = restricted_visibility_levels.include?(level)
   - disabled = disallowed || restricted
   .form-check{ class: [('disabled' if disabled), ('restricted' if restricted)] }
-    = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled, class: 'form-check-input'
+    = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled, class: 'form-check-input', data: { track_label: "blank_project", track_event: "activate_form_input", track_property: "#{model_method}", track_value: "#{level}" }
     = form.label "#{model_method}_#{level}", class: 'form-check-label' do
       = visibility_level_icon(level)
       .option-title

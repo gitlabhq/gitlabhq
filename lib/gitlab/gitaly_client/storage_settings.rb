@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     # This is a chokepoint that is meant to help us stop remove all places

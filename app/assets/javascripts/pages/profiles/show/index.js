@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusEmojiField = document.getElementById('js-status-emoji-field');
   const statusMessageField = document.getElementById('js-status-message-field');
 
-  const toggleNoEmojiPlaceholder = (isVisible) => {
+  const toggleNoEmojiPlaceholder = isVisible => {
     const placeholderElement = document.getElementById('js-no-emoji-placeholder');
     placeholderElement.classList.toggle('hidden', !isVisible);
   };
@@ -69,5 +69,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     })
-    .catch(() => createFlash('Failed to load emoji list!'));
+    .catch(() => createFlash('Failed to load emoji list.'));
 });

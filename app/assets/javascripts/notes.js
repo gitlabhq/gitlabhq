@@ -1,5 +1,5 @@
-/* eslint-disable no-restricted-properties, func-names, no-var, wrap-iife, camelcase,
-no-unused-expressions, max-len, one-var, one-var-declaration-per-line, default-case,
+/* eslint-disable no-restricted-properties, func-names, no-var, camelcase,
+no-unused-expressions, one-var, default-case,
 prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, vars-on-top,
 no-unused-vars, no-shadow, no-useless-escape, class-methods-use-this */
@@ -16,7 +16,7 @@ import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';
-import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
@@ -1293,10 +1293,10 @@ export default class Notes {
     new Vue({
       el,
       components: {
-        SkeletonLoadingContainer,
+        GlSkeletonLoading,
       },
       render(createElement) {
-        return createElement('skeleton-loading-container');
+        return createElement('gl-skeleton-loading');
       },
     });
   }

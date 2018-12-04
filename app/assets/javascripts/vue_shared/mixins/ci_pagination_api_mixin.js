@@ -4,10 +4,7 @@
  *
  * Components need to have `scope`, `page` and `requestData`
  */
-import {
-  historyPushState,
-  buildUrlWithCurrentLocation,
-} from '../../lib/utils/common_utils';
+import { historyPushState, buildUrlWithCurrentLocation } from '../../lib/utils/common_utils';
 
 export default {
   methods: {
@@ -17,19 +14,28 @@ export default {
 
     onChangePage(page) {
       /* URLS parameters are strings, we need to parse to match types */
-      this.updateContent({ scope: this.scope, page: Number(page).toString() });
+      const params = {
+        page: Number(page).toString(),
+      };
+
+      if (this.scope) {
+        params.scope = this.scope;
+      }
+      this.updateContent(params);
     },
 
     updateInternalState(parameters) {
       // stop polling
       this.poll.stop();
 
-      const queryString = Object.keys(parameters).map((parameter) => {
-        const value = parameters[parameter];
-        // update internal state for UI
-        this[parameter] = value;
-        return `${parameter}=${encodeURIComponent(value)}`;
-      }).join('&');
+      const queryString = Object.keys(parameters)
+        .map(parameter => {
+          const value = parameters[parameter];
+          // update internal state for UI
+          this[parameter] = value;
+          return `${parameter}=${encodeURIComponent(value)}`;
+        })
+        .join('&');
 
       // update polling parameters
       this.requestData = parameters;

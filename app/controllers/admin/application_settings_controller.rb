@@ -61,14 +61,15 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.html do
         usage_data_json = JSON.pretty_generate(Gitlab::UsageData.data)
 
-        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
+        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
       format.json { render json: Gitlab::UsageData.to_json }
     end
   end
 
-  def reset_runners_token
+  def reset_registration_token
     @application_setting.reset_runners_registration_token!
+
     flash[:notice] = 'New runners registration token has been generated!'
     redirect_to admin_runners_path
   end
@@ -128,8 +129,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],
-      restricted_visibility_levels: [],
-      sidekiq_throttling_queues: []
+      restricted_visibility_levels: []
     ]
   end
 end

@@ -1,126 +1,116 @@
 const glob = require('glob');
 const prettier = require('prettier');
 const fs = require('fs');
-const path = require('path');
-const prettierIgnore = require('ignore')();
+const { getStagedFiles } = require('./frontend_script_utils');
 
-const getStagedFiles = require('./frontend_script_utils').getStagedFiles;
+const matchExtensions = ['js', 'vue'];
+
+// This will improve glob performance by excluding certain directories.
+// The .prettierignore file will also be respected, but after the glob has executed.
+const globIgnore = ['**/node_modules/**', 'vendor/**', 'public/**'];
+
+const readFileAsync = (file, options) =>
+  new Promise((resolve, reject) => {
+    fs.readFile(file, options, function(err, data) {
+      if (err) reject(err);
+      else resolve(data);
+    });
+  });
+
+const writeFileAsync = (file, data, options) =>
+  new Promise((resolve, reject) => {
+    fs.writeFile(file, data, options, function(err) {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
 
 const mode = process.argv[2] || 'check';
 const shouldSave = mode === 'save' || mode === 'save-all';
 const allFiles = mode === 'check-all' || mode === 'save-all';
-let dirPath = process.argv[3] || '';
-if (dirPath && dirPath.charAt(dirPath.length - 1) !== '/') dirPath += '/';
+let globDir = process.argv[3] || '';
+if (globDir && globDir.charAt(globDir.length - 1) !== '/') globDir += '/';
 
-const config = {
-  patterns: ['**/*.js', '**/*.vue', '**/*.scss'],
-  /*
-   * The ignore patterns below are just to reduce search time with glob, as it includes the
-   * folders with the most ignored assets, the actual `.prettierignore` will be used later on
-   */
-  ignore: ['**/node_modules/**', '**/vendor/**', '**/public/**'],
-  parsers: {
-    js: 'babylon',
-    vue: 'vue',
-    scss: 'css',
-  },
-};
-
-/*
- * Unfortunately the prettier API does not expose support for `.prettierignore` files, they however
- * use the ignore package, so we do the same. We simply cannot use the glob package, because
- * gitignore style is not compatible with globs ignore style.
- */
-prettierIgnore.add(
-  fs
-    .readFileSync(path.join(__dirname, '../../', '.prettierignore'))
-    .toString()
-    .trim()
-    .split(/\r?\n/)
+console.log(
+  `Loading all ${allFiles ? '' : 'staged '}files ${globDir ? `within ${globDir} ` : ''}...`
 );
 
-const availableExtensions = Object.keys(config.parsers);
+const globPatterns = matchExtensions.map(ext => `${globDir}**/*.${ext}`);
+const matchedFiles = allFiles
+  ? glob.sync(`{${globPatterns.join(',')}}`, { ignore: globIgnore })
+  : getStagedFiles(globPatterns);
+const matchedCount = matchedFiles.length;
 
-console.log(`Loading ${allFiles ? 'All' : 'Selected'} Files ...`);
-
-const stagedFiles =
-  allFiles || dirPath ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
-
-if (stagedFiles) {
-  if (!stagedFiles.length || (stagedFiles.length === 1 && !stagedFiles[0])) {
-    console.log('No matching staged files.');
-    process.exit(1);
-  }
-  console.log(`Matching staged Files : ${stagedFiles.length}`);
+if (!matchedCount) {
+  console.log('No files found to process with prettier');
+  process.exit(0);
 }
 
 let didWarn = false;
-let didError = false;
+let passedCount = 0;
+let failedCount = 0;
+let ignoredCount = 0;
 
-let files;
-if (allFiles) {
-  const ignore = config.ignore;
-  const patterns = config.patterns;
-  const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
-  files = glob.sync(globPattern, { ignore }).filter(f => allFiles || stagedFiles.includes(f));
-} else if (dirPath) {
-  const ignore = config.ignore;
-  const patterns = config.patterns.map(item => {
-    return dirPath + item;
-  });
-  const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
-  files = glob.sync(globPattern, { ignore });
-} else {
-  files = stagedFiles.filter(f => availableExtensions.includes(f.split('.').pop()));
-}
+console.log(`${shouldSave ? 'Updating' : 'Checking'} ${matchedCount} file(s)`);
 
-files = prettierIgnore.filter(files);
+const fixCommand = `yarn prettier-${allFiles ? 'all' : 'staged'}-save`;
+const warningMessage = `
+===============================
+GitLab uses Prettier to format all JavaScript code.
+Please format each file listed below or run "${fixCommand}"
+===============================
+`;
 
-if (!files.length) {
-  console.log('No Files found to process with Prettier');
-  process.exit(1);
-}
-
-console.log(`${shouldSave ? 'Updating' : 'Checking'} ${files.length} file(s)`);
-
-files.forEach(file => {
-  try {
-    prettier
-      .resolveConfig(file)
-      .then(options => {
-        const fileExtension = file.split('.').pop();
-        Object.assign(options, {
-          parser: config.parsers[fileExtension],
+const checkFileWithOptions = (filePath, options) =>
+  readFileAsync(filePath, 'utf8').then(input => {
+    if (shouldSave) {
+      const output = prettier.format(input, options);
+      if (input === output) {
+        passedCount += 1;
+      } else {
+        return writeFileAsync(filePath, output, 'utf8').then(() => {
+          console.log(`Prettified : ${filePath}`);
+          failedCount += 1;
         });
-
-        const input = fs.readFileSync(file, 'utf8');
-
-        if (shouldSave) {
-          const output = prettier.format(input, options);
-          if (output !== input) {
-            fs.writeFileSync(file, output, 'utf8');
-            console.log(`Prettified : ${file}`);
-          }
-        } else if (!prettier.check(input, options)) {
-          if (!didWarn) {
-            console.log(
-              '\n===============================\nGitLab uses Prettier to format all JavaScript code.\nPlease format each file listed below or run "yarn prettier-staged-save"\n===============================\n'
-            );
-            didWarn = true;
-          }
-          console.log(`Prettify Manually : ${file}`);
+      }
+    } else {
+      if (prettier.check(input, options)) {
+        passedCount += 1;
+      } else {
+        if (!didWarn) {
+          console.log(warningMessage);
+          didWarn = true;
         }
-      })
-      .catch(e => {
-        console.log(`Error on loading the Config File: ${e.message}`);
-        process.exit(1);
-      });
-  } catch (error) {
-    didError = true;
-    console.log(`\n\nError with ${file}: ${error.message}`);
-  }
-});
+        console.log(`Prettify Manually : ${filePath}`);
+        failedCount += 1;
+      }
+    }
+  });
 
-if (didWarn || didError) {
-  process.exit(1);
-}
+const checkFileWithPrettierConfig = filePath =>
+  prettier
+    .getFileInfo(filePath, { ignorePath: '.prettierignore' })
+    .then(({ ignored, inferredParser }) => {
+      if (ignored || !inferredParser) {
+        ignoredCount += 1;
+        return;
+      }
+      return prettier.resolveConfig(filePath).then(fileOptions => {
+        const options = { ...fileOptions, parser: inferredParser };
+        return checkFileWithOptions(filePath, options);
+      });
+    });
+
+Promise.all(matchedFiles.map(checkFileWithPrettierConfig))
+  .then(() => {
+    const failAction = shouldSave ? 'fixed' : 'failed';
+    console.log(
+      `\nSummary:\n  ${matchedCount} files processed (${passedCount} passed, ${failedCount} ${failAction}, ${ignoredCount} ignored)\n`
+    );
+
+    if (didWarn) process.exit(1);
+  })
+  .catch(e => {
+    console.log(`\nAn error occurred while processing files with prettier: ${e.message}\n`);
+    process.exit(1);
+  });

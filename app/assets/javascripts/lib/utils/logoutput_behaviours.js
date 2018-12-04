@@ -1,5 +1,11 @@
 import $ from 'jquery';
-import { canScroll, isScrolledToBottom, toggleDisableButton } from './scroll_utils';
+import {
+  canScroll,
+  isScrolledToBottom,
+  isScrolledToTop,
+  isScrolledToMiddle,
+  toggleDisableButton,
+} from './scroll_utils';
 
 export default class LogOutputBehaviours {
   constructor() {
@@ -12,18 +18,13 @@ export default class LogOutputBehaviours {
   }
 
   toggleScroll() {
-    const $document = $(document);
-    const currentPosition = $document.scrollTop();
-    const scrollHeight = $document.height();
-
-    const windowHeight = $(window).height();
     if (canScroll()) {
-      if (currentPosition > 0 && scrollHeight - currentPosition !== windowHeight) {
+      if (isScrolledToMiddle()) {
         // User is in the middle of the log
 
         toggleDisableButton(this.$scrollTopBtn, false);
         toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (currentPosition === 0) {
+      } else if (isScrolledToTop()) {
         // User is at Top of  Log
 
         toggleDisableButton(this.$scrollTopBtn, true);

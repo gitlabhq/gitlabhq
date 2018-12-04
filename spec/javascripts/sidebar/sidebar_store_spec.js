@@ -25,20 +25,17 @@ const PARTICIPANT = {
   avatar_url: 'gravatar.com/avatar/xxx',
 };
 
-const PARTICIPANT_LIST = [
-  PARTICIPANT,
-  { ...PARTICIPANT, id: 2 },
-  { ...PARTICIPANT, id: 3 },
-];
+const PARTICIPANT_LIST = [PARTICIPANT, { ...PARTICIPANT, id: 2 }, { ...PARTICIPANT, id: 3 }];
 
-describe('Sidebar store', function () {
+describe('Sidebar store', function() {
   beforeEach(() => {
     this.store = new SidebarStore({
       currentUser: {
         id: 1,
         name: 'Administrator',
         username: 'root',
-        avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        avatar_url:
+          'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       },
       editable: true,
       rootPath: '/',
@@ -56,11 +53,13 @@ describe('Sidebar store', function () {
 
   it('adds a new assignee', () => {
     this.store.addAssignee(ASSIGNEE);
+
     expect(this.store.assignees.length).toEqual(1);
   });
 
   it('removes an assignee', () => {
     this.store.removeAssignee(ASSIGNEE);
+
     expect(this.store.assignees.length).toEqual(0);
   });
 
@@ -69,14 +68,17 @@ describe('Sidebar store', function () {
 
     this.store.addAssignee(ASSIGNEE);
     foundAssignee = this.store.findAssignee(ASSIGNEE);
+
     expect(foundAssignee).toBeDefined();
     expect(foundAssignee).toEqual(ASSIGNEE);
     foundAssignee = this.store.findAssignee(ANOTHER_ASSINEE);
+
     expect(foundAssignee).toBeUndefined();
   });
 
   it('removes all assignees', () => {
     this.store.removeAllAssignees();
+
     expect(this.store.assignees.length).toEqual(0);
   });
 
@@ -108,6 +110,7 @@ describe('Sidebar store', function () {
     };
 
     this.store.setAssigneeData(users);
+
     expect(this.store.isFetching.assignees).toBe(false);
     expect(this.store.assignees.length).toEqual(3);
   });
@@ -128,6 +131,7 @@ describe('Sidebar store', function () {
 
   it('set time tracking data', () => {
     this.store.setTimeTrackingData(Mock.time);
+
     expect(this.store.timeEstimate).toEqual(Mock.time.time_estimate);
     expect(this.store.totalTimeSpent).toEqual(Mock.time.total_time_spent);
     expect(this.store.humanTimeEstimate).toEqual(Mock.time.human_time_estimate);

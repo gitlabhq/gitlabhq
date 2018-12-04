@@ -71,4 +71,40 @@ describe('RepoFile', () => {
 
     expect(vm.$el.querySelector('.file-row-name').style.marginLeft).toBe('32px');
   });
+
+  describe('outputText', () => {
+    beforeEach(done => {
+      createComponent({
+        file: {
+          ...file(),
+          path: 'app/assets/index.js',
+        },
+        level: 0,
+      });
+
+      vm.displayTextKey = 'path';
+
+      vm.$nextTick(done);
+    });
+
+    it('returns text if truncateStart is 0', done => {
+      vm.truncateStart = 0;
+
+      vm.$nextTick(() => {
+        expect(vm.outputText).toBe('app/assets/index.js');
+
+        done();
+      });
+    });
+
+    it('returns text truncated at start', done => {
+      vm.truncateStart = 5;
+
+      vm.$nextTick(() => {
+        expect(vm.outputText).toBe('...ssets/index.js');
+
+        done();
+      });
+    });
+  });
 });

@@ -8,7 +8,7 @@
 
 - if show_menu
   .project-action-button.dropdown.inline
-    %a.btn.dropdown-toggle.has-tooltip{ href: '#', title: _('Create new...'), 'data-toggle' => 'dropdown', 'data-container' => 'body', 'aria-label' => _('Create new...'), 'data-display' => 'static' }
+    %a.btn.dropdown-toggle.has-tooltip.qa-create-new-dropdown{ href: '#', title: _('Create new...'), 'data-toggle' => 'dropdown', 'data-container' => 'body', 'aria-label' => _('Create new...'), 'data-display' => 'static' }
       = icon('plus')
       = icon("caret-down")
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
@@ -28,7 +28,7 @@
         %li.dropdown-header= _('This repository')
 
       - if can_push_code
-        %li= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
+        %li.qa-new-file-option= link_to _('New file'), project_new_blob_path(@project, @project.default_branch || 'master')
         - unless @project.empty_repo?
           %li= link_to _('New branch'), new_project_branch_path(@project)
           %li= link_to _('New tag'), new_project_tag_path(@project)

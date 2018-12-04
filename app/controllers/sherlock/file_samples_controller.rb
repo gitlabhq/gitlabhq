@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sherlock
   class FileSamplesController < Sherlock::ApplicationController
     def show

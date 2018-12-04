@@ -23,6 +23,16 @@ export default class FilteredSearchTokenKeys {
     return this.conditions;
   }
 
+  shouldUppercaseTokenName(tokenKey) {
+    const token = this.searchByKey(tokenKey.toLowerCase());
+    return token && token.uppercaseTokenName;
+  }
+
+  shouldCapitalizeTokenValue(tokenKey) {
+    const token = this.searchByKey(tokenKey.toLowerCase());
+    return token && token.capitalizeTokenValue;
+  }
+
   searchByKey(key) {
     return this.tokenKeys.find(tokenKey => tokenKey.key === key) || null;
   }
@@ -32,19 +42,21 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByKeyParam(keyParam) {
-    return this.tokenKeysWithAlternative.find((tokenKey) => {
-      let tokenKeyParam = tokenKey.key;
+    return (
+      this.tokenKeysWithAlternative.find(tokenKey => {
+        let tokenKeyParam = tokenKey.key;
 
-      // Replace hyphen with underscore to compare keyParam with tokenKeyParam
-      // e.g. 'my-reaction' => 'my_reaction'
-      tokenKeyParam = tokenKeyParam.replace('-', '_');
+        // Replace hyphen with underscore to compare keyParam with tokenKeyParam
+        // e.g. 'my-reaction' => 'my_reaction'
+        tokenKeyParam = tokenKeyParam.replace('-', '_');
 
-      if (tokenKey.param) {
-        tokenKeyParam += `_${tokenKey.param}`;
-      }
+        if (tokenKey.param) {
+          tokenKeyParam += `_${tokenKey.param}`;
+        }
 
-      return keyParam === tokenKeyParam;
-    }) || null;
+        return keyParam === tokenKeyParam;
+      }) || null
+    );
   }
 
   searchByConditionUrl(url) {
@@ -52,7 +64,26 @@ export default class FilteredSearchTokenKeys {
   }
 
   searchByConditionKeyValue(key, value) {
-    return this.conditions
-      .find(condition => condition.tokenKey === key && condition.value === value) || null;
+    return (
+      this.conditions.find(condition => condition.tokenKey === key && condition.value === value) ||
+      null
+    );
+  }
+
+  addExtraTokensForMergeRequests() {
+    const wipToken = {
+      key: 'wip',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'admin',
+      tag: 'Yes or No',
+      lowercaseValueOnSubmit: true,
+      uppercaseTokenName: true,
+      capitalizeTokenValue: true,
+    };
+
+    this.tokenKeys.push(wipToken);
+    this.tokenKeysWithAlternative.push(wipToken);
   }
 }

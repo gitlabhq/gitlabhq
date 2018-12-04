@@ -1,6 +1,6 @@
 # GitLab as an OAuth2 provider
 
-This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow other services access Gitlab resources on user's behalf. 
+This document covers using the [OAuth2](https://oauth.net/2/) protocol to allow other services access GitLab resources on user's behalf. 
 
 If you want GitLab to be an OAuth authentication service provider to sign into other services please see the [OAuth2 provider](../integration/oauth_provider.md)
 documentation.
@@ -9,7 +9,7 @@ This functionality is based on [doorkeeper gem](https://github.com/doorkeeper-ge
 
 ## Supported OAuth2 Flows
 
-Gitlab currently supports following authorization flows: 
+GitLab currently supports following authorization flows: 
 
 * *Web Application Flow* - Most secure and common type of flow, designed for the applications with secure server-side.
 * *Implicit Flow* - This flow is designed for user-agent only apps (e.g. single page web application running on GitLab Pages).
@@ -76,7 +76,7 @@ Check [RFC spec](http://tools.ietf.org/html/rfc6749#section-4.2) for a detailed 
 Unlike the web flow, the client receives an `access token` immediately as a result of the authorization request. The flow does not use client secret 
 or authorization code because all of the application code and storage is easily accessible, therefore __secrets__ can leak easily. 
 
->**Important:** Avoid using this flow for applications that store data outside of the Gitlab instance. If you do, make sure to verify `application id` 
+>**Important:** Avoid using this flow for applications that store data outside of the GitLab instance. If you do, make sure to verify `application id` 
 associated with access token before granting access to the data 
 (see [/oauth/token/info](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo)). 
  
@@ -146,7 +146,7 @@ access_token = client.password.get_token('user@example.com', 'secret')
 puts access_token.token
 ```
 
-##  Access Gitlab API with `access token`
+##  Access GitLab API with `access token`
 
 The `access token` allows you to make requests to the API on a behalf of a user. You can pass the token either as GET parameter 
 ```

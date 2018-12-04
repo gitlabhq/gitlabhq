@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
 
 require 'securerandom'
@@ -104,23 +106,6 @@ module Gitlab
       raise Error, cmd.output unless success
 
       success
-    end
-
-    # Fetch remote for repository
-    #
-    # repository - an instance of Git::Repository
-    # remote - remote name
-    # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
-    # forced - should we use --force flag?
-    # no_tags - should we use --no-tags flag?
-    #
-    # Ex.
-    #   fetch_remote(my_repo, "upstream")
-    #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
-      wrapped_gitaly_errors do
-        repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
-      end
     end
 
     # Move repository reroutes to mv_directory which is an alias for

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class StringPlaceholderReplacer
     # This method accepts the following paras

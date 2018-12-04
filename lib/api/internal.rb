@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Internal access API
   class Internal < Grape::API
@@ -38,7 +40,7 @@ module API
           elsif params[:user_id]
             User.find_by(id: params[:user_id])
           elsif params[:username]
-            User.find_by_username(params[:username])
+            UserFinder.new(params[:username]).find_by_username
           end
 
         protocol = params[:protocol]
@@ -63,6 +65,8 @@ module API
                          result
                        rescue Gitlab::GitAccess::UnauthorizedError => e
                          break response_with_status(code: 401, success: false, message: e.message)
+                       rescue Gitlab::GitAccess::TimeoutError => e
+                         break response_with_status(code: 503, success: false, message: e.message)
                        rescue Gitlab::GitAccess::NotFoundError => e
                          break response_with_status(code: 404, success: false, message: e.message)
                        end
@@ -152,7 +156,7 @@ module API
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
         elsif params[:username]
-          user = User.find_by(username: params[:username])
+          user = UserFinder.new(params[:username]).find_by_username
         end
 
         present user, with: Entities::UserSafe

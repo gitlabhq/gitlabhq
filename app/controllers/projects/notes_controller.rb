@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::NotesController < Projects::ApplicationController
   include RendersNotes
   include NotesActions
@@ -66,7 +68,7 @@ class Projects::NotesController < Projects::ApplicationController
   alias_method :awardable, :note
 
   def finder_params
-    params.merge(last_fetched_at: last_fetched_at)
+    params.merge(last_fetched_at: last_fetched_at, notes_filter: notes_filter)
   end
 
   def authorize_admin_note!

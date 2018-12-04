@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GlRepository
     def self.gl_repository(project, is_wiki)

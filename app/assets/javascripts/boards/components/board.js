@@ -1,25 +1,20 @@
-/* eslint-disable comma-dangle */
-
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import { n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
-import boardList from './board_list.vue';
 import BoardBlankState from './board_blank_state.vue';
-import './board_delete';
+import BoardDelete from './board_delete';
+import BoardList from './board_list.vue';
+import boardsStore from '../stores/boards_store';
+import { getBoardSortableDefaultOptions, sortableEnd } from '../mixins/sortable_default_options';
 
-const Store = gl.issueBoards.BoardsStore;
-
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.Board = Vue.extend({
+export default Vue.extend({
   components: {
-    boardList,
-    'board-delete': gl.issueBoards.BoardDelete,
     BoardBlankState,
+    BoardDelete,
+    BoardList,
     Icon,
   },
   directives: {
@@ -47,10 +42,10 @@ gl.issueBoards.Board = Vue.extend({
       required: true,
     },
   },
-  data () {
+  data() {
     return {
-      detailIssue: Store.detail,
-      filter: Store.filter,
+      detailIssue: boardsStore.detail,
+      filter: boardsStore.filter,
     };
   },
   computed: {
@@ -58,44 +53,47 @@ gl.issueBoards.Board = Vue.extend({
       const { issuesSize } = this.list;
       return `${n__('%d issue', '%d issues', issuesSize)}`;
     },
+    isNewIssueShown() {
+      return this.list.type === 'backlog' || (!this.disabled && this.list.type !== 'closed');
+    },
   },
   watch: {
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true)
-          .catch(() => {
-            // TODO: handle request error
-          });
+        this.list.getIssues(true).catch(() => {
+          // TODO: handle request error
+        });
       },
       deep: true,
-    }
+    },
   },
-  mounted () {
-    this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
+  mounted() {
+    this.sortableOptions = getBoardSortableDefaultOptions({
       disabled: this.disabled,
       group: 'boards',
       draggable: '.is-draggable',
       handle: '.js-board-handle',
-      onEnd: (e) => {
-        gl.issueBoards.onEnd();
+      onEnd: e => {
+        sortableEnd();
 
         if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
           const order = this.sortable.toArray();
-          const list = Store.findList('id', parseInt(e.item.dataset.id, 10));
+          const list = boardsStore.findList('id', parseInt(e.item.dataset.id, 10));
 
           this.$nextTick(() => {
-            Store.moveList(list, order);
+            boardsStore.moveList(list, order);
           });
         }
-      }
+      },
     });
 
     this.sortable = Sortable.create(this.$el.parentNode, this.sortableOptions);
   },
   created() {
     if (this.list.isExpandable && AccessorUtilities.isLocalStorageAccessSafe()) {
-      const isCollapsed = localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
+      const isCollapsed =
+        localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
 
       this.list.isExpanded = !isCollapsed;
     }
@@ -109,7 +107,10 @@ gl.issueBoards.Board = Vue.extend({
         this.list.isExpanded = !this.list.isExpanded;
 
         if (AccessorUtilities.isLocalStorageAccessSafe()) {
-          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+          localStorage.setItem(
+            `boards.${this.boardId}.${this.list.type}.expanded`,
+            this.list.isExpanded,
+          );
         }
       }
     },

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ProtocolAccess
     def self.allowed?(protocol)

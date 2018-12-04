@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # :nocov:
 module DeliverNever
   def deliver_later

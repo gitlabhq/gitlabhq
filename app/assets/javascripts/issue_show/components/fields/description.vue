@@ -1,54 +1,50 @@
 <script>
-  import updateMixin from '../../mixins/update';
-  import markdownField from '../../../vue_shared/components/markdown/field.vue';
+import updateMixin from '../../mixins/update';
+import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
-  export default {
-    components: {
-      markdownField,
+export default {
+  components: {
+    markdownField,
+  },
+  mixins: [updateMixin],
+  props: {
+    formState: {
+      type: Object,
+      required: true,
     },
-    mixins: [updateMixin],
-    props: {
-      formState: {
-        type: Object,
-        required: true,
-      },
-      markdownPreviewPath: {
-        type: String,
-        required: true,
-      },
-      markdownDocsPath: {
-        type: String,
-        required: true,
-      },
-      markdownVersion: {
-        type: Number,
-        required: false,
-        default: 0,
-      },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      enableAutocomplete: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+    markdownPreviewPath: {
+      type: String,
+      required: true,
     },
-    mounted() {
-      this.$refs.textarea.focus();
+    markdownDocsPath: {
+      type: String,
+      required: true,
     },
-  };
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  mounted() {
+    this.$refs.textarea.focus();
+  },
+};
 </script>
 
 <template>
   <div class="common-note-form">
-    <label
-      class="sr-only"
-      for="issue-description">
-      Description
-    </label>
+    <label class="sr-only" for="issue-description"> Description </label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
@@ -61,12 +57,14 @@
         ref="textarea"
         slot="textarea"
         v-model="formState.description"
-        class="note-textarea js-gfm-input js-autosize markdown-area"
+        class="note-textarea js-gfm-input js-autosize markdown-area
+        qa-description-textarea"
         data-supports-quick-actions="false"
         aria-label="Description"
         placeholder="Write a comment or drag your files here…"
         @keydown.meta.enter="updateIssuable"
-        @keydown.ctrl.enter="updateIssuable">
+        @keydown.ctrl.enter="updateIssuable"
+      >
       </textarea>
     </markdown-field>
   </div>

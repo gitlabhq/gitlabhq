@@ -95,10 +95,10 @@ UDP can be done using the following settings:
 This does the following:
 
 1. Enable UDP and bind it to port 8089 for all addresses.
-2. Store any data received in the "gitlab" database.
-3. Define a batch of points to be 1000 points in size and allow a maximum of
+1. Store any data received in the "gitlab" database.
+1. Define a batch of points to be 1000 points in size and allow a maximum of
    5 batches _or_ flush them automatically after 1 second.
-4. Define a UDP read buffer size of 200 MB.
+1. Define a UDP read buffer size of 200 MB.
 
 One of the most important settings here is the UDP read buffer size as if this
 value is set too low, packets will be dropped. You must also make sure the OS

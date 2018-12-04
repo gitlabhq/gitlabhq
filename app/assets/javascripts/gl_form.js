@@ -39,7 +39,10 @@ export default class GLForm {
       this.form.find('.div-dropzone').remove();
       this.form.addClass('gfm-form');
       // remove notify commit author checkbox for non-commit notes
-      gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
+      gl.utils.disableButtonIfEmptyField(
+        this.form.find('.js-note-text'),
+        this.form.find('.js-comment-button, .js-note-new-discussion'),
+      );
       this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
       dropzoneInput(this.form);
@@ -55,11 +58,9 @@ export default class GLForm {
   }
 
   setupAutosize() {
-    this.textarea.off('autosize:resized')
-      .on('autosize:resized', this.setHeightData.bind(this));
+    this.textarea.off('autosize:resized').on('autosize:resized', this.setHeightData.bind(this));
 
-    this.textarea.off('mouseup.autosize')
-      .on('mouseup.autosize', this.destroyAutosize.bind(this));
+    this.textarea.off('mouseup.autosize').on('mouseup.autosize', this.destroyAutosize.bind(this));
 
     setTimeout(() => {
       autosize(this.textarea);
@@ -91,10 +92,14 @@ export default class GLForm {
 
   addEventListeners() {
     this.textarea.on('focus', function focusTextArea() {
-      $(this).closest('.md-area').addClass('is-focused');
+      $(this)
+        .closest('.md-area')
+        .addClass('is-focused');
     });
     this.textarea.on('blur', function blurTextArea() {
-      $(this).closest('.md-area').removeClass('is-focused');
+      $(this)
+        .closest('.md-area')
+        .removeClass('is-focused');
     });
   }
 }

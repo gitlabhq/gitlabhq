@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Bitbucket
   class Connection
     DEFAULT_API_VERSION = '2.0'.freeze

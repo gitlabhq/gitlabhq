@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # The DSL evaluation context inside rule { ... } blocks.
   # Responsible for creating and combining Rule objects.

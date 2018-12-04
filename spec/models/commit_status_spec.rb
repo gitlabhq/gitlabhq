@@ -13,6 +13,8 @@ describe CommitStatus do
     create(:commit_status, pipeline: pipeline, **opts)
   end
 
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
@@ -125,6 +127,20 @@ describe CommitStatus do
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#cancel' do
+    subject { job.cancel }
+
+    context 'when status is scheduled' do
+      let(:job) { build(:commit_status, :scheduled) }
+
+      it 'updates the status' do
+        subject
+
+        expect(job).to be_canceled
       end
     end
   end
@@ -561,6 +577,12 @@ describe CommitStatus do
 
     context 'when initial state is :manual' do
       let(:commit_status) { create(:commit_status, :manual) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :scheduled' do
+      let(:commit_status) { create(:commit_status, :scheduled) }
 
       it_behaves_like 'commit status enqueued'
     end

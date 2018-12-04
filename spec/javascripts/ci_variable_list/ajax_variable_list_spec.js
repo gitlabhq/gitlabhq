@@ -24,7 +24,7 @@ describe('AjaxFormVariableList', () => {
     mock = new MockAdapter(axios);
 
     const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');
-    saveButton = ajaxVariableListEl.querySelector('.js-secret-variables-save-button');
+    saveButton = ajaxVariableListEl.querySelector('.js-ci-variables-save-button');
     errorBox = container.querySelector('.js-ci-variable-error-box');
     ajaxVariableList = new AjaxFormVariableList({
       container,
@@ -43,8 +43,8 @@ describe('AjaxFormVariableList', () => {
   });
 
   describe('onSaveClicked', () => {
-    it('shows loading spinner while waiting for the request', (done) => {
-      const loadingIcon = saveButton.querySelector('.js-secret-variables-save-loading-icon');
+    it('shows loading spinner while waiting for the request', done => {
+      const loadingIcon = saveButton.querySelector('.js-ci-variables-save-loading-icon');
 
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(() => {
         expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(false);
@@ -54,7 +54,8 @@ describe('AjaxFormVariableList', () => {
 
       expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(loadingIcon.classList.contains(HIDE_CLASS)).toEqual(true);
         })
@@ -62,27 +63,30 @@ describe('AjaxFormVariableList', () => {
         .catch(done.fail);
     });
 
-    it('calls `updateRowsWithPersistedVariables` with the persisted variables', (done) => {
+    it('calls `updateRowsWithPersistedVariables` with the persisted variables', done => {
       const variablesResponse = [{ id: 1, key: 'foo', value: 'bar' }];
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200, {
         variables: variablesResponse,
       });
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
-          expect(ajaxVariableList.updateRowsWithPersistedVariables)
-            .toHaveBeenCalledWith(variablesResponse);
+          expect(ajaxVariableList.updateRowsWithPersistedVariables).toHaveBeenCalledWith(
+            variablesResponse,
+          );
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('hides any previous error box', (done) => {
+    it('hides any previous error box', done => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
         })
@@ -90,14 +94,15 @@ describe('AjaxFormVariableList', () => {
         .catch(done.fail);
     });
 
-    it('disables remove buttons while waiting for the request', (done) => {
+    it('disables remove buttons while waiting for the request', done => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(() => {
         expect(ajaxVariableList.variableList.toggleEnableRow).toHaveBeenCalledWith(false);
 
         return [200, {}];
       });
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(ajaxVariableList.variableList.toggleEnableRow).toHaveBeenCalledWith(true);
         })
@@ -105,7 +110,7 @@ describe('AjaxFormVariableList', () => {
         .catch(done.fail);
     });
 
-    it('hides secret values', (done) => {
+    it('hides secret values', done => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(200, {});
 
       const row = container.querySelector('.js-row:first-child');
@@ -118,7 +123,8 @@ describe('AjaxFormVariableList', () => {
       expect(valuePlaceholder.classList.contains(HIDE_CLASS)).toBe(true);
       expect(valueInput.classList.contains(HIDE_CLASS)).toBe(false);
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(valuePlaceholder.classList.contains(HIDE_CLASS)).toBe(false);
           expect(valueInput.classList.contains(HIDE_CLASS)).toBe(true);
@@ -127,29 +133,31 @@ describe('AjaxFormVariableList', () => {
         .catch(done.fail);
     });
 
-    it('shows error box with validation errors', (done) => {
+    it('shows error box with validation errors', done => {
       const validationError = 'some validation error';
-      mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(400, [
-        validationError,
-      ]);
+      mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(400, [validationError]);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(false);
-          expect(errorBox.textContent.trim().replace(/\n+\s+/m, ' ')).toEqual(`Validation failed ${validationError}`);
+          expect(errorBox.textContent.trim().replace(/\n+\s+/m, ' ')).toEqual(
+            `Validation failed ${validationError}`,
+          );
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('shows flash message when request fails', (done) => {
+    it('shows flash message when request fails', done => {
       mock.onPatch(VARIABLE_PATCH_ENDPOINT).reply(500);
 
       expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
 
-      ajaxVariableList.onSaveClicked()
+      ajaxVariableList
+        .onSaveClicked()
         .then(() => {
           expect(errorBox.classList.contains(HIDE_CLASS)).toEqual(true);
         })
@@ -164,7 +172,7 @@ describe('AjaxFormVariableList', () => {
       container = document.querySelector('.js-ci-variable-list-section');
 
       const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');
-      saveButton = ajaxVariableListEl.querySelector('.js-secret-variables-save-button');
+      saveButton = ajaxVariableListEl.querySelector('.js-ci-variables-save-button');
       errorBox = container.querySelector('.js-ci-variable-error-box');
       ajaxVariableList = new AjaxFormVariableList({
         container,
@@ -200,11 +208,13 @@ describe('AjaxFormVariableList', () => {
 
       expect(idInput.value).toEqual('');
 
-      ajaxVariableList.updateRowsWithPersistedVariables([{
-        id: 3,
-        key: 'foo',
-        value: 'bar',
-      }]);
+      ajaxVariableList.updateRowsWithPersistedVariables([
+        {
+          id: 3,
+          key: 'foo',
+          value: 'bar',
+        },
+      ]);
 
       expect(idInput.value).toEqual('3');
       expect(row.dataset.isPersisted).toEqual('true');

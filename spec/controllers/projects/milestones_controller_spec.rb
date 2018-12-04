@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MilestonesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
@@ -143,11 +143,27 @@ describe Projects::MilestonesController do
   end
 
   describe '#promote' do
+    let(:group) { create(:group) }
+
+    before do
+      project.update(namespace: group)
+    end
+
+    context 'when user does not have permission to promote milestone' do
+      before do
+        group.add_guest(user)
+      end
+
+      it 'renders 404' do
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     context 'promotion succeeds' do
       before do
-        group = create(:group)
         group.add_developer(user)
-        milestone.project.update(namespace: group)
       end
 
       it 'shows group milestone' do
@@ -166,12 +182,17 @@ describe Projects::MilestonesController do
       end
     end
 
-    context 'promotion fails' do
-      it 'shows project milestone' do
+    context 'when user cannot admin group milestones' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'renders 404' do
+        project.update(namespace: user.namespace)
+
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        expect(response).to redirect_to(project_milestone_path(project, milestone))
-        expect(flash[:alert]).to eq('Promotion failed - Project does not belong to a group.')
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

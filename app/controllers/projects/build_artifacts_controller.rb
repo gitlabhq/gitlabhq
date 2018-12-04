@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
 
   before_action :authorize_read_build!
   before_action :extract_ref_name_and_path
-  before_action :validate_artifacts!
+  before_action :validate_artifacts!, except: [:download]
 
   def download
-    redirect_to download_project_job_artifacts_path(project, job)
+    redirect_to download_project_job_artifacts_path(project, job, params: request.query_parameters)
   end
 
   def browse

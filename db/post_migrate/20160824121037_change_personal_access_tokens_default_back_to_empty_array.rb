@@ -4,7 +4,7 @@
 #
 # Details: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951#note_19721973
 
-class ChangePersonalAccessTokensDefaultBackToEmptyArray < ActiveRecord::Migration
+class ChangePersonalAccessTokensDefaultBackToEmptyArray < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

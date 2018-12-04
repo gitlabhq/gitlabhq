@@ -1,4 +1,4 @@
-class AddCanPushToDeployKeysProjects < ActiveRecord::Migration
+class AddCanPushToDeployKeysProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

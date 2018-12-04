@@ -7,6 +7,8 @@ describe InternalId do
   let(:scope) { { project: project } }
   let(:init) { ->(s) { s.project.issues.size } }
 
+  it_behaves_like 'having unique enum values'
+
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
   end
@@ -65,7 +67,8 @@ describe InternalId do
     context 'with an insufficient schema version' do
       before do
         described_class.reset_column_information
-        expect(ActiveRecord::Migrator).to receive(:current_version).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+        # Project factory will also call the current_version
+        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
       end
 
       let(:init) { double('block') }

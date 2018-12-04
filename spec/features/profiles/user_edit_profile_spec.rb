@@ -61,83 +61,231 @@ describe 'User edit profile' do
   end
 
   context 'user status', :js do
-    def select_emoji(emoji_name)
+    def select_emoji(emoji_name, is_modal = false)
+      emoji_menu_class = is_modal ? '.js-modal-status-emoji-menu' : '.js-status-emoji-menu'
       toggle_button = find('.js-toggle-emoji-menu')
       toggle_button.click
-      emoji_button = find(%Q{.js-status-emoji-menu .js-emoji-btn gl-emoji[data-name="#{emoji_name}"]})
+      emoji_button = find(%Q{#{emoji_menu_class} .js-emoji-btn gl-emoji[data-name="#{emoji_name}"]})
       emoji_button.click
     end
 
-    it 'shows the user status form' do
-      visit(profile_path)
+    context 'profile edit form' do
+      it 'shows the user status form' do
+        visit(profile_path)
 
-      expect(page).to have_content('Current status')
-    end
+        expect(page).to have_content('Current status')
+      end
 
-    it 'adds emoji to user status' do
-      emoji = 'biohazard'
-      visit(profile_path)
-      select_emoji(emoji)
-      submit_settings
+      it 'adds emoji to user status' do
+        emoji = 'biohazard'
+        visit(profile_path)
+        select_emoji(emoji)
+        submit_settings
 
-      visit user_path(user)
-      within('.cover-status') do
-        expect(page).to have_emoji(emoji)
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(emoji)
+        end
+      end
+
+      it 'adds message to user status' do
+        message = 'I have something to say'
+        visit(profile_path)
+        fill_in 'js-status-message-field', with: message
+        submit_settings
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji('speech_balloon')
+          expect(page).to have_content message
+        end
+      end
+
+      it 'adds message and emoji to user status' do
+        emoji = 'tanabata_tree'
+        message = 'Playing outside'
+        visit(profile_path)
+        select_emoji(emoji)
+        fill_in 'js-status-message-field', with: message
+        submit_settings
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(emoji)
+          expect(page).to have_content message
+        end
+      end
+
+      it 'clears the user status' do
+        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(user_status.emoji)
+          expect(page).to have_content user_status.message
+        end
+
+        visit(profile_path)
+        click_button 'js-clear-user-status-button'
+        submit_settings
+
+        wait_for_requests
+
+        visit user_path(user)
+        expect(page).not_to have_selector '.cover-status'
+      end
+
+      it 'displays a default emoji if only message is entered' do
+        message = 'a status without emoji'
+        visit(profile_path)
+        fill_in 'js-status-message-field', with: message
+
+        within('.js-toggle-emoji-menu') do
+          expect(page).to have_emoji('speech_balloon')
+        end
       end
     end
 
-    it 'adds message to user status' do
-      message = 'I have something to say'
-      visit(profile_path)
-      fill_in 'js-status-message-field', with: message
-      submit_settings
+    context 'user menu' do
+      def open_user_status_modal
+        find('.header-user-dropdown-toggle').click
 
-      visit user_path(user)
-      within('.cover-status') do
-        expect(page).to have_emoji('speech_balloon')
-        expect(page).to have_content message
-      end
-    end
-
-    it 'adds message and emoji to user status' do
-      emoji = 'tanabata_tree'
-      message = 'Playing outside'
-      visit(profile_path)
-      select_emoji(emoji)
-      fill_in 'js-status-message-field', with: message
-      submit_settings
-
-      visit user_path(user)
-      within('.cover-status') do
-        expect(page).to have_emoji(emoji)
-        expect(page).to have_content message
-      end
-    end
-
-    it 'clears the user status' do
-      user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
-
-      visit user_path(user)
-      within('.cover-status') do
-        expect(page).to have_emoji(user_status.emoji)
-        expect(page).to have_content user_status.message
+        page.within ".header-user" do
+          click_button 'Set status'
+        end
       end
 
-      visit(profile_path)
-      click_button 'js-clear-user-status-button'
-      submit_settings
+      def set_user_status_in_modal
+        page.within "#set-user-status-modal" do
+          click_button 'Set status'
+        end
+      end
 
-      visit user_path(user)
-      expect(page).not_to have_selector '.cover-status'
-    end
+      before do
+        visit root_path(user)
+      end
 
-    it 'displays a default emoji if only message is entered' do
-      message = 'a status without emoji'
-      visit(profile_path)
-      fill_in 'js-status-message-field', with: message
+      it 'shows the "Set status" menu item in the user menu' do
+        find('.header-user-dropdown-toggle').click
 
-      within('.js-toggle-emoji-menu') do
-        expect(page).to have_emoji('speech_balloon')
+        page.within ".header-user" do
+          expect(page).to have_content('Set status')
+        end
+      end
+
+      it 'shows the "Edit status" menu item in the user menu' do
+        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+        visit root_path(user)
+
+        find('.header-user-dropdown-toggle').click
+
+        page.within ".header-user" do
+          expect(page).to have_emoji(user_status.emoji)
+          expect(page).to have_content user_status.message
+          expect(page).to have_content('Edit status')
+        end
+      end
+
+      it 'shows user status modal' do
+        open_user_status_modal
+
+        expect(page.find('#set-user-status-modal')).to be_visible
+        expect(page).to have_content('Set a status')
+      end
+
+      it 'adds emoji to user status' do
+        emoji = 'biohazard'
+        open_user_status_modal
+        select_emoji(emoji, true)
+        set_user_status_in_modal
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(emoji)
+        end
+      end
+
+      it 'adds message to user status' do
+        message = 'I have something to say'
+        open_user_status_modal
+        find('.js-status-message-field').native.send_keys(message)
+        set_user_status_in_modal
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji('speech_balloon')
+          expect(page).to have_content message
+        end
+      end
+
+      it 'adds message and emoji to user status' do
+        emoji = 'tanabata_tree'
+        message = 'Playing outside'
+        open_user_status_modal
+        select_emoji(emoji, true)
+        find('.js-status-message-field').native.send_keys(message)
+        set_user_status_in_modal
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(emoji)
+          expect(page).to have_content message
+        end
+      end
+
+      it 'clears the user status with the "X" button' do
+        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(user_status.emoji)
+          expect(page).to have_content user_status.message
+        end
+
+        find('.header-user-dropdown-toggle').click
+
+        page.within ".header-user" do
+          click_button 'Edit status'
+        end
+
+        find('.js-clear-user-status-button').click
+        set_user_status_in_modal
+
+        visit user_path(user)
+        expect(page).not_to have_selector '.cover-status'
+      end
+
+      it 'clears the user status with the "Remove status" button' do
+        user_status = create(:user_status, user: user, message: 'Eating bread', emoji: 'stuffed_flatbread')
+
+        visit user_path(user)
+        within('.cover-status') do
+          expect(page).to have_emoji(user_status.emoji)
+          expect(page).to have_content user_status.message
+        end
+
+        find('.header-user-dropdown-toggle').click
+
+        page.within ".header-user" do
+          click_button 'Edit status'
+        end
+
+        page.within "#set-user-status-modal" do
+          click_button 'Remove status'
+        end
+
+        visit user_path(user)
+        expect(page).not_to have_selector '.cover-status'
+      end
+
+      it 'displays a default emoji if only message is entered' do
+        message = 'a status without emoji'
+        open_user_status_modal
+        find('.js-status-message-field').native.send_keys(message)
+
+        within('.js-toggle-emoji-menu') do
+          expect(page).to have_emoji('speech_balloon')
+        end
       end
     end
   end

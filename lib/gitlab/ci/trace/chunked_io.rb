@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 # source: https://gitlab.com/snippets/1685610
@@ -11,7 +13,7 @@ module Gitlab
 
         attr_reader :build
         attr_reader :tell, :size
-        attr_reader :chunk, :chunk_range
+        attr_reader :chunk_data, :chunk_range
 
         alias_method :pos, :tell
 
@@ -66,42 +68,46 @@ module Gitlab
           end
         end
 
-        def read(length = nil, outbuf = "")
-          out = ""
+        def read(length = nil, outbuf = nil)
+          out = []
 
           length ||= size - tell
 
           until length <= 0 || eof?
             data = chunk_slice_from_offset
-            break if data.empty?
+            raise FailedToGetChunkError if data.empty?
 
             chunk_bytes = [CHUNK_SIZE - chunk_offset, length].min
-            chunk_data = data.byteslice(0, chunk_bytes)
+            chunk_data_slice = data.byteslice(0, chunk_bytes)
 
-            out << chunk_data
-            @tell += chunk_data.bytesize
-            length -= chunk_data.bytesize
+            out << chunk_data_slice
+            @tell += chunk_data_slice.bytesize
+            length -= chunk_data_slice.bytesize
           end
+
+          out = out.join
 
           # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
           if outbuf
-            outbuf.slice!(0, outbuf.bytesize)
-            outbuf << out
+            outbuf.replace(out)
           end
 
           out
         end
 
         def readline
-          out = ""
+          out = []
 
           until eof?
             data = chunk_slice_from_offset
+            raise FailedToGetChunkError if data.empty?
+
             new_line = data.index("\n")
 
             if !new_line.nil?
-              out << data[0..new_line]
-              @tell += new_line + 1
+              raw_data = data[0..new_line]
+              out << raw_data
+              @tell += raw_data.bytesize
               break
             else
               out << data
@@ -109,7 +115,7 @@ module Gitlab
             end
           end
 
-          out
+          out.join
         end
 
         def write(data)
@@ -118,13 +124,13 @@ module Gitlab
           while tell < start_pos + data.bytesize
             # get slice from current offset till the end where it falls into chunk
             chunk_bytes = CHUNK_SIZE - chunk_offset
-            chunk_data = data.byteslice(tell - start_pos, chunk_bytes)
+            data_slice = data.byteslice(tell - start_pos, chunk_bytes)
 
             # append data to chunk, overwriting from that point
-            ensure_chunk.append(chunk_data, chunk_offset)
+            ensure_chunk.append(data_slice, chunk_offset)
 
             # move offsets within buffer
-            @tell += chunk_data.bytesize
+            @tell += data_slice.bytesize
             @size = [size, tell].max
           end
 
@@ -180,12 +186,12 @@ module Gitlab
             current_chunk.tap do |chunk|
               raise FailedToGetChunkError unless chunk
 
-              @chunk = chunk.data
+              @chunk_data = chunk.data
               @chunk_range = chunk.range
             end
           end
 
-          @chunk[chunk_offset..CHUNK_SIZE]
+          @chunk_data.byteslice(chunk_offset, CHUNK_SIZE)
         end
 
         def chunk_offset

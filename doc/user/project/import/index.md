@@ -1,6 +1,7 @@
 # Migrating projects to a GitLab instance
 
-1. [From Bitbucket.org](bitbucket.md)
+1. [From Bitbucket Cloud (aka bitbucket.org)](bitbucket.md)
+1. [From Bitbucket Server (aka Stash)](bitbucket_server.md)
 1. [From ClearCase](clearcase.md)
 1. [From CVS](cvs.md)
 1. [From FogBugz](fogbugz.md)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JSONWebToken
   class RSAToken < Token
     attr_reader :key_file

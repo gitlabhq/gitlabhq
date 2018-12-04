@@ -96,7 +96,7 @@ directly from GitLab. No third-party integrations needed.
 - [GitLab Auto Deploy](../ci/autodeploy/index.md): Deploy your application out-of-the-box with GitLab Auto Deploy.
 - [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
 - [GitLab Pages](project/pages/index.md): Publish your static site directly from
-GitLab with Gitlab Pages. You can build, test, and deploy any Static Site Generator with Pages.
+GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
 - [GitLab Container Registry](project/container_registry.md): Build and deploy Docker
 images with Container Registry.
 

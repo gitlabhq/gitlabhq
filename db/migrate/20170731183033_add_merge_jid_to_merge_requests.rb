@@ -1,4 +1,4 @@
-class AddMergeJidToMergeRequests < ActiveRecord::Migration
+class AddMergeJidToMergeRequests < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

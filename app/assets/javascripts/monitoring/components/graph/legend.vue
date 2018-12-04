@@ -39,15 +39,9 @@ export default {
           <strong v-if="series.renderCanary">{{ series.trackName }}</strong>
         </td>
         <track-line :track="series" />
-        <td
-          v-if="timeSeries.length > 1"
-          class="legend-metric-title">
-          <track-info
-            v-if="series.metricTag"
-            :track="series" />
-          <track-info
-            v-else
-            :track="series">
+        <td v-if="timeSeries.length > 1" class="legend-metric-title">
+          <track-info v-if="series.metricTag" :track="series" />
+          <track-info v-else :track="series">
             <strong>{{ legendTitle }}</strong> series {{ index + 1 }}
           </track-info>
         </td>
@@ -57,13 +51,9 @@ export default {
           </track-info>
         </td>
         <template v-for="(track, trackIndex) in series.tracksLegend">
-          <track-line
-            :track="track"
-            :key="`track-line-${trackIndex}`"/>
+          <track-line :key="`track-line-${trackIndex}`" :track="track" />
           <td :key="`track-info-${trackIndex}`">
-            <track-info
-              :track="track"
-              class="legend-metric-title" />
+            <track-info :track="track" class="legend-metric-title" />
           </td>
         </template>
       </tr>

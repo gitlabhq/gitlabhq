@@ -23,6 +23,7 @@ module QA
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
           element :ldap_tab
           element :standard_tab
+          element :register_tab
         end
 
         view 'app/views/devise/shared/_tabs_normal.html.haml' do
@@ -30,19 +31,23 @@ module QA
           element :register_tab
         end
 
+        view 'app/views/devise/shared/_omniauth_box.html.haml' do
+          element :saml_login_button
+        end
+
         def initialize
           # The login page is usually the entry point for all the scenarios so
           # we need to wait for the instance to start. That said, in some cases
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
-            page.has_css?('.login-page') ||
-              Page::Menu::Main.act { has_personal_area?(wait: 0) }
+            has_css?('.login-page') ||
+              Page::Main::Menu.act { has_personal_area?(wait: 0) }
           end
         end
 
         def sign_in_using_credentials(user = nil)
           # Don't try to log-in if we're already logged-in
-          return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
+          return if Page::Main::Menu.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present
@@ -56,11 +61,11 @@ module QA
             end
           end
 
-          Page::Menu::Main.act { has_personal_area? }
+          Page::Main::Menu.act { has_personal_area? }
         end
 
         def sign_in_using_admin_credentials
-          admin = QA::Factory::Resource::User.new.tap do |user|
+          admin = QA::Resource::User.new.tap do |user|
             user.username = QA::Runtime::User.admin_username
             user.password = QA::Runtime::User.admin_password
           end
@@ -71,19 +76,35 @@ module QA
             sign_in_using_gitlab_credentials(admin)
           end
 
-          Page::Menu::Main.act { has_personal_area? }
+          Page::Main::Menu.act { has_personal_area? }
         end
 
         def self.path
           '/users/sign_in'
         end
 
+        def has_sign_in_tab?
+          has_element?(:sign_in_tab)
+        end
+
+        def has_ldap_tab?
+          has_element?(:ldap_tab)
+        end
+
+        def has_standard_tab?
+          has_element?(:standard_tab)
+        end
+
         def sign_in_tab?
-          page.has_button?('Sign in')
+          has_css?(".active", text: 'Sign in')
         end
 
         def ldap_tab?
-          page.has_link?('LDAP')
+          has_css?(".active", text: 'LDAP')
+        end
+
+        def standard_tab?
+          has_css?(".active", text: 'Standard')
         end
 
         def switch_to_sign_in_tab
@@ -91,6 +112,7 @@ module QA
         end
 
         def switch_to_register_tab
+          set_initial_password_if_present
           click_element :register_tab
         end
 
@@ -112,9 +134,14 @@ module QA
           click_element :sign_in_button
         end
 
+        def sign_in_with_saml
+          set_initial_password_if_present
+          click_element :saml_login_button
+        end
+
         def sign_in_using_gitlab_credentials(user)
-          switch_to_sign_in_tab unless sign_in_tab?
-          switch_to_standard_tab if ldap_tab?
+          switch_to_sign_in_tab if has_sign_in_tab?
+          switch_to_standard_tab if has_standard_tab?
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
@@ -122,7 +149,7 @@ module QA
         end
 
         def set_initial_password_if_present
-          return unless page.has_content?('Change your password')
+          return unless has_content?('Change your password')
 
           fill_element :password_field, Runtime::User.password
           fill_element :password_confirmation, Runtime::User.password

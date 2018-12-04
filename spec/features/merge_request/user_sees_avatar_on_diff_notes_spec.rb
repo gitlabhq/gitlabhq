@@ -81,22 +81,25 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         visit diffs_project_merge_request_path(project, merge_request, view: view)
 
         wait_for_requests
+
+        find('.js-toggle-tree-list').click
       end
 
       it 'shows note avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 1)
+          expect(page).to have_selector('.js-diff-comment-avatar img', count: 1)
         end
       end
 
       it 'shows comment on note avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
-
-          expect(first('img.js-diff-comment-avatar')["data-original-title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
+          first('.js-diff-comment-avatar img').hover
         end
+
+        expect(page).to have_content "#{note.author.name}: #{note.note.truncate(17)}"
       end
 
       it 'toggles comments when clicking avatar' do
@@ -107,7 +110,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         expect(page).not_to have_selector('.notes_holder')
 
         page.within find_line(position.line_code(project.repository)) do
-          first('img.js-diff-comment-avatar').click
+          first('.js-diff-comment-avatar img').click
         end
 
         expect(page).to have_selector('.notes_holder')
@@ -123,7 +126,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         wait_for_requests
 
         page.within find_line(position.line_code(project.repository)) do
-          expect(page).not_to have_selector('img.js-diff-comment-avatar')
+          expect(page).not_to have_selector('.js-diff-comment-avatar img')
         end
       end
 
@@ -141,7 +144,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
+          expect(page).to have_selector('.js-diff-comment-avatar img', count: 2)
         end
       end
 
@@ -160,7 +163,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
+          expect(page).to have_selector('.js-diff-comment-avatar img', count: 3)
           expect(find('.diff-comments-more-count')).to have_content '+1'
         end
       end

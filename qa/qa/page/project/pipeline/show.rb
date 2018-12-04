@@ -2,20 +2,20 @@ module QA::Page
   module Project::Pipeline
     class Show < QA::Page::Base
       view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
-        element :pipeline_header, /header class.*ci-header-container.*/
+        element :pipeline_header, /header class.*ci-header-container.*/ # rubocop:disable QA/ElementWithPattern
       end
 
       view 'app/assets/javascripts/pipelines/components/graph/graph_component.vue' do
-        element :pipeline_graph, /class.*pipeline-graph.*/
+        element :pipeline_graph, /class.*pipeline-graph.*/ # rubocop:disable QA/ElementWithPattern
       end
 
-      view 'app/assets/javascripts/pipelines/components/graph/job_component.vue' do
-        element :job_component, /class.*ci-job-component.*/
-        element :job_link, /class.*js-pipeline-graph-job-link.*/
+      view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
+        element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
+        element :job_link, /class.*js-pipeline-graph-job-link.*/ # rubocop:disable QA/ElementWithPattern
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
-        element :status_icon, 'ci-status-icon-${status}'
+        element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
       end
 
       def running?

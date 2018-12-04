@@ -8,7 +8,12 @@ describe('Issuable Time Tracker', () => {
   let initialData;
   let vm;
 
-  const initTimeTrackingComponent = opts => {
+  const initTimeTrackingComponent = ({
+    timeEstimate,
+    timeSpent,
+    timeEstimateHumanReadable,
+    timeSpentHumanReadable,
+  }) => {
     setFixtures(`
     <div>
       <div id="mock-container"></div>
@@ -16,10 +21,10 @@ describe('Issuable Time Tracker', () => {
   `);
 
     initialData = {
-      time_estimate: opts.timeEstimate,
-      time_spent: opts.timeSpent,
-      human_time_estimate: opts.timeEstimateHumanReadable,
-      human_time_spent: opts.timeSpentHumanReadable,
+      timeEstimate,
+      timeSpent,
+      humanTimeEstimate: timeEstimateHumanReadable,
+      humanTimeSpent: timeSpentHumanReadable,
       rootPath: '/',
     };
 
@@ -43,8 +48,8 @@ describe('Issuable Time Tracker', () => {
   describe('Initialization', () => {
     beforeEach(() => {
       initTimeTrackingComponent({
-        timeEstimate: 100000,
-        timeSpent: 5000,
+        timeEstimate: 10000, // 2h 46m
+        timeSpent: 5000, // 1h 23m
         timeEstimateHumanReadable: '2h 46m',
         timeSpentHumanReadable: '1h 23m',
       });
@@ -56,14 +61,14 @@ describe('Issuable Time Tracker', () => {
 
     it('should correctly set timeEstimate', done => {
       Vue.nextTick(() => {
-        expect(vm.timeEstimate).toBe(initialData.time_estimate);
+        expect(vm.timeEstimate).toBe(initialData.timeEstimate);
         done();
       });
     });
 
     it('should correctly set time_spent', done => {
       Vue.nextTick(() => {
-        expect(vm.timeSpent).toBe(initialData.time_spent);
+        expect(vm.timeSpent).toBe(initialData.timeSpent);
         done();
       });
     });
@@ -74,8 +79,8 @@ describe('Issuable Time Tracker', () => {
       describe('Comparison pane', () => {
         beforeEach(() => {
           initTimeTrackingComponent({
-            timeEstimate: 100000,
-            timeSpent: 5000,
+            timeEstimate: 100000, // 1d 3h
+            timeSpent: 5000, // 1h 23m
             timeEstimateHumanReadable: '',
             timeSpentHumanReadable: '',
           });
@@ -85,6 +90,7 @@ describe('Issuable Time Tracker', () => {
           Vue.nextTick(() => {
             expect(vm.showComparisonState).toBe(true);
             const $comparisonPane = vm.$el.querySelector('.time-tracking-comparison-pane');
+
             expect($comparisonPane).toBeVisible();
             done();
           });
@@ -93,23 +99,29 @@ describe('Issuable Time Tracker', () => {
         describe('Remaining meter', () => {
           it('should display the remaining meter with the correct width', done => {
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[value="5"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[value="5"]'),
+              ).not.toBeNull();
               done();
             });
           });
 
           it('should display the remaining meter with the correct background color when within estimate', done => {
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="primary"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="primary"]'),
+              ).not.toBeNull();
               done();
             });
           });
 
           it('should display the remaining meter with the correct background color when over estimate', done => {
-            vm.time_estimate = 100000;
-            vm.time_spent = 20000000;
+            vm.timeEstimate = 10000; // 2h 46m
+            vm.timeSpent = 20000000; // 231 days
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="danger"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="danger"]'),
+              ).not.toBeNull();
               done();
             });
           });
@@ -119,7 +131,7 @@ describe('Issuable Time Tracker', () => {
       describe('Estimate only pane', () => {
         beforeEach(() => {
           initTimeTrackingComponent({
-            timeEstimate: 100000,
+            timeEstimate: 10000, // 2h 46m
             timeSpent: 0,
             timeEstimateHumanReadable: '2h 46m',
             timeSpentHumanReadable: '',
@@ -142,7 +154,7 @@ describe('Issuable Time Tracker', () => {
         beforeEach(() => {
           initTimeTrackingComponent({
             timeEstimate: 0,
-            timeSpent: 5000,
+            timeSpent: 5000, // 1h 23m
             timeEstimateHumanReadable: '2h 46m',
             timeSpentHumanReadable: '1h 23m',
           });

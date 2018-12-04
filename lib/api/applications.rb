@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # External applications API
   class Applications < Grape::API
@@ -21,6 +23,22 @@ module API
         else
           render_validation_error! application
         end
+      end
+
+      desc 'Get applications' do
+        success Entities::Application
+      end
+      get do
+        applications = ApplicationsFinder.new.execute
+        present applications, with: Entities::Application
+      end
+
+      desc 'Delete an application'
+      delete ':id' do
+        application = ApplicationsFinder.new(params).execute
+        application.destroy
+
+        status 204
       end
     end
   end

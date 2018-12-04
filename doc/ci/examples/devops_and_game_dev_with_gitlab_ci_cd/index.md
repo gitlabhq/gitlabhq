@@ -418,7 +418,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the id and secret around, you'll need them later
     ![AWS Access Key Config](img/aws_config_window.png)
 1. Go to your GitLab project, click **Settings > CI/CD** on the left sidebar
-1. Expand the **Secret Variables** section
+1. Expand the **Variables** section
     ![GitLab Secret Config](img/gitlab_config.png)
 1. Add a key named `AWS_KEY_ID` and copy the key id from Step 2 into the **Value** textbox
 1. Add a key named `AWS_KEY_SECRET` and copy the key secret from Step 2 into the **Value** textbox
@@ -520,7 +520,7 @@ a lot of breathing room in quickly getting changes to players.
 Here are some ideas to further investigate that can speed up or improve your pipeline:
 
 - [Yarn](https://yarnpkg.com) instead of npm
-- Setup a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
+- Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
 - Forward a [custom domain](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
 - Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)

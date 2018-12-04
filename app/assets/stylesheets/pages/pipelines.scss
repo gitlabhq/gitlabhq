@@ -141,10 +141,6 @@
     float: none;
   }
 
-  .api {
-    @extend .monospace;
-  }
-
   .branch-commit {
     .ref-name {
       font-weight: $gl-font-weight-bold;
@@ -760,6 +756,7 @@
   }
 
   &.ci-status-icon-canceled,
+  &.ci-status-icon-scheduled,
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {

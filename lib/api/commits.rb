@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -21,7 +23,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project repository commits' do
         success Entities::Commit
       end
@@ -73,10 +75,30 @@ module API
       params do
         requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false
         requires :commit_message, type: String, desc: 'Commit message'
-        requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
+        requires :actions, type: Array, desc: 'Actions to perform in commit' do
+          requires :action, type: String, desc: 'The action to perform, `create`, `delete`, `move`, `update`, `chmod`', values: %w[create update move delete chmod].freeze
+          requires :file_path, type: String, desc: 'Full path to the file. Ex. `lib/class.rb`'
+          given action: ->(action) { action == 'move' } do
+            requires :previous_path, type: String, desc: 'Original full path to the file being moved. Ex. `lib/class1.rb`'
+          end
+          given action: ->(action) { %w[create move].include? action } do
+            optional :content, type: String, desc: 'File content'
+          end
+          given action: ->(action) { action == 'update' } do
+            requires :content, type: String, desc: 'File content'
+          end
+          optional :encoding, type: String, desc: '`text` or `base64`', default: 'text', values: %w[text base64]
+          given action: ->(action) { %w[update move delete].include? action } do
+            optional :last_commit_id, type: String, desc: 'Last known file commit id'
+          end
+          given action: ->(action) { action == 'chmod' } do
+            requires :execute_filemode, type: Boolean, desc: 'When `true/false` enables/disables the execute flag on the file.'
+          end
+        end
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
+        optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
       end
       post ':id/repository/commits' do
         authorize_push_to_branch!(params[:branch])
@@ -89,7 +111,10 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
-          present commit_detail, with: Entities::CommitDetail
+
+          Gitlab::WebIdeCommitsCounter.increment if find_user_from_warden
+
+          present commit_detail, with: Entities::CommitDetail, stats: params[:stats]
         else
           render_api_error!(result[:message], 400)
         end
@@ -169,11 +194,47 @@ module API
           branch_name: params[:branch]
         }
 
-        result = ::Commits::CherryPickService.new(user_project, current_user, commit_params).execute
+        result = ::Commits::CherryPickService
+          .new(user_project, current_user, commit_params)
+          .execute
 
         if result[:status] == :success
-          branch = find_branch!(params[:branch])
-          present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
+          present user_project.repository.commit(result[:result]),
+            with: Entities::Commit
+        else
+          render_api_error!(result[:message], 400)
+        end
+      end
+
+      desc 'Revert a commit in a branch' do
+        detail 'This feature was introduced in GitLab 11.5'
+        success Entities::Commit
+      end
+      params do
+        requires :sha, type: String, desc: 'Commit SHA to revert'
+        requires :branch, type: String, desc: 'Target branch name', allow_blank: false
+      end
+      post ':id/repository/commits/:sha/revert', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        authorize_push_to_branch!(params[:branch])
+
+        commit = user_project.commit(params[:sha])
+        not_found!('Commit') unless commit
+
+        find_branch!(params[:branch])
+
+        commit_params = {
+          commit: commit,
+          start_branch: params[:branch],
+          branch_name: params[:branch]
+        }
+
+        result = ::Commits::RevertService
+          .new(user_project, current_user, commit_params)
+          .execute
+
+        if result[:status] == :success
+          present user_project.repository.commit(result[:result]),
+            with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
         end

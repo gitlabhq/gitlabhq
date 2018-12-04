@@ -8,6 +8,5 @@
     "online": { "type": "boolean" },
     "available": { "type": "boolean" },
     "settings_path": { "type": "string" }
-  },
-  "additionalProperties": false
+  }
 }

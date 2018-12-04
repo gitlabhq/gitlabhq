@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": [
+    "key",
+    "name",
+    "nickname",
+    "popular",
+    "html_url",
+    "source_url",
+    "description",
+    "conditions",
+    "permissions",
+    "limitations",
+    "content"
+  ],
+  "properties": {
+    "key": { "type": "string" },
+    "name": { "type": "string" },
+    "nickname": { "type": ["null", "string"] },
+    "popular": { "type": "boolean" },
+    "html_url": { "type": ["null", "string"] },
+    "source_url": { "type": ["null", "string"] },
+    "description": { "type": ["null", "string"] },
+    "conditions": { "type": "array", "items": { "type": "string" } },
+    "permissions": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "content": { "type": "string" }
+  },
+  "additionalProperties": false
+}

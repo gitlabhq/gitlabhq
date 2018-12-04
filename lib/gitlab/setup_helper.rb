@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'toml-rb'
 
 module Gitlab
@@ -30,7 +32,10 @@ module Gitlab
         end
 
         if Rails.env.test?
-          storages << { name: 'test_second_storage', path: Rails.root.join('tmp', 'tests', 'second_storage').to_s }
+          storage_path = Rails.root.join('tmp', 'tests', 'second_storage').to_s
+
+          FileUtils.mkdir(storage_path) unless File.exist?(storage_path)
+          storages << { name: 'test_second_storage', path: storage_path }
         end
 
         config = { socket_path: address.sub(/\Aunix:/, ''), storage: storages }

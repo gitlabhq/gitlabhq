@@ -36,7 +36,7 @@ export default class CreateItemDropdown {
       },
       selectable: true,
       toggleLabel(selected) {
-        return (selected && 'id' in selected) ? _.escape(selected.title) : this.defaultToggleLabel;
+        return selected && 'id' in selected ? _.escape(selected.title) : this.defaultToggleLabel;
       },
       fieldName: this.fieldName,
       text(item) {
@@ -46,7 +46,7 @@ export default class CreateItemDropdown {
         return _.escape(item.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: (options) => {
+      clicked: options => {
         options.e.preventDefault();
         this.onSelect();
       },
@@ -77,9 +77,8 @@ export default class CreateItemDropdown {
   getData(term, callback) {
     this.getDataOption(term, (data = []) => {
       // Ensure the selected item isn't already in the data to avoid duplicates
-      const alreadyHasSelectedItem = this.selectedItem && data.some(item =>
-        item.id === this.selectedItem.id,
-      );
+      const alreadyHasSelectedItem =
+        this.selectedItem && data.some(item => item.id === this.selectedItem.id);
 
       let uniqueData = data;
       if (!alreadyHasSelectedItem) {
@@ -106,9 +105,7 @@ export default class CreateItemDropdown {
     if (newValue) {
       this.selectedItem = this.createNewItemFromValue(newValue);
 
-      this.$dropdownContainer
-        .find('.js-dropdown-create-new-item code')
-        .text(newValue);
+      this.$dropdownContainer.find('.js-dropdown-create-new-item code').text(newValue);
     }
 
     this.toggleFooter(!newValue);

@@ -1,4 +1,4 @@
-class AddFaviconToAppearances < ActiveRecord::Migration
+class AddFaviconToAppearances < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

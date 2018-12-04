@@ -4,9 +4,9 @@
   .card
     .card-header
       Domains (#{@domains.count})
-    %ul.content-list.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
+    %ul.list-group.list-group-flush.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
       - @domains.each do |domain|
-        %li.pages-domain-list-item.unstyled
+        %li.pages-domain-list-item.list-group-item.d-flex.justify-content-between
           - if verification_enabled
             - tooltip, status = domain.unverified? ? [_('Unverified'), 'failed'] : [_('Verified'), 'success']
             .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
@@ -16,7 +16,7 @@
               = domain.url
               = icon('external-link')
             - if domain.subject
-              %p
+              %div
                 %span.badge.badge-gray Certificate: #{domain.subject}
                 - if domain.expired?
                   %span.badge.badge-danger Expired
@@ -24,6 +24,6 @@
             = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
             = link_to 'Remove', project_pages_domain_path(@project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
         - if verification_enabled && domain.unverified?
-          %li.warning-row
+          %li.list-group-item.bs-callout-warning
             #{domain.domain} is not verified. To learn how to verify ownership, visit your
             #{link_to 'domain details', project_pages_domain_path(@project, domain)}.

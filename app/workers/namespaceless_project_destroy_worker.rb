@@ -32,7 +32,5 @@ class NamespacelessProjectDestroyWorker
     merge_requests = project.forked_from_project.merge_requests.opened.from_project(project)
 
     merge_requests.update_all(state: 'closed')
-
-    project.forked_project_link.destroy
   end
 end

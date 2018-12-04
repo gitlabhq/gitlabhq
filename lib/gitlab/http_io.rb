@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This class is compatible with IO class (https://ruby-doc.org/core-2.3.1/IO.html)
 # source: https://gitlab.com/snippets/1685610
@@ -73,8 +75,8 @@ module Gitlab
       end
     end
 
-    def read(length = nil, outbuf = "")
-      out = ""
+    def read(length = nil, outbuf = nil)
+      out = []
 
       length ||= size - tell
 
@@ -83,24 +85,25 @@ module Gitlab
         break if data.empty?
 
         chunk_bytes = [BUFFER_SIZE - chunk_offset, length].min
-        chunk_data = data.byteslice(0, chunk_bytes)
+        data_slice = data.byteslice(0, chunk_bytes)
 
-        out << chunk_data
-        @tell += chunk_data.bytesize
-        length -= chunk_data.bytesize
+        out << data_slice
+        @tell += data_slice.bytesize
+        length -= data_slice.bytesize
       end
+
+      out = out.join
 
       # If outbuf is passed, we put the output into the buffer. This supports IO.copy_stream functionality
       if outbuf
-        outbuf.slice!(0, outbuf.bytesize)
-        outbuf << out
+        outbuf.replace(out)
       end
 
       out
     end
 
     def readline
-      out = ""
+      out = []
 
       until eof?
         data = get_chunk
@@ -116,7 +119,7 @@ module Gitlab
         end
       end
 
-      out
+      out.join
     end
 
     def write(data)
@@ -158,14 +161,14 @@ module Gitlab
         ##
         # Note: If provider does not return content_range, then we set it as we requested
         # Provider: minio
-        # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
-        # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
+        # - When the file size is larger than requested Content-range, the Content-range is included in responses with Net::HTTPPartialContent 206
+        # - When the file size is smaller than requested Content-range, the Content-range is included in responses with Net::HTTPPartialContent 206
         # Provider: AWS
-        # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
-        # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
+        # - When the file size is larger than requested Content-range, the Content-range is included in responses with Net::HTTPPartialContent 206
+        # - When the file size is smaller than requested Content-range, the Content-range is included in responses with Net::HTTPPartialContent 206
         # Provider: GCS
-        # - When the file size is larger than requested Content-range, the Content-range is included in responces with Net::HTTPPartialContent 206
-        # - When the file size is smaller than requested Content-range, the Content-range is included in responces with Net::HTTPOK 200
+        # - When the file size is larger than requested Content-range, the Content-range is included in responses with Net::HTTPPartialContent 206
+        # - When the file size is smaller than requested Content-range, the Content-range is included in responses with Net::HTTPOK 200
         @chunk_range ||= (chunk_start...(chunk_start + @chunk.bytesize))
       end
 

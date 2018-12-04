@@ -1,7 +1,11 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '../eventhub';
 
 export default {
+  components: {
+    GlLoadingIcon,
+  },
   props: {
     deployKey: {
       type: Object,
@@ -39,11 +43,9 @@ export default {
     :class="[{ disabled: isLoading }, btnCssClass]"
     :disabled="isLoading"
     class="btn"
-    @click="doAction">
+    @click="doAction"
+  >
     <slot></slot>
-    <gl-loading-icon
-      v-if="isLoading"
-      :inline="true"
-    />
+    <gl-loading-icon v-if="isLoading" :inline="true" />
   </button>
 </template>

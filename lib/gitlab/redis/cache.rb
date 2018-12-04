@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # please require all dependencies below:
 require_relative 'wrapper' unless defined?(::Rails) && ::Rails.root.present?
 

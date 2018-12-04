@@ -39,13 +39,19 @@ describe('Merge request widget rebase component', () => {
     });
 
     it('it should render rebase button and warning message', () => {
-      const text = vm.$el.querySelector('.rebase-state-find-class-convention span').textContent.trim();
+      const text = vm.$el
+        .querySelector('.rebase-state-find-class-convention span')
+        .textContent.trim();
+
       expect(text).toContain('Fast-forward merge is not possible.');
-      expect(text).toContain('Rebase the source branch onto the target branch or merge target');
+      expect(text.replace(/\s\s+/g, ' ')).toContain(
+        'Rebase the source branch onto the target branch or merge target',
+      );
+
       expect(text).toContain('branch into source branch to allow this merge request to be merged.');
     });
 
-    it('it should render error message when it fails', (done) => {
+    it('it should render error message when it fails', done => {
       vm.rebasingError = 'Something went wrong!';
 
       Vue.nextTick(() => {
@@ -68,17 +74,19 @@ describe('Merge request widget rebase component', () => {
         service: {},
       });
 
-      const text = vm.$el.querySelector('.rebase-state-find-class-convention span').textContent.trim();
+      const text = vm.$el
+        .querySelector('.rebase-state-find-class-convention span')
+        .textContent.trim();
 
       expect(text).toContain('Fast-forward merge is not possible.');
       expect(text).toContain('Rebase the source branch onto');
       expect(text).toContain('foo');
-      expect(text).toContain('to allow this merge request to be merged.');
+      expect(text.replace(/\s\s+/g, ' ')).toContain('to allow this merge request to be merged.');
     });
   });
 
   describe('methods', () => {
-    it('checkRebaseStatus', (done) => {
+    it('checkRebaseStatus', done => {
       spyOn(eventHub, '$emit');
       vm = mountComponent(Component, {
         mr: {},

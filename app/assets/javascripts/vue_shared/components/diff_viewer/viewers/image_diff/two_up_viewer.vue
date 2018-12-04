@@ -14,28 +14,25 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
 };
 </script>
 
 <template>
-  <div class="two-up view row">
-    <div class="col-sm-6 frame deleted">
-      <image-viewer
-        :path="oldPath"
-        :project-path="projectPath"
-      />
-    </div>
-    <div class="col-sm-6 frame added">
-      <image-viewer
-        :path="newPath"
-        :project-path="projectPath"
-      />
-    </div>
+  <div class="two-up view d-flex">
+    <image-viewer
+      :path="oldPath"
+      :render-info="true"
+      inner-css-classes="frame deleted"
+      class="wrap w-50"
+    />
+    <image-viewer
+      :path="newPath"
+      :render-info="true"
+      :inner-css-classes="['frame', 'added']"
+      class="wrap w-50"
+    >
+      <slot slot="image-overlay" name="image-overlay"> </slot>
+    </image-viewer>
   </div>
 </template>

@@ -3,8 +3,8 @@ import { mapActions } from 'vuex';
 
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 import FileStatusIcon from './repo_file_status_icon.vue';
-import ChangedFileIcon from './changed_file_icon.vue';
 
 export default {
   components: {
@@ -72,41 +72,26 @@ export default {
   <li
     :class="{
       active: tab.active,
-      disabled: tab.pending
+      disabled: tab.pending,
     }"
-    @click="clickFile(tab)"
+    @click="clickFile(tab);"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
-    <div
-      :title="tab.url"
-      class="multi-file-tab"
-    >
-      <file-icon
-        :file-name="tab.name"
-        :size="16"
-      />
+    <div :title="tab.url" class="multi-file-tab">
+      <file-icon :file-name="tab.name" :size="16" />
       {{ tab.name }}
-      <file-status-icon
-        :file="tab"
-      />
+      <file-status-icon :file="tab" />
     </div>
     <button
       :aria-label="closeLabel"
       :disabled="tab.pending"
       type="button"
       class="multi-file-tab-close"
-      @click.stop.prevent="closeFile(tab)"
+      @click.stop.prevent="closeFile(tab);"
     >
-      <icon
-        v-if="!showChangedIcon"
-        :size="12"
-        name="close"
-      />
-      <changed-file-icon
-        v-else
-        :file="tab"
-      />
+      <icon v-if="!showChangedIcon" :size="12" name="close" />
+      <changed-file-icon v-else :file="tab" />
     </button>
   </li>
 </template>

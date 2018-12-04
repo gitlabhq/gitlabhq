@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Explore::ProjectsController < Explore::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess

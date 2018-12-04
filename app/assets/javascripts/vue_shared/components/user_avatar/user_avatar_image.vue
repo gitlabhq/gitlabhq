@@ -15,14 +15,14 @@
 
 */
 
+import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
-import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  directives: {
-    tooltip,
+  components: {
+    GlTooltip,
   },
   props: {
     lazy: {
@@ -73,9 +73,6 @@ export default {
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
     },
-    tooltipContainer() {
-      return this.tooltipText ? 'body' : null;
-    },
     avatarSizeClass() {
       return `s${this.size}`;
     },
@@ -84,22 +81,28 @@ export default {
 </script>
 
 <template>
-  <img
-    v-tooltip
-    :class="{
-      lazy: lazy,
-      [avatarSizeClass]: true,
-      [cssClasses]: true
-    }"
-    :src="resultantSrcAttribute"
-    :width="size"
-    :height="size"
-    :alt="imgAlt"
-    :data-src="sanitizedSource"
-    :data-container="tooltipContainer"
-    :data-placement="tooltipPlacement"
-    :title="tooltipText"
-    class="avatar"
-    data-boundary="window"
-  />
+  <span>
+    <img
+      ref="userAvatarImage"
+      :class="{
+        lazy: lazy,
+        [avatarSizeClass]: true,
+        [cssClasses]: true,
+      }"
+      :src="resultantSrcAttribute"
+      :width="size"
+      :height="size"
+      :alt="imgAlt"
+      :data-src="sanitizedSource"
+      class="avatar"
+    />
+    <gl-tooltip
+      :target="() => $refs.userAvatarImage"
+      :placement="tooltipPlacement"
+      boundary="window"
+      class="js-user-avatar-image-toolip"
+    >
+      <slot> {{ tooltipText }} </slot>
+    </gl-tooltip>
+  </span>
 </template>

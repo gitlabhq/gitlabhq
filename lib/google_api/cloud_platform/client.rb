@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
 require 'google/apis/cloudbilling_v1'

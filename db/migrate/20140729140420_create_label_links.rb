@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateLabelLinks < ActiveRecord::Migration
+class CreateLabelLinks < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

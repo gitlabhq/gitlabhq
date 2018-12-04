@@ -5,7 +5,7 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'adds new secret variable' do
+  it 'adds new CI variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key value')

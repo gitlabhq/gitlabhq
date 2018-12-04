@@ -517,21 +517,6 @@ $ide-commit-header-height: 48px;
   }
 }
 
-.ide-file-addition,
-.ide-file-addition-solid {
-  color: $green-500;
-}
-
-.ide-file-modified,
-.ide-file-modified-solid {
-  color: $orange-500;
-}
-
-.ide-file-deletion,
-.ide-file-deletion-solid {
-  color: $red-500;
-}
-
 .multi-file-commit-list-collapsed {
   display: flex;
   flex-direction: column;
@@ -1397,14 +1382,6 @@ $ide-commit-header-height: 48px;
   display: flex;
   align-items: center;
   color: $theme-gray-700;
-}
-
-.ide-file-changed-icon {
-  margin-left: auto;
-
-  > svg {
-    display: block;
-  }
 }
 
 .file-row:hover,

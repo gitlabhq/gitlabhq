@@ -22,6 +22,18 @@ shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
     expect(session[:"#{provider}_access_token"]).to eq(token)
     expect(controller).to redirect_to(status_import_url)
   end
+
+  it "strips access token with spaces" do
+    token = 'asdfasdf9876'
+
+    allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
+      .to receive(:user).and_return(true)
+
+    post :personal_access_token, personal_access_token: "  #{token} "
+
+    expect(session[:"#{provider}_access_token"]).to eq(token)
+    expect(controller).to redirect_to(status_import_url)
+  end
 end
 
 shared_examples 'a GitHub-ish import controller: GET new' do

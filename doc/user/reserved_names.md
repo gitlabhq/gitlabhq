@@ -68,7 +68,6 @@ Currently the following names are reserved as top level groups:
 - import
 - invites
 - jwt
-- koding
 - notification_settings
 - oauth
 - profile

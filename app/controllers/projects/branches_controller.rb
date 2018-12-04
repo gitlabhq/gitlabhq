@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
@@ -103,7 +105,7 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to project_branches_path(@project), status: :see_other
       end
 
-      format.js { render nothing: true, status: result[:return_code] }
+      format.js { head result[:return_code] }
       format.json { render json: { message: result[:message] }, status: result[:return_code] }
     end
   end

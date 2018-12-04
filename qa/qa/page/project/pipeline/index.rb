@@ -2,7 +2,7 @@ module QA::Page
   module Project::Pipeline
     class Index < QA::Page::Base
       view 'app/assets/javascripts/pipelines/components/pipeline_url.vue' do
-        element :pipeline_link, 'class="js-pipeline-url-link"'
+        element :pipeline_link, 'class="js-pipeline-url-link"' # rubocop:disable QA/ElementWithPattern
       end
 
       def go_to_latest_pipeline

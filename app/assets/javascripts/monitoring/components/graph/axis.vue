@@ -38,38 +38,25 @@ export default {
   computed: {
     textTransform() {
       const yCoordinate =
-        (this.graphHeight -
-          this.margin.top +
-          this.measurements.axisLabelLineOffset) /
-          2 || 0;
+        (this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset) / 2 || 0;
 
       return `translate(15, ${yCoordinate}) rotate(-90)`;
     },
 
     rectTransform() {
       const yCoordinate =
-        (this.graphHeight -
-          this.margin.top +
-          this.measurements.axisLabelLineOffset) /
-          2 +
+        (this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset) / 2 +
           this.yLabelWidth / 2 || 0;
 
       return `translate(0, ${yCoordinate}) rotate(-90)`;
     },
 
     xPosition() {
-      return (
-        (this.graphWidth + this.measurements.axisLabelLineOffset) / 2 -
-          this.margin.right || 0
-      );
+      return (this.graphWidth + this.measurements.axisLabelLineOffset) / 2 - this.margin.right || 0;
     },
 
     yPosition() {
-      return (
-        this.graphHeight -
-          this.margin.top +
-          this.measurements.axisLabelLineOffset || 0
-      );
+      return this.graphHeight - this.margin.top + this.measurements.axisLabelLineOffset || 0;
     },
 
     yAxisLabelSentenceCase() {
@@ -123,19 +110,8 @@ export default {
     >
       {{ yAxisLabelSentenceCase }}
     </text>
-    <rect
-      :x="xPosition + 60"
-      :y="graphHeight - 80"
-      class="rect-axis-text"
-      width="35"
-      height="50"
-    />
-    <text
-      :x="xPosition + 60"
-      :y="yPosition"
-      class="label-axis-text x-label-text"
-      dy=".35em"
-    >
+    <rect :x="xPosition + 60" :y="graphHeight - 80" class="rect-axis-text" width="35" height="50" />
+    <text :x="xPosition + 60" :y="yPosition" class="label-axis-text x-label-text" dy=".35em">
       {{ timeString }}
     </text>
   </g>

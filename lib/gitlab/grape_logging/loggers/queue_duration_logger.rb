@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This grape_logging module (https://github.com/aserafin/grape_logging) makes it
 # possible to log how much time an API request was queued by Workhorse.
 module Gitlab

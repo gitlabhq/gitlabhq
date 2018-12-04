@@ -5,7 +5,7 @@
     .project-header.d-flex.flex-row.flex-wrap.align-items-center.append-bottom-8
       .project-title-row.d-flex.align-items-center
         .avatar-container.project-avatar.float-none
-          = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile')
+          = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s24', width: 24, height: 24)
         %h1.project-title.d-flex.align-items-baseline.qa-project-name
           = @project.name
       .project-metadata.d-flex.flex-row.flex-wrap.align-items-baseline
@@ -76,8 +76,6 @@
             = render 'projects/buttons/download', project: @project, ref: @ref
           .d-none.d-sm-inline-flex
             = render 'projects/buttons/dropdown'
-          .d-none.d-sm-inline-flex
-            = render 'projects/buttons/koding'
 
         .d-none.d-sm-inline-flex
           = render 'shared/notifications/button', notification_setting: @notification_setting
