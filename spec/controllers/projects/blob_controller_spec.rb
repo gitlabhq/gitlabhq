@@ -35,6 +35,11 @@ describe Projects::BlobController do
         let(:id) { 'binary-encoding/encoding/binary-1.bin' }
         it { is_expected.to respond_with(:success) }
       end
+
+      context "Markdown file" do
+        let(:id) { 'master/README.md' }
+        it { is_expected.to respond_with(:success) }
+      end
     end
 
     context 'with file path and JSON format' do

@@ -1,5 +1,0 @@
----
-title: Display impersonation token value only after creation
-merge_request: 22916
-author:
-type: fixed

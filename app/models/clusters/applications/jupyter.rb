@@ -56,7 +56,11 @@ module Clusters
       def specification
         {
           "ingress" => {
-            "hosts" => [hostname]
+            "hosts" => [hostname],
+            "tls" => [{
+              "hosts" => [hostname],
+              "secretName" => "jupyter-cert"
+            }]
           },
           "hub" => {
             "extraEnv" => {

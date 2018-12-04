@@ -363,6 +363,12 @@
     background-color: $white-light;
     border-top: 0;
   }
+
+  .filter-dropdown-container {
+    .dropdown {
+      margin-left: 0;
+    }
+  }
 }
 
 @include media-breakpoint-down(sm) {
@@ -371,16 +377,6 @@
     .dropdown,
     .dropdown-menu {
       width: 100%;
-    }
-
-    .dropdown {
-      margin-left: 0;
-    }
-
-    .fa-chevron-down {
-      position: absolute;
-      right: 10px;
-      top: 10px;
     }
   }
 }

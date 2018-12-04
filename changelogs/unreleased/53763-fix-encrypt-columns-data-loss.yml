@@ -1,5 +1,0 @@
----
-title: Correctly handle data-loss scenarios when encrypting columns
-merge_request: 23306
-author:
-type: fixed

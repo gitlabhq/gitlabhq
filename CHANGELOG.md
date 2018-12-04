@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.2 (2018-12-03)
+
+### Removed (1 change)
+
+- Removed Site Statistics optimization as it was causing problems. !23314
+
+### Fixed (6 changes, 1 of them is from the community)
+
+- Display impersonation token value only after creation. !22916
+- Fix not render emoji in filter dropdown. !23112 (Hiroyuki Sato)
+- Fixes stuck tooltip on stop env button. !23244
+- Correctly handle data-loss scenarios when encrypting columns. !23306
+- Clear BatchLoader context between Sidekiq jobs. !23308
+- Fix handling of filenames with hash characters in tree view. !23368
+
+
 ## 11.5.1 (2018-11-26)
 
 ### Security (17 changes)
@@ -285,6 +301,14 @@ entry.
 - Updates svg dependency.
 - Adds missing i18n to pipelines table.
 - Disables stop environment button while the deploy is in progress.
+
+
+## 11.4.9 (2018-12-03)
+
+### Fixed (2 changes)
+
+- Display impersonation token value only after creation. !22916
+- Correctly handle data-loss scenarios when encrypting columns. !23306
 
 
 ## 11.4.8 (2018-11-27)
