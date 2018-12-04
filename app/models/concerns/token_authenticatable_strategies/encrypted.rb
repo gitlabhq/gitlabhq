@@ -88,7 +88,10 @@ module TokenAuthenticatableStrategies
 
     def token_set?(instance)
       raw_token = instance.read_attribute(encrypted_field)
-      raw_token ||= (insecure_strategy.get_token(instance) if fallback?)
+
+      unless fully_encrypted?
+        raw_token ||= insecure_strategy.get_token(instance)
+      end
 
       raw_token.present?
     end
