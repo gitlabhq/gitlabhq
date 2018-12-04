@@ -273,6 +273,36 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         )
       end
     end
+
+    context 'group level cluster' do
+      let!(:cluster) { create(:cluster, :group, platform_kubernetes: kubernetes) }
+
+      let(:project) { create(:project, group: cluster.group) }
+
+      subject { kubernetes.predefined_variables(project: project) }
+
+      context 'no kubernetes namespace for the project' do
+        it_behaves_like 'setting variables'
+
+        it 'does not return KUBE_TOKEN' do
+          expect(subject).not_to include(
+            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          )
+        end
+      end
+
+      context 'kubernetes namespace exists for the project' do
+        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster, project: project) }
+
+        it_behaves_like 'setting variables'
+
+        it 'sets KUBE_TOKEN' do
+          expect(subject).to include(
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          )
+        end
+      end
+    end
   end
 
   describe '#terminals' do

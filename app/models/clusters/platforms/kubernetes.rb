@@ -85,7 +85,7 @@ module Clusters
 
           if kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
             variables.concat(kubernetes_namespace.predefined_variables)
-          else
+          elsif cluster.project_type?
             # From 11.5, every Clusters::Project should have at least one
             # Clusters::KubernetesNamespace, so once migration has been completed,
             # this 'else' branch will be removed. For more information, please see
