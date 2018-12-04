@@ -1,14 +1,22 @@
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Vue from 'vue';
 import collapsibleComponent from '~/registry/components/collapsible_container.vue';
 import store from '~/registry/stores';
-import { repoPropsData } from '../mock_data';
+import { repoPropsData, registryServerResponse } from '../mock_data';
 
 describe('collapsible registry container', () => {
   let vm;
-  let Component;
+  let mock;
+  const Component = Vue.extend(collapsibleComponent);
 
   beforeEach(() => {
-    Component = Vue.extend(collapsibleComponent);
+    mock = new MockAdapter(axios);
+
+    mock
+      .onGet(repoPropsData.tagsPath)
+      .replyOnce(200, registryServerResponse, {});
+
     vm = new Component({
       store,
       propsData: {
@@ -18,6 +26,7 @@ describe('collapsible registry container', () => {
   });
 
   afterEach(() => {
+    mock.restore();
     vm.$destroy();
   });
 
@@ -29,10 +38,17 @@ describe('collapsible registry container', () => {
       );
     });
 
-    it('should be open when user clicks on closed repo', done => {
+    fit('should be open when user clicks on closed repo', done => {
+
+      console.log(vm.repo, vm.$el)
+
       vm.$el.querySelector('.js-toggle-repo').click();
+      
       Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.container-image-tags')).toBeDefined();
+      
+        console.log('nextTick', vm.repo, vm.$el)
+      
+        expect(vm.$el.querySelector('.container-image-tags')).not.toBeNull();
         expect(vm.$el.querySelector('.container-image-head i').className).toEqual(
           'fa fa-chevron-up',
         );
@@ -58,7 +74,7 @@ describe('collapsible registry container', () => {
 
   describe('delete repo', () => {
     it('should be possible to delete a repo', () => {
-      expect(vm.$el.querySelector('.js-remove-repo')).toBeDefined();
+      expect(vm.$el.querySelector('.js-remove-repo')).not.toBeNull();
     });
   });
 });

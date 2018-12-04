@@ -1,7 +1,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
-import Flash from '../../flash';
+import createFlash from '../../flash';
 import store from '../stores';
 import collapsibleContainer from './collapsible_container.vue';
 import { errorMessages, errorMessagesTypes } from '../constants';
@@ -26,7 +26,7 @@ export default {
     this.setMainEndpoint(this.endpoint);
   },
   mounted() {
-    this.fetchRepos().catch(() => Flash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
+    this.fetchRepos().catch(() => createFlash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
   },
   methods: {
     ...mapActions(['setMainEndpoint', 'fetchRepos']),

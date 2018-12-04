@@ -1,18 +1,18 @@
 <script>
 import { mapActions } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
-import Flash from '../../flash';
-import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import createFlash from '../../flash';
+import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
-import tableRegistry from './table_registry.vue';
+import TableRegistry from './table_registry.vue';
 import { errorMessages, errorMessagesTypes } from '../constants';
 import { __ } from '../../locale';
 
 export default {
   name: 'CollapsibeContainerRegisty',
   components: {
-    clipboardButton,
-    tableRegistry,
+    ClipboardButton,
+    TableRegistry,
     GlLoadingIcon,
   },
   directives: {
@@ -31,7 +31,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchRepos', 'fetchList', 'deleteRepo']),
-
     toggleRepo() {
       this.isOpen = !this.isOpen;
 
@@ -41,18 +40,16 @@ export default {
         );
       }
     },
-
     handleDeleteRepository() {
       this.deleteRepo(this.repo)
         .then(() => {
-          Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+          createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
           this.fetchRepos();
         })
         .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
     },
-
     showError(message) {
-      Flash(errorMessages[message]);
+      createFlash(errorMessages[message]);
     },
   },
 };
