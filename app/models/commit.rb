@@ -177,7 +177,9 @@ class Commit
   def title
     return full_title if full_title.length < 100
 
-    full_title.truncate(81, separator: ' ', omission: '…')
+    # Use three dots instead of the ellipsis Unicode character because
+    # some clients show the raw Unicode value in the merge commit.
+    full_title.truncate(81, separator: ' ', omission: '...')
   end
 
   # Returns the full commits title
