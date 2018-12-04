@@ -297,6 +297,16 @@ describe('Notes Store mutations', () => {
 
       expect(state.discussions[0].expanded).toEqual(false);
     });
+
+    it('forces a discussions expanded state', () => {
+      const state = {
+        discussions: [{ ...discussionMock, expanded: false }],
+      };
+
+      mutations.TOGGLE_DISCUSSION(state, { discussionId: discussionMock.id, forceExpanded: true });
+
+      expect(state.discussions[0].expanded).toEqual(true);
+    });
   });
 
   describe('UPDATE_NOTE', () => {
