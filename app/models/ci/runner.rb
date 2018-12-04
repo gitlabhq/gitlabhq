@@ -8,6 +8,9 @@ module Ci
     include RedisCacheable
     include ChronicDurationAttribute
     include FromUnion
+    include TokenAuthenticatable
+
+    add_authentication_token_field :token, encrypted: true, migrating: true
 
     enum access_level: {
       not_protected: 0,
@@ -39,7 +42,7 @@ module Ci
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
-    before_validation :set_default_values
+    before_save :ensure_token
 
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
@@ -143,10 +146,6 @@ module Ci
       else
         order_created_at_desc
       end
-    end
-
-    def set_default_values
-      self.token = SecureRandom.hex(15) if self.token.blank?
     end
 
     def assign_to(project, current_user = nil)

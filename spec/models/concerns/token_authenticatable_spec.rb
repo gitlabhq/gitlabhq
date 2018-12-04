@@ -21,44 +21,59 @@ end
 
 describe ApplicationSetting, 'TokenAuthenticatable' do
   let(:token_field) { :runners_registration_token }
+  let(:settings) { described_class.new }
+
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'generating new token' do
     context 'token is not generated yet' do
       describe 'token field accessor' do
-        subject { described_class.new.send(token_field) }
+        subject { settings.send(token_field) }
+
         it { is_expected.not_to be_blank }
       end
 
-      describe 'ensured token' do
-        subject { described_class.new.send("ensure_#{token_field}") }
+      describe "ensure_runners_registration_token" do
+        subject { settings.send("ensure_#{token_field}") }
 
         it { is_expected.to be_a String }
         it { is_expected.not_to be_blank }
+
+        it 'does not persist token' do
+          expect(settings).not_to be_persisted
+        end
       end
 
-      describe 'ensured! token' do
-        subject { described_class.new.send("ensure_#{token_field}!") }
+      describe 'ensure_runners_registration_token!' do
+        subject { settings.send("ensure_#{token_field}!") }
 
-        it 'persists new token' do
-          expect(subject).to eq described_class.current[token_field]
+        it 'persists new token as an encrypted string' do
+          expect(subject).to eq settings.reload.runners_registration_token
+          expect(settings.read_attribute('runners_registration_token_encrypted'))
+            .to eq Gitlab::CryptoHelper.aes256_gcm_encrypt(subject)
+          expect(settings).to be_persisted
+        end
+
+        it 'does not persist token in a clear text' do
+          expect(subject).not_to eq settings.reload
+            .read_attribute('runners_registration_token_encrypted')
         end
       end
     end
 
     context 'token is generated' do
       before do
-        subject.send("reset_#{token_field}!")
+        settings.send("reset_#{token_field}!")
       end
 
       it 'persists a new token' do
-        expect(subject.send(:read_attribute, token_field)).to be_a String
+        expect(settings.runners_registration_token).to be_a String
       end
     end
   end
 
   describe 'setting new token' do
-    subject { described_class.new.send("set_#{token_field}", '0123456789') }
+    subject { settings.send("set_#{token_field}", '0123456789') }
 
     it { is_expected.to eq '0123456789' }
   end

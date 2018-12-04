@@ -15,12 +15,12 @@ module Gitlab
           attr_encrypted :token,
                          mode:      :per_attribute_iv,
                          algorithm: 'aes-256-gcm',
-                         key:       Settings.attr_encrypted_db_key_base_truncated
+                         key:       ::Settings.attr_encrypted_db_key_base_truncated
 
           attr_encrypted :url,
                          mode:      :per_attribute_iv,
                          algorithm: 'aes-256-gcm',
-                         key:       Settings.attr_encrypted_db_key_base_truncated
+                         key:       ::Settings.attr_encrypted_db_key_base_truncated
         end
       end
     end
