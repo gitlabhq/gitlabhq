@@ -666,7 +666,7 @@ gitlab:assets:compile:
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitabhq
+    - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
   tags:
     - gitlab-org-delivery
