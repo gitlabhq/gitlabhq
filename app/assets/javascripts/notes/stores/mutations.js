@@ -178,9 +178,11 @@ export default {
     }
   },
 
-  [types.TOGGLE_DISCUSSION](state, { discussionId }) {
+  [types.TOGGLE_DISCUSSION](state, { discussionId, shouldExpand = null }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    Object.assign(discussion, { expanded: !discussion.expanded });
+    Object.assign(discussion, {
+      expanded: shouldExpand === null ? !discussion.expanded : shouldExpand,
+    });
   },
 
   [types.UPDATE_NOTE](state, note) {
