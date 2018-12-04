@@ -14,7 +14,7 @@ in the following table.
 
 > `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23534) in GitLab 11.5.3.
 
-[personal-access-tokens]: (../user/profile/personal_access_tokens.md)
+[personal-access-tokens]: ../user/profile/personal_access_tokens.md
 
 ## Get file from repository
 
