@@ -391,6 +391,24 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    context 'with PATs' do
+      it 'returns 403 with `read_repository` scope' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'returns 201 with `api` scope' do
+        token = create(:personal_access_token, scopes: ['api'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params
+
+        expect(response).to have_gitlab_http_status(201)
+      end
+    end
+
     context "when specifying an author" do
       it "creates a new file with the specified author" do
         params.merge!(author_email: author_email, author_name: author_name)
