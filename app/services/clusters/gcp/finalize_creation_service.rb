@@ -26,7 +26,7 @@ module Clusters
       private
 
       def create_gitlab_service_account!
-        Clusters::Gcp::Kubernetes::CreateServiceAccountService.gitlab_creator(
+        Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.gitlab_creator(
           kube_client,
           rbac: create_rbac_cluster?
         ).execute

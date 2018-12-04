@@ -266,13 +266,13 @@ describe Projects::CreateService, '#execute' do
     let(:group) { group_cluster.group }
 
     let(:token) { 'aaaa' }
-    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateServiceAccountService, execute: true) }
+    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
     let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
 
     before do
       group.add_owner(user)
 
-      expect(Clusters::Gcp::Kubernetes::CreateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
+      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
       expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
     end
 

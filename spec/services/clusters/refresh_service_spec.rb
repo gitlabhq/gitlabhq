@@ -5,11 +5,11 @@ require 'spec_helper'
 describe Clusters::RefreshService do
   shared_examples 'creates a kubernetes namespace' do
     let(:token) { 'aaaaaa' }
-    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateServiceAccountService, execute: true) }
+    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
     let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
 
     it 'creates a kubernetes namespace' do
-      expect(Clusters::Gcp::Kubernetes::CreateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
+      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
       expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
 
       expect { subject }.to change(project.kubernetes_namespaces, :count)
@@ -22,7 +22,7 @@ describe Clusters::RefreshService do
 
   shared_examples 'does not create a kubernetes namespace' do
     it 'does not create a new kubernetes namespace' do
-      expect(Clusters::Gcp::Kubernetes::CreateServiceAccountService).not_to receive(:namespace_creator)
+      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).not_to receive(:namespace_creator)
       expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).not_to receive(:new)
 
       expect { subject }.not_to change(Clusters::KubernetesNamespace, :count)
