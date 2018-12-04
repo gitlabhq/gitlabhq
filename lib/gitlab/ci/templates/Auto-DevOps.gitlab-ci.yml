@@ -19,15 +19,6 @@
 # * review: REVIEW_DISABLED
 # * stop_review: REVIEW_DISABLED
 #
-# The sast and sast_dashboard jobs are executed to guarantee full compatibility
-# with the group security dashboard and the security reports with old runners.
-# If you use only runners with version 11.5 or above, you can disable the sast
-# job by setting the OLD_REPORTS_DISABLED environment variable. If you use only
-# runners with version below 11.5, you can disable the sast_dashboard job by
-# setting the NEW_REPORTS_DISABLED environment variable.
-# The sast_dashboard job will be removed in the future, when the sast job will
-# use the new reports syntax.
-#
 # In order to deploy, you must have a Kubernetes cluster configured either
 # via a project integration, or via group/project variables.
 # AUTO_DEVOPS_DOMAIN must also be set as a variable at the group or project
@@ -182,29 +173,6 @@ sast:
   except:
     variables:
       - $SAST_DISABLED
-      - $OLD_REPORTS_DISABLED
-
-sast_dashboard:
-  stage: test
-  image: docker:stable
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - setup_docker
-    - sast
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bsast\b/
-  except:
-    variables:
-      - $SAST_DISABLED
-      - $NEW_REPORTS_DISABLED
 
 dependency_scanning:
   stage: test
@@ -658,6 +626,7 @@ rollout 100%:
     fi
 
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
+      echo "Deploying first release with database initialization..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
@@ -680,6 +649,7 @@ rollout 100%:
         "$name" \
         chart/
 
+      echo "Deploying second release..."
       helm upgrade --reuse-values \
         --wait \
         --set application.initializeCommand="" \
@@ -688,6 +658,7 @@ rollout 100%:
         "$name" \
         chart/
     else
+      echo "Deploying new release..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \

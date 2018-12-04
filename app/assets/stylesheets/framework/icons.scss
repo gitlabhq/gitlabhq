@@ -80,3 +80,15 @@
 .user-avatar-link {
   text-decoration: none;
 }
+
+.circle-icon-container {
+  $border-size: 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: $border-size solid $theme-gray-400;
+  border-radius: 50%;
+  padding: $gl-padding-8 - $border-size;
+  color: $theme-gray-700;
+}

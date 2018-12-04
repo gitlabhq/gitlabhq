@@ -55,7 +55,7 @@ GitLab can be considered to have two layers from a process perspective:
 
 ### gitaly
 
-- [Omnibus confiugration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration) 
+- [Omnibus configuration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration) 
 - Layer: Core Service (Data)
 
 Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab. (Think GitLab.com or High Availablity Deployments) As of 11.3.0, This service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).

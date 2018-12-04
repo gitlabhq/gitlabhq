@@ -4297,9 +4297,6 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-msgid "No Label"
-msgstr ""
-
 msgid "No assignee"
 msgstr ""
 

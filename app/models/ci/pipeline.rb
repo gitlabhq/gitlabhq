@@ -26,6 +26,8 @@ module Ci
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
+    has_many :deployments, through: :builds
+    has_many :environments, -> { distinct }, through: :deployments
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
@@ -521,10 +523,6 @@ module Ci
 
     def has_yaml_errors?
       yaml_errors.present?
-    end
-
-    def environments
-      builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
 
     # Manually set the notes for a Ci::Pipeline

@@ -29,6 +29,22 @@ describe 'Merge request > User sees deployment widget', :js do
         expect(page).to have_content("Deployed to #{environment.name}")
         expect(find('.js-deploy-time')['data-original-title']).to eq(deployment.created_at.to_time.in_time_zone.to_s(:medium))
       end
+
+      context 'when a user created a new merge request with the same SHA' do
+        let(:pipeline2) { create(:ci_pipeline_without_jobs, sha: sha, project: project, ref: 'new-patch-1') }
+        let(:build2) { create(:ci_build, :success, pipeline: pipeline2) }
+        let(:environment2) { create(:environment, project: project) }
+        let!(:deployment2) { create(:deployment, environment: environment2, sha: sha, ref: 'new-patch-1', deployable: build2) }
+
+        it 'displays one environment which is related to the pipeline' do
+          visit project_merge_request_path(project, merge_request)
+          wait_for_requests
+
+          expect(page).to have_selector('.js-deployment-info', count: 1)
+          expect(page).to have_content("#{environment.name}")
+          expect(page).not_to have_content("#{environment2.name}")
+        end
+      end
     end
 
     context 'when deployment failed' do
