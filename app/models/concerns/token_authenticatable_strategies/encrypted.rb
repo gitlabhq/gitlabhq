@@ -6,7 +6,7 @@ module TokenAuthenticatableStrategies
       super
 
       if migrating? && fallback?
-        raise ArgumentError, '`fallback` and `migration` options are not compatible!'
+        raise ArgumentError, '`fallback` and `migrating` options are not compatible!'
       end
     end
 
