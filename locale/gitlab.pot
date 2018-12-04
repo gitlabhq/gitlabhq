@@ -7086,9 +7086,6 @@ msgstr ""
 msgid "Users requesting access to"
 msgstr ""
 
-msgid "Variables"
-msgstr ""
-
 msgid "Various container registry settings."
 msgstr ""
 
