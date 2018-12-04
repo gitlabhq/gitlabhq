@@ -11,7 +11,13 @@
       "name": "Gemnasium"
     },
     "location": {
-      "file": "app/pom.xml"
+      "file": "app/pom.xml",
+      "dependency": {
+        "package": {
+          "name": "io.netty/netty"
+        },
+        "version": "3.9.1.Final"
+      }
     },
     "identifiers": [
       {
@@ -55,7 +61,13 @@
       "name": "Gemnasium"
     },
     "location": {
-      "file": "app/requirements.txt"
+      "file": "app/requirements.txt",
+      "dependency": {
+        "package": {
+          "name": "Django"
+        },
+        "version": "1.11.3"
+      }
     },
     "identifiers": [
       {
@@ -93,7 +105,13 @@
       "name": "Gemnasium"
     },
     "location": {
-      "file": "rails/Gemfile.lock"
+      "file": "rails/Gemfile.lock",
+      "dependency": {
+        "package": {
+          "name": "nokogiri"
+        },
+        "version": "1.8.0"
+      }
     },
     "identifiers": [
       {
@@ -131,7 +149,13 @@
       "name": "bundler-audit"
     },
     "location": {
-      "file": "sast-sample-rails/Gemfile.lock"
+      "file": "sast-sample-rails/Gemfile.lock",
+      "dependency": {
+        "package": {
+          "name": "ffi"
+        },
+        "version": "1.9.18"
+      }
     },
     "identifiers": [
       {
