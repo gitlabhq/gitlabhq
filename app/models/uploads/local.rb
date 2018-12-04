@@ -3,7 +3,7 @@
 module Uploads
   class Local < Base
     def keys(relation)
-      relation.includes(:model).find_each.map {|u| u.absolute_path }
+      relation.includes(:model).find_each.map(&:absolute_path)
     end
 
     def delete_keys(keys)

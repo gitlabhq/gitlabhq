@@ -1,5 +1,0 @@
----
-title: Delete file uploads asynchronously when deleting a project or other resources.
-merge_request: 20977
-author:
-type: added
