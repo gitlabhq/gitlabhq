@@ -6,7 +6,6 @@ import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
-const diffDiscussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('noteable_discussion component', () => {
   const Component = Vue.extend(noteableDiscussion);
@@ -79,6 +78,7 @@ describe('noteable_discussion component', () => {
     });
   });
 
+<<<<<<< HEAD
   describe('computed', () => {
     describe('hasMultipleUnresolvedDiscussions', () => {
       it('is false if there are no unresolved discussions', done => {
@@ -161,6 +161,8 @@ describe('noteable_discussion component', () => {
     });
   });
 
+=======
+>>>>>>> 403430968cf... Merge branch 'winh-collapse-discussions' into 'master'
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
       it('expands next unresolved discussion', done => {

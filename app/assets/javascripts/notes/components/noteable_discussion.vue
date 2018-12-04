@@ -65,11 +65,13 @@ export default {
     },
   },
   data() {
+    const { diff_discussion: isDiffDiscussion, resolved } = this.discussion;
+
     return {
       isReplying: false,
       isResolving: false,
       resolveAsThread: true,
-      isRepliesToggledByUser: false,
+      isRepliesCollapsed: Boolean(!isDiffDiscussion && resolved),
     };
   },
   computed: {
@@ -189,6 +191,7 @@ export default {
 
       return isExpanded || this.alwaysExpanded || isResolvedNonDiffDiscussion;
     },
+<<<<<<< HEAD
     isRepliesCollapsed() {
       const { discussion, isRepliesToggledByUser } = this;
       const { resolved, notes } = discussion;
@@ -196,6 +199,37 @@ export default {
 
       return (
         (!discussion.diff_discussion && resolved && hasReplies && !isRepliesToggledByUser) || false
+=======
+    actionText() {
+      const commitId = this.discussion.commit_id ? truncateSha(this.discussion.commit_id) : '';
+      const linkStart = `<a href="${_.escape(this.discussion.discussion_path)}">`;
+      const linkEnd = '</a>';
+
+      let text = s__('MergeRequests|started a discussion');
+
+      if (this.discussion.for_commit) {
+        text = s__(
+          'MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}',
+        );
+      } else if (this.discussion.diff_discussion) {
+        if (this.discussion.active) {
+          text = s__('MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}');
+        } else {
+          text = s__(
+            'MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}',
+          );
+        }
+      }
+
+      return sprintf(
+        text,
+        {
+          commitId,
+          linkStart,
+          linkEnd,
+        },
+        false,
+>>>>>>> 403430968cf... Merge branch 'winh-collapse-discussions' into 'master'
       );
     },
   },
@@ -242,7 +276,7 @@ export default {
       this.toggleDiscussion({ discussionId: this.discussion.id });
     },
     toggleReplies() {
-      this.isRepliesToggledByUser = !this.isRepliesToggledByUser;
+      this.isRepliesCollapsed = !this.isRepliesCollapsed;
     },
     showReplyForm() {
       this.isReplying = true;
