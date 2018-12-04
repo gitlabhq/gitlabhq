@@ -25,7 +25,8 @@ describe GroupPolicy do
       :read_cluster,
       :create_cluster,
       :update_cluster,
-      :admin_cluster
+      :admin_cluster,
+      :add_cluster
     ]
   end
 
@@ -380,6 +381,16 @@ describe GroupPolicy do
       let(:current_user) { create(:user) }
 
       it { expect_disallowed(:change_share_with_group_lock) }
+    end
+  end
+
+  it_behaves_like 'clusterable policies' do
+    let(:clusterable) { create(:group) }
+    let(:cluster) do
+      create(:cluster,
+             :provided_by_gcp,
+             :group,
+             groups: [clusterable])
     end
   end
 end

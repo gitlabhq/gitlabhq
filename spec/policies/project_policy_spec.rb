@@ -48,7 +48,7 @@ describe ProjectPolicy do
       update_deployment admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
-      admin_pipeline admin_environment admin_deployment
+      admin_pipeline admin_environment admin_deployment add_cluster
     ]
   end
 
@@ -463,6 +463,16 @@ describe ProjectPolicy do
       merge_request.close!
 
       expect_disallowed(*maintainer_abilities)
+    end
+  end
+
+  it_behaves_like 'clusterable policies' do
+    let(:clusterable) { create(:project, :repository) }
+    let(:cluster) do
+      create(:cluster,
+             :provided_by_gcp,
+             :project,
+             projects: [clusterable])
     end
   end
 end

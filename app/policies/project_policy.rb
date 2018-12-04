@@ -2,6 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   extend ClassMethods
+  include ClusterableActions
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
     issue
@@ -102,6 +103,9 @@ class ProjectPolicy < BasePolicy
   condition(:merge_requests_visible_to_user, score: 4) do
     @subject.feature_available?(:merge_requests, @user)
   end
+
+  condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
+  condition(:can_have_multiple_clusters) { multiple_clusters_available? }
 
   features = %w[
     merge_requests
@@ -257,6 +261,7 @@ class ProjectPolicy < BasePolicy
     enable :read_pages
     enable :update_pages
     enable :read_cluster
+    enable :add_cluster
     enable :create_cluster
     enable :update_cluster
     enable :admin_cluster
@@ -380,6 +385,8 @@ class ProjectPolicy < BasePolicy
   rule do
     (can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
   end.enable :read_merge_request_iid
+
+  rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
   private
 
