@@ -18,6 +18,7 @@ describe Blob do
 
   describe '.lazy' do
     let(:project) { create(:project, :repository) }
+    let(:same_project) { Project.find(project.id) }
     let(:other_project) { create(:project, :repository) }
     let(:commit_id) { 'e63f41fe459e62e1228fcef60d7189127aeba95a' }
 
@@ -32,7 +33,7 @@ describe Blob do
       expect(other_project.repository).not_to receive(:blobs_at)
 
       changelog = described_class.lazy(project, commit_id, 'CHANGELOG')
-      contributing = described_class.lazy(project, commit_id, 'CONTRIBUTING.md')
+      contributing = described_class.lazy(same_project, commit_id, 'CONTRIBUTING.md')
 
       described_class.lazy(other_project, commit_id, 'CHANGELOG')
 
