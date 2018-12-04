@@ -7,12 +7,7 @@ module Clusters
 
       # Create all namespaces that are missing for each project
       cluster.all_projects.missing_kubernetes_namespace(cluster_namespaces).each do |project|
-        kubernetes_namespace = cluster.find_or_initialize_kubernetes_namespace_for_project(project)
-
-        ::Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
-          cluster: cluster,
-          kubernetes_namespace: kubernetes_namespace
-        ).execute
+        create_or_update_namespace(cluster, project)
       end
     end
 
@@ -21,13 +16,19 @@ module Clusters
 
       # Create all namespaces that are missing for each cluster
       project.all_clusters.missing_kubernetes_namespace(project_namespaces).each do |cluster|
-        kubernetes_namespace = cluster.find_or_initialize_kubernetes_namespace_for_project(project)
-
-        ::Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
-          cluster: cluster,
-          kubernetes_namespace: kubernetes_namespace
-        ).execute
+        create_or_update_namespace(cluster, project)
       end
+    end
+
+    private
+
+    def create_or_update_namespace(cluster, project)
+      kubernetes_namespace = cluster.find_or_initialize_kubernetes_namespace_for_project(project)
+
+      ::Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
+        cluster: cluster,
+        kubernetes_namespace: kubernetes_namespace
+      ).execute
     end
   end
 end
