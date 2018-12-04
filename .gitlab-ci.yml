@@ -982,6 +982,7 @@ review-qa-smoke:
   retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+  allow_failure: true
 
 review-qa-all:
   <<: *review-qa-base
