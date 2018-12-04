@@ -6,6 +6,8 @@ describe PrometheusMetric do
   subject { build(:prometheus_metric) }
   let(:other_project) { build(:project) }
 
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:project) }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:query) }

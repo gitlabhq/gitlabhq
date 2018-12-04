@@ -18,6 +18,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   it { is_expected.to delegate_method(:managed?).to(:cluster) }
   it { is_expected.to delegate_method(:kubernetes_namespace).to(:cluster) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'before_validation' do
     context 'when namespace includes upper case' do
       let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
