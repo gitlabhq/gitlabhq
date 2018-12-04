@@ -11,6 +11,7 @@ describe PipelineScheduleWorker do
   end
 
   before do
+    stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_to_return_yaml_file
 
     pipeline_schedule.update_column(:next_run_at, 1.day.ago)

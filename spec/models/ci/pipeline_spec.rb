@@ -1249,22 +1249,40 @@ describe Ci::Pipeline, :mailer do
   describe '#ci_yaml_file_path' do
     subject { pipeline.ci_yaml_file_path }
 
-    it 'returns the path from project' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+    %i[unknown_source repository_source].each do |source|
+      context source.to_s do
+        before do
+          pipeline.config_source = described_class.config_sources.fetch(source)
+        end
 
-      is_expected.to eq('custom/path')
+        it 'returns the path from project' do
+          allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+
+          is_expected.to eq('custom/path')
+        end
+
+        it 'returns default when custom path is nil' do
+          allow(pipeline.project).to receive(:ci_config_path) { nil }
+
+          is_expected.to eq('.gitlab-ci.yml')
+        end
+
+        it 'returns default when custom path is empty' do
+          allow(pipeline.project).to receive(:ci_config_path) { '' }
+
+          is_expected.to eq('.gitlab-ci.yml')
+        end
+      end
     end
 
-    it 'returns default when custom path is nil' do
-      allow(pipeline.project).to receive(:ci_config_path) { nil }
+    context 'when pipeline is for auto-devops' do
+      before do
+        pipeline.config_source = 'auto_devops_source'
+      end
 
-      is_expected.to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns default when custom path is empty' do
-      allow(pipeline.project).to receive(:ci_config_path) { '' }
-
-      is_expected.to eq('.gitlab-ci.yml')
+      it 'does not return config file' do
+        is_expected.to be_nil
+      end
     end
   end
 
