@@ -114,7 +114,7 @@ describe ApplicationController do
       skip_before_action :authenticate_user!, only: :index
 
       def index
-        render text: 'authenticated'
+        render html: 'authenticated'
       end
     end
 
@@ -401,7 +401,7 @@ describe ApplicationController do
   context 'terms' do
     controller(described_class) do
       def index
-        render text: 'authenticated'
+        render html: 'authenticated'
       end
     end
 
@@ -444,7 +444,7 @@ describe ApplicationController do
       attr_reader :last_payload
 
       def index
-        render text: 'authenticated'
+        render html: 'authenticated'
       end
 
       def append_info_to_payload(payload)

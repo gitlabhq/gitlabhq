@@ -53,6 +53,8 @@ from teams other than your own.
 
 #### Security requirements
 
+   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data](https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit) (this is a confidential document), it must be
+      **approved by a [Security Engineer][team]**.
    1. If your merge request involves implementing, utilizing, or is otherwise related to any type of authentication, authorization, or session handling mechanism, it must be
       **approved by a [Security Engineer][team]**.
    1. If your merge request has a goal which requires a cryptographic function such as: confidentiality, integrity, authentication, or non-repudiation, it must be
@@ -84,6 +86,23 @@ any other developer to get an in-depth review of the solution.
 If an author is unsure if a merge request needs a domain expert's opinion, that's
 usually a pretty good sign that it does, since without it the required level of
 confidence in their solution will not have been reached.
+
+Before the review, the author is requested to submit comments on the merge
+request diff alerting the reviewer to anything important as well as for anything
+that demands further explanation or attention.  Examples of content that may
+warrant a comment could be:
+
+- The addition of a linting rule (Rubocop, JS etc)
+- The addition of a library (Ruby gem, JS lib etc)
+- Where not obvious, a link to the parent class or method
+- Any benchmarking performed to complement the change
+- Potentially insecure code
+
+Do not add these comments directly to the source code, unless the
+reviewer requires you to do so.
+
+This
+[saves reviewers time and helps authors catch mistakes earlier](https://www.ibm.com/developerworks/rational/library/11-proven-practices-for-peer-review/index.html#__RefHeading__97_174136755).
 
 ### The responsibility of the maintainer
 

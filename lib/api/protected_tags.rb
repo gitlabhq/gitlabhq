@@ -4,14 +4,14 @@ module API
   class ProtectedTags < Grape::API
     include PaginationParams
 
-    TAG_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
+    TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize_admin_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "Get a project's protected tags" do
         detail 'This feature was introduced in GitLab 11.3.'
         success Entities::ProtectedTag

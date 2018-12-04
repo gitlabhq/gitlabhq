@@ -658,6 +658,7 @@ rollout 100%:
     fi
 
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
+      echo "Deploying first release with database initialization..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
@@ -680,6 +681,7 @@ rollout 100%:
         "$name" \
         chart/
 
+      echo "Deploying second release..."
       helm upgrade --reuse-values \
         --wait \
         --set application.initializeCommand="" \
@@ -688,6 +690,7 @@ rollout 100%:
         "$name" \
         chart/
     else
+      echo "Deploying new release..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \

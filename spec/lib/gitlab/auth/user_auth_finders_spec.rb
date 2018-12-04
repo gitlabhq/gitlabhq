@@ -279,5 +279,20 @@ describe Gitlab::Auth::UserAuthFinders do
         expect { validate_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
       end
     end
+
+    context 'with impersonation token' do
+      let(:personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
+
+      context 'when impersonation is disabled' do
+        before do
+          stub_config_setting(impersonation_enabled: false)
+          allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+        end
+
+        it 'returns Gitlab::Auth::ImpersonationDisabled' do
+          expect { validate_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
+        end
+      end
+    end
   end
 end

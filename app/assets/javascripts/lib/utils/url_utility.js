@@ -17,27 +17,29 @@ export function getParameterValues(sParam) {
 // @param {Object} params - url keys and value to merge
 // @param {String} url
 export function mergeUrlParams(params, url) {
-  let newUrl = Object.keys(params).reduce((acc, paramName) => {
-    const paramValue = encodeURIComponent(params[paramName]);
-    const pattern = new RegExp(`\\b(${paramName}=).*?(&|$)`);
+  const re = /^([^?#]*)(\?[^#]*)?(.*)/;
+  const merged = {};
+  const urlparts = url.match(re);
 
-    if (paramValue === null) {
-      return acc.replace(pattern, '');
-    } else if (url.search(pattern) !== -1) {
-      return acc.replace(pattern, `$1${paramValue}$2`);
-    }
-
-    return `${acc}${acc.indexOf('?') > 0 ? '&' : '?'}${paramName}=${paramValue}`;
-  }, decodeURIComponent(url));
-
-  // Remove a trailing ampersand
-  const lastChar = newUrl[newUrl.length - 1];
-
-  if (lastChar === '&') {
-    newUrl = newUrl.slice(0, -1);
+  if (urlparts[2]) {
+    urlparts[2]
+      .substr(1)
+      .split('&')
+      .forEach(part => {
+        if (part.length) {
+          const kv = part.split('=');
+          merged[decodeURIComponent(kv[0])] = decodeURIComponent(kv.slice(1).join('='));
+        }
+      });
   }
 
-  return newUrl;
+  Object.assign(merged, params);
+
+  const query = Object.keys(merged)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(merged[key])}`)
+    .join('&');
+
+  return `${urlparts[1]}?${query}${urlparts[3]}`;
 }
 
 export function removeParamQueryString(url, param) {

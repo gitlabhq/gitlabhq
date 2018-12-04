@@ -7,12 +7,12 @@ module Gitlab
         ##
         # Entry that represents an only/except trigger policy for the job.
         #
-        class Policy < Simplifiable
+        class Policy < ::Gitlab::Config::Entry::Simplifiable
           strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
           strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
 
-          class RefsPolicy < Entry::Node
-            include Entry::Validatable
+          class RefsPolicy < ::Gitlab::Config::Entry::Node
+            include ::Gitlab::Config::Entry::Validatable
 
             validations do
               validates :config, array_of_strings_or_regexps: true
@@ -23,9 +23,9 @@ module Gitlab
             end
           end
 
-          class ComplexPolicy < Entry::Node
-            include Entry::Validatable
-            include Entry::Attributable
+          class ComplexPolicy < ::Gitlab::Config::Entry::Node
+            include ::Gitlab::Config::Entry::Validatable
+            include ::Gitlab::Config::Entry::Attributable
 
             ALLOWED_KEYS = %i[refs kubernetes variables changes].freeze
             attributes :refs, :kubernetes, :variables, :changes
@@ -58,7 +58,7 @@ module Gitlab
             end
           end
 
-          class UnknownStrategy < Entry::Node
+          class UnknownStrategy < ::Gitlab::Config::Entry::Node
             def errors
               ["#{location} has to be either an array of conditions or a hash"]
             end

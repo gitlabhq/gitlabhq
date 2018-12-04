@@ -1,7 +1,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- breadcrumb_title @page.title.capitalize
+- breadcrumb_title @page.human_title
 - wiki_breadcrumb_dropdown_links(@page.slug)
-- page_title @page.title.capitalize, _("Wiki")
+- page_title @page.human_title, _("Wiki")
 - add_to_breadcrumbs _("Wiki"), get_project_wiki_path(@project)
 
 .wiki-page-header.has-sidebar-toggle
@@ -9,7 +9,7 @@
     = icon('angle-double-left')
 
   .nav-text
-    %h2.wiki-page-title= @page.title.capitalize
+    %h2.wiki-page-title= @page.human_title
     %span.wiki-last-edit-by
       - if @page.last_version
         = (_("Last edited by %{name}") % { name: "<strong>#{@page.last_version.author_name}</strong>" }).html_safe

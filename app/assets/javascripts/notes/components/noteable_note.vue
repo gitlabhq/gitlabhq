@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
@@ -18,6 +19,7 @@ export default {
     noteHeader,
     noteActions,
     noteBody,
+    TimelineEntryItem,
   },
   mixins: [noteable, resolvable],
   props: {
@@ -169,62 +171,60 @@ export default {
 </script>
 
 <template>
-  <li
+  <timeline-entry-item
     :id="noteAnchorId"
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note timeline-entry note-wrapper"
+    class="note note-wrapper"
   >
-    <div class="timeline-entry-inner">
-      <div v-once class="timeline-icon">
-        <user-avatar-link
-          :link-href="author.path"
-          :img-src="author.avatar_url"
-          :img-alt="author.name"
-          :img-size="40"
-        >
-          <slot slot="avatar-badge" name="avatar-badge"> </slot>
-        </user-avatar-link>
-      </div>
-      <div class="timeline-content">
-        <div class="note-header">
-          <note-header
-            v-once
-            :author="author"
-            :created-at="note.created_at"
-            :note-id="note.id"
-            action-text="commented"
-          />
-          <note-actions
-            :author-id="author.id"
-            :note-id="note.id"
-            :note-url="note.noteable_note_url"
-            :access-level="note.human_access"
-            :can-edit="note.current_user.can_edit"
-            :can-award-emoji="note.current_user.can_award_emoji"
-            :can-delete="note.current_user.can_edit"
-            :can-report-as-abuse="canReportAsAbuse"
-            :can-resolve="note.current_user.can_resolve"
-            :report-abuse-path="note.report_abuse_path"
-            :resolvable="note.resolvable"
-            :is-resolved="note.resolved"
-            :is-resolving="isResolving"
-            :resolved-by="note.resolved_by"
-            @handleEdit="editHandler"
-            @handleDelete="deleteHandler"
-            @handleResolve="resolveHandler"
-          />
-        </div>
-        <note-body
-          ref="noteBody"
-          :note="note"
+    <div v-once class="timeline-icon">
+      <user-avatar-link
+        :link-href="author.path"
+        :img-src="author.avatar_url"
+        :img-alt="author.name"
+        :img-size="40"
+      >
+        <slot slot="avatar-badge" name="avatar-badge"> </slot>
+      </user-avatar-link>
+    </div>
+    <div class="timeline-content">
+      <div class="note-header">
+        <note-header
+          v-once
+          :author="author"
+          :created-at="note.created_at"
+          :note-id="note.id"
+          action-text="commented"
+        />
+        <note-actions
+          :author-id="author.id"
+          :note-id="note.id"
+          :note-url="note.noteable_note_url"
+          :access-level="note.human_access"
           :can-edit="note.current_user.can_edit"
-          :is-editing="isEditing"
-          @handleFormUpdate="formUpdateHandler"
-          @cancelForm="formCancelHandler"
+          :can-award-emoji="note.current_user.can_award_emoji"
+          :can-delete="note.current_user.can_edit"
+          :can-report-as-abuse="canReportAsAbuse"
+          :can-resolve="note.current_user.can_resolve"
+          :report-abuse-path="note.report_abuse_path"
+          :resolvable="note.resolvable"
+          :is-resolved="note.resolved"
+          :is-resolving="isResolving"
+          :resolved-by="note.resolved_by"
+          @handleEdit="editHandler"
+          @handleDelete="deleteHandler"
+          @handleResolve="resolveHandler"
         />
       </div>
+      <note-body
+        ref="noteBody"
+        :note="note"
+        :can-edit="note.current_user.can_edit"
+        :is-editing="isEditing"
+        @handleFormUpdate="formUpdateHandler"
+        @cancelForm="formCancelHandler"
+      />
     </div>
-  </li>
+  </timeline-entry-item>
 </template>

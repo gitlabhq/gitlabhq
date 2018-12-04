@@ -1606,6 +1606,15 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.index ["status"], name: "index_project_mirror_data_on_status", using: :btree
   end
 
+  create_table "project_repositories", id: :bigserial, force: :cascade do |t|
+    t.integer "shard_id", null: false
+    t.string "disk_path", null: false
+    t.integer "project_id", null: false
+    t.index ["disk_path"], name: "index_project_repositories_on_disk_path", unique: true, using: :btree
+    t.index ["project_id"], name: "index_project_repositories_on_project_id", unique: true, using: :btree
+    t.index ["shard_id"], name: "index_project_repositories_on_shard_id", using: :btree
+  end
+
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -2392,6 +2401,8 @@ ActiveRecord::Schema.define(version: 20181126153547) do
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
+  add_foreign_key "project_repositories", "projects", on_delete: :cascade
+  add_foreign_key "project_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "projects", "pool_repositories", name: "fk_6e5c14658a", on_delete: :nullify
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade

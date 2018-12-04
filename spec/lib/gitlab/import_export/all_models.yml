@@ -121,6 +121,8 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- deployments
+- environments
 pipeline_variables:
 - pipeline
 stages:
@@ -245,6 +247,7 @@ project:
 - protected_branches
 - protected_tags
 - project_members
+- project_repository
 - users
 - requesters
 - deploy_keys_projects

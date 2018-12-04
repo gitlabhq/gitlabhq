@@ -9,7 +9,7 @@ module Projects
     end
 
     def execute
-      if @params[:template_name]&.present?
+      if @params[:template_name].present?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
@@ -85,6 +85,8 @@ module Projects
         @project.write_repository_config
         @project.create_wiki unless skip_wiki?
       end
+
+      @project.track_project_repository
 
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)

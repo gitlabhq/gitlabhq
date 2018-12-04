@@ -241,4 +241,7 @@ export default {
   [types.CLOSE_DIFF_FILE_COMMENT_FORM](state, fileHash) {
     state.commentForms = state.commentForms.filter(form => form.fileHash !== fileHash);
   },
+  [types.SET_HIGHLIGHTED_ROW](state, lineCode) {
+    state.highlightedRow = lineCode;
+  },
 };

@@ -1,4 +1,6 @@
 <script>
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+
 /**
  * Common component to render a placeholder system note.
  *
@@ -9,6 +11,9 @@
  */
 export default {
   name: 'PlaceholderSystemNote',
+  components: {
+    TimelineEntryItem,
+  },
   props: {
     note: {
       type: Object,
@@ -19,11 +24,9 @@ export default {
 </script>
 
 <template>
-  <li class="note system-note timeline-entry being-posted fade-in-half">
-    <div class="timeline-entry-inner">
-      <div class="timeline-content">
-        <em>{{ note.body }}</em>
-      </div>
+  <timeline-entry-item class="note system-note being-posted fade-in-half">
+    <div class="timeline-content">
+      <em>{{ note.body }}</em>
     </div>
-  </li>
+  </timeline-entry-item>
 </template>

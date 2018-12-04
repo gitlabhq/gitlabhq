@@ -7,6 +7,7 @@ module Gitlab
     TokenNotFoundError = Class.new(AuthenticationError)
     ExpiredError = Class.new(AuthenticationError)
     RevokedError = Class.new(AuthenticationError)
+    ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
 
     class InsufficientScopeError < AuthenticationError
@@ -67,6 +68,8 @@ module Gitlab
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
           raise RevokedError
+        when AccessTokenValidationService::IMPERSONATION_DISABLED
+          raise ImpersonationDisabled
         end
       end
 

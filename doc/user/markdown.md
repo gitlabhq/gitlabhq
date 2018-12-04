@@ -1022,7 +1022,7 @@ A link starting with a `/` is relative to the wiki root.
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"
-[katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
+[katex-subset]: https://katex.org/docs/supported.html "Macros supported by KaTeX"
 [asciidoctor-manual]: http://asciidoctor.org/docs/user-manual/#activating-stem-support "Asciidoctor user manual"
 [commonmarker]: https://github.com/gjtorikian/commonmarker
 [commonmark-spec]: https://spec.commonmark.org/current/

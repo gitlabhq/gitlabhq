@@ -1,0 +1,5 @@
+---
+title: Fix "protected branches only" checkbox not set properly at init
+merge_request: 23409
+author:
+type: fixed
