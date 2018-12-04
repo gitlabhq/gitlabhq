@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include SpammableActions
 
   def self.issue_except_actions
-    %i[index calendar new create bulk_update]
+    %i[index calendar new create bulk_update import_csv]
   end
 
   def self.set_issuables_index_only_actions
@@ -155,11 +155,11 @@ class Projects::IssuesController < Projects::ApplicationController
   def can_create_branch
     can_create = current_user &&
       can?(current_user, :push_code, @project) &&
-      @issue.can_be_worked_on?
+      issue.can_be_worked_on?
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, suggested_branch_name: @issue.suggested_branch_name }
+        render json: { can_create_branch: can_create, suggested_branch_name: issue.suggested_branch_name }
       end
     end
   end
@@ -173,6 +173,13 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       render json: result[:messsage], status: :unprocessable_entity
     end
+  end
+
+  def import_csv
+    redirect_to(
+      project_issues_path(project),
+      notice: _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    )
   end
 
   protected

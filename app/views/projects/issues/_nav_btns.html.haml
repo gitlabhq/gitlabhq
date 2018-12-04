@@ -1,11 +1,30 @@
-= render 'shared/issuable/feed_buttons'
+- show_feed_buttons = local_assigns.fetch(:show_feed_buttons, true)
+- show_import_button = local_assigns.fetch(:show_import_button, true) && Feature.enabled?(:issues_import_csv)
+- show_export_button = local_assigns.fetch(:show_export_button, true)
 
-- if @can_bulk_update
-  = button_tag "Edit issues", class: "btn btn-default append-right-10 js-bulk-update-toggle"
-- if show_new_issue_link?(@project)
-  = link_to "New issue", new_project_issue_path(@project,
-                                                issue: { assignee_id: finder.assignee.try(:id),
-                                                         milestone_id: finder.milestones.first.try(:id) }),
-                                                class: "btn btn-success",
-                                                title: "New issue",
-                                                id: "new_issue_link"
+.nav-controls.issues-nav-controls
+  - if show_feed_buttons
+    = render 'shared/issuable/feed_buttons'
+
+  .btn-group.append-right-10<
+    - if show_export_button
+      = render_if_exists 'projects/issues/export_csv/button'
+
+    - if show_import_button
+      = render 'projects/issues/import_csv/button'
+
+  - if @can_bulk_update
+    = button_tag _("Edit issues"), class: "btn btn-default append-right-10 js-bulk-update-toggle"
+  - if show_new_issue_link?(@project)
+    = link_to _("New issue"), new_project_issue_path(@project,
+                                                  issue: { assignee_id: finder.assignee.try(:id),
+                                                           milestone_id: finder.milestones.first.try(:id) }),
+                                                  class: "btn btn-success",
+                                                  title: _("New issue"),
+                                                  id: "new_issue_link"
+
+- if show_export_button
+  = render_if_exists 'projects/issues/export_csv/modal'
+
+- if show_import_button
+  = render 'projects/issues/import_csv/modal'
