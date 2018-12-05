@@ -23,6 +23,7 @@ class PipelineEntity < Grape::Entity
     expose :latest?, as: :latest
     expose :stuck?, as: :stuck
     expose :auto_devops_source?, as: :auto_devops
+    expose :merge_request?, as: :merge_request
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable

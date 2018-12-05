@@ -110,6 +110,22 @@ describe 'Merge request > User sees merge request pipelines', :js do
         end
       end
 
+      it 'sees merge request tag for merge request pipelines' do
+        page.within('.ci-table') do
+          expect(all('.pipeline-tags')[0])
+            .to have_content("merge request")
+
+          expect(all('.pipeline-tags')[1])
+            .to have_content("merge request")
+
+          expect(all('.pipeline-tags')[2])
+            .not_to have_content("merge request")
+
+          expect(all('.pipeline-tags')[3])
+            .not_to have_content("merge request")
+        end
+      end
+
       it 'sees the latest merge request pipeline as the head pipeline' do
         page.within('.ci-widget-content') do
           expect(page).to have_content("##{merge_request_pipeline_2.id}")
@@ -273,6 +289,22 @@ describe 'Merge request > User sees merge request pipelines', :js do
 
           expect(all('.js-pipeline-url-link')[3])
             .to have_content("##{push_pipeline.id}")
+        end
+      end
+
+      it 'sees merge request tag for merge request pipelines' do
+        page.within('.ci-table') do
+          expect(all('.pipeline-tags')[0])
+            .to have_content("merge request")
+
+          expect(all('.pipeline-tags')[1])
+            .to have_content("merge request")
+
+          expect(all('.pipeline-tags')[2])
+            .not_to have_content("merge request")
+
+          expect(all('.pipeline-tags')[3])
+            .not_to have_content("merge request")
         end
       end
 
