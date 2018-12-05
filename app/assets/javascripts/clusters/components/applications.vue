@@ -395,6 +395,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="knative"
         :logo-url="knativeLogo"
         :title="applications.knative.title"
