@@ -34,5 +34,33 @@ describe UpdateHeadPipelineForMergeRequestWorker do
         expect { subject.perform(merge_request.id) }.not_to change { merge_request.reload.head_pipeline_id }
       end
     end
+
+    context 'when a merge request pipeline exists' do
+      let!(:merge_request_pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               source: :merge_request,
+               sha: latest_sha,
+               merge_request: merge_request)
+      end
+
+      it 'sets the merge request pipeline as the head pipeline' do
+        expect { subject.perform(merge_request.id) }
+          .to change { merge_request.reload.head_pipeline_id }
+          .from(nil).to(merge_request_pipeline.id)
+      end
+
+      context 'when branch pipeline exists' do
+        let!(:branch_pipeline) do
+          create(:ci_pipeline, project: project, source: :push, sha: latest_sha)
+        end
+
+        it 'prioritizes the merge request pipeline as the head pipeline' do
+          expect { subject.perform(merge_request.id) }
+            .to change { merge_request.reload.head_pipeline_id }
+            .from(nil).to(merge_request_pipeline.id)
+        end
+      end
+    end
   end
 end

@@ -159,6 +159,78 @@ describe MergeRequests::CreateService do
           end
         end
       end
+
+      describe 'Merge request pipelines' do
+        before do
+          stub_ci_pipeline_yaml_file(YAML.dump(config))
+        end
+
+        context "when .gitlab-ci.yml has merge_requests keywords" do
+          let(:config) do
+            {
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['merge_requests']
+              }
+            }
+          end
+
+          it 'creates a merge request pipeline and sets it as a head pipeline' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.merge_request_pipelines.count).to eq(1)
+            expect(merge_request.actual_head_pipeline).to be_merge_request
+          end
+
+          context "when branch pipeline was created before a merge request pipline has been created" do
+            before do
+              create(:ci_pipeline, project: merge_request.source_project,
+                                   sha: merge_request.diff_head_sha,
+                                   ref: merge_request.source_branch,
+                                   tag: false)
+
+              merge_request
+            end
+
+            it 'sets the latest merge request pipeline as the head pipeline' do
+              expect(merge_request.actual_head_pipeline).to be_merge_request
+            end
+          end
+
+          context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
+            before do
+              stub_feature_flags(ci_merge_request_pipeline: false)
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(merge_request).to be_persisted
+
+              merge_request.reload
+              expect(merge_request.merge_request_pipelines.count).to eq(0)
+            end
+          end
+        end
+
+        context "when .gitlab-ci.yml does not have merge_requests keywords" do
+          let(:config) do
+            {
+              test: {
+                stage: 'test',
+                script: 'echo'
+              }
+            }
+          end
+
+          it 'does not create a merge request pipeline' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.merge_request_pipelines.count).to eq(0)
+          end
+        end
+      end
     end
 
     it_behaves_like 'new issuable record that supports quick actions' do

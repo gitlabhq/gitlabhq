@@ -132,6 +132,94 @@ describe MergeRequests::RefreshService do
       end
     end
 
+    describe 'Merge request pipelines' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+
+      context "when .gitlab-ci.yml has merge_requests keywords" do
+        let(:config) do
+          {
+            test: {
+              stage: 'test',
+              script: 'echo',
+              only: ['merge_requests']
+            }
+          }
+        end
+
+        it 'create merge request pipeline' do
+          expect { subject }
+            .to change { @merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @another_merge_request.merge_request_pipelines.count }.by(1)
+        end
+
+        context "when branch pipeline was created before a merge request pipline has been created" do
+          before do
+            create(:ci_pipeline, project: @merge_request.source_project,
+                                 sha: @merge_request.diff_head_sha,
+                                 ref: @merge_request.source_branch,
+                                 tag: false)
+
+            subject
+          end
+
+          it 'sets the latest merge request pipeline as a head pipeline' do
+            @merge_request.reload
+            expect(@merge_request.actual_head_pipeline).to be_merge_request
+          end
+
+          it 'returns pipelines in correct order' do
+            @merge_request.reload
+            expect(@merge_request.all_pipelines.first).to be_merge_request
+            expect(@merge_request.all_pipelines.second).to be_push
+          end
+        end
+
+        context "when MergeRequestUpdateWorker is retried by an exception" do
+          it 'does not re-create a duplicate merge request pipeline' do
+            expect do
+              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+            end.to change { @merge_request.merge_request_pipelines.count }.by(1)
+
+            expect do
+              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+            end.not_to change { @merge_request.merge_request_pipelines.count }
+          end
+        end
+
+        context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
+          before do
+            stub_feature_flags(ci_merge_request_pipeline: false)
+          end
+
+          it 'does not create a merge request pipeline' do
+            expect { subject }
+              .not_to change { @merge_request.merge_request_pipelines.count }
+          end
+        end
+      end
+
+      context "when .gitlab-ci.yml does not have merge_requests keywords" do
+        let(:config) do
+          {
+            test: {
+              stage: 'test',
+              script: 'echo'
+            }
+          }
+        end
+
+        it 'does not create a merge request pipeline' do
+          expect { subject }
+            .not_to change { @merge_request.merge_request_pipelines.count }
+        end
+      end
+    end
+
     context 'push to origin repo source branch when an MR was reopened' do
       let(:refresh_service) { service.new(@project, @user) }
       let(:notification_service) { spy('notification_service') }
