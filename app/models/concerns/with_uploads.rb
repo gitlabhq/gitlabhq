@@ -31,13 +31,9 @@ module WithUploads
 
     # TODO: when feature flag is removed, we can use just dependent: destroy
     # option on :file_uploads
-    before_destroy :remove_file_uploads
+    before_destroy :remove_file_uploads, unless: :fast_destroy_enabled?
 
-    use_fast_destroy :file_uploads
-  end
-
-  def perform_fast_destroy(subject)
-    super if fast_destroy_enabled?
+    use_fast_destroy :file_uploads, if: :fast_destroy_enabled?
   end
 
   def retrieve_upload(_identifier, paths)
