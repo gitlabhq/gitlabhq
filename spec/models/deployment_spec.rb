@@ -16,6 +16,8 @@ describe Deployment do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  it_behaves_like 'having unique enum values'
+
   describe '#scheduled_actions' do
     subject { deployment.scheduled_actions }
 

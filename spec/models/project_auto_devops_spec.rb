@@ -3,6 +3,8 @@ require 'spec_helper'
 describe ProjectAutoDevops do
   set(:project) { build(:project) }
 
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:project) }
 
   it { is_expected.to define_enum_for(:deploy_strategy) }

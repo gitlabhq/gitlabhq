@@ -6,12 +6,12 @@ class WebHook < ActiveRecord::Base
   attr_encrypted :token,
                  mode:      :per_attribute_iv,
                  algorithm: 'aes-256-gcm',
-                 key:       Settings.attr_encrypted_db_key_base_truncated
+                 key:       Settings.attr_encrypted_db_key_base_32
 
   attr_encrypted :url,
                  mode:      :per_attribute_iv,
                  algorithm: 'aes-256-gcm',
-                 key:       Settings.attr_encrypted_db_key_base_truncated
+                 key:       Settings.attr_encrypted_db_key_base_32
 
   has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 

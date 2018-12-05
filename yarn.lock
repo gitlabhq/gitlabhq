@@ -630,9 +630,9 @@
     eslint-plugin-vue "^5.0.0-beta.3"
 
 "@gitlab/svgs@^1.40.0":
-  version "1.40.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.40.0.tgz#58d7545fde3a7af3c290b419d1de2405973e58c5"
-  integrity sha512-Y5QkaZH5N84qSNSGPxaj+NNlI4kthUNet7eRS1QCnaskwcvuWd/vF0xYCPd/tbRnK9MIhkKzhbxatUYDZVgXTQ==
+  version "1.41.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.41.0.tgz#f80e3a0e259f3550af00685556ea925e471276d3"
+  integrity sha512-tKUXyqe54efWBsjQBUcvNF0AvqmE2NI2No3Bnix/gKDRImzIlcgIkM67Y8zoJv1D0w4CO87WcaG5GLpIFIT1Pg==
 
 "@gitlab/ui@^1.11.0":
   version "1.11.0"

@@ -85,7 +85,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  add_authentication_token_field :runners_token
+  add_authentication_token_field :runners_token, encrypted: true, migrating: true
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
@@ -1138,6 +1138,11 @@ class Project < ActiveRecord::Base
 
   def http_url_to_repo
     "#{web_url}.git"
+  end
+
+  # Is overriden in EE
+  def lfs_http_url_to_repo(_)
+    http_url_to_repo
   end
 
   def forked?

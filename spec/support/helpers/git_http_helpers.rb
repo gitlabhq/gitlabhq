@@ -60,9 +60,4 @@ module GitHttpHelpers
     message = Gitlab::GitAccessWiki::ERROR_MESSAGES[error_key]
     message || raise("GitAccessWiki error message key '#{error_key}' not found")
   end
-
-  def change_access_error(error_key)
-    message = Gitlab::Checks::ChangeAccess::ERROR_MESSAGES[error_key]
-    message || raise("ChangeAccess error message key '#{error_key}' not found")
-  end
 end

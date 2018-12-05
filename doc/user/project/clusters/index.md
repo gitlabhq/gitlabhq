@@ -432,11 +432,33 @@ GitLab CI/CD build environment.
 | `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
 
 NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
 service account of the cluster integration.
+
+### Troubleshooting missing `KUBECONFIG` or `KUBE_TOKEN`
+
+GitLab will create a new service account specifically for your CI builds. The
+new service account is created when the cluster is added to the project.
+Sometimes there may be errors that cause the service account creation to fail.
+
+In such instances, your build will not be passed the `KUBECONFIG` or
+`KUBE_TOKEN` variables and, if you are using Auto DevOps, your Auto DevOps
+pipelines will no longer trigger a `production` deploy build. You will need to
+check the [logs](../../../administration/logs.md) to debug why the service
+account creation failed.
+
+A common reason for failure is that the token you gave GitLab did not have
+[`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+privileges as GitLab expects.
+
+Another common problem for why these variables are not being passed to your
+builds is that they must have a matching
+[`environment:name`](../../../ci/environments.md#defining-environments). If
+your build has no `environment:name` set, it will not be passed the Kubernetes
+credentials.
 
 ## Enabling or disabling the Kubernetes cluster integration
 

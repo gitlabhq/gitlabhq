@@ -19,6 +19,10 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
 
   subject { described_class.new.execute(provider) }
 
+  before do
+    allow(ClusterPlatformConfigureWorker).to receive(:perform_async)
+  end
+
   shared_examples 'success' do
     it 'configures provider and kubernetes' do
       subject
@@ -39,14 +43,10 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
       expect(platform.token).to eq(token)
     end
 
-    it 'creates kubernetes namespace model' do
-      subject
+    it 'calls ClusterPlatformConfigureWorker in a ascync fashion' do
+      expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id)
 
-      kubernetes_namespace = cluster.reload.kubernetes_namespace
-      expect(kubernetes_namespace).to be_persisted
-      expect(kubernetes_namespace.namespace).to eq(namespace)
-      expect(kubernetes_namespace.service_account_name).to eq("#{namespace}-service-account")
-      expect(kubernetes_namespace.service_account_token).to be_present
+      subject
     end
   end
 
@@ -104,8 +104,10 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
       stub_kubeclient_discover(api_url)
       stub_kubeclient_get_namespace(api_url)
       stub_kubeclient_create_namespace(api_url)
+      stub_kubeclient_get_service_account_error(api_url, 'gitlab')
       stub_kubeclient_create_service_account(api_url)
       stub_kubeclient_create_secret(api_url)
+      stub_kubeclient_put_secret(api_url, 'gitlab-token')
 
       stub_kubeclient_get_secret(
         api_url,
@@ -113,19 +115,6 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
           metadata_name: secret_name,
           token: Base64.encode64(token),
           namespace: 'default'
-        }
-      )
-
-      stub_kubeclient_get_namespace(api_url, namespace: namespace)
-      stub_kubeclient_create_service_account(api_url, namespace: namespace)
-      stub_kubeclient_create_secret(api_url, namespace: namespace)
-
-      stub_kubeclient_get_secret(
-        api_url,
-        {
-          metadata_name: "#{namespace}-token",
-          token: Base64.encode64(token),
-          namespace: namespace
         }
       )
     end
@@ -155,8 +144,8 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
     before do
       provider.legacy_abac = false
 
+      stub_kubeclient_get_cluster_role_binding_error(api_url, 'gitlab-admin')
       stub_kubeclient_create_cluster_role_binding(api_url)
-      stub_kubeclient_create_role_binding(api_url, namespace: namespace)
     end
 
     include_context 'kubernetes information successfully fetched'

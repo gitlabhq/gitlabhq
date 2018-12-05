@@ -27,7 +27,7 @@ module Clusters
         end
 
         def create_project_service_account
-          Clusters::Gcp::Kubernetes::CreateServiceAccountService.namespace_creator(
+          Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.namespace_creator(
             platform.kubeclient,
             service_account_name: kubernetes_namespace.service_account_name,
             service_account_namespace: kubernetes_namespace.namespace,

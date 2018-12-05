@@ -411,11 +411,10 @@ export default {
         <div slot="description">
           <p>
             {{
-              s__(`ClusterIntegration|Knative (pronounced kay-nay-tiv) extends
-              Kubernetes to provide a set of middleware components that are
-              essential to build modern, source-centric, and container-based
-              applications that can run anywhere: on premises, in the cloud, or
-              even in a third-party data center.`)
+              s__(`ClusterIntegration|Knative extends Kubernetes to provide
+              a set of middleware components that are essential to build modern,
+              source-centric, and container-based applications that can run
+              anywhere: on premises, in the cloud, or even in a third-party data center.`)
             }}
           </p>
 

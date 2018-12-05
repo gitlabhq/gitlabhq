@@ -4,6 +4,8 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
 
+  it_behaves_like 'having unique enum values'
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -2705,6 +2707,17 @@ describe Project do
     it 'returns the url to the repo without a username' do
       expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
       expect(project.http_url_to_repo).not_to include('@')
+    end
+  end
+
+  describe '#lfs_http_url_to_repo' do
+    let(:project) { create(:project) }
+
+    it 'returns the url to the repo without a username' do
+      lfs_http_url_to_repo = project.lfs_http_url_to_repo('operation_that_doesnt_matter')
+
+      expect(lfs_http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(lfs_http_url_to_repo).not_to include('@')
     end
   end
 

@@ -142,6 +142,14 @@ shared_examples 'discussion comments' do |resource_name|
           find(comments_selector, match: :first)
         end
 
+        def submit_reply(text)
+          find("#{comments_selector} .js-vue-discussion-reply").click
+          find("#{comments_selector} .note-textarea").send_keys(text)
+
+          click_button "Comment"
+          wait_for_requests
+        end
+
         it 'clicking "Start discussion" will post a discussion' do
           new_comment = all(comments_selector).last
 
@@ -149,16 +157,29 @@ shared_examples 'discussion comments' do |resource_name|
           expect(new_comment).to have_selector '.discussion'
         end
 
+        if resource_name =~ /(issue|merge request)/
+          it 'can be replied to' do
+            submit_reply('some text')
+
+            expect(page).to have_css('.discussion-notes .note', count: 2)
+            expect(page).to have_content 'Collapse replies'
+          end
+
+          it 'can be collapsed' do
+            submit_reply('another text')
+
+            find('.js-collapse-replies').click
+            expect(page).to have_css('.discussion-notes .note', count: 1)
+            expect(page).to have_content '1 reply'
+          end
+        end
+
         if resource_name == 'merge request'
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
           let(:reply_id) { find("#{comments_selector} .note:last-child", match: :first)['data-note-id'] }
 
           it 'shows resolved discussion when toggled' do
-            find("#{comments_selector} .js-vue-discussion-reply").click
-            find("#{comments_selector} .note-textarea").send_keys('a')
-
-            click_button "Comment"
-            wait_for_requests
+            submit_reply('a')
 
             click_button "Resolve discussion"
             wait_for_requests

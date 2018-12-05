@@ -100,18 +100,12 @@ module Boards
         .merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
     end
 
+    def serializer
+      IssueSerializer.new(current_user: current_user)
+    end
+
     def serialize_as_json(resource)
-      resource.as_json(
-        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
-        labels: true,
-        issue_endpoints: true,
-        include_full_project_path: board.group_board?,
-        include: {
-          project: { only: [:id, :path] },
-          assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-          milestone: { only: [:id, :title] }
-        }
-      )
+      serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
     end
 
     def whitelist_query_limiting
