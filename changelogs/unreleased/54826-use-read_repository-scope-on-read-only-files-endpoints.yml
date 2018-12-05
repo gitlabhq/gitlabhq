@@ -1,0 +1,5 @@
+---
+title: Use read_repository scope on read-only files API
+merge_request: 23534
+author:
+type: fixed
