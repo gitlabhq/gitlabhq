@@ -10,7 +10,7 @@
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
           = icon('chevron-down')
         .form-text.text-muted.append-bottom-10
-          = link_to _("Read more"), help_page_path("user/permissions"), class: "vlink"
+          = link_to _("Read more"), help_page_path("user/permissions")
           about role permissions
       .form-group
         = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
