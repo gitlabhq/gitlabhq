@@ -16,6 +16,7 @@ module Ci
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
+    belongs_to :merge_request, class_name: 'MergeRequest'
 
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
       s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
@@ -50,6 +51,9 @@ module Ci
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
+    validates :merge_request, presence: { if: :merge_request? }
+    validates :merge_request, absence: { unless: :merge_request? }
+    validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
@@ -170,6 +174,13 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
+
+    scope :sort_by_merge_request_pipelines, -> do
+      sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
+      query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, sources[:merge_request]]) # rubocop:disable GitlabSecurity/PublicSend
+
+      order(query)
+    end
 
     scope :for_user, -> (user) { where(user: user) }
 
@@ -372,7 +383,7 @@ module Ci
     end
 
     def branch?
-      !tag?
+      !tag? && !merge_request?
     end
 
     def stuck?
@@ -619,7 +630,12 @@ module Ci
 
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
-      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
+      @all_merge_requests ||=
+        if merge_request?
+          project.merge_requests.where(id: merge_request.id)
+        else
+          project.merge_requests.where(source_branch: ref)
+        end
     end
 
     def detailed_status(current_user)
@@ -695,6 +711,8 @@ module Ci
 
     def git_ref
       if branch?
+        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+      elsif merge_request?
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
       elsif tag?
         Gitlab::Git::TAG_REF_PREFIX + ref.to_s

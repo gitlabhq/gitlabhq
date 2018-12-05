@@ -243,6 +243,7 @@ Ci::Pipeline:
 - failure_reason
 - protected
 - iid
+- merge_request_id
 Ci::Stage:
 - id
 - name
