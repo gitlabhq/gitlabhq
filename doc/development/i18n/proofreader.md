@@ -57,12 +57,14 @@ are very appreciative of the work done by translators and proofreaders!
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [Crowdin](https://crowdin.com/profile/BawAppie)
+  - Jeongwhan Choi - [GitLab](https://gitlab.com/jeongwhanchoi), [Crowdin](https://crowdin.com/profile/jeongwhanchoi)
 - Mongolian
   - Proofreaders needed.
 - Norwegian Bokmal
   - Proofreaders needed.
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
+  - Maksymilian Roman - [GitLab](https://gitlab.com/villaincandle), [Crowdin](https://crowdin.com/profile/villaincandle)
 - Portuguese
   - Proofreaders needed.
 - Portuguese, Brazilian
