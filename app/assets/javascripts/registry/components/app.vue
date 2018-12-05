@@ -26,7 +26,7 @@ export default {
     this.setMainEndpoint(this.endpoint);
   },
   mounted() {
-    this.fetchRepos().catch(() => createFlash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
+    this.fetchRepos();
   },
   methods: {
     ...mapActions(['setMainEndpoint', 'fetchRepos']),
@@ -38,9 +38,9 @@ export default {
     <gl-loading-icon v-if="isLoading" :size="3" />
 
     <collapsible-container
-      v-for="(item, index) in repos"
+      v-for="item in repos"
       v-else-if="!isLoading && repos.length"
-      :key="index"
+      :key="item.id"
       :repo="item"
     />
 

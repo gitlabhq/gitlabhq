@@ -28,9 +28,7 @@ describe('Actions Registry Store', () => {
   describe('server requests', () => {
     describe('fetchRepos', () => {
       beforeEach(() => {
-        mock
-          .onGet(`${TEST_HOST}/endpoint.json`)
-          .replyOnce(200, reposServerResponse, {})
+        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, reposServerResponse, {});
       });
 
       it('should set receveived repos', done => {
@@ -53,11 +51,9 @@ describe('Actions Registry Store', () => {
       let repo;
       beforeEach(() => {
         mockedState.repos = parsedReposServerResponse;
-        [, repo ] = mockedState.repos;
+        [, repo] = mockedState.repos;
 
-        mock
-          .onGet(repo.tagsPath)
-          .replyOnce(200, registryServerResponse, {})
+        mock.onGet(repo.tagsPath).replyOnce(200, registryServerResponse, {});
       });
 
       it('should set received list', done => {

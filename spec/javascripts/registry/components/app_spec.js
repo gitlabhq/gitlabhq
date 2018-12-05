@@ -57,9 +57,9 @@ describe('Registry List', () => {
           Vue.nextTick(() => {
             vm.$el.querySelector('.js-toggle-repo').click();
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.js-toggle-repo i').className).toEqual(
-                'fa fa-chevron-up',
-              );
+              expect(
+                vm.$el.querySelector('.js-toggle-repo use').getAttribute('xlink:href'),
+              ).toContain('angle-up');
               done();
             });
           });
