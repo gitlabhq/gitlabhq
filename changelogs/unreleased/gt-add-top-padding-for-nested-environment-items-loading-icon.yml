@@ -1,0 +1,5 @@
+---
+title: Add top padding for nested environment items loading icon
+merge_request: 23580
+author: George Tsiolis
+type: fixed
