@@ -90,13 +90,11 @@ module Clusters
             # Clusters::KubernetesNamespace, so once migration has been completed,
             # this 'else' branch will be removed. For more information, please see
             # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
-            config = YAML.dump(kubeconfig)
-
             variables
               .append(key: 'KUBE_URL', value: api_url)
               .append(key: 'KUBE_TOKEN', value: token, public: false)
               .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
-              .append(key: 'KUBECONFIG', value: config, public: false, file: true)
+              .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
           end
         end
       end
