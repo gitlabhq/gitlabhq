@@ -432,7 +432,7 @@ export default {
               />
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="helmInstalled">
             <div class="form-group">
               <label for="knative-domainname">
                 {{ s__('ClusterIntegration|Knative Domain Name:') }}
