@@ -247,7 +247,17 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  # The relation :all_pipelines is intented to be used when we want to get the
+  # whole list of pipelines associated to the project
+  has_many :all_pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  # The relation :ci_pipelines is intented to be used when we want to get only
+  # those pipeline which are directly related to CI. There are
+  # other pipelines, like webide ones, that we won't retrieve
+  # if we use this relation.
+  has_many :ci_pipelines,
+          -> { Feature.enabled?(:pipeline_ci_sources_only, default_enabled: true) ? ci_sources : all },
+          class_name: 'Ci::Pipeline',
+          inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
@@ -621,7 +631,7 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
-    latest_pipeline = pipelines.latest_successful_for(ref)
+    latest_pipeline = ci_pipelines.latest_successful_for(ref)
 
     if latest_pipeline
       latest_pipeline.builds.latest.with_artifacts_archive
@@ -1376,7 +1386,7 @@ class Project < ActiveRecord::Base
 
     return unless sha
 
-    pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
+    ci_pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
   def latest_successful_pipeline_for_default_branch
@@ -1385,12 +1395,12 @@ class Project < ActiveRecord::Base
     end
 
     @latest_successful_pipeline_for_default_branch =
-      pipelines.latest_successful_for(default_branch)
+      ci_pipelines.latest_successful_for(default_branch)
   end
 
   def latest_successful_pipeline_for(ref = nil)
     if ref && ref != default_branch
-      pipelines.latest_successful_for(ref)
+      ci_pipelines.latest_successful_for(ref)
     else
       latest_successful_pipeline_for_default_branch
     end

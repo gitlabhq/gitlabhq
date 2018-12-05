@@ -24,7 +24,7 @@ class CommitCollection
   # Setting this status ahead of time removes the need for running a query for
   # every commit we're displaying.
   def with_pipeline_status
-    statuses = project.pipelines.latest_status_per_commit(map(&:id), ref)
+    statuses = project.ci_pipelines.latest_status_per_commit(map(&:id), ref)
 
     each do |commit|
       commit.set_status_for_ref(ref, statuses[commit.id])

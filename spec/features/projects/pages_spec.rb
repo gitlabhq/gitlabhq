@@ -300,7 +300,7 @@ describe 'Pages' do
         let(:pipeline) do
           commit_sha = project.commit('HEAD').sha
 
-          project.pipelines.create(
+          project.ci_pipelines.create(
             ref: 'HEAD',
             sha: commit_sha,
             source: :push,

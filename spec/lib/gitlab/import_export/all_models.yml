@@ -103,7 +103,7 @@ merge_request_diff_commits:
 - merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
-pipelines:
+ci_pipelines:
 - project
 - user
 - stages
@@ -265,7 +265,8 @@ project:
 - notification_settings
 - import_data
 - commit_statuses
-- pipelines
+- ci_pipelines
+- all_pipelines
 - stages
 - builds
 - runner_projects

@@ -34,6 +34,8 @@ module Gitlab
 
         project_json['project_members'] += group_members_json
 
+        RelationRenameService.add_new_associations(project_json)
+
         project_json.to_json
       end
 

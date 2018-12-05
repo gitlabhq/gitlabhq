@@ -12,14 +12,14 @@ module Ci
     include AtomicInternalId
     include EnumWithNil
 
-    belongs_to :project, inverse_of: :pipelines
+    belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
     belongs_to :merge_request, class_name: 'MergeRequest'
 
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
-      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
+      s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
     end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
@@ -174,6 +174,7 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
+    scope :ci_sources, -> { where(config_source: ci_sources_values) }
 
     scope :sort_by_merge_request_pipelines, -> do
       sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
@@ -269,6 +270,10 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
+    end
+
+    def self.ci_sources_values
+      config_sources.values_at(:repository_source, :auto_devops_source, :unknown_source)
     end
 
     def stages_count

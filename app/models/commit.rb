@@ -298,7 +298,7 @@ class Commit
   end
 
   def pipelines
-    project.pipelines.where(sha: sha)
+    project.ci_pipelines.where(sha: sha)
   end
 
   def last_pipeline
@@ -312,7 +312,7 @@ class Commit
   end
 
   def status_for_project(ref, pipeline_project)
-    pipeline_project.pipelines.latest_status_per_commit(id, ref)[id]
+    pipeline_project.ci_pipelines.latest_status_per_commit(id, ref)[id]
   end
 
   def set_status_for_ref(ref, status)
