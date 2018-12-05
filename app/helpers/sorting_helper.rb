@@ -120,6 +120,18 @@ module SortingHelper
     }
   end
 
+  def users_sort_options_hash
+    {
+      sort_value_name => sort_title_name,
+      sort_value_recently_signin => sort_title_recently_signin,
+      sort_value_oldest_signin => sort_title_oldest_signin,
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_oldest_updated => sort_title_oldest_updated
+    }
+  end
+
   def sortable_item(item, path, sorted_by)
     link_to item, path, class: sorted_by == item ? 'is-active' : ''
   end
