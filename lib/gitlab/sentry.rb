@@ -3,7 +3,8 @@
 module Gitlab
   module Sentry
     def self.enabled?
-      Rails.env.production? && Gitlab::CurrentSettings.sentry_enabled?
+      (Rails.env.production? || Rails.env.development?) &&
+        Gitlab::CurrentSettings.sentry_enabled?
     end
 
     def self.context(current_user = nil)
@@ -31,7 +32,7 @@ module Gitlab
     def self.track_exception(exception, issue_url: nil, extra: {})
       track_acceptable_exception(exception, issue_url: issue_url, extra: extra)
 
-      raise exception if should_raise?
+      raise exception if should_raise_for_dev?
     end
 
     # This should be used when you do not want to raise an exception in
@@ -43,7 +44,11 @@ module Gitlab
         extra[:issue_url] = issue_url if issue_url
         context # Make sure we've set everything we know in the context
 
-        Raven.capture_exception(exception, extra: extra)
+        tags = {
+          Gitlab::CorrelationId::LOG_KEY.to_sym => Gitlab::CorrelationId.current_id
+        }
+
+        Raven.capture_exception(exception, tags: tags, extra: extra)
       end
     end
 
@@ -55,7 +60,7 @@ module Gitlab
       end
     end
 
-    def self.should_raise?
+    def self.should_raise_for_dev?
       Rails.env.development? || Rails.env.test?
     end
   end

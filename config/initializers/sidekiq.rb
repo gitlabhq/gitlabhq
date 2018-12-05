@@ -21,6 +21,7 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::Shutdown
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
+    chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
   end
 
@@ -31,6 +32,7 @@ Sidekiq.configure_server do |config|
 
   config.client_middleware do |chain|
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
+    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
   end
 
   config.on :startup do
@@ -75,6 +77,7 @@ Sidekiq.configure_client do |config|
   config.redis = queues_config_hash
 
   config.client_middleware do |chain|
+    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
 end

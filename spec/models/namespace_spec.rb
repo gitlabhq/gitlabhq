@@ -249,7 +249,7 @@ describe Namespace do
 
               move_dir_result
             end
-            expect(Gitlab::Sentry).to receive(:should_raise?).and_return(false) # like prod
+            expect(Gitlab::Sentry).to receive(:should_raise_for_dev?).and_return(false) # like prod
 
             namespace.update(path: namespace.full_path + '_new')
           end
