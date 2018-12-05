@@ -8,7 +8,7 @@ class AddIndexToCiBuildsTokenEncrypted < ActiveRecord::Migration[5.0]
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_builds, :token_encrypted, unique: true
+    add_concurrent_index :ci_builds, :token_encrypted, unique: true, where: 'token_encrypted IS NOT NULL'
   end
 
   def down
