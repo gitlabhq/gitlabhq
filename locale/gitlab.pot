@@ -1571,13 +1571,13 @@ msgstr ""
 msgid "ClusterIntegration|Knative"
 msgstr ""
 
-msgid "ClusterIntegration|Knative (pronounced kay-nay-tiv) extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
-msgstr ""
-
 msgid "ClusterIntegration|Knative Domain Name:"
 msgstr ""
 
 msgid "ClusterIntegration|Knative IP Address:"
+msgstr ""
+
+msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"

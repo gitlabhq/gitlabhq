@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
+describe Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService do
   include KubernetesHelpers
 
   let(:api_url) { 'http://111.111.111.111' }
@@ -55,7 +55,11 @@ describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
   before do
     stub_kubeclient_discover(api_url)
     stub_kubeclient_get_namespace(api_url, namespace: namespace)
-    stub_kubeclient_create_service_account(api_url, namespace: namespace )
+
+    stub_kubeclient_get_service_account_error(api_url, service_account_name, namespace: namespace)
+    stub_kubeclient_create_service_account(api_url, namespace: namespace)
+
+    stub_kubeclient_get_secret_error(api_url, token_name, namespace: namespace)
     stub_kubeclient_create_secret(api_url, namespace: namespace)
   end
 
@@ -74,10 +78,12 @@ describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
 
     context 'with RBAC cluster' do
       let(:rbac) { true }
+      let(:cluster_role_binding_name) { 'gitlab-admin' }
 
       before do
         cluster.platform_kubernetes.rbac!
 
+        stub_kubeclient_get_cluster_role_binding_error(api_url, cluster_role_binding_name)
         stub_kubeclient_create_cluster_role_binding(api_url)
       end
 
@@ -130,10 +136,12 @@ describe Clusters::Gcp::Kubernetes::CreateServiceAccountService do
 
     context 'With RBAC enabled cluster' do
       let(:rbac) { true }
+      let(:role_binding_name) { "gitlab-#{namespace}"}
 
       before do
         cluster.platform_kubernetes.rbac!
 
+        stub_kubeclient_get_role_binding_error(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_create_role_binding(api_url, namespace: namespace)
       end
 

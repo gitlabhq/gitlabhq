@@ -67,12 +67,14 @@ describe Gitlab::Ci::Config::Entry::Jobs do
                    script: %w[rspec],
                    commands: 'rspec',
                    ignore: false,
-                   stage: 'test' },
+                   stage: 'test',
+                   only: { refs: %w[branches tags] } },
           spinach: { name: :spinach,
                      script: %w[spinach],
                      commands: 'spinach',
                      ignore: false,
-                     stage: 'test' })
+                     stage: 'test',
+                     only: { refs: %w[branches tags] } })
       end
     end
 

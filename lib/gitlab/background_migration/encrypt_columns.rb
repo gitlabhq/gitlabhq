@@ -5,15 +5,17 @@ module Gitlab
     # EncryptColumn migrates data from an unencrypted column - `foo`, say - to
     # an encrypted column - `encrypted_foo`, say.
     #
+    # To avoid depending on a particular version of the model in app/, add a
+    # model to `lib/gitlab/background_migration/models/encrypt_columns` and use
+    # it in the migration that enqueues the jobs, so code can be shared.
+    #
     # For this background migration to work, the table that is migrated _has_ to
     # have an `id` column as the primary key. Additionally, the encrypted column
     # should be managed by attr_encrypted, and map to an attribute with the same
     # name as the unencrypted column (i.e., the unencrypted column should be
-    # shadowed).
+    # shadowed), unless you want to define specific methods / accessors in the
+    # temporary model in `/models/encrypt_columns/your_model.rb`.
     #
-    # To avoid depending on a particular version of the model in app/, add a
-    # model to `lib/gitlab/background_migration/models/encrypt_columns` and use
-    # it in the migration that enqueues the jobs, so code can be shared.
     class EncryptColumns
       def perform(model, attributes, from, to)
         model = model.constantize if model.is_a?(String)
@@ -34,6 +36,10 @@ module Gitlab
             encrypt!(instance, attributes)
           end
         end
+      end
+
+      def clear_migrated_values?
+        true
       end
 
       private
@@ -72,7 +78,10 @@ module Gitlab
 
         if instance.changed?
           instance.save!
-          instance.update_columns(to_clear)
+
+          if clear_migrated_values?
+            instance.update_columns(to_clear)
+          end
         end
       end
 

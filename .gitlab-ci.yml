@@ -48,6 +48,7 @@ after_script:
 stages:
   - build
   - prepare
+  - merge
   - test
   - post-test
   - pages
@@ -666,7 +667,7 @@ gitlab:assets:compile:
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitabhq
+    - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
   tags:
     - gitlab-org-delivery
@@ -978,9 +979,10 @@ review-deploy:
 
 review-qa-smoke:
   <<: *review-qa-base
-  retry: 2
+  # retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+  allow_failure: true
 
 review-qa-all:
   <<: *review-qa-base
@@ -1025,3 +1027,27 @@ schedule:review-cleanup:
     - gem install gitlab --no-document
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+merge:master:
+  image: registry.gitlab.com/gitlab-org/merge-train
+  stage: merge
+  # The global before_script/after_script blocks break this job, or aren't
+  # necessary. These two lines result in them being ignored.
+  before_script: []
+  after_script: []
+  only:
+    refs:
+      - master
+      - schedules
+    variables:
+      - $CI_PROJECT_PATH == "gitlab-org/gitlab-ce"
+      - $MERGE_TRAIN_SSH_PUBLIC_KEY
+      - $MERGE_TRAIN_SSH_PRIVATE_KEY
+      - $MERGE_TRAIN_API_TOKEN
+      - $MERGE_FORCE_ENABLE
+  script:
+    - scripts/merge-train
+  cache:
+    paths:
+      - gitlab-ee
+    key: "merge:master"

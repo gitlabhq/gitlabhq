@@ -127,4 +127,42 @@ describe Gitlab::Utils do
       end
     end
   end
+
+  describe '.ensure_utf8_size' do
+    context 'string is has less bytes than expected' do
+      it 'backfills string with null characters' do
+        transformed = described_class.ensure_utf8_size('a' * 10, bytes: 32)
+
+        expect(transformed.bytesize).to eq 32
+        expect(transformed).to eq(('a' * 10) + ('0' * 22))
+      end
+    end
+
+    context 'string size is exactly the one that is expected' do
+      it 'returns original value' do
+        transformed = described_class.ensure_utf8_size('a' * 32, bytes: 32)
+
+        expect(transformed).to eq 'a' * 32
+        expect(transformed.bytesize).to eq 32
+      end
+    end
+
+    context 'when string contains a few multi-byte UTF characters' do
+      it 'backfills string with null characters' do
+        transformed = described_class.ensure_utf8_size('❤' * 6, bytes: 32)
+
+        expect(transformed).to eq '❤❤❤❤❤❤' + ('0' * 14)
+        expect(transformed.bytesize).to eq 32
+      end
+    end
+
+    context 'when string has multiple multi-byte UTF chars exceeding 32 bytes' do
+      it 'truncates string to 32 characters and backfills it if needed' do
+        transformed = described_class.ensure_utf8_size('❤' * 18, bytes: 32)
+
+        expect(transformed).to eq(('❤' * 10) + ('0' * 2))
+        expect(transformed.bytesize).to eq 32
+      end
+    end
+  end
 end

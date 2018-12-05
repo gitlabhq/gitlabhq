@@ -148,7 +148,7 @@ export const scrollToLineIfNeededParallel = (_, line) => {
 };
 
 export const loadCollapsedDiff = ({ commit }, file) =>
-  axios.get(file.loadCollapsedDiffUrl).then(res => {
+  axios.get(file.load_collapsed_diff_url).then(res => {
     commit(types.ADD_COLLAPSED_DIFFS, {
       file,
       data: res.data,

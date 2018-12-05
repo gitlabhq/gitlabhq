@@ -9,7 +9,7 @@
     "project_id": { "type": "integer" },
     "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
-    "weight": { "type": "integer" },
+    "weight": { "type": ["integer", "null"] },
     "project": {
       "type": "object",
       "properties": {

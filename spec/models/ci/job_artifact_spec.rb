@@ -15,6 +15,8 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+  it_behaves_like 'having unique enum values'
+
   describe '.test_reports' do
     subject { described_class.test_reports }
 

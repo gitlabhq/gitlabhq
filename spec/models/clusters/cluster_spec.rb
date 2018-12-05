@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Clusters::Cluster do
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }

@@ -7,6 +7,8 @@ RSpec.describe ResourceLabelEvent, type: :model do
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:issue) }
