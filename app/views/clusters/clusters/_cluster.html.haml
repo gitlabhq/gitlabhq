@@ -3,12 +3,7 @@
     .table-section.section-60
       .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
       .table-mobile-content
-        - if cluster.group_type? && cluster.group.id != clusterable.id
-          - if cluster.group.ancestors.any?
-            = "#{cluster.group.ancestors.first.name} /"
-            - if cluster.group.ancestors.length > 1
-              = "&hellip; /".html_safe
-          = "#{cluster.group.name} /"
+        = cluster_group_path_display(cluster, clusterable)
         = link_to cluster.name, cluster.show_path
         - unless cluster.enabled?
           %span.badge.badge-danger Connection disabled
