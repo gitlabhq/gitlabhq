@@ -82,7 +82,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the template'
       end
-      get "templates/#{template_type}/:name" do
+      get "templates/#{template_type}/:name", requirements: { name: /[\w\.-]+/ } do
         finder = TemplateFinder.build(template_type, nil, name: declared(params)[:name])
         new_template = finder.execute
 
