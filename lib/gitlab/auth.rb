@@ -199,7 +199,7 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def lfs_token_check(login, encoded_token, project)
+      def lfs_token_check(login, password, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =
@@ -222,7 +222,7 @@ module Gitlab
             read_authentication_abilities
           end
 
-        if token_handler.token_valid?(encoded_token)
+        if Devise.secure_compare(token_handler.token, password)
           Gitlab::Auth::Result.new(actor, nil, token_handler.type, authentication_abilities)
         end
       end
