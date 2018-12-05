@@ -8,6 +8,10 @@ module Gitlab
             diff_options: diff_options,
             diff_refs:    diff_refs)
         end
+
+        def unfold_diff_lines(positions)
+          # no-op
+        end
       end
     end
   end

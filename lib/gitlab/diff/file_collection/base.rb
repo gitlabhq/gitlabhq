@@ -32,6 +32,16 @@ module Gitlab
           @diff_files ||= diffs.decorate! { |diff| decorate_diff!(diff) }
         end
 
+        # This mutates `diff_files` lines.
+        def unfold_diff_files(positions)
+          positions_grouped_by_path = positions.group_by { |position| position.file_path }
+
+          diff_files.each do |diff_file|
+            positions = positions_grouped_by_path.fetch(diff_file.file_path, [])
+            positions.each { |position| diff_file.unfold_diff_lines(position) }
+          end
+        end
+
         def diff_file_with_old_path(old_path)
           diff_files.find { |diff_file| diff_file.old_path == old_path }
         end
