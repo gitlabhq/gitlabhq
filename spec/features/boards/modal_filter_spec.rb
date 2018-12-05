@@ -176,7 +176,7 @@ describe 'Issue Boards add issue modal filtering', :js do
 
     it 'filters by no label' do
       set_filter('label')
-      click_filter_link('No Label')
+      click_filter_link('None')
       submit_filter
 
       page.within('.add-issues-modal') do

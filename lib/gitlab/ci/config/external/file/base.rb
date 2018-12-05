@@ -37,8 +37,8 @@ module Gitlab
             end
 
             def to_hash
-              @hash ||= Ci::Config::Loader.new(content).load!
-            rescue Ci::Config::Loader::FormatError
+              @hash ||= Gitlab::Config::Loader::Yaml.new(content).load!
+            rescue Gitlab::Config::Loader::FormatError
               nil
             end
 

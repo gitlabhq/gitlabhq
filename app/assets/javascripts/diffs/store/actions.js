@@ -33,6 +33,10 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+export const setHighlightedRow = ({ commit }, lineCode) => {
+  commit(types.SET_HIGHLIGHTED_ROW, lineCode);
+};
+
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
 export const assignDiscussionsToDiff = (
@@ -127,7 +131,7 @@ export const loadMoreLines = ({ commit }, options) => {
 export const scrollToLineIfNeededInline = (_, line) => {
   const hash = getLocationHash();
 
-  if (hash && line.lineCode === hash) {
+  if (hash && line.line_code === hash) {
     handleLocationHash();
   }
 };
@@ -137,14 +141,14 @@ export const scrollToLineIfNeededParallel = (_, line) => {
 
   if (
     hash &&
-    ((line.left && line.left.lineCode === hash) || (line.right && line.right.lineCode === hash))
+    ((line.left && line.left.line_code === hash) || (line.right && line.right.line_code === hash))
   ) {
     handleLocationHash();
   }
 };
 
 export const loadCollapsedDiff = ({ commit }, file) =>
-  axios.get(file.loadCollapsedDiffUrl).then(res => {
+  axios.get(file.load_collapsed_diff_url).then(res => {
     commit(types.ADD_COLLAPSED_DIFFS, {
       file,
       data: res.data,

@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.integer "diff_max_patch_bytes", default: 102400, null: false
     t.integer "archive_builds_in_seconds"
     t.string "commit_email_hostname"
+    t.string "runners_registration_token_encrypted"
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -473,7 +474,9 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.boolean "protected"
     t.integer "failure_reason"
     t.integer "iid"
+    t.integer "merge_request_id"
     t.index ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
+    t.index ["merge_request_id"], name: "index_ci_pipelines_on_merge_request_id", using: :btree
     t.index ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
     t.index ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
     t.index ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
@@ -520,6 +523,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.string "ip_address"
     t.integer "maximum_timeout"
     t.integer "runner_type", limit: 2, null: false
+    t.string "token_encrypted"
     t.index ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
     t.index ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
     t.index ["locked"], name: "index_ci_runners_on_locked", using: :btree
@@ -1335,6 +1339,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
     t.string "runners_token"
+    t.string "runners_token_encrypted"
     t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
     t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
     t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
@@ -1675,6 +1680,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
     t.bigint "pool_repository_id"
+    t.string "runners_token_encrypted"
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -2288,6 +2294,7 @@ ActiveRecord::Schema.define(version: 20181126153547) do
   add_foreign_key "ci_pipeline_variables", "ci_pipelines", column: "pipeline_id", name: "fk_f29c5f4380", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
+  add_foreign_key "ci_pipelines", "merge_requests", name: "fk_a23be95014", on_delete: :cascade
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
   add_foreign_key "ci_runner_namespaces", "ci_runners", column: "runner_id", on_delete: :cascade
   add_foreign_key "ci_runner_namespaces", "namespaces", on_delete: :cascade

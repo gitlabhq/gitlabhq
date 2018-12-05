@@ -82,7 +82,7 @@ gem 'validates_hostname', '~> 1.0.6'
 gem 'browser', '~> 2.5'
 
 # GPG
-gem 'gpgme'
+gem 'gpgme', '~> 2.0.18'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -91,7 +91,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # API
-gem 'grape', '~> 1.1'
+gem 'grape', '~> 1.1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
@@ -298,7 +298,7 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader', '~> 1.2.1'
+gem 'batch-loader', '~> 1.2.2'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'

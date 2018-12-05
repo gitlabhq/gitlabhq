@@ -7,7 +7,7 @@ class ApplicationSetting < ActiveRecord::Base
   include IgnorableColumn
   include ChronicDurationAttribute
 
-  add_authentication_token_field :runners_registration_token
+  add_authentication_token_field :runners_registration_token, encrypted: true, fallback: true
   add_authentication_token_field :health_check_access_token
 
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace

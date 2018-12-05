@@ -70,7 +70,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     babosa (1.0.2)
     base32 (0.3.2)
-    batch-loader (1.2.1)
+    batch-loader (1.2.2)
     bcrypt (3.1.12)
     bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
@@ -310,8 +310,8 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.7)
-    gpgme (2.0.13)
-      mini_portile2 (~> 2.1)
+    gpgme (2.0.18)
+      mini_portile2 (~> 2.3)
     grape (1.1.0)
       activesupport
       builder
@@ -941,7 +941,7 @@ DEPENDENCIES
   awesome_print
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
-  batch-loader (~> 1.2.1)
+  batch-loader (~> 1.2.2)
   bcrypt_pbkdf (~> 1.0)
   benchmark-ips (~> 2.3.0)
   better_errors (~> 2.5.0)
@@ -1007,8 +1007,8 @@ DEPENDENCIES
   gon (~> 6.2)
   google-api-client (~> 0.23)
   google-protobuf (~> 3.6)
-  gpgme
-  grape (~> 1.1)
+  gpgme (~> 2.0.18)
+  grape (~> 1.1.0)
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.0)
   grape_logging (~> 1.7)

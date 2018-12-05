@@ -112,7 +112,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-heading deploy-heading append-bottom-default">
+  <div class="deploy-heading">
     <div class="ci-widget media">
       <div class="media-body">
         <div class="deploy-body">

@@ -88,9 +88,14 @@ export const conditions = [
     value: 'started',
   },
   {
-    url: 'label_name[]=No+Label',
+    url: 'label_name[]=None',
     tokenKey: 'label',
     value: 'none',
+  },
+  {
+    url: 'label_name[]=Any',
+    tokenKey: 'any',
+    value: 'any',
   },
   {
     url: 'my_reaction_emoji=None',

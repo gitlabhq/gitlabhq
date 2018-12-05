@@ -7,12 +7,12 @@ module Gitlab
         ##
         # Entry that represents a retry config for a job.
         #
-        class Retry < Simplifiable
+        class Retry < ::Gitlab::Config::Entry::Simplifiable
           strategy :SimpleRetry, if: -> (config) { config.is_a?(Integer) }
           strategy :FullRetry, if: -> (config) { config.is_a?(Hash) }
 
-          class SimpleRetry < Entry::Node
-            include Entry::Validatable
+          class SimpleRetry < ::Gitlab::Config::Entry::Node
+            include ::Gitlab::Config::Entry::Validatable
 
             validations do
               validates :config, numericality: { only_integer: true,
@@ -31,9 +31,9 @@ module Gitlab
             end
           end
 
-          class FullRetry < Entry::Node
-            include Entry::Validatable
-            include Entry::Attributable
+          class FullRetry < ::Gitlab::Config::Entry::Node
+            include ::Gitlab::Config::Entry::Validatable
+            include ::Gitlab::Config::Entry::Attributable
 
             ALLOWED_KEYS = %i[max when].freeze
             attributes :max, :when
@@ -73,7 +73,7 @@ module Gitlab
             end
           end
 
-          class UnknownStrategy < Entry::Node
+          class UnknownStrategy < ::Gitlab::Config::Entry::Node
             def errors
               ["#{location} has to be either an integer or a hash"]
             end

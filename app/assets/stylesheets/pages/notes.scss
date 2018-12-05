@@ -371,10 +371,10 @@ $note-form-margin-left: 72px;
 
           &::after {
             content: '';
-            width: 100%;
             height: 70px;
             position: absolute;
-            left: 0;
+            left: $gl-padding-24;
+            right: 0;
             bottom: 0;
             background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
           }
@@ -587,12 +587,6 @@ $note-form-margin-left: 72px;
 
 .system-note .note-header-info {
   padding-bottom: 0;
-}
-
-.note-header-author-name {
-  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
-    display: none;
-  }
 }
 
 .note-headline-light {

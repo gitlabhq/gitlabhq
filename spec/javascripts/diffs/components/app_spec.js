@@ -13,6 +13,8 @@ describe('diffs/components/app', () => {
   beforeEach(() => {
     // setup globals (needed for component to mount :/)
     window.mrTabs = jasmine.createSpyObj('mrTabs', ['resetViewContainer']);
+    window.mrTabs.expandViewContainer = jasmine.createSpy();
+    window.location.hash = 'ABC_123';
 
     // setup component
     const store = createDiffsStore();
@@ -38,5 +40,16 @@ describe('diffs/components/app', () => {
 
   it('does not show commit info', () => {
     expect(vm.$el).not.toContainElement('.blob-commit-info');
+  });
+
+  it('sets highlighted row if hash exists in location object', done => {
+    vm.$props.shouldShow = true;
+
+    vm.$nextTick()
+      .then(() => {
+        expect(vm.$store.state.diffs.highlightedRow).toBe('ABC_123');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 });

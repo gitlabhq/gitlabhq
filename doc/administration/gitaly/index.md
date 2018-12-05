@@ -237,3 +237,14 @@ gitaly_enabled=false
 
 When you run `service gitlab restart` Gitaly will be disabled on this
 particular machine.
+
+## Troubleshooting Gitaly in production
+
+Since GitLab 11.6, Gitaly comes with a command-line tool called
+`gitaly-debug` that can be run on a Gitaly server to aid in
+troubleshooting. In GitLab 11.6 its only sub-command is
+`simulate-http-clone` which allows you to measure the maximum possible
+Git clone speed for a specific repository on the server.
+
+For an up to date list of sub-commands see [the gitaly-debug
+README](https://gitlab.com/gitlab-org/gitaly/blob/master/cmd/gitaly-debug/README.md).

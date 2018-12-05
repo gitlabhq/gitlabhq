@@ -105,7 +105,7 @@ export default {
         :key="tabView.name"
         class="h-100"
       >
-        <component :is="tabView.name" />
+        <component :is="tabView.component || tabView.name" />
       </div>
     </resizable-panel>
     <nav class="ide-activity-bar">

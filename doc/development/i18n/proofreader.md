@@ -43,7 +43,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Greek
   - Proofreaders needed.
 - Hebrew
-  - Proofreaders needed.
+  - Yaron Shahrabani - [GitLab](https://gitlab.com/yarons), [Crowdin](https://crowdin.com/profile/YaronSh)
 - Hungarian
   - Proofreaders needed.
 - Indonesian

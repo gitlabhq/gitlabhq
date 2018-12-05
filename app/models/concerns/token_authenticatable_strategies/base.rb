@@ -2,6 +2,8 @@
 
 module TokenAuthenticatableStrategies
   class Base
+    attr_reader :klass, :token_field, :options
+
     def initialize(klass, token_field, options)
       @klass = klass
       @token_field = token_field
@@ -22,6 +24,7 @@ module TokenAuthenticatableStrategies
 
     def ensure_token(instance)
       write_new_token(instance) unless token_set?(instance)
+      get_token(instance)
     end
 
     # Returns a token, but only saves when the database is in read & write mode
@@ -34,6 +37,36 @@ module TokenAuthenticatableStrategies
     def reset_token!(instance)
       write_new_token(instance)
       instance.save! if Gitlab::Database.read_write?
+    end
+
+    def fallback?
+      unless options[:fallback].in?([true, false, nil])
+        raise ArgumentError, 'fallback: needs to be a boolean value!'
+      end
+
+      options[:fallback] == true
+    end
+
+    def migrating?
+      unless options[:migrating].in?([true, false, nil])
+        raise ArgumentError, 'migrating: needs to be a boolean value!'
+      end
+
+      options[:migrating] == true
+    end
+
+    def self.fabricate(model, field, options)
+      if options[:digest] && options[:encrypted]
+        raise ArgumentError, 'Incompatible options set!'
+      end
+
+      if options[:digest]
+        TokenAuthenticatableStrategies::Digest.new(model, field, options)
+      elsif options[:encrypted]
+        TokenAuthenticatableStrategies::Encrypted.new(model, field, options)
+      else
+        TokenAuthenticatableStrategies::Insecure.new(model, field, options)
+      end
     end
 
     protected
@@ -64,10 +97,6 @@ module TokenAuthenticatableStrategies
 
     def token_set?(instance)
       raise NotImplementedError
-    end
-
-    def token_field_name
-      @token_field
     end
   end
 end

@@ -92,13 +92,47 @@ To add an existing Kubernetes cluster to your project:
       the `ca.crt` contents here.
     - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
-      scoped to a particular `namespace`. If you don't have a service token yet,
-      you can follow the
-      [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
-      to create one. You can also view or create service tokens in the
-      [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
-      (under **Config > Secrets**). **The account that will issue the service token
-      must have admin privileges on the cluster.**
+      scoped to a particular `namespace`.
+      **The token used should belong to a service account with
+      [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+      privileges.** To create this service account:
+
+      1. Create a `gitlab` service account in the `default` namespace:
+
+          ```bash
+          kubectl create -f - <<EOF
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+              name: gitlab
+              namespace: default
+          EOF
+          ```
+      1. Create a cluster role binding to give the `gitlab` service account
+         `cluster-admin` privileges:
+
+          ```bash
+          kubectl create -f - <<EOF
+          kind: ClusterRoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
+          metadata:
+            name: gitlab-cluster-admin
+          subjects:
+          - kind: ServiceAccount
+            name: gitlab
+            namespace: default
+          roleRef:
+            kind: ClusterRole
+            name: cluster-admin
+            apiGroup: rbac.authorization.k8s.io
+          EOF
+          ```
+      NOTE: **Note:**
+      For GKE clusters, you will need the
+      `container.clusterRoleBindings.create` permission to create a cluster
+      role binding. You can follow the [Google Cloud
+      documentation](https://cloud.google.com/iam/docs/granting-changing-revoking-access)
+      to grant access.
     - **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
       - Each project should have a unique namespace.
@@ -142,8 +176,9 @@ Whether ABAC or RBAC is enabled, GitLab will create the necessary
 service accounts and privileges in order to install and run
 [GitLab managed applications](#installing-applications):
 
-- A `gitlab` service account with `cluster-admin` privileges will be created in the
-  `default` namespace, which will be used by GitLab to manage the newly created cluster.
+- If GitLab is creating the cluster, a `gitlab` service account with
+  `cluster-admin` privileges will be created in the `default` namespace,
+  which will be used by GitLab to manage the newly created cluster.
 
 - A project service account with [`edit`
   privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
@@ -397,11 +432,33 @@ GitLab CI/CD build environment.
 | `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
 
 NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
 service account of the cluster integration.
+
+### Troubleshooting missing `KUBECONFIG` or `KUBE_TOKEN`
+
+GitLab will create a new service account specifically for your CI builds. The
+new service account is created when the cluster is added to the project.
+Sometimes there may be errors that cause the service account creation to fail.
+
+In such instances, your build will not be passed the `KUBECONFIG` or
+`KUBE_TOKEN` variables and, if you are using Auto DevOps, your Auto DevOps
+pipelines will no longer trigger a `production` deploy build. You will need to
+check the [logs](../../../administration/logs.md) to debug why the service
+account creation failed.
+
+A common reason for failure is that the token you gave GitLab did not have
+[`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+privileges as GitLab expects.
+
+Another common problem for why these variables are not being passed to your
+builds is that they must have a matching
+[`environment:name`](../../../ci/environments.md#defining-environments). If
+your build has no `environment:name` set, it will not be passed the Kubernetes
+credentials.
 
 ## Enabling or disabling the Kubernetes cluster integration
 
