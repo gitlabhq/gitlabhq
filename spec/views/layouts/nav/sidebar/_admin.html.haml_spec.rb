@@ -1,27 +1,26 @@
 require 'spec_helper'
 
-RSpec.describe 'admin active tab' do
-  before do
-    sign_in(create(:admin))
-  end
-
+describe 'layouts/nav/sidebar/_admin' do
   shared_examples 'page has active tab' do |title|
     it "activates #{title} tab" do
-      expect(page).to have_selector('.nav-sidebar .sidebar-top-level-items > li.active', count: 1)
-      expect(page.find('.nav-sidebar .sidebar-top-level-items > li.active')).to have_content(title)
+      render
+
+      expect(rendered).to have_selector('.nav-sidebar .sidebar-top-level-items > li.active', count: 1)
+      expect(rendered).to have_css('.nav-sidebar .sidebar-top-level-items > li.active', text: title)
     end
   end
 
   shared_examples 'page has active sub tab' do |title|
     it "activates #{title} sub tab" do
-      expect(page).to have_selector('.sidebar-sub-level-items > li.active', count: 2)
-      expect(page.all('.sidebar-sub-level-items > li.active')[1]).to have_content(title)
+      render
+
+      expect(rendered).to have_css('.sidebar-sub-level-items > li.active', text: title)
     end
   end
 
   context 'on home page' do
     before do
-      visit admin_root_path
+      allow(controller).to receive(:controller_name).and_return('dashboard')
     end
 
     it_behaves_like 'page has active tab', 'Overview'
@@ -29,7 +28,8 @@ RSpec.describe 'admin active tab' do
 
   context 'on projects' do
     before do
-      visit admin_projects_path
+      allow(controller).to receive(:controller_name).and_return('projects')
+      allow(controller).to receive(:controller_path).and_return('admin/projects')
     end
 
     it_behaves_like 'page has active tab', 'Overview'
@@ -38,7 +38,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on groups' do
     before do
-      visit admin_groups_path
+      allow(controller).to receive(:controller_name).and_return('groups')
     end
 
     it_behaves_like 'page has active tab', 'Overview'
@@ -47,7 +47,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on users' do
     before do
-      visit admin_users_path
+      allow(controller).to receive(:controller_name).and_return('users')
     end
 
     it_behaves_like 'page has active tab', 'Overview'
@@ -56,7 +56,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on logs' do
     before do
-      visit admin_logs_path
+      allow(controller).to receive(:controller_name).and_return('logs')
     end
 
     it_behaves_like 'page has active tab', 'Monitoring'
@@ -65,7 +65,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on messages' do
     before do
-      visit admin_broadcast_messages_path
+      allow(controller).to receive(:controller_name).and_return('broadcast_messages')
     end
 
     it_behaves_like 'page has active tab', 'Messages'
@@ -73,7 +73,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on hooks' do
     before do
-      visit admin_hooks_path
+      allow(controller).to receive(:controller_name).and_return('hooks')
     end
 
     it_behaves_like 'page has active tab', 'Hooks'
@@ -81,7 +81,7 @@ RSpec.describe 'admin active tab' do
 
   context 'on background jobs' do
     before do
-      visit admin_background_jobs_path
+      allow(controller).to receive(:controller_name).and_return('background_jobs')
     end
 
     it_behaves_like 'page has active tab', 'Monitoring'
