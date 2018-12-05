@@ -22,12 +22,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
-    notes_grouped_by_path = renderable_notes.group_by { |note| note.position.file_path }
 
-    @diffs.diff_files.each do |diff_file|
-      notes = notes_grouped_by_path.fetch(diff_file.file_path, [])
-      notes.each { |note| diff_file.unfold_diff_lines(note.position) }
-    end
+    note_positions = renderable_notes.map(&:position).compact
+    @diffs.unfold_diff_files(note_positions)
 
     @diffs.write_cache
 

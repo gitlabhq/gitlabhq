@@ -36,6 +36,18 @@ describe Projects::MergeRequests::DiffsController do
         end
       end
 
+      context 'when note has no position' do
+        before do
+          create(:legacy_diff_note_on_merge_request, project: project, noteable: merge_request, position: nil)
+        end
+
+        it 'serializes merge request diff collection' do
+          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+
+          go
+        end
+      end
+
       context 'with forked projects with submodules' do
         render_views
 
