@@ -17,6 +17,9 @@ describe Gitlab::UsageData do
       gcp_cluster = create(:cluster, :provided_by_gcp)
       create(:cluster, :provided_by_user)
       create(:cluster, :provided_by_user, :disabled)
+      create(:cluster, :group)
+      create(:cluster, :group, :disabled)
+      create(:cluster, :group, :disabled)
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
       create(:clusters_applications_cert_managers, :installed, cluster: gcp_cluster)
@@ -77,7 +80,11 @@ describe Gitlab::UsageData do
         environments
         clusters
         clusters_enabled
+        project_clusters_enabled
+        group_clusters_enabled
         clusters_disabled
+        project_clusters_disabled
+        group_clusters_disabled
         clusters_platforms_gke
         clusters_platforms_user
         clusters_applications_helm
@@ -127,8 +134,13 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
 
-      expect(count_data[:clusters_enabled]).to eq(6)
-      expect(count_data[:clusters_disabled]).to eq(1)
+      expect(count_data[:clusters_enabled]).to eq(7)
+      expect(count_data[:project_clusters_enabled]).to eq(6)
+      expect(count_data[:group_clusters_enabled]).to eq(1)
+      expect(count_data[:clusters_disabled]).to eq(3)
+      expect(count_data[:project_clusters_disabled]).to eq(1)
+      expect(count_data[:group_clusters_disabled]).to eq(2)
+      expect(count_data[:group_clusters_enabled]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
       expect(count_data[:clusters_applications_helm]).to eq(1)
