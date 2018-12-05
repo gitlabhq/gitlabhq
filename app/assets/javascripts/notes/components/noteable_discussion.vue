@@ -394,7 +394,7 @@ Please check your network connection and try again.`;
                   <div class="discussion-with-resolve-btn">
                     <button
                       type="button"
-                      class="js-vue-discussion-reply btn btn-text-field mr-sm-2 qa-discussion-reply"
+                      class="js-vue-discussion-reply btn btn-text-field qa-discussion-reply"
                       title="Add a reply"
                       @click="showReplyForm"
                     >
@@ -403,7 +403,7 @@ Please check your network connection and try again.`;
                     <div v-if="discussion.resolvable">
                       <button
                         type="button"
-                        class="btn btn-default mr-sm-2"
+                        class="btn btn-default ml-sm-2"
                         @click="resolveHandler();"
                       >
                         <i v-if="isResolving" aria-hidden="true" class="fa fa-spinner fa-spin"></i>

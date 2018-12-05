@@ -255,7 +255,6 @@ table {
     display: flex;
   }
 
-
   .discussion-actions {
     display: table;
 
@@ -276,8 +275,10 @@ table {
     }
   }
 
-  .btn {
-    width: 100%;
+  @include media-breakpoint-down(xs) {
+    .btn {
+      width: 100%;
+    }
   }
 
   .btn-text-field {
