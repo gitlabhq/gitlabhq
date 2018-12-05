@@ -379,7 +379,7 @@ describe('DiffsStoreActions', () => {
 
   describe('loadCollapsedDiff', () => {
     it('should fetch data and call mutation with response and the give parameter', done => {
-      const file = { hash: 123, loadCollapsedDiffUrl: '/load/collapsed/diff/url' };
+      const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
       const mock = new MockAdapter(axios);
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
