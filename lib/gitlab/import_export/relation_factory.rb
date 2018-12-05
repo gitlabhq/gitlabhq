@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class RelationFactory
       OVERRIDES = { snippets: :project_snippets,
+                    ci_pipelines: 'Ci::Pipeline',
                     pipelines: 'Ci::Pipeline',
                     stages: 'Ci::Stage',
                     statuses: 'commit_status',

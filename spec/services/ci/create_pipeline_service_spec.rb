@@ -44,7 +44,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to be_valid
         expect(pipeline).to be_persisted
         expect(pipeline).to be_push
-        expect(pipeline).to eq(project.pipelines.last)
+        expect(pipeline).to eq(project.ci_pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
         expect(pipeline.repository_source?).to be true
@@ -731,8 +731,8 @@ describe Ci::CreatePipelineService do
 
               it 'creates a merge request pipeline in the forked project' do
                 expect(pipeline).to be_persisted
-                expect(project.pipelines).to eq([pipeline])
-                expect(target_project.pipelines).to be_empty
+                expect(project.ci_pipelines).to eq([pipeline])
+                expect(target_project.ci_pipelines).to be_empty
               end
             end
 

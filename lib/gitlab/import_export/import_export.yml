@@ -51,7 +51,7 @@ project_tree:
     - resource_label_events:
       - label:
           :priorities
-  - pipelines:
+  - ci_pipelines:
     - notes:
       - :author
       - events:

@@ -1056,7 +1056,7 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines(shas: all_commit_shas)
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.pipelines
+    @all_pipelines ||= source_project.ci_pipelines
       .where(sha: shas, ref: source_branch)
       .where(merge_request: [nil, self])
       .sort_by_merge_request_pipelines
@@ -1220,7 +1220,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def base_pipeline
-    @base_pipeline ||= project.pipelines
+    @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
       .find_by(sha: diff_base_sha)
   end

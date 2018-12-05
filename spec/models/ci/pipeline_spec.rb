@@ -33,8 +33,9 @@ describe Ci::Pipeline, :mailer do
 
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
-      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:pipelines)
-      expect(Project.reflect_on_association(:pipelines).has_inverse?).to eq(:project)
+      expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:all_pipelines)
+      expect(Project.reflect_on_association(:all_pipelines).has_inverse?).to eq(:project)
+      expect(Project.reflect_on_association(:ci_pipelines).has_inverse?).to eq(:project)
     end
   end
 
@@ -1186,7 +1187,7 @@ describe Ci::Pipeline, :mailer do
       create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
       create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline2, name: 'rubocop')
 
-      pipelines = project.pipelines.to_a
+      pipelines = project.ci_pipelines.to_a
 
       pipelines.each(&:number_of_warnings)
 
