@@ -2710,6 +2710,17 @@ describe Project do
     end
   end
 
+  describe '#lfs_http_url_to_repo' do
+    let(:project) { create(:project) }
+
+    it 'returns the url to the repo without a username' do
+      lfs_http_url_to_repo = project.lfs_http_url_to_repo('operation_that_doesnt_matter')
+
+      expect(lfs_http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(lfs_http_url_to_repo).not_to include('@')
+    end
+  end
+
   describe '#pipeline_status' do
     let(:project) { create(:project, :repository) }
     it 'builds a pipeline status' do
