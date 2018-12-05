@@ -296,7 +296,6 @@ export default {
         :request-status="applications.cert_manager.requestStatus"
         :request-reason="applications.cert_manager.requestReason"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
         <div slot="description" v-html="certManagerDescription"></div>
@@ -405,7 +404,6 @@ export default {
         :request-reason="applications.knative.requestReason"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
