@@ -249,6 +249,27 @@ describe Gitlab::UrlBlocker do
         end
       end
     end
+
+    context 'when ascii_only is true' do
+      it 'returns true for unicode domain' do
+        expect(described_class.blocked_url?('https://𝕘itⅼαƄ.com/foo/foo.bar', ascii_only: true)).to be true
+      end
+
+      it 'returns true for unicode tld' do
+        expect(described_class.blocked_url?('https://gitlab.ᴄοｍ/foo/foo.bar', ascii_only: true)).to be true
+      end
+
+      it 'returns true for unicode path' do
+        expect(described_class.blocked_url?('https://gitlab.com/𝒇οο/𝒇οο.Ƅαꮁ', ascii_only: true)).to be true
+      end
+
+      it 'returns true for IDNA deviations' do
+        expect(described_class.blocked_url?('https://mißile.com/foo/foo.bar', ascii_only: true)).to be true
+        expect(described_class.blocked_url?('https://miςςile.com/foo/foo.bar', ascii_only: true)).to be true
+        expect(described_class.blocked_url?('https://git‍lab.com/foo/foo.bar', ascii_only: true)).to be true
+        expect(described_class.blocked_url?('https://git‌lab.com/foo/foo.bar', ascii_only: true)).to be true
+      end
+    end
   end
 
   describe '#validate_hostname!' do

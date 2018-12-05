@@ -8,7 +8,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, allow_localhost: false, allow_local_network: true, enforce_user: false, ports: [], protocols: [])
+      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false)
         return true if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
@@ -22,6 +22,7 @@ module Gitlab
         validate_port!(port, ports) if ports.any?
         validate_user!(uri.user) if enforce_user
         validate_hostname!(uri.hostname)
+        validate_unicode_restriction!(uri) if ascii_only
 
         begin
           addrs_info = Addrinfo.getaddrinfo(uri.hostname, port, nil, :STREAM).map do |addr|
@@ -89,6 +90,12 @@ module Gitlab
         return if value =~ /\A\p{Alnum}/
 
         raise BlockedUrlError, "Hostname or IP address invalid"
+      end
+
+      def validate_unicode_restriction!(uri)
+        return if uri.to_s.ascii_only?
+
+        raise BlockedUrlError, "URI must be ascii only #{uri.to_s.dump}"
       end
 
       def validate_localhost!(addrs_info)
