@@ -745,4 +745,33 @@ describe Group do
       let(:uploader_class) { AttachmentUploader }
     end
   end
+
+  describe '#group_clusters_enabled?' do
+    before do
+      # Override global stub in spec/spec_helper.rb
+      expect(Feature).to receive(:enabled?).and_call_original
+    end
+
+    subject { group.group_clusters_enabled? }
+
+    it { is_expected.to be_truthy }
+
+    context 'explicitly disabled for root ancestor' do
+      before do
+        feature = Feature.get(:group_clusters)
+        feature.disable(group.root_ancestor)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'explicitly disabled for root ancestor' do
+      before do
+        feature = Feature.get(:group_clusters)
+        feature.enable(group.root_ancestor)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

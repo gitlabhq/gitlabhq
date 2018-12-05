@@ -400,6 +400,10 @@ class Group < Namespace
     ensure_runners_token!
   end
 
+  def group_clusters_enabled?
+    Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
+  end
+
   private
 
   def update_two_factor_requirement

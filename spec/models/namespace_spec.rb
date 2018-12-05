@@ -560,6 +560,7 @@ describe Namespace do
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
     it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
+    it { expect(child.all_projects.to_a).to match_array([project2]) }
   end
 
   describe '#all_pipelines' do
@@ -720,6 +721,7 @@ describe Namespace do
       deep_nested_group = create(:group, parent: nested_group)
       very_deep_nested_group = create(:group, parent: deep_nested_group)
 
+      expect(root_group.root_ancestor).to eq(root_group)
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)

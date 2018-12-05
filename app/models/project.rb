@@ -238,6 +238,7 @@ class Project < ActiveRecord::Base
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
+  has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace'
 
   has_many :prometheus_metrics
 
@@ -300,6 +301,8 @@ class Project < ActiveRecord::Base
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
   delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
+  delegate :group_clusters_enabled?, to: :group, allow_nil: true
+  delegate :root_ancestor, to: :namespace, allow_nil: true
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -390,6 +393,12 @@ class Project < ActiveRecord::Base
   scope :with_group_runners_enabled, -> do
     joins(:ci_cd_settings)
     .where(project_ci_cd_settings: { group_runners_enabled: true })
+  end
+
+  scope :missing_kubernetes_namespace, -> (kubernetes_namespaces) do
+    subquery = kubernetes_namespaces.select('1').where('clusters_kubernetes_namespaces.project_id = projects.id')
+
+    where('NOT EXISTS (?)', subquery)
   end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
@@ -556,9 +565,9 @@ class Project < ActiveRecord::Base
 
   # returns all ancestor-groups upto but excluding the given namespace
   # when no namespace is given, all ancestors upto the top are returned
-  def ancestors_upto(top = nil)
+  def ancestors_upto(top = nil, hierarchy_order: nil)
     Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
-      .base_and_ancestors(upto: top)
+      .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
   def lfs_enabled?
@@ -1069,6 +1078,12 @@ class Project < ActiveRecord::Base
   # For compatibility with old code
   def code
     path
+  end
+
+  def all_clusters
+    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+
+    Clusters::Cluster.from_union([clusters, group_clusters])
   end
 
   def items_for(entity)
