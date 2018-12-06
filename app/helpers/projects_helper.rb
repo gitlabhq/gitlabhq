@@ -257,6 +257,10 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def link_to_bfg
+    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  end
+
   def legacy_render_context(params)
     params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
   end

@@ -115,6 +115,7 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :description_html
     - :repository_languages
+    - :bfg_object_map
   namespaces:
     - :runners_token
     - :runners_token_encrypted

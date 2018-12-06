@@ -339,6 +339,7 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
+  validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -411,6 +412,9 @@ class Project < ActiveRecord::Base
                                             less_than: 1.month,
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
+
+  # Used by Projects::CleanupService to hold a map of rewritten object IDs
+  mount_uploader :bfg_object_map, AttachmentUploader
 
   # Returns a project, if it is not about to be removed.
   #
@@ -1971,6 +1975,10 @@ class Project < ActiveRecord::Base
 
   def snippets_visible?(user = nil)
     Ability.allowed?(user, :read_project_snippet, self)
+  end
+
+  def max_attachment_size
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
   private

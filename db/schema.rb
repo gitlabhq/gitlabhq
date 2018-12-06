@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181129104944) do
+ActiveRecord::Schema.define(version: 20181203002526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1684,6 +1684,7 @@ ActiveRecord::Schema.define(version: 20181129104944) do
     t.boolean "remote_mirror_available_overridden"
     t.bigint "pool_repository_id"
     t.string "runners_token_encrypted"
+    t.string "bfg_object_map"
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree

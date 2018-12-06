@@ -466,6 +466,14 @@ class NotificationService
     end
   end
 
+  def repository_cleanup_success(project, user)
+    mailer.send(:repository_cleanup_success_email, project, user).deliver_later
+  end
+
+  def repository_cleanup_failure(project, user, error)
+    mailer.send(:repository_cleanup_failure_email, project, user, error).deliver_later
+  end
+
   protected
 
   def new_resource_email(target, method)

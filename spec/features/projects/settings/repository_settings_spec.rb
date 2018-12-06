@@ -196,5 +196,40 @@ describe 'Projects > Settings > Repository settings' do
         end
       end
     end
+
+    context 'repository cleanup settings' do
+      let(:object_map_file) { Rails.root.join('spec', 'fixtures', 'bfg_object_map.txt') }
+
+      context 'feature enabled' do
+        it 'uploads an object map file', :js do
+          stub_feature_flags(project_cleanup: true)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content('Repository cleanup')
+
+          page.within('#cleanup') do
+            attach_file('project[bfg_object_map]', object_map_file, visible: false)
+
+            Sidekiq::Testing.fake! do
+              click_button 'Start cleanup'
+            end
+          end
+
+          expect(page).to have_content('Repository cleanup has started')
+          expect(RepositoryCleanupWorker.jobs.count).to eq(1)
+        end
+      end
+
+      context 'feature disabled' do
+        it 'does not show the settings' do
+          stub_feature_flags(project_cleanup: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).not_to have_content('Repository cleanup')
+        end
+      end
+    end
   end
 end
