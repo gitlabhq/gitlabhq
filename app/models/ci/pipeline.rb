@@ -605,13 +605,18 @@ module Ci
     end
 
     def predefined_variables
-      Gitlab::Ci::Variables::Collection.new
-        .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
-        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
-        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
-        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
-        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
+        variables.append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+        variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+        variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+
+        if merge_request? && merge_request
+          variables.concat(merge_request.predefined_variables)
+        end
+      end
     end
 
     def queued_duration

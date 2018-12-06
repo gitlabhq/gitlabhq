@@ -1070,6 +1070,42 @@ class MergeRequest < ActiveRecord::Base
     actual_head_pipeline&.has_test_reports?
   end
 
+  def predefined_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
+      variables.append(key: 'CI_MERGE_REQUEST_IID', value: iid.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_REF_PATH',
+                       value: ref_path.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_ID',
+                       value: project.id.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_PATH',
+                       value: project.full_path)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_URL',
+                       value: project.web_url)
+
+      variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME',
+                       value: target_branch.to_s)
+
+      if source_project
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_ID',
+                         value: source_project.id.to_s)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH',
+                         value: source_project.full_path)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_URL',
+                         value: source_project.web_url)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME',
+                         value: source_branch.to_s)
+      end
+    end
+  end
+
   # rubocop: disable CodeReuse/ServiceClass
   def compare_test_reports
     unless has_test_reports?
