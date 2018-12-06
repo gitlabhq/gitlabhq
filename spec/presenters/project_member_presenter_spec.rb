@@ -135,4 +135,10 @@ describe ProjectMemberPresenter do
       end
     end
   end
+
+  it_behaves_like '#valid_level_roles', :project do
+    before do
+      entity.group = group
+    end
+  end
 end

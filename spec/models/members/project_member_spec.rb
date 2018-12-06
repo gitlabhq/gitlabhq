@@ -124,4 +124,19 @@ describe ProjectMember do
   end
 
   it_behaves_like 'members notifications', :project
+
+  context 'access levels' do
+    context 'with parent group' do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:entity) { create(:project, group: parent_entity) }
+      end
+    end
+
+    context 'with parent group and a subgroup', :nested_groups do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:subgroup) { create(:group, parent: parent_entity) }
+        let(:entity) { create(:project, group: subgroup) }
+      end
+    end
+  end
 end

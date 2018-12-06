@@ -1906,7 +1906,7 @@ describe API::Projects do
     let(:group) { create(:group) }
     let(:group2) do
       group = create(:group, name: 'group2_name')
-      group.add_owner(user2)
+      group.add_maintainer(user2)
       group
     end
 
