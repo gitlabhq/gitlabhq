@@ -26,6 +26,28 @@ describe Gitlab::Gpg::Commit do
       end
     end
 
+    context 'invalid signature' do
+      let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
+
+      let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
+
+      before do
+        allow(Gitlab::Git::Commit).to receive(:extract_signature_lazily)
+            .with(Gitlab::Git::Repository, commit_sha)
+            .and_return(
+              [
+                # Corrupt the key
+                GpgHelpers::User1.signed_commit_signature.tr('=', 'a'),
+                GpgHelpers::User1.signed_commit_base_data
+              ]
+            )
+      end
+
+      it 'returns nil' do
+        expect(described_class.new(commit).signature).to be_nil
+      end
+    end
+
     context 'known key' do
       context 'user matches the key uid' do
         context 'user email matches the email committer' do

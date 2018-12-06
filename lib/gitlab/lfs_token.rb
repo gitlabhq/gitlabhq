@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def type
-      actor.is_a?(User) ? :lfs_token : :lfs_deploy_token
+      user? ? :lfs_token : :lfs_deploy_token
     end
 
     def actor_name

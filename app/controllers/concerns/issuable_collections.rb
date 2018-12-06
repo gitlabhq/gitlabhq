@@ -91,7 +91,7 @@ module IssuableCollections
     options = {
       scope: params[:scope],
       state: params[:state],
-      sort: set_sort_order_from_cookie || default_sort_order
+      sort: set_sort_order
     }
 
     # Used by view to highlight active option
@@ -111,6 +111,32 @@ module IssuableCollections
 
   def default_state
     'opened'
+  end
+
+  def set_sort_order
+    set_sort_order_from_user_preference || set_sort_order_from_cookie || default_sort_order
+  end
+
+  def set_sort_order_from_user_preference
+    return unless current_user
+    return unless issuable_sorting_field
+
+    user_preference = current_user.user_preference
+
+    sort_param = params[:sort]
+    sort_param ||= user_preference[issuable_sorting_field]
+
+    if user_preference[issuable_sorting_field] != sort_param
+      user_preference.update_attribute(issuable_sorting_field, sort_param)
+    end
+
+    sort_param
+  end
+
+  # Implement default_sorting_field method on controllers
+  # to choose which column to store the sorting parameter.
+  def issuable_sorting_field
+    nil
   end
 
   def set_sort_order_from_cookie
@@ -141,12 +167,6 @@ module IssuableCollections
     case value
     when 'id_asc'             then sort_value_oldest_created
     when 'id_desc'            then sort_value_recently_created
-    when 'created_asc'        then sort_value_created_date
-    when 'created_desc'       then sort_value_created_date
-    when 'due_date_asc'       then sort_value_due_date
-    when 'due_date_desc'      then sort_value_due_date
-    when 'milestone_due_asc'  then sort_value_milestone
-    when 'milestone_due_desc' then sort_value_milestone
     when 'downvotes_asc'      then sort_value_popularity
     when 'downvotes_desc'     then sort_value_popularity
     else value

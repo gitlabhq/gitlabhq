@@ -76,7 +76,7 @@ describe Group do
 
       before do
         group.add_developer(user)
-        sub_group.add_developer(user)
+        sub_group.add_maintainer(user)
       end
 
       it 'also gets notification settings from parent groups' do
@@ -498,7 +498,7 @@ describe Group do
     it 'returns member users on every nest level without duplication' do
       group.add_developer(user_a)
       nested_group.add_developer(user_b)
-      deep_nested_group.add_developer(user_a)
+      deep_nested_group.add_maintainer(user_a)
 
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
@@ -743,6 +743,35 @@ describe Group do
       let(:model_object) { create(:group, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  describe '#group_clusters_enabled?' do
+    before do
+      # Override global stub in spec/spec_helper.rb
+      expect(Feature).to receive(:enabled?).and_call_original
+    end
+
+    subject { group.group_clusters_enabled? }
+
+    it { is_expected.to be_truthy }
+
+    context 'explicitly disabled for root ancestor' do
+      before do
+        feature = Feature.get(:group_clusters)
+        feature.disable(group.root_ancestor)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'explicitly disabled for root ancestor' do
+      before do
+        feature = Feature.get(:group_clusters)
+        feature.enable(group.root_ancestor)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 end

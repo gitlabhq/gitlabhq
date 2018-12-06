@@ -56,7 +56,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipelines/:pipeline_id/jobs' do
-        pipeline = user_project.pipelines.find(params[:pipeline_id])
+        pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
         builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])

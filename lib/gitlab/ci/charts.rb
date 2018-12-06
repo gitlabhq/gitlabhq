@@ -54,7 +54,7 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def collect
-          query = project.pipelines
+          query = project.all_pipelines
             .where("? > #{::Ci::Pipeline.table_name}.created_at AND #{::Ci::Pipeline.table_name}.created_at > ?", @to, @from) # rubocop:disable GitlabSecurity/SqlInjection
 
           totals_count  = grouped_count(query)
@@ -115,7 +115,7 @@ module Gitlab
 
       class PipelineTime < Chart
         def collect
-          commits = project.pipelines.last(30)
+          commits = project.all_pipelines.last(30)
 
           commits.each do |commit|
             @labels << commit.short_sha

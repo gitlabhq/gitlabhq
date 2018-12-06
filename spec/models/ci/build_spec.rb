@@ -769,33 +769,15 @@ describe Ci::Build do
     let(:subject) { build.hide_secrets(data) }
 
     context 'hide runners token' do
-      let(:data) { 'new token data'}
+      let(:data) { "new #{project.runners_token} data"}
 
-      before do
-        build.project.update(runners_token: 'token')
-      end
-
-      it { is_expected.to eq('new xxxxx data') }
+      it { is_expected.to match(/^new x+ data$/) }
     end
 
     context 'hide build token' do
-      let(:data) { 'new token data'}
+      let(:data) { "new #{build.token} data"}
 
-      before do
-        build.update(token: 'token')
-      end
-
-      it { is_expected.to eq('new xxxxx data') }
-    end
-
-    context 'hide build token' do
-      let(:data) { 'new token data'}
-
-      before do
-        build.update(token: 'token')
-      end
-
-      it { is_expected.to eq('new xxxxx data') }
+      it { is_expected.to match(/^new x+ data$/) }
     end
   end
 
@@ -1943,7 +1925,7 @@ describe Ci::Build do
 
     context 'when token is empty' do
       before do
-        build.token = nil
+        build.update_columns(token: nil, token_encrypted: nil)
       end
 
       it { is_expected.to be_nil}
@@ -2159,7 +2141,7 @@ describe Ci::Build do
       end
 
       before do
-        build.token = 'my-token'
+        build.set_token('my-token')
         build.yaml_variables = []
       end
 

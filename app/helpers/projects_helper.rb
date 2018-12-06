@@ -257,6 +257,10 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def link_to_bfg
+    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  end
+
   def legacy_render_context(params)
     params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
   end
@@ -307,6 +311,7 @@ module ProjectsHelper
       settings:         :admin_project,
       builds:           :read_build,
       clusters:         :read_cluster,
+      serverless:       :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -545,6 +550,7 @@ module ProjectsHelper
     %w[
       environments
       clusters
+      functions
       user
       gcp
     ]

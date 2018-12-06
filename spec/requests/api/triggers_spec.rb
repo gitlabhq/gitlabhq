@@ -39,7 +39,7 @@ describe API::Triggers do
     end
 
     context 'Have a commit' do
-      let(:pipeline) { project.pipelines.last }
+      let(:pipeline) { project.ci_pipelines.last }
 
       it 'creates pipeline' do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'master')

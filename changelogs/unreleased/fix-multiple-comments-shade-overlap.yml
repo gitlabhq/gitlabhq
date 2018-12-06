@@ -1,0 +1,5 @@
+---
+title: Fix multiple commits shade overlapping vertical discussion line
+merge_request: 23515
+author:
+type: fixed

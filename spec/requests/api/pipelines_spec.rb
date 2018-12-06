@@ -304,7 +304,7 @@ describe API::Pipelines do
         it 'creates and returns a new pipeline' do
           expect do
             post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
-          end.to change { project.pipelines.count }.by(1)
+          end.to change { project.ci_pipelines.count }.by(1)
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response).to be_a Hash
@@ -317,8 +317,8 @@ describe API::Pipelines do
           it 'creates and returns a new pipeline using the given variables' do
             expect do
               post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
-            end.to change { project.pipelines.count }.by(1)
-            expect_variables(project.pipelines.last.variables, variables)
+            end.to change { project.ci_pipelines.count }.by(1)
+            expect_variables(project.ci_pipelines.last.variables, variables)
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response).to be_a Hash
@@ -338,8 +338,8 @@ describe API::Pipelines do
           it 'creates and returns a new pipeline using the given variables' do
             expect do
               post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
-            end.to change { project.pipelines.count }.by(1)
-            expect_variables(project.pipelines.last.variables, variables)
+            end.to change { project.ci_pipelines.count }.by(1)
+            expect_variables(project.ci_pipelines.last.variables, variables)
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response).to be_a Hash
@@ -353,7 +353,7 @@ describe API::Pipelines do
             it "doesn't create a job" do
               expect do
                 post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
-              end.not_to change { project.pipelines.count }
+              end.not_to change { project.ci_pipelines.count }
 
               expect(response).to have_gitlab_http_status(400)
             end

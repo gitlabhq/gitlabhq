@@ -48,6 +48,7 @@ after_script:
 stages:
   - build
   - prepare
+  - merge
   - test
   - post-test
   - pages
@@ -666,7 +667,7 @@ gitlab:assets:compile:
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitabhq
+    - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
   tags:
     - gitlab-org-delivery
@@ -697,6 +698,32 @@ karma:
       - coverage-javascript/
     reports:
       junit: junit_karma.xml
+
+jest:
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *use-pg
+  dependencies:
+  - compile-assets
+  - setup-test-env
+  script:
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake karma:fixtures
+    - date
+    - yarn jest --ci --coverage
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+    - coverage-frontend/
+    - junit_jest.xml
+    reports:
+      junit: junit_jest.xml
+  cache:
+    key: jest
+    paths:
+      - tmp/jest/jest/
 
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -922,6 +949,8 @@ no_ee_check:
 # GitLab Review apps
 review-deploy:
   <<: *review-base
+  retry: 2
+  allow_failure: true
   variables:
     GIT_DEPTH: "1"
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
@@ -951,6 +980,8 @@ review-deploy:
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
+  retry: 2
+  allow_failure: true
   variables:
     <<: *review-docker-variables
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
@@ -978,7 +1009,6 @@ review-deploy:
 
 review-qa-smoke:
   <<: *review-qa-base
-  retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 

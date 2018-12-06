@@ -13,9 +13,9 @@ module Spec
       module Features
         module SortingHelpers
           def sort_by(value)
-            find('.filter-dropdown-container button.dropdown-menu-toggle').click
+            find('.filter-dropdown-container .dropdown').click
 
-            page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+            page.within('ul.dropdown-menu.dropdown-menu-right li') do
               click_link(value)
             end
           end

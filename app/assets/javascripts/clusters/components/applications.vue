@@ -296,7 +296,6 @@ export default {
         :request-status="applications.cert_manager.requestStatus"
         :request-reason="applications.cert_manager.requestReason"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
         <div slot="description" v-html="certManagerDescription"></div>
@@ -396,6 +395,7 @@ export default {
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="knative"
         :logo-url="knativeLogo"
         :title="applications.knative.title"
@@ -405,17 +405,15 @@ export default {
         :request-reason="applications.knative.requestReason"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
           <p>
             {{
-              s__(`ClusterIntegration|Knative (pronounced kay-nay-tiv) extends
-              Kubernetes to provide a set of middleware components that are
-              essential to build modern, source-centric, and container-based
-              applications that can run anywhere: on premises, in the cloud, or
-              even in a third-party data center.`)
+              s__(`ClusterIntegration|Knative extends Kubernetes to provide
+              a set of middleware components that are essential to build modern,
+              source-centric, and container-based applications that can run
+              anywhere: on premises, in the cloud, or even in a third-party data center.`)
             }}
           </p>
 
@@ -433,7 +431,7 @@ export default {
               />
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="helmInstalled">
             <div class="form-group">
               <label for="knative-domainname">
                 {{ s__('ClusterIntegration|Knative Domain Name:') }}

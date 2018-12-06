@@ -1,7 +1,7 @@
 - expanded = Rails.env.test?
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 
-%section.settings.project-mirror-settings.js-mirror-settings.no-animate#js-push-remote-settings{ class: ('expanded' if expanded) }
+%section.settings.project-mirror-settings.js-mirror-settings.no-animate.qa-mirroring-repositories-settings#js-push-remote-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4= _('Mirroring repositories')
     %button.btn.js-settings-toggle
@@ -20,7 +20,7 @@
 
           .form-group.has-feedback
             = label_tag :url, _('Git repository URL'), class: 'label-light'
-            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
+            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url qa-mirror-repository-url-input', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
 
           = render 'projects/mirrors/instructions'
 
@@ -32,7 +32,7 @@
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit _('Mirror repository'), class: 'btn btn-success js-mirror-submit', name: :update_remote_mirror
+          = f.submit _('Mirror repository'), class: 'btn btn-success js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror
 
     .panel.panel-default
       .table-responsive
@@ -50,10 +50,10 @@
             = render_if_exists 'projects/mirrors/table_pull_row'
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - if mirror.enabled
-                %tr
-                  %td= mirror.safe_url
+                %tr.qa-mirrored-repository-row
+                  %td.qa-mirror-repository-url= mirror.safe_url
                   %td= _('Push')
-                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+                  %td.qa-mirror-last-update-at= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
                   %td
                     - if mirror.last_error.present?
                       .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')

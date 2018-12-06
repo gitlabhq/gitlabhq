@@ -53,7 +53,7 @@
                 = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
             .prepend-top-5.append-bottom-10
               %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
-              %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
+              %span.file_name.prepend-left-default.js-filename= _("No file chosen")
               = f.file_field :avatar, class: "js-project-avatar-input hidden"
             .form-text.text-muted= _("The maximum file size allowed is 200KB.")
             - if @project.avatar?

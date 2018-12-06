@@ -81,3 +81,4 @@
   - [delete_diff_files, 1]
   - [detect_repository_languages, 1]
   - [auto_devops, 2]
+  - [repository_cleanup, 1]

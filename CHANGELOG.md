@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.3 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
+## 11.5.2 (2018-12-03)
+
+### Removed (1 change)
+
+- Removed Site Statistics optimization as it was causing problems. !23314
+
+### Fixed (6 changes, 1 of them is from the community)
+
+- Display impersonation token value only after creation. !22916
+- Fix not render emoji in filter dropdown. !23112 (Hiroyuki Sato)
+- Fixes stuck tooltip on stop env button. !23244
+- Correctly handle data-loss scenarios when encrypting columns. !23306
+- Clear BatchLoader context between Sidekiq jobs. !23308
+- Fix handling of filenames with hash characters in tree view. !23368
+
+
 ## 11.5.1 (2018-11-26)
 
 ### Security (17 changes)
@@ -603,6 +626,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.12 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
 
 
 ## 11.3.11 (2018-11-26)

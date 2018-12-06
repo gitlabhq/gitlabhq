@@ -135,4 +135,12 @@ describe GroupMemberPresenter do
       end
     end
   end
+
+  it_behaves_like '#valid_level_roles', :group do
+    let(:expected_roles) { { 'Developer' => 30, 'Maintainer' => 40, 'Owner' => 50, 'Reporter' => 20 } }
+
+    before do
+      entity.parent = group
+    end
+  end
 end

@@ -245,6 +245,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      namespace :serverless do
+        resources :functions, only: [:index]
+      end
+
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
@@ -432,6 +436,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
+          post :cleanup
         end
       end
 

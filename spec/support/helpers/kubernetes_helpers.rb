@@ -34,6 +34,17 @@ module KubernetesHelpers
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
+  def stub_kubeclient_knative_services(**options)
+    options[:name] ||= "kubetest"
+    options[:namespace] ||= "default"
+    options[:domain] ||= "example.com"
+
+    stub_kubeclient_discover(service.api_url)
+    knative_url = service.api_url + "/apis/serving.knative.dev/v1alpha1/services"
+
+    WebMock.stub_request(:get, knative_url).to_return(kube_response(kube_knative_services_body(options)))
+  end
+
   def stub_kubeclient_get_secret(api_url, **options)
     options[:metadata_name] ||= "default-token-1"
     options[:namespace] ||= "default"
@@ -44,6 +55,11 @@ module KubernetesHelpers
 
   def stub_kubeclient_get_secret_error(api_url, name, namespace: 'default', status: 404)
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{name}")
+      .to_return(status: [status, "Internal Server Error"])
+  end
+
+  def stub_kubeclient_get_service_account_error(api_url, name, namespace: 'default', status: 404)
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts/#{name}")
       .to_return(status: [status, "Internal Server Error"])
   end
 
@@ -62,9 +78,24 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_put_secret(api_url, name, namespace: 'default')
+    WebMock.stub_request(:put, api_url + "/api/v1/namespaces/#{namespace}/secrets/#{name}")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_get_cluster_role_binding_error(api_url, name, status: 404)
+    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/#{name}")
+      .to_return(status: [status, "Internal Server Error"])
+  end
+
   def stub_kubeclient_create_cluster_role_binding(api_url)
     WebMock.stub_request(:post, api_url + '/apis/rbac.authorization.k8s.io/v1/clusterrolebindings')
       .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_get_role_binding_error(api_url, name, namespace: 'default', status: 404)
+    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
+      .to_return(status: [status, "Internal Server Error"])
   end
 
   def stub_kubeclient_create_role_binding(api_url, namespace: 'default')
@@ -161,6 +192,13 @@ module KubernetesHelpers
     }
   end
 
+  def kube_knative_services_body(**options)
+    {
+      "kind" => "List",
+      "items" => [kube_service(options)]
+    }
+  end
+
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
   def kube_pod(name: "kube-pod", app: "valid-pod-label", status: "Running", track: nil)
@@ -200,6 +238,54 @@ module KubernetesHelpers
         "replicas" => 3,
         "updatedReplicas" => 3,
         "availableReplicas" => 3
+      }
+    }
+  end
+
+  def kube_service(name: "kubetest", namespace: "default", domain: "example.com")
+    {
+      "metadata" => {
+          "creationTimestamp" => "2018-11-21T06:16:33Z",
+          "name" => name,
+          "namespace" => namespace,
+          "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
+      },
+      "spec" => {
+        "generation" => 2
+      },
+      "status" => {
+        "domain" => "#{name}.#{namespace}.#{domain}",
+        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
+        "latestCreatedRevisionName" => "#{name}-00002",
+        "latestReadyRevisionName" => "#{name}-00002",
+        "observedGeneration" => 2
+      }
+    }
+  end
+
+  def kube_service_full(name: "kubetest", namespace: "kube-ns", domain: "example.com")
+    {
+      "metadata" => {
+        "creationTimestamp" => "2018-11-21T06:16:33Z",
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}",
+        "annotation" => {
+          "description" => "This is a test description"
+        }
+      },
+      "spec" => {
+        "generation" => 2,
+        "build" => {
+          "template" => "go-1.10.3"
+        }
+      },
+      "status" => {
+        "domain" => "#{name}.#{namespace}.#{domain}",
+        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
+        "latestCreatedRevisionName" => "#{name}-00002",
+        "latestReadyRevisionName" => "#{name}-00002",
+        "observedGeneration" => 2
       }
     }
   end

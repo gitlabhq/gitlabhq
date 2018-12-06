@@ -289,8 +289,8 @@ function get_job_id() {
     local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?per_page=100&page=${page}${query_string}"
     echoerr "GET ${url}"
 
-    local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".[] | select(.name == \"${job_name}\") | .id")
-    [[ "${job_id}" == "" && "${page}" -lt "$max_page" ]] || break
+    local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
+    [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
 
     ((page++))
   done
@@ -328,17 +328,18 @@ function wait_for_job_to_be_done() {
 
   # In case the job hasn't finished yet. Keep trying until the job times out.
   local interval=30
-  local elapsed=0
+  local elapsed_seconds=0
   while true; do
     local job_status=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".status" | sed -e s/\"//g)
     [[ "${job_status}" == "pending" || "${job_status}" == "running" ]] || break
 
     printf "."
-    ((elapsed+=$interval))
+    ((elapsed_seconds+=$interval))
     sleep ${interval}
   done
 
-  echoerr "Waited '${job_name}' for ${elapsed} seconds."
+  local elapsed_minutes=$((elapsed_seconds / 60))
+  echoerr "Waited '${job_name}' for ${elapsed_minutes} minutes."
 
   if [[ "${job_status}" == "failed" ]]; then
     echo "The '${job_name}' failed."

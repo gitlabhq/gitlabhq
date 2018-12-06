@@ -8,7 +8,7 @@ class PipelinesFinder
   def initialize(project, current_user, params = {})
     @project = project
     @current_user = current_user
-    @pipelines = project.pipelines
+    @pipelines = project.all_pipelines
     @params = params
   end
 

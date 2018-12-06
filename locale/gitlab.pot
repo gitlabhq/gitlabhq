@@ -225,7 +225,7 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
-msgid "403|Please contact your GitLab administrator to get the permission."
+msgid "403|Please contact your GitLab administrator to get permission."
 msgstr ""
 
 msgid "403|You don't have the permission to access this page."
@@ -1244,6 +1244,9 @@ msgstr ""
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
+msgid "Choose a file"
+msgstr ""
+
 msgid "Choose a template..."
 msgstr ""
 
@@ -1571,13 +1574,13 @@ msgstr ""
 msgid "ClusterIntegration|Knative"
 msgstr ""
 
-msgid "ClusterIntegration|Knative (pronounced kay-nay-tiv) extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
-msgstr ""
-
 msgid "ClusterIntegration|Knative Domain Name:"
 msgstr ""
 
 msgid "ClusterIntegration|Knative IP Address:"
+msgstr ""
+
+msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"
@@ -2939,6 +2942,9 @@ msgstr ""
 msgid "Failed to update issues, please try again."
 msgstr ""
 
+msgid "Failed to upload object map file"
+msgstr ""
+
 msgid "Failure"
 msgstr ""
 
@@ -3436,6 +3442,9 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like \"1 hour\". Values without specification represent seconds."
+msgstr ""
+
 msgid "If disabled, the access level will depend on the user's permissions in the project."
 msgstr ""
 
@@ -3795,10 +3804,16 @@ msgstr ""
 msgid "Latest changes"
 msgstr ""
 
+msgid "Latest pipeline for this branch"
+msgstr ""
+
 msgid "Learn more"
 msgstr ""
 
 msgid "Learn more about %{issue_boards_url}, to keep track of issues in multiple lists, using labels, assignees, and milestones. If you’re missing something from issue boards, please create an issue on %{gitlab_issues_url}."
+msgstr ""
+
+msgid "Learn more about Auto DevOps"
 msgstr ""
 
 msgid "Learn more about Kubernetes"
@@ -4324,6 +4339,9 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
+msgid "No file selected"
+msgstr ""
+
 msgid "No files found."
 msgstr ""
 
@@ -4612,9 +4630,6 @@ msgid "Pending"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."
-msgstr ""
-
-msgid "Per job. If a job passes this threshold, it will be marked as failed"
 msgstr ""
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
@@ -5483,6 +5498,12 @@ msgstr ""
 msgid "Repository URL"
 msgstr ""
 
+msgid "Repository cleanup"
+msgstr ""
+
+msgid "Repository cleanup has started. You will receive an email once the cleanup operation is complete."
+msgstr ""
+
 msgid "Repository maintenance"
 msgstr ""
 
@@ -5807,6 +5828,45 @@ msgid "September"
 msgstr ""
 
 msgid "Server version"
+msgstr ""
+
+msgid "Serverless"
+msgstr ""
+
+msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
+msgstr ""
+
+msgid "Serverless|An error occurred while retrieving serverless components"
+msgstr ""
+
+msgid "Serverless|Domain"
+msgstr ""
+
+msgid "Serverless|Function"
+msgstr ""
+
+msgid "Serverless|Getting started with serverless"
+msgstr ""
+
+msgid "Serverless|If you believe none of these apply, please check back later as the function data may be in the process of becoming available."
+msgstr ""
+
+msgid "Serverless|Install Knative"
+msgstr ""
+
+msgid "Serverless|Last Update"
+msgstr ""
+
+msgid "Serverless|Learn more about Serverless"
+msgstr ""
+
+msgid "Serverless|No functions available"
+msgstr ""
+
+msgid "Serverless|Runtime"
+msgstr ""
+
+msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
 msgstr ""
 
 msgid "Service Templates"
@@ -6156,6 +6216,9 @@ msgstr ""
 msgid "Start and due date"
 msgstr ""
 
+msgid "Start cleanup"
+msgstr ""
+
 msgid "Start date"
 msgstr ""
 
@@ -6369,6 +6432,9 @@ msgid "The import will time out after %{timeout}. For repositories that take lon
 msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr ""
+
+msgid "The maximum file size allowed is %{max_attachment_size}mb"
 msgstr ""
 
 msgid "The maximum file size allowed is 200KB."
@@ -6605,6 +6671,9 @@ msgstr ""
 msgid "This page will be removed in a future release."
 msgstr ""
 
+msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
+msgstr ""
+
 msgid "This project"
 msgstr ""
 
@@ -6632,7 +6701,7 @@ msgstr ""
 msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
-msgid "This timeout will take precedence when lower than Project-defined timeout"
+msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."
 msgstr ""
 
 msgid "This user has no identities"
@@ -7048,6 +7117,9 @@ msgid "Upload New File"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "Upload object map"
 msgstr ""
 
 msgid "UploadLink|click to upload"
@@ -7922,6 +7994,9 @@ msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "should be higher than %{access} inherited membership from group %{group_name}"
+msgstr ""
 
 msgid "source"
 msgstr ""

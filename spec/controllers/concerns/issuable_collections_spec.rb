@@ -86,6 +86,7 @@ describe IssuableCollections do
 
     it 'only allows whitelisted params' do
       allow(controller).to receive(:cookies).and_return({})
+      allow(controller).to receive(:current_user).and_return(nil)
 
       finder_options = controller.send(:finder_options)
 
