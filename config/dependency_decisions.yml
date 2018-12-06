@@ -592,3 +592,9 @@
       in compiled/distributed product so attribution not needed.
     :versions: []
     :when: 2018-10-02 19:23:54.840151000 Z
+- - :approve
+  - echarts
+  - :who: Mike Greiling
+    :why: Apache 2.0 license
+    :versions: []
+    :when: 2018-12-05 22:12:30.550027000 Z
