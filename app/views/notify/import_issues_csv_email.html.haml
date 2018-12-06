@@ -1,0 +1,18 @@
+- text_style = 'font-size:16px; text-align:center;  line-height:30px;'
+
+%p{ style: text_style }
+  Your CSV import for project
+  %a{ href: project_url(@project), style: "color:#3777b0; text-decoration:none;" }
+    = @project.full_name
+  has been completed.
+
+%p{ style: text_style }
+  #{pluralize(@results[:success], 'issue')} imported successfully.
+
+- if @results[:errors].present?
+  %p{ style: text_style }
+    Errors found on line #{'number'.pluralize(@results[:errors].size)}: #{@results[:errors].join(', ')}.
+
+- unless @results[:valid_file]
+  %p{ style: text_style }
+    Error parsing CSV file.

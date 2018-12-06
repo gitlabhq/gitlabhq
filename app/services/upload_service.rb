@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UploadService
+  attr_accessor :uploader
+
   def initialize(model, file, uploader_class = FileUploader, **uploader_context)
     @model, @file, @uploader_class, @uploader_context = model, file, uploader_class, uploader_context
   end
@@ -8,10 +10,10 @@ class UploadService
   def execute
     return nil unless @file && @file.size <= max_attachment_size
 
-    uploader = @uploader_class.new(@model, nil, @uploader_context)
-    uploader.store!(@file)
+    @uploader = @uploader_class.new(@model, nil, @uploader_context)
+    @uploader.store!(@file)
 
-    uploader.to_h
+    @uploader.to_h
   end
 
   private

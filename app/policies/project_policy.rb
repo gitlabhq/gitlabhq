@@ -223,6 +223,7 @@ class ProjectPolicy < BasePolicy
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { can?(:developer_access) }.policy do
+    enable :import_issues
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request

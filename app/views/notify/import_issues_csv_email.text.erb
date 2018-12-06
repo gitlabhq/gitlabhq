@@ -1,0 +1,11 @@
+Your CSV import for project <%= @project.full_name %> (<%= project_url(@project) %>) has been completed.
+
+<%= pluralize(@results[:success], 'issue') %> imported successfully.
+
+<% if @results[:errors].present? %>
+Errors found on line <%= 'number'.pluralize(@results[:errors].size) %>: <%= @results[:errors].join(', ') %>.
+<% end %>
+
+<% unless @results[:valid_file] %>
+Error parsing CSV file.
+<% end %>
