@@ -1921,7 +1921,7 @@ describe Project do
     end
   end
 
-  describe '#latest_successful_builds_for and #latest_successful_build_for' do
+  describe '#latest_successful_build_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
                            sha: project.commit.sha,
@@ -1946,12 +1946,10 @@ describe Project do
         create_build(pipeline1, 'test')
         create_build(pipeline1, 'test2')
         build1_p2 = create_build(pipeline2, 'test')
-        build2_p2 = create_build(pipeline2, 'test2')
+        create_build(pipeline2, 'test2')
 
-        latest_builds = project.latest_successful_builds_for
         single_build = project.latest_successful_build_for(build1_p2.name)
 
-        expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
         expect(single_build).to eq(build1_p2)
       end
     end
@@ -1961,22 +1959,19 @@ describe Project do
 
       context 'standalone pipeline' do
         it 'returns builds for ref for default_branch' do
-          builds = project.latest_successful_builds_for
           single_build = project.latest_successful_build_for(build.name)
 
-          expect(builds).to contain_exactly(build)
           expect(single_build).to eq(build)
         end
 
-        it 'returns empty relation if the build cannot be found for #latest_successful_builds_for' do
-          builds = project.latest_successful_builds_for('TAIL')
+        it 'returns empty relation if the build cannot be found for #latest_successful_build_for' do
+          builds = project.latest_successful_build_for('TAIL')
 
-          expect(builds).to be_kind_of(ActiveRecord::Relation)
-          expect(builds).to be_empty
+          expect(builds).to be_nil
         end
 
-        it 'returns exception if the build cannot be found for #latest_successful_build_for' do
-          expect { project.latest_successful_build_for(build.name, 'TAIL') }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'returns exception if the build cannot be found for #latest_successful_build_for!' do
+          expect { project.latest_successful_build_for!(build.name, 'TAIL') }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -1986,26 +1981,21 @@ describe Project do
         end
 
         it 'gives the latest build from latest pipeline' do
-          latest_builds = project.latest_successful_builds_for
           last_single_build = project.latest_successful_build_for(build.name)
 
-          expect(latest_builds).to contain_exactly(build)
           expect(last_single_build).to eq(build)
         end
       end
     end
 
     context 'with pending pipeline' do
-      before do
-        pipeline.update(status: 'pending')
-        create_build(pipeline)
-      end
-
       it 'returns empty relation' do
-        builds = project.latest_successful_builds_for
+        pipeline.update(status: 'pending')
+        pending_build = create_build(pipeline)
 
-        expect(builds).to be_kind_of(ActiveRecord::Relation)
-        expect(builds).to be_empty
+        expect(project.latest_successful_build_for(pending_build.name)).to be_nil
+
+        expect { project.latest_successful_build_for!(pending_build.name) }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
