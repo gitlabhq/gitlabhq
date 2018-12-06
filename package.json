@@ -118,7 +118,7 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
-    "@gitlab/eslint-config": "^1.2.0",
+    "@gitlab/eslint-config": "^1.4.0",
     "@vue/test-utils": "^1.0.0-beta.25",
     "axios-mock-adapter": "^1.15.0",
     "babel-core": "^7.0.0-bridge",
