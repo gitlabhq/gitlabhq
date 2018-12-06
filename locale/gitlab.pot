@@ -3349,6 +3349,9 @@ msgid_plural "Hide values"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Hide values"
+msgstr ""
+
 msgid "Hide whitespace changes"
 msgstr ""
 
@@ -5492,13 +5495,13 @@ msgstr ""
 msgid "Retry verification"
 msgstr ""
 
-msgid "Reveal Variables"
-msgstr ""
-
 msgid "Reveal value"
 msgid_plural "Reveal values"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Reveal values"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr ""
@@ -7078,6 +7081,9 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
+msgid "Variables:"
 msgstr ""
 
 msgid "Various container registry settings."
