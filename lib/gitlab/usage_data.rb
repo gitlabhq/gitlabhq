@@ -2,6 +2,8 @@
 
 module Gitlab
   class UsageData
+    APPROXIMATE_COUNT_MODELS = [Label, MergeRequest, Note, Todo].freeze
+
     class << self
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
@@ -73,12 +75,9 @@ module Gitlab
             issues: count(Issue),
             keys: count(Key),
             label_lists: count(List.label),
-            labels: count(Label),
             lfs_objects: count(LfsObject),
-            merge_requests: count(MergeRequest),
             milestone_lists: count(List.milestone),
             milestones: count(Milestone),
-            notes: count(Note),
             pages_domains: count(PagesDomain),
             projects: count(Project),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
@@ -86,10 +85,9 @@ module Gitlab
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
             snippets: count(Snippet),
-            todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
+          }.merge(services_usage).merge(approximate_counts)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -164,6 +162,16 @@ module Gitlab
         fallback
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def approximate_counts
+        approx_counts = Gitlab::Database::Count.approximate_counts(APPROXIMATE_COUNT_MODELS)
+
+        APPROXIMATE_COUNT_MODELS.each_with_object({}) do |model, result|
+          key = model.name.underscore.pluralize.to_sym
+
+          result[key] = approx_counts[model] || -1
+        end
+      end
     end
   end
 end

@@ -20,6 +20,8 @@ module Gitlab
           models.each_with_object({}) do |model, data|
             data[model] = model.count
           end
+        rescue *CONNECTION_ERRORS
+          {}
         end
 
         def self.enabled?
