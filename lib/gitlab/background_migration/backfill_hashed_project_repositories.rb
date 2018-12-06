@@ -2,58 +2,60 @@
 
 module Gitlab
   module BackgroundMigration
-    # Class the will create rows in project_repositories for all
-    # projects that are on hashed storage
+    # Class that will create fill the project_repositories table
+    # for all projects that are on hashed storage and an entry is
+    # is missing in this table.
     class BackfillHashedProjectRepositories
-      # Model for a Shard
+      # Shard model
       class Shard < ActiveRecord::Base
         self.table_name = 'shards'
-
-        def self.by_name(name)
-          to_a.detect { |shard| shard.name == name } || create_by(name: name)
-        rescue ActiveRecord::RecordNotUnique
-          retry
-        end
       end
 
       # Class that will find or create the shard by name.
-      # There is only a small set of shards, which would not change quickly,
-      # so look them up from memory instead of hitting the DB each time.
+      # There is only a small set of shards, which would
+      # not change quickly, so look them up from memory
+      # instead of hitting the DB each time.
       class ShardFinder
-        def find(name)
-          shards.detect { |shard| shard.name == name } || create!(name)
+        def find_shard_id(name)
+          shard_id = shards.fetch(name, nil)
+          return shard_id if shard_id.present?
+
+          Shard.transaction(requires_new: true) do
+            create!(name)
+          end
         rescue ActiveRecord::RecordNotUnique
-          load!
+          reload!
           retry
         end
 
         private
 
         def create!(name)
-          Shard.create!(name: name).tap { |shard| @shards << shard }
+          Shard.create!(name: name).tap { |shard| @shards[name] = shard.id }
         end
 
         def shards
-          @shards || load!
+          @shards ||= reload!
         end
 
-        def load!
-          @shards = Shard.all.to_a
+        def reload!
+          @shards = Hash[*Shard.all.map { |shard| [shard.name, shard.id] }.flatten]
         end
       end
 
-      # Model for a ProjectRepository
+      # ProjectRegistry model
       class ProjectRepository < ActiveRecord::Base
         self.table_name = 'project_repositories'
 
         belongs_to :project, inverse_of: :project_repository
       end
 
-      # Model for a Project
+      # Project model
       class Project < ActiveRecord::Base
         self.table_name = 'projects'
 
         HASHED_PATH_PREFIX = '@hashed'
+
         HASHED_STORAGE_FEATURES = {
           repository: 1,
           attachments: 2
@@ -63,32 +65,25 @@ module Gitlab
 
         class << self
           def on_hashed_storage
-            where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[:repository]))
+            where(Project.arel_table[:storage_version]
+              .gteq(HASHED_STORAGE_FEATURES[:repository]))
           end
 
           def without_project_repository
-            cond = ProjectRepository.arel_table[:project_id].eq(nil)
-            left_outer_joins(:project_repository).where(cond)
+            joins(left_outer_join_project_repository)
+              .where(ProjectRepository.arel_table[:project_id].eq(nil))
           end
 
-          def left_outer_joins(relation)
-            return super if Gitlab.rails5?
+          def left_outer_join_project_repository
+            projects_table = Project.arel_table
+            repository_table = ProjectRepository.arel_table
 
-            # TODO Rails 4?
+            projects_table
+              .join(repository_table, Arel::Nodes::OuterJoin)
+              .on(projects_table[:id].eq(repository_table[:project_id]))
+              .join_sources
           end
         end
-
-        def project_repository_attributes(shard_finder)
-          return unless hashed_storage?
-
-          {
-            project_id: id,
-            shard_id: shard_finder.find(repository_storage).id,
-            disk_path: hashed_disk_path
-          }
-        end
-
-        private
 
         def hashed_storage?
           self.storage_version && self.storage_version >= 1
@@ -99,7 +94,7 @@ module Gitlab
         end
 
         def disk_hash
-          @disk_hash ||= Digest::SHA2.hexdigest(id.to_s) if id
+          @disk_hash ||= Digest::SHA2.hexdigest(id.to_s)
         end
       end
 
@@ -110,10 +105,25 @@ module Gitlab
       private
 
       def project_repositories(start_id, stop_id)
-        Project.on_hashed_storage.without_project_repository
+        Project.on_hashed_storage
+          .without_project_repository
           .where(id: start_id..stop_id)
-          .map { |project| project.project_repository_attributes(shard_finder) }
+          .map { |project| build_attributes_for_project(project) }
           .compact
+      end
+
+      def build_attributes_for_project(project)
+        return unless project.hashed_storage?
+
+        {
+          project_id: project.id,
+          shard_id:   find_shard_id(project.repository_storage),
+          disk_path:  project.hashed_disk_path
+        }
+      end
+
+      def find_shard_id(repository_storage)
+        shard_finder.find_shard_id(repository_storage)
       end
 
       def shard_finder

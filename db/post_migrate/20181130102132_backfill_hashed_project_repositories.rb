@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class BackfillHashedProjectRepositories < ActiveRecord::Migration[5.0]
+class BackfillHashedProjectRepositories < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
   BATCH_SIZE     = 1_000
-  DELAY_INTERVAL = 1.minutes
+  DELAY_INTERVAL = 5.minutes
   MIGRATION      = 'BackfillHashedProjectRepositories'
 
   disable_ddl_transaction!
@@ -21,7 +21,6 @@ class BackfillHashedProjectRepositories < ActiveRecord::Migration[5.0]
   end
 
   def down
-    # Since there could have been existing rows before the migration
-    # do not remove anything
+    # no-op: since there could have been existing rows before the migration do not remove anything
   end
 end
