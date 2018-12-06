@@ -1,5 +1,11 @@
-import initDismissableCallout from '~/dismissable_callout';
+import PersistentUserCallout from '~/persistent_user_callout';
 import initGkeDropdowns from '~/projects/gke_cluster_dropdowns';
+
+function initGcpSignupCallout() {
+  const callout = document.querySelector('.gcp-signup-offer');
+
+  if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const { page } = document.body.dataset;
@@ -10,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   if (newClusterViews.indexOf(page) > -1) {
-    initDismissableCallout('.gcp-signup-offer');
+    initGcpSignupCallout();
     initGkeDropdowns();
   }
 });

@@ -1,5 +1,7 @@
-import initDismissableCallout from '~/dismissable_callout';
+import PersistentUserCallout from '~/persistent_user_callout';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initDismissableCallout('.gcp-signup-offer');
+  const callout = document.querySelector('.gcp-signup-offer');
+
+  if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
 });
