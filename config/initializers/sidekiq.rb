@@ -39,7 +39,7 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
-  if Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
+  if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
     Sidekiq::ReliableFetcher.setup_reliable_fetch!(config)
   end
 
