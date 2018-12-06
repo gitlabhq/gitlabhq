@@ -350,6 +350,50 @@ describe Ci::Pipeline, :mailer do
                             CI_COMMIT_TITLE
                             CI_COMMIT_DESCRIPTION]
     end
+
+    context 'when source is merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master')
+      end
+
+      it 'exposes merge request pipeline variables' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_MERGE_REQUEST_ID' => merge_request.id.to_s,
+            'CI_MERGE_REQUEST_IID' => merge_request.iid.to_s,
+            'CI_MERGE_REQUEST_REF_PATH' => merge_request.ref_path.to_s,
+            'CI_MERGE_REQUEST_PROJECT_ID' => merge_request.project.id.to_s,
+            'CI_MERGE_REQUEST_PROJECT_PATH' => merge_request.project.full_path,
+            'CI_MERGE_REQUEST_PROJECT_URL' => merge_request.project.web_url,
+            'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => merge_request.target_branch.to_s,
+            'CI_MERGE_REQUEST_SOURCE_PROJECT_ID' => merge_request.source_project.id.to_s,
+            'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
+            'CI_MERGE_REQUEST_SOURCE_PROJECT_URL' => merge_request.source_project.web_url,
+            'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s)
+      end
+
+      context 'when source project does not exist' do
+        before do
+          merge_request.update_column(:source_project_id, nil)
+        end
+
+        it 'does not expose source project related variables' do
+          expect(subject.to_hash.keys).not_to include(
+            %w[CI_MERGE_REQUEST_SOURCE_PROJECT_ID
+               CI_MERGE_REQUEST_SOURCE_PROJECT_PATH
+               CI_MERGE_REQUEST_SOURCE_PROJECT_URL
+               CI_MERGE_REQUEST_SOURCE_BRANCH_NAME])
+        end
+      end
+    end
   end
 
   describe '#protected_ref?' do
