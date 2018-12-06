@@ -13,7 +13,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         "jid" => "da883554ee4fe414012f5f42",
         "created_at" => timestamp.to_f,
         "enqueued_at" => timestamp.to_f,
-        "correlation_id" => 'cid'
+        "correlation-id" => 'cid'
       }
     end
     let(:logger) { double() }

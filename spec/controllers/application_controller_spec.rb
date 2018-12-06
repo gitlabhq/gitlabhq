@@ -465,7 +465,7 @@ describe ApplicationController do
         get :index
       end
 
-      expect(controller.last_payload).to include('correlation_id' => 'new-id')
+      expect(controller.last_payload).to include('correlation-id' => 'new-id')
     end
 
     context '422 errors' do

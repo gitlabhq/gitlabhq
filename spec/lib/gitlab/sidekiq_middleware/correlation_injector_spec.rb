@@ -37,7 +37,7 @@ describe Gitlab::SidekiqMiddleware::CorrelationInjector do
     expected_job_params = {
       "class" => "TestWorker",
       "args" => [1234],
-      "correlation_id" => "new-correlation-id"
+      "correlation-id" => "new-correlation-id"
     }
 
     expect(Sidekiq::Queues.jobs_by_worker).to a_hash_including(

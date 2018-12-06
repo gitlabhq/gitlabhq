@@ -2,7 +2,7 @@
 
 module Gitlab
   module CorrelationId
-    LOG_KEY = 'correlation_id'.freeze
+    LOG_KEY = 'correlation-id'.freeze
 
     class << self
       def use_id(correlation_id, &blk)
