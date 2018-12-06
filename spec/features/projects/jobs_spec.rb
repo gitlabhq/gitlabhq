@@ -354,7 +354,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         create(:ci_build, pipeline: pipeline, trigger_request: trigger_request)
       end
 
-
       shared_examples 'job with outdated deployment' do
         it 'shows a link for the job' do
           expect(page).to have_content('Token')

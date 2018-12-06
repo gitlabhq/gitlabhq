@@ -400,6 +400,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'with variables' do
         before do
+          project.add_maintainer(user)
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
 
           get_show(id: job.id, format: :json)
@@ -412,6 +413,24 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(json_response['trigger']['variables'].length).to eq 1
           expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
           expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
+          expect(json_response['trigger']['variables'].first['public']).to eq false
+        end
+      end
+
+      context 'with no variable values' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+
+          get_show(id: job.id, format: :json)
+        end
+
+        it 'exposes trigger information and variables' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('job/job_details')
+          expect(json_response['trigger']['short_token']).to eq 'toke'
+          expect(json_response['trigger']['variables'].length).to eq 1
+          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
+          expect(json_response['trigger']['variables'].first['value']).to be_nil
           expect(json_response['trigger']['variables'].first['public']).to eq false
         end
       end
