@@ -16,6 +16,12 @@ describe Gitlab::Database::Count::ExactCountStrategy do
 
       expect(subject).to eq({ Project => 3, Identity => 1 })
     end
+
+    it 'returns default value if count times out' do
+      allow(models.first).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
+
+      expect(subject).to eq({})
+    end
   end
 
   describe '.enabled?' do
