@@ -3,6 +3,7 @@ require 'spec_helper'
 describe MergeRequests::BuildService do
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
+  include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }
   let(:source_project) { nil }
@@ -49,7 +50,7 @@ describe MergeRequests::BuildService do
 
   describe '#execute' do
     it 'calls the compare service with the correct arguments' do
-      allow_any_instance_of(described_class).to receive(:branches_valid?).and_return(true)
+      allow_any_instance_of(described_class).to receive(:projects_and_branches_valid?).and_return(true)
       expect(CompareService).to receive(:new)
                                   .with(project, Gitlab::Git::BRANCH_REF_PREFIX + source_branch)
                                   .and_call_original
@@ -393,11 +394,27 @@ describe MergeRequests::BuildService do
       end
     end
 
+    context 'target_project is set but repo is not accessible by current_user' do
+      let(:target_project) do
+        create(:project, :public, :repository, repository_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
     context 'source_project is set and accessible by current_user' do
       let(:source_project) { create(:project, :public, :repository)}
       let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'sets target project correctly' do
+      before do
+        # To create merge requests _from_ a project the user needs at least
+        # developer access
+        source_project.add_developer(user)
+      end
+
+      it 'sets source project correctly' do
         expect(merge_request.source_project).to eq(source_project)
       end
     end
@@ -406,8 +423,40 @@ describe MergeRequests::BuildService do
       let(:source_project) { create(:project, :private, :repository)}
       let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'sets target project correctly' do
+      it 'sets source project correctly' do
         expect(merge_request.source_project).to eq(project)
+      end
+    end
+
+    context 'source_project is set but the user cannot create merge requests from the project' do
+      let(:source_project) do
+        create(:project, :public, :repository, merge_requests_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'sets the source_project correctly' do
+        expect(merge_request.source_project).to eq(project)
+      end
+    end
+
+    context 'target_project is not in the fork network of source_project' do
+      let(:target_project) { create(:project, :public, :repository) }
+
+      it 'adds an error to the merge request' do
+        expect(merge_request.errors[:validate_fork]).to contain_exactly('Source project is not a fork of the target project')
+      end
+    end
+
+    context 'target_project is in the fork network of source project but no longer accessible' do
+      let!(:project) { fork_project(target_project, user, namespace: user.namespace, repository: true) }
+      let(:source_project) { project }
+      let(:target_project) { create(:project, :public, :repository) }
+
+      before do
+        target_project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'sets the target_project correctly' do
+        expect(merge_request.target_project).to eq(project)
       end
     end
 
