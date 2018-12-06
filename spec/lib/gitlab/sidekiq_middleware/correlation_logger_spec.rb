@@ -30,6 +30,6 @@ describe Gitlab::SidekiqMiddleware::CorrelationLogger do
       'queue' => 'test',
       'class' => TestWorker,
       'args' => [1234],
-      'correlation-id' => 'new-correlation-id')
+      'correlation_id' => 'new-correlation-id')
   end
 end

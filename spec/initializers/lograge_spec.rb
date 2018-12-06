@@ -11,7 +11,7 @@ describe 'lograge', type: :request do
     it 'logs to api_json log' do
       # we assert receiving parameters by grape logger
       expect_any_instance_of(Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp).to receive(:call)
-        .with(anything, anything, anything, a_hash_including("correlation-id" => "new-correlation-id"))
+        .with(anything, anything, anything, a_hash_including("correlation_id" => "new-correlation-id"))
         .and_call_original
 
       subject
@@ -24,12 +24,12 @@ describe 'lograge', type: :request do
     it 'logs to production_json log' do
       # formatter receives a hash with correlation id
       expect(Lograge.formatter).to receive(:call)
-        .with(a_hash_including("correlation-id" => "new-correlation-id"))
+        .with(a_hash_including("correlation_id" => "new-correlation-id"))
         .and_call_original
 
       # a log file receives a line with correlation id
       expect(Lograge.logger).to receive(:send)
-        .with(anything, include('"correlation-id":"new-correlation-id"'))
+        .with(anything, include('"correlation_id":"new-correlation-id"'))
         .and_call_original
 
       subject

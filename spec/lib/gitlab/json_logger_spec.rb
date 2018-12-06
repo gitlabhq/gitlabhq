@@ -18,7 +18,7 @@ describe Gitlab::JsonLogger do
       expect(data['severity']).to eq('INFO')
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['message']).to eq('Hello world')
-      expect(data['correlation-id']).to eq('new-correlation-id')
+      expect(data['correlation_id']).to eq('new-correlation-id')
     end
 
     it 'formats hashes' do
@@ -29,7 +29,7 @@ describe Gitlab::JsonLogger do
       expect(data['time']).to eq(now.utc.iso8601(3))
       expect(data['hello']).to eq(1)
       expect(data['message']).to be_nil
-      expect(data['correlation-id']).to eq('new-correlation-id')
+      expect(data['correlation_id']).to eq('new-correlation-id')
     end
   end
 end
