@@ -90,6 +90,8 @@ export default {
         :old-sha="diffFile.diff_refs.base_sha"
         :file-hash="diffFile.file_hash"
         :project-path="projectPath"
+        :a-mode="diffFile.a_mode"
+        :b-mode="diffFile.b_mode"
       >
         <image-diff-overlay
           slot="image-overlay"

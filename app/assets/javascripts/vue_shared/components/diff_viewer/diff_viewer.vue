@@ -1,7 +1,10 @@
 <script>
+import { diffModes } from '~/ide/constants';
 import { viewerInformationForPath } from '../content_viewer/lib/viewer_utils';
 import ImageDiffViewer from './viewers/image_diff_viewer.vue';
 import DownloadDiffViewer from './viewers/download_diff_viewer.vue';
+import RenamedFile from './viewers/renamed.vue';
+import ModeChanged from './viewers/mode_changed.vue';
 
 export default {
   props: {
@@ -30,9 +33,25 @@ export default {
       required: false,
       default: '',
     },
+    aMode: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    bMode: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     viewer() {
+      if (this.diffMode === diffModes.renamed) {
+        return RenamedFile;
+      } else if (this.diffMode === diffModes.mode_changed) {
+        return ModeChanged;
+      }
+
       if (!this.newPath) return null;
 
       const previewInfo = viewerInformationForPath(this.newPath);
@@ -67,8 +86,10 @@ export default {
       :new-path="fullNewPath"
       :old-path="fullOldPath"
       :project-path="projectPath"
+      :a-mode="aMode"
+      :b-mode="bMode"
     >
-      <slot slot="image-overlay" name="image-overlay"> </slot>
+      <slot slot="image-overlay" name="image-overlay"></slot>
     </component>
     <slot></slot>
   </div>

@@ -52,7 +52,9 @@ export default {
         (!this.file.highlighted_diff_lines &&
           !this.isLoadingCollapsedDiff &&
           !this.file.too_large &&
-          this.file.text)
+          this.file.text &&
+          !this.file.renamed_file &&
+          !this.file.mode_changed)
       );
     },
     showLoadingIcon() {
@@ -143,9 +145,8 @@ export default {
       <a
         :href="file.fork_path"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
+        >Fork</a
       >
-        Fork
-      </a>
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"
@@ -163,9 +164,9 @@ export default {
     <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />
     <div v-else-if="showExpandMessage" class="nothing-here-block diff-collapsed">
       {{ __('This diff is collapsed.') }}
-      <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">
-        {{ __('Click to expand it.') }}
-      </a>
+      <a class="click-to-expand js-click-to-expand" href="#" @click.prevent="handleToggle">{{
+        __('Click to expand it.')
+      }}</a>
     </div>
     <div v-if="file.too_large" class="nothing-here-block diff-collapsed js-too-large-diff">
       {{ __('This source diff could not be displayed because it is too large.') }}
