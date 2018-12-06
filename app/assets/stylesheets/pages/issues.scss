@@ -259,6 +259,16 @@ ul.related-merge-requests > li {
   display: block;
 }
 
+.issue-sort-dropdown {
+  .btn-group {
+    width: 100%;
+  }
+
+  .reverse-sort-btn {
+    color: $gl-text-color-secondary;
+  }
+}
+
 @include media-breakpoint-up(sm) {
   .emoji-block .row {
     display: flex;
