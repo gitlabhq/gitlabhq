@@ -949,6 +949,8 @@ no_ee_check:
 # GitLab Review apps
 review-deploy:
   <<: *review-base
+  retry: 2
+  allow_failure: true
   variables:
     GIT_DEPTH: "1"
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
@@ -978,6 +980,8 @@ review-deploy:
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
+  retry: 2
+  allow_failure: true
   variables:
     <<: *review-docker-variables
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
@@ -1005,10 +1009,8 @@ review-deploy:
 
 review-qa-smoke:
   <<: *review-qa-base
-  # retry: 2
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
-  allow_failure: true
 
 review-qa-all:
   <<: *review-qa-base
