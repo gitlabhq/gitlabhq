@@ -110,7 +110,7 @@ module Gitlab
         end
 
         def cache_key
-          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:project:#{project.id}:pipeline_status:#{commit&.sha}"
+          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:projects/#{project.id}/pipeline_status/#{commit&.sha}"
         end
 
         def commit
