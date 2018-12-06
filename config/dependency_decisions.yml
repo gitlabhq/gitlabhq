@@ -595,6 +595,6 @@
 - - :approve
   - echarts
   - :who: Mike Greiling
-    :why: Apache 2.0 license
+    :why: https://github.com/apache/incubator-echarts/blob/master/LICENSE
     :versions: []
     :when: 2018-12-05 22:12:30.550027000 Z
