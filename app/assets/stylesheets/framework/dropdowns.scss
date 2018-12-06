@@ -294,10 +294,10 @@
     height: 1px;
     margin: #{$grid-size / 2} 0;
     padding: 0;
-    background-color: $dropdown-divider-color;
+    background-color: $dropdown-divider-bg;
 
     &:hover {
-      background-color: $dropdown-divider-color;
+      background-color: $dropdown-divider-bg;
     }
   }
 
@@ -306,7 +306,7 @@
     height: 1px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: $dropdown-divider-color;
+    background-color: $dropdown-divider-bg;
   }
 
   .dropdown-menu-empty-item a {
@@ -542,7 +542,7 @@
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border-bottom: 1px solid $dropdown-divider-color;
+  border-bottom: 1px solid $dropdown-divider-bg;
   overflow: hidden;
 }
 
@@ -621,7 +621,7 @@
   padding: 0 7px;
   color: $gl-gray-700;
   line-height: 30px;
-  border: 1px solid $dropdown-divider-color;
+  border: 1px solid $dropdown-divider-bg;
   border-radius: 2px;
   outline: 0;
 
@@ -656,7 +656,7 @@
   padding-top: 10px;
   margin-top: 10px;
   font-size: 13px;
-  border-top: 1px solid $dropdown-divider-color;
+  border-top: 1px solid $dropdown-divider-bg;
 }
 
 .dropdown-footer-content {
