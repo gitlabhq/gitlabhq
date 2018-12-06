@@ -46,6 +46,7 @@ class DiffFileEntity < Grape::Entity
 
   expose :deleted_file?, as: :deleted_file
   expose :renamed_file?, as: :renamed_file
+  expose :mode_changed?, as: :mode_changed
   expose :old_path
   expose :new_path
   expose :mode_changed?, as: :mode_changed

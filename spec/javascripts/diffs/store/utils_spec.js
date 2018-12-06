@@ -559,4 +559,26 @@ describe('DiffsStoreUtils', () => {
       ]);
     });
   });
+
+  describe('getDiffMode', () => {
+    it('returns mode when matched in file', () => {
+      expect(
+        utils.getDiffMode({
+          renamed_file: true,
+        }),
+      ).toBe('renamed');
+    });
+
+    it('returns mode_changed if key has no match', () => {
+      expect(
+        utils.getDiffMode({
+          mode_changed: true,
+        }),
+      ).toBe('mode_changed');
+    });
+
+    it('defaults to replaced', () => {
+      expect(utils.getDiffMode({})).toBe('replaced');
+    });
+  });
 });

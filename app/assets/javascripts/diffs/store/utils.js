@@ -324,5 +324,9 @@ export const generateTreeList = files =>
 
 export const getDiffMode = diffFile => {
   const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}_file`]);
-  return diffModes[diffModeKey] || diffModes.replaced;
+  return (
+    diffModes[diffModeKey] ||
+    (diffFile.mode_changed && diffModes.mode_changed) ||
+    diffModes.replaced
+  );
 };
