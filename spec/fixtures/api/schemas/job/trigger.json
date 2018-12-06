@@ -12,7 +12,6 @@
         "type": "object",
         "required": [
           "key",
-          "value",
           "public"
         ],
         "properties": {
