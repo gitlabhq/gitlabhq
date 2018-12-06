@@ -10,6 +10,8 @@ module SnippetsActions
   def raw
     disposition = params[:inline] == 'false' ? 'attachment' : 'inline'
 
+    workhorse_set_content_type!
+
     send_data(
       convert_line_endings(@snippet.content),
       type: 'text/plain; charset=utf-8',

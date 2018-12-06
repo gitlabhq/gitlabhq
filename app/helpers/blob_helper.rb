@@ -140,6 +140,8 @@ module BlobHelper
     Gitlab::Sanitizers::SVG.clean(data)
   end
 
+  # Remove once https://gitlab.com/gitlab-org/gitlab-ce/issues/36103 is closed
+  # and :workhorse_set_content_type flag is removed
   # If we blindly set the 'real' content type when serving a Git blob we
   # are enabling XSS attacks. An attacker could upload e.g. a Javascript
   # file to a Git repository, trick the browser of a victim into
@@ -161,6 +163,8 @@ module BlobHelper
   end
 
   def content_disposition(blob, inline)
+    # Remove the following line when https://gitlab.com/gitlab-org/gitlab-ce/issues/36103
+    # is closed and :workhorse_set_content_type flag is removed
     return 'attachment' if blob.extension == 'svg'
 
     inline ? 'inline' : 'attachment'

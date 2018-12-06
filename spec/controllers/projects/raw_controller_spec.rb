@@ -14,26 +14,74 @@ describe Projects::RawController do
     context 'regular filename' do
       let(:filepath) { 'master/README.md' }
 
-      it 'delivers ASCII file' do
-        subject
+      context 'when feature flag workhorse_set_content_type is' do
+        before do
+          stub_feature_flags(workhorse_set_content_type: flag_value)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-        expect(response.header['Content-Disposition'])
-            .to eq('inline')
-        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          subject
+        end
+
+        context 'enabled' do
+          let(:flag_value) { true }
+
+          it 'delivers ASCII file' do
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(response.header['Content-Disposition']).to eq('inline')
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
+
+        context 'disabled' do
+          let(:flag_value) { false }
+
+          it 'delivers ASCII file' do
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+            expect(response.header['Content-Disposition']).to eq('inline')
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
       end
     end
 
     context 'image header' do
       let(:filepath) { 'master/files/images/6049019_460s.jpg' }
 
-      it 'sets image content type header' do
-        subject
+      context 'when feature flag workhorse_set_content_type is' do
+        before do
+          stub_feature_flags(workhorse_set_content_type: flag_value)
+        end
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response.header['Content-Type']).to eq('image/jpeg')
-        expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+        context 'enabled' do
+          let(:flag_value) { true }
+
+          it 'leaves image content disposition' do
+            subject
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('image/jpeg')
+            expect(response.header['Content-Disposition']).to eq('inline')
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
+
+        context 'disabled' do
+          let(:flag_value) { false }
+
+          it 'sets image content type header' do
+            subject
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Content-Type']).to eq('image/jpeg')
+            expect(response.header['Content-Disposition']).to eq('inline')
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
+            expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          end
+        end
       end
     end
 
