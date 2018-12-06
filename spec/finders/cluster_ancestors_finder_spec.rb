@@ -20,6 +20,10 @@ describe ClusterAncestorsFinder, '#execute' do
   context 'for a project' do
     let(:clusterable) { project }
 
+    before do
+      project.add_maintainer(user)
+    end
+
     it 'returns the project clusters followed by group clusters' do
       is_expected.to eq([project_cluster, group_cluster])
     end
@@ -38,8 +42,20 @@ describe ClusterAncestorsFinder, '#execute' do
     end
   end
 
+  context 'user cannot read clusters for clusterable' do
+    let(:clusterable) { project }
+
+    it 'returns nothing' do
+      is_expected.to be_empty
+    end
+  end
+
   context 'for a group' do
     let(:clusterable) { group }
+
+    before do
+      group.add_maintainer(user)
+    end
 
     it 'returns the list of group clusters' do
       is_expected.to eq([group_cluster])
