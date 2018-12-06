@@ -628,6 +628,13 @@ entry.
 - Check frozen string in style builds. (gfyoung)
 
 
+## 11.3.12 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
 ## 11.3.11 (2018-11-26)
 
 ### Security (33 changes)
