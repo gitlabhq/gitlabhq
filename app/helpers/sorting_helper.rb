@@ -136,6 +136,53 @@ module SortingHelper
     link_to item, path, class: sorted_by == item ? 'is-active' : ''
   end
 
+  def issuable_sort_option_overrides
+    {
+      sort_value_oldest_created => sort_value_created_date,
+      sort_value_oldest_updated => sort_value_recently_updated,
+      sort_value_milestone_later => sort_value_milestone
+    }
+  end
+
+  def issuable_reverse_sort_order_hash
+    {
+      sort_value_created_date => sort_value_oldest_created,
+      sort_value_recently_created => sort_value_oldest_created,
+      sort_value_recently_updated => sort_value_oldest_updated,
+      sort_value_milestone => sort_value_milestone_later
+    }.merge(issuable_sort_option_overrides)
+  end
+
+  def issuable_sort_option_title(sort_value)
+    sort_value = issuable_sort_option_overrides[sort_value] || sort_value
+
+    sort_options_hash[sort_value]
+  end
+
+  def issuable_sort_direction_button(sort_value)
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    reverse_sort = issuable_reverse_sort_order_hash[sort_value]
+
+    if reverse_sort
+      reverse_url = page_filter_path(sort: reverse_sort)
+    else
+      reverse_url = '#'
+      link_class += ' disabled'
+    end
+
+    link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
+      icon_suffix =
+        case sort_value
+        when sort_value_milestone, sort_value_due_date, /_asc\z/
+          'lowest'
+        else
+          'highest'
+        end
+
+      sprite_icon("sort-#{icon_suffix}", size: 16)
+    end
+  end
+
   # Titles.
   def sort_title_access_level_asc
     s_('SortOptions|Access level, ascending')

@@ -167,12 +167,6 @@ module IssuableCollections
     case value
     when 'id_asc'             then sort_value_oldest_created
     when 'id_desc'            then sort_value_recently_created
-    when 'created_asc'        then sort_value_created_date
-    when 'created_desc'       then sort_value_created_date
-    when 'due_date_asc'       then sort_value_due_date
-    when 'due_date_desc'      then sort_value_due_date
-    when 'milestone_due_asc'  then sort_value_milestone
-    when 'milestone_due_desc' then sort_value_milestone
     when 'downvotes_asc'      then sort_value_popularity
     when 'downvotes_desc'     then sort_value_popularity
     else value
