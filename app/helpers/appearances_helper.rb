@@ -2,7 +2,12 @@
 
 module AppearancesHelper
   def brand_title
-    current_appearance&.title.presence || 'GitLab Community Edition'
+    current_appearance&.title.presence || default_brand_title
+  end
+
+  def default_brand_title
+    # This resides in a separate method so that EE can easily redefine it.
+    'GitLab Community Edition'
   end
 
   def brand_image
