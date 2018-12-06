@@ -652,7 +652,11 @@ class Project < ActiveRecord::Base
   end
 
   def latest_successful_build_for!(job_name, ref = default_branch)
-    latest_successful_build_for(job_name, ref) or raise ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}", job_name)
+    latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
+  end
+
+  def get_build(id)
+    builds.find_by(id: id)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

@@ -85,11 +85,9 @@ class Projects::ArtifactsController < Projects::ApplicationController
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def build_from_id
-    project.builds.find_by(id: params[:job_id]) if params[:job_id]
+    project.get_build(params[:job_id]) if params[:job_id]
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def build_from_ref
     return unless @ref_name
