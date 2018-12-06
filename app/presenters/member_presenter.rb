@@ -7,6 +7,14 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     member.class.access_level_roles
   end
 
+  def valid_level_roles
+    return access_level_roles unless member.highest_group_member
+
+    access_level_roles.reject do |_name, level|
+      member.highest_group_member.access_level > level
+    end
+  end
+
   def can_resend_invite?
     invite? &&
       can?(current_user, admin_member_permission, source)

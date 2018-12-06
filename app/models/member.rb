@@ -7,6 +7,7 @@ class Member < ActiveRecord::Base
   include Expirable
   include Gitlab::Access
   include Presentable
+  include Gitlab::Utils::StrongMemoize
 
   attr_accessor :raw_invite_token
 
@@ -22,6 +23,7 @@ class Member < ActiveRecord::Base
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
+  validate :higher_access_level_than_group, unless: :importing?
   validates :invite_email,
     presence: {
       if: :invite?
@@ -364,6 +366,15 @@ class Member < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # Find the user's group member with a highest access level
+  def highest_group_member
+    strong_memoize(:highest_group_member) do
+      next unless user_id && source&.ancestors&.any?
+
+      GroupMember.where(source: source.ancestors, user_id: user_id).order(:access_level).last
+    end
+  end
+
   private
 
   def send_invite
@@ -429,5 +440,13 @@ class Member < ActiveRecord::Base
 
   def notifiable_options
     {}
+  end
+
+  def higher_access_level_than_group
+    if highest_group_member && highest_group_member.access_level >= access_level
+      error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
+
+      errors.add(:access_level, s_("should be higher than %{access} inherited membership from group %{group_name}") % error_parameters)
+    end
   end
 end
