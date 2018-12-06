@@ -93,6 +93,16 @@ module Clusters
       where('NOT EXISTS (?)', subquery)
     end
 
+    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.installed) }
+
+    scope :preload_knative, -> {
+      preload(
+        :kubernetes_namespace,
+        :platform_kubernetes,
+        :application_knative
+      )
+    }
+
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
       hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order).eager_load(:clusters)
       hierarchy_groups = hierarchy_groups.merge(current_scope) if current_scope

@@ -307,6 +307,7 @@ module ProjectsHelper
       settings:         :admin_project,
       builds:           :read_build,
       clusters:         :read_cluster,
+      serverless:       :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -545,6 +546,7 @@ module ProjectsHelper
     %w[
       environments
       clusters
+      functions
       user
       gcp
     ]
