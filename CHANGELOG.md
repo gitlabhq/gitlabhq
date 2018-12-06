@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.10 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
 ## 11.4.9 (2018-12-03)
 
 ### Fixed (2 changes)
