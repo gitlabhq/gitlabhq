@@ -1,0 +1,52 @@
+.flex-grid {
+  .grid-row {
+    border-bottom: 1px solid $border-color;
+    padding: 0;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    @include media-breakpoint-down(md) {
+      border-bottom: 0;
+      border-right: 1px solid $border-color;
+
+      &:last-child {
+        border-right: 0;
+      }
+    }
+
+    @include media-breakpoint-down(xs) {
+      border-right: 0;
+      border-bottom: 1px solid $border-color;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  .grid-cell {
+    padding: 10px $gl-padding;
+    border-right: 1px solid $border-color;
+
+    &:last-child {
+      border-right: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+      flex: 1;
+    }
+
+    @include media-breakpoint-down(md) {
+      border-right: 0;
+      flex: none;
+    }
+  }
+}
+
+.card {
+  .card-body.flex-grid {
+    padding: 0;
+  }
+}
