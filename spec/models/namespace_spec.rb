@@ -538,7 +538,7 @@ describe Namespace do
     it 'returns member users on every nest level without duplication' do
       group.add_developer(user_a)
       nested_group.add_developer(user_b)
-      deep_nested_group.add_developer(user_a)
+      deep_nested_group.add_maintainer(user_a)
 
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)

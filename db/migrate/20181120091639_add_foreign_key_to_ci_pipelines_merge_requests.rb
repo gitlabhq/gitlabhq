@@ -8,7 +8,7 @@ class AddForeignKeyToCiPipelinesMergeRequests < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_pipelines, :merge_request_id
+    add_concurrent_index :ci_pipelines, :merge_request_id, where: 'merge_request_id IS NOT NULL'
     add_concurrent_foreign_key :ci_pipelines, :merge_requests, column: :merge_request_id, on_delete: :cascade
   end
 
@@ -17,6 +17,6 @@ class AddForeignKeyToCiPipelinesMergeRequests < ActiveRecord::Migration
       remove_foreign_key :ci_pipelines, :merge_requests
     end
 
-    remove_concurrent_index :ci_pipelines, :merge_request_id
+    remove_concurrent_index :ci_pipelines, :merge_request_id, where: 'merge_request_id IS NOT NULL'
   end
 end

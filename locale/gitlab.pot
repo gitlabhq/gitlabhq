@@ -7932,6 +7932,9 @@ msgid_plural "replies"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "should be higher than %{access} inherited membership from group %{group_name}"
+msgstr ""
+
 msgid "source"
 msgstr ""
 
