@@ -974,10 +974,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 
 Merge changes submitted with MR using this API.
 
+If merge request is unable to be accepted (ie: Work in Progress, Closed, Pipeline Pending Completion, or Failed while requiring Success) - you'll get a `405` and the error message 'Method Not Allowed'
 
-If it has some conflicts and can not be merged - you'll get a `405` and the error message 'Branch cannot be merged'
-
-If merge request is already merged or closed - you'll get a `406` and the error message 'Method Not Allowed'
+If it has some conflicts and can not be merged - you'll get a `406` and the error message 'Branch cannot be merged'
 
 If the `sha` parameter is passed and does not match the HEAD of the source - you'll get a `409` and the error message 'SHA does not match HEAD of source branch'
 
