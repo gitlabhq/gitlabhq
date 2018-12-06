@@ -344,25 +344,45 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    describe 'Variables when user is a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      let!(:trigger_request) { create(:ci_trigger_request) }
+      let!(:job) do
+        create(:ci_build, pipeline: pipeline, trigger_request: trigger_request)
+      end
+
+
+      shared_examples 'job with outdated deployment' do
+        it 'shows a link for the job' do
+          expect(page).to have_content('Token')
+          expect(page).to have_content('Variables')
+
+          click_button 'Reveal values'
+
+          expect(page).to have_css('.js-reveal-variables')
+          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        end
+      end
+    end
+
     describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do
-        create :ci_build, pipeline: pipeline, trigger_request: trigger_request
+        create(:ci_build, pipeline: pipeline, trigger_request: trigger_request)
       end
 
       shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', :js do
+        it 'renders a hidden value with no reveal values button', :js do
           expect(page).to have_content('Token')
-          expect(page).to have_css('.js-reveal-variables')
-          expect(page).not_to have_css('.js-build-variable')
-          expect(page).not_to have_css('.js-build-value')
-
-          click_button 'Reveal Variables'
-
+          expect(page).to have_content('Variables')
           expect(page).not_to have_css('.js-reveal-variables')
           expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+          expect(page).to have_selector('.js-build-value', text: '••••••')
         end
       end
 
