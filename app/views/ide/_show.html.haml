@@ -1,0 +1,10 @@
+- @body_class = 'ide-layout'
+- page_title 'IDE'
+
+- content_for :page_specific_javascripts do
+  = stylesheet_link_tag 'page_bundles/ide'
+
+#ide.ide-loading{ data: ide_data() }
+  .text-center
+    = icon('spinner spin 2x')
+    %h2.clgray= _('Loading the GitLab IDE...')

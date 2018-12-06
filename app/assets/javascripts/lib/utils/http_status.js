@@ -16,7 +16,9 @@ const httpStatusCodes = {
   IM_USED: 226,
   MULTIPLE_CHOICES: 300,
   BAD_REQUEST: 400,
+  FORBIDDEN: 403,
   NOT_FOUND: 404,
+  UNPROCESSABLE_ENTITY: 422,
 };
 
 export const successCodes = [
