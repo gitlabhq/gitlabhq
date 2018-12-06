@@ -63,17 +63,11 @@ export default {
       </p>
 
       <table class="js-build-variables trigger-build-variables">
-        <tr v-for="variable in trigger.variables">
-          <td
-            :key="`${variable.key}-variable`"
-            class="js-build-variable trigger-build-variable trigger-variables-table-cell"
-          >
+        <tr v-for="(variable, index) in trigger.variables" :key="`${variable.key}-${index}`">
+          <td class="js-build-variable trigger-build-variable trigger-variables-table-cell">
             {{ variable.key }}
           </td>
-          <td
-            :key="`${variable.key}-value`"
-            class="js-build-value trigger-build-value trigger-variables-table-cell"
-          >
+          <td class="js-build-value trigger-build-value trigger-variables-table-cell">
             {{ getDisplayValue(variable.value) }}
           </td>
         </tr>
