@@ -16,7 +16,11 @@ class NotificationSettingsController < ApplicationController
     @notification_setting = current_user.notification_settings.find(params[:id])
     @saved = @notification_setting.update(notification_setting_params_for(@notification_setting.source))
 
-    render_response
+    if params[:hide_label].present?
+      render_response("projects/buttons/_notifications")
+    else
+      render_response
+    end
   end
 
   private
@@ -37,9 +41,9 @@ class NotificationSettingsController < ApplicationController
     can?(current_user, ability_name, resource)
   end
 
-  def render_response
+  def render_response(response_template = "shared/notifications/_button")
     render json: {
-      html: view_to_html_string("shared/notifications/_button", notification_setting: @notification_setting),
+      html: view_to_html_string(response_template, notification_setting: @notification_setting),
       saved: @saved
     }
   end
