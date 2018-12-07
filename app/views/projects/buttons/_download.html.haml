@@ -5,8 +5,8 @@
   .project-action-button.dropdown.inline>
     %button.btn.has-tooltip{ title: s_('DownloadSource|Download'), 'data-toggle' => 'dropdown', 'aria-label' => s_('DownloadSource|Download'), 'data-display' => 'static' }
       = sprite_icon('download')
-      = icon("caret-down")
       %span.sr-only=  _('Select Archive Format')
+      = sprite_icon("arrow-down")
     %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
       %li.dropdown-header
         #{ _('Source code') }

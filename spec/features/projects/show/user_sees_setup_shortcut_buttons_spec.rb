@@ -21,7 +21,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
 
       it 'no Auto DevOps button if can not manage pipelines' do
-        page.within('.project-stats') do
+        page.within('.project-buttons') do
           expect(page).not_to have_link('Enable Auto DevOps')
           expect(page).not_to have_link('Auto DevOps enabled')
         end
@@ -30,7 +30,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       it '"Auto DevOps enabled" button not linked' do
         visit project_path(project)
 
-        page.within('.project-stats') do
+        page.within('.project-buttons') do
           expect(page).to have_text('Auto DevOps enabled')
         end
       end
@@ -45,19 +45,19 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
 
       it '"New file" button linked to new file page' do
-        page.within('.project-stats') do
+        page.within('.project-buttons') do
           expect(page).to have_link('New file', href: project_new_blob_path(project, project.default_branch || 'master'))
         end
       end
 
-      it '"Add Readme" button linked to new file populated for a readme' do
-        page.within('.project-stats') do
-          expect(page).to have_link('Add Readme', href: presenter.add_readme_path)
+      it '"Add README" button linked to new file populated for a README' do
+        page.within('.project-buttons') do
+          expect(page).to have_link('Add README', href: presenter.add_readme_path)
         end
       end
 
       it '"Add license" button linked to new file populated for a license' do
-        page.within('.project-metadata') do
+        page.within('.project-stats') do
           expect(page).to have_link('Add license', href: presenter.add_license_path)
         end
       end
@@ -67,7 +67,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           it '"Auto DevOps enabled" anchor linked to settings page' do
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
             end
           end
@@ -77,7 +77,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           let(:project) { create(:project, :public, :empty_repo, auto_devops_attributes: { enabled: false }) }
 
           it '"Enable Auto DevOps" button linked to settings page' do
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
             end
           end
@@ -86,7 +86,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
       describe 'Kubernetes cluster button' do
         it '"Add Kubernetes cluster" button linked to clusters page' do
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).to have_link('Add Kubernetes cluster', href: new_project_cluster_path(project))
           end
         end
@@ -96,7 +96,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
           visit project_path(project)
 
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
           end
         end
@@ -119,7 +119,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         it '"Auto DevOps enabled" button not linked' do
           visit project_path(project)
 
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).to have_text('Auto DevOps enabled')
           end
         end
@@ -129,14 +129,14 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         let(:project) { create(:project, :public, :repository, auto_devops_attributes: { enabled: false }) }
 
         it 'no Auto DevOps button if can not manage pipelines' do
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).not_to have_link('Enable Auto DevOps')
             expect(page).not_to have_link('Auto DevOps enabled')
           end
         end
 
         it 'no Kubernetes cluster button if can not manage clusters' do
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).not_to have_link('Add Kubernetes cluster')
             expect(page).not_to have_link('Kubernetes configured')
           end
@@ -151,59 +151,59 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         sign_in(user)
       end
 
-      context 'Readme button' do
+      context 'README button' do
         before do
           allow(Project).to receive(:find_by_full_path)
                               .with(project.full_path, follow_redirects: true)
                               .and_return(project)
         end
 
-        context 'when the project has a populated Readme' do
-          it 'show the "Readme" anchor' do
+        context 'when the project has a populated README' do
+          it 'show the "README" anchor' do
             visit project_path(project)
 
             expect(project.repository.readme).not_to be_nil
 
-            page.within('.project-stats') do
-              expect(page).not_to have_link('Add Readme', href: presenter.add_readme_path)
-              expect(page).to have_link('Readme', href: presenter.readme_path)
+            page.within('.project-buttons') do
+              expect(page).not_to have_link('Add README', href: presenter.add_readme_path)
+              expect(page).to have_link('README', href: presenter.readme_path)
             end
           end
 
-          context 'when the project has an empty Readme' do
-            it 'show the "Readme" anchor' do
+          context 'when the project has an empty README' do
+            it 'show the "README" anchor' do
               allow(project.repository).to receive(:readme).and_return(fake_blob(path: 'README.md', data: '', size: 0))
 
               visit project_path(project)
 
-              page.within('.project-stats') do
-                expect(page).not_to have_link('Add Readme', href: presenter.add_readme_path)
-                expect(page).to have_link('Readme', href: presenter.readme_path)
+              page.within('.project-buttons') do
+                expect(page).not_to have_link('Add README', href: presenter.add_readme_path)
+                expect(page).to have_link('README', href: presenter.readme_path)
               end
             end
           end
         end
 
-        context 'when the project does not have a Readme' do
-          it 'shows the "Add Readme" button' do
+        context 'when the project does not have a README' do
+          it 'shows the "Add README" button' do
             allow(project.repository).to receive(:readme).and_return(nil)
 
             visit project_path(project)
 
-            page.within('.project-stats') do
-              expect(page).to have_link('Add Readme', href: presenter.add_readme_path)
+            page.within('.project-buttons') do
+              expect(page).to have_link('Add README', href: presenter.add_readme_path)
             end
           end
         end
       end
 
-      it 'no "Add Changelog" button if the project already has a changelog' do
+      it 'no "Add CHANGELOG" button if the project already has a changelog' do
         visit project_path(project)
 
         expect(project.repository.changelog).not_to be_nil
 
-        page.within('.project-stats') do
-          expect(page).not_to have_link('Add Changelog')
+        page.within('.project-buttons') do
+          expect(page).not_to have_link('Add CHANGELOG')
         end
       end
 
@@ -212,18 +212,18 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
         expect(project.repository.license_blob).not_to be_nil
 
-        page.within('.project-stats') do
+        page.within('.project-buttons') do
           expect(page).not_to have_link('Add license')
         end
       end
 
-      it 'no "Add Contribution guide" button if the project already has a contribution guide' do
+      it 'no "Add CONTRIBUTING" button if the project already has a contribution guide' do
         visit project_path(project)
 
         expect(project.repository.contribution_guide).not_to be_nil
 
-        page.within('.project-stats') do
-          expect(page).not_to have_link('Add Contribution guide')
+        page.within('.project-buttons') do
+          expect(page).not_to have_link('Add CONTRIBUTING')
         end
       end
 
@@ -232,7 +232,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           it 'no "Set up CI/CD" button if the project has Auto DevOps enabled' do
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).not_to have_link('Set up CI/CD')
             end
           end
@@ -246,7 +246,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
             expect(project.repository.gitlab_ci_yml).to be_nil
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).to have_link('Set up CI/CD', href: presenter.add_ci_yml_path)
             end
           end
@@ -266,7 +266,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).not_to have_link('Set up CI/CD')
             end
           end
@@ -278,7 +278,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           it '"Auto DevOps enabled" anchor linked to settings page' do
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
             end
           end
@@ -290,7 +290,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
           it '"Enable Auto DevOps" button linked to settings page' do
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
             end
           end
@@ -302,7 +302,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
             expect(page).to have_selector('.js-autodevops-banner')
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).not_to have_link('Enable Auto DevOps')
               expect(page).not_to have_link('Auto DevOps enabled')
             end
@@ -323,7 +323,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
             visit project_path(project)
 
-            page.within('.project-stats') do
+            page.within('.project-buttons') do
               expect(page).not_to have_link('Enable Auto DevOps')
               expect(page).not_to have_link('Auto DevOps enabled')
             end
@@ -335,7 +335,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         it '"Add Kubernetes cluster" button linked to clusters page' do
           visit project_path(project)
 
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).to have_link('Add Kubernetes cluster', href: new_project_cluster_path(project))
           end
         end
@@ -345,7 +345,7 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
           visit project_path(project)
 
-          page.within('.project-stats') do
+          page.within('.project-buttons') do
             expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
           end
         end

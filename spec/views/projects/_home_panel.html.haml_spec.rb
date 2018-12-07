@@ -23,7 +23,7 @@ describe 'projects/_home_panel' do
       it 'makes it possible to set notification level' do
         render
 
-        expect(view).to render_template('shared/notifications/_button')
+        expect(view).to render_template('projects/buttons/_notifications')
         expect(rendered).to have_selector('.notification-dropdown')
       end
     end
