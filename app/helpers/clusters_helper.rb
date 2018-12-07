@@ -10,21 +10,11 @@ module ClustersHelper
   # clusterable, only for the ancestor clusters.
   def cluster_group_path_display(cluster, clusterable)
     if cluster.group_type? && cluster.group.id != clusterable.id
-      group_path_shortened(cluster.group)
-    end
-  end
+      components = cluster.group.full_path_components
 
-  def group_path_shortened(group)
-    components = group.full_path_components
-
-    breadcrumb = if components.size > 2
-                   [components.first, '&hellip;'.html_safe, components.last]
-                 else
-                   components
-                 end
-
-    breadcrumb.each_with_object(''.html_safe) do |component, string|
-      string.concat(component + ' / ')
+      group_path_shortened(components) + ' / ' + link_to_cluster(cluster)
+    else
+      link_to_cluster(cluster)
     end
   end
 
@@ -37,7 +27,31 @@ module ClustersHelper
     end
   end
 
-  def display_clusters_callout?(clusters, clusterable)
+  def render_cluster_help_content?(clusters, clusterable)
     clusters.length > clusterable.clusters.length
+  end
+
+  private
+
+  def components_split_by_horizontal_ellipsis(components)
+    [
+      components.first,
+      sprite_icon('ellipsis_h', size: 12, css_class: 'vertical-align-middle').html_safe,
+      components.last
+    ]
+  end
+
+  def link_to_cluster(cluster)
+    link_to cluster.name, cluster.show_path
+  end
+
+  def group_path_shortened(components)
+    breadcrumb = if components.size > 2
+                   components_split_by_horizontal_ellipsis(components)
+                 else
+                   components
+                 end
+
+    breadcrumb.join(' / ').html_safe
   end
 end

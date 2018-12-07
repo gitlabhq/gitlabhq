@@ -4,7 +4,6 @@
       .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
       .table-mobile-content
         = cluster_group_path_display(cluster, clusterable)
-        = link_to cluster.name, cluster.show_path
         - unless cluster.enabled?
           %span.badge.badge-danger Connection disabled
     .table-section.section-25
