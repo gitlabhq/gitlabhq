@@ -263,7 +263,7 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 When a developer updates a merge request, a pipeline should quickly report back
 its result to the developer, but often pipelines take long time to complete
-because general branch pipelines contain unrelated jobs to the merge request.
+because general branch pipelines contain unnecessary jobs from the merge request standpoint.
 You can customize a specific pipeline structure for merge requests in order to
 speed the cycle up by running only important jobs.
 
