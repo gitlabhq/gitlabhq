@@ -1512,8 +1512,11 @@ ActiveRecord::Schema.define(version: 20181203002526) do
   create_table "pool_repositories", id: :bigserial, force: :cascade do |t|
     t.integer "shard_id", null: false
     t.string "disk_path"
+    t.string "state"
+    t.integer "source_project_id"
     t.index ["disk_path"], name: "index_pool_repositories_on_disk_path", unique: true, using: :btree
     t.index ["shard_id"], name: "index_pool_repositories_on_shard_id", using: :btree
+    t.index ["source_project_id"], name: "index_pool_repositories_on_source_project_id", unique: true, using: :btree
   end
 
   create_table "programming_languages", force: :cascade do |t|
@@ -2393,6 +2396,7 @@ ActiveRecord::Schema.define(version: 20181203002526) do
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "pool_repositories", "projects", column: "source_project_id", on_delete: :nullify
   add_foreign_key "pool_repositories", "shards", on_delete: :restrict
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade

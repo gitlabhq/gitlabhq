@@ -4092,6 +4092,44 @@ describe Project do
     end
   end
 
+  describe '#git_objects_poolable?' do
+    subject { project }
+
+    context 'when the feature flag is turned off' do
+      before do
+        stub_feature_flags(object_pools: false)
+      end
+
+      let(:project) { create(:project, :repository, :public) }
+
+      it { is_expected.not_to be_git_objects_poolable }
+    end
+
+    context 'when the feature flag is enabled' do
+      context 'when not using hashed storage' do
+        let(:project) { create(:project, :legacy_storage, :public, :repository) }
+
+        it { is_expected.not_to be_git_objects_poolable }
+      end
+
+      context 'when the project is not public' do
+        let(:project) { create(:project, :private) }
+
+        it { is_expected.not_to be_git_objects_poolable }
+      end
+
+      context 'when objects are poolable' do
+        let(:project) { create(:project, :repository, :public) }
+
+        before do
+          stub_application_setting(hashed_storage_enabled: true)
+        end
+
+        it { is_expected.to be_git_objects_poolable }
+      end
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end
