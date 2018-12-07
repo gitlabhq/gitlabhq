@@ -19,6 +19,7 @@ describe TodoService do
   before do
     project.add_guest(guest)
     project.add_developer(author)
+    project.add_developer(assignee)
     project.add_developer(member)
     project.add_developer(john_doe)
     project.add_developer(skipped)
