@@ -14,7 +14,7 @@ There are many ways you can install GitLab depending on your platform:
 
 1. **Omnibus Gitlab**: The official deb/rpm packages that contain a bundle of GitLab
    and the various components it depends on like PostgreSQL, Redis, Sidekiq, etc.
-1. **GitLab Helm chart**: The cloud native Helm chart of installing GitLab and all
+1. **GitLab Helm chart**: The cloud native Helm chart for installing GitLab and all
    its components on Kubernetes.
 1. **Docker**: The Omnibus GitLab packages dockerized.
 1. **Source**: Install GitLab and all its components from scratch.
