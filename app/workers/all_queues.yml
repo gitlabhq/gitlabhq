@@ -10,7 +10,6 @@
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
-- cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
