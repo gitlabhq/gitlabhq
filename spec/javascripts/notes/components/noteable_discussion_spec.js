@@ -78,7 +78,6 @@ describe('noteable_discussion component', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('computed', () => {
     describe('hasMultipleUnresolvedDiscussions', () => {
       it('is false if there are no unresolved discussions', done => {
@@ -116,53 +115,8 @@ describe('noteable_discussion component', () => {
           .catch(done.fail);
       });
     });
-
-    describe('isRepliesCollapsed', () => {
-      it('should return false for diff discussions', done => {
-        const diffDiscussion = getJSONFixture(diffDiscussionFixture)[0];
-        vm.$store.dispatch('setInitialNotes', [diffDiscussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.isRepliesCollapsed).toEqual(false);
-            expect(vm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
-            expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('should return false if discussion does not have a reply', () => {
-        const discussion = { ...discussionMock, resolved: true };
-        discussion.notes = discussion.notes.slice(0, 1);
-        const noRepliesVm = new Component({
-          store,
-          propsData: { discussion },
-        }).$mount();
-
-        expect(noRepliesVm.isRepliesCollapsed).toEqual(false);
-        expect(noRepliesVm.$el.querySelector('.js-toggle-replies')).toBeNull();
-        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-        noRepliesVm.$destroy();
-      });
-
-      it('should return true for resolved non-diff discussion which has replies', () => {
-        const discussion = { ...discussionMock, resolved: true };
-        const resolvedDiscussionVm = new Component({
-          store,
-          propsData: { discussion },
-        }).$mount();
-
-        expect(resolvedDiscussionVm.isRepliesCollapsed).toEqual(true);
-        expect(resolvedDiscussionVm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
-        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-        resolvedDiscussionVm.$destroy();
-      });
-    });
   });
 
-=======
->>>>>>> 403430968cf... Merge branch 'winh-collapse-discussions' into 'master'
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
       it('expands next unresolved discussion', done => {
