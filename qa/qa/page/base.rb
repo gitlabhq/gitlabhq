@@ -15,7 +15,7 @@ module QA
       def_delegators :evaluator, :view, :views
 
       def refresh
-        visit current_url
+        page.refresh
       end
 
       def wait(max: 60, time: 0.1, reload: true)
@@ -80,8 +80,8 @@ module QA
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name)
-        find(element_selector_css(name))
+      def find_element(name, wait: Capybara.default_max_wait_time)
+        find(element_selector_css(name), wait: wait)
       end
 
       def all_elements(name)
@@ -100,12 +100,26 @@ module QA
         find_element(name).set(content)
       end
 
+      def select_element(name, value)
+        element = find_element(name)
+
+        return if element.text.downcase.to_s == value.to_s
+
+        element.select value.to_s.capitalize
+      end
+
       def has_element?(name)
         has_css?(element_selector_css(name))
       end
 
       def within_element(name)
         page.within(element_selector_css(name)) do
+          yield
+        end
+      end
+
+      def within_element_by_index(name, index)
+        page.within all_elements(name)[index] do
           yield
         end
       end

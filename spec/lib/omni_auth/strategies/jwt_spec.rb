@@ -4,12 +4,10 @@ describe OmniAuth::Strategies::Jwt do
   include Rack::Test::Methods
   include DeviseHelpers
 
-  context '.decoded' do
-    let(:strategy) { described_class.new({}) }
+  context '#decoded' do
+    subject { described_class.new({}) }
     let(:timestamp) { Time.now.to_i }
     let(:jwt_config) { Devise.omniauth_configs[:jwt] }
-    let(:key) { JWT.encode(claims, jwt_config.strategy.secret) }
-
     let(:claims) do
       {
         id: 123,
@@ -18,19 +16,55 @@ describe OmniAuth::Strategies::Jwt do
         iat: timestamp
       }
     end
+    let(:algorithm) { 'HS256' }
+    let(:secret) { jwt_config.strategy.secret }
+    let(:private_key) { secret }
+    let(:payload) { JWT.encode(claims, private_key, algorithm) }
 
     before do
-      allow_any_instance_of(OmniAuth::Strategy).to receive(:options).and_return(jwt_config.strategy)
-      allow_any_instance_of(Rack::Request).to receive(:params).and_return({ 'jwt' => key })
+      subject.options[:secret] = secret
+      subject.options[:algorithm] = algorithm
+
+      expect_next_instance_of(Rack::Request) do |rack_request|
+        expect(rack_request).to receive(:params).and_return('jwt' => payload)
+      end
     end
 
-    it 'decodes the user information' do
-      result = strategy.decoded
+    ECDSA_NAMED_CURVES = {
+      'ES256' => 'prime256v1',
+      'ES384' => 'secp384r1',
+      'ES512' => 'secp521r1'
+    }.freeze
 
-      expect(result["id"]).to eq(123)
-      expect(result["name"]).to eq("user_example")
-      expect(result["email"]).to eq("user@example.com")
-      expect(result["iat"]).to eq(timestamp)
+    {
+      OpenSSL::PKey::RSA => %w[RS256 RS384 RS512],
+      OpenSSL::PKey::EC => %w[ES256 ES384 ES512],
+      String => %w[HS256 HS384 HS512]
+    }.each do |private_key_class, algorithms|
+      algorithms.each do |algorithm|
+        context "when the #{algorithm} algorithm is used" do
+          let(:algorithm) { algorithm }
+          let(:secret) do
+            if private_key_class == OpenSSL::PKey::RSA
+              private_key_class.generate(2048)
+                .to_pem
+            elsif private_key_class == OpenSSL::PKey::EC
+              private_key_class.new(ECDSA_NAMED_CURVES[algorithm])
+                .tap { |key| key.generate_key! }
+                .to_pem
+            else
+              private_key_class.new(jwt_config.strategy.secret)
+            end
+          end
+          let(:private_key) { private_key_class ? private_key_class.new(secret) : secret }
+
+          it 'decodes the user information' do
+            result = subject.decoded
+
+            expect(result).to eq(claims.stringify_keys)
+          end
+        end
+      end
     end
 
     context 'required claims is missing' do
@@ -43,7 +77,7 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
+        expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
 
@@ -57,11 +91,12 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       before do
-        jwt_config.strategy.valid_within = Time.now.to_i
+        # Omniauth config values are always strings!
+        subject.options[:valid_within] = 2.days.to_s
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
+        expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
 
@@ -76,11 +111,12 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       before do
-        jwt_config.strategy.valid_within = 2.seconds
+        # Omniauth config values are always strings!
+        subject.options[:valid_within] = 2.seconds.to_s
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
+        expect { subject.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
   end

@@ -479,14 +479,23 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+#### Migrations
+
 > [Introduced][ce-21955] in GitLab 11.4
 
 Database initialization and migrations for PostgreSQL can be configured to run
 within the application pod by setting the project variables `DB_INITIALIZE` and
 `DB_MIGRATE` respectively.
 
-If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
-post-install hook. Note that this means that if any deploy succeeds,
+If present, `DB_INITIALIZE` will be run as a shell command within an
+application pod as a helm post-install hook. As some applications will
+not run without a successful database initialization step, GitLab will
+deploy the first release without the application deployment and only the
+database initialization step. After the database initialization completes,
+GitLab will deploy a second release with the application deployment as
+normal.
+
+Note that a post-install hook means that if any deploy succeeds,
 `DB_INITIALIZE` will not be processed thereafter.
 
 If present, `DB_MIGRATE` will be run as a shell command within an application pod as

@@ -11,6 +11,7 @@ describe PipelineScheduleWorker do
   end
 
   before do
+    stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_to_return_yaml_file
 
     pipeline_schedule.update_column(:next_run_at, 1.day.ago)
@@ -24,12 +25,12 @@ describe PipelineScheduleWorker do
     context 'when there is a scheduled pipeline within next_run_at' do
       shared_examples 'successful scheduling' do
         it 'creates a new pipeline' do
-          expect { subject }.to change { project.pipelines.count }.by(1)
+          expect { subject }.to change { project.ci_pipelines.count }.by(1)
           expect(Ci::Pipeline.last).to be_schedule
 
           pipeline_schedule.reload
           expect(pipeline_schedule.next_run_at).to be > Time.now
-          expect(pipeline_schedule).to eq(project.pipelines.last.pipeline_schedule)
+          expect(pipeline_schedule).to eq(project.ci_pipelines.last.pipeline_schedule)
           expect(pipeline_schedule).to be_active
         end
       end
@@ -53,7 +54,7 @@ describe PipelineScheduleWorker do
       end
 
       it 'does not creates a new pipeline' do
-        expect { subject }.not_to change { project.pipelines.count }
+        expect { subject }.not_to change { project.ci_pipelines.count }
       end
     end
 
@@ -63,7 +64,7 @@ describe PipelineScheduleWorker do
       end
 
       it 'creates a failed pipeline with the reason' do
-        expect { subject }.to change { project.pipelines.count }.by(1)
+        expect { subject }.to change { project.ci_pipelines.count }.by(1)
         expect(Ci::Pipeline.last).to be_config_error
         expect(Ci::Pipeline.last.yaml_errors).not_to be_nil
       end
@@ -104,7 +105,7 @@ describe PipelineScheduleWorker do
     end
 
     it 'does not create a pipeline' do
-      expect { subject }.not_to change { project.pipelines.count }
+      expect { subject }.not_to change { project.ci_pipelines.count }
     end
 
     it 'does not raise an exception' do
@@ -134,7 +135,7 @@ describe PipelineScheduleWorker do
     end
 
     it 'does not create a pipeline' do
-      expect { subject }.not_to change { project.pipelines.count }
+      expect { subject }.not_to change { project.ci_pipelines.count }
     end
 
     it 'does not raise an exception' do

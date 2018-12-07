@@ -21,7 +21,7 @@
         = link_to 'Enable two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-success'
 
 %hr
-- if button_based_providers.any?
+- if display_providers_on_profile?
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
@@ -46,6 +46,7 @@
           - else
             = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
               Connect
+      = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: local_assigns[:group_saml_identities]
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default
@@ -66,7 +67,7 @@
     %h4.prepend-top-0.danger-title
       = s_('Profiles|Delete account')
   .col-lg-8
-    - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
+    - if current_user.can_be_removed? && can?(current_user, :destroy_user, current_user)
       %p
         = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
@@ -79,10 +80,10 @@
         confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
         username: current_user.username } }
     - else
-      - if @user.solo_owned_groups.present?
+      - if current_user.solo_owned_groups.present?
         %p
           = s_('Profiles|Your account is currently an owner in these groups:')
-          %strong= @user.solo_owned_groups.map(&:name).join(', ')
+          %strong= current_user.solo_owned_groups.map(&:name).join(', ')
         %p
           = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
       - else

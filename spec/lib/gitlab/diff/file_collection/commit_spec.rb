@@ -12,4 +12,8 @@ describe Gitlab::Diff::FileCollection::Commit do
     let(:diffable) { project.commit }
     let(:stub_path) { 'bar/branch-test.txt' }
   end
+
+  it_behaves_like 'unfoldable diff' do
+    let(:diffable) { project.commit }
+  end
 end

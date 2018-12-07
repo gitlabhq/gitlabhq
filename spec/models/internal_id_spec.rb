@@ -7,6 +7,8 @@ describe InternalId do
   let(:scope) { { project: project } }
   let(:init) { ->(s) { s.project.issues.size } }
 
+  it_behaves_like 'having unique enum values'
+
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
   end

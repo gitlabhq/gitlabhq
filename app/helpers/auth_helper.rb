@@ -57,6 +57,10 @@ module AuthHelper
     auth_providers.reject { |provider| form_based_provider?(provider) }
   end
 
+  def display_providers_on_profile?
+    button_based_providers.any?
+  end
+
   def providers_for_base_controller
     auth_providers.reject { |provider| LDAP_PROVIDER === provider }
   end

@@ -4,7 +4,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
   include AuthHelper
 
   def show
-    @user = current_user
+    render(locals: show_view_variables)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -23,4 +23,10 @@ class Profiles::AccountsController < Profiles::ApplicationController
     redirect_to profile_account_path
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  private
+
+  def show_view_variables
+    {}
+  end
 end

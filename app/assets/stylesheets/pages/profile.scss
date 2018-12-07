@@ -144,11 +144,13 @@
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
+  margin-bottom: 10px;
   border: 1px solid $border-color;
   border-radius: 3px;
 
   &:last-child {
     margin-right: 0;
+    margin-bottom: 0;
   }
 }
 

@@ -17,4 +17,35 @@ describe Projects::Settings::RepositoryController do
       expect(response).to render_template(:show)
     end
   end
+
+  describe 'PUT cleanup' do
+    def do_put!
+      object_map = fixture_file_upload('spec/fixtures/bfg_object_map.txt')
+
+      Sidekiq::Testing.fake! do
+        put :cleanup, namespace_id: project.namespace, project_id: project, project: { object_map: object_map }
+      end
+    end
+
+    context 'feature enabled' do
+      it 'enqueues a RepositoryCleanupWorker' do
+        stub_feature_flags(project_cleanup: true)
+
+        do_put!
+
+        expect(response).to redirect_to project_settings_repository_path(project)
+        expect(RepositoryCleanupWorker.jobs.count).to eq(1)
+      end
+    end
+
+    context 'feature disabled' do
+      it 'shows a 404 error' do
+        stub_feature_flags(project_cleanup: false)
+
+        do_put!
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
 end

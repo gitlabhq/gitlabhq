@@ -29,6 +29,7 @@
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:cluster_platform_configure
+- gcp_cluster:cluster_project_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -132,3 +133,4 @@
 - create_note_diff_file
 - delete_diff_files
 - detect_repository_languages
+- repository_cleanup

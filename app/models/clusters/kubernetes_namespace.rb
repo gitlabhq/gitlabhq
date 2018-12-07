@@ -33,14 +33,12 @@ module Clusters
     end
 
     def predefined_variables
-      config = YAML.dump(kubeconfig)
-
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables
           .append(key: 'KUBE_SERVICE_ACCOUNT', value: service_account_name.to_s)
           .append(key: 'KUBE_NAMESPACE', value: namespace.to_s)
           .append(key: 'KUBE_TOKEN', value: service_account_token.to_s, public: false)
-          .append(key: 'KUBECONFIG', value: config, public: false, file: true)
+          .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
       end
     end
 

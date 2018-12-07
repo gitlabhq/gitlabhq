@@ -27,7 +27,7 @@ request.
 1. Bitbucket Server allows multiple levels of threading. GitLab
 import will collapse this into one discussion and quote part of the original
 comment.
-1. Declined pull requests have unrecahable commits, which prevents the GitLab
+1. Declined pull requests have unreachable commits, which prevents the GitLab
 importer from generating a proper diff. These pull requests will show up as
 empty changes.
 1. Attachments in Markdown are currently not imported.

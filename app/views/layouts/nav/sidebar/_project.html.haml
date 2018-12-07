@@ -222,6 +222,12 @@
                   %span
                     = _('Environments')
 
+            - if project_nav_tab? :serverless
+              = nav_link(controller: :functions) do
+                = link_to project_serverless_functions_path(@project), title: _('Serverless') do
+                  %span
+                    = _('Serverless')
+
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)
               = nav_link(controller: [:clusters, :user, :gcp]) do

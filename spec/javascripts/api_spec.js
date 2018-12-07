@@ -180,6 +180,23 @@ describe('Api', () => {
     });
   });
 
+  describe('projectRunners', () => {
+    it('fetches the runners of a project', done => {
+      const projectPath = 7;
+      const params = { scope: 'active' };
+      const mockData = [{ id: 4 }];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/runners`;
+      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+
+      Api.projectRunners(projectPath, { params })
+        .then(({ data }) => {
+          expect(data).toEqual(mockData);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('newLabel', () => {
     it('creates a new label', done => {
       const namespace = 'some namespace';

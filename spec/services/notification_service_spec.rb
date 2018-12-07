@@ -2146,6 +2146,27 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'Repository cleanup' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+
+    describe '#repository_cleanup_success' do
+      it 'emails the specified user only' do
+        notification.repository_cleanup_success(project, user)
+
+        should_email(user)
+      end
+    end
+
+    describe '#repository_cleanup_failure' do
+      it 'emails the specified user only' do
+        notification.repository_cleanup_failure(project, user, 'Some error')
+
+        should_email(user)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

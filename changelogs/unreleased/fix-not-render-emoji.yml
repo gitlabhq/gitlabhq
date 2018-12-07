@@ -1,5 +1,0 @@
----
-title: Fix not render emoji in filter dropdown
-merge_request: 23112
-author: Hiroyuki Sato
-type: fixed

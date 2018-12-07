@@ -10,6 +10,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
   let(:api_url) { 'https://kubernetes.example.com' }
   let(:project) { cluster.project }
   let(:cluster_project) { cluster.cluster_project }
+  let(:namespace) { "#{project.path}-#{project.id}" }
 
   subject do
     described_class.new(
@@ -18,40 +19,31 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     ).execute
   end
 
-  shared_context 'kubernetes requests' do
-    before do
-      stub_kubeclient_discover(api_url)
-      stub_kubeclient_get_namespace(api_url)
-      stub_kubeclient_create_service_account(api_url)
-      stub_kubeclient_create_secret(api_url)
+  before do
+    stub_kubeclient_discover(api_url)
+    stub_kubeclient_get_namespace(api_url)
+    stub_kubeclient_get_service_account_error(api_url, 'gitlab')
+    stub_kubeclient_create_service_account(api_url)
+    stub_kubeclient_get_secret_error(api_url, 'gitlab-token')
+    stub_kubeclient_create_secret(api_url)
 
-      stub_kubeclient_get_namespace(api_url, namespace: namespace)
-      stub_kubeclient_create_service_account(api_url, namespace: namespace)
-      stub_kubeclient_create_secret(api_url, namespace: namespace)
+    stub_kubeclient_get_namespace(api_url, namespace: namespace)
+    stub_kubeclient_get_service_account_error(api_url, "#{namespace}-service-account", namespace: namespace)
+    stub_kubeclient_create_service_account(api_url, namespace: namespace)
+    stub_kubeclient_create_secret(api_url, namespace: namespace)
+    stub_kubeclient_put_secret(api_url, "#{namespace}-token", namespace: namespace)
 
-      stub_kubeclient_get_secret(
-        api_url,
-        {
-          metadata_name: "#{namespace}-token",
-          token: Base64.encode64('sample-token'),
-          namespace: namespace
-        }
-      )
-    end
+    stub_kubeclient_get_secret(
+      api_url,
+      {
+        metadata_name: "#{namespace}-token",
+        token: Base64.encode64('sample-token'),
+        namespace: namespace
+      }
+    )
   end
 
-  context 'when kubernetes namespace is not persisted' do
-    let(:namespace) { "#{project.path}-#{project.id}" }
-
-    let(:kubernetes_namespace) do
-      create(:cluster_kubernetes_namespace,
-            cluster: cluster,
-            project: cluster_project.project,
-            cluster_project: cluster_project)
-    end
-
-    include_context 'kubernetes requests'
-
+  shared_examples 'successful creation of kubernetes namespace' do
     it 'creates a Clusters::KubernetesNamespace' do
       expect do
         subject
@@ -59,7 +51,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     end
 
     it 'creates project service account' do
-      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateServiceAccountService).to receive(:execute).once
+      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
 
       subject
     end
@@ -74,42 +66,69 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     end
   end
 
-  context 'when there is a Kubernetes Namespace associated' do
-    let(:namespace) { 'new-namespace' }
+  context 'group clusters' do
+    let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
+    let(:group) { cluster.group }
+    let(:project) { create(:project, group: group) }
 
-    let(:kubernetes_namespace) do
-      create(:cluster_kubernetes_namespace,
-             cluster: cluster,
-             project: cluster_project.project,
-             cluster_project: cluster_project)
+    context 'when kubernetes namespace is not persisted' do
+      let(:kubernetes_namespace) do
+        build(:cluster_kubernetes_namespace,
+              cluster: cluster,
+              project: project)
+      end
+
+      it_behaves_like 'successful creation of kubernetes namespace'
+    end
+  end
+
+  context 'project clusters' do
+    context 'when kubernetes namespace is not persisted' do
+      let(:kubernetes_namespace) do
+        build(:cluster_kubernetes_namespace,
+              cluster: cluster,
+              project: cluster_project.project,
+              cluster_project: cluster_project)
+      end
+
+      it_behaves_like 'successful creation of kubernetes namespace'
     end
 
-    include_context 'kubernetes requests'
+    context 'when there is a Kubernetes Namespace associated' do
+      let(:namespace) { 'new-namespace' }
 
-    before do
-      platform.update_column(:namespace, 'new-namespace')
-    end
+      let(:kubernetes_namespace) do
+        create(:cluster_kubernetes_namespace,
+               cluster: cluster,
+               project: cluster_project.project,
+               cluster_project: cluster_project)
+      end
 
-    it 'does not create any Clusters::KubernetesNamespace' do
-      subject
+      before do
+        platform.update_column(:namespace, 'new-namespace')
+      end
 
-      expect(cluster.kubernetes_namespace).to eq(kubernetes_namespace)
-    end
+      it 'does not create any Clusters::KubernetesNamespace' do
+        subject
 
-    it 'creates project service account' do
-      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateServiceAccountService).to receive(:execute).once
+        expect(cluster.kubernetes_namespace).to eq(kubernetes_namespace)
+      end
 
-      subject
-    end
+      it 'creates project service account' do
+        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
 
-    it 'updates Clusters::KubernetesNamespace' do
-      subject
+        subject
+      end
 
-      kubernetes_namespace.reload
+      it 'updates Clusters::KubernetesNamespace' do
+        subject
 
-      expect(kubernetes_namespace.namespace).to eq(namespace)
-      expect(kubernetes_namespace.service_account_name).to eq("#{namespace}-service-account")
-      expect(kubernetes_namespace.encrypted_service_account_token).to be_present
+        kubernetes_namespace.reload
+
+        expect(kubernetes_namespace.namespace).to eq(namespace)
+        expect(kubernetes_namespace.service_account_name).to eq("#{namespace}-service-account")
+        expect(kubernetes_namespace.encrypted_service_account_token).to be_present
+      end
     end
   end
 end

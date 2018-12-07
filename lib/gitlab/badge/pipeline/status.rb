@@ -22,7 +22,7 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def status
-          @project.pipelines
+          @project.ci_pipelines
             .where(sha: @sha)
             .latest_status(@ref) || 'unknown'
         end

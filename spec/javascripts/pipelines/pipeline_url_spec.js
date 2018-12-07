@@ -90,7 +90,7 @@ describe('Pipeline Url Component', () => {
     expect(component.$el.querySelector('.js-pipeline-url-api').textContent).toContain('API');
   });
 
-  it('should render latest, yaml invalid and stuck flags when provided', () => {
+  it('should render latest, yaml invalid, merge request, and stuck flags when provided', () => {
     const component = new PipelineUrlComponent({
       propsData: {
         pipeline: {
@@ -100,6 +100,7 @@ describe('Pipeline Url Component', () => {
             latest: true,
             yaml_errors: true,
             stuck: true,
+            merge_request: true,
           },
         },
         autoDevopsHelpPath: 'foo',
@@ -109,6 +110,10 @@ describe('Pipeline Url Component', () => {
     expect(component.$el.querySelector('.js-pipeline-url-latest').textContent).toContain('latest');
     expect(component.$el.querySelector('.js-pipeline-url-yaml').textContent).toContain(
       'yaml invalid',
+    );
+
+    expect(component.$el.querySelector('.js-pipeline-url-mergerequest').textContent).toContain(
+      'merge request',
     );
 
     expect(component.$el.querySelector('.js-pipeline-url-stuck').textContent).toContain('stuck');

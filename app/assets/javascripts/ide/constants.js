@@ -26,6 +26,7 @@ export const diffModes = {
   new: 'new',
   deleted: 'deleted',
   renamed: 'renamed',
+  mode_changed: 'mode_changed',
 };
 
 export const rightSidebarViews = {
