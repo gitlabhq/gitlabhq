@@ -20,7 +20,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
-                    Gitlab::GrapeLogging::Loggers::PerfLogger.new
+                    Gitlab::GrapeLogging::Loggers::PerfLogger.new,
+                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -84,7 +85,6 @@ module API
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
-    helpers ::SentryHelper
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
