@@ -405,9 +405,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
 
           get_show(id: job.id, format: :json)
-        end
 
-        before(:each) do
           @first_variable = json_response['trigger']['variables'].first
         end
 
@@ -433,9 +431,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
 
           get_show(id: job.id, format: :json)
-        end
 
-        before(:each) do
           @first_variable = json_response['trigger']['variables'].first
         end
 
