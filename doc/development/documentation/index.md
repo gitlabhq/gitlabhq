@@ -368,6 +368,16 @@ You can combine one or more of the following:
       = link_to 'Help page', help_page_path('user/permissions')
     ```
 
+### GitLab `/help` tests
+
+Several [rspec tests](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/features/help_pages_spec.rb)
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
+For example, [GitLab.com's `/help`](https://gitlab.com/help).
+
+CAUTION: **Caution:**
+Because the rspec tests only run in a full pipeline, and not a special [docs-only pipeline](#branch-naming), it is possible
+to merge changes that will break `master` from a merge request with a successful docs-only pipeline run.
+
 ## General Documentation vs Technical Articles
 
 ### General documentation
@@ -552,6 +562,7 @@ Currently, the following tests are in place:
     As CE is merged into EE once a day, it's important to avoid merge conflicts.
     Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
     essential to avoid them.
+1. In a full pipeline, tests for [`/help`](#gitlab-help-tests).
 
 ### Linting
 
