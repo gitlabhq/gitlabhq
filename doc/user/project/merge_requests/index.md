@@ -259,7 +259,7 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
 
-## Customize a specific pipeline structure for merge requests
+## Pipelines for merge requests
 
 When a developer updates a merge request, a pipeline should quickly report back
 its result to the developer, but often pipelines take long time to complete
@@ -267,7 +267,7 @@ because general branch pipelines contain unnecessary jobs from the merge request
 You can customize a specific pipeline structure for merge requests in order to
 speed the cycle up by running only important jobs.
 
-[Learn more about pipelines for merge requests.](../../../ci/merge_request_pipelines/index.md)
+Learn more about [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
 
 ## Pipeline status in merge requests
 
