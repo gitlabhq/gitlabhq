@@ -654,20 +654,44 @@ describe MergeRequests::RefreshService do
 
     subject { service.execute(oldrev, newrev, 'refs/heads/merge-commit-analyze-before') }
 
-    it "updates merge requests' merge_commits" do
-      expect(Gitlab::BranchPushMergeCommitAnalyzer).to receive(:new).and_wrap_original do |original_method, commits|
-        expect(commits.map(&:id)).to eq(%w{646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5 5f82584f0a907f3b30cfce5bb8df371454a90051 8a994512e8c8f0dfcf22bb16df6e876be7a61036 689600b91aabec706e657e38ea706ece1ee8268f db46a1c5a5e474aa169b6cdb7a522d891bc4c5f9})
-
-        original_method.call(commits)
+    context 'feature enabled' do
+      before do
+        stub_feature_flags(branch_push_merge_commit_analyze: true)
       end
 
-      subject
+      it "updates merge requests' merge_commits" do
+        expect(Gitlab::BranchPushMergeCommitAnalyzer).to receive(:new).and_wrap_original do |original_method, commits|
+          expect(commits.map(&:id)).to eq(%w{646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5 5f82584f0a907f3b30cfce5bb8df371454a90051 8a994512e8c8f0dfcf22bb16df6e876be7a61036 689600b91aabec706e657e38ea706ece1ee8268f db46a1c5a5e474aa169b6cdb7a522d891bc4c5f9})
 
-      merge_request.reload
-      merge_request_side_branch.reload
+          original_method.call(commits)
+        end
 
-      expect(merge_request.merge_commit.id).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
-      expect(merge_request_side_branch.merge_commit.id).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+        subject
+
+        merge_request.reload
+        merge_request_side_branch.reload
+
+        expect(merge_request.merge_commit.id).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
+        expect(merge_request_side_branch.merge_commit.id).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+      end
+    end
+
+    context 'when feature is disabled' do
+      before do
+        stub_feature_flags(branch_push_merge_commit_analyze: false)
+      end
+
+      it "does not trigger analysis" do
+        expect(Gitlab::BranchPushMergeCommitAnalyzer).not_to receive(:new)
+
+        subject
+
+        merge_request.reload
+        merge_request_side_branch.reload
+
+        expect(merge_request.merge_commit).to eq(nil)
+        expect(merge_request_side_branch.merge_commit).to eq(nil)
+      end
     end
   end
 end
