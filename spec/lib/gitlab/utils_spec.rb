@@ -2,7 +2,33 @@ require 'spec_helper'
 
 describe Gitlab::Utils do
   delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, :which, :ensure_array_from_string,
-   :bytes_to_megabytes, :append_path, to: :described_class
+   :bytes_to_megabytes, :append_path, :check_path_traversal!, to: :described_class
+
+  describe '.check_path_traversal!' do
+    it 'detects path traversal at the start of the string' do
+      expect { check_path_traversal!('../foo') }.to raise_error(/Invalid path/)
+    end
+
+    it 'detects path traversal at the start of the string, even to just the subdirectory' do
+      expect { check_path_traversal!('../') }.to raise_error(/Invalid path/)
+    end
+
+    it 'detects path traversal in the middle of the string' do
+      expect { check_path_traversal!('foo/../../bar') }.to raise_error(/Invalid path/)
+    end
+
+    it 'detects path traversal at the end of the string when slash-terminates' do
+      expect { check_path_traversal!('foo/../') }.to raise_error(/Invalid path/)
+    end
+
+    it 'detects path traversal at the end of the string' do
+      expect { check_path_traversal!('foo/..') }.to raise_error(/Invalid path/)
+    end
+
+    it 'does nothing for a safe string' do
+      expect(check_path_traversal!('./foo')).to eq('./foo')
+    end
+  end
 
   describe '.slugify' do
     {

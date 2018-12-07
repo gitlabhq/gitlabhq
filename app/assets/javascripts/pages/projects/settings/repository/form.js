@@ -7,6 +7,7 @@ import initDeployKeys from '~/deploy_keys';
 import ProtectedBranchCreate from '~/protected_branches/protected_branch_create';
 import ProtectedBranchEditList from '~/protected_branches/protected_branch_edit_list';
 import DueDateSelectors from '~/due_date_select';
+import fileUpload from '~/lib/utils/file_upload';
 
 export default () => {
   new ProtectedTagCreate();
@@ -16,4 +17,5 @@ export default () => {
   new ProtectedBranchCreate();
   new ProtectedBranchEditList();
   new DueDateSelectors();
+  fileUpload('.js-choose-file', '.js-object-map-input');
 };

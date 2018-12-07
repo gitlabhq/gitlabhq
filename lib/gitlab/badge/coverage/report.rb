@@ -14,7 +14,7 @@ module Gitlab
           @ref = ref
           @job = job
 
-          @pipeline = @project.pipelines.latest_successful_for(@ref)
+          @pipeline = @project.ci_pipelines.latest_successful_for(@ref)
         end
 
         def entity

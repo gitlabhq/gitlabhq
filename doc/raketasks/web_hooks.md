@@ -38,8 +38,6 @@
 ## List the webhooks from projects in a given **NAMESPACE**:
 
     # omnibus-gitlab
-    sudo gitlab-rake gitlab:web_hook:list NAMESPACE=/
+    sudo gitlab-rake gitlab:web_hook:list NAMESPACE=acme
     # source installations
-    bundle exec rake gitlab:web_hook:list NAMESPACE=/ RAILS_ENV=production
-
-> Note: `/` is the global namespace.
+    bundle exec rake gitlab:web_hook:list NAMESPACE=acme RAILS_ENV=production

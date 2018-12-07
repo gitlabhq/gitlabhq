@@ -92,20 +92,7 @@ export default {
         {{ selectedProjectName }} <icon name="chevron-down" />
       </button>
       <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-        <div class="dropdown-title">
-          <span>Projects</span>
-          <button
-            aria-label="Close"
-            type="button"
-            class="dropdown-title-button dropdown-menu-close"
-          >
-            <icon
-              name="merge-request-close-m"
-              data-hidden="true"
-              class="dropdown-menu-close-icon"
-            />
-          </button>
-        </div>
+        <div class="dropdown-title">Projects</div>
         <div class="dropdown-input">
           <input class="dropdown-input-field" type="search" placeholder="Search projects" />
           <icon name="search" class="dropdown-input-search" data-hidden="true" />

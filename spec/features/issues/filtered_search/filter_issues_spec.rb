@@ -430,7 +430,7 @@ describe 'Filter issues', :js do
 
         expect_issues_list_count(2)
 
-        sort_toggle = find('.filter-dropdown-container .dropdown-menu-toggle')
+        sort_toggle = find('.filter-dropdown-container .dropdown')
         sort_toggle.click
 
         find('.filter-dropdown-container .dropdown-menu li a', text: 'Created date').click

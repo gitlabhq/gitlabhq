@@ -50,10 +50,11 @@ function hideOrShowHelpBlock(form) {
 }
 
 $(() => {
-  const $form = $('form.js-requires-input');
-  if ($form) {
+  $('form.js-requires-input').each((i, el) => {
+    const $form = $(el);
+
     $form.requiresInput();
     hideOrShowHelpBlock($form);
     $('.select2.js-select-namespace').change(() => hideOrShowHelpBlock($form));
-  }
+  });
 });

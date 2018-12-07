@@ -838,23 +838,48 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     context "when job has a trace artifact" do
       let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
-      it 'returns a trace' do
-        response = subject
+      context 'when feature flag workhorse_set_content_type is' do
+        before do
+          stub_feature_flags(workhorse_set_content_type: flag_value)
+        end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
-        expect(response.body).to eq(job.job_artifacts_trace.open.read)
+        context 'enabled' do
+          let(:flag_value) { true }
+
+          it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
+            expect(response.body).to eq(job.job_artifacts_trace.open.read)
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+          end
+        end
+
+        context 'disabled' do
+          let(:flag_value) { false }
+
+          it 'returns a trace' do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
+            expect(response.body).to eq(job.job_artifacts_trace.open.read)
+            expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to be nil
+          end
+        end
       end
     end
 
     context "when job has a trace file" do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
-      it "send a trace file" do
+      it 'sends a trace file' do
         response = subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
+        expect(response.headers["Content-Disposition"]).to match(/^inline/)
         expect(response.body).to eq("BUILD TRACE")
       end
     end
@@ -866,12 +891,27 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         job.update_column(:trace, "Sample trace")
       end
 
-      it "send a trace file" do
+      it 'sends a trace file' do
         response = subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
-        expect(response.body).to eq("Sample trace")
+        expect(response.headers['Content-Type']).to eq('text/plain; charset=utf-8')
+        expect(response.headers['Content-Disposition']).to match(/^inline/)
+        expect(response.body).to eq('Sample trace')
+      end
+
+      context 'when trace format is not text/plain' do
+        before do
+          job.update_column(:trace, '<html></html>')
+        end
+
+        it 'sets content disposition to attachment' do
+          response = subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(response.headers['Content-Disposition']).to match(/^attachment/)
+        end
       end
     end
 

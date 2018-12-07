@@ -74,6 +74,32 @@ describe('DiffFile', () => {
         });
       });
 
+      it('should be collapsed for renamed files', done => {
+        vm.file.renderIt = true;
+        vm.file.collapsed = false;
+        vm.file.highlighted_diff_lines = null;
+        vm.file.renamed_file = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+
+          done();
+        });
+      });
+
+      it('should be collapsed for mode changed files', done => {
+        vm.file.renderIt = true;
+        vm.file.collapsed = false;
+        vm.file.highlighted_diff_lines = null;
+        vm.file.mode_changed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).not.toContain('This diff is collapsed');
+
+          done();
+        });
+      });
+
       it('should have loading icon while loading a collapsed diffs', done => {
         vm.file.collapsed = true;
         vm.isLoadingCollapsedDiff = true;

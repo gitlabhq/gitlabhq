@@ -140,15 +140,22 @@ class Projects::JobsController < Projects::ApplicationController
 
   def raw
     if trace_artifact_file
+      workhorse_set_content_type!
       send_upload(trace_artifact_file,
                   send_params: raw_send_params,
                   redirect_params: raw_redirect_params)
     else
       build.trace.read do |stream|
         if stream.file?
+          workhorse_set_content_type!
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
         else
-          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
+          # In this case we can't use workhorse_set_content_type! and let
+          # Workhorse handle the response because the data is streamed directly
+          # to the user but, because we have the trace content, we can calculate
+          # the proper content type and disposition here.
+          raw_data = stream.raw
+          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data), filename: 'job.log'
         end
       end
     end
@@ -200,5 +207,14 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build_path(build)
     project_job_path(build.project, build)
+  end
+
+  def raw_trace_content_disposition(raw_data)
+    mime_type = MimeMagic.by_magic(raw_data)
+
+    # if mime_type is nil can also represent 'text/plain'
+    return 'inline' if mime_type.nil? || mime_type.type == 'text/plain'
+
+    'attachment'
   end
 end

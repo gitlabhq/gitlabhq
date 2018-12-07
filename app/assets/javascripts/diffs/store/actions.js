@@ -147,13 +147,19 @@ export const scrollToLineIfNeededParallel = (_, line) => {
   }
 };
 
-export const loadCollapsedDiff = ({ commit }, file) =>
-  axios.get(file.load_collapsed_diff_url).then(res => {
-    commit(types.ADD_COLLAPSED_DIFFS, {
-      file,
-      data: res.data,
+export const loadCollapsedDiff = ({ commit, getters }, file) =>
+  axios
+    .get(file.load_collapsed_diff_url, {
+      params: {
+        commit_id: getters.commitId,
+      },
+    })
+    .then(res => {
+      commit(types.ADD_COLLAPSED_DIFFS, {
+        file,
+        data: res.data,
+      });
     });
-  });
 
 export const expandAllFiles = ({ commit }) => {
   commit(types.EXPAND_ALL_FILES);
@@ -186,8 +192,9 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   });
 };
 
-export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
+export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
   const postData = getNoteFormData({
+    commit: state.commit,
     note,
     ...formData,
   });

@@ -167,7 +167,6 @@ Here's a list of what you can't do with subgroups:
 - [GitLab Pages](../../project/pages/index.md) are not currently working for
   projects hosted under a subgroup. That means that only projects hosted under
   the first parent group will work.
-- Group level labels don't work in subgroups / sub projects
 - It is not possible to share a project with a group that's an ancestor of
   the group the project is in. That means you can only share as you walk down
   the hierarchy. For example, `group/subgroup01/project` **cannot** be shared

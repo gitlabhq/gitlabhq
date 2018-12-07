@@ -34,7 +34,7 @@ module Projects
       end
 
       def auto_devops_pipelines
-        @auto_devops_pipelines ||= project.pipelines.auto_devops_source
+        @auto_devops_pipelines ||= project.ci_pipelines.auto_devops_source
       end
     end
   end

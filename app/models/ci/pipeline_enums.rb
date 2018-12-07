@@ -21,7 +21,8 @@ module Ci
         trigger: 3,
         schedule: 4,
         api: 5,
-        external: 6
+        external: 6,
+        merge_request: 10
       }
     end
   end

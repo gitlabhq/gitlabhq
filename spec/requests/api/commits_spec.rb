@@ -818,7 +818,7 @@ describe API::Commits do
       end
 
       context 'when the ref has a pipeline' do
-        let!(:pipeline) { project.pipelines.create(source: :push, ref: 'master', sha: commit.sha, protected: false) }
+        let!(:pipeline) { project.ci_pipelines.create(source: :push, ref: 'master', sha: commit.sha, protected: false) }
 
         it 'includes a "created" status' do
           get api(route, current_user)

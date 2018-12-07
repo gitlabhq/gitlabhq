@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Admin::Users" do
+  include Spec::Support::Helpers::Features::ListRowsHelpers
+
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
@@ -28,6 +30,51 @@ describe "Admin::Users" do
       expect(page).to have_link('Block', href: block_admin_user_path(user))
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
+    end
+
+    describe 'search and sort' do
+      before do
+        create(:user, name: 'Foo Bar')
+        create(:user, name: 'Foo Baz')
+        create(:user, name: 'Dmitriy')
+      end
+
+      it 'searches users by name' do
+        visit admin_users_path(search_query: 'Foo')
+
+        expect(page).to have_content('Foo Bar')
+        expect(page).to have_content('Foo Baz')
+        expect(page).not_to have_content('Dmitriy')
+      end
+
+      it 'sorts users by name' do
+        visit admin_users_path
+
+        sort_by('Name')
+
+        expect(first_row.text).to include('Dmitriy')
+        expect(second_row.text).to include('Foo Bar')
+      end
+
+      it 'sorts search results only' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Name')
+
+        expect(page).not_to have_content('Dmitriy')
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'searches with respect of sorting' do
+        visit admin_users_path(sort: 'Name')
+
+        fill_in :search_query, with: 'Foo'
+        click_button('Search users')
+
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
     end
 
     describe 'Two-factor Authentication filters' do
@@ -565,5 +612,11 @@ describe "Admin::Users" do
 
   def check_breadcrumb(content)
     expect(find('.breadcrumbs-sub-title')).to have_content(content)
+  end
+
+  def sort_by(text)
+    page.within('.user-sort-dropdown') do
+      click_link text
+    end
   end
 end

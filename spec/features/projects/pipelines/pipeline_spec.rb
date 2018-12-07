@@ -499,4 +499,154 @@ describe 'Pipeline', :js do
       end
     end
   end
+
+  context 'when user sees pipeline flags in a pipeline detail page' do
+    let(:project) { create(:project, :repository) }
+
+    context 'when pipeline is latest' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates it is the latest build' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'latest'
+        end
+      end
+    end
+
+    context 'when pipeline has configuration errors' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               :invalid,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates errors' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'yaml invalid'
+        end
+      end
+
+      it 'contains badge with tooltip which contains error' do
+        expect(pipeline).to have_yaml_errors
+
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_selector(
+            %Q{span[title="#{pipeline.yaml_errors}"]})
+        end
+      end
+
+      it 'contains badge that indicates failure reason' do
+        expect(page).to have_content 'error'
+      end
+
+      it 'contains badge with tooltip which contains failure reason' do
+        expect(pipeline.failure_reason?).to eq true
+
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_selector(
+            %Q{span[title="#{pipeline.present.failure_reason}"]})
+        end
+      end
+    end
+
+    context 'when pipeline is stuck' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        create(:ci_build, :pending, pipeline: pipeline)
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates being stuck' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'stuck'
+        end
+      end
+    end
+
+    context 'when pipeline uses auto devops' do
+      include_context 'pipeline builds'
+
+      let(:project) { create(:project, :repository, auto_devops_attributes: { enabled: true }) }
+      let(:pipeline) do
+        create(:ci_pipeline,
+               :auto_devops_source,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates using auto devops' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'Auto DevOps'
+        end
+      end
+    end
+
+    context 'when pipeline runs in a merge request context' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               source: :merge_request,
+               project: merge_request.source_project,
+               ref: 'feature',
+               sha: merge_request.diff_head_sha,
+               user: user,
+               merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master')
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates merge request pipeline' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'merge request'
+        end
+      end
+    end
+  end
 end
