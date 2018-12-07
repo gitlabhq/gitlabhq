@@ -40,7 +40,7 @@ module Gitlab
           if strategy.enabled?
             models_with_missing_counts = models - counts_by_model.keys
 
-            break if models_with_missing_counts.empty?
+            break counts_by_model if models_with_missing_counts.empty?
 
             counts = strategy.new(models_with_missing_counts).count
 

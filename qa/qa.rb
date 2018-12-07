@@ -184,6 +184,7 @@ module QA
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'
+        autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
       end
 
       module Issue

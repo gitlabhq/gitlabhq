@@ -63,6 +63,7 @@ class MergeRequest < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
+  has_many :merge_request_pipelines, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
 
   belongs_to :assignee, class_name: "User"
 
@@ -1052,16 +1053,57 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def all_pipelines
+  def all_pipelines(shas: all_commit_shas)
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commit_shas, ref: source_branch)
-      .order(id: :desc)
+    @all_pipelines ||= source_project.ci_pipelines
+      .where(sha: shas, ref: source_branch)
+      .where(merge_request: [nil, self])
+      .sort_by_merge_request_pipelines
+  end
+
+  def merge_request_pipeline_exists?
+    merge_request_pipelines.exists?(sha: diff_head_sha)
   end
 
   def has_test_reports?
     actual_head_pipeline&.has_test_reports?
+  end
+
+  def predefined_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
+      variables.append(key: 'CI_MERGE_REQUEST_IID', value: iid.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_REF_PATH',
+                       value: ref_path.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_ID',
+                       value: project.id.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_PATH',
+                       value: project.full_path)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_URL',
+                       value: project.web_url)
+
+      variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME',
+                       value: target_branch.to_s)
+
+      if source_project
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_ID',
+                         value: source_project.id.to_s)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH',
+                         value: source_project.full_path)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_URL',
+                         value: source_project.web_url)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME',
+                         value: source_branch.to_s)
+      end
+    end
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1214,7 +1256,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def base_pipeline
-    @base_pipeline ||= project.pipelines
+    @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
       .find_by(sha: diff_base_sha)
   end

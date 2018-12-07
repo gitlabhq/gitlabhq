@@ -114,7 +114,8 @@ module Ci
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
 
-    chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
+    chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
+        error_message: 'Maximum job timeout has a value which could not be accepted'
 
     validates :maximum_timeout, allow_nil: true,
                                 numericality: { greater_than_or_equal_to: 600,

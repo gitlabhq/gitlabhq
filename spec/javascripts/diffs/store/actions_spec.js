@@ -29,6 +29,7 @@ import actions, {
 } from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
@@ -382,24 +383,47 @@ describe('DiffsStoreActions', () => {
       const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
       const mock = new MockAdapter(axios);
+      const commit = jasmine.createSpy('commit');
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
-      testAction(
-        loadCollapsedDiff,
-        file,
-        {},
-        [
-          {
-            type: types.ADD_COLLAPSED_DIFFS,
-            payload: { file, data },
-          },
-        ],
-        [],
-        () => {
+      loadCollapsedDiff({ commit, getters: { commitId: null } }, file)
+        .then(() => {
+          expect(commit).toHaveBeenCalledWith(types.ADD_COLLAPSED_DIFFS, { file, data });
+
           mock.restore();
           done();
-        },
-      );
+        })
+        .catch(done.fail);
+    });
+
+    it('should fetch data without commit ID', () => {
+      const file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+      const getters = {
+        commitId: null,
+      };
+
+      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+
+      loadCollapsedDiff({ commit() {}, getters }, file);
+
+      expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+        params: { commit_id: null },
+      });
+    });
+
+    it('should fetch data with commit ID', () => {
+      const file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+      const getters = {
+        commitId: '123',
+      };
+
+      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+
+      loadCollapsedDiff({ commit() {}, getters }, file);
+
+      expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+        params: { commit_id: '123' },
+      });
     });
   });
 
@@ -584,11 +608,18 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('saveDiffDiscussion', () => {
-    beforeEach(() => {
-      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
-    });
-
     it('dispatches actions', done => {
+      const commitId = 'something';
+      const formData = {
+        diffFile: { ...mockDiffFile },
+        noteableData: {},
+      };
+      const note = {};
+      const state = {
+        commit: {
+          id: commitId,
+        },
+      };
       const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
         switch (name) {
           case 'saveNote':
@@ -602,11 +633,19 @@ describe('DiffsStoreActions', () => {
         }
       });
 
-      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+      saveDiffDiscussion({ state, dispatch }, { note, formData })
         .then(() => {
-          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
-          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
-          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
+          const { calls } = dispatch;
+
+          expect(calls.count()).toBe(5);
+          expect(calls.argsFor(0)).toEqual(['saveNote', jasmine.any(Object), { root: true }]);
+
+          const postData = calls.argsFor(0)[1];
+
+          expect(postData.data.note.commit_id).toBe(commitId);
+
+          expect(calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
         })
         .then(done)
         .catch(done.fail);

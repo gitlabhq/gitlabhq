@@ -20,7 +20,7 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
     tag_names = @tags.map(&:name)
-    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
 
     respond_to do |format|

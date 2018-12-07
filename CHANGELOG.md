@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.3 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
 ## 11.5.2 (2018-12-03)
 
 ### Removed (1 change)
@@ -619,6 +626,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.12 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
 
 
 ## 11.3.11 (2018-11-26)

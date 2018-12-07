@@ -38,6 +38,7 @@ module UploadsActions
 
     return render_404 unless uploader
 
+    workhorse_set_content_type!
     send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 

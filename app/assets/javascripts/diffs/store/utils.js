@@ -27,6 +27,7 @@ export const getReversePosition = linePosition => {
 
 export function getFormData(params) {
   const {
+    commit,
     note,
     noteableType,
     noteableData,
@@ -66,7 +67,7 @@ export function getFormData(params) {
       position,
       noteable_type: noteableType,
       noteable_id: noteableData.id,
-      commit_id: '',
+      commit_id: commit && commit.id,
       type:
         diffFile.diff_refs.start_sha && diffFile.diff_refs.head_sha
           ? DIFF_NOTE_TYPE
@@ -324,5 +325,9 @@ export const generateTreeList = files =>
 
 export const getDiffMode = diffFile => {
   const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}_file`]);
-  return diffModes[diffModeKey] || diffModes.replaced;
+  return (
+    diffModes[diffModeKey] ||
+    (diffFile.mode_changed && diffModes.mode_changed) ||
+    diffModes.replaced
+  );
 };

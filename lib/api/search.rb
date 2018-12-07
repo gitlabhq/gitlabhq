@@ -35,12 +35,7 @@ module API
       end
 
       def process_results(results)
-        case params[:scope]
-        when 'blobs', 'wiki_blobs'
-          paginate(results).map { |blob| blob[1] }
-        else
-          paginate(results)
-        end
+        paginate(results)
       end
 
       def snippets?

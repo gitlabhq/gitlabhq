@@ -13,6 +13,7 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
     NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
+    DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6

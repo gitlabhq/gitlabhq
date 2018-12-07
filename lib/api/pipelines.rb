@@ -130,7 +130,7 @@ module API
 
     helpers do
       def pipeline
-        @pipeline ||= user_project.pipelines.find(params[:pipeline_id])
+        @pipeline ||= user_project.ci_pipelines.find(params[:pipeline_id])
       end
     end
   end

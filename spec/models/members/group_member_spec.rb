@@ -50,4 +50,26 @@ describe GroupMember do
       group_member.destroy
     end
   end
+
+  context 'access levels', :nested_groups do
+    context 'with parent group' do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:entity) { create(:group, parent: parent_entity) }
+      end
+    end
+
+    context 'with parent group and a sub subgroup' do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:subgroup) { create(:group, parent: parent_entity) }
+        let(:entity) { create(:group, parent: subgroup) }
+      end
+
+      context 'when only the subgroup has the member' do
+        it_behaves_like 'inherited access level as a member of entity' do
+          let(:parent_entity) { create(:group, parent: create(:group)) }
+          let(:entity) { create(:group, parent: parent_entity) }
+        end
+      end
+    end
+  end
 end
