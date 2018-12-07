@@ -1338,12 +1338,7 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#index_exists_by_name?' do
-    # TODO: remove rails5-only after removing rails4 tests
-    # rails 4 can not handle multiple indexes on the same column set if
-    # index was added by 't.index' - t.index is used by default in schema.rb in
-    # rails 5. Let's run this test only in rails 5 env:
-    # see https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21492#note_113602758
-    it 'returns true if an index exists', :rails5 do
+    it 'returns true if an index exists' do
       expect(model.index_exists_by_name?(:projects, 'index_projects_on_path'))
         .to be_truthy
     end
