@@ -76,11 +76,11 @@ describe('Trigger block', () => {
             );
 
             expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
-            
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_S3',
             );
-            
+
             expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
           })
           .then(done)
