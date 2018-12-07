@@ -351,3 +351,89 @@ describe PersonalAccessToken, 'TokenAuthenticatable' do
     end
   end
 end
+
+describe Ci::Build, 'TokenAuthenticatable' do
+  let(:token_field) { :token }
+  let(:build) { FactoryBot.build(:ci_build) }
+
+  it_behaves_like 'TokenAuthenticatable'
+
+  describe 'generating new token' do
+    context 'token is not generated yet' do
+      describe 'token field accessor' do
+        it 'makes it possible to access token' do
+          expect(build.token).to be_nil
+
+          build.save!
+
+          expect(build.token).to be_present
+        end
+      end
+
+      describe "ensure_token" do
+        subject { build.ensure_token }
+
+        it { is_expected.to be_a String }
+        it { is_expected.not_to be_blank }
+
+        it 'does not persist token' do
+          expect(build).not_to be_persisted
+        end
+      end
+
+      describe 'ensure_token!' do
+        it 'persists a new token' do
+          expect(build.ensure_token!).to eq build.reload.token
+          expect(build).to be_persisted
+        end
+
+        it 'persists new token as an encrypted string' do
+          build.ensure_token!
+
+          encrypted = Gitlab::CryptoHelper.aes256_gcm_encrypt(build.token)
+
+          expect(build.read_attribute('token_encrypted')).to eq encrypted
+        end
+
+        it 'does not persist a token in a clear text' do
+          build.ensure_token!
+
+          expect(build.read_attribute('token')).to be_nil
+        end
+      end
+    end
+
+    describe '#reset_token!' do
+      it 'persists a new token' do
+        build.save!
+
+        build.token.yield_self do |previous_token|
+          build.reset_token!
+
+          expect(build.token).not_to eq previous_token
+          expect(build.token).to be_a String
+        end
+      end
+    end
+  end
+
+  describe 'setting a new token' do
+    subject { build.set_token('0123456789') }
+
+    it 'returns the token' do
+      expect(subject).to eq '0123456789'
+    end
+
+    it 'writes a new encrypted token' do
+      expect(build.read_attribute('token_encrypted')).to be_nil
+      expect(subject).to eq '0123456789'
+      expect(build.read_attribute('token_encrypted')).to be_present
+    end
+
+    it 'does not write a new cleartext token' do
+      expect(build.read_attribute('token')).to be_nil
+      expect(subject).to eq '0123456789'
+      expect(build.read_attribute('token')).to be_nil
+    end
+  end
+end

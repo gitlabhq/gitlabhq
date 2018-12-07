@@ -345,6 +345,7 @@ ActiveRecord::Schema.define(version: 20181203002526) do
     t.boolean "protected"
     t.integer "failure_reason"
     t.datetime_with_timezone "scheduled_at"
+    t.string "token_encrypted"
     t.index ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
     t.index ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
     t.index ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -361,6 +362,7 @@ ActiveRecord::Schema.define(version: 20181203002526) do
     t.index ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
     t.index ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
     t.index ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
+    t.index ["token_encrypted"], name: "index_ci_builds_on_token_encrypted", unique: true, where: "(token_encrypted IS NOT NULL)", using: :btree
     t.index ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
     t.index ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
   end
