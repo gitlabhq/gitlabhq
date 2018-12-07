@@ -295,7 +295,7 @@ class IssuableFinder
 
   def use_cte_for_search?
     strong_memoize(:use_cte_for_search) do
-      attempt_group_search_optimizations? && 
+      attempt_group_search_optimizations? &&
         !use_subquery_for_search? &&
         Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
     end
