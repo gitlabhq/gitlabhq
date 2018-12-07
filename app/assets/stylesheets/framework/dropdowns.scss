@@ -290,6 +290,10 @@
     }
   }
 
+  .dropdown-item {
+    @include dropdown-link;
+  }
+
   .divider {
     height: 1px;
     margin: #{$grid-size / 2} 0;
