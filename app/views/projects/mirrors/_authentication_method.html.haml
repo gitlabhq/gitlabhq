@@ -8,14 +8,14 @@
   = f.label :auth_method, _('Authentication method'), class: 'label-bold'
   = f.select :auth_method,
       options_for_select(auth_options, mirror.auth_method),
-      {}, { class: "form-control js-mirror-auth-type" }
+      {}, { class: "form-control js-mirror-auth-type qa-authentication-method" }
 
 .form-group
   .collapse.js-well-changing-auth
     .changing-auth-method= icon('spinner spin lg')
   .well-password-auth.collapse.js-well-password-auth
     = f.label :password, _("Password"), class: "label-bold"
-    = f.password_field :password, value: mirror.password, class: 'form-control'
+    = f.password_field :password, value: mirror.password, class: 'form-control qa-password', autocomplete: 'new-password'
   - unless is_push
     .well-ssh-auth.collapse.js-well-ssh-auth
       %p.js-ssh-public-key-present{ class: ('collapse' unless ssh_public_key_present) }

@@ -5,6 +5,7 @@ import {
   deploymentData,
   convertDatesMultipleSeries,
   singleRowMetricsMultipleSeries,
+  queryWithoutData,
 } from './mock_data';
 
 const tagsPath = 'http://test.host/frontend-fixtures/environments-project/tags';
@@ -103,5 +104,24 @@ describe('Graph', () => {
     component.positionFlag();
 
     expect(component.currentData).toBe(component.timeSeries[0].values[10]);
+  });
+
+  describe('Without data to display', () => {
+    it('shows a "no data to display" empty state on a graph', done => {
+      const component = createComponent({
+        graphData: queryWithoutData,
+        deploymentData,
+        tagsPath,
+        projectPath,
+      });
+
+      Vue.nextTick(() => {
+        expect(
+          component.$el.querySelector('.js-no-data-to-display text').textContent.trim(),
+        ).toEqual('No data to display');
+
+        done();
+      });
+    });
   });
 });

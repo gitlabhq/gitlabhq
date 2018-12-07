@@ -20,7 +20,7 @@ describe Appearance do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', false do
+    it_behaves_like 'model with uploads', false do
       let(:model_object) { create(:appearance, :with_logo) }
       let(:upload_attribute) { :logo }
       let(:uploader_class) { AttachmentUploader }

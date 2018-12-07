@@ -1,0 +1,5 @@
+---
+title: Fix line height of numbers in file blame view
+merge_request: 23090
+author: Johann Hubert Sonntagbauer
+type: fixed

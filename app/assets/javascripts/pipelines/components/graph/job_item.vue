@@ -84,10 +84,6 @@ export default {
 
       return textBuilder.join(' ');
     },
-
-    tooltipBoundary() {
-      return this.dropdownLength < 5 ? 'viewport' : null;
-    },
     /**
      * Verifies if the provided job has an action path
      *
@@ -108,7 +104,7 @@ export default {
   <div class="ci-job-component">
     <gl-link
       v-if="status.has_details"
-      v-gl-tooltip="{ boundary: tooltipBoundary }"
+      v-gl-tooltip
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"

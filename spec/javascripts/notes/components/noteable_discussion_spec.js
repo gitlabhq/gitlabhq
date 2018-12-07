@@ -6,7 +6,6 @@ import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
-const diffDiscussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('noteable_discussion component', () => {
   const Component = Vue.extend(noteableDiscussion);
@@ -76,88 +75,6 @@ describe('noteable_discussion component', () => {
       expect(
         vm.$el.querySelector('*[data-original-title="Jump to next unresolved discussion"]'),
       ).toBeNull();
-    });
-  });
-
-  describe('computed', () => {
-    describe('hasMultipleUnresolvedDiscussions', () => {
-      it('is false if there are no unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is false if there is one unresolved discussion', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is true if there are two unresolved discussions', done => {
-        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
-        discussion.notes[0].resolved = false;
-        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-    });
-
-    describe('isRepliesCollapsed', () => {
-      it('should return false for diff discussions', done => {
-        const diffDiscussion = getJSONFixture(diffDiscussionFixture)[0];
-        vm.$store.dispatch('setInitialNotes', [diffDiscussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.isRepliesCollapsed).toEqual(false);
-            expect(vm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
-            expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('should return false if discussion does not have a reply', () => {
-        const discussion = { ...discussionMock, resolved: true };
-        discussion.notes = discussion.notes.slice(0, 1);
-        const noRepliesVm = new Component({
-          store,
-          propsData: { discussion },
-        }).$mount();
-
-        expect(noRepliesVm.isRepliesCollapsed).toEqual(false);
-        expect(noRepliesVm.$el.querySelector('.js-toggle-replies')).toBeNull();
-        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-        noRepliesVm.$destroy();
-      });
-
-      it('should return true for resolved non-diff discussion which has replies', () => {
-        const discussion = { ...discussionMock, resolved: true };
-        const resolvedDiscussionVm = new Component({
-          store,
-          propsData: { discussion },
-        }).$mount();
-
-        expect(resolvedDiscussionVm.isRepliesCollapsed).toEqual(true);
-        expect(resolvedDiscussionVm.$el.querySelector('.js-toggle-replies')).not.toBeNull();
-        expect(vm.$el.querySelector('.discussion-reply-holder')).not.toBeNull();
-        resolvedDiscussionVm.$destroy();
-      });
     });
   });
 

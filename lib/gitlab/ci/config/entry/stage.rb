@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a stage for a job.
         #
-        class Stage < Node
-          include Validatable
+        class Stage < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, type: String

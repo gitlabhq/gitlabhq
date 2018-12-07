@@ -197,6 +197,7 @@ $well-light-text-color: #5b6169;
 $gl-font-size: 14px;
 $gl-font-size-xs: 11px;
 $gl-font-size-small: 12px;
+$gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
@@ -243,6 +244,7 @@ $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
 $gl-bar-padding: 3px;
 $input-horizontal-padding: 12px;
+$browserScrollbarSize: 10px;
 
 /*
  * Misc
@@ -269,7 +271,8 @@ $performance-bar-height: 35px;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
-$project-title-row-height: 24px;
+$project-title-row-height: 64px;
+$project-avatar-mobile-size: 24px;
 $gl-line-height: 16px;
 $gl-line-height-24: 24px;
 
@@ -331,7 +334,6 @@ $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-shadow-color: rgba(#000, 0.1);
-$dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-shadow: rgba($blue-300, 0.4);
@@ -365,6 +367,8 @@ $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
 $gl-btn-vert-padding: 8px;
 $gl-btn-horz-padding: 12px;
+$gl-btn-small-font-size: 13px;
+$gl-btn-small-line-height: 13px;
 
 /*
 * Badges

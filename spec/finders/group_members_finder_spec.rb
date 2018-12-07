@@ -19,7 +19,7 @@ describe GroupMembersFinder, '#execute' do
   end
 
   it 'returns members for nested group', :nested_groups do
-    group.add_maintainer(user2)
+    group.add_developer(user2)
     nested_group.request_access(user4)
     member1 = group.add_maintainer(user1)
     member3 = nested_group.add_maintainer(user2)

@@ -4,6 +4,8 @@ describe Project do
   include ProjectForksHelper
   include GitHelpers
 
+  it_behaves_like 'having unique enum values'
+
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -54,13 +56,14 @@ describe Project do
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
     it { is_expected.to have_one(:external_wiki_service) }
     it { is_expected.to have_one(:project_feature) }
+    it { is_expected.to have_one(:project_repository) }
     it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
-    it { is_expected.to have_many(:pipelines) }
+    it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:runner_projects) }
@@ -84,6 +87,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
+    it { is_expected.to have_many(:kubernetes_namespaces) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
     it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
     it { is_expected.to have_many(:lfs_file_locks) }
@@ -139,6 +143,29 @@ describe Project do
         expect(subject.boards.size).to eq 1
       end
     end
+
+    describe 'ci_pipelines association' do
+      context 'when feature flag pipeline_ci_sources_only is enabled' do
+        it 'returns only pipelines from ci_sources' do
+          stub_feature_flags(pipeline_ci_sources_only: true)
+
+          expect(Ci::Pipeline).to receive(:ci_sources).and_call_original
+
+          subject.ci_pipelines
+        end
+      end
+
+      context 'when feature flag pipeline_ci_sources_only is disabled' do
+        it 'returns all pipelines' do
+          stub_feature_flags(pipeline_ci_sources_only: false)
+
+          expect(Ci::Pipeline).not_to receive(:ci_sources).and_call_original
+          expect(Ci::Pipeline).to receive(:all).and_call_original.at_least(:once)
+
+          subject.ci_pipelines
+        end
+      end
+    end
   end
 
   describe 'modules' do
@@ -149,6 +176,24 @@ describe Project do
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
+  end
+
+  describe '.missing_kubernetes_namespace' do
+    let!(:project) { create(:project) }
+    let!(:cluster) { create(:cluster, :provided_by_user, :group) }
+    let(:kubernetes_namespaces) { project.kubernetes_namespaces }
+
+    subject { described_class.missing_kubernetes_namespace(kubernetes_namespaces) }
+
+    it { is_expected.to contain_exactly(project) }
+
+    context 'kubernetes namespace exists' do
+      before do
+        create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
+      end
+
+      it { is_expected.to be_empty }
+    end
   end
 
   describe 'validation' do
@@ -218,76 +263,93 @@ describe Project do
       end
     end
 
-    it 'does not allow an invalid URI as import_url' do
-      project = build(:project, import_url: 'invalid://')
+    describe 'import_url' do
+      it 'does not allow an invalid URI as import_url' do
+        project = build(:project, import_url: 'invalid://')
 
-      expect(project).not_to be_valid
-    end
+        expect(project).not_to be_valid
+      end
 
-    it 'does allow a SSH URI as import_url for persisted projects' do
-      project = create(:project)
-      project.import_url = 'ssh://test@gitlab.com/project.git'
+      it 'does allow a SSH URI as import_url for persisted projects' do
+        project = create(:project)
+        project.import_url = 'ssh://test@gitlab.com/project.git'
 
-      expect(project).to be_valid
-    end
+        expect(project).to be_valid
+      end
 
-    it 'does not allow a SSH URI as import_url for new projects' do
-      project = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+      it 'does not allow a SSH URI as import_url for new projects' do
+        project = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
 
-      expect(project).not_to be_valid
-    end
+        expect(project).not_to be_valid
+      end
 
-    it 'does allow a valid URI as import_url' do
-      project = build(:project, import_url: 'http://gitlab.com/project.git')
+      it 'does allow a valid URI as import_url' do
+        project = build(:project, import_url: 'http://gitlab.com/project.git')
 
-      expect(project).to be_valid
-    end
+        expect(project).to be_valid
+      end
 
-    it 'allows an empty URI' do
-      project = build(:project, import_url: '')
+      it 'allows an empty URI' do
+        project = build(:project, import_url: '')
 
-      expect(project).to be_valid
-    end
+        expect(project).to be_valid
+      end
 
-    it 'does not produce import data on an empty URI' do
-      project = build(:project, import_url: '')
+      it 'does not produce import data on an empty URI' do
+        project = build(:project, import_url: '')
 
-      expect(project.import_data).to be_nil
-    end
+        expect(project.import_data).to be_nil
+      end
 
-    it 'does not produce import data on an invalid URI' do
-      project = build(:project, import_url: 'test://')
+      it 'does not produce import data on an invalid URI' do
+        project = build(:project, import_url: 'test://')
 
-      expect(project.import_data).to be_nil
-    end
+        expect(project.import_data).to be_nil
+      end
 
-    it "does not allow import_url pointing to localhost" do
-      project = build(:project, import_url: 'http://localhost:9000/t.git')
+      it "does not allow import_url pointing to localhost" do
+        project = build(:project, import_url: 'http://localhost:9000/t.git')
 
-      expect(project).to be_invalid
-      expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
-    end
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
+      end
 
-    it "does not allow import_url with invalid ports for new projects" do
-      project = build(:project, import_url: 'http://github.com:25/t.git')
+      it "does not allow import_url with invalid ports for new projects" do
+        project = build(:project, import_url: 'http://github.com:25/t.git')
 
-      expect(project).to be_invalid
-      expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
-    end
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+      end
 
-    it "does not allow import_url with invalid ports for persisted projects" do
-      project = create(:project)
-      project.import_url = 'http://github.com:25/t.git'
+      it "does not allow import_url with invalid ports for persisted projects" do
+        project = create(:project)
+        project.import_url = 'http://github.com:25/t.git'
 
-      expect(project).to be_invalid
-      expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
-    end
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+      end
 
-    it "does not allow import_url with invalid user" do
-      project = build(:project, import_url: 'http://$user:password@github.com/t.git')
+      it "does not allow import_url with invalid user" do
+        project = build(:project, import_url: 'http://$user:password@github.com/t.git')
 
-      expect(project).to be_invalid
-      expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+      end
+
+      include_context 'invalid urls'
+
+      it 'does not allow urls with CR or LF characters' do
+        project = build(:project)
+
+        aggregate_failures do
+          urls_with_CRLF.each do |url|
+            project.import_url = url
+
+            expect(project).not_to be_valid
+            expect(project.errors.full_messages.first).to match(/is blocked: URI is invalid/)
+          end
+        end
+      end
     end
 
     describe 'project pending deletion' do
@@ -373,6 +435,8 @@ describe Project do
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:group_clusters_enabled?).to(:group).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference_with_postfix' do
@@ -1601,6 +1665,30 @@ describe Project do
     end
   end
 
+  describe '#track_project_repository' do
+    let(:project) { create(:project, :repository) }
+
+    it 'creates a project_repository' do
+      project.track_project_repository
+
+      expect(project.reload.project_repository).to be_present
+      expect(project.project_repository.disk_path).to eq(project.disk_path)
+      expect(project.project_repository.shard_name).to eq(project.repository_storage)
+    end
+
+    it 'updates the project_repository' do
+      project.track_project_repository
+
+      allow(project).to receive(:disk_path).and_return('@fancy/new/path')
+
+      expect do
+        project.track_project_repository
+      end.not_to change(ProjectRepository, :count)
+
+      expect(project.reload.project_repository.disk_path).to eq(project.disk_path)
+    end
+  end
+
   describe '#create_repository' do
     let(:project) { create(:project, :repository) }
     let(:shell) { Gitlab::Shell.new }
@@ -1683,6 +1771,16 @@ describe Project do
         .and_return(true)
 
       project.ensure_repository
+    end
+  end
+
+  describe 'handling import URL' do
+    it 'returns the sanitized URL' do
+      project = create(:project, :import_started, import_url: 'http://user:pass@test.com')
+
+      project.import_state.finish
+
+      expect(project.reload.import_url).to eq('http://test.com')
     end
   end
 
@@ -1799,106 +1897,6 @@ describe Project do
     end
   end
 
-  describe '#human_import_status_name' do
-    context 'when import_state exists' do
-      it 'returns the humanized status name' do
-        project = create(:project)
-        create(:import_state, :started, project: project)
-
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-
-    context 'when import_state was not created yet' do
-      let(:project) { create(:project, :import_started) }
-
-      it 'ensures import_state is created and returns humanized status name' do
-        expect do
-          project.human_import_status_name
-        end.to change { ProjectImportState.count }.from(0).to(1)
-      end
-
-      it 'returns humanized status name' do
-        expect(project.human_import_status_name).to eq("started")
-      end
-    end
-  end
-
-  describe 'Project import job' do
-    let(:project) { create(:project, import_url: generate(:url)) }
-
-    before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage, project.disk_path, project.import_url)
-        .and_return(true)
-
-      # Works around https://github.com/rspec/rspec-mocks/issues/910
-      allow(described_class).to receive(:find).with(project.id).and_return(project)
-      expect(project.repository).to receive(:after_import)
-        .and_call_original
-      expect(project.wiki.repository).to receive(:after_import)
-        .and_call_original
-    end
-
-    it 'imports a project' do
-      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
-
-      expect { project.import_schedule }.to change { project.import_jid }
-      expect(project.reload.import_status).to eq('finished')
-    end
-  end
-
-  describe 'project import state transitions' do
-    context 'state transition: [:started] => [:finished]' do
-      let(:after_import_service) { spy(:after_import_service) }
-      let(:housekeeping_service) { spy(:housekeeping_service) }
-
-      before do
-        allow(Projects::AfterImportService)
-          .to receive(:new) { after_import_service }
-
-        allow(after_import_service)
-          .to receive(:execute) { housekeeping_service.execute }
-
-        allow(Projects::HousekeepingService)
-          .to receive(:new) { housekeeping_service }
-      end
-
-      it 'resets project import_error' do
-        error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update(last_error: error_message)
-
-        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
-      end
-
-      it 'performs housekeeping when an import of a fresh project is completed' do
-        project = create(:project_empty_repo, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(after_import_service).to have_received(:execute)
-        expect(housekeeping_service).to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project repository does not exist' do
-        project = create(:project, :import_started, import_type: :github)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-
-      it 'does not perform housekeeping when project does not have a valid import type' do
-        project = create(:project, :import_started, import_type: nil)
-
-        project.import_finish
-
-        expect(housekeeping_service).not_to have_received(:execute)
-      end
-    end
-  end
-
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
@@ -1974,6 +1972,42 @@ describe Project do
 
         expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
+      end
+    end
+  end
+
+  describe '#import_status' do
+    context 'with import_state' do
+      it 'returns the right status' do
+        project = create(:project, :import_started)
+
+        expect(project.import_status).to eq("started")
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.import_status).to eq('none')
+      end
+    end
+  end
+
+  describe '#human_import_status_name' do
+    context 'with import_state' do
+      it 'returns the right human import status' do
+        project = create(:project, :import_started)
+
+        expect(project.human_import_status_name).to eq('started')
+      end
+    end
+
+    context 'without import_state' do
+      it 'returns none' do
+        project = create(:project)
+
+        expect(project.human_import_status_name).to eq('none')
       end
     end
   end
@@ -2107,6 +2141,39 @@ describe Project do
 
     it 'includes ancestors upto but excluding the given ancestor' do
       expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
+    end
+
+    describe 'with hierarchy_order' do
+      it 'returns ancestors ordered by descending hierarchy' do
+        expect(project.ancestors_upto(hierarchy_order: :desc)).to eq([parent, child, child2])
+      end
+
+      it 'can be used with upto option' do
+        expect(project.ancestors_upto(parent, hierarchy_order: :desc)).to eq([child, child2])
+      end
+    end
+  end
+
+  describe '#root_ancestor' do
+    let(:project) { create(:project) }
+
+    subject { project.root_ancestor }
+
+    it { is_expected.to eq(project.namespace) }
+
+    context 'in a group' do
+      let(:group) { create(:group) }
+      let(:project) { create(:project, group: group) }
+
+      it { is_expected.to eq(group) }
+    end
+
+    context 'in a nested group', :nested_groups do
+      let(:root) { create(:group) }
+      let(:child) { create(:group, parent: root) }
+      let(:project) { create(:project, group: child) }
+
+      it { is_expected.to eq(root) }
     end
   end
 
@@ -2717,6 +2784,17 @@ describe Project do
     it 'returns the url to the repo without a username' do
       expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
       expect(project.http_url_to_repo).not_to include('@')
+    end
+  end
+
+  describe '#lfs_http_url_to_repo' do
+    let(:project) { create(:project) }
+
+    it 'returns the url to the repo without a username' do
+      lfs_http_url_to_repo = project.lfs_http_url_to_repo('operation_that_doesnt_matter')
+
+      expect(lfs_http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(lfs_http_url_to_repo).not_to include('@')
     end
   end
 
@@ -3372,7 +3450,7 @@ describe Project do
 
     context 'with a ref that is not the default branch' do
       it 'returns the latest successful pipeline for the given ref' do
-        expect(project.pipelines).to receive(:latest_successful_for).with('foo')
+        expect(project.ci_pipelines).to receive(:latest_successful_for).with('foo')
 
         project.latest_successful_pipeline_for('foo')
       end
@@ -3400,7 +3478,7 @@ describe Project do
     it 'memoizes and returns the latest successful pipeline for the default branch' do
       pipeline = double(:pipeline)
 
-      expect(project.pipelines).to receive(:latest_successful_for)
+      expect(project.ci_pipelines).to receive(:latest_successful_for)
         .with(project.default_branch)
         .and_return(pipeline)
         .once
@@ -3414,13 +3492,14 @@ describe Project do
 
   describe '#after_import' do
     let(:project) { create(:project) }
+    let(:import_state) { create(:import_state, project: project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
       expect(project.wiki.repository).to receive(:after_import)
-      expect(project).to receive(:import_finish)
+      expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)
-      expect(project).to receive(:remove_import_jid)
+      expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
 
@@ -3429,6 +3508,10 @@ describe Project do
 
     context 'branch protection' do
       let(:project) { create(:project, :repository) }
+
+      before do
+        create(:import_state, :started, project: project)
+      end
 
       it 'does not protect when branch protection is disabled' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -3482,37 +3565,6 @@ describe Project do
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#remove_import_jid', :clean_gitlab_redis_cache do
-    let(:project) {  }
-
-    context 'without an import JID' do
-      it 'does nothing' do
-        project = create(:project)
-
-        expect(Gitlab::SidekiqStatus)
-          .not_to receive(:unset)
-
-        project.remove_import_jid
-      end
-    end
-
-    context 'with an import JID' do
-      it 'unsets the import JID' do
-        project = create(:project)
-        create(:import_state, project: project, jid: '123')
-
-        expect(Gitlab::SidekiqStatus)
-          .to receive(:unset)
-          .with('123')
-          .and_call_original
-
-        project.remove_import_jid
-
-        expect(project.import_jid).to be_nil
-      end
     end
   end
 
@@ -3846,7 +3898,7 @@ describe Project do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', true do
+    it_behaves_like 'model with uploads', true do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
@@ -4016,6 +4068,27 @@ describe Project do
       user = create(:user)
 
       expect(project.snippets_visible?(user)).to eq(false)
+    end
+  end
+
+  describe '#all_clusters' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, cluster_type: :project_type, projects: [project]) }
+
+    subject { project.all_clusters }
+
+    it 'returns project level cluster' do
+      expect(subject).to eq([cluster])
+    end
+
+    context 'project belongs to a group' do
+      let(:group_cluster) { create(:cluster, :group) }
+      let(:group) { group_cluster.group }
+      let(:project) { create(:project, group: group) }
+
+      it 'returns clusters for groups of this project' do
+        expect(subject).to contain_exactly(cluster, group_cluster)
+      end
     end
   end
 

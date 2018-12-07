@@ -54,6 +54,24 @@ module MergeRequests
         merge_request, merge_request.project, current_user, merge_request.assignee)
     end
 
+    def create_merge_request_pipeline(merge_request, user)
+      return unless Feature.enabled?(:ci_merge_request_pipeline,
+                                     merge_request.source_project,
+                                     default_enabled: true)
+
+      ##
+      # UpdateMergeRequestsWorker could be retried by an exception.
+      # MR pipelines should not be recreated in such case.
+      return if merge_request.merge_request_pipeline_exists?
+
+      Ci::CreatePipelineService
+        .new(merge_request.source_project, user, ref: merge_request.source_branch)
+        .execute(:merge_request,
+                 ignore_skip_ci: true,
+                 save_on_errors: false,
+                 merge_request: merge_request)
+    end
+
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
     # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests_for(source_branch, mr_states: [:opened])

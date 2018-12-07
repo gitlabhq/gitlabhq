@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PushEventPayload do
+  it_behaves_like 'having unique enum values'
+
   describe 'saving payloads' do
     it 'does not allow commit messages longer than 70 characters' do
       event = create(:push_event)

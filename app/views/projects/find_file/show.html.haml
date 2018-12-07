@@ -1,6 +1,6 @@
 - page_title "Find File", @ref
 
-.file-finder-holder.tree-holder.clearfix.js-file-finder{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, @options.merge(format: :json)))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @id || @commit.id)) }
+.file-finder-holder.tree-holder.clearfix.js-file-finder{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, format: :json))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @id || @commit.id)) }
   .nav-block
     .tree-ref-holder
       = render 'shared/ref_switcher', destination: 'find_file', path: @path

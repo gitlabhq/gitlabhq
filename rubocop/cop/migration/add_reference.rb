@@ -8,7 +8,7 @@ module RuboCop
       class AddReference < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = '`add_reference` requires `index: true`'
+        MSG = '`add_reference` requires `index: true` or `index: { options... }`'
 
         def on_send(node)
           return unless in_migration?(node)
@@ -33,7 +33,12 @@ module RuboCop
         private
 
         def index_enabled?(pair)
-          hash_key_type(pair) == :sym && hash_key_name(pair) == :index && pair.children[1].true_type?
+          return unless hash_key_type(pair) == :sym
+          return unless hash_key_name(pair) == :index
+
+          index = pair.children[1]
+
+          index.true_type? || index.hash_type?
         end
 
         def hash_key_type(pair)

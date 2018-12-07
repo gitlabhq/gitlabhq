@@ -5,6 +5,6 @@
     = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
     - if @snippets.empty?
       %li
-        .nothing-here-block Nothing here.
+        .nothing-here-block= _("Nothing here.")
 
   = paginate @snippets, theme: 'gitlab'

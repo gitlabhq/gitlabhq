@@ -110,14 +110,12 @@ class KubernetesService < DeploymentService
   # Clusters::Platforms::Kubernetes, it won't be used on this method
   # as it's only needed for Clusters::Cluster.
   def predefined_variables(project:)
-    config = YAML.dump(kubeconfig)
-
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables
         .append(key: 'KUBE_URL', value: api_url)
         .append(key: 'KUBE_TOKEN', value: token, public: false)
         .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
-        .append(key: 'KUBECONFIG', value: config, public: false, file: true)
+        .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
 
       if ca_pem.present?
         variables

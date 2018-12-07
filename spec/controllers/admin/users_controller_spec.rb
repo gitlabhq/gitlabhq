@@ -264,5 +264,17 @@ describe Admin::UsersController do
         expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
       end
     end
+
+    context "when impersonation is disabled" do
+      before do
+        stub_config_setting(impersonation_enabled: false)
+      end
+
+      it "shows error page" do
+        post :impersonate, id: user.username
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
   end
 end

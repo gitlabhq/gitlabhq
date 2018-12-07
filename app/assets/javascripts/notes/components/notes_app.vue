@@ -22,6 +22,7 @@ export default {
     commentForm,
     placeholderNote,
     placeholderSystemNote,
+    skeletonLoadingContainer,
   },
   props: {
     noteableData: {
@@ -59,7 +60,6 @@ export default {
       'isNotesFetched',
       'discussions',
       'getNotesDataByProp',
-      'discussionCount',
       'isLoading',
       'commentsDisabled',
     ]),
@@ -109,39 +109,22 @@ export default {
     this.$nextTick(() => highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member')));
   },
   methods: {
-    ...mapActions({
-      setLoadingState: 'setLoadingState',
-      fetchDiscussions: 'fetchDiscussions',
-      poll: 'poll',
-      actionToggleAward: 'toggleAward',
-      scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
-      setNotesData: 'setNotesData',
-      setNoteableData: 'setNoteableData',
-      setUserData: 'setUserData',
-      setLastFetchedAt: 'setLastFetchedAt',
-      setTargetNoteHash: 'setTargetNoteHash',
-      toggleDiscussion: 'toggleDiscussion',
-      setNotesFetchedState: 'setNotesFetchedState',
-      startTaskList: 'startTaskList',
-    }),
-    getComponentName(discussion) {
-      if (discussion.isSkeletonNote) {
-        return skeletonLoadingContainer;
-      }
-      if (discussion.isPlaceholderNote) {
-        if (discussion.placeholderType === constants.SYSTEM_NOTE) {
-          return placeholderSystemNote;
-        }
-        return placeholderNote;
-      } else if (discussion.individual_note) {
-        return discussion.notes[0].system ? systemNote : noteableNote;
-      }
-
-      return noteableDiscussion;
-    },
-    getComponentData(discussion) {
-      return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
-    },
+    ...mapActions([
+      'setLoadingState',
+      'fetchDiscussions',
+      'poll',
+      'toggleAward',
+      'scrollToNoteIfNeeded',
+      'setNotesData',
+      'setNoteableData',
+      'setUserData',
+      'setLastFetchedAt',
+      'setTargetNoteHash',
+      'toggleDiscussion',
+      'setNotesFetchedState',
+      'expandDiscussion',
+      'startTaskList',
+    ]),
     fetchNotes() {
       if (this.isFetching) return null;
 
@@ -181,31 +164,46 @@ export default {
       const noteId = hash && hash.replace(/^note_/, '');
 
       if (noteId) {
-        this.discussions.forEach(discussion => {
-          if (discussion.notes) {
-            discussion.notes.forEach(note => {
-              if (`${note.id}` === `${noteId}`) {
-                // FIXME: this modifies the store state without using a mutation/action
-                Object.assign(discussion, { expanded: true });
-              }
-            });
-          }
-        });
+        const discussion = this.discussions.find(d => d.notes.some(({ id }) => id === noteId));
+
+        if (discussion) {
+          this.expandDiscussion({ discussionId: discussion.id });
+        }
       }
     },
   },
+  systemNote: constants.SYSTEM_NOTE,
 };
 </script>
 
 <template>
   <div v-show="shouldShow" id="notes">
     <ul id="notes-list" class="notes main-notes-list timeline">
-      <component
-        :is="getComponentName(discussion)"
-        v-for="discussion in allDiscussions"
-        :key="discussion.id"
-        v-bind="getComponentData(discussion)"
-      />
+      <template v-for="discussion in allDiscussions">
+        <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+        <template v-else-if="discussion.isPlaceholderNote">
+          <placeholder-system-note
+            v-if="discussion.placeholderType === $options.systemNote"
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+          />
+          <placeholder-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+        </template>
+        <template v-else-if="discussion.individual_note">
+          <system-note
+            v-if="discussion.notes[0].system"
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+          />
+          <noteable-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+        </template>
+        <noteable-discussion
+          v-else
+          :key="discussion.id"
+          :discussion="discussion"
+          :render-diff-file="true"
+        />
+      </template>
     </ul>
 
     <comment-form

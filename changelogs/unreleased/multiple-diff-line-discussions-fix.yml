@@ -1,0 +1,5 @@
+---
+title: Fixed duplicate discussions getting added to diff lines
+merge_request:
+author:
+type: fixed

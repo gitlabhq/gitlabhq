@@ -8,7 +8,7 @@
     %span.cred (Admin)
 
   .float-right
-    - if @user != current_user && @user.can?(:log_in)
+    - if impersonation_enabled? && @user != current_user && @user.can?(:log_in)
       = link_to 'Impersonate', impersonate_admin_user_path(@user), method: :post, class: "btn btn-nr btn-grouped btn-info"
     = link_to edit_admin_user_path(@user), class: "btn btn-nr btn-grouped" do
       %i.fa.fa-pencil-square-o

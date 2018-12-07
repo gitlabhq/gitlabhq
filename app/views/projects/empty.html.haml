@@ -4,11 +4,10 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-= render "home_panel"
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+  = render "home_panel"
 
-.project-empty-note-panel
-  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-    .prepend-top-20
+  .project-empty-note-panel
     %h4.append-bottom-20
       = _('The repository for this project is empty')
 
@@ -32,66 +31,65 @@
         = _('Otherwise it is recommended you start with one of the options below.')
       .prepend-top-20
 
-%nav.project-stats{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-  .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
-    .fade-left= icon('angle-left')
-    .fade-right= icon('angle-right')
-    .nav-links.scrolling-tabs.quick-links
-      = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-      = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
+  %nav.project-buttons
+    .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+      .fade-left= icon('angle-left')
+      .fade-right= icon('angle-right')
+      .nav-links.scrolling-tabs.quick-links
+        = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
-- if can?(current_user, :push_code, @project)
-  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-    .prepend-top-20
-    .empty_wrapper
-      %h3#repo-command-line-instructions.page-title-empty
-        Command line instructions
-      .git-empty.js-git-empty
-        %fieldset
-          %h5 Git global setup
-          %pre.bg-light
-            :preserve
-              git config --global user.name "#{h git_user_name}"
-              git config --global user.email "#{h git_user_email}"
+  - if can?(current_user, :push_code, @project)
+    %div
+      .prepend-top-20
+      .empty_wrapper
+        %h3#repo-command-line-instructions.page-title-empty
+          = _('Command line instructions')
+        .git-empty.js-git-empty
+          %fieldset
+            %h5= _('Git global setup')
+            %pre.bg-light
+              :preserve
+                git config --global user.name "#{h git_user_name}"
+                git config --global user.email "#{h git_user_email}"
 
-        %fieldset
-          %h5 Create a new repository
-          %pre.bg-light
-            :preserve
-              git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-              cd #{h @project.path}
-              touch README.md
-              git add README.md
-              git commit -m "add README"
-            - if @project.can_current_user_push_to_default_branch?
-              %span><
-                git push -u origin master
+          %fieldset
+            %h5= _('Create a new repository')
+            %pre.bg-light
+              :preserve
+                git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+                cd #{h @project.path}
+                touch README.md
+                git add README.md
+                git commit -m "add README"
+              - if @project.can_current_user_push_to_default_branch?
+                %span><
+                  git push -u origin master
 
-        %fieldset
-          %h5 Existing folder
-          %pre.bg-light
-            :preserve
-              cd existing_folder
-              git init
-              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-              git add .
-              git commit -m "Initial commit"
-            - if @project.can_current_user_push_to_default_branch?
-              %span><
-                git push -u origin master
+          %fieldset
+            %h5= _('Existing folder')
+            %pre.bg-light
+              :preserve
+                cd existing_folder
+                git init
+                git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+                git add .
+                git commit -m "Initial commit"
+              - if @project.can_current_user_push_to_default_branch?
+                %span><
+                  git push -u origin master
 
-        %fieldset
-          %h5 Existing Git repository
-          %pre.bg-light
-            :preserve
-              cd existing_repo
-              git remote rename origin old-origin
-              git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
-            - if @project.can_current_user_push_to_default_branch?
-              %span><
-                git push -u origin --all
-                git push -u origin --tags
+          %fieldset
+            %h5= _('Existing Git repository')
+            %pre.bg-light
+              :preserve
+                cd existing_repo
+                git remote rename origin old-origin
+                git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
+              - if @project.can_current_user_push_to_default_branch?
+                %span><
+                  git push -u origin --all
+                  git push -u origin --tags
 
-          - if can? current_user, :remove_project, @project
-            .prepend-top-20
-              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"
+            - if can? current_user, :remove_project, @project
+              .prepend-top-20
+                = link_to _('Remove project'), [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"

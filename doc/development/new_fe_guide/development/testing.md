@@ -6,8 +6,14 @@ Tests relevant for frontend development can be found at two places:
   - [frontend unit tests](#frontend-unit-tests)
   - [frontend component tests](#frontend-component-tests)
   - [frontend integration tests](#frontend-integration-tests)
+- `spec/frontend/` which are run by Jest and contain
+  - [frontend unit tests](#frontend-unit-tests)
+  - [frontend component tests](#frontend-component-tests)
+  - [frontend integration tests](#frontend-integration-tests)
 - `spec/features/` which are run by RSpec and contain
   - [feature tests](#feature-tests)
+
+All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#53757]).
 
 In addition there were feature tests in `features/` run by Spinach in the past.
 These have been removed from our codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-ce/issues/23036)).
@@ -16,6 +22,8 @@ See also:
 
 - [old testing guide](../../testing_guide/frontend_testing.html)
 - [notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components)
+
+[#53757]: https://gitlab.com/gitlab-org/gitlab-ce/issues/53757
 
 ## Frontend unit tests
 

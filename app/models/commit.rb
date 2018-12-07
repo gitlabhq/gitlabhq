@@ -177,7 +177,9 @@ class Commit
   def title
     return full_title if full_title.length < 100
 
-    full_title.truncate(81, separator: ' ', omission: '…')
+    # Use three dots instead of the ellipsis Unicode character because
+    # some clients show the raw Unicode value in the merge commit.
+    full_title.truncate(81, separator: ' ', omission: '...')
   end
 
   # Returns the full commits title
@@ -298,7 +300,7 @@ class Commit
   end
 
   def pipelines
-    project.pipelines.where(sha: sha)
+    project.ci_pipelines.where(sha: sha)
   end
 
   def last_pipeline
@@ -312,7 +314,7 @@ class Commit
   end
 
   def status_for_project(ref, pipeline_project)
-    pipeline_project.pipelines.latest_status_per_commit(id, ref)[id]
+    pipeline_project.ci_pipelines.latest_status_per_commit(id, ref)[id]
   end
 
   def set_status_for_ref(ref, status)

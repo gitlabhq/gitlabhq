@@ -6,7 +6,7 @@ namespace :gitlab do
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :gitlab_environment do
       namespaces = Set.new(Namespace.pluck(:path))
-      namespaces << Storage::HashedProject::ROOT_PATH_PREFIX
+      namespaces << Storage::HashedProject::REPOSITORY_PATH_PREFIX
 
       Gitaly::Server.all.each do |server|
         all_dirs = Gitlab::GitalyClient::StorageService
@@ -49,7 +49,7 @@ namespace :gitlab do
 
           # TODO ignoring hashed repositories for now.  But revisit to fully support
           # possible orphaned hashed repos
-          next if repo_with_namespace.start_with?(Storage::HashedProject::ROOT_PATH_PREFIX)
+          next if repo_with_namespace.start_with?(Storage::HashedProject::REPOSITORY_PATH_PREFIX)
           next if Project.find_by_full_path(repo_with_namespace)
 
           new_path = path + move_suffix

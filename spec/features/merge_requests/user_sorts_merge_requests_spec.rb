@@ -19,9 +19,9 @@ describe 'User sorts merge requests' do
   end
 
   it 'keeps the sort option' do
-    find('button.dropdown-toggle').click
+    find('.filter-dropdown-container .dropdown').click
 
-    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+    page.within('ul.dropdown-menu.dropdown-menu-right li') do
       click_link('Milestone')
     end
 
@@ -49,9 +49,9 @@ describe 'User sorts merge requests' do
   it 'separates remember sorting with issues' do
     create(:issue, project: project)
 
-    find('button.dropdown-toggle').click
+    find('.filter-dropdown-container .dropdown').click
 
-    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+    page.within('ul.dropdown-menu.dropdown-menu-right li') do
       click_link('Milestone')
     end
 
@@ -70,9 +70,9 @@ describe 'User sorts merge requests' do
     end
 
     it 'sorts by popularity' do
-      find('button.dropdown-toggle').click
+      find('.filter-dropdown-container .dropdown').click
 
-      page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+      page.within('ul.dropdown-menu.dropdown-menu-right li') do
         click_link('Popularity')
       end
 

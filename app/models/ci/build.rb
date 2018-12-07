@@ -120,7 +120,7 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token
+    add_authentication_token_field :token, encrypted: true, fallback: true
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token

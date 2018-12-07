@@ -13,6 +13,23 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     it { is_expected.to belong_to :project }
   end
 
+  context 'redirects' do
+    it 'does not follow redirects' do
+      redirect_to = 'https://redirected.example.com'
+      redirect_req_stub = stub_prometheus_request(prometheus_query_url('1'), status: 302, headers: { location: redirect_to })
+      redirected_req_stub = stub_prometheus_request(redirect_to, body: { 'status': 'success' })
+
+      result = service.test
+
+      # result = { success: false, result: error }
+      expect(result[:success]).to be_falsy
+      expect(result[:result]).to be_instance_of(Gitlab::PrometheusClient::Error)
+
+      expect(redirect_req_stub).to have_been_requested
+      expect(redirected_req_stub).not_to have_been_requested
+    end
+  end
+
   describe 'Validations' do
     context 'when manual_configuration is enabled' do
       before do

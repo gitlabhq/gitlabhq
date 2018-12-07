@@ -16,6 +16,7 @@ Set the title to: `[Security] Description of the original issue`
 - [ ] Add a link to the MR to the [links section](#links)
 - [ ] Add a link to an EE MR if required
 - [ ] Make sure the MR remains in-progress and gets approved after the review cycle, **but never merged**.
+- [ ] Add a link to this issue on the original security issue.
 
 #### Backports
 
@@ -37,6 +38,7 @@ Set the title to: `[Security] Description of the original issue`
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
 - [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)
+- [ ] Once your `master` MR is merged, comment on the original security issue with a link to that MR indicating the issue is fixed.
 
 ### Summary
 

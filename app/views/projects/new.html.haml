@@ -50,7 +50,7 @@
             .project-template
               .form-group
                 %div
-                  = render 'project_templates', f: f
+                  = render 'project_templates', f: f, project: @project
 
         .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
           - if import_sources_enabled?

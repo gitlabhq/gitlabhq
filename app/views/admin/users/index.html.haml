@@ -9,28 +9,20 @@
       .search-holder
         .search-field-holder
           = search_field_tag :search_query, params[:search_query], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
+          - if @sort.present?
+            = hidden_field_tag :sort, @sort
           = icon("search", class: "search-icon")
-        .dropdown
-          - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end
+          = button_tag 'Search users' if Rails.env.test?
+        .dropdown.user-sort-dropdown
+          - toggle_text = if @sort.present? then users_sort_options_hash[@sort] else sort_title_name end
           = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
           %ul.dropdown-menu.dropdown-menu-right
             %li.dropdown-header
               Sort by
             %li
-              = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
-                = sort_title_name
-              = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
-                = sort_title_recently_signin
-              = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do
-                = sort_title_oldest_signin
-              = link_to admin_users_path(sort: sort_value_recently_created, filter: params[:filter]) do
-                = sort_title_recently_created
-              = link_to admin_users_path(sort: sort_value_oldest_created, filter: params[:filter]) do
-                = sort_title_oldest_created
-              = link_to admin_users_path(sort: sort_value_recently_updated, filter: params[:filter]) do
-                = sort_title_recently_updated
-              = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
-                = sort_title_oldest_updated
+              - users_sort_options_hash.each do |value, title|
+                = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
+                  = title
         = link_to 'New user', new_admin_user_path, class: 'btn btn-success btn-search'
 
     .top-area.scrolling-tabs-container.inner-page-scroll-tabs

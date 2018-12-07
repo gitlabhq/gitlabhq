@@ -342,15 +342,16 @@ In addition, `only` and `except` allow the use of special keywords:
 
 | **Value** |  **Description**  |
 | --------- |  ---------------- |
-| `branches`  | When a branch is pushed.  |
-| `tags`      | When a tag is pushed.  |
-| `api`       | When pipeline has been triggered by a second pipelines API (not triggers API).  |
-| `external`  | When using CI services other than GitLab. |
-| `pipelines` | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
-| `pushes`    | Pipeline is triggered by a `git push` by the user. |
-| `schedules` | For [scheduled pipelines][schedules]. |
-| `triggers`  | For pipelines created using a trigger token. |
-| `web`       | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+| `branches`       | When a git reference of a pipeline is a branch.  |
+| `tags`           | When a git reference of a pipeline is a tag.  |
+| `api`            | When pipeline has been triggered by a second pipelines API (not triggers API).  |
+| `external`       | When using CI services other than GitLab. |
+| `pipelines`      | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
+| `pushes`         | Pipeline is triggered by a `git push` by the user. |
+| `schedules`      | For [scheduled pipelines][schedules]. |
+| `triggers`       | For pipelines created using a trigger token. |
+| `web`            | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+| `merge_requests` | When a merge request is created or updated (See [pipelines for merge requests](../merge_request_pipelines/index.md)). |
 
 In the example below, `job` will run only for refs that start with `issue-`,
 whereas all branches will be skipped:
@@ -390,6 +391,24 @@ job:
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
+
+If a job does not have neither `only` nor `except` rule,
+`only: ['branches', 'tags']` is set by default.
+
+For example,
+
+```yaml
+job:
+  script: echo 'test'
+```
+
+is translated to
+
+```yaml
+job:
+  script: echo 'test'
+  only: ['branches', 'tags']
+```
 
 ## `only` and `except` (complex)
 
@@ -1590,7 +1609,7 @@ Possible values for `when` are:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22631) in GitLab 11.5.
 
 `parallel` allows you to configure how many instances of a job to run in
-parallel. This value has to be greater than or equal to two (2) and less or equal than 50.
+parallel. This value has to be greater than or equal to two (2) and less than or equal to 50.
 
 This creates N instances of the same job that run in parallel. They're named
 sequentially from `job_name 1/N` to `job_name N/N`.
@@ -1820,13 +1839,6 @@ variables:
 These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
-
-To turn off global defined variables in a specific job, define an empty hash:
-
-```yaml
-job_name:
-  variables: {}
-```
 
 Except for the user defined variables, there are also the ones [set up by the
 Runner itself](../variables/README.md#predefined-variables-environment-variables).

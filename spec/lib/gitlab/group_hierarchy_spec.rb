@@ -34,6 +34,28 @@ describe Gitlab::GroupHierarchy, :postgresql do
       expect { relation.update_all(share_with_group_lock: false) }
         .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
+
+    describe 'hierarchy_order option' do
+      let(:relation) do
+        described_class.new(Group.where(id: child2.id)).base_and_ancestors(hierarchy_order: hierarchy_order)
+      end
+
+      context ':asc' do
+        let(:hierarchy_order) { :asc }
+
+        it 'orders by child to parent' do
+          expect(relation).to eq([child2, child1, parent])
+        end
+      end
+
+      context ':desc' do
+        let(:hierarchy_order) { :desc }
+
+        it 'orders by parent to child' do
+          expect(relation).to eq([parent, child1, child2])
+        end
+      end
+    end
   end
 
   describe '#base_and_descendants' do

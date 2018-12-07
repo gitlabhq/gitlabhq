@@ -217,7 +217,10 @@ describe Projects::EnvironmentsController do
       end
 
       it 'loads the terminals for the environment' do
-        expect_any_instance_of(Environment).to receive(:terminals)
+        # In EE we have to stub EE::Environment since it overwrites the
+        # "terminals" method.
+        expect_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+          .to receive(:terminals)
 
         get :terminal, environment_params
       end
@@ -240,7 +243,9 @@ describe Projects::EnvironmentsController do
 
       context 'and valid id' do
         it 'returns the first terminal for the environment' do
-          expect_any_instance_of(Environment)
+          # In EE we have to stub EE::Environment since it overwrites the
+          # "terminals" method.
+          expect_any_instance_of(defined?(EE) ? EE::Environment : Environment)
             .to receive(:terminals)
             .and_return([:fake_terminal])
 

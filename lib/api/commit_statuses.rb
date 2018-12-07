@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include PaginationParams
 
       before { authenticate! }
@@ -29,7 +29,7 @@ module API
 
         not_found!('Commit') unless user_project.commit(params[:sha])
 
-        pipelines = user_project.pipelines.where(sha: params[:sha])
+        pipelines = user_project.ci_pipelines.where(sha: params[:sha])
         statuses = ::CommitStatus.where(pipeline: pipelines)
         statuses = statuses.latest unless to_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
@@ -75,7 +75,7 @@ module API
 
         pipeline = @project.pipeline_for(ref, commit.sha)
         unless pipeline
-          pipeline = @project.pipelines.create!(
+          pipeline = @project.ci_pipelines.create!(
             source: :external,
             sha: commit.sha,
             ref: ref,

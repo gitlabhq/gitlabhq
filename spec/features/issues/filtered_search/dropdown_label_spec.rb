@@ -45,7 +45,8 @@ describe 'Dropdown label', :js do
       bug_label = create(:label, project: project, title: 'bug-label')
       init_label_search
 
-      filtered_search.native.send_keys(:down, :down, :enter)
+      # navigate to the bug_label option and selects it
+      filtered_search.native.send_keys(:down, :down, :down, :enter)
 
       expect_tokens([label_token(bug_label.title)])
       expect_filtered_search_input_empty
@@ -234,10 +235,18 @@ describe 'Dropdown label', :js do
     end
 
     it 'selects `no label`' do
-      find("#{js_dropdown_label} .filter-dropdown-item", text: 'No Label').click
+      find("#{js_dropdown_label} .filter-dropdown-item", text: 'None').click
 
       expect(page).not_to have_css(js_dropdown_label)
       expect_tokens([label_token('none', false)])
+      expect_filtered_search_input_empty
+    end
+
+    it 'selects `any label`' do
+      find("#{js_dropdown_label} .filter-dropdown-item", text: 'Any').click
+
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([label_token('any', false)])
       expect_filtered_search_input_empty
     end
   end

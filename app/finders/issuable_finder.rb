@@ -27,12 +27,13 @@
 #     created_before: datetime
 #     updated_after: datetime
 #     updated_before: datetime
-#     use_cte_for_search: boolean
+#     attempt_group_search_optimizations: boolean
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
   include CreatedAtFilter
+  include Gitlab::Utils::StrongMemoize
 
   requires_cross_project_access unless: -> { project? }
 
@@ -75,8 +76,9 @@ class IssuableFinder
     items = init_collection
     items = filter_items(items)
 
-    # This has to be last as we may use a CTE as an optimization fence by
-    # passing the use_cte_for_search param
+    # This has to be last as we may use a CTE as an optimization fence
+    # by passing the attempt_group_search_optimizations param and
+    # enabling the use_cte_for_group_issues_search feature flag
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
@@ -85,6 +87,8 @@ class IssuableFinder
 
   def filter_items(items)
     items = by_project(items)
+    items = by_group(items)
+    items = by_subquery(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
@@ -282,10 +286,29 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def use_subquery_for_search?
+    strong_memoize(:use_subquery_for_search) do
+      attempt_group_search_optimizations? &&
+        Feature.enabled?(:use_subquery_for_group_issues_search, default_enabled: false)
+    end
+  end
+
+  def use_cte_for_search?
+    strong_memoize(:use_cte_for_search) do
+      attempt_group_search_optimizations? &&
+        !use_subquery_for_search? &&
+        Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
+    end
+  end
+
   private
 
   def init_collection
     klass.all
+  end
+
+  def attempt_group_search_optimizations?
+    search && Gitlab::Database.postgresql? && params[:attempt_group_search_optimizations]
   end
 
   def count_key(value)
@@ -351,12 +374,13 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def use_cte_for_search?
-    return false unless search
-    return false unless Gitlab::Database.postgresql?
-    return false unless Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
-
-    params[:use_cte_for_search]
+  # Wrap projects and groups in a subquery if the conditions are met.
+  def by_subquery(items)
+    if use_subquery_for_search?
+      klass.where(id: items.select(:id)) # rubocop: disable CodeReuse/ActiveRecord
+    else
+      items
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

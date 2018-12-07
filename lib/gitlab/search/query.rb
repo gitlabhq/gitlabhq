@@ -3,6 +3,8 @@
 module Gitlab
   module Search
     class Query < SimpleDelegator
+      include EncodingHelper
+
       def initialize(query, filter_opts = {}, &block)
         @raw_query = query.dup
         @filters = []
@@ -50,7 +52,9 @@ module Gitlab
       end
 
       def parse_filter(filter, input)
-        filter[:parser].call(input)
+        result = filter[:parser].call(input)
+
+        @filter_options[:encode_binary] ? encode_binary(result) : result
       end
     end
   end

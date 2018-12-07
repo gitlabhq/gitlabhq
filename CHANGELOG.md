@@ -2,6 +2,52 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.3 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
+## 11.5.2 (2018-12-03)
+
+### Removed (1 change)
+
+- Removed Site Statistics optimization as it was causing problems. !23314
+
+### Fixed (6 changes, 1 of them is from the community)
+
+- Display impersonation token value only after creation. !22916
+- Fix not render emoji in filter dropdown. !23112 (Hiroyuki Sato)
+- Fixes stuck tooltip on stop env button. !23244
+- Correctly handle data-loss scenarios when encrypting columns. !23306
+- Clear BatchLoader context between Sidekiq jobs. !23308
+- Fix handling of filenames with hash characters in tree view. !23368
+
+
+## 11.5.1 (2018-11-26)
+
+### Security (17 changes)
+
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Don't expose confidential information in commit message list.
+- Provide email notification when a user changes their email address.
+- Restrict Personal Access Tokens to API scope on web requests.
+- Resolve reflected XSS in Ouath authorize window.
+- Fix SSRF in project integrations.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Configure mermaid to not render HTML content in diagrams.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+
+
 ## 11.5.0 (2018-11-22)
 
 ### Security (10 changes, 1 of them is from the community)
@@ -262,6 +308,44 @@ entry.
 - Updates svg dependency.
 - Adds missing i18n to pipelines table.
 - Disables stop environment button while the deploy is in progress.
+
+
+## 11.4.9 (2018-12-03)
+
+### Fixed (2 changes)
+
+- Display impersonation token value only after creation. !22916
+- Correctly handle data-loss scenarios when encrypting columns. !23306
+
+
+## 11.4.8 (2018-11-27)
+
+### Security (24 changes)
+
+- Escape entity title while autocomplete template rendering to prevent XSS. !2571
+- Resolve reflected XSS in Ouath authorize window.
+- Fix XSS in merge request source branch name.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Don't expose confidential information in commit message list.
+- Provide email notification when a user changes their email address.
+- Restrict Personal Access Tokens to API scope on web requests.
+- Redact personal tokens in unsubscribe links.
+- Fix SSRF in project integrations.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Monkey kubeclient to not follow any redirects.
+- Configure mermaid to not render HTML content in diagrams.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
 
 
 ## 11.4.7 (2018-11-20)
@@ -542,6 +626,52 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.12 (2018-12-06)
+
+### Security (1 change)
+
+- Prevent a path traversal attack on global file templates.
+
+
+## 11.3.11 (2018-11-26)
+
+### Security (33 changes)
+
+- Filter user sensitive data from discussions JSON. !2537
+- Escape entity title while autocomplete template rendering to prevent XSS. !2557
+- Restrict Personal Access Tokens to API scope on web requests.
+- Fix XSS in merge request source branch name.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Fix CRLF vulnerability in Project hooks.
+- Fix possible XSS attack in Markdown urls with spaces.
+- Redact sensitive information on gitlab-workhorse log.
+- Set timeout for syntax highlighting.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Persist only SHA digest of PersonalAccessToken#token.
+- Sanitize JSON data properly to fix XSS on Issue details page.
+- Don't expose confidential information in commit message list.
+- Markdown API no longer displays confidential title references unless authorized.
+- Provide email notification when a user changes their email address.
+- Properly filter private references from system notes.
+- Redact personal tokens in unsubscribe links.
+- Resolve reflected XSS in Ouath authorize window.
+- Fix SSRF in project integrations.
+- Fix stored XSS in merge requests from imported repository.
+- Fixed ability to comment on locked/confidential issues.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fix milestone promotion authorization check.
+- Monkey kubeclient to not follow any redirects.
+- Configure mermaid to not render HTML content in diagrams.
+- Redact confidential events in the API.
+- Fix xss vulnerability sourced from package.json.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+- Block loopback addresses in UrlBlocker.
+- Prevent SSRF attacks in HipChat integration.
+- Validate Wiki attachments are valid temporary files.
 
 
 ## 11.3.10 (2018-11-18)

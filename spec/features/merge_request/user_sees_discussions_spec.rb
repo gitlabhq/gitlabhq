@@ -53,13 +53,11 @@ describe 'Merge request > User sees discussions', :js do
     shared_examples 'a functional discussion' do
       let(:discussion_id) { note.discussion_id(merge_request) }
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
-      xit 'is displayed' do
+      it 'is displayed' do
         expect(page).to have_css(".discussion[data-discussion-id='#{discussion_id}']")
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
-      xit 'can be replied to' do
+      it 'can be replied to' do
         within(".discussion[data-discussion-id='#{discussion_id}']") do
           click_button 'Reply...'
           fill_in 'note[note]', with: 'Test!'
@@ -74,16 +72,21 @@ describe 'Merge request > User sees discussions', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    context 'a regular commit comment' do
-      let(:note) { create(:note_on_commit, project: project) }
-
-      it_behaves_like 'a functional discussion'
-    end
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+    # context 'a regular commit comment' do
+    #   let(:note) { create(:note_on_commit, project: project) }
+    #
+    #   it_behaves_like 'a functional discussion'
+    # end
 
     context 'a commit diff comment' do
       let(:note) { create(:diff_note_on_commit, project: project) }
 
       it_behaves_like 'a functional discussion'
+
+      it 'displays correct header' do
+        expect(page).to have_content "started a discussion on commit #{note.commit_id[0...7]}"
+      end
     end
   end
 end

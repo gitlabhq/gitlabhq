@@ -26,15 +26,15 @@ JWT will provide you with a secret key for you to use.
     ```ruby
     gitlab_rails['omniauth_providers'] = [
       { name: 'jwt',
-        app_secret: 'YOUR_APP_SECRET',
         args: {
-                algorithm: 'HS256',
-                uid_claim: 'email',
-                required_claims: ["name", "email"],
-                info_maps: { name: "name", email: "email" },
-                auth_url: 'https://example.com/',
-                valid_within: nil,
-              }
+          secret: 'YOUR_APP_SECRET',
+          algorithm: 'HS256', # Supported algorithms: 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512'
+          uid_claim: 'email',
+          required_claims: ['name', 'email'],
+          info_maps: { name: 'name', email: 'email' },
+          auth_url: 'https://example.com/',
+          valid_within: 3600 # 1 hour
+        }
       }
     ]
     ```
@@ -43,15 +43,15 @@ JWT will provide you with a secret key for you to use.
 
     ```
     - { name: 'jwt',
-        app_secret: 'YOUR_APP_SECRET',
         args: {
-                algorithm: 'HS256',
-                uid_claim: 'email',
-                required_claims: ["name", "email"],
-                info_map: { name: "name", email: "email" },
-                auth_url: 'https://example.com/',
-                valid_within: null,
-              }
+          secret: 'YOUR_APP_SECRET',
+          algorithm: 'HS256', # Supported algorithms: 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512'
+          uid_claim: 'email',
+          required_claims: ['name', 'email'],
+          info_map: { name: 'name', email: 'email' },
+          auth_url: 'https://example.com/',
+          valid_within: 3600 # 1 hour
+        }
       }
     ```
 
@@ -60,7 +60,7 @@ JWT will provide you with a secret key for you to use.
 
 1.  Change `YOUR_APP_SECRET` to the client secret and set `auth_url` to your redirect URL.
 1.  Save the configuration file.
-1.  [Reconfigure GitLab][] or [restart GitLab][] for the changes to take effect if you
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
     installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a JWT icon below the regular sign in form.
@@ -68,5 +68,5 @@ Click the icon to begin the authentication process. JWT will ask the user to
 sign in and authorize the GitLab application. If everything goes well, the user
 will be redirected to GitLab and will be signed in.
 
-[reconfigure GitLab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
+[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../restart_gitlab.md#installations-from-source

@@ -4,12 +4,14 @@ module Gitlab
   module ImportExport
     class RelationFactory
       OVERRIDES = { snippets: :project_snippets,
+                    ci_pipelines: 'Ci::Pipeline',
                     pipelines: 'Ci::Pipeline',
                     stages: 'Ci::Stage',
                     statuses: 'commit_status',
                     triggers: 'Ci::Trigger',
                     pipeline_schedules: 'Ci::PipelineSchedule',
                     builds: 'Ci::Build',
+                    runners: 'Ci::Runner',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
@@ -33,7 +35,7 @@ module Gitlab
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
 
-      TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook].freeze
+      TOKEN_RESET_MODELS = %w[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
       def self.create(*args)
         new(*args).create

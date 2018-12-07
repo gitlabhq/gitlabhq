@@ -73,6 +73,7 @@ export default {
 
       this.cancelCommentForm({
         lineCode: this.line.line_code,
+        fileHash: this.diffFileHash,
       });
       this.$nextTick(() => {
         this.resetAutoSave();

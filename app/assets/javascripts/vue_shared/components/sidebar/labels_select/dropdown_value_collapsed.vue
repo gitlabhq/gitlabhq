@@ -44,6 +44,7 @@ export default {
     class="sidebar-collapsed-icon"
     data-placement="left"
     data-container="body"
+    data-boundary="viewport"
     @click="handleClick"
   >
     <i aria-hidden="true" data-hidden="true" class="fa fa-tags"> </i>

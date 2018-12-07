@@ -471,6 +471,31 @@ describe ProjectsHelper do
     end
   end
 
+  describe 'link_to_bfg' do
+    subject { helper.link_to_bfg }
+
+    it 'generates a hardcoded link to the BFG Repo-Cleaner' do
+      result = helper.link_to_bfg
+      doc = Nokogiri::HTML.fragment(result)
+
+      expect(doc.children.size).to eq(1)
+
+      link = doc.children.first
+
+      aggregate_failures do
+        expect(result).to be_html_safe
+
+        expect(link.name).to eq('a')
+        expect(link[:target]).to eq('_blank')
+        expect(link[:rel]).to eq('noopener noreferrer')
+        expect(link[:href]).to eq('https://rtyley.github.io/bfg-repo-cleaner/')
+        expect(link.inner_html).to eq('BFG')
+
+        expect(result).to be_html_safe
+      end
+    end
+  end
+
   describe '#legacy_render_context' do
     it 'returns the redcarpet engine' do
       params = { legacy_render: '1' }

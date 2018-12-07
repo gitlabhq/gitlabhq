@@ -8,15 +8,14 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
   include SafeParamsHelper
-  include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
+  include SessionlessAuthentication
   # this can be removed after switching to rails 5
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/51908
   include InvalidUTF8ErrorHandler unless Gitlab.rails5?
 
-  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
@@ -28,6 +27,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
+  before_action :check_impersonation_availability
 
   around_action :set_locale
 
@@ -128,6 +128,7 @@ class ApplicationController < ActionController::Base
 
     payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
+    payload[Gitlab::CorrelationId::LOG_KEY] = Gitlab::CorrelationId.current_id
 
     logged_user = auth_user
 
@@ -153,15 +154,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # This filter handles personal access tokens, and atom requests with rss tokens
-  def authenticate_sessionless_user!
-    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
-
-    sessionless_sign_in(user) if user
-  end
-
   def log_exception(exception)
-    Raven.capture_exception(exception) if sentry_enabled?
+    Gitlab::Sentry.track_acceptable_exception(exception)
 
     backtrace_cleaner = Gitlab.rails5? ? request.env["action_dispatch.backtrace_cleaner"] : env
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
@@ -426,23 +420,9 @@ class ApplicationController < ActionController::Base
     Gitlab::I18n.with_user_locale(current_user, &block)
   end
 
-  def sessionless_sign_in(user)
-    if user && can?(user, :log_in)
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in(user, store: false, message: :sessionless_sign_in)
-    end
-  end
-
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
-  end
-
-  def sessionless_user?
-    current_user && !session.keys.include?('warden.user.user.key')
   end
 
   def peek_request?
@@ -482,5 +462,33 @@ class ApplicationController < ActionController::Base
     ApplicationSettings::UpdateService
       .new(settings, current_user, application_setting_params)
       .execute
+  end
+
+  def check_impersonation_availability
+    return unless session[:impersonator_id]
+
+    unless Gitlab.config.gitlab.impersonation_enabled
+      stop_impersonation
+      access_denied! _('Impersonation has been disabled')
+    end
+  end
+
+  def stop_impersonation
+    impersonated_user = current_user
+
+    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
+
+    warden.set_user(impersonator, scope: :user)
+    session[:impersonator_id] = nil
+
+    impersonated_user
+  end
+
+  def impersonator
+    @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
+  end
+
+  def sentry_context
+    Gitlab::Sentry.context(current_user)
   end
 end

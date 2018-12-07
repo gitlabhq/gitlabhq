@@ -395,6 +395,14 @@ describe UsersController do
     end
   end
 
+  context 'token authentication' do
+    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
+      before do
+        default_params.merge!(username: user.username)
+      end
+    end
+  end
+
   def user_moved_message(redirect_route, user)
     "User '#{redirect_route.path}' was moved to '#{user.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

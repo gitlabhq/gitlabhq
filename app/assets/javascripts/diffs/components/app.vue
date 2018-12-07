@@ -102,6 +102,12 @@ export default {
     if (this.shouldShow) {
       this.fetchData();
     }
+
+    const id = window && window.location && window.location.hash;
+
+    if (id) {
+      this.setHighlightedRow(id.slice(1));
+    }
   },
   created() {
     this.adjustView();
@@ -114,6 +120,7 @@ export default {
       'fetchDiffFiles',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
+      'setHighlightedRow',
     ]),
     fetchData() {
       this.fetchDiffFiles()

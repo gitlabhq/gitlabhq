@@ -2,6 +2,7 @@
 
 class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
+  before_action :check_impersonation_availability, only: :impersonate
 
   def index
     @users = User.order_name_asc.filter(params[:filter])
@@ -226,5 +227,9 @@ class Admin::UsersController < Admin::ApplicationController
     result = Users::UpdateService.new(current_user, user: user).execute(&block)
 
     result[:status] == :success
+  end
+
+  def check_impersonation_availability
+    access_denied! unless Gitlab.config.gitlab.impersonation_enabled
   end
 end

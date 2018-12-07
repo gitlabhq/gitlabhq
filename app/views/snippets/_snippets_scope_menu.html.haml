@@ -4,7 +4,7 @@
 .nav-links.snippet-scope-menu.mobile-separator.nav.nav-tabs
   %li{ class: active_when(params[:scope].nil?) }
     = link_to subject_snippets_path(subject) do
-      All
+      = _("All")
       %span.badge.badge-pill
         - if include_private
           = subject.snippets.count
@@ -14,18 +14,18 @@
   - if include_private
     %li{ class: active_when(params[:scope] == "are_private") }
       = link_to subject_snippets_path(subject, scope: 'are_private') do
-        Private
+        = _("Private")
         %span.badge.badge-pill
           = subject.snippets.are_private.count
 
   %li{ class: active_when(params[:scope] == "are_internal") }
     = link_to subject_snippets_path(subject, scope: 'are_internal') do
-      Internal
+      = _("Internal")
       %span.badge.badge-pill
         = subject.snippets.are_internal.count
 
   %li{ class: active_when(params[:scope] == "are_public") }
     = link_to subject_snippets_path(subject, scope: 'are_public') do
-      Public
+      = _("Public")
       %span.badge.badge-pill
         = subject.snippets.are_public.count

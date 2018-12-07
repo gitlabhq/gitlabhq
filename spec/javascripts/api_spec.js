@@ -123,7 +123,7 @@ describe('Api', () => {
     });
   });
 
-  describe('mergerequest', () => {
+  describe('projectMergeRequest', () => {
     it('fetches a merge request', done => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
@@ -132,7 +132,7 @@ describe('Api', () => {
         title: 'test',
       });
 
-      Api.mergeRequest(projectPath, mergeRequestId)
+      Api.projectMergeRequest(projectPath, mergeRequestId)
         .then(({ data }) => {
           expect(data.title).toBe('test');
         })
@@ -141,7 +141,7 @@ describe('Api', () => {
     });
   });
 
-  describe('mergerequest changes', () => {
+  describe('projectMergeRequestChanges', () => {
     it('fetches the changes of a merge request', done => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
@@ -150,7 +150,7 @@ describe('Api', () => {
         title: 'test',
       });
 
-      Api.mergeRequestChanges(projectPath, mergeRequestId)
+      Api.projectMergeRequestChanges(projectPath, mergeRequestId)
         .then(({ data }) => {
           expect(data.title).toBe('test');
         })
@@ -159,7 +159,7 @@ describe('Api', () => {
     });
   });
 
-  describe('mergerequest versions', () => {
+  describe('projectMergeRequestVersions', () => {
     it('fetches the versions of a merge request', done => {
       const projectPath = 'abc';
       const mergeRequestId = '123456';
@@ -170,10 +170,27 @@ describe('Api', () => {
         },
       ]);
 
-      Api.mergeRequestVersions(projectPath, mergeRequestId)
+      Api.projectMergeRequestVersions(projectPath, mergeRequestId)
         .then(({ data }) => {
           expect(data.length).toBe(1);
           expect(data[0].id).toBe(123);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('projectRunners', () => {
+    it('fetches the runners of a project', done => {
+      const projectPath = 7;
+      const params = { scope: 'active' };
+      const mockData = [{ id: 4 }];
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/runners`;
+      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+
+      Api.projectRunners(projectPath, { params })
+        .then(({ data }) => {
+          expect(data).toEqual(mockData);
         })
         .then(done)
         .catch(done.fail);

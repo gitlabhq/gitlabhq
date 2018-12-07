@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mapActions } from 'vuex';
+import _ from 'underscore';
 import Translate from '~/vue_shared/translate';
 import ide from './components/ide.vue';
 import store from './stores';
@@ -13,19 +14,19 @@ Vue.use(Translate);
  *
  * @param {Element} el - The element that will contain the IDE.
  * @param {Object} options - Extra options for the IDE (Used by EE).
- * @param {(e:Element) => Object} options.extraInitialData -
- *   Function that returns extra properties to seed initial data.
  * @param {Component} options.rootComponent -
  *   Component that overrides the root component.
+ * @param {(store:Vuex.Store, el:Element) => Vuex.Store} options.extendStore -
+ *   Function that receives the default store and returns an extended one.
  */
 export function initIde(el, options = {}) {
   if (!el) return null;
 
-  const { extraInitialData = () => ({}), rootComponent = ide } = options;
+  const { rootComponent = ide, extendStore = _.identity } = options;
 
   return new Vue({
     el,
-    store,
+    store: extendStore(store, el),
     router,
     created() {
       this.setEmptyStateSvgs({
@@ -41,7 +42,6 @@ export function initIde(el, options = {}) {
       });
       this.setInitialData({
         clientsidePreviewEnabled: parseBoolean(el.dataset.clientsidePreviewEnabled),
-        ...extraInitialData(el),
       });
     },
     methods: {

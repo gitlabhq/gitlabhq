@@ -52,15 +52,58 @@ describe GraphqlController do
     end
   end
 
+  context 'token authentication' do
+    before do
+      stub_authentication_activity_metrics(debug: false)
+    end
+
+    let(:user) { create(:user, username: 'Simon') }
+    let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    context "when the 'personal_access_token' param is populated with the personal access token" do
+      it 'logs the user in' do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+                .and increment(:user_session_override_counter)
+                       .and increment(:user_sessionless_authentication_counter)
+
+        run_test_query!(private_token: personal_access_token.token)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(query_response).to eq('echo' => '"Simon" says: test success')
+      end
+    end
+
+    context 'when the personal access token has no api scope' do
+      it 'does not log the user in' do
+        personal_access_token.update(scopes: [:read_user])
+
+        run_test_query!(private_token: personal_access_token.token)
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(query_response).to eq('echo' => 'nil says: test success')
+      end
+    end
+
+    context 'without token' do
+      it 'shows public data' do
+        run_test_query!
+
+        expect(query_response).to eq('echo' => 'nil says: test success')
+      end
+    end
+  end
+
   # Chosen to exercise all the moving parts in GraphqlController#execute
-  def run_test_query!(variables: { 'text' => 'test success' })
+  def run_test_query!(variables: { 'text' => 'test success' }, private_token: nil)
     query = <<~QUERY
       query Echo($text: String) {
         echo(text: $text)
       }
     QUERY
 
-    post :execute, query: query, operationName: 'Echo', variables: variables
+    post :execute, query: query, operationName: 'Echo', variables: variables, private_token: private_token
   end
 
   def query_response

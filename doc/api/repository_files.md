@@ -4,6 +4,16 @@
 
 **Create, read, update and delete repository files using this API**
 
+The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
+in the following table.
+
+| Scope | Description |
+| ----- | ----------- |
+| `read_repository` | Allows read-access to the repository files. |
+| `api` | Allows read-write access to the repository files. |
+
+> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23534) in GitLab 11.6.
+
 ## Get file from repository
 
 Allows you to receive information about file in repository like name, size,

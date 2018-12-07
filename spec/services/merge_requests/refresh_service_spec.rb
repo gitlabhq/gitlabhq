@@ -132,6 +132,94 @@ describe MergeRequests::RefreshService do
       end
     end
 
+    describe 'Merge request pipelines' do
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+
+      context "when .gitlab-ci.yml has merge_requests keywords" do
+        let(:config) do
+          {
+            test: {
+              stage: 'test',
+              script: 'echo',
+              only: ['merge_requests']
+            }
+          }
+        end
+
+        it 'create merge request pipeline' do
+          expect { subject }
+            .to change { @merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @another_merge_request.merge_request_pipelines.count }.by(1)
+        end
+
+        context "when branch pipeline was created before a merge request pipline has been created" do
+          before do
+            create(:ci_pipeline, project: @merge_request.source_project,
+                                 sha: @merge_request.diff_head_sha,
+                                 ref: @merge_request.source_branch,
+                                 tag: false)
+
+            subject
+          end
+
+          it 'sets the latest merge request pipeline as a head pipeline' do
+            @merge_request.reload
+            expect(@merge_request.actual_head_pipeline).to be_merge_request
+          end
+
+          it 'returns pipelines in correct order' do
+            @merge_request.reload
+            expect(@merge_request.all_pipelines.first).to be_merge_request
+            expect(@merge_request.all_pipelines.second).to be_push
+          end
+        end
+
+        context "when MergeRequestUpdateWorker is retried by an exception" do
+          it 'does not re-create a duplicate merge request pipeline' do
+            expect do
+              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+            end.to change { @merge_request.merge_request_pipelines.count }.by(1)
+
+            expect do
+              service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
+            end.not_to change { @merge_request.merge_request_pipelines.count }
+          end
+        end
+
+        context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
+          before do
+            stub_feature_flags(ci_merge_request_pipeline: false)
+          end
+
+          it 'does not create a merge request pipeline' do
+            expect { subject }
+              .not_to change { @merge_request.merge_request_pipelines.count }
+          end
+        end
+      end
+
+      context "when .gitlab-ci.yml does not have merge_requests keywords" do
+        let(:config) do
+          {
+            test: {
+              stage: 'test',
+              script: 'echo'
+            }
+          }
+        end
+
+        it 'does not create a merge request pipeline' do
+          expect { subject }
+            .not_to change { @merge_request.merge_request_pipelines.count }
+        end
+      end
+    end
+
     context 'push to origin repo source branch when an MR was reopened' do
       let(:refresh_service) { service.new(@project, @user) }
       let(:notification_service) { spy('notification_service') }
@@ -531,6 +619,79 @@ describe MergeRequests::RefreshService do
       @fork_merge_request.reload
       @build_failed_todo.reload
       @fork_build_failed_todo.reload
+    end
+  end
+
+  describe 'updating merge_commit' do
+    let(:service) { described_class.new(project, user) }
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository) }
+
+    let(:oldrev) { TestEnv::BRANCH_SHA['merge-commit-analyze-before'] }
+    let(:newrev) { TestEnv::BRANCH_SHA['merge-commit-analyze-after'] } # Pretend branch is now updated
+
+    let!(:merge_request) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'merge-commit-analyze-after',
+        target_branch: 'merge-commit-analyze-before',
+        target_project: project,
+        merge_user: user
+      )
+    end
+
+    let!(:merge_request_side_branch) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: 'merge-commit-analyze-side-branch',
+        target_branch: 'merge-commit-analyze-before',
+        target_project: project,
+        merge_user: user
+      )
+    end
+
+    subject { service.execute(oldrev, newrev, 'refs/heads/merge-commit-analyze-before') }
+
+    context 'feature enabled' do
+      before do
+        stub_feature_flags(branch_push_merge_commit_analyze: true)
+      end
+
+      it "updates merge requests' merge_commits" do
+        expect(Gitlab::BranchPushMergeCommitAnalyzer).to receive(:new).and_wrap_original do |original_method, commits|
+          expect(commits.map(&:id)).to eq(%w{646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5 5f82584f0a907f3b30cfce5bb8df371454a90051 8a994512e8c8f0dfcf22bb16df6e876be7a61036 689600b91aabec706e657e38ea706ece1ee8268f db46a1c5a5e474aa169b6cdb7a522d891bc4c5f9})
+
+          original_method.call(commits)
+        end
+
+        subject
+
+        merge_request.reload
+        merge_request_side_branch.reload
+
+        expect(merge_request.merge_commit.id).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
+        expect(merge_request_side_branch.merge_commit.id).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+      end
+    end
+
+    context 'when feature is disabled' do
+      before do
+        stub_feature_flags(branch_push_merge_commit_analyze: false)
+      end
+
+      it "does not trigger analysis" do
+        expect(Gitlab::BranchPushMergeCommitAnalyzer).not_to receive(:new)
+
+        subject
+
+        merge_request.reload
+        merge_request_side_branch.reload
+
+        expect(merge_request.merge_commit).to eq(nil)
+        expect(merge_request_side_branch.merge_commit).to eq(nil)
+      end
     end
   end
 end

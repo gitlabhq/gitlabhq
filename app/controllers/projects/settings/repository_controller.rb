@@ -5,6 +5,7 @@ module Projects
     class RepositoryController < Projects::ApplicationController
       before_action :authorize_admin_project!
       before_action :remote_mirror, only: [:show]
+      before_action :check_cleanup_feature_flag!, only: :cleanup
 
       def show
         render_show
@@ -20,7 +21,25 @@ module Projects
         render_show
       end
 
+      def cleanup
+        cleanup_params = params.require(:project).permit(:bfg_object_map)
+        result = Projects::UpdateService.new(project, current_user, cleanup_params).execute
+
+        if result[:status] == :success
+          RepositoryCleanupWorker.perform_async(project.id, current_user.id)
+          flash[:notice] = _('Repository cleanup has started. You will receive an email once the cleanup operation is complete.')
+        else
+          flash[:alert] = _('Failed to upload object map file')
+        end
+
+        redirect_to project_settings_repository_path(project)
+      end
+
       private
+
+      def check_cleanup_feature_flag!
+        render_404 unless ::Feature.enabled?(:project_cleanup, project)
+      end
 
       def render_show
         @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
