@@ -51,6 +51,7 @@ describe('Trigger block', () => {
             expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
               'Hide values',
             );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_GCS',
             );
@@ -69,13 +70,17 @@ describe('Trigger block', () => {
             expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
               'Reveal values',
             );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_GCS',
             );
+
             expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
+            
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_S3',
             );
+            
             expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
           })
           .then(done)
