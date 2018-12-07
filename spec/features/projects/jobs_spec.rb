@@ -344,86 +344,87 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    describe 'Pipeline trigger variables when user is not a maintainer' do
+    describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
-
       let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
 
-      shared_examples 'expected variables behavior' do
-        it 'renders a hidden value with no reveal values button', :js do
-          expect(page).to have_content('Token')
-          expect(page).to have_content('Variables')
-          expect(page).not_to have_css('.js-reveal-variables')
-          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-          expect(page).to have_selector('.js-build-value', text: '••••••')
+      context 'when user is a maintainer' do
+        shared_examples 'no reveal button variables behavior' do
+          it 'renders a hidden value with no reveal values button', :js do
+            expect(page).to have_content('Token')
+            expect(page).to have_content('Variables')
+
+            expect(page).not_to have_css('.js-reveal-variables')
+
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: '••••••')
+          end
+        end
+
+        context 'when variables are stored in trigger_request' do
+          before do
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'no reveal button variables behavior'
+        end
+
+        context 'when variables are stored in pipeline_variables' do
+          before do
+            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'no reveal button variables behavior'
         end
       end
 
-      context 'when variables are stored in trigger_request' do
-        before do
-          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
-
-          visit project_job_path(project, job)
-        end
-
-        it_behaves_like 'expected variables behavior'
-      end
-
-      context 'when variables are stored in pipeline_variables' do
-        before do
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
-
-          visit project_job_path(project, job)
-        end
-
-        it_behaves_like 'expected variables behavior'
-      end
-    end
-
-    describe 'Pipeline trigger variables when user is a maintainer' do
-      let(:trigger_request) { create(:ci_trigger_request) }
-
-      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
-
-      shared_examples 'expected variables behavior when maintainer' do
-        it 'renders a hidden value with a reveal values button', :js do
-          expect(page).to have_content('Token')
-          expect(page).to have_content('Variables')
-          expect(page).to have_css('.js-reveal-variables')
-          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-          expect(page).to have_selector('.js-build-value', text: '••••••')
-        end
-
-        it 'reveals values on button click', :js do
-          click_button 'Reveal values'
-
-          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
-        end
-      end
-
-      context 'when variables are stored in trigger_request' do
+      context 'when user is a maintainer' do
         before do
           project.add_maintainer(user)
-
-          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
-
-          visit project_job_path(project, job)
         end
 
-        it_behaves_like 'expected variables behavior when maintainer'
-      end
+        shared_examples 'reveal button variables behavior' do
+          it 'renders a hidden value with a reveal values button', :js do
+            expect(page).to have_content('Token')
+            expect(page).to have_content('Variables')
 
-      context 'when variables are stored in pipeline_variables' do
-        before do
-          project.add_maintainer(user)
+            expect(page).to have_css('.js-reveal-variables')
 
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: '••••••')
+          end
 
-          visit project_job_path(project, job)
+          it 'reveals values on button click', :js do
+            click_button 'Reveal values'
+
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+          end
         end
 
-        it_behaves_like 'expected variables behavior when maintainer'
+        context 'when variables are stored in trigger_request' do
+          before do
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'reveal button variables behavior'
+        end
+
+        context 'when variables are stored in pipeline_variables' do
+          before do
+            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'reveal button variables behavior'
+        end
       end
     end
 
