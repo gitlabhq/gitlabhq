@@ -115,6 +115,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[6].status_reason,
             requestStatus: null,
             requestReason: null,
+            email: mockResponseData.applications[6].email,
           },
         },
       });
