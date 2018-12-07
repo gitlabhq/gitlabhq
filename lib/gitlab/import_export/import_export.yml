@@ -143,7 +143,6 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
-    - :token_encrypted
     - :when
     - :artifacts_file
     - :artifacts_metadata
