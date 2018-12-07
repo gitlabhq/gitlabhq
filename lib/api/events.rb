@@ -18,29 +18,15 @@ module API
                         desc: 'Return events sorted in ascending and descending order'
       end
 
-      RedactedEvent = OpenStruct.new(target_title: 'Confidential event').freeze
-
-      def redact_events(events)
-        events.map do |event|
-          if event.visible_to_user?(current_user)
-            event
-          else
-            RedactedEvent
-          end
-        end
-      end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def present_events(events, redact: true)
-        events = events.reorder(created_at: params[:sort])
-                 .with_associations
-
+      def present_events(events)
         events = paginate(events)
-        events = redact_events(events) if redact
 
         present events, with: Entities::Event
       end
-      # rubocop: enable CodeReuse/ActiveRecord
+
+      def find_events(source)
+        EventsFinder.new(params.merge(source: source, current_user: current_user, with_associations: true)).execute
+      end
     end
 
     resource :events do
@@ -55,16 +41,14 @@ module API
         use :event_filter_params
         use :sort_params
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       get do
         authenticate!
 
-        events = EventsFinder.new(params.merge(source: current_user, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(current_user)
 
-        # Since we're viewing our own events, redaction is unnecessary
-        present_events(events, redact: false)
+        present_events(events)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -82,16 +66,15 @@ module API
         use :event_filter_params
         use :sort_params
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       get ':id/events' do
         user = find_user(params[:id])
         not_found!('User') unless user
 
-        events = EventsFinder.new(params.merge(source: user, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(user)
 
         present_events(events)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     params do
@@ -106,13 +89,12 @@ module API
         use :event_filter_params
         use :sort_params
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       get ":id/events" do
-        events = EventsFinder.new(params.merge(source: user_project, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(user_project)
 
         present_events(events)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end
