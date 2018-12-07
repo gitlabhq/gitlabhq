@@ -403,7 +403,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
         end
 
-        context 'with variables and user is a maintainer' do
+        context 'user is a maintainer' do
           before do
             project.add_maintainer(user)
 
@@ -429,7 +429,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           end
         end
 
-        context 'with variables and user is not a mantainer' do
+        context 'user is not a mantainer' do
           before do
             get_show(id: job.id, format: :json)
           end

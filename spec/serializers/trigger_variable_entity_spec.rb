@@ -14,6 +14,7 @@ describe TriggerVariableEntity do
   end
 
   it 'exposes the variable key' do
+    expect(subject).to include(:key)
   end
 
   context 'when user has access to the value' do
