@@ -134,3 +134,4 @@
 - delete_diff_files
 - detect_repository_languages
 - repository_cleanup
+- delete_stored_files

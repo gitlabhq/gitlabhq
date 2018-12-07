@@ -82,3 +82,4 @@
   - [detect_repository_languages, 1]
   - [auto_devops, 2]
   - [repository_cleanup, 1]
+  - [delete_stored_files, 1]

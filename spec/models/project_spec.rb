@@ -3898,7 +3898,7 @@ describe Project do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', true do
+    it_behaves_like 'model with uploads', true do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
