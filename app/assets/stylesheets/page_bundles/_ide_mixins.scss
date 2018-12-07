@@ -1,0 +1,18 @@
+@mixin ide-trace-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: -$grid-size;
+  margin-bottom: -$grid-size;
+
+  &.build-page .top-bar {
+    top: 0;
+    height: auto;
+    font-size: 12px;
+    border-top-right-radius: $border-radius-default;
+  }
+
+  .top-bar {
+    margin-left: -$gl-padding;
+  }
+}
