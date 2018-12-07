@@ -1445,6 +1445,9 @@ msgstr ""
 msgid "ClusterIntegration|Cert-Manager"
 msgstr ""
 
+msgid "ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up-to-date."
+msgstr ""
+
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
@@ -1557,6 +1560,12 @@ msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
 msgstr ""
 
 msgid "ClusterIntegration|Integration status"
+msgstr ""
+
+msgid "ClusterIntegration|Issuer Email"
+msgstr ""
+
+msgid "ClusterIntegration|Issuers represent a certificate authority. You must provide an email address for your Issuer. "
 msgstr ""
 
 msgid "ClusterIntegration|Jupyter Hostname"
@@ -1776,9 +1785,6 @@ msgid "ClusterIntegration|Zone"
 msgstr ""
 
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates are valid and up to date."
 msgstr ""
 
 msgid "ClusterIntegration|check the pricing here"
