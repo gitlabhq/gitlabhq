@@ -24,7 +24,7 @@
     }
   }
 
-  table {
+  &:not(.use-csslab) table {
     @extend .table;
   }
 
