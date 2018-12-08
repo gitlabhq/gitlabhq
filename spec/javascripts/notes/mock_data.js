@@ -305,6 +305,7 @@ export const discussionMock = {
   ],
   individual_note: false,
   resolvable: true,
+  active: true,
 };
 
 export const loggedOutnoteableData = {
@@ -1173,6 +1174,7 @@ export const discussion1 = {
   id: 'abc1',
   resolvable: true,
   resolved: false,
+  active: true,
   diff_file: {
     file_path: 'about.md',
   },
@@ -1209,6 +1211,7 @@ export const discussion2 = {
   id: 'abc2',
   resolvable: true,
   resolved: false,
+  active: true,
   diff_file: {
     file_path: 'README.md',
   },
@@ -1226,6 +1229,7 @@ export const discussion2 = {
 export const discussion3 = {
   id: 'abc3',
   resolvable: true,
+  active: true,
   resolved: false,
   diff_file: {
     file_path: 'README.md',

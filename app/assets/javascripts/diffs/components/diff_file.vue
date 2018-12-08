@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { __, sprintf } from '~/locale';
 import createFlash from '~/flash';
 import { GlLoadingIcon } from '@gitlab/ui';
+import eventHub from '../../notes/event_hub';
 import DiffFileHeader from './diff_file_header.vue';
 import DiffContent from './diff_content.vue';
 
@@ -74,6 +75,9 @@ export default {
         this.handleLoadCollapsedDiff();
       }
     },
+  },
+  created() {
+    eventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.handleLoadCollapsedDiff);
   },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),

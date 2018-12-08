@@ -22,6 +22,7 @@ export default {
       if (isDiscussion && isInMRPage()) {
         noteData.resolvable = note.resolvable;
         noteData.resolved = false;
+        noteData.active = true;
         noteData.resolve_path = note.resolve_path;
         noteData.resolve_with_issue_path = note.resolve_with_issue_path;
         noteData.diff_discussion = false;
