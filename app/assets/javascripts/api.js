@@ -21,7 +21,9 @@ const Api = {
   projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
   projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
   usersPath: '/api/:version/users.json',
-  userStatusPath: '/api/:version/user/status',
+  userPath: '/api/:version/users/:id',
+  userStatusPath: '/api/:version/users/:id/status',
+  userPostStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
@@ -254,6 +256,20 @@ const Api = {
     });
   },
 
+  user(id, options) {
+    const url = Api.buildUrl(this.userPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url, {
+      params: options,
+    });
+  },
+
+  userStatus(id, options) {
+    const url = Api.buildUrl(this.userStatusPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url, {
+      params: options,
+    });
+  },
+
   branches(id, query = '', options = {}) {
     const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
 
@@ -276,7 +292,7 @@ const Api = {
   },
 
   postUserStatus({ emoji, message }) {
-    const url = Api.buildUrl(this.userStatusPath);
+    const url = Api.buildUrl(this.userPostStatusPath);
 
     return axios.put(url, {
       emoji,

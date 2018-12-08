@@ -97,6 +97,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{bio} at %{organization}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 

@@ -172,6 +172,7 @@ $theme-light-red-700: #a62e21;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$shadow-color: rgba($black, 0.1);
 $almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
