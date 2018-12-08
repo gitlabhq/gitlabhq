@@ -17,7 +17,13 @@ import { __ } from '~/locale';
 
 let eTagPoll;
 
-export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
+export const expandDiscussion = ({ commit, dispatch }, data) => {
+  if (data.discussionId) {
+    dispatch('diffs/renderFileForDiscussionId', data.discussionId, { root: true });
+  }
+
+  commit(types.EXPAND_DISCUSSION, data);
+};
 
 export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
 

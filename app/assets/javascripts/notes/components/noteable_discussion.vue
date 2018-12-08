@@ -91,6 +91,7 @@ export default {
       'nextUnresolvedDiscussionId',
       'unresolvedDiscussionsCount',
       'hasUnresolvedDiscussions',
+      'showJumpToNextDiscussion',
     ]),
     author() {
       return this.initialDiscussion.author;
@@ -130,6 +131,12 @@ export default {
     },
     resolvedText() {
       return this.discussion.resolved_by_push ? __('Automatically resolved') : __('Resolved');
+    },
+    shouldShowJumpToNextDiscussion() {
+      return this.showJumpToNextDiscussion(
+        this.discussion.id,
+        this.discussionsByDiffOrder ? 'diff' : 'discussion',
+      );
     },
     shouldRenderDiffs() {
       return this.discussion.diff_discussion && this.renderDiffFile;
@@ -441,7 +448,7 @@ Please check your network connection and try again.`;
                           <icon name="issue-new" />
                         </a>
                       </div>
-                      <div v-if="hasUnresolvedDiscussions" class="btn-group" role="group">
+                      <div v-if="shouldShowJumpToNextDiscussion" class="btn-group" role="group">
                         <button
                           v-gl-tooltip
                           class="btn btn-default discussion-next-btn"
