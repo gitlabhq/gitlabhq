@@ -26,7 +26,7 @@
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
 .prepend-top-default.append-bottom-default
-  .wiki
+  .wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
     = render_wiki_content(@page, legacy_render_context(params))
 
 = render 'sidebar'
