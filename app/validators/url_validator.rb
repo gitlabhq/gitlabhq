@@ -69,6 +69,7 @@ class UrlValidator < ActiveModel::EachValidator
       ports: [],
       allow_localhost: true,
       allow_local_network: true,
+      ascii_only: false,
       enforce_user: false
     }
   end
