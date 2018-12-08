@@ -14,6 +14,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
+      origin_ref: 'master',
       seeds_block: nil)
   end
 
@@ -106,6 +107,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       Gitlab::Ci::Pipeline::Chain::Command.new(
         project: project,
         current_user: user,
+        origin_ref: 'master',
         seeds_block: seeds_block)
     end
 

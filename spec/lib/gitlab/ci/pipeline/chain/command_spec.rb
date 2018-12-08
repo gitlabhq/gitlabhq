@@ -182,4 +182,24 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#ambiguous_ref' do
+    let(:project) { create(:project, :repository) }
+    let(:command) { described_class.new(project: project, origin_ref: 'ref') }
+
+    subject { command.ambiguous_ref? }
+
+    context 'when ref is not ambiguous' do
+      it { is_expected. to eq(false) }
+    end
+
+    context 'when ref is ambiguous' do
+      before do
+        project.repository.add_tag(project.creator, 'ref', 'master')
+        project.repository.add_branch(project.creator, 'ref', 'master')
+      end
+
+      it { is_expected. to eq(true) }
+    end
+  end
 end
