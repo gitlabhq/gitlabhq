@@ -389,7 +389,7 @@ module Ci
     end
 
     def branch?
-      !tag? && !merge_request?
+      super && !merge_request?
     end
 
     def stuck?
@@ -721,14 +721,10 @@ module Ci
     end
 
     def git_ref
-      if branch?
+      if merge_request?
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif merge_request?
-        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif tag?
-        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
       else
-        raise ArgumentError, 'Invalid pipeline type!'
+        super
       end
     end
 
