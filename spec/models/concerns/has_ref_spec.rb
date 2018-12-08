@@ -4,13 +4,13 @@ require 'spec_helper'
 
 describe HasRef do
   describe '#branch?' do
-    let(:pipeline) { create(:ci_pipeline) }
+    let(:build) { create(:ci_build) }
 
-    subject { pipeline.branch? }
+    subject { build.branch? }
 
     context 'is not a tag' do
       before do
-        pipeline.tag = false
+        build.tag = false
       end
 
       it 'return true when tag is set to false' do
@@ -20,7 +20,7 @@ describe HasRef do
 
     context 'is not a tag' do
       before do
-        pipeline.tag = true
+        build.tag = true
       end
 
       it 'return false when tag is set to true' do
@@ -30,10 +30,10 @@ describe HasRef do
   end
 
   describe '#git_ref' do
-    subject { pipeline.git_ref }
+    subject { build.git_ref }
 
     context 'when tag is true' do
-      let(:pipeline) { create(:ci_pipeline, tag: true) }
+      let(:build) { create(:ci_build, tag: true) }
 
       it 'returns a tag ref' do
         is_expected.to start_with(Gitlab::Git::TAG_REF_PREFIX)
@@ -41,7 +41,7 @@ describe HasRef do
     end
 
     context 'when tag is false' do
-      let(:pipeline) { create(:ci_pipeline, tag: false) }
+      let(:build) { create(:ci_build, tag: false) }
 
       it 'returns a branch ref' do
         is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)
@@ -49,7 +49,7 @@ describe HasRef do
     end
 
     context 'when tag is nil' do
-      let(:pipeline) { create(:ci_pipeline, tag: nil) }
+      let(:build) { create(:ci_build, tag: nil) }
 
       it 'returns a branch ref' do
         is_expected.to start_with(Gitlab::Git::BRANCH_REF_PREFIX)
