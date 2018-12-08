@@ -35,6 +35,11 @@
 @import "pages/**/*";
 
 /*
+ * Component specific styles, will be moved to gitlab-ui
+ */
+@import "components/**/*";
+
+/*
  * Code highlight
  */
 @import "highlight/dark";

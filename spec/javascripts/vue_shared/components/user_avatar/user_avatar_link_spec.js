@@ -74,9 +74,7 @@ describe('User Avatar Link Component', function() {
 
   describe('username', function() {
     it('should not render avatar image tooltip', function() {
-      expect(
-        this.userAvatarLink.$el.querySelector('.js-user-avatar-image-toolip').innerText.trim(),
-      ).toEqual('');
+      expect(this.userAvatarLink.$el.querySelector('.js-user-avatar-image-toolip')).toBeNull();
     });
 
     it('should render username prop in <span>', function() {
