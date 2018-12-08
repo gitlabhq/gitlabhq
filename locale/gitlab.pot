@@ -855,6 +855,9 @@ msgstr ""
 msgid "Available specific runners"
 msgstr ""
 
+msgid "Avatar for %{assigneeName}"
+msgstr ""
+
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -2924,6 +2927,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Expired %{expiredOn}"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
@@ -6288,6 +6294,12 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Started"
+msgstr ""
+
+msgid "Started %{startsIn}"
+msgstr ""
+
+msgid "Starts %{startsIn}"
 msgstr ""
 
 msgid "Starts at (UTC)"
