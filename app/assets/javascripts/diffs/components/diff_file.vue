@@ -176,6 +176,9 @@ export default {
       {{ __('This source diff could not be displayed because it is too large.') }}
       <span v-html="viewBlobLink"></span>
     </div>
+    <div v-if="file.empty" class="nothing-here-block">
+        {{ __('Empty file') }}
+    </div>
   </div>
 </template>
 
