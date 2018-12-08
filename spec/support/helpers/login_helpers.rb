@@ -47,7 +47,7 @@ module LoginHelpers
   end
 
   def gitlab_sign_in_via(provider, user, uid, saml_response = nil)
-    mock_auth_hash(provider, uid, user.email, saml_response)
+    mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
     visit new_user_session_path
     click_link provider
   end
@@ -87,7 +87,12 @@ module LoginHelpers
     click_link "oauth-login-#{provider}"
   end
 
-  def mock_auth_hash(provider, uid, email, saml_response = nil)
+  def mock_auth_hash_with_saml_xml(provider, uid, email, saml_response)
+    response_object = { document: saml_xml(saml_response) }
+    mock_auth_hash(provider, uid, email, response_object: response_object)
+  end
+
+  def mock_auth_hash(provider, uid, email, response_object: nil)
     # The mock_auth configuration allows you to set per-provider (or default)
     # authentication hashes to return during integration testing.
     OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
@@ -110,9 +115,7 @@ module LoginHelpers
             image: 'mock_user_thumbnail_url'
           }
         },
-        response_object: {
-          document: saml_xml(saml_response)
-        }
+        response_object: response_object
       }
     })
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]

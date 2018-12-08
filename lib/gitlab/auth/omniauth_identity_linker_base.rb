@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def link
-        save if identity.new_record?
+        save if unlinked?
       end
 
       def changed?
@@ -33,6 +33,10 @@ module Gitlab
 
       def save
         @changed = identity.save
+      end
+
+      def unlinked?
+        identity.new_record?
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
