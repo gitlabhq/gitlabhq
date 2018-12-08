@@ -26,7 +26,9 @@ import actions, {
   toggleTreeOpen,
   scrollToFile,
   toggleShowTreeList,
+  renderFileForDiscussionId,
 } from '~/diffs/store/actions';
+import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import mockDiffFile from 'spec/diffs/mock_data/diff_file';
@@ -733,6 +735,65 @@ describe('DiffsStoreActions', () => {
       toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
+    });
+  });
+
+  describe('renderFileForDiscussionId', () => {
+    const rootState = {
+      notes: {
+        discussions: [
+          {
+            id: '123',
+            diff_file: {
+              file_hash: 'HASH',
+            },
+          },
+          {
+            id: '456',
+            diff_file: {
+              file_hash: 'HASH',
+            },
+          },
+        ],
+      },
+    };
+    let commit;
+    let $emit;
+    let scrollToElement;
+    const state = ({ collapsed, renderIt }) => ({
+      diffFiles: [
+        {
+          file_hash: 'HASH',
+          collapsed,
+          renderIt,
+        },
+      ],
+    });
+
+    beforeEach(() => {
+      commit = jasmine.createSpy('commit');
+      scrollToElement = spyOnDependency(actions, 'scrollToElement').and.stub();
+      $emit = spyOn(eventHub, '$emit');
+    });
+
+    it('renders and expands file for the given discussion id', () => {
+      const localState = state({ collapsed: true, renderIt: false });
+
+      renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
+
+      expect(commit).toHaveBeenCalledWith('RENDER_FILE', localState.diffFiles[0]);
+      expect($emit).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).toHaveBeenCalledTimes(1);
+    });
+
+    it('jumps to discussion on already rendered and expanded file', () => {
+      const localState = state({ collapsed: false, renderIt: true });
+
+      renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
+
+      expect(commit).not.toHaveBeenCalled();
+      expect($emit).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).not.toHaveBeenCalled();
     });
   });
 });

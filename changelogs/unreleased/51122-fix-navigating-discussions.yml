@@ -1,0 +1,5 @@
+---
+title: Fix navigating by unresolved discussions on Merge Request page
+merge_request: 22789
+author:
+type: fixed
