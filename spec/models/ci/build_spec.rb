@@ -2619,7 +2619,7 @@ describe Ci::Build do
 
           allow_any_instance_of(Project)
             .to receive(:ci_variables_for)
-            .with(ref: 'master', environment: nil) do
+            .with(ref: 'refs/heads/master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
 
