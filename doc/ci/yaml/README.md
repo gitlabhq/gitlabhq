@@ -571,7 +571,7 @@ osx job:
 
 `allow_failure` is used when you want to allow a job to fail without impacting
 the rest of the CI suite. Failed jobs don't contribute to the commit status.
-The default value is `false`.
+The default value is `false`, except for [manual](#whenmanual) jobs.
 
 When enabled and the job fails, the pipeline will be successful/green for all
 intents and purposes, but a "CI build passed with warnings" message  will be
