@@ -914,6 +914,7 @@
     padding: 0;
     width: (2px * $image-comment-cursor-left-offset);
     height: (2px * $image-comment-cursor-top-offset);
+    color: $blue-400;
     // center the indicator to match the top left click region
     margin-top: (-1px * $image-comment-cursor-top-offset) + 2;
     margin-left: (-1px * $image-comment-cursor-left-offset) + 1;
