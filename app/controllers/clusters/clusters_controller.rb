@@ -181,30 +181,15 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def gcp_cluster
-    @gcp_cluster = new_cluster do |cluster|
-      cluster.build_provider_gcp
-    end
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_provider_gcp
+    @gcp_cluster = cluster.present(current_user: current_user)
   end
 
   def user_cluster
-    @user_cluster = new_cluster do |cluster|
-      cluster.build_platform_kubernetes
-    end
-  end
-
-  def new_cluster
-    ::Clusters::Cluster.new.tap do |cluster|
-      yield cluster
-
-      case clusterable.subject
-      when ::Project
-        cluster.cluster_type = :project_type
-      when ::Group
-        cluster.cluster_type = :group_type
-      else
-        raise NotImplementedError
-      end
-    end.present(current_user: current_user)
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_platform_kubernetes
+    @user_cluster = cluster.present(current_user: current_user)
   end
 
   def validate_gcp_token
