@@ -28,8 +28,8 @@ describe Notify do
   end
 
   def have_referable_subject(referable, reply: false)
-    prefix = referable.project ? "#{referable.project.name} | " : ''
-    prefix.prepend('Re: ') if reply
+    prefix = (referable.project ? "#{referable.project.name} | " : '').freeze
+    prefix = "Re: #{prefix}" if reply
 
     suffix = "#{referable.title} (#{referable.to_reference})"
 
