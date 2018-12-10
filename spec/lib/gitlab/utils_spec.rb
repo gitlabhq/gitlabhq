@@ -44,6 +44,12 @@ describe Gitlab::Utils do
     end
   end
 
+  describe '.nlbr' do
+    it 'replaces new lines with <br>' do
+      expect(described_class.nlbr("<b>hello</b>\n<i>world</i>".freeze)).to eq("hello<br>world")
+    end
+  end
+
   describe '.remove_line_breaks' do
     using RSpec::Parameterized::TableSyntax
 
