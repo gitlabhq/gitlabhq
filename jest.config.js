@@ -24,5 +24,4 @@ module.exports = {
   cacheDirectory: '<rootDir>/tmp/cache/jest',
   modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
   reporters,
-  rootDir: '..', // necessary because this file is in the config/ subdirectory
 };

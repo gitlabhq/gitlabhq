@@ -6,4 +6,4 @@ plugins:
 settings:
   import/resolver:
     jest:
-      jestConfigFile: "config/jest.config.js"
+      jestConfigFile: "jest.config.js"
