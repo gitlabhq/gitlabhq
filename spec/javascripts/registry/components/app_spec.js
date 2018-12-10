@@ -1,37 +1,30 @@
-import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Vue from 'vue';
 import registry from '~/registry/components/app.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { TEST_HOST } from 'spec/test_constants';
 import { reposServerResponse } from '../mock_data';
 
 describe('Registry List', () => {
+  const Component = Vue.extend(registry);
   let vm;
-  let Component;
+  let mock;
 
   beforeEach(() => {
-    Component = Vue.extend(registry);
+    mock = new MockAdapter(axios);
   });
 
   afterEach(() => {
+    mock.restore();
     vm.$destroy();
   });
 
   describe('with data', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify(reposServerResponse), {
-          status: 200,
-        }),
-      );
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-      vm = mountComponent(Component, { endpoint: 'foo' });
-    });
+      mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, reposServerResponse);
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
     });
 
     it('should render a list of repos', done => {
@@ -64,9 +57,9 @@ describe('Registry List', () => {
           Vue.nextTick(() => {
             vm.$el.querySelector('.js-toggle-repo').click();
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.js-toggle-repo i').className).toEqual(
-                'fa fa-chevron-up',
-              );
+              expect(
+                vm.$el.querySelector('.js-toggle-repo use').getAttribute('xlink:href'),
+              ).toContain('angle-up');
               done();
             });
           });
@@ -76,21 +69,10 @@ describe('Registry List', () => {
   });
 
   describe('without data', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify([]), {
-          status: 200,
-        }),
-      );
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-      vm = mountComponent(Component, { endpoint: 'foo' });
-    });
+      mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, []);
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
     });
 
     it('should render empty message', done => {
@@ -109,21 +91,10 @@ describe('Registry List', () => {
   });
 
   describe('while loading data', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify(reposServerResponse), {
-          status: 200,
-        }),
-      );
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-      vm = mountComponent(Component, { endpoint: 'foo' });
-    });
+      mock.onGet(`${TEST_HOST}/foo`).replyOnce(200, []);
 
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      vm = mountComponent(Component, { endpoint: `${TEST_HOST}/foo` });
     });
 
     it('should render a loading spinner', done => {

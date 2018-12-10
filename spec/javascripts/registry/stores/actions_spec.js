@@ -1,42 +1,34 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-import _ from 'underscore';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import * as actions from '~/registry/stores/actions';
 import * as types from '~/registry/stores/mutation_types';
+import state from '~/registry/stores/state';
+import { TEST_HOST } from 'spec/test_constants';
 import testAction from '../../helpers/vuex_action_helper';
 import {
-  defaultState,
   reposServerResponse,
   registryServerResponse,
   parsedReposServerResponse,
 } from '../mock_data';
 
-Vue.use(VueResource);
-
 describe('Actions Registry Store', () => {
-  let interceptor;
   let mockedState;
+  let mock;
 
   beforeEach(() => {
-    mockedState = defaultState;
+    mockedState = state();
+    mockedState.endpoint = `${TEST_HOST}/endpoint.json`;
+    mock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   describe('server requests', () => {
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
-
     describe('fetchRepos', () => {
       beforeEach(() => {
-        interceptor = (request, next) => {
-          next(
-            request.respondWith(JSON.stringify(reposServerResponse), {
-              status: 200,
-            }),
-          );
-        };
-
-        Vue.http.interceptors.push(interceptor);
+        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, reposServerResponse, {});
       });
 
       it('should set receveived repos', done => {
@@ -56,23 +48,15 @@ describe('Actions Registry Store', () => {
     });
 
     describe('fetchList', () => {
+      let repo;
       beforeEach(() => {
-        interceptor = (request, next) => {
-          next(
-            request.respondWith(JSON.stringify(registryServerResponse), {
-              status: 200,
-            }),
-          );
-        };
+        mockedState.repos = parsedReposServerResponse;
+        [, repo] = mockedState.repos;
 
-        Vue.http.interceptors.push(interceptor);
+        mock.onGet(repo.tagsPath).replyOnce(200, registryServerResponse, {});
       });
 
       it('should set received list', done => {
-        mockedState.repos = parsedReposServerResponse;
-
-        const repo = mockedState.repos[1];
-
         testAction(
           actions.fetchList,
           { repo },
