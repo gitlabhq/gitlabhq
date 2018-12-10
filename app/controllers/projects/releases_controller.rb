@@ -4,9 +4,13 @@ class Projects::ReleasesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :authorize_push_code!
-  before_action :tag
-  before_action :release
+  before_action :authorize_push_code!, except: [:index]
+  before_action :tag, except: [:index]
+  before_action :release, except: [:index]
+  before_action :check_releases_page_feature_flag, only: [:index]
+
+  def index
+  end
 
   def edit
   end
@@ -25,6 +29,12 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   private
+
+  def check_releases_page_feature_flag
+    return render_404 unless Feature.enabled?(:releases_page)
+
+    push_frontend_feature_flag(:releases_page)
+  end
 
   def tag
     @tag ||= @repository.find_tag(params[:tag_id])

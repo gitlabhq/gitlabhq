@@ -29,6 +29,11 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
+          - if project_nav_tab?(:releases) && Feature.enabled?(:releases_page)
+            = nav_link(controller: :releases) do
+              = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
+                %span= _('Releases')
+
           = render_if_exists 'projects/sidebar/security_dashboard'
 
           - if can?(current_user, :read_cycle_analytics, @project)
@@ -62,7 +67,7 @@
               = link_to project_branches_path(@project) do
                 = _('Branches')
 
-            = nav_link(controller: [:tags, :releases]) do
+            = nav_link(controller: [:tags]) do
               = link_to project_tags_path(@project) do
                 = _('Tags')
 
