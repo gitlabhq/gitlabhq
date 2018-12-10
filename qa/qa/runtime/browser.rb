@@ -40,22 +40,23 @@ module QA
 
         return if Capybara.drivers.include?(:chrome)
 
-        Capybara.register_driver :chrome do |app|
-          capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-            # This enables access to logs with `page.driver.manage.get_log(:browser)`
-            loggingPrefs: {
-              browser: "ALL",
-              client: "ALL",
-              driver: "ALL",
-              server: "ALL"
-            }
-          )
+        Capybara.register_driver QA::Runtime::Env.browser do |app|
+          capabilities = Selenium::WebDriver::Remote::Capabilities.send(QA::Runtime::Env.browser,
+             # This enables access to logs with `page.driver.manage.get_log(:browser)`
+             loggingPrefs: {
+               browser: "ALL",
+               client: "ALL",
+               driver: "ALL",
+               server: "ALL"
+             })
 
           if QA::Runtime::Env.accept_insecure_certs?
             capabilities['acceptInsecureCerts'] = true
           end
 
-          options = Selenium::WebDriver::Chrome::Options.new
+          # QA::Runtime::Env.browser.capitalize will work for every driver type except PhantomJS.
+          # We will have no use to use PhantomJS so this shouldn't be a problem.
+          options = Selenium::WebDriver.const_get(QA::Runtime::Env.browser.capitalize)::Options.new
           options.add_argument("window-size=1240,1680")
 
           # Chrome won't work properly in a Docker container in sandbox mode
@@ -80,12 +81,18 @@ module QA
           # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
           options.add_argument("disable-dev-shm-usage") if QA::Runtime::Env.running_in_ci?
 
-          Capybara::Selenium::Driver.new(
-            app,
-            browser: :chrome,
+          selenium_options = {
+            browser: QA::Runtime::Env.browser,
             clear_local_storage: true,
             desired_capabilities: capabilities,
             options: options
+          }
+
+          selenium_options[:url] = QA::Runtime::Env.remote_grid if QA::Runtime::Env.remote_grid
+
+          Capybara::Selenium::Driver.new(
+            app,
+            selenium_options
           )
         end
 
@@ -93,7 +100,7 @@ module QA
         Capybara::Screenshot.prune_strategy = :keep_last_run
 
         # From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
-        Capybara::Screenshot.register_driver(:chrome) do |driver, path|
+        Capybara::Screenshot.register_driver(QA::Runtime::Env.browser) do |driver, path|
           driver.browser.save_screenshot(path)
         end
 
@@ -102,8 +109,8 @@ module QA
         end
 
         Capybara.configure do |config|
-          config.default_driver = :chrome
-          config.javascript_driver = :chrome
+          config.default_driver = QA::Runtime::Env.browser
+          config.javascript_driver = QA::Runtime::Env.browser
           config.default_max_wait_time = 10
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = ::File.expand_path('../../tmp', __dir__)
