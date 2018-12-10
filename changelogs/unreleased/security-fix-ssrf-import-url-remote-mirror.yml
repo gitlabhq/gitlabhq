@@ -1,0 +1,5 @@
+---
+title: Fix SSRF with import_url and remote mirror url
+merge_request:
+author:
+type: security

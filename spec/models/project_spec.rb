@@ -314,6 +314,13 @@ describe Project do
         expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
       end
 
+      it 'does not allow import_url pointing to the local network' do
+        project = build(:project, import_url: 'https://192.168.1.1')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
+      end
+
       it "does not allow import_url with invalid ports for new projects" do
         project = build(:project, import_url: 'http://github.com:25/t.git')
 
