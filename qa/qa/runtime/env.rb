@@ -30,6 +30,11 @@ module QA
         enabled?(ENV['CHROME_HEADLESS'])
       end
 
+      # set to 'true' to have Chrome use a fixed profile directory
+      def reuse_chrome_profile?
+        enabled?(ENV['CHROME_REUSE_PROFILE'], default: false)
+      end
+
       def accept_insecure_certs?
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end

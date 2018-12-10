@@ -70,6 +70,13 @@ module QA
             options.add_argument("disable-gpu")
           end
 
+          # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.
+          # Useful to speed up local QA.
+          if QA::Runtime::Env.reuse_chrome_profile?
+            qa_profile_dir = ::File.expand_path('../../tmp/qa-profile', __dir__)
+            options.add_argument("user-data-dir=#{qa_profile_dir}")
+          end
+
           # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
           options.add_argument("disable-dev-shm-usage") if QA::Runtime::Env.running_in_ci?
 
