@@ -405,9 +405,6 @@ msgstr ""
 msgid "Admin Overview"
 msgstr ""
 
-msgid "Admin area"
-msgstr ""
-
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 

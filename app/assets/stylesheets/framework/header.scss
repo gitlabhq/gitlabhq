@@ -90,12 +90,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        .tanuki-logo {
-          @include media-breakpoint-up(sm) {
-            margin-right: 8px;
-          }
-        }
       }
 
       .project-item-select {
