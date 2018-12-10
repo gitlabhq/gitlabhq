@@ -1925,7 +1925,7 @@ describe Ci::Build do
 
     context 'when token is empty' do
       before do
-        build.token = nil
+        build.update_columns(token: nil, token_encrypted: nil)
       end
 
       it { is_expected.to be_nil}
@@ -2141,7 +2141,7 @@ describe Ci::Build do
       end
 
       before do
-        build.token = 'my-token'
+        build.set_token('my-token')
         build.yaml_variables = []
       end
 

@@ -351,21 +351,50 @@ describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   context 'group context' do
-    let(:context) { { project: nil, group: create(:group) } }
-    let(:milestone) { create(:milestone, project: project) }
+    let(:group) { create(:group) }
+    let(:context) { { project: nil, group: group } }
 
-    it 'links to a valid reference' do
-      reference = "#{project.full_path}%#{milestone.iid}"
+    context 'when project milestone' do
+      let(:milestone) { create(:milestone, project: project) }
 
-      result = reference_filter("See #{reference}", context)
+      it 'links to a valid reference' do
+        reference = "#{project.full_path}%#{milestone.iid}"
 
-      expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+        result = reference_filter("See #{reference}", context)
+
+        expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+      end
+
+      it 'ignores internal references' do
+        exp = act = "See %#{milestone.iid}"
+
+        expect(reference_filter(act, context).to_html).to eq exp
+      end
     end
 
-    it 'ignores internal references' do
-      exp = act = "See %#{milestone.iid}"
+    context 'when group milestone' do
+      let(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
 
-      expect(reference_filter(act, context).to_html).to eq exp
+      context 'for subgroups', :nested_groups do
+        let(:sub_group) { create(:group, parent: group) }
+        let(:sub_group_milestone) { create(:milestone, title: 'sub_group_milestone', group: sub_group) }
+
+        it 'links to a valid reference of subgroup and group milestones' do
+          [group_milestone, sub_group_milestone].each do |milestone|
+            reference = "%#{milestone.title}"
+
+            result = reference_filter("See #{reference}", { project: nil, group: sub_group })
+
+            expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+          end
+        end
+      end
+
+      it 'ignores internal references' do
+        exp = act = "See %#{group_milestone.iid}"
+
+        expect(reference_filter(act, context).to_html).to eq exp
+      end
     end
   end
 

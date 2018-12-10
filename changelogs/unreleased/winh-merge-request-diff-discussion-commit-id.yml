@@ -1,0 +1,5 @@
+---
+title: Pass commit when posting diff discussions
+merge_request: 23371
+author:
+type: fixed

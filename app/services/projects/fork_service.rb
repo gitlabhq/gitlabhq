@@ -54,6 +54,8 @@ module Projects
         new_params[:avatar] = @project.avatar
       end
 
+      new_params.merge!(@project.object_pool_params)
+
       new_project = CreateService.new(current_user, new_params).execute
       return new_project unless new_project.persisted?
 

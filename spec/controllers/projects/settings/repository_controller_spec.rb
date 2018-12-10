@@ -19,12 +19,14 @@ describe Projects::Settings::RepositoryController do
   end
 
   describe 'PUT cleanup' do
+    before do
+      allow(RepositoryCleanupWorker).to receive(:perform_async)
+    end
+
     def do_put!
       object_map = fixture_file_upload('spec/fixtures/bfg_object_map.txt')
 
-      Sidekiq::Testing.fake! do
-        put :cleanup, namespace_id: project.namespace, project_id: project, project: { object_map: object_map }
-      end
+      put :cleanup, namespace_id: project.namespace, project_id: project, project: { object_map: object_map }
     end
 
     context 'feature enabled' do
@@ -34,7 +36,7 @@ describe Projects::Settings::RepositoryController do
         do_put!
 
         expect(response).to redirect_to project_settings_repository_path(project)
-        expect(RepositoryCleanupWorker.jobs.count).to eq(1)
+        expect(RepositoryCleanupWorker).to have_received(:perform_async).once
       end
     end
 

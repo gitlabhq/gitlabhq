@@ -12,7 +12,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         "queue_namespace" => "cronjob",
         "jid" => "da883554ee4fe414012f5f42",
         "created_at" => timestamp.to_f,
-        "enqueued_at" => timestamp.to_f
+        "enqueued_at" => timestamp.to_f,
+        "correlation_id" => 'cid'
       }
     end
     let(:logger) { double() }

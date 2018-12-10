@@ -20,7 +20,7 @@ module Clusters
           end
 
           if application.has_attribute?(:email)
-            application.email = current_user.email
+            application.email = params[:email]
           end
 
           if application.respond_to?(:oauth_application)

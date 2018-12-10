@@ -5,7 +5,6 @@ require_relative '../../../config/initializers/sentry'
 describe API::Helpers do
   include API::APIGuard::HelperMethods
   include described_class
-  include SentryHelper
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -224,8 +223,15 @@ describe API::Helpers do
 
   describe '.handle_api_exception' do
     before do
-      allow_any_instance_of(self.class).to receive(:sentry_enabled?).and_return(true)
       allow_any_instance_of(self.class).to receive(:rack_response)
+      allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
+
+      stub_application_setting(
+        sentry_enabled: true,
+        sentry_dsn: "dummy://12345:67890@sentry.localdomain/sentry/42"
+      )
+      configure_sentry
+      Raven.client.configuration.encoding = 'json'
     end
 
     it 'does not report a MethodNotAllowed exception to Sentry' do
@@ -241,10 +247,13 @@ describe API::Helpers do
       exception = RuntimeError.new('test error')
       allow(exception).to receive(:backtrace).and_return(caller)
 
-      expect_any_instance_of(self.class).to receive(:sentry_context)
-      expect(Raven).to receive(:capture_exception).with(exception, extra: {})
+      expect(Raven).to receive(:capture_exception).with(exception, tags: {
+        correlation_id: 'new-correlation-id'
+      }, extra: {})
 
-      handle_api_exception(exception)
+      Gitlab::CorrelationId.use_id('new-correlation-id') do
+        handle_api_exception(exception)
+      end
     end
 
     context 'with a personal access token given' do
@@ -255,7 +264,6 @@ describe API::Helpers do
         # We need to stub at a lower level than #sentry_enabled? otherwise
         # Sentry is not enabled when the request below is made, and the test
         # would pass even without the fix
-        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
         expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
 
         get api('/projects', personal_access_token: token)
@@ -272,17 +280,7 @@ describe API::Helpers do
       # Sentry events are an array of the form [auth_header, data, options]
       let(:event_data) { Raven.client.transport.events.first[1] }
 
-      before do
-        stub_application_setting(
-          sentry_enabled: true,
-          sentry_dsn: "dummy://12345:67890@sentry.localdomain/sentry/42"
-        )
-        configure_sentry
-        Raven.client.configuration.encoding = 'json'
-      end
-
       it 'sends the params, excluding confidential values' do
-        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
         expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
 
         get api('/projects', user), password: 'dont_send_this', other_param: 'send_this'

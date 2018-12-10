@@ -85,13 +85,14 @@ module ButtonHelper
     dropdown_item_with_description('SSH', dropdown_description, href: append_url, data: { clone_type: 'ssh' })
   end
 
-  def dropdown_item_with_description(title, description, href: nil, data: nil)
+  def dropdown_item_with_description(title, description, href: nil, data: nil, default: false)
+    active_class = "is-active" if default
     button_content = content_tag(:strong, title, class: 'dropdown-menu-inner-title')
     button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
 
     content_tag (href ? :a : :span),
       (href ? button_content : title),
-      class: "#{title.downcase}-selector",
+      class: "#{title.downcase}-selector #{active_class}",
       href: (href if href),
       data: (data if data)
   end

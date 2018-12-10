@@ -8,13 +8,18 @@ describe 'Projects > Show > User manages notifications', :js do
     visit project_path(project)
   end
 
-  it 'changes the notification setting' do
+  def click_notifications_button
     first('.notifications-btn').click
+  end
+
+  it 'changes the notification setting' do
+    click_notifications_button
     click_link 'On mention'
 
-    page.within '#notifications-button' do
-      expect(page).to have_content 'On mention'
-    end
+    wait_for_requests
+
+    click_notifications_button
+    expect(find('.update-notification.is-active')).to have_content('On mention')
   end
 
   context 'custom notification settings' do
@@ -38,7 +43,7 @@ describe 'Projects > Show > User manages notifications', :js do
     end
 
     it 'shows notification settings checkbox' do
-      first('.notifications-btn').click
+      click_notifications_button
       page.find('a[data-notification-level="custom"]').click
 
       page.within('.custom-notifications-form') do

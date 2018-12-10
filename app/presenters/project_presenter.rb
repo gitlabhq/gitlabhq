@@ -6,27 +6,27 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
+  include IconsHelper
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
   presents :project
 
-  AnchorData = Struct.new(:enabled, :label, :link, :class_modifier)
+  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon)
   MAX_TAGS_TO_SHOW = 3
+
+  def statistic_icon(icon_name = 'plus-square-o')
+    sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
+  end
 
   def statistics_anchors(show_auto_devops_callout:)
     [
-      readme_anchor_data,
-      changelog_anchor_data,
-      contribution_guide_anchor_data,
-      files_anchor_data,
+      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      gitlab_ci_anchor_data,
-      autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
-      kubernetes_cluster_anchor_data
-    ].compact.select { |item| item.enabled }
+      files_anchor_data
+    ].compact.select(&:is_link)
   end
 
   def statistics_buttons(show_auto_devops_callout:)
@@ -37,27 +37,28 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data
-    ].compact.reject { |item| item.enabled }
+    ].compact.reject(&:is_link)
   end
 
   def empty_repo_statistics_anchors
     [
-      files_anchor_data,
+      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      autodevops_anchor_data,
-      kubernetes_cluster_anchor_data
-    ].compact.select { |item| item.enabled }
+      files_anchor_data
+    ].compact.select { |item| item.is_link }
   end
 
   def empty_repo_statistics_buttons
     [
       new_file_anchor_data,
       readme_anchor_data,
+      changelog_anchor_data,
+      contribution_guide_anchor_data,
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
-    ].compact.reject { |item| item.enabled }
+    ].compact.reject { |item| item.is_link }
   end
 
   def default_view
@@ -113,7 +114,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_contribution_guide_path
-    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
+    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add CONTRIBUTING')
   end
 
   def add_ci_yml_path
@@ -149,32 +150,52 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def files_anchor_data
     AnchorData.new(true,
-                   _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
+                   statistic_icon('doc-code') +
+                   _('%{strong_start}%{human_size}%{strong_end} Files').html_safe % {
+                     human_size: storage_counter(statistics.total_repository_size),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_tree_path(project))
   end
 
   def commits_anchor_data
     AnchorData.new(true,
-                   n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
+                   statistic_icon('commit') +
+                   n_('%{strong_start}%{commit_count}%{strong_end} Commit', '%{strong_start}%{commit_count}%{strong_end} Commits', statistics.commit_count).html_safe % {
+                     commit_count: number_with_delimiter(statistics.commit_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_commits_path(project, repository.root_ref))
   end
 
   def branches_anchor_data
     AnchorData.new(true,
-                   n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
+                   statistic_icon('branch') +
+                   n_('%{strong_start}%{branch_count}%{strong_end} Branch', '%{strong_start}%{branch_count}%{strong_end} Branches', repository.branch_count).html_safe % {
+                     branch_count: number_with_delimiter(repository.branch_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_branches_path(project))
   end
 
   def tags_anchor_data
     AnchorData.new(true,
-                   n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
+                   statistic_icon('label') +
+                   n_('%{strong_start}%{tag_count}%{strong_end} Tag', '%{strong_start}%{tag_count}%{strong_end} Tags', repository.tag_count).html_safe % {
+                     tag_count: number_with_delimiter(repository.tag_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
                    empty_repo? ? nil : project_tags_path(project))
   end
 
   def new_file_anchor_data
     if current_user && can_current_user_push_to_default_branch?
       AnchorData.new(false,
-                     _('New file'),
+                     statistic_icon + _('New file'),
                      project_new_blob_path(project, default_branch || 'master'),
                      'success')
     end
@@ -183,40 +204,45 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def readme_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
       AnchorData.new(false,
-                     _('Add Readme'),
+                     statistic_icon + _('Add README'),
                      add_readme_path)
     elsif repository.readme
-      AnchorData.new(true,
-                     _('Readme'),
-                     default_view != 'readme' ? readme_path : '#readme')
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('README'),
+                     default_view != 'readme' ? readme_path : '#readme',
+                    'default',
+                    'doc-text')
     end
   end
 
   def changelog_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
       AnchorData.new(false,
-                     _('Add Changelog'),
+                     statistic_icon + _('Add CHANGELOG'),
                      add_changelog_path)
     elsif repository.changelog.present?
-      AnchorData.new(true,
-                     _('Changelog'),
-                     changelog_path)
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CHANGELOG'),
+                     changelog_path,
+                    'default')
     end
   end
 
   def license_anchor_data
+    icon = statistic_icon('scale')
+
     if repository.license_blob.present?
       AnchorData.new(true,
-                     license_short_name,
+                     icon + content_tag(:strong, license_short_name, class: 'project-stat-value'),
                      license_path)
     else
       if current_user && can_current_user_push_to_default_branch?
-        AnchorData.new(false,
-                       _('Add license'),
+        AnchorData.new(true,
+                       content_tag(:span, icon + _('Add license'), class: 'add-license-link d-flex'),
                        add_license_path)
       else
-        AnchorData.new(false,
-                       _('No license. All rights reserved'),
+        AnchorData.new(true,
+                       icon + content_tag(:strong, _('No license. All rights reserved'), class: 'project-stat-value'),
                        nil)
       end
     end
@@ -225,22 +251,29 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def contribution_guide_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
       AnchorData.new(false,
-                     _('Add Contribution guide'),
+                     statistic_icon + _('Add CONTRIBUTING'),
                      add_contribution_guide_path)
     elsif repository.contribution_guide.present?
-      AnchorData.new(true,
-                     _('Contribution guide'),
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CONTRIBUTING'),
                      contribution_guide_path)
     end
   end
 
   def autodevops_anchor_data(show_auto_devops_callout: false)
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
-      AnchorData.new(auto_devops_enabled?,
-                     auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-                     project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+      if auto_devops_enabled?
+        AnchorData.new(false,
+                       statistic_icon('doc-text') + _('Auto DevOps enabled'),
+                       project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
+                       'default')
+      else
+        AnchorData.new(false,
+                       statistic_icon + _('Enable Auto DevOps'),
+                       project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+      end
     elsif auto_devops_enabled?
-      AnchorData.new(true,
+      AnchorData.new(false,
                      _('Auto DevOps enabled'),
                      nil)
     end
@@ -248,27 +281,32 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def kubernetes_cluster_anchor_data
     if current_user && can?(current_user, :create_cluster, project)
-      cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
       if clusters.empty?
-        cluster_link = new_project_cluster_path(project)
-      end
+        AnchorData.new(false,
+                       statistic_icon + _('Add Kubernetes cluster'),
+                       new_project_cluster_path(project))
+      else
+        cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
-      AnchorData.new(!clusters.empty?,
-                     clusters.empty? ? _('Add Kubernetes cluster') : _('Kubernetes configured'),
-                     cluster_link)
+        AnchorData.new(false,
+                       _('Kubernetes configured'),
+                       cluster_link,
+                      'default')
+      end
     end
   end
 
   def gitlab_ci_anchor_data
     if current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
       AnchorData.new(false,
-                     _('Set up CI/CD'),
+                     statistic_icon + _('Set up CI/CD'),
                      add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
-      AnchorData.new(true,
-                     _('CI/CD configuration'),
-                     ci_configuration_path)
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CI/CD configuration'),
+                     ci_configuration_path,
+                    'default')
     end
   end
 
