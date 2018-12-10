@@ -181,14 +181,20 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def gcp_cluster
-    @gcp_cluster = ::Clusters::Cluster.new.tap do |cluster|
+    @gcp_cluster = new_cluster do |cluster|
       cluster.build_provider_gcp
-    end.present(current_user: current_user)
+    end
   end
 
   def user_cluster
-    @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
+    @user_cluster = new_cluster do |cluster|
       cluster.build_platform_kubernetes
+    end
+  end
+
+  def new_cluster
+    ::Clusters::Cluster.new.tap do |cluster|
+      yield cluster
 
       case clusterable.subject
       when ::Project
