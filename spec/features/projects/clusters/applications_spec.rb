@@ -70,6 +70,44 @@ describe 'Clusters Applications', :js do
         end
       end
 
+      context 'when user installs Cert Manager' do
+        before do
+          allow(ClusterInstallAppWorker).to receive(:perform_async)
+          allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+          allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+
+          create(:clusters_applications_helm, :installed, cluster: cluster)
+
+          page.within('.js-cluster-application-row-cert_manager') do
+            click_button 'Install'
+          end
+        end
+
+        it 'shows status transition' do
+          def email_form_value
+            page.find('.js-email').value
+          end
+
+          page.within('.js-cluster-application-row-cert_manager') do
+            expect(email_form_value).to eq(cluster.user.email)
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+
+            page.find('.js-email').set("new_email@example.org")
+            Clusters::Cluster.last.application_cert_manager.make_installing!
+
+            expect(email_form_value).to eq('new_email@example.org')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+            Clusters::Cluster.last.application_cert_manager.make_installed!
+
+            expect(email_form_value).to eq('new_email@example.org')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+          end
+
+          expect(page).to have_content('Cert-Manager was successfully installed on your Kubernetes cluster')
+        end
+      end
+
       context 'when user installs Ingress' do
         context 'when user installs application: Ingress' do
           before do

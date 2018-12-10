@@ -1,5 +1,5 @@
 import { s__ } from '../../locale';
-import { INGRESS, JUPYTER, KNATIVE } from '../constants';
+import { INGRESS, JUPYTER, KNATIVE, CERT_MANAGER } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -30,6 +30,7 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
+          email: null,
         },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
@@ -103,6 +104,9 @@ export default class ClusterStore {
 
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
+      } else if (appId === CERT_MANAGER) {
+        this.state.applications.cert_manager.email =
+          this.state.applications.cert_manager.email || serverAppEntry.email;
       } else if (appId === JUPYTER) {
         this.state.applications.jupyter.hostname =
           serverAppEntry.hostname ||

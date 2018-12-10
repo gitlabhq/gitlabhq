@@ -10,7 +10,6 @@
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
-- cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
@@ -86,6 +85,10 @@
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
 
+- object_pool:object_pool_create
+- object_pool:object_pool_schedule_join
+- object_pool:object_pool_join
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
@@ -134,3 +137,4 @@
 - delete_diff_files
 - detect_repository_languages
 - repository_cleanup
+- delete_stored_files

@@ -655,6 +655,11 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def latest_successful_build_for(job_name, ref = default_branch)
+    builds = latest_successful_builds_for(ref)
+    builds.find_by!(name: job_name)
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     commit_by(oid: sha) if sha
@@ -1585,6 +1590,7 @@ class Project < ActiveRecord::Base
     import_state.remove_jid
     update_project_counter_caches
     after_create_default_branch
+    join_pool_repository
     refresh_markdown_cache!
   end
 
@@ -1981,7 +1987,47 @@ class Project < ActiveRecord::Base
     Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
+  def object_pool_params
+    return {} unless !forked? && git_objects_poolable?
+
+    {
+      repository_storage: repository_storage,
+      pool_repository:    pool_repository || create_new_pool_repository
+    }
+  end
+
+  # Git objects are only poolable when the project is or has:
+  # - Hashed storage -> The object pool will have a remote to its members, using relative paths.
+  #                     If the repository path changes we would have to update the remote.
+  # - Public         -> User will be able to fetch Git objects that might not exist
+  #                     in their own repository.
+  # - Repository     -> Else the disk path will be empty, and there's nothing to pool
+  def git_objects_poolable?
+    hashed_storage?(:repository) &&
+      public? &&
+      repository_exists? &&
+      Gitlab::CurrentSettings.hashed_storage_enabled &&
+      Feature.enabled?(:object_pools, self)
+  end
+
   private
+
+  def create_new_pool_repository
+    pool = begin
+             create_or_find_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
+           rescue ActiveRecord::RecordNotUnique
+             retry
+           end
+
+    pool.schedule
+    pool
+  end
+
+  def join_pool_repository
+    return unless pool_repository
+
+    ObjectPool::JoinWorker.perform_async(pool_repository.id, self.id)
+  end
 
   def use_hashed_storage
     if self.new_record? && Gitlab::CurrentSettings.hashed_storage_enabled

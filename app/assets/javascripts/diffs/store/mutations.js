@@ -170,7 +170,7 @@ export default {
         }
 
         if (!file.parallel_diff_lines || !file.highlighted_diff_lines) {
-          file.discussions = file.discussions.concat(discussion);
+          file.discussions = (file.discussions || []).concat(discussion);
         }
 
         return file;

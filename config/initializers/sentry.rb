@@ -24,4 +24,4 @@ def configure_sentry
   end
 end
 
-configure_sentry if Rails.env.production?
+configure_sentry if Rails.env.production? || Rails.env.development?

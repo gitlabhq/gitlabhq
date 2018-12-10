@@ -1,22 +1,24 @@
 <script>
 import { mapActions } from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
-import Flash from '../../flash';
-import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
-import tableRegistry from './table_registry.vue';
+import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import createFlash from '../../flash';
+import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import Icon from '../../vue_shared/components/icon.vue';
+import TableRegistry from './table_registry.vue';
 import { errorMessages, errorMessagesTypes } from '../constants';
 import { __ } from '../../locale';
 
 export default {
   name: 'CollapsibeContainerRegisty',
   components: {
-    clipboardButton,
-    tableRegistry,
+    ClipboardButton,
+    TableRegistry,
     GlLoadingIcon,
+    GlButton,
+    Icon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     repo: {
@@ -29,30 +31,30 @@ export default {
       isOpen: false,
     };
   },
+  computed: {
+    iconName() {
+      return this.isOpen ? 'angle-up' : 'angle-right';
+    },
+  },
   methods: {
     ...mapActions(['fetchRepos', 'fetchList', 'deleteRepo']),
-
     toggleRepo() {
       this.isOpen = !this.isOpen;
 
       if (this.isOpen) {
-        this.fetchList({ repo: this.repo }).catch(() =>
-          this.showError(errorMessagesTypes.FETCH_REGISTRY),
-        );
+        this.fetchList({ repo: this.repo });
       }
     },
-
     handleDeleteRepository() {
       this.deleteRepo(this.repo)
         .then(() => {
-          Flash(__('This container registry has been scheduled for deletion.'), 'notice');
+          createFlash(__('This container registry has been scheduled for deletion.'), 'notice');
           this.fetchRepos();
         })
         .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
     },
-
     showError(message) {
-      Flash(errorMessages[message]);
+      createFlash(errorMessages[message]);
     },
   },
 };
@@ -61,18 +63,9 @@ export default {
 <template>
   <div class="container-image">
     <div class="container-image-head">
-      <button type="button" class="js-toggle-repo btn-link" @click="toggleRepo">
-        <i
-          :class="{
-            'fa-chevron-right': !isOpen,
-            'fa-chevron-up': isOpen,
-          }"
-          class="fa"
-          aria-hidden="true"
-        >
-        </i>
-        {{ repo.name }}
-      </button>
+      <gl-button class="js-toggle-repo btn-link align-baseline" @click="toggleRepo">
+        <icon :name="iconName" /> {{ repo.name }}
+      </gl-button>
 
       <clipboard-button
         v-if="repo.location"
@@ -82,17 +75,17 @@ export default {
       />
 
       <div class="controls d-none d-sm-block float-right">
-        <button
+        <gl-button
           v-if="repo.canDelete"
-          v-tooltip
+          v-gl-tooltip
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
-          type="button"
-          class="js-remove-repo btn btn-danger"
+          class="js-remove-repo"
+          variant="danger"
           @click="handleDeleteRepository"
         >
-          <i class="fa fa-trash" aria-hidden="true"> </i>
-        </button>
+          <icon name="remove" />
+        </gl-button>
       </div>
     </div>
 

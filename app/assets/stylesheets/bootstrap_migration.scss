@@ -18,8 +18,10 @@ $input-border: $border-color;
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
 
-html {
-  // Override default font size used in bs4
+body,
+.form-control,
+.search form {
+  // Override default font size used in non-csslab UI
   font-size: 14px;
 }
 

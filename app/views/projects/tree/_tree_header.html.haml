@@ -85,4 +85,8 @@
       = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
         = _('Web IDE')
 
+  - if show_xcode_link?(@project)
+    .project-action-button.project-xcode.inline
+      = render "projects/buttons/xcode_link"
+
   = render 'projects/buttons/download', project: @project, ref: @ref

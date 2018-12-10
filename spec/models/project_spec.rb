@@ -1897,7 +1897,7 @@ describe Project do
     end
   end
 
-  describe '#latest_successful_builds_for' do
+  describe '#latest_successful_builds_for and #latest_successful_build_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
                            sha: project.commit.sha,
@@ -1919,14 +1919,16 @@ describe Project do
       it 'gives the latest builds from latest pipeline' do
         pipeline1 = create_pipeline
         pipeline2 = create_pipeline
-        build1_p2 = create_build(pipeline2, 'test')
         create_build(pipeline1, 'test')
         create_build(pipeline1, 'test2')
+        build1_p2 = create_build(pipeline2, 'test')
         build2_p2 = create_build(pipeline2, 'test2')
 
         latest_builds = project.latest_successful_builds_for
+        single_build = project.latest_successful_build_for(build1_p2.name)
 
         expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
+        expect(single_build).to eq(build1_p2)
       end
     end
 
@@ -1936,15 +1938,21 @@ describe Project do
       context 'standalone pipeline' do
         it 'returns builds for ref for default_branch' do
           builds = project.latest_successful_builds_for
+          single_build = project.latest_successful_build_for(build.name)
 
           expect(builds).to contain_exactly(build)
+          expect(single_build).to eq(build)
         end
 
-        it 'returns empty relation if the build cannot be found' do
+        it 'returns empty relation if the build cannot be found for #latest_successful_builds_for' do
           builds = project.latest_successful_builds_for('TAIL')
 
           expect(builds).to be_kind_of(ActiveRecord::Relation)
           expect(builds).to be_empty
+        end
+
+        it 'returns exception if the build cannot be found for #latest_successful_build_for' do
+          expect { project.latest_successful_build_for(build.name, 'TAIL') }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
@@ -1954,9 +1962,11 @@ describe Project do
         end
 
         it 'gives the latest build from latest pipeline' do
-          latest_build = project.latest_successful_builds_for
+          latest_builds = project.latest_successful_builds_for
+          last_single_build = project.latest_successful_build_for(build.name)
 
-          expect(latest_build).to contain_exactly(build)
+          expect(latest_builds).to contain_exactly(build)
+          expect(last_single_build).to eq(build)
         end
       end
     end
@@ -3898,7 +3908,7 @@ describe Project do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', true do
+    it_behaves_like 'model with uploads', true do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
@@ -4088,6 +4098,44 @@ describe Project do
 
       it 'returns clusters for groups of this project' do
         expect(subject).to contain_exactly(cluster, group_cluster)
+      end
+    end
+  end
+
+  describe '#git_objects_poolable?' do
+    subject { project }
+
+    context 'when the feature flag is turned off' do
+      before do
+        stub_feature_flags(object_pools: false)
+      end
+
+      let(:project) { create(:project, :repository, :public) }
+
+      it { is_expected.not_to be_git_objects_poolable }
+    end
+
+    context 'when the feature flag is enabled' do
+      context 'when not using hashed storage' do
+        let(:project) { create(:project, :legacy_storage, :public, :repository) }
+
+        it { is_expected.not_to be_git_objects_poolable }
+      end
+
+      context 'when the project is not public' do
+        let(:project) { create(:project, :private) }
+
+        it { is_expected.not_to be_git_objects_poolable }
+      end
+
+      context 'when objects are poolable' do
+        let(:project) { create(:project, :repository, :public) }
+
+        before do
+          stub_application_setting(hashed_storage_enabled: true)
+        end
+
+        it { is_expected.to be_git_objects_poolable }
       end
     end
   end

@@ -460,6 +460,14 @@ describe ApplicationController do
       expect(controller.last_payload.has_key?(:response)).to be_falsey
     end
 
+    it 'does log correlation id' do
+      Gitlab::CorrelationId.use_id('new-id') do
+        get :index
+      end
+
+      expect(controller.last_payload).to include('correlation_id' => 'new-id')
+    end
+
     context '422 errors' do
       it 'logs a response with a string' do
         response = spy(ActionDispatch::Response, status: 422, body: 'Hello world', content_type: 'application/json', cookies: {})

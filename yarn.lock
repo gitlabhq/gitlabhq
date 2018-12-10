@@ -616,6 +616,13 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@gitlab/csslab@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/csslab/-/csslab-1.8.0.tgz#54a2457fdc80f006665f0e578a5532780954ccfa"
+  integrity sha512-RZylRElufH1kwsBQlIDaVcrcXMyD5IEGrU6ABUd8W3LG8/F9jJ4Y3Ys7EPTpK/qFJyx86AutTtFGRxRNlMx85w==
+  dependencies:
+    bootstrap "4.1.3"
+
 "@gitlab/eslint-config@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-1.2.0.tgz#115568a70edabbc024f1bc13ba1ba499a9ba05a9"
@@ -634,10 +641,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.41.0.tgz#f80e3a0e259f3550af00685556ea925e471276d3"
   integrity sha512-tKUXyqe54efWBsjQBUcvNF0AvqmE2NI2No3Bnix/gKDRImzIlcgIkM67Y8zoJv1D0w4CO87WcaG5GLpIFIT1Pg==
 
-"@gitlab/ui@^1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.14.0.tgz#f0fd7c0e6c45a36ab3be18d00e2908a8cb405f90"
-  integrity sha512-jkBTN8qO41A894kcLo6b/mfLIgL8YNn+ZzjgzEXaZ3PyeQ3mKBdrBoSYkzH556qviroBvk/+3yyZz96VUo08qQ==
+"@gitlab/ui@^1.15.0":
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.15.0.tgz#288e189cb99de354aeb4598f9ac8cced5f47e139"
+  integrity sha512-Aiv/WABr8lBVJk0eoanSoO07Lr5Nnvuq82IjDnNzcw9enB1DAKvlstC2r9iiMfg1pVgV/uLdDeRFqH9eI1X4Rg==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"

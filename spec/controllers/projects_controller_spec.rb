@@ -279,7 +279,7 @@ describe ProjectsController do
         expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
 
         expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
-          .not_to exceed_query_limit(1).for_query(expected_query)
+          .not_to exceed_query_limit(2).for_query(expected_query)
       end
     end
   end

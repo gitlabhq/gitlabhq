@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
   include SafeParamsHelper
-  include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
@@ -129,6 +128,7 @@ class ApplicationController < ActionController::Base
 
     payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
+    payload[Gitlab::CorrelationId::LOG_KEY] = Gitlab::CorrelationId.current_id
 
     logged_user = auth_user
 
@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
-    Raven.capture_exception(exception) if sentry_enabled?
+    Gitlab::Sentry.track_acceptable_exception(exception)
 
     backtrace_cleaner = Gitlab.rails5? ? request.env["action_dispatch.backtrace_cleaner"] : env
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
@@ -486,5 +486,9 @@ class ApplicationController < ActionController::Base
 
   def impersonator
     @impersonator ||= User.find(session[:impersonator_id]) if session[:impersonator_id]
+  end
+
+  def sentry_context
+    Gitlab::Sentry.context(current_user)
   end
 end

@@ -176,6 +176,54 @@ describe('Applications', () => {
       });
     });
 
+    describe('Cert-Manager application', () => {
+      describe('when not installed', () => {
+        it('renders email & allows editing', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              helm: { title: 'Helm Tiller', status: 'installed' },
+              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              cert_manager: {
+                title: 'Cert-Manager',
+                email: 'before@example.com',
+                status: 'installable',
+              },
+              runner: { title: 'GitLab Runner' },
+              prometheus: { title: 'Prometheus' },
+              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
+            },
+          });
+
+          expect(vm.$el.querySelector('.js-email').value).toEqual('before@example.com');
+          expect(vm.$el.querySelector('.js-email').getAttribute('readonly')).toBe(null);
+        });
+      });
+
+      describe('when installed', () => {
+        it('renders email in readonly', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              helm: { title: 'Helm Tiller', status: 'installed' },
+              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              cert_manager: {
+                title: 'Cert-Manager',
+                email: 'after@example.com',
+                status: 'installed',
+              },
+              runner: { title: 'GitLab Runner' },
+              prometheus: { title: 'Prometheus' },
+              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
+              knative: { title: 'Knative', hostname: '', status: 'installable' },
+            },
+          });
+
+          expect(vm.$el.querySelector('.js-email').value).toEqual('after@example.com');
+          expect(vm.$el.querySelector('.js-email').getAttribute('readonly')).toEqual('readonly');
+        });
+      });
+    });
+
     describe('Jupyter application', () => {
       describe('with ingress installed with ip & jupyter installable', () => {
         it('renders hostname active input', () => {

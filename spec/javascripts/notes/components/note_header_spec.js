@@ -42,6 +42,9 @@ describe('note_header component', () => {
     it('should render user information', () => {
       expect(vm.$el.querySelector('.note-header-author-name').textContent.trim()).toEqual('Root');
       expect(vm.$el.querySelector('.note-header-info a').getAttribute('href')).toEqual('/root');
+      expect(vm.$el.querySelector('.note-header-info a').dataset.userId).toEqual('1');
+      expect(vm.$el.querySelector('.note-header-info a').dataset.username).toEqual('root');
+      expect(vm.$el.querySelector('.note-header-info a').classList).toContain('js-user-link');
     });
 
     it('should render timestamp link', () => {

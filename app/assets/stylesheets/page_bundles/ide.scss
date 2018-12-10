@@ -1,5 +1,6 @@
 @import 'framework/variables';
 @import 'framework/mixins';
+@import './ide_mixins';
 
 $search-list-icon-width: 18px;
 $ide-activity-bar-width: 60px;
@@ -1111,11 +1112,7 @@ $ide-commit-header-height: 48px;
 }
 
 .ide-pipeline {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin-top: -$grid-size;
-  margin-bottom: -$grid-size;
+  @include ide-trace-view();
 
   .empty-state {
     margin-top: auto;
@@ -1133,16 +1130,8 @@ $ide-commit-header-height: 48px;
     }
   }
 
-  .build-trace,
-  .top-bar {
+  .build-trace {
     margin-left: -$gl-padding;
-  }
-
-  &.build-page .top-bar {
-    top: 0;
-    height: auto;
-    font-size: 12px;
-    border-top-right-radius: $border-radius-default;
   }
 }
 

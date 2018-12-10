@@ -53,6 +53,12 @@ describe Projects::CommitsController do
 
           it { is_expected.to respond_with(:not_found) }
         end
+
+        context "branch with invalid format, valid file" do
+          let(:id) { 'branch with space/README.md' }
+
+          it { is_expected.to respond_with(:not_found) }
+        end
       end
 
       context "when the ref name ends in .atom" do
@@ -92,6 +98,30 @@ describe Projects::CommitsController do
             expect(response.content_type).to eq('text/html')
           end
         end
+      end
+    end
+
+    describe "GET /commits/:id/signatures" do
+      render_views
+
+      before do
+        get(:signatures,
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id,
+            format: :json)
+      end
+
+      context "valid branch" do
+        let(:id) { 'master' }
+
+        it { is_expected.to respond_with(:success) }
+      end
+
+      context "invalid branch format" do
+        let(:id) { 'some branch' }
+
+        it { is_expected.to respond_with(:not_found) }
       end
     end
   end

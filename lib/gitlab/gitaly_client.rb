@@ -193,6 +193,7 @@ module Gitlab
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
+      metadata['x-gitlab-correlation-id'] = Gitlab::CorrelationId.current_id if Gitlab::CorrelationId.current_id
 
       metadata.merge!(server_feature_flags)
 
