@@ -176,9 +176,9 @@
   display: block;
   font-weight: $gl-font-weight-normal;
   position: relative;
-  padding: 8px 16px;
+  padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   color: $gl-text-color;
-  line-height: normal;
+  line-height: $gl-btn-line-height;
   white-space: normal;
   overflow: hidden;
   text-align: left;
@@ -319,8 +319,8 @@
   .dropdown-header {
     color: $gl-text-color-secondary;
     font-size: 13px;
-    line-height: 22px;
-    padding: 8px 16px;
+    line-height: $gl-line-height;
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
 
   &.capitalize-header .dropdown-header {
@@ -329,13 +329,8 @@
 
   .dropdown-bold-header {
     font-weight: $gl-font-weight-bold;
-    line-height: 22px;
-    padding: 0 16px;
-  }
-
-  .separator + .dropdown-header,
-  .separator + .dropdown-bold-header {
-    padding-top: 10px;
+    line-height: $gl-line-height;
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
 
   .unclickable {
