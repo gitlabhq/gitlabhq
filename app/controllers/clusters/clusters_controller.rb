@@ -189,6 +189,15 @@ class Clusters::ClustersController < Clusters::BaseController
   def user_cluster
     @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_platform_kubernetes
+
+      case clusterable.subject
+      when ::Project
+        cluster.cluster_type = :project_type
+      when ::Group
+        cluster.cluster_type = :group_type
+      else
+        raise NotImplementedError
+      end
     end.present(current_user: current_user)
   end
 
