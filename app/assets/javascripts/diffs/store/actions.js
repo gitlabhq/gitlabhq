@@ -192,8 +192,9 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   });
 };
 
-export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
+export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
   const postData = getNoteFormData({
+    commit: state.commit,
     note,
     ...formData,
   });

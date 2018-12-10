@@ -165,32 +165,32 @@ describe ProjectPresenter do
 
     describe '#files_anchor_data' do
       it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(enabled: true,
-                                                               label: 'Files (0 Bytes)',
+        expect(presenter.files_anchor_data).to have_attributes(is_link: true,
+                                                               label:  a_string_including('0 Bytes'),
                                                                link: nil)
       end
     end
 
     describe '#commits_anchor_data' do
       it 'returns commits data' do
-        expect(presenter.commits_anchor_data).to have_attributes(enabled: true,
-                                                                 label: 'Commits (0)',
+        expect(presenter.commits_anchor_data).to have_attributes(is_link: true,
+                                                                 label: a_string_including('0'),
                                                                  link: nil)
       end
     end
 
     describe '#branches_anchor_data' do
       it 'returns branches data' do
-        expect(presenter.branches_anchor_data).to have_attributes(enabled: true,
-                                                                  label: "Branches (0)",
+        expect(presenter.branches_anchor_data).to have_attributes(is_link: true,
+                                                                  label: a_string_including('0'),
                                                                   link: nil)
       end
     end
 
     describe '#tags_anchor_data' do
       it 'returns tags data' do
-        expect(presenter.tags_anchor_data).to have_attributes(enabled: true,
-                                                              label: "Tags (0)",
+        expect(presenter.tags_anchor_data).to have_attributes(is_link: true,
+                                                              label: a_string_including('0'),
                                                               link: nil)
       end
     end
@@ -202,32 +202,32 @@ describe ProjectPresenter do
 
     describe '#files_anchor_data' do
       it 'returns files data' do
-        expect(presenter.files_anchor_data).to have_attributes(enabled: true,
-                                                               label: 'Files (0 Bytes)',
+        expect(presenter.files_anchor_data).to have_attributes(is_link: true,
+                                                               label:  a_string_including('0 Bytes'),
                                                                link: presenter.project_tree_path(project))
       end
     end
 
     describe '#commits_anchor_data' do
       it 'returns commits data' do
-        expect(presenter.commits_anchor_data).to have_attributes(enabled: true,
-                                                                 label: 'Commits (0)',
+        expect(presenter.commits_anchor_data).to have_attributes(is_link: true,
+                                                                 label: a_string_including('0'),
                                                                  link: presenter.project_commits_path(project, project.repository.root_ref))
       end
     end
 
     describe '#branches_anchor_data' do
       it 'returns branches data' do
-        expect(presenter.branches_anchor_data).to have_attributes(enabled: true,
-                                                                  label: "Branches (#{project.repository.branches.size})",
+        expect(presenter.branches_anchor_data).to have_attributes(is_link: true,
+                                                                  label: a_string_including("#{project.repository.branches.size}"),
                                                                   link: presenter.project_branches_path(project))
       end
     end
 
     describe '#tags_anchor_data' do
       it 'returns tags data' do
-        expect(presenter.tags_anchor_data).to have_attributes(enabled: true,
-                                                              label: "Tags (#{project.repository.tags.size})",
+        expect(presenter.tags_anchor_data).to have_attributes(is_link: true,
+                                                              label: a_string_including("#{project.repository.tags.size}"),
                                                               link: presenter.project_tags_path(project))
       end
     end
@@ -236,8 +236,8 @@ describe ProjectPresenter do
       it 'returns new file data if user can push' do
         project.add_developer(user)
 
-        expect(presenter.new_file_anchor_data).to have_attributes(enabled: false,
-                                                                  label: "New file",
+        expect(presenter.new_file_anchor_data).to have_attributes(is_link: false,
+                                                                  label: a_string_including("New file"),
                                                                   link: presenter.project_new_blob_path(project, 'master'),
                                                                   class_modifier: 'success')
       end
@@ -264,8 +264,8 @@ describe ProjectPresenter do
           project.add_developer(user)
           allow(project.repository).to receive(:readme).and_return(nil)
 
-          expect(presenter.readme_anchor_data).to have_attributes(enabled: false,
-                                                                  label: 'Add Readme',
+          expect(presenter.readme_anchor_data).to have_attributes(is_link: false,
+                                                                  label: a_string_including('Add README'),
                                                                   link: presenter.add_readme_path)
         end
       end
@@ -274,21 +274,21 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:readme).and_return(double(name: 'readme'))
 
-          expect(presenter.readme_anchor_data).to have_attributes(enabled: true,
-                                                                  label: 'Readme',
+          expect(presenter.readme_anchor_data).to have_attributes(is_link: false,
+                                                                  label: a_string_including('README'),
                                                                   link: presenter.readme_path)
         end
       end
     end
 
     describe '#changelog_anchor_data' do
-      context 'when user can push and CHANGELOG does not exists' do
+      context 'when user can push and CHANGELOG does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
           allow(project.repository).to receive(:changelog).and_return(nil)
 
-          expect(presenter.changelog_anchor_data).to have_attributes(enabled: false,
-                                                                     label: 'Add Changelog',
+          expect(presenter.changelog_anchor_data).to have_attributes(is_link: false,
+                                                                     label: a_string_including('Add CHANGELOG'),
                                                                      link: presenter.add_changelog_path)
         end
       end
@@ -297,21 +297,21 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:changelog).and_return(double(name: 'foo'))
 
-          expect(presenter.changelog_anchor_data).to have_attributes(enabled: true,
-                                                                     label: 'Changelog',
+          expect(presenter.changelog_anchor_data).to have_attributes(is_link: false,
+                                                                     label: a_string_including('CHANGELOG'),
                                                                      link: presenter.changelog_path)
         end
       end
     end
 
     describe '#license_anchor_data' do
-      context 'when user can push and LICENSE does not exists' do
+      context 'when user can push and LICENSE does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
           allow(project.repository).to receive(:license_blob).and_return(nil)
 
-          expect(presenter.license_anchor_data).to have_attributes(enabled: false,
-                                                                   label: 'Add license',
+          expect(presenter.license_anchor_data).to have_attributes(is_link: true,
+                                                                   label: a_string_including('Add license'),
                                                                    link: presenter.add_license_path)
         end
       end
@@ -320,21 +320,21 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:license_blob).and_return(double(name: 'foo'))
 
-          expect(presenter.license_anchor_data).to have_attributes(enabled: true,
-                                                                   label: presenter.license_short_name,
+          expect(presenter.license_anchor_data).to have_attributes(is_link: true,
+                                                                   label: a_string_including(presenter.license_short_name),
                                                                    link: presenter.license_path)
         end
       end
     end
 
     describe '#contribution_guide_anchor_data' do
-      context 'when user can push and CONTRIBUTING does not exists' do
+      context 'when user can push and CONTRIBUTING does not exist' do
         it 'returns anchor data' do
           project.add_developer(user)
           allow(project.repository).to receive(:contribution_guide).and_return(nil)
 
-          expect(presenter.contribution_guide_anchor_data).to have_attributes(enabled: false,
-                                                                              label: 'Add Contribution guide',
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(is_link: false,
+                                                                              label: a_string_including('Add CONTRIBUTING'),
                                                                               link: presenter.add_contribution_guide_path)
         end
       end
@@ -343,8 +343,8 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project.repository).to receive(:contribution_guide).and_return(double(name: 'foo'))
 
-          expect(presenter.contribution_guide_anchor_data).to have_attributes(enabled: true,
-                                                                              label: 'Contribution guide',
+          expect(presenter.contribution_guide_anchor_data).to have_attributes(is_link: false,
+                                                                              label: a_string_including('CONTRIBUTING'),
                                                                               link: presenter.contribution_guide_path)
         end
       end
@@ -355,20 +355,20 @@ describe ProjectPresenter do
         it 'returns anchor data' do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)
 
-          expect(presenter.autodevops_anchor_data).to have_attributes(enabled: true,
-                                                                      label: 'Auto DevOps enabled',
+          expect(presenter.autodevops_anchor_data).to have_attributes(is_link: false,
+                                                                      label: a_string_including('Auto DevOps enabled'),
                                                                       link: nil)
         end
       end
 
-      context 'when user can admin pipeline and CI yml does not exists' do
+      context 'when user can admin pipeline and CI yml does not exist' do
         it 'returns anchor data' do
           project.add_maintainer(user)
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
           allow(project.repository).to receive(:gitlab_ci_yml).and_return(nil)
 
-          expect(presenter.autodevops_anchor_data).to have_attributes(enabled: false,
-                                                                      label: 'Enable Auto DevOps',
+          expect(presenter.autodevops_anchor_data).to have_attributes(is_link: false,
+                                                                      label: a_string_including('Enable Auto DevOps'),
                                                                       link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
         end
       end
@@ -380,8 +380,8 @@ describe ProjectPresenter do
           project.add_maintainer(user)
           cluster = create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: true,
-                                                                              label: 'Kubernetes configured',
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
+                                                                              label: a_string_including('Kubernetes configured'),
                                                                               link: presenter.project_cluster_path(project, cluster))
         end
 
@@ -390,16 +390,16 @@ describe ProjectPresenter do
           create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: true,
-                                                                              label: 'Kubernetes configured',
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
+                                                                              label: a_string_including('Kubernetes configured'),
                                                                               link: presenter.project_clusters_path(project))
         end
 
         it 'returns link to create a cluster if no cluster exists' do
           project.add_maintainer(user)
 
-          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(enabled: false,
-                                                                              label: 'Add Kubernetes cluster',
+          expect(presenter.kubernetes_cluster_anchor_data).to have_attributes(is_link: false,
+                                                                              label: a_string_including('Add Kubernetes cluster'),
                                                                               link: presenter.new_project_cluster_path(project))
         end
       end

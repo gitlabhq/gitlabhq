@@ -25,7 +25,9 @@ Gitlab::Seeder.quiet do
       developer = project.team.developers.sample
       break unless developer
 
-      MergeRequests::CreateService.new(project, developer, params).execute
+      Sidekiq::Worker.skipping_transaction_check do
+        MergeRequests::CreateService.new(project, developer, params).execute
+      end
       print '.'
     end
   end
@@ -39,7 +41,9 @@ Gitlab::Seeder.quiet do
     target_branch: 'master',
     title: 'Can be automatically merged'
   }
-  MergeRequests::CreateService.new(project, User.admins.first, params).execute
+  Sidekiq::Worker.skipping_transaction_check do
+    MergeRequests::CreateService.new(project, User.admins.first, params).execute
+  end
   print '.'
 
   params = {
@@ -47,6 +51,8 @@ Gitlab::Seeder.quiet do
     target_branch: 'feature',
     title: 'Cannot be automatically merged'
   }
-  MergeRequests::CreateService.new(project, User.admins.first, params).execute
+  Sidekiq::Worker.skipping_transaction_check do
+    MergeRequests::CreateService.new(project, User.admins.first, params).execute
+  end
   print '.'
 end

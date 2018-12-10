@@ -342,15 +342,16 @@ In addition, `only` and `except` allow the use of special keywords:
 
 | **Value** |  **Description**  |
 | --------- |  ---------------- |
-| `branches`  | When a branch is pushed.  |
-| `tags`      | When a tag is pushed.  |
-| `api`       | When pipeline has been triggered by a second pipelines API (not triggers API).  |
-| `external`  | When using CI services other than GitLab. |
-| `pipelines` | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
-| `pushes`    | Pipeline is triggered by a `git push` by the user. |
-| `schedules` | For [scheduled pipelines][schedules]. |
-| `triggers`  | For pipelines created using a trigger token. |
-| `web`       | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+| `branches`       | When a git reference of a pipeline is a branch.  |
+| `tags`           | When a git reference of a pipeline is a tag.  |
+| `api`            | When pipeline has been triggered by a second pipelines API (not triggers API).  |
+| `external`       | When using CI services other than GitLab. |
+| `pipelines`      | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
+| `pushes`         | Pipeline is triggered by a `git push` by the user. |
+| `schedules`      | For [scheduled pipelines][schedules]. |
+| `triggers`       | For pipelines created using a trigger token. |
+| `web`            | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+| `merge_requests` | When a merge request is created or updated (See [pipelines for merge requests](../merge_request_pipelines/index.md)). |
 
 In the example below, `job` will run only for refs that start with `issue-`,
 whereas all branches will be skipped:
@@ -390,6 +391,24 @@ job:
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
+
+If a job does not have neither `only` nor `except` rule,
+`only: ['branches', 'tags']` is set by default.
+
+For example,
+
+```yaml
+job:
+  script: echo 'test'
+```
+
+is translated to
+
+```yaml
+job:
+  script: echo 'test'
+  only: ['branches', 'tags']
+```
 
 ## `only` and `except` (complex)
 

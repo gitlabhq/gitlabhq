@@ -74,13 +74,5 @@ describe DiscussionEntity do
         :active
       )
     end
-
-    context 'when diff file is a image' do
-      it 'exposes image attributes' do
-        allow(discussion).to receive(:on_image?).and_return(true)
-
-        expect(subject.keys).to include(:image_diff_html)
-      end
-    end
   end
 end

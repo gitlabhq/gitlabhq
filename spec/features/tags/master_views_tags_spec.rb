@@ -13,7 +13,7 @@ describe 'Maintainer views tags' do
 
     before do
       visit project_path(project)
-      click_on 'Add Readme'
+      click_on 'Add README'
       fill_in :commit_message, with: 'Add a README file', visible: true
       click_button 'Commit changes'
       visit project_tags_path(project)

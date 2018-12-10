@@ -290,6 +290,20 @@ describe Projects::MergeRequestsController do
 
       it_behaves_like 'update invalid issuable', MergeRequest
     end
+
+    context 'two merge requests with the same source branch' do
+      it 'does not allow a closed merge request to be reopened if another one is open' do
+        merge_request.close!
+        create(:merge_request, source_project: merge_request.source_project, source_branch: merge_request.source_branch)
+
+        update_merge_request(state_event: 'reopen')
+
+        errors = assigns[:merge_request].errors
+
+        expect(errors[:validate_branches]).to include(/Another open merge request already exists for this source branch/)
+        expect(merge_request.reload).to be_closed
+      end
+    end
   end
 
   describe 'POST merge' do

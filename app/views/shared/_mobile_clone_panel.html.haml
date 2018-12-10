@@ -1,13 +1,13 @@
 - project = project || @project
 - ssh_copy_label = _("Copy SSH clone URL")
-- http_copy_label = _("Copy HTTPS clone URL")
+- http_copy_label = _('Copy %{http_label} clone URL') % { http_label: gitlab_config.protocol.upcase }
 
-.btn-group.mobile-git-clone.js-mobile-git-clone
-  = clipboard_button(button_text: default_clone_label, target: '#project_clone', hide_button_icon: true, class: "input-group-text clone-dropdown-btn js-clone-dropdown-label btn btn-default")
-  %button.btn.btn-default.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
-    = icon("caret-down", class: "dropdown-btn-icon")
+.btn-group.mobile-git-clone.js-mobile-git-clone.btn-block
+  = clipboard_button(button_text: default_clone_label, text: default_url_to_repo(project), hide_button_icon: true, class: "btn-primary flex-fill bold justify-content-center input-group-text clone-dropdown-btn js-clone-dropdown-label")
+  %button.btn.btn-primary.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
+    = sprite_icon("arrow-down", css_class: "dropdown-btn-icon icon")
   %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
     %li
-      = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' })
+      = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' }, default: true)
     %li
       = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })

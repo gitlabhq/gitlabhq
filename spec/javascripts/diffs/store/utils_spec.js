@@ -150,7 +150,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,
@@ -209,7 +209,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: LEGACY_DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,

@@ -113,7 +113,15 @@ feature flag. You can stub a feature flag as follows:
 stub_feature_flags(my_feature_flag: false)
 ```
 
-## Enabling a feature flag
+## Enabling a feature flag (in development)
+
+In the rails console (`rails c`), enter the following command to enable your feature flag
+
+```ruby
+Feature.enable(:feature_flag_name)
+```
+
+## Enabling a feature flag (in production)
 
 Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
 

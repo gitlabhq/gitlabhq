@@ -17,6 +17,8 @@
 
 module WithUploads
   extend ActiveSupport::Concern
+  include FastDestroyAll::Helpers
+  include FeatureGate
 
   # Currently there is no simple way how to select only not-mounted
   # uploads, it should be all FileUploaders so we select them by
@@ -25,21 +27,40 @@ module WithUploads
 
   included do
     has_many :uploads, as: :model
+    has_many :file_uploads, -> { where(uploader: FILE_UPLOADERS) }, class_name: 'Upload', as: :model
 
-    before_destroy :destroy_file_uploads
+    # TODO: when feature flag is removed, we can use just dependent: destroy
+    # option on :file_uploads
+    before_destroy :remove_file_uploads
+
+    use_fast_destroy :file_uploads, if: :fast_destroy_enabled?
   end
+
+  def retrieve_upload(_identifier, paths)
+    uploads.find_by(path: paths)
+  end
+
+  private
 
   # mounted uploads are deleted in carrierwave's after_commit hook,
   # but FileUploaders which are not mounted must be deleted explicitly and
   # it can not be done in after_commit because FileUploader requires loads
   # associated model on destroy (which is already deleted in after_commit)
-  def destroy_file_uploads
-    self.uploads.where(uploader: FILE_UPLOADERS).find_each do |upload|
+  def remove_file_uploads
+    fast_destroy_enabled? ? delete_uploads : destroy_uploads
+  end
+
+  def delete_uploads
+    file_uploads.delete_all(:delete_all)
+  end
+
+  def destroy_uploads
+    file_uploads.find_each do |upload|
       upload.destroy
     end
   end
 
-  def retrieve_upload(_identifier, paths)
-    uploads.find_by(path: paths)
+  def fast_destroy_enabled?
+    Feature.enabled?(:fast_destroy_uploads, self)
   end
 end

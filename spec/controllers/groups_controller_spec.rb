@@ -226,9 +226,10 @@ describe GroupsController do
     end
 
     context 'searching' do
-      # Remove as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/52271
       before do
+        # Remove in https://gitlab.com/gitlab-org/gitlab-ce/issues/54643
         stub_feature_flags(use_cte_for_group_issues_search: false)
+        stub_feature_flags(use_subquery_for_group_issues_search: true)
       end
 
       it 'works with popularity sort' do

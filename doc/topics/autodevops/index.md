@@ -132,7 +132,8 @@ in three places:
 
 - either under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops)
 - or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
-- or at the project or group level as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
+- or at the project as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
+- or at the group level as a variable: `AUTO_DEVOPS_DOMAIN`
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -202,6 +203,12 @@ Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
+
+NOTE: **Note:**
+Auto DevOps is not supported for a group with multiple clusters, as it
+is not possible to set `AUTO_DEVOPS_DOMAIN` per environment on the group
+level. This will be resolved in the future with the [following issue](
+https://gitlab.com/gitlab-org/gitlab-ce/issues/52363).
 
 ## Enabling/Disabling Auto DevOps
 

@@ -383,6 +383,16 @@
       top: 1px;
     }
   }
+
+  .dropdown-menu li a .identicon {
+    width: 17px;
+    height: 17px;
+    font-size: $gl-font-size-xs;
+    vertical-align: middle;
+    text-indent: 0;
+    line-height: $gl-font-size-xs + 2px;
+    display: inline-block;
+  }
 }
 
 .breadcrumbs-list {
