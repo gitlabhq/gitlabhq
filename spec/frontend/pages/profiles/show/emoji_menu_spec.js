@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import EmojiMenu from '~/pages/profiles/show/emoji_menu';
-import { TEST_HOST } from 'spec/test_constants';
+import { TEST_HOST } from 'helpers/test_constants';
 
 describe('EmojiMenu', () => {
   const dummyEmojiTag = '<dummy></tag>';
@@ -56,7 +56,7 @@ describe('EmojiMenu', () => {
     });
 
     it('does not make an axios requst', done => {
-      spyOn(axios, 'request').and.stub();
+      jest.spyOn(axios, 'request').mockReturnValue();
 
       emojiMenu.addAward(dummyVotesBlock(), dummyAwardUrl, dummyEmoji, false, () => {
         expect(axios.request).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('EmojiMenu', () => {
 
   describe('bindEvents', () => {
     beforeEach(() => {
-      spyOn(emojiMenu, 'registerEventListener').and.stub();
+      jest.spyOn(emojiMenu, 'registerEventListener').mockReturnValue();
     });
 
     it('binds event listeners to custom toggle button', () => {
