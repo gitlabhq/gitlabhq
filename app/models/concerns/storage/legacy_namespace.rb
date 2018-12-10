@@ -4,6 +4,8 @@ module Storage
   module LegacyNamespace
     extend ActiveSupport::Concern
 
+    include Gitlab::ShellAdapter
+
     def move_dir
       proj_with_tags = first_project_with_container_registry_tags
 

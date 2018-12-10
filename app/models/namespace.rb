@@ -3,7 +3,6 @@
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
-  include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue

@@ -17,7 +17,6 @@ class Repository
     #{REF_ENVIRONMENTS}
   ].freeze
 
-  include Gitlab::ShellAdapter
   include Gitlab::RepositoryCacheAdapter
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
