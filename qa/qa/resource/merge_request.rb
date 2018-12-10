@@ -63,6 +63,7 @@ module QA
           page.fill_title(@title)
           page.fill_description(@description)
           page.choose_milestone(@milestone) if @milestone
+          page.assign_to_me if @assignee == 'me'
           labels.each do |label|
             page.select_label(label)
           end
