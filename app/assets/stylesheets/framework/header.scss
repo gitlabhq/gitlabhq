@@ -127,12 +127,6 @@
     }
   }
 
-  li.dropdown-bold-header {
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    padding: 0 16px;
-  }
-
   .navbar-collapse {
     flex: 0 0 auto;
     border-top: 0;
@@ -541,7 +535,7 @@
     left: auto;
 
     li.current-user {
-      padding: 5px 18px;
+      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
 
       .user-name {
         display: block;
