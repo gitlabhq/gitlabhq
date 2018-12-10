@@ -13,6 +13,9 @@ export default class Project {
     const $cloneOptions = $('ul.clone-options-dropdown');
     const $projectCloneField = $('#project_clone');
     const $cloneBtnLabel = $('.js-git-clone-holder .js-clone-dropdown-label');
+    const mobileCloneField = document.querySelector(
+      '.js-mobile-git-clone .js-clone-dropdown-label',
+    );
 
     const selectedCloneOption = $cloneBtnLabel.text().trim();
     if (selectedCloneOption.length > 0) {
@@ -36,7 +39,11 @@ export default class Project {
         $label.text(activeText);
       });
 
-      $projectCloneField.val(url);
+      if (mobileCloneField) {
+        mobileCloneField.dataset.clipboardText = url;
+      } else {
+        $projectCloneField.val(url);
+      }
       $('.js-git-empty .js-clone').text(url);
     });
     // Ref switcher

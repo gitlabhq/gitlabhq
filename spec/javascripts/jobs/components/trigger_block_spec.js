@@ -31,8 +31,8 @@ describe('Trigger block', () => {
   });
 
   describe('with variables', () => {
-    describe('reveal variables', () => {
-      it('reveals variables on click', done => {
+    describe('hide/reveal variables', () => {
+      it('should toggle variables on click', done => {
         vm = mountComponent(Component, {
           trigger: {
             short_token: 'bd7e',
@@ -48,6 +48,10 @@ describe('Trigger block', () => {
         vm.$nextTick()
           .then(() => {
             expect(vm.$el.querySelector('.js-build-variables')).not.toBeNull();
+            expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
+              'Hide values',
+            );
+
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
               'UPLOAD_TO_GCS',
             );
@@ -58,6 +62,26 @@ describe('Trigger block', () => {
             );
 
             expect(vm.$el.querySelector('.js-build-variables').textContent).toContain('true');
+
+            vm.$el.querySelector('.js-reveal-variables').click();
+          })
+          .then(vm.$nextTick)
+          .then(() => {
+            expect(vm.$el.querySelector('.js-reveal-variables').textContent.trim()).toEqual(
+              'Reveal values',
+            );
+
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
+              'UPLOAD_TO_GCS',
+            );
+
+            expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
+
+            expect(vm.$el.querySelector('.js-build-variables').textContent).toContain(
+              'UPLOAD_TO_S3',
+            );
+
+            expect(vm.$el.querySelector('.js-build-value').textContent).toContain('••••••');
           })
           .then(done)
           .catch(done.fail);

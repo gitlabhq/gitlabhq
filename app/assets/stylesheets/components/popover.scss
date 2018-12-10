@@ -1,0 +1,9 @@
+.popover {
+  min-width: 300px;
+
+  .popover-body .user-popover {
+    padding: $gl-padding-8;
+    font-size: $gl-font-size-small;
+    line-height: $gl-line-height;
+  }
+}

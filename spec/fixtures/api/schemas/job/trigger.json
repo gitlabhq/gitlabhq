@@ -12,12 +12,11 @@
         "type": "object",
         "required": [
           "key",
-          "value",
           "public"
         ],
         "properties": {
           "key": { "type": "string" },
-          "value": { "type": "string" },
+          "value": { "type": "string", "optional": true },
           "public": { "type": "boolean" }
         },
         "additionalProperties": false

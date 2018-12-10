@@ -14,6 +14,10 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      default_value_for :email do |cert_manager|
+        cert_manager.cluster&.user&.email
+      end
+
       validates :email, presence: true
 
       def chart

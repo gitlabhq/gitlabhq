@@ -50,6 +50,12 @@ module ProjectsHelper
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
+    data_attrs = {
+      user_id: author.id,
+      username: author.username,
+      name: author.name
+    }
+
     return "(deleted)" unless author
 
     author_html = []
@@ -65,7 +71,7 @@ module ProjectsHelper
     author_html = author_html.join.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
       link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
@@ -383,6 +389,10 @@ module ProjectsHelper
     else
       'ssh'
     end
+  end
+
+  def sidebar_operations_link_path(project = @project)
+    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
   end
 
   def project_last_activity(project)

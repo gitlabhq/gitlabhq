@@ -401,18 +401,56 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'with variables' do
         before do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
-
-          get_show(id: job.id, format: :json)
         end
 
-        it 'exposes trigger information and variables' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('job/job_details')
-          expect(json_response['trigger']['short_token']).to eq 'toke'
-          expect(json_response['trigger']['variables'].length).to eq 1
-          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
-          expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
-          expect(json_response['trigger']['variables'].first['public']).to eq false
+        context 'user is a maintainer' do
+          before do
+            project.add_maintainer(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'returns a job_detail' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+          end
+
+          it 'exposes trigger information and variables' do
+            expect(json_response['trigger']['short_token']).to eq 'toke'
+            expect(json_response['trigger']['variables'].length).to eq 1
+          end
+
+          it 'exposes correct variable properties' do
+            first_variable = json_response['trigger']['variables'].first
+
+            expect(first_variable['key']).to eq "TRIGGER_KEY_1"
+            expect(first_variable['value']).to eq "TRIGGER_VALUE_1"
+            expect(first_variable['public']).to eq false
+          end
+        end
+
+        context 'user is not a mantainer' do
+          before do
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'returns a job_detail' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+          end
+
+          it 'exposes trigger information and variables' do
+            expect(json_response['trigger']['short_token']).to eq 'toke'
+            expect(json_response['trigger']['variables'].length).to eq 1
+          end
+
+          it 'exposes correct variable properties' do
+            first_variable = json_response['trigger']['variables'].first
+
+            expect(first_variable['key']).to eq "TRIGGER_KEY_1"
+            expect(first_variable['value']).to be_nil
+            expect(first_variable['public']).to eq false
+          end
         end
       end
     end

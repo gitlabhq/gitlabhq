@@ -31,6 +31,31 @@ describe Clusters::Applications::CreateService do
       subject
     end
 
+    context 'cert manager application' do
+      let(:params) do
+        {
+          application: 'cert_manager',
+          email: 'test@example.com'
+        }
+      end
+
+      before do
+        allow_any_instance_of(Clusters::Applications::ScheduleInstallationService).to receive(:execute)
+      end
+
+      it 'creates the application' do
+        expect do
+          subject
+
+          cluster.reload
+        end.to change(cluster, :application_cert_manager)
+      end
+
+      it 'sets the email' do
+        expect(subject.email).to eq('test@example.com')
+      end
+    end
+
     context 'jupyter application' do
       let(:params) do
         {

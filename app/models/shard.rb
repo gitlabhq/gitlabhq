@@ -18,7 +18,9 @@ class Shard < ActiveRecord::Base
   end
 
   def self.by_name(name)
-    find_or_create_by(name: name)
+    transaction(requires_new: true) do
+      find_or_create_by(name: name)
+    end
   rescue ActiveRecord::RecordNotUnique
     retry
   end

@@ -1,11 +1,88 @@
 # frozen_string_literal: true
 
+# The PoolRepository model is the database equivalent of an ObjectPool for Gitaly
+# That is; PoolRepository is the record in the database, ObjectPool is the
+# repository on disk
 class PoolRepository < ActiveRecord::Base
   include Shardable
+  include AfterCommitQueue
+
+  has_one :source_project, class_name: 'Project'
+  validates :source_project, presence: true
 
   has_many :member_projects, class_name: 'Project'
 
   after_create :correct_disk_path
+
+  state_machine :state, initial: :none do
+    state :scheduled
+    state :ready
+    state :failed
+
+    event :schedule do
+      transition none: :scheduled
+    end
+
+    event :mark_ready do
+      transition [:scheduled, :failed] => :ready
+    end
+
+    event :mark_failed do
+      transition all => :failed
+    end
+
+    state all - [:ready] do
+      def joinable?
+        false
+      end
+    end
+
+    state :ready do
+      def joinable?
+        true
+      end
+    end
+
+    after_transition none: :scheduled do |pool, _|
+      pool.run_after_commit do
+        ::ObjectPool::CreateWorker.perform_async(pool.id)
+      end
+    end
+
+    after_transition scheduled: :ready do |pool, _|
+      pool.run_after_commit do
+        ::ObjectPool::ScheduleJoinWorker.perform_async(pool.id)
+      end
+    end
+  end
+
+  def create_object_pool
+    object_pool.create
+  end
+
+  # The members of the pool should have fetched the missing objects to their own
+  # objects directory. If the caller fails to do so, data loss might occur
+  def delete_object_pool
+    object_pool.delete
+  end
+
+  def link_repository(repository)
+    object_pool.link(repository.raw)
+  end
+
+  # This RPC can cause data loss, as not all objects are present the local repository
+  # No execution path yet, will be added through:
+  # https://gitlab.com/gitlab-org/gitaly/issues/1415
+  def delete_repository_alternate(repository)
+    object_pool.unlink_repository(repository.raw)
+  end
+
+  def object_pool
+    @object_pool ||= Gitlab::Git::ObjectPool.new(
+      shard.name,
+      disk_path + '.git',
+      source_project.repository.raw)
+  end
 
   private
 

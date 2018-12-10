@@ -172,6 +172,7 @@ $theme-light-red-700: #a62e21;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$shadow-color: rgba($black, 0.1);
 $almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
@@ -197,6 +198,7 @@ $well-light-text-color: #5b6169;
 $gl-font-size: 14px;
 $gl-font-size-xs: 11px;
 $gl-font-size-small: 12px;
+$gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
@@ -270,7 +272,8 @@ $performance-bar-height: 35px;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
-$project-title-row-height: 24px;
+$project-title-row-height: 64px;
+$project-avatar-mobile-size: 24px;
 $gl-line-height: 16px;
 $gl-line-height-24: 24px;
 
@@ -365,6 +368,8 @@ $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
 $gl-btn-vert-padding: 8px;
 $gl-btn-horz-padding: 12px;
+$gl-btn-small-font-size: 13px;
+$gl-btn-small-line-height: 13px;
 
 /*
 * Badges
