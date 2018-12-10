@@ -6,6 +6,13 @@ module JavaScriptFixturesHelpers
 
   FIXTURE_PATH = 'spec/javascripts/fixtures'.freeze
 
+  def self.included(base)
+    base.around do |example|
+      # pick an arbitrary date from the past, so tests are not time dependent
+      Timecop.freeze(Time.utc(2015, 7, 3, 10)) { example.run }
+    end
+  end
+
   # Public: Removes all fixture files from given directory
   #
   # directory_name - directory of the fixtures (relative to FIXTURE_PATH)
