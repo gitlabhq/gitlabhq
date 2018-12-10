@@ -5,7 +5,6 @@ class RepositoryUpdateRemoteMirrorWorker
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker
-  include Gitlab::ShellAdapter
 
   sidekiq_options retry: 3, dead: false
 
