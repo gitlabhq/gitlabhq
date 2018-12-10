@@ -60,7 +60,7 @@ module Gitlab
 
     # Converts newlines into HTML line break elements
     def nlbr(str)
-      ActionView::Base.full_sanitizer.sanitize(str, tags: []).gsub(/\r?\n/, '<br>').html_safe
+      ActionView::Base.full_sanitizer.sanitize(+str, tags: []).gsub(/\r?\n/, '<br>').html_safe
     end
 
     def remove_line_breaks(str)
