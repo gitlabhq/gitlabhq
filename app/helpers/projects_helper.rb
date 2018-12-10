@@ -391,6 +391,10 @@ module ProjectsHelper
     end
   end
 
+  def sidebar_operations_link_path(project = @project)
+    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
+  end
+
   def project_last_activity(project)
     if project.last_activity_at
       time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
