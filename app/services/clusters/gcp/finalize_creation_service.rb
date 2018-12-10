@@ -16,14 +16,21 @@ module Clusters
         ClusterPlatformConfigureWorker.perform_async(cluster.id)
 
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+        logger.error(exception: e.class.name, service: self.class.name, provider_id: provider.id, message: e.message)
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue Kubeclient::HttpError => e
+        logger.error(exception: e.class.name, service: self.class.name, provider_id: provider.id, message: e.message)
         provider.make_errored!("Failed to run Kubeclient: #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
+        logger.error(exception: e.class.name, service: self.class.name, provider_id: provider.id, message: e.message)
         provider.make_errored!("Failed to configure Google Kubernetes Engine Cluster: #{e.message}")
       end
 
       private
+
+      def logger
+        @logger ||= Gitlab::Kubernetes::Logger.build
+      end
 
       def create_gitlab_service_account!
         Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.gitlab_creator(
