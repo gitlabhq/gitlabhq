@@ -1,4 +1,4 @@
-const testTimeoutInMs = 0;
+const testTimeoutInMs = 300;
 jest.setTimeout(testTimeoutInMs);
 
 let testStartTime;
