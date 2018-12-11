@@ -57,7 +57,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def load_projects
     projects = ProjectsFinder.new(current_user: current_user, params: params)
                  .execute
-                 .includes(:route, namespace: :route)
+                 .includes(:route, :creator, :group, namespace: [:route, :owner])
                  .page(params[:page])
                  .without_count
 

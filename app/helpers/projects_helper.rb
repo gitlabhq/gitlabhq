@@ -2,7 +2,7 @@
 
 module ProjectsHelper
   def link_to_project(project)
-    link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
