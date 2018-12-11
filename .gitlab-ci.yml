@@ -318,7 +318,8 @@ review-docs-cleanup:
 cloud-native-image:
   image: ruby:2.4-alpine
   before_script: []
-  stage: test
+  dependencies: []
+  stage: post-test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"

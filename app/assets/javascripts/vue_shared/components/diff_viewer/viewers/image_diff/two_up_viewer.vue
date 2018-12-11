@@ -19,18 +19,18 @@ export default {
 </script>
 
 <template>
-  <div class="two-up view">
+  <div class="two-up view d-flex">
     <image-viewer
       :path="oldPath"
       :render-info="true"
       inner-css-classes="frame deleted"
-      class="wrap"
+      class="wrap w-50"
     />
     <image-viewer
       :path="newPath"
       :render-info="true"
       :inner-css-classes="['frame', 'added']"
-      class="wrap"
+      class="wrap w-50"
     >
       <slot
         slot="image-overlay"
