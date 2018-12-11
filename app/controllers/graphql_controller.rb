@@ -43,6 +43,6 @@ class GraphqlController < ApplicationController
   end
 
   def check_graphql_feature_flag!
-    render_404 unless Feature.enabled?(:graphql)
+    render_404 unless Feature.enabled?(:graphql, default_enabled: true)
   end
 end
