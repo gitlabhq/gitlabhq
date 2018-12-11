@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 import Flash from '../../../flash';
 import GLForm from '../../../gl_form';
 import markdownHeader from './header.vue';
@@ -99,11 +99,12 @@ export default {
 
       if (text) {
         this.markdownPreviewLoading = true;
+        this.markdownPreview = __('Loading…');
         this.$http
           .post(this.versionedPreviewPath(), { text })
           .then(resp => resp.json())
           .then(data => this.renderMarkdown(data))
-          .catch(() => new Flash(s__('Error loading markdown preview')));
+          .catch(() => new Flash(__('Error loading markdown preview')));
       } else {
         this.renderMarkdown();
       }
@@ -162,10 +163,12 @@ export default {
         />
       </div>
     </div>
-    <div v-show="previewMarkdown" class="md md-preview-holder md-preview js-vue-md-preview">
-      <div ref="markdown-preview" v-html="markdownPreview"></div>
-      <span v-if="markdownPreviewLoading"> Loading... </span>
-    </div>
+    <div
+      v-show="previewMarkdown"
+      ref="markdown-preview"
+      class="md-preview js-vue-md-preview md md-preview-holder"
+      v-html="markdownPreview"
+    ></div>
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
       <div v-if="shouldShowReferencedUsers" class="referenced-users">

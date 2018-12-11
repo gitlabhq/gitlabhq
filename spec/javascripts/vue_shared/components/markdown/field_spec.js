@@ -80,7 +80,7 @@ describe('Markdown field component', () => {
         previewLink.click();
 
         Vue.nextTick(() => {
-          expect(vm.$el.querySelector('.md-preview').textContent.trim()).toContain('Loading...');
+          expect(vm.$el.querySelector('.md-preview').textContent.trim()).toContain('Loading…');
 
           done();
         });
