@@ -10,7 +10,7 @@ describe Gitlab::Email::Handler::UnsubscribeHandler do
     stub_config_setting(host: 'localhost')
   end
 
-  let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}+unsubscribe") }
+  let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}") }
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:noteable) { create(:issue, project: project) }
@@ -39,6 +39,14 @@ describe Gitlab::Email::Handler::UnsubscribeHandler do
 
     it 'unsubscribes user from notable' do
       expect { receiver.execute }.to change { noteable.subscribed?(user) }.from(true).to(false)
+    end
+
+    context 'when using old style unsubscribe link' do
+      let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_OLD}") }
+
+      it 'unsubscribes user from notable' do
+        expect { receiver.execute }.to change { noteable.subscribed?(user) }.from(true).to(false)
+      end
     end
   end
 

@@ -9,7 +9,7 @@ module Gitlab
         delegate :project, to: :sent_notification, allow_nil: true
 
         def can_handle?
-          mail_key =~ /\A\w+#{Regexp.escape(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)}\z/
+          mail_key =~ /\A\w+#{Regexp.escape(suffix)}\z/
         end
 
         def execute
@@ -28,8 +28,16 @@ module Gitlab
           @sent_notification ||= SentNotification.for(reply_key)
         end
 
+        def suffix
+          @suffix ||= if mail_key&.end_with?(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)
+                        Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX
+                      else
+                        Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_OLD
+                      end
+        end
+
         def reply_key
-          mail_key.sub(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX, '')
+          mail_key.sub(suffix, '')
         end
       end
     end
