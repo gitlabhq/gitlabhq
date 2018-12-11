@@ -20,7 +20,7 @@
 
     - if can_collaborate || can_create_mr_from_fork
       %li.breadcrumb-item
-        %a.btn.add-to-tree{ addtotree_toggle_attributes }
+        %a.btn.add-to-tree.qa-add-to-tree{ addtotree_toggle_attributes }
           = sprite_icon('plus', size: 16, css_class: 'float-left')
           = sprite_icon('arrow-down', size: 16, css_class: 'float-left')
         - if on_top_of_branch?
@@ -30,7 +30,7 @@
                 %li.dropdown-header
                   #{ _('This directory') }
                 %li
-                  = link_to project_new_blob_path(@project, @id) do
+                  = link_to project_new_blob_path(@project, @id), class: 'qa-new-file-option' do
                     #{ _('New file') }
                 %li
                   = link_to '#modal-upload-blob', { 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } do
