@@ -29,7 +29,7 @@ module Gitlab
       private
 
       def should_run_diff_validations?
-        newrev && oldrev && !deletion? && validate_lfs_file_locks?
+        validate_lfs_file_locks?
       end
 
       def validate_lfs_file_locks?
