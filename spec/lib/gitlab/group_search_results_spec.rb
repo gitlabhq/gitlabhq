@@ -15,7 +15,9 @@ describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      expect(described_class.new(user, anything, group, 'gob').objects('users')).to eq [user1]
+      result = described_class.new(user, anything, group, 'gob').objects('users')
+
+      expect(result).to eq [user1]
     end
 
     it 'returns the user belonging to the subgroup matching the search query', :nested_groups do
@@ -25,7 +27,21 @@ describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      expect(described_class.new(user, anything, group, 'gob').objects('users')).to eq [user1]
+      result = described_class.new(user, anything, group, 'gob').objects('users')
+
+      expect(result).to eq [user1]
+    end
+
+    it 'returns the user belonging to the parent group matching the search query', :nested_groups do
+      user1 = create(:user, username: 'gob_bluth')
+      parent_group = create(:group, children: [group])
+      create(:group_member, :developer, user: user1, group: parent_group)
+
+      create(:user, username: 'gob_2018')
+
+      result = described_class.new(user, anything, group, 'gob').objects('users')
+
+      expect(result).to eq [user1]
     end
 
     it 'does not return the user belonging to the private subgroup', :nested_groups do
@@ -35,7 +51,9 @@ describe Gitlab::GroupSearchResults do
 
       create(:user, username: 'gob_2018')
 
-      expect(described_class.new(user, anything, group, 'gob').objects('users')).to eq []
+      result = described_class.new(user, anything, group, 'gob').objects('users')
+
+      expect(result).to eq []
     end
   end
 end
