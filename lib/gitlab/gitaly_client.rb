@@ -66,15 +66,20 @@ module Gitlab
       end
     end
 
-    def self.load_certs
-      @certs ||= Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"].map do |cert|
+    def self.certs
+      return @certs if @certs
+
+      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+
+      @certs = cert_paths.map do |cert|
         File.read(cert)
       end.join("\n")
     end
 
     def self.stub_creds(storage)
       if URI(address(storage)).scheme == 'tls'
-        GRPC::Core::ChannelCredentials.new load_certs
+        GRPC::Core::ChannelCredentials.new certs
       else
         :this_channel_is_insecure
       end
