@@ -80,6 +80,12 @@ describe SnippetsController do
             expect(assigns(:snippet)).to eq(personal_snippet)
             expect(response).to have_gitlab_http_status(200)
           end
+
+          it 'responds with status 404 when embeddable content is requested' do
+            get :show, id: personal_snippet.to_param, format: :js
+
+            expect(response).to have_gitlab_http_status(404)
+          end
         end
       end
 
@@ -106,6 +112,12 @@ describe SnippetsController do
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
         end
+
+        it 'responds with status 404 when embeddable content is requested' do
+          get :show, id: personal_snippet.to_param, format: :js
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
 
       context 'when not signed in' do
@@ -127,6 +139,13 @@ describe SnippetsController do
 
         it 'renders the snippet' do
           get :show, id: personal_snippet.to_param
+
+          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'responds with status 200 when embeddable content is requested' do
+          get :show, id: personal_snippet.to_param, format: :js
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
