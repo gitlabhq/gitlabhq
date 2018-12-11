@@ -18,8 +18,20 @@ class Clusters::ClustersController < Clusters::BaseController
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    clusters = ClusterAncestorsFinder.new(clusterable.subject, current_user).execute
+    finder = ClusterAncestorsFinder.new(clusterable.subject, current_user)
+    clusters = finder.execute
+
+    # Note: We are paginating through an array here but this should OK as:
+    #
+    # In CE, we can have a maximum group nesting depth of 21, so including
+    # project cluster, we can have max 22 clusters for a group hierachy.
+    # In EE (Premium) we can have any number, as multiple clusters are
+    # supported, but the number of clusters are fairly low currently.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/55260 also.
     @clusters = Kaminari.paginate_array(clusters).page(params[:page]).per(20)
+
+    @has_ancestor_clusters = finder.has_ancestor_clusters?
   end
 
   def new

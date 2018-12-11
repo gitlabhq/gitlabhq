@@ -14,8 +14,4 @@ module ClustersHelper
       render 'clusters/clusters/gcp_signup_offer_banner'
     end
   end
-
-  def render_cluster_help_content?(clusters, clusterable)
-    clusters.length > clusterable.clusters.length
-  end
 end
