@@ -114,7 +114,7 @@ describe('Merge request widget rebase component', () => {
         // Wait for the eventHub to be called
         .then(vm.$nextTick())
         .then(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+          expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetRebaseSuccess');
         })
         .then(done)
         .catch(done.fail);

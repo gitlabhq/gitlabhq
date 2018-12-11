@@ -72,7 +72,7 @@ export default {
               Flash('Something went wrong. Please try again.');
             }
 
-            eventHub.$emit('MRWidgetUpdateRequested');
+            eventHub.$emit('MRWidgetRebaseSuccess');
             stopPolling();
           }
         })
