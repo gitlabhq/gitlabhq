@@ -160,9 +160,13 @@ export default {
       return expanded || this.alwaysExpanded || isResolvedNonDiffDiscussion;
     },
     actionText() {
-      const commitId = this.discussion.commit_id ? truncateSha(this.discussion.commit_id) : '';
       const linkStart = `<a href="${_.escape(this.discussion.discussion_path)}">`;
       const linkEnd = '</a>';
+
+      let { commit_id: commitId } = this.discussion;
+      if (commitId) {
+        commitId = `<span class="commit-sha">${truncateSha(commitId)}</span>`;
+      }
 
       let text = s__('MergeRequests|started a discussion');
 
