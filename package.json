@@ -159,5 +159,8 @@
     "prettier": "1.15.2",
     "vue-jest": "^3.0.1",
     "webpack-dev-server": "^3.1.10"
+  },
+  "engines": {
+    "yarn": "^1.10.0"
   }
 }
