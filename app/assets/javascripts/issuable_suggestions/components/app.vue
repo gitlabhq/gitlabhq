@@ -27,7 +27,7 @@ export default {
   apollo: {
     issues: {
       query,
-      debounce: 250,
+      debounce: 1000,
       skip() {
         return this.isSearchEmpty;
       },
