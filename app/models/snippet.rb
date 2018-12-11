@@ -175,6 +175,14 @@ class Snippet < ActiveRecord::Base
     :visibility_level
   end
 
+  def embeddable?
+    if project_id?
+      Ability.allowed?(nil, :read_project_snippet, self)
+    else
+      Ability.allowed?(nil, :read_personal_snippet, self)
+    end
+  end
+
   def notes_with_associations
     notes.includes(:author)
   end
