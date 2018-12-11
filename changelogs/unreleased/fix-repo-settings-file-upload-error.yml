@@ -1,0 +1,5 @@
+---
+title: Fix bug causing repository mirror settings UI to break
+merge_request: 23712
+author:
+type: fixed
