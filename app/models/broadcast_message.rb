@@ -16,14 +16,20 @@ class BroadcastMessage < ActiveRecord::Base
   default_value_for :color, '#E75E40'
   default_value_for :font,  '#FFFFFF'
 
-  CACHE_KEY = 'broadcast_message_current'.freeze
+  CACHE_KEY = 'broadcast_message_current_json'.freeze
+  LEGACY_CACHE_KEY = 'broadcast_message_current'.freeze
 
   after_commit :flush_redis_cache
 
   def self.current
-    messages = Rails.cache.fetch(CACHE_KEY, expires_in: cache_expires_in) { current_and_future_messages.to_a }
+    raw_messages = Rails.cache.fetch(CACHE_KEY, expires_in: cache_expires_in) do
+      remove_legacy_cache_key
+      current_and_future_messages.to_json
+    end
 
-    return messages if messages.empty?
+    messages = decode_messages(raw_messages)
+
+    return [] unless messages&.present?
 
     now_or_future = messages.select(&:now_or_future?)
 
@@ -34,12 +40,41 @@ class BroadcastMessage < ActiveRecord::Base
     now_or_future.select(&:now?)
   end
 
+  def self.decode_messages(raw_messages)
+    return unless raw_messages&.present?
+
+    message_list = ActiveSupport::JSON.decode(raw_messages)
+
+    return unless message_list.is_a?(Array)
+
+    valid_attr = BroadcastMessage.attribute_names
+
+    message_list.map do |raw|
+      BroadcastMessage.new(raw) if valid_cache_entry?(raw, valid_attr)
+    end.compact
+  rescue ActiveSupport::JSON.parse_error
+  end
+
+  def self.valid_cache_entry?(raw, valid_attr)
+    return false unless raw.is_a?(Hash)
+
+    (raw.keys - valid_attr).empty?
+  end
+
   def self.current_and_future_messages
     where('ends_at > :now', now: Time.zone.now).order_id_asc
   end
 
   def self.cache_expires_in
     nil
+  end
+
+  # This can be removed in GitLab 12.0+
+  # The old cache key had an indefinite lifetime, and in an HA
+  # environment a one-shot migration would not work because the cache
+  # would be repopulated by a node that has not been upgraded.
+  def self.remove_legacy_cache_key
+    Rails.cache.delete(LEGACY_CACHE_KEY)
   end
 
   def active?
@@ -68,5 +103,6 @@ class BroadcastMessage < ActiveRecord::Base
 
   def flush_redis_cache
     Rails.cache.delete(CACHE_KEY)
+    self.class.remove_legacy_cache_key
   end
 end

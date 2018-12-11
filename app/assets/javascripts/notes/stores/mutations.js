@@ -246,7 +246,7 @@ export default {
       discussion =>
         !discussion.individual_note &&
         discussion.resolvable &&
-        discussion.notes.some(note => !note.resolved),
+        discussion.notes.some(note => note.resolvable && !note.resolved),
     ).length;
     state.hasUnresolvedDiscussions = state.unresolvedDiscussionsCount > 1;
   },

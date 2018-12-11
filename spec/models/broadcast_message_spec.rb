@@ -58,6 +58,12 @@ describe BroadcastMessage do
       end
     end
 
+    it 'does not create new records' do
+      create(:broadcast_message)
+
+      expect { described_class.current }.not_to change { described_class.count }
+    end
+
     it 'includes messages that need to be displayed in the future' do
       create(:broadcast_message)
 
@@ -77,8 +83,36 @@ describe BroadcastMessage do
     it 'does not clear the cache if only a future message should be displayed' do
       create(:broadcast_message, :future)
 
-      expect(Rails.cache).not_to receive(:delete)
+      expect(Rails.cache).not_to receive(:delete).with(described_class::CACHE_KEY)
       expect(described_class.current.length).to eq(0)
+    end
+
+    it 'clears the legacy cache key' do
+      create(:broadcast_message, :future)
+
+      expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
+      expect(described_class.current.length).to eq(0)
+    end
+
+    it 'gracefully handles bad cache entry' do
+      allow(described_class).to receive(:current_and_future_messages).and_return('{')
+
+      expect(described_class.current).to be_empty
+    end
+
+    it 'gracefully handles an empty hash' do
+      allow(described_class).to receive(:current_and_future_messages).and_return('{}')
+
+      expect(described_class.current).to be_empty
+    end
+
+    it 'gracefully handles unknown attributes' do
+      message = create(:broadcast_message)
+
+      allow(described_class).to receive(:current_and_future_messages)
+                                 .and_return([{ bad_attr: 1 }, message])
+
+      expect(described_class.current).to eq([message])
     end
   end
 
@@ -143,6 +177,7 @@ describe BroadcastMessage do
       message = create(:broadcast_message)
 
       expect(Rails.cache).to receive(:delete).with(described_class::CACHE_KEY)
+      expect(Rails.cache).to receive(:delete).with(described_class::LEGACY_CACHE_KEY)
 
       message.flush_redis_cache
     end

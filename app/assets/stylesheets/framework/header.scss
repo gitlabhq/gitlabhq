@@ -90,12 +90,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        .tanuki-logo {
-          @include media-breakpoint-up(sm) {
-            margin-right: 8px;
-          }
-        }
       }
 
       .project-item-select {
@@ -125,12 +119,6 @@
         }
       }
     }
-  }
-
-  li.dropdown-bold-header {
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    padding: 0 16px;
   }
 
   .navbar-collapse {
@@ -541,7 +529,7 @@
     left: auto;
 
     li.current-user {
-      padding: 5px 18px;
+      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
 
       .user-name {
         display: block;

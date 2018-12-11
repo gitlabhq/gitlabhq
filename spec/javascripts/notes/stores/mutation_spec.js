@@ -9,6 +9,11 @@ import {
   individualNote,
 } from '../mock_data';
 
+const RESOLVED_NOTE = { resolvable: true, resolved: true };
+const UNRESOLVED_NOTE = { resolvable: true, resolved: false };
+const SYSTEM_NOTE = { resolvable: false, resolved: false };
+const WEIRD_NOTE = { resolvable: false, resolved: true };
+
 describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
     let state;
@@ -449,49 +454,61 @@ describe('Notes Store mutations', () => {
   });
 
   describe('UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', () => {
-    it('updates resolvableDiscussionsCount', () => {
+    it('with unresolvable discussions, updates state', () => {
       const state = {
         discussions: [
-          { individual_note: false, resolvable: true, notes: [] },
-          { individual_note: true, resolvable: true, notes: [] },
-          { individual_note: false, resolvable: false, notes: [] },
+          { individual_note: false, resolvable: true, notes: [UNRESOLVED_NOTE] },
+          { individual_note: true, resolvable: true, notes: [UNRESOLVED_NOTE] },
+          { individual_note: false, resolvable: false, notes: [UNRESOLVED_NOTE] },
         ],
-        resolvableDiscussionsCount: 0,
       };
 
       mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
 
-      expect(state.resolvableDiscussionsCount).toBe(1);
+      expect(state).toEqual(
+        jasmine.objectContaining({
+          resolvableDiscussionsCount: 1,
+          unresolvedDiscussionsCount: 1,
+          hasUnresolvedDiscussions: false,
+        }),
+      );
     });
 
-    it('updates unresolvedDiscussionsCount', () => {
+    it('with resolvable discussions, updates state', () => {
       const state = {
         discussions: [
-          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
-          { individual_note: true, resolvable: true, notes: [{ resolved: false }] },
-          { individual_note: false, resolvable: false, notes: [{ resolved: false }] },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [RESOLVED_NOTE, SYSTEM_NOTE, RESOLVED_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [RESOLVED_NOTE, SYSTEM_NOTE, WEIRD_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [SYSTEM_NOTE, RESOLVED_NOTE, WEIRD_NOTE, UNRESOLVED_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [UNRESOLVED_NOTE],
+          },
         ],
-        unresolvedDiscussionsCount: 0,
       };
 
       mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
 
-      expect(state.unresolvedDiscussionsCount).toBe(1);
-    });
-
-    it('updates hasUnresolvedDiscussions', () => {
-      const state = {
-        discussions: [
-          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
-          { individual_note: false, resolvable: true, notes: [{ resolved: false }] },
-          { individual_note: false, resolvable: false, notes: [{ resolved: false }] },
-        ],
-        hasUnresolvedDiscussions: 0,
-      };
-
-      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
-
-      expect(state.hasUnresolvedDiscussions).toBe(true);
+      expect(state).toEqual(
+        jasmine.objectContaining({
+          resolvableDiscussionsCount: 4,
+          unresolvedDiscussionsCount: 2,
+          hasUnresolvedDiscussions: true,
+        }),
+      );
     });
   });
 });
