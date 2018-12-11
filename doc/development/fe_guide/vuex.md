@@ -137,6 +137,7 @@ By following this pattern we guarantee:
 
 #### Dispatching actions
 To dispatch an action from a component, use the `mapActions` helper:
+
 ```javascript
 import { mapActions } from 'vuex';
 
@@ -204,6 +205,7 @@ export const getUsersWithPets = (state, getters) => {
 ```
 
 To access a getter from a component, use the `mapGetters` helper:
+
 ```javascript
 import { mapGetters } from 'vuex';
 
@@ -226,6 +228,7 @@ export const ADD_USER = 'ADD_USER';
 
 ### How to include the store in your application
 The store should be included in the main component of your application:
+
 ```javascript
   // app.vue
   import store from 'store'; // it will include the index.js file
@@ -364,7 +367,8 @@ Because we're currently using [`babel-plugin-rewire`](https://github.com/speedsk
 `[vuex] actions should be function or object with "handler" function`
 
 To prevent this error from happening, you need to export an empty function as `default`:
-```
+
+```javascript
 // getters.js or actions.js
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
