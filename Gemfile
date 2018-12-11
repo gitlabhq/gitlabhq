@@ -277,6 +277,7 @@ gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
+gem 'sass', '~> 3.5'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.5.2'
