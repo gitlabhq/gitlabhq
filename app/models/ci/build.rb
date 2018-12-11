@@ -742,7 +742,7 @@ module Ci
     def collect_test_reports!(test_reports)
       test_reports.get_suite(group_name).tap do |test_suite|
         each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
-          Gitlab::Ci::Parsers::Test.fabricate!(file_type).parse!(blob, test_suite)
+          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
         end
       end
     end
