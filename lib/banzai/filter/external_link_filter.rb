@@ -9,11 +9,10 @@ module Banzai
       def call
         links.each do |node|
           uri = uri(node['href'].to_s)
-          next unless uri
 
-          node.set_attribute('href', uri.to_s)
+          node.set_attribute('href', uri.to_s) if uri
 
-          if SCHEMES.include?(uri.scheme) && external_url?(uri)
+          if SCHEMES.include?(uri&.scheme) && !internal_url?(uri)
             node.set_attribute('rel', 'nofollow noreferrer noopener')
             node.set_attribute('target', '_blank')
           end
@@ -35,11 +34,12 @@ module Banzai
         doc.xpath(query)
       end
 
-      def external_url?(uri)
+      def internal_url?(uri)
+        return false if uri.nil?
         # Relative URLs miss a hostname
-        return false unless uri.hostname
+        return true unless uri.hostname
 
-        uri.hostname != internal_url.hostname
+        uri.hostname == internal_url.hostname
       end
 
       def internal_url
