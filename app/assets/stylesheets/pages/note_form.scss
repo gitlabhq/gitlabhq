@@ -178,7 +178,7 @@
 
 table {
   .discussion-form-container {
-    padding: $gl-padding-top $gl-padding $gl-padding;
+    padding: $gl-padding;
   }
 }
 
@@ -237,11 +237,12 @@ table {
 }
 
 .discussion-body,
-.diff-file {
+.diff-file,
+.commit-diff {
   .discussion-reply-holder {
     background-color: $white-light;
-    padding: 10px 16px;
     border-radius: 0 0 3px 3px;
+    padding: $gl-padding;
 
     &.is-replying {
       padding-bottom: $gl-padding;
@@ -253,7 +254,6 @@ table {
   @include media-breakpoint-up(sm) {
     display: flex;
   }
-
 
   .discussion-actions {
     display: table;
@@ -275,8 +275,10 @@ table {
     }
   }
 
-  .btn {
-    width: 100%;
+  @include media-breakpoint-down(xs) {
+    .btn {
+      width: 100%;
+    }
   }
 
   .btn-text-field {
