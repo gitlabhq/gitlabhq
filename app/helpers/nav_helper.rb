@@ -47,8 +47,8 @@ module NavHelper
     class_names
   end
 
-  def show_separator?
-    Gitlab::Sherlock.enabled? || can?(current_user, :read_instance_statistics)
+  def has_extra_nav_icons?
+    Gitlab::Sherlock.enabled? || can?(current_user, :read_instance_statistics) || current_user.admin?
   end
 
   def page_has_markdown?

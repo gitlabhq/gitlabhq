@@ -1,0 +1,5 @@
+---
+title: Resolve Main navbar is broken in certain viewport widths
+merge_request: 23348
+author:
+type: fixed

@@ -52,6 +52,7 @@ module QA
         end
 
         view 'app/views/shared/issuable/_sidebar.html.haml' do
+          element :assignee_block
           element :labels_block
         end
 
@@ -97,6 +98,12 @@ module QA
 
           wait(reload: false) do
             has_text?('Fast-forward merge without a merge commit')
+          end
+        end
+
+        def has_assignee?(username)
+          page.within(element_selector_css(:assignee_block)) do
+            has_text?(username)
           end
         end
 

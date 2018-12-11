@@ -29,6 +29,11 @@ module SelectsHelper
     classes = Array.wrap(opts[:class])
     classes << 'ajax-groups-select'
 
+    # EE requires this line to be present, but there is no easy way of injecting
+    # this into EE without causing merge conflicts. Given this line is very
+    # simple and not really EE specific on its own, we just include it in CE.
+    classes << 'multiselect' if opts[:multiple]
+
     opts[:class] = classes.join(' ')
 
     select2_tag(id, opts)

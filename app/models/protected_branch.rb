@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProtectedBranch < ActiveRecord::Base
-  include Gitlab::ShellAdapter
   include ProtectedRef
 
   protected_ref_access_levels :merge, :push
