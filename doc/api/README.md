@@ -5,77 +5,85 @@ under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
 The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
 
-## Resources
+## API Resources
 
-Documentation for various API resources can be found separately in the
-following locations:
+The following API resources are available:
 
-- [Award Emoji](award_emoji.md)
+- [Applications](applications.md)
+- [Avatar](avatar.md)
+- [Award emoji](award_emoji.md)
 - [Branches](branches.md)
-- [Broadcast Messages](broadcast_messages.md)
-- [Project-level Variables](project_level_variables.md)
-- [Group-level Variables](group_level_variables.md)
-- [Code Snippets](snippets.md)
+- [Broadcast messages](broadcast_messages.md)
+- [Code snippets](snippets.md)
 - [Commits](commits.md)
-- [Custom Attributes](custom_attributes.md)
+- [Custom attributes](custom_attributes.md)
+- [Deploy keys](deploy_keys.md), and [deploy keys for multiple projects](deploy_key_multiple_projects.md)
 - [Deployments](deployments.md)
-- [Deploy Keys](deploy_keys.md)
-- [Dockerfile templates](templates/dockerfiles.md)
+- [Discussions](discussions.md) (threaded comments)
 - [Environments](environments.md)
 - [Events](events.md)
 - [Feature flags](features.md)
-- [Gitignore templates](templates/gitignores.md)
-- [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
-- [Groups](groups.md)
-- [Group Access Requests](access_requests.md)
-- [Group Badges](group_badges.md)
-- [Group Members](members.md)
+- Group-related resources, including:
+  - [Groups](groups.md)
+  - [Group access requests](access_requests.md)
+  - [Group badges](group_badges.md)
+  - [Group issue boards](group_boards.md)
+  - [Group-level variables](group_level_variables.md)
+  - [Group members](members.md)
+  - [Group milestones](group_milestones.md)
 - [Issues](issues.md)
-- [Issue Boards](boards.md)
-- [Group Issue Boards](group_boards.md)
+- [Issue boards](boards.md)
 - [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Markdown](markdown.md)
-- [Merge Requests](merge_requests.md)
-- [Project milestones](milestones.md)
-- [Group milestones](group_milestones.md)
+- [Merge requests](merge_requests.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
-- [Discussions](discussions.md) (threaded comments)
-- [Resource Label Events](resource_label_events.md)
 - [Notification settings](notification_settings.md)
-- [Open source license templates](templates/licenses.md)
-- [Pages Domains](pages_domains.md)
+- [Pages domains](pages_domains.md)
 - [Pipelines](pipelines.md)
-- [Pipeline Triggers](pipeline_triggers.md)
-- [Pipeline Schedules](pipeline_schedules.md)
-- [Projects](projects.md) including setting Webhooks
-- [Project Access Requests](access_requests.md)
-- [Project Badges](project_badges.md)
-- [Project import/export](project_import_export.md)
-- [Project Members](members.md)
-- [Project Snippets](project_snippets.md)
-- [Project Templates](project_templates.md)
-- [Protected Branches](protected_branches.md)
-- [Protected Tags](protected_tags.md)
+- [Pipeline schedules](pipeline_schedules.md)
+- [Pipeline triggers](pipeline_triggers.md) and [triggering pipelines](../ci/triggers/README.md)
+- Project-related resources, including:
+  - [Projects](projects.md) including setting Webhooks
+  - [Project access requests](access_requests.md)
+  - [Project badges](project_badges.md)
+  - [Project-level variables](project_level_variables.md)
+  - [Project import/export](project_import_export.md)
+  - [Project members](members.md)
+  - [Project milestones](milestones.md)
+  - [Project snippets](project_snippets.md)
+  - [Project templates](project_templates.md) (see also [Templates API Resources](#templates-api-resources))
+- [Protected branches](protected_branches.md)
+- [Protected tags](protected_tags.md)
 - [Repositories](repositories.md)
-- [Repository Files](repository_files.md)
-- [Repository Submodules](repository_submodules.md)
+- [Repository files](repository_files.md)
+- [Repository submodules](repository_submodules.md)
+- [Resource label events](resource_label_events.md)
 - [Runners](runners.md)
 - [Search](search.md)
 - [Services](services.md)
 - [Settings](settings.md)
 - [Sidekiq metrics](sidekiq_metrics.md)
-- [System Hooks](system_hooks.md)
+- [System hooks](system_hooks.md)
 - [Tags](tags.md)
 - [Todos](todos.md)
-- [Triggering Pipelines](../ci/triggers/README.md)
 - [Users](users.md)
-- [Validate CI configuration](lint.md)
-- [V3 to V4](v3_to_v4.md)
+- [Validate CI configuration](lint.md) (linting)
 - [Version](version.md)
 - [Wikis](wikis.md)
+
+See also [V3 to V4](v3_to_v4.md).
+
+### Templates API Resources
+
+Endpoints are available for:
+
+- [Dockerfile templates](templates/dockerfiles.md).
+- [gitignore templates](templates/gitignores.md).
+- [GitLab CI YAML templates](templates/gitlab_ci_ymls.md).
+- [Open source license templates](templates/licenses.md).
 
 ## Road to GraphQL
 
@@ -98,7 +106,7 @@ specification.
 ## Compatibility Guidelines
 
 The HTTP API is versioned using a single number, the current one being 4. This
-number symbolises the same as the major version number as described by
+number symbolizes the same as the major version number as described by
 [SemVer](https://semver.org/). This mean that backward incompatible changes
 will require this version number to change. However, the minor version is
 not explicit. This allows for a stable API endpoint, but also means new

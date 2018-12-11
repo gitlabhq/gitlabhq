@@ -1,4 +1,4 @@
-# Milestones API
+# Project milestones API
 
 ## List project milestones
 
@@ -44,7 +44,6 @@ Example Response:
   }
 ]
 ```
-
 
 ## Get single milestone
 
