@@ -30,7 +30,7 @@ module Gitlab
     end
 
     def users
-      super.where(id: @project.users)
+      super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def blobs_count
