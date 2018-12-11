@@ -5,28 +5,17 @@ module Autocomplete
     class TagsFinder
       LIMIT = 20
 
-      def initialize(taggable_type:, params:)
-        @taggable_type = taggable_type
+      def initialize(params:)
         @params = params
       end
 
       def execute
         @tags = ::ActsAsTaggableOn::Tag.all
 
-        filter_by_taggable_type!
         search!
         limit!
 
         @tags
-      end
-
-      def filter_by_taggable_type!
-        # rubocop: disable CodeReuse/ActiveRecord
-        @tags = @tags
-          .joins(:taggings)
-          .where(taggings: { taggable_type: @taggable_type.name })
-          .distinct
-        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       def search!

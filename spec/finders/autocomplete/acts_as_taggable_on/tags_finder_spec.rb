@@ -6,10 +6,10 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
   describe '#execute' do
     context 'with empty params' do
       it 'returns all tags' do
-        create :ci_runner, tag_list: ['tag1']
-        create :ci_runner, tag_list: ['tag2']
+        ActsAsTaggableOn::Tag.create!(name: 'tag1')
+        ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
-        tags = described_class.new(taggable_type: Ci::Runner, params: {}).execute.map(&:name)
+        tags = described_class.new(params: {}).execute.map(&:name)
 
         expect(tags).to match_array %w(tag1 tag2)
       end
@@ -18,10 +18,10 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
     context 'filter by search' do
       context 'with an empty search term' do
         it 'returns an empty collection' do
-          create :ci_runner, tag_list: ['tag1']
-          create :ci_runner, tag_list: ['tag2']
+          ActsAsTaggableOn::Tag.create!(name: 'tag1')
+          ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
-          tags = described_class.new(taggable_type: Ci::Runner, params: { search: '' }).execute.map(&:name)
+          tags = described_class.new(params: { search: '' }).execute.map(&:name)
 
           expect(tags).to be_empty
         end
@@ -29,10 +29,10 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
 
       context 'with a search containing 2 characters' do
         it 'returns the tag that strictly matches the search term' do
-          create :ci_runner, tag_list: ['t1']
-          create :ci_runner, tag_list: ['t11']
+          ActsAsTaggableOn::Tag.create!(name: 't1')
+          ActsAsTaggableOn::Tag.create!(name: 't11')
 
-          tags = described_class.new(taggable_type: Ci::Runner, params: { search: 't1' }).execute.map(&:name)
+          tags = described_class.new(params: { search: 't1' }).execute.map(&:name)
 
           expect(tags).to match_array ['t1']
         end
@@ -40,10 +40,10 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
 
       context 'with a search containing 3 characters' do
         it 'returns the tag that partially matches the search term' do
-          create :ci_runner, tag_list: ['tag1']
-          create :ci_runner, tag_list: ['tag11']
+          ActsAsTaggableOn::Tag.create!(name: 'tag1')
+          ActsAsTaggableOn::Tag.create!(name: 'tag11')
 
-          tags = described_class.new(taggable_type: Ci::Runner, params: { search: 'ag1' }).execute.map(&:name)
+          tags = described_class.new(params: { search: 'ag1' }).execute.map(&:name)
 
           expect(tags).to match_array %w(tag1 tag11)
         end
@@ -54,10 +54,10 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
       it 'limits the result set by the limit constant' do
         stub_const("#{described_class}::LIMIT", 1)
 
-        create :ci_runner, tag_list: ['tag1']
-        create :ci_runner, tag_list: ['tag2']
+        ActsAsTaggableOn::Tag.create!(name: 'tag1')
+        ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
-        tags = described_class.new(taggable_type: Ci::Runner, params: { search: 'tag' }).execute
+        tags = described_class.new(params: { search: 'tag' }).execute
 
         expect(tags.count).to eq 1
       end
