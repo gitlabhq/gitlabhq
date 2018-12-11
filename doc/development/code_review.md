@@ -10,7 +10,7 @@ code is effective, understandable, maintainable, and secure.
 ## Getting your merge request reviewed, approved, and merged
 
 You are strongly encouraged to get your code **reviewed** by a
-[reviewer](https://about.gitlab.com/handbook/engineering/#reviewer) as soon as
+[reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) as soon as
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
 uncovered edge cases. The reviewer can be from a different team, but it is
@@ -24,7 +24,7 @@ If you need assistance with security scans or comments, feel free to include the
 Security Team (`@gitlab-com/gl-security`) in the review.
 
 Depending on the areas your merge request touches, it must be **approved** by one
-or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
+or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
 For approvals, we use the approval functionality found in the merge request
 widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
