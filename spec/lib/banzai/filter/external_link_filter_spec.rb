@@ -49,16 +49,16 @@ describe Banzai::Filter::ExternalLinkFilter do
   end
 
   context 'for invalid urls' do
-    it 'skips broken hrefs' do
+    it 'adds rel and target attributes to broken hrefs' do
       doc = filter %q(<p><a href="don't crash on broken urls">Google</a></p>)
-      expected = %q(<p><a href="don't%20crash%20on%20broken%20urls">Google</a></p>)
+      expected = %q(<p><a href="don't%20crash%20on%20broken%20urls" rel="nofollow noreferrer noopener" target="_blank">Google</a></p>)
 
       expect(doc.to_html).to eq(expected)
     end
 
-    it 'skips improperly formatted mailtos' do
+    it 'adds rel and target to improperly formatted mailtos' do
       doc = filter %q(<p><a href="mailto://jblogs@example.com">Email</a></p>)
-      expected = %q(<p><a href="mailto://jblogs@example.com">Email</a></p>)
+      expected = %q(<p><a href="mailto://jblogs@example.com" rel="nofollow noreferrer noopener" target="_blank">Email</a></p>)
 
       expect(doc.to_html).to eq(expected)
     end
