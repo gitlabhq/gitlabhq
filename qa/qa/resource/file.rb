@@ -22,7 +22,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Show.perform(&:create_new_file!)
+        Page::Project::Show.perform(&:create_first_new_file!)
 
         Page::File::Form.perform do |page|
           page.add_name(@name)

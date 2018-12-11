@@ -7,7 +7,7 @@ module QA
 
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       before(:all) do
@@ -18,7 +18,15 @@ module QA
           project.description = 'Add file templates via the Files view'
         end
 
-        Page::Main::Menu.act { sign_out }
+        # There's no 'New File' dropdown when the project is blank, so we first
+        # add a dummy file so that the dropdown will appear
+        Resource::File.fabricate! do |file|
+          file.project = @project
+          file.name = 'README.md'
+          file.content = '# Readme'
+        end
+
+        Page::Main::Menu.perform(&:sign_out)
       end
 
       templates = [
@@ -55,7 +63,7 @@ module QA
           login
           @project.visit!
 
-          Page::Project::Show.act { create_new_file! }
+          Page::Project::Show.perform(&:create_new_file!)
           Page::File::Form.perform do |page|
             page.select_template template[:file_name], template[:name]
           end
