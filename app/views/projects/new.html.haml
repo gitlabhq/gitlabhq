@@ -4,10 +4,10 @@
 - header_title  "Projects", dashboard_projects_path
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
 
-.project-edit-container
+.project-edit-container.prepend-top-default
   .project-edit-errors
     = render 'projects/errors'
-  .row.prepend-top-default
+  .row
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
         = _('New project')
@@ -50,7 +50,7 @@
             .project-template
               .form-group
                 %div
-                  = render 'project_templates', f: f
+                  = render 'project_templates', f: f, project: @project
 
         .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
           - if import_sources_enabled?

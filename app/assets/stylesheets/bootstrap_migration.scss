@@ -18,8 +18,10 @@ $input-border: $border-color;
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
 
-html {
-  // Override default font size used in bs4
+body,
+.form-control,
+.search form {
+  // Override default font size used in non-csslab UI
   font-size: 14px;
 }
 
@@ -335,4 +337,13 @@ input[type=color].form-control {
 // Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
 .input-group-btn:last-child {
   @extend .input-group-append;
+}
+
+/*
+ Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
+ so we need to reset the vertical alignment to the default value. See:
+ - https://gitlab.com/gitlab-org/gitlab-ce/issues/51362
+ */
+svg {
+  vertical-align: baseline;
 }

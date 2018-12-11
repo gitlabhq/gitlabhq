@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Generated from:
 # SVG element list: https://www.w3.org/TR/SVG/eltindex.html
 # SVG Attribute list: https://www.w3.org/TR/SVG/attindex.html

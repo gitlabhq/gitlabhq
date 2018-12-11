@@ -5,7 +5,7 @@ describe Clusters::Applications::Prometheus do
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
-  include_examples 'cluster application helm specs', :clusters_applications_knative
+  include_examples 'cluster application helm specs', :clusters_applications_prometheus
 
   describe '.installed' do
     subject { described_class.installed }
@@ -35,7 +35,7 @@ describe Clusters::Applications::Prometheus do
 
   describe 'transition to installed' do
     let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, projects: [project]) }
+    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
     let(:prometheus_service) { double('prometheus_service') }
 
     subject { create(:clusters_applications_prometheus, :installing, cluster: cluster) }

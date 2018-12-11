@@ -131,10 +131,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-if="showPagination"
-    class="gl-pagination prepend-top-default"
-  >
+  <div v-if="showPagination" class="gl-pagination prepend-top-default">
     <ul class="pagination justify-content-center">
       <li
         v-for="(item, index) in getItems"
@@ -148,14 +145,11 @@ export default {
           'd-none d-md-block': hideOnSmallScreen(item),
           separator: item.separator,
           active: item.active,
-          disabled: item.disabled || item.separator
+          disabled: item.disabled || item.separator,
         }"
         class="page-item"
       >
-        <a
-          class="page-link"
-          @click.prevent="changePage(item.title, item.disabled)"
-        >
+        <a class="page-link" @click.prevent="changePage(item.title, item.disabled);">
           {{ item.title }}
         </a>
       </li>

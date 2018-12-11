@@ -61,13 +61,8 @@ export default {
 
 <template>
   <div>
-    <div
-      class="js-gcp-zone-dropdown dropdown"
-    >
-      <dropdown-hidden-input
-        :name="fieldName"
-        :value="selectedZone"
-      />
+    <div class="js-gcp-zone-dropdown dropdown">
+      <dropdown-hidden-input :name="fieldName" :value="selectedZone" />
       <dropdown-button
         :class="{ 'border-danger': hasErrors }"
         :is-disabled="isDisabled"
@@ -86,29 +81,21 @@ export default {
                 {{ s__('ClusterIntegration|No zones matched your search') }}
               </span>
             </li>
-            <li
-              v-for="result in results"
-              :key="result.id"
-            >
-              <button
-                type="button"
-                @click.prevent="setItem(result.name)"
-              >
+            <li v-for="result in results" :key="result.id">
+              <button type="button" @click.prevent="setItem(result.name);">
                 {{ result.name }}
               </button>
             </li>
           </ul>
         </div>
-        <div class="dropdown-loading">
-          <gl-loading-icon />
-        </div>
+        <div class="dropdown-loading"><gl-loading-icon /></div>
       </div>
     </div>
     <span
       v-if="hasErrors"
       :class="{
         'text-danger': hasErrors,
-        'text-muted': !hasErrors
+        'text-muted': !hasErrors,
       }"
       class="form-text"
     >

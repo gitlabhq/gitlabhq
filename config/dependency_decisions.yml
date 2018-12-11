@@ -470,8 +470,8 @@
 - - :license
   - pikaday
   - MIT
-  - :who: 
-    :why: 
+  - :who: Filipa Lacerda
+    :why: MIT License
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
 - - :license
@@ -544,13 +544,6 @@
     :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
     :versions: []
     :when: 2018-06-08 05:30:56.764116000 Z
-- - :license
-  - "@gitlab-org/gitlab-ui"
-  - MIT
-  - :who: Clement Ho
-    :why: Our own library
-    :versions: []
-    :when: 2018-07-17 21:02:54.529227000 Z
 - - :approve
   - lz-string
   - :who: Phil Hughes
@@ -599,3 +592,10 @@
       in compiled/distributed product so attribution not needed.
     :versions: []
     :when: 2018-10-02 19:23:54.840151000 Z
+- - :license
+  - echarts
+  - Apache 2.0
+  - :who: Adriel Santiago
+    :why: https://github.com/apache/incubator-echarts/blob/master/LICENSE
+    :versions: []
+    :when: 2018-12-07 20:46:12.421256000 Z

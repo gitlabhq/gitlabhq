@@ -55,11 +55,11 @@ describe 'User creates branch and merge request on issue page', :js do
           test_branch_name_checking(input_branch_name)
           test_source_checking(input_source)
 
-          # The button inside dropdown should be disabled if any errors occured.
+          # The button inside dropdown should be disabled if any errors occurred.
           expect(page).to have_button('Create branch', disabled: true)
         end
 
-        # The top level button should be disabled if any errors occured.
+        # The top level button should be disabled if any errors occurred.
         expect(page).to have_button('Create branch', disabled: true)
       end
 
@@ -76,7 +76,7 @@ describe 'User creates branch and merge request on issue page', :js do
 
           visit project_issue_path(project, issue)
 
-          expect(page).to have_content('created branch 1-cherry-coloured-funk')
+          expect(page).to have_content("created merge request !1 to address this issue")
           expect(page).to have_content('mentioned in merge request !1')
         end
 
@@ -106,7 +106,7 @@ describe 'User creates branch and merge request on issue page', :js do
 
           visit project_issue_path(project, issue)
 
-          expect(page).to have_content('created branch custom-branch-name')
+          expect(page).to have_content("created merge request !1 to address this issue")
           expect(page).to have_content('mentioned in merge request !1')
         end
 

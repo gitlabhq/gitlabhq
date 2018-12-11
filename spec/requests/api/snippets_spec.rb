@@ -94,6 +94,12 @@ describe API::Snippets do
       expect(response.body).to eq(snippet.content)
     end
 
+    it 'forces attachment content disposition' do
+      get api("/snippets/#{snippet.id}/raw", user)
+
+      expect(headers['Content-Disposition']).to match(/^attachment/)
+    end
+
     it 'returns 404 for invalid snippet id' do
       get api("/snippets/1234/raw", user)
 

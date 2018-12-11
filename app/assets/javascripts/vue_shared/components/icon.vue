@@ -106,6 +106,6 @@ export default {
     :tabindex="tabIndex"
     aria-hidden="true"
   >
-    <use v-bind="{ 'xlink:href':spriteHref }"/>
+    <use v-bind="{ 'xlink:href': spriteHref }" />
   </svg>
 </template>

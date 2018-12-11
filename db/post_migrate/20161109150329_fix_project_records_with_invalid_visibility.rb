@@ -1,4 +1,4 @@
-class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
+class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration[4.2]
   include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 

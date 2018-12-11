@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateBoardProjectRecentVisits < ActiveRecord::Migration
+class CreateBoardProjectRecentVisits < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

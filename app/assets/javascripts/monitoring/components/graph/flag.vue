@@ -117,59 +117,29 @@ export default {
 </script>
 
 <template>
-  <div
-    :style="cursorStyle"
-    class="prometheus-graph-cursor"
-  >
-    <div
-      v-if="showFlagContent"
-      :class="flagOrientation"
-      class="prometheus-graph-flag popover"
-    >
+  <div :style="cursorStyle" class="prometheus-graph-cursor">
+    <div v-if="showFlagContent" :class="flagOrientation" class="prometheus-graph-flag popover">
       <div class="arrow-shadow"></div>
       <div class="arrow"></div>
       <div class="popover-title">
-        <h5 v-if="deploymentFlagData">
-          Deployed
-        </h5>
-        {{ formatDate }}
-        <strong>{{ formatTime }}</strong>
+        <h5 v-if="deploymentFlagData">Deployed</h5>
+        {{ formatDate }} <strong>{{ formatTime }}</strong>
       </div>
-      <div
-        v-if="deploymentFlagData"
-        class="popover-content deploy-meta-content"
-      >
+      <div v-if="deploymentFlagData" class="popover-content deploy-meta-content">
         <div>
-          <icon
-            :size="12"
-            name="commit"
-          />
-          <a :href="deploymentFlagData.commitUrl">
-            {{ deploymentFlagData.sha.slice(0, 8) }}
-          </a>
+          <icon :size="12" name="commit" />
+          <a :href="deploymentFlagData.commitUrl"> {{ deploymentFlagData.sha.slice(0, 8) }} </a>
         </div>
-        <div
-          v-if="deploymentFlagData.tag"
-        >
-          <icon
-            :size="12"
-            name="label"
-          />
-          <a :href="deploymentFlagData.tagUrl">
-            {{ deploymentFlagData.ref }}
-          </a>
+        <div v-if="deploymentFlagData.tag">
+          <icon :size="12" name="label" />
+          <a :href="deploymentFlagData.tagUrl"> {{ deploymentFlagData.ref }} </a>
         </div>
       </div>
       <div class="popover-content">
         <table class="prometheus-table">
-          <tr
-            v-for="(series, index) in timeSeries"
-            :key="index"
-          >
-            <track-line :track="series"/>
-            <td>
-              {{ series.track }} {{ seriesMetricLabel(index, series) }}
-            </td>
+          <tr v-for="(series, index) in timeSeries" :key="index">
+            <track-line :track="series" />
+            <td>{{ series.track }} {{ seriesMetricLabel(index, series) }}</td>
             <td>
               <strong>{{ seriesMetricValue(index, series) }}</strong>
             </td>

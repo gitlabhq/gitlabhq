@@ -4,12 +4,8 @@ class DashboardController < Dashboard::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  FILTER_PARAMS = [
-    :author_id,
-    :assignee_id,
-    :milestone_title,
-    :label_name
-  ].freeze
+  prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
@@ -51,9 +47,12 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def check_filters_presence!
-    @no_filters_set = FILTER_PARAMS.none? { |k| params.key?(k) }
+    @no_filters_set = finder_type.scalar_params.none? { |k| params.key?(k) }
 
     return unless @no_filters_set
+
+    # Call to set selected `state` and `sort` options in view
+    finder_options
 
     respond_to do |format|
       format.html { render }

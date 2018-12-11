@@ -1,4 +1,4 @@
-class LimitsCiBuildTraceChunksRawDataForMysql < ActiveRecord::Migration
+class LimitsCiBuildTraceChunksRawDataForMysql < ActiveRecord::Migration[4.2]
   def up
     return unless Gitlab::Database.mysql?
 

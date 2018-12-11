@@ -35,6 +35,11 @@ describe Projects::BlobController do
         let(:id) { 'binary-encoding/encoding/binary-1.bin' }
         it { is_expected.to respond_with(:success) }
       end
+
+      context "Markdown file" do
+        let(:id) { 'master/README.md' }
+        it { is_expected.to respond_with(:success) }
+      end
     end
 
     context 'with file path and JSON format' do
@@ -152,7 +157,7 @@ describe Projects::BlobController do
             expect(match_line['meta_data']).to have_key('new_pos')
           end
 
-          it 'does not add top match line when when "since" is equal 1' do
+          it 'does not add top match line when "since" is equal 1' do
             do_get(since: 1, to: 10, offset: 10, from_merge_request: true)
 
             match_line = JSON.parse(response.body).first

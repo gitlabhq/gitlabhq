@@ -42,12 +42,14 @@ export default {
       :raw-code="rawInputCode"
       :count="cell.execution_count"
       :code-css-class="codeCssClass"
-      type="input" />
+      type="input"
+    />
     <output-cell
       v-if="hasOutput"
       :count="cell.execution_count"
       :output="output"
-      :code-css-class="codeCssClass" />
+      :code-css-class="codeCssClass"
+    />
   </div>
 </template>
 

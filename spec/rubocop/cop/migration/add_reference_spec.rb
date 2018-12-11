@@ -29,7 +29,7 @@ describe RuboCop::Cop::Migration::AddReference do
       expect_offense(<<~RUBY)
         call do
           add_reference(:projects, :users)
-          ^^^^^^^^^^^^^ `add_reference` requires `index: true`
+          ^^^^^^^^^^^^^ `add_reference` requires `index: true` or `index: { options... }`
         end
       RUBY
     end
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Migration::AddReference do
       expect_offense(<<~RUBY)
         def up
           add_reference(:projects, :users, index: false)
-          ^^^^^^^^^^^^^ `add_reference` requires `index: true`
+          ^^^^^^^^^^^^^ `add_reference` requires `index: true` or `index: { options... }`
         end
       RUBY
     end
@@ -47,6 +47,14 @@ describe RuboCop::Cop::Migration::AddReference do
       expect_no_offenses(<<~RUBY)
         def up
           add_reference(:projects, :users, index: true)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the index is unique' do
+      expect_no_offenses(<<~RUBY)
+        def up
+          add_reference(:projects, :users, index: { unique: true } )
         end
       RUBY
     end

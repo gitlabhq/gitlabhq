@@ -90,6 +90,8 @@ export default {
         :old-sha="diffFile.diff_refs.base_sha"
         :file-hash="diffFile.file_hash"
         :project-path="projectPath"
+        :a-mode="diffFile.a_mode"
+        :b-mode="diffFile.b_mode"
       >
         <image-diff-overlay
           slot="image-overlay"
@@ -97,10 +99,7 @@ export default {
           :file-hash="diffFile.file_hash"
           :can-comment="getNoteableData.current_user.can_create_note"
         />
-        <div
-          v-if="showNotesContainer"
-          class="note-container"
-        >
+        <div v-if="showNotesContainer" class="note-container">
           <diff-discussions
             v-if="diffFile.discussions.length"
             class="diff-file-discussions"
@@ -115,8 +114,8 @@ export default {
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handleFormUpdate="handleSaveNote"
-            @cancelForm="closeDiffFileCommentForm(diffFile.file_hash)"
-          />          
+            @cancelForm="closeDiffFileCommentForm(diffFile.file_hash);"
+          />
         </div>
       </diff-viewer>
     </div>

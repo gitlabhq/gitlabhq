@@ -6,20 +6,35 @@ module API
 
     before { authenticate! }
 
+    helpers do
+      params :optional_list_params_ee do
+        # EE::API::Namespaces would override this helper
+      end
+
+      # EE::API::Namespaces would override this method
+      def custom_namespace_present_options
+        {}
+      end
+    end
+
     resource :namespaces do
       desc 'Get a namespaces list' do
         success Entities::Namespace
       end
       params do
         optional :search, type: String, desc: "Search query for namespaces"
+
         use :pagination
+        use :optional_list_params_ee
       end
       get do
         namespaces = current_user.admin ? Namespace.all : current_user.namespaces
 
         namespaces = namespaces.search(params[:search]) if params[:search].present?
 
-        present paginate(namespaces), with: Entities::Namespace, current_user: current_user
+        options = { with: Entities::Namespace, current_user: current_user }
+
+        present paginate(namespaces), options.reverse_merge(custom_namespace_present_options)
       end
 
       desc 'Get a namespace by ID' do
@@ -28,7 +43,7 @@ module API
       params do
         requires :id, type: String, desc: "Namespace's ID or path"
       end
-      get ':id' do
+      get ':id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         present user_namespace, with: Entities::Namespace, current_user: current_user
       end
     end

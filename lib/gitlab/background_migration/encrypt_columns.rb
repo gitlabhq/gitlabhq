@@ -5,18 +5,26 @@ module Gitlab
     # EncryptColumn migrates data from an unencrypted column - `foo`, say - to
     # an encrypted column - `encrypted_foo`, say.
     #
+    # To avoid depending on a particular version of the model in app/, add a
+    # model to `lib/gitlab/background_migration/models/encrypt_columns` and use
+    # it in the migration that enqueues the jobs, so code can be shared.
+    #
     # For this background migration to work, the table that is migrated _has_ to
     # have an `id` column as the primary key. Additionally, the encrypted column
     # should be managed by attr_encrypted, and map to an attribute with the same
     # name as the unencrypted column (i.e., the unencrypted column should be
-    # shadowed).
+    # shadowed), unless you want to define specific methods / accessors in the
+    # temporary model in `/models/encrypt_columns/your_model.rb`.
     #
-    # To avoid depending on a particular version of the model in app/, add a
-    # model to `lib/gitlab/background_migration/models/encrypt_columns` and use
-    # it in the migration that enqueues the jobs, so code can be shared.
     class EncryptColumns
       def perform(model, attributes, from, to)
         model = model.constantize if model.is_a?(String)
+
+        # If sidekiq hasn't undergone a restart, its idea of what columns are
+        # present may be inaccurate, so ensure this is as fresh as possible
+        model.reset_column_information
+        model.define_attribute_methods
+
         attributes = expand_attributes(model, Array(attributes).map(&:to_sym))
 
         model.transaction do
@@ -30,6 +38,10 @@ module Gitlab
         end
       end
 
+      def clear_migrated_values?
+        true
+      end
+
       private
 
       # Build a hash of { attribute => encrypted column name }
@@ -40,6 +52,14 @@ module Gitlab
 
           raise "Couldn't determine encrypted column for #{klass}##{attribute}" if
             crypt_column_name.nil?
+
+          raise "#{klass} source column: #{attribute} is missing" unless
+            klass.column_names.include?(attribute.to_s)
+
+          # Running the migration without the destination column being present
+          # leads to data loss
+          raise "#{klass} destination column: #{crypt_column_name} is missing" unless
+            klass.column_names.include?(crypt_column_name.to_s)
 
           [attribute, crypt_column_name]
         end
@@ -58,7 +78,10 @@ module Gitlab
 
         if instance.changed?
           instance.save!
-          instance.update_columns(to_clear)
+
+          if clear_migrated_values?
+            instance.update_columns(to_clear)
+          end
         end
       end
 

@@ -1,8 +1,8 @@
 - if current_user
   .dropdown
-    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
-      = icon('globe')
-      %span.light= _("Visibility:")
+    %button.dropdown-menu-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
+      = icon('globe', class: 'mt-1')
+      %span.light.ml-3= _("Visibility:")
       - if params[:visibility_level].present?
         = visibility_level_label(params[:visibility_level].to_i)
       - else

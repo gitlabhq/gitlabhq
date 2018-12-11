@@ -19,25 +19,23 @@ export default {
 </script>
 <template>
   <div class="mr-widget-body media">
-    <status-icon
-      :show-disabled-button="true"
-      status="warning"
-    />
+    <status-icon :show-disabled-button="true" status="warning" />
 
     <div class="media-body space-children">
-      <span
-        v-if="mr.shouldBeRebased"
-        class="bold"
-      >
-        {{ s__(`mrWidget|Fast-forward merge is not possible.
-To merge this request, first rebase locally.`) }}
+      <span v-if="mr.shouldBeRebased" class="bold">
+        {{
+          s__(`mrWidget|Fast-forward merge is not possible.
+To merge this request, first rebase locally.`)
+        }}
       </span>
       <template v-else>
         <span class="bold">
-          {{ s__("mrWidget|There are merge conflicts") }}<span v-if="!mr.canMerge">.</span>
+          {{ s__('mrWidget|There are merge conflicts') }}<span v-if="!mr.canMerge">.</span>
           <span v-if="!mr.canMerge">
-            {{ s__(`mrWidget|Resolve these conflicts or ask someone
-            with write access to this repository to merge it locally`) }}
+            {{
+              s__(`mrWidget|Resolve these conflicts or ask someone
+            with write access to this repository to merge it locally`)
+            }}
           </span>
         </span>
         <a
@@ -45,7 +43,7 @@ To merge this request, first rebase locally.`) }}
           :href="mr.conflictResolutionPath"
           class="js-resolve-conflicts-button btn btn-default btn-sm"
         >
-          {{ s__("mrWidget|Resolve conflicts") }}
+          {{ s__('mrWidget|Resolve conflicts') }}
         </a>
         <button
           v-if="mr.canMerge"
@@ -53,7 +51,7 @@ To merge this request, first rebase locally.`) }}
           data-toggle="modal"
           data-target="#modal_merge_info"
         >
-          {{ s__("mrWidget|Merge locally") }}
+          {{ s__('mrWidget|Merge locally') }}
         </button>
       </template>
     </div>

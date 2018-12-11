@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ImportCommonMetrics < ActiveRecord::Migration
+class ImportCommonMetrics < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   require Rails.root.join('db/importers/common_metrics_importer.rb')

@@ -1,5 +1,5 @@
 import { s__ } from '../../locale';
-import { INGRESS, JUPYTER, KNATIVE } from '../constants';
+import { INGRESS, JUPYTER, KNATIVE, CERT_MANAGER } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -23,6 +23,14 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           externalIp: null,
+        },
+        cert_manager: {
+          title: s__('ClusterIntegration|Cert-Manager'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+          email: null,
         },
         runner: {
           title: s__('ClusterIntegration|GitLab Runner'),
@@ -53,6 +61,7 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           hostname: null,
+          externalIp: null,
         },
       },
     };
@@ -95,6 +104,9 @@ export default class ClusterStore {
 
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
+      } else if (appId === CERT_MANAGER) {
+        this.state.applications.cert_manager.email =
+          this.state.applications.cert_manager.email || serverAppEntry.email;
       } else if (appId === JUPYTER) {
         this.state.applications.jupyter.hostname =
           serverAppEntry.hostname ||
@@ -104,6 +116,8 @@ export default class ClusterStore {
       } else if (appId === KNATIVE) {
         this.state.applications.knative.hostname =
           serverAppEntry.hostname || this.state.applications.knative.hostname;
+        this.state.applications.knative.externalIp =
+          serverAppEntry.external_ip || this.state.applications.knative.externalIp;
       }
     });
   }

@@ -226,9 +226,10 @@ describe GroupsController do
     end
 
     context 'searching' do
-      # Remove as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/52271
       before do
+        # Remove in https://gitlab.com/gitlab-org/gitlab-ce/issues/54643
         stub_feature_flags(use_cte_for_group_issues_search: false)
+        stub_feature_flags(use_subquery_for_group_issues_search: true)
       end
 
       it 'works with popularity sort' do
@@ -603,6 +604,26 @@ describe GroupsController do
 
       it 'should be denied' do
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  context 'token authentication' do
+    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
+      before do
+        default_params.merge!(id: group)
+      end
+    end
+
+    it_behaves_like 'authenticates sessionless user', :issues, :atom, public: true do
+      before do
+        default_params.merge!(id: group, author_id: user.id)
+      end
+    end
+
+    it_behaves_like 'authenticates sessionless user', :issues_calendar, :ics, public: true do
+      before do
+        default_params.merge!(id: group)
       end
     end
   end

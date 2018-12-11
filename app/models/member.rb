@@ -7,6 +7,7 @@ class Member < ActiveRecord::Base
   include Expirable
   include Gitlab::Access
   include Presentable
+  include Gitlab::Utils::StrongMemoize
 
   attr_accessor :raw_invite_token
 
@@ -22,6 +23,7 @@ class Member < ActiveRecord::Base
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
+  validate :higher_access_level_than_group, unless: :importing?
   validates :invite_email,
     presence: {
       if: :invite?
@@ -152,11 +154,13 @@ class Member < ActiveRecord::Base
 
       return member unless can_update_member?(current_user, member)
 
-      member.attributes = {
-        created_by: member.created_by || current_user,
-        access_level: access_level,
-        expires_at: expires_at
-      }
+      set_member_attributes(
+        member,
+        access_level,
+        current_user: current_user,
+        expires_at: expires_at,
+        ldap: ldap
+      )
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
@@ -173,6 +177,18 @@ class Member < ActiveRecord::Base
 
       member
       # rubocop: enable CodeReuse/ServiceClass
+    end
+
+    # Populates the attributes of a member.
+    #
+    # This logic resides in a separate method so that EE can extend this logic,
+    # without having to patch the `add_user` method directly.
+    def set_member_attributes(member, access_level, current_user: nil, expires_at: nil, ldap: false)
+      member.attributes = {
+        created_by: member.created_by || current_user,
+        access_level: access_level,
+        expires_at: expires_at
+      }
     end
 
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
@@ -350,6 +366,15 @@ class Member < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  # Find the user's group member with a highest access level
+  def highest_group_member
+    strong_memoize(:highest_group_member) do
+      next unless user_id && source&.ancestors&.any?
+
+      GroupMember.where(source: source.ancestors, user_id: user_id).order(:access_level).last
+    end
+  end
+
   private
 
   def send_invite
@@ -415,5 +440,13 @@ class Member < ActiveRecord::Base
 
   def notifiable_options
     {}
+  end
+
+  def higher_access_level_than_group
+    if highest_group_member && highest_group_member.access_level >= access_level
+      error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
+
+      errors.add(:access_level, s_("should be higher than %{access} inherited membership from group %{group_name}") % error_parameters)
+    end
   end
 end

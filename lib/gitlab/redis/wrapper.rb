@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file should only be used by sub-classes, not directly by any clients of the sub-classes
 # please require all dependencies below:
 require 'active_support/core_ext/hash/keys'

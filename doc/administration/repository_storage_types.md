@@ -94,6 +94,23 @@ need to be performed on these nodes as well. Database changes will propagate wit
 You must make sure the migration event was already processed or otherwise it may migrate
 the files back to Hashed state again.
 
+#### Hashed object pools
+
+For deduplication of public forks and their parent repository, objects are pooled
+in an object pool. These object pools are a third repository where shared objects
+are stored.
+
+```ruby
+# object pool paths
+"@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
+```
+
+The object pool feature is behind the `object_pools` feature flag, and can be
+enabled for individual projects by executing
+`Feature.enable(:object_pools, Project.find(<id>))`. Note that the project has to
+be on hashed storage, should not be a fork itself, and hashed storage should be
+enabled for all new projects.
+
 ##### Attachments
 
 To rollback single Attachment migration, rename `aa/bb/abcdef1234567890...` folder back to `namespace/project`.

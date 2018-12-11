@@ -197,9 +197,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has the correct number of pipelines and statuses' do
-          expect(@project.pipelines.size).to eq(5)
+          expect(@project.ci_pipelines.size).to eq(5)
 
-          @project.pipelines.zip([2, 2, 2, 2, 2])
+          @project.ci_pipelines.zip([2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end
@@ -297,7 +297,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                       issues: 1,
                       labels: 1,
                       milestones: 1,
-                      first_issue_labels: 1
+                      first_issue_labels: 1,
+                      services: 1
 
       context 'project.json file access check' do
         it 'does not read a symlink' do
@@ -380,6 +381,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       before do
         project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+      end
+
+      it 'does not import any templated services' do
+        restored_project_json
+
+        expect(project.services.where(template: true).count).to eq(0)
       end
 
       it 'imports labels' do

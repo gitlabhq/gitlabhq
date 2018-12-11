@@ -1,5 +1,5 @@
 - @no_container = true
-- page_title "Metrics for environment", @environment.name
+- page_title _("Metrics for environment"), @environment.name
 
 .prometheus-container{ class: container_class }
   #prometheus-graphs{ data: metrics_data(@project, @environment) }

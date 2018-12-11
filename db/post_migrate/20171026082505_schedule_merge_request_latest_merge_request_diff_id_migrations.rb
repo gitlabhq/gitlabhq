@@ -1,4 +1,4 @@
-class ScheduleMergeRequestLatestMergeRequestDiffIdMigrations < ActiveRecord::Migration
+class ScheduleMergeRequestLatestMergeRequestDiffIdMigrations < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

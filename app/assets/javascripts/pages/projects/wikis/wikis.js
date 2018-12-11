@@ -1,5 +1,4 @@
 import bp from '../../../breakpoints';
-import { slugify } from '../../../lib/utils/text_utility';
 import { parseQueryStringIntoObject } from '../../../lib/utils/common_utils';
 import { mergeUrlParams, redirectTo } from '../../../lib/utils/url_utility';
 
@@ -26,7 +25,8 @@ export default class Wikis {
     if (!this.newWikiForm) return;
 
     const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
-    const slug = slugify(slugInput.value);
+
+    const slug = slugInput.value;
 
     if (slug.length > 0) {
       const wikisPath = slugInput.getAttribute('data-wikis-path');

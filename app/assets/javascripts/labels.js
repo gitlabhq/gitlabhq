@@ -22,7 +22,7 @@ export default class Labels {
   updateColorPreview() {
     const previewColor = $('input#label_color').val();
     return $('div.label-color-preview').css('background-color', previewColor);
-    // Updates the the preview color with the hex-color input
+    // Updates the preview color with the hex-color input
   }
 
   // Updates the preview color with a click on a suggested color

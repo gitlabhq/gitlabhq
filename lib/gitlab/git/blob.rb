@@ -1,4 +1,4 @@
-# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+# frozen_string_literal: true
 
 module Gitlab
   module Git

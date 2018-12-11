@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateLabelPriorities < ActiveRecord::Migration
+class CreateLabelPriorities < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

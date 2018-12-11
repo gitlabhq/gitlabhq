@@ -82,16 +82,8 @@ export default {
 <template>
   <div class="dropdown">
     <div class="btn-group">
-      <slot
-        name="mainAction"
-        :class-name="className"
-      >
-        <button
-          type="button"
-          :class="className"
-        >
-          {{ title }}
-        </button>
+      <slot name="mainAction" :class-name="className">
+        <button type="button" :class="className">{{ title }}</button>
       </slot>
 
       <button
@@ -103,10 +95,7 @@ export default {
         aria-expanded="false"
         aria-label="Expand dropdown"
       >
-        <icon
-          name="angle-down"
-          :size="12"
-        />
+        <icon name="angle-down" :size="12" />
       </button>
       <div class="dropdown-menu dropdown-menu-right">
         <div class="dropdown-input">
@@ -117,25 +106,13 @@ export default {
             placeholder="Filter"
             class="js-filtered-dropdown-input dropdown-input-field"
           />
-          <icon
-            class="dropdown-input-search"
-            name="search"
-          />
+          <icon class="dropdown-input-search" name="search" />
         </div>
 
         <div class="dropdown-content">
           <ul>
-            <li
-              v-for="(result, i) in filteredResults"
-              :key="i"
-              class="js-filtered-dropdown-result"
-            >
-              <slot
-                name="result"
-                :result="result"
-              >
-                {{ result[filterKey] }}
-              </slot>
+            <li v-for="(result, i) in filteredResults" :key="i" class="js-filtered-dropdown-result">
+              <slot name="result" :result="result"> {{ result[filterKey] }} </slot>
             </li>
           </ul>
         </div>

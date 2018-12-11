@@ -7,9 +7,9 @@ module Gitlab
         ##
         # Entry that represents a concrete CI/CD job.
         #
-        class Job < Node
-          include Configurable
-          include Attributable
+        class Job < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
                             allow_failure type stage when start_in artifacts cache
@@ -65,10 +65,10 @@ module Gitlab
           entry :services, Entry::Services,
             description: 'Services that will be used to execute this job.'
 
-          entry :only, Entry::Policy,
+          entry :only, Entry::OnlyPolicy,
             description: 'Refs policy this job will be executed for.'
 
-          entry :except, Entry::Policy,
+          entry :except, Entry::ExceptPolicy,
             description: 'Refs policy this job will be executed for.'
 
           entry :variables, Entry::Variables,

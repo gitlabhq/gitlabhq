@@ -93,7 +93,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::String do
   end
 
   describe '#evaluate' do
-    it 'returns string value it is is present' do
+    it 'returns string value if it is present' do
       string = described_class.new('my string')
 
       expect(string.evaluate).to eq 'my string'

@@ -31,16 +31,6 @@
 
   .timeline-entry-inner {
     position: relative;
-
-    @include notes-media('max', map-get($grid-breakpoints, sm)) {
-      .timeline-icon {
-        display: none;
-      }
-
-      .timeline-content {
-        margin-left: 0;
-      }
-    }
   }
 
   &:target,

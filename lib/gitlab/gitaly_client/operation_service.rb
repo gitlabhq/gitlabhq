@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class OperationService
@@ -383,7 +385,8 @@ module Gitlab
           file_path: encode_binary(action[:file_path]),
           previous_path: encode_binary(action[:previous_path]),
           base64_content: action[:encoding] == 'base64',
-          execute_filemode: !!action[:execute_filemode]
+          execute_filemode: !!action[:execute_filemode],
+          infer_content: !!action[:infer_content]
         )
       rescue RangeError
         raise ArgumentError, "Unknown action '#{action[:action]}'"

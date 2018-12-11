@@ -166,7 +166,7 @@ class Notify < BaseMailer
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = [message_id(model)]
 
-    headers[:subject]&.prepend('Re: ')
+    headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 
     mail_thread(model, headers)
   end

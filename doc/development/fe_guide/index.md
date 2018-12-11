@@ -54,6 +54,9 @@ Vuex specific design patterns and practices.
 ## [Axios](axios.md)
 Axios specific practices and gotchas.
 
+## [GraphQL](graphql.md)
+How to use GraphQL
+
 ## [Icons and Illustrations](icons.md)
 How we use SVG for our Icons and Illustrations.
 

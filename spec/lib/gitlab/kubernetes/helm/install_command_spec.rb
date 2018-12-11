@@ -26,7 +26,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
   it_behaves_like 'helm commands' do
     let(:commands) do
       <<~EOS
-      helm init --client-only
+      helm init --upgrade
+      for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
       helm repo add app-name https://repository.example.com
       helm repo update
       #{helm_install_comand}
@@ -42,6 +43,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         --tls-cert /data/helm/app-name/config/cert.pem
         --tls-key /data/helm/app-name/config/key.pem
         --version 1.2.3
+        --set rbac.create\\=false,rbac.enabled\\=false
         --namespace gitlab-managed-apps
         -f /data/helm/app-name/config/values.yaml
       EOS
@@ -54,7 +56,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -84,7 +87,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         #{helm_install_command}
         EOS
       end
@@ -98,6 +102,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
           --tls-cert /data/helm/app-name/config/cert.pem
           --tls-key /data/helm/app-name/config/key.pem
           --version 1.2.3
+          --set rbac.create\\=false,rbac.enabled\\=false
           --namespace gitlab-managed-apps
           -f /data/helm/app-name/config/values.yaml
         EOS
@@ -111,7 +116,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -122,7 +128,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS.strip
         /bin/date
         /bin/true
-        helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml
+        helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --set rbac.create\\=false,rbac.enabled\\=false --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml
         EOS
       end
     end
@@ -134,7 +140,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -143,7 +150,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
 
       let(:helm_install_command) do
         <<~EOS.strip
-        helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml
+        helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --set rbac.create\\=false,rbac.enabled\\=false --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml
         /bin/date
         /bin/false
         EOS
@@ -157,7 +164,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -169,6 +177,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         helm install chart-name
            --name app-name
            --version 1.2.3
+           --set rbac.create\\=false,rbac.enabled\\=false
            --namespace gitlab-managed-apps
            -f /data/helm/app-name/config/values.yaml
         EOS
@@ -182,7 +191,8 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --client-only
+        helm init --upgrade
+        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -197,6 +207,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
           --tls-ca-cert /data/helm/app-name/config/ca.pem
           --tls-cert /data/helm/app-name/config/cert.pem
           --tls-key /data/helm/app-name/config/key.pem
+          --set rbac.create\\=false,rbac.enabled\\=false
           --namespace gitlab-managed-apps
           -f /data/helm/app-name/config/values.yaml
         EOS

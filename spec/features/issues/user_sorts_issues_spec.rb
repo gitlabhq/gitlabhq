@@ -20,13 +20,13 @@ describe "User sorts issues" do
   end
 
   it 'keeps the sort option' do
-    find('button.dropdown-toggle').click
+    find('.filter-dropdown-container .dropdown').click
 
-    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+    page.within('ul.dropdown-menu.dropdown-menu-right li') do
       click_link('Milestone')
     end
 
-    visit(issues_dashboard_path(assignee_id: user.id))
+    visit(issues_dashboard_path(assignee_username: user.username))
 
     expect(find('.issues-filters a.is-active')).to have_content('Milestone')
 
@@ -40,9 +40,9 @@ describe "User sorts issues" do
   end
 
   it "sorts by popularity" do
-    find("button.dropdown-toggle").click
+    find('.filter-dropdown-container .dropdown').click
 
-    page.within(".content ul.dropdown-menu.dropdown-menu-right li") do
+    page.within('ul.dropdown-menu.dropdown-menu-right li') do
       click_link("Popularity")
     end
 

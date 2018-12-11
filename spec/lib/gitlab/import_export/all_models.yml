@@ -94,6 +94,7 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
+- merge_request_pipelines
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -102,7 +103,7 @@ merge_request_diff_commits:
 - merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
-pipelines:
+ci_pipelines:
 - project
 - user
 - stages
@@ -121,6 +122,9 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- merge_request
+- deployments
+- environments
 pipeline_variables:
 - pipeline
 stages:
@@ -245,6 +249,7 @@ project:
 - protected_branches
 - protected_tags
 - project_members
+- project_repository
 - users
 - requesters
 - deploy_keys_projects
@@ -260,7 +265,8 @@ project:
 - notification_settings
 - import_data
 - commit_statuses
-- pipelines
+- ci_pipelines
+- all_pipelines
 - stages
 - builds
 - runner_projects
@@ -281,6 +287,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- file_uploads
 - import_state
 - members_and_requesters
 - build_trace_section_names
@@ -301,6 +308,7 @@ project:
 - import_export_upload
 - repository_languages
 - pool_repository
+- kubernetes_namespaces
 award_emoji:
 - awardable
 - user

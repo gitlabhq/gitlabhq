@@ -7,7 +7,7 @@ module Commits
     # - user: `User` that will be the committer
     # - params:
     #   - branch_name: `String` the branch that will be committed into
-    #   - start_branch: `String` the branch that will will started from
+    #   - start_branch: `String` the branch that will be started from
     #   - patches: `Gitlab::Git::Patches::Collection` that contains the patches
     def initialize(*args)
       super

@@ -44,7 +44,7 @@ describe PipelineEntity do
         expect(subject).to include :flags
         expect(subject[:flags])
           .to include :latest, :stuck, :auto_devops,
-                      :yaml_errors, :retryable, :cancelable
+                      :yaml_errors, :retryable, :cancelable, :merge_request
       end
     end
 

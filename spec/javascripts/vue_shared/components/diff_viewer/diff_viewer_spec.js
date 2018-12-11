@@ -68,4 +68,30 @@ describe('DiffViewer', () => {
       done();
     });
   });
+
+  it('renders renamed component', () => {
+    createComponent({
+      diffMode: 'renamed',
+      newPath: 'test.abc',
+      newSha: 'ABC',
+      oldPath: 'testold.abc',
+      oldSha: 'DEF',
+    });
+
+    expect(vm.$el.textContent).toContain('File moved');
+  });
+
+  it('renders mode changed component', () => {
+    createComponent({
+      diffMode: 'mode_changed',
+      newPath: 'test.abc',
+      newSha: 'ABC',
+      oldPath: 'testold.abc',
+      oldSha: 'DEF',
+      aMode: '123',
+      bMode: '321',
+    });
+
+    expect(vm.$el.textContent).toContain('File mode changed from 123 to 321');
+  });
 });

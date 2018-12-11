@@ -38,6 +38,12 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.INSTALLING,
             status_reason: 'Cannot connect',
           },
+          {
+            name: 'cert_manager',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            email: 'test@example.com',
+          },
         ],
       },
     },
@@ -77,6 +83,12 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.INSTALLABLE,
             status_reason: 'Cannot connect',
           },
+          {
+            name: 'cert_manager',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            email: 'test@example.com',
+          },
         ],
       },
     },
@@ -84,6 +96,7 @@ const CLUSTERS_MOCK_DATA = {
   POST: {
     '/gitlab-org/gitlab-shell/clusters/1/applications/helm': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/cert_manager': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},

@@ -24,7 +24,7 @@ import BoardSidebar from './components/board_sidebar';
 import initNewListDropdown from './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
-import { NavigationType } from '~/lib/utils/common_utils';
+import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
 
 let issueBoardsApp;
 
@@ -60,7 +60,7 @@ export default () => {
       boardsEndpoint: $boardApp.dataset.boardsEndpoint,
       listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
-      disabled: $boardApp.dataset.disabled === 'true',
+      disabled: parseBoolean($boardApp.dataset.disabled),
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,

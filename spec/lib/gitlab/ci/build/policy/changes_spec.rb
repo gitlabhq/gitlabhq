@@ -4,7 +4,7 @@ describe Gitlab::Ci::Build::Policy::Changes do
   set(:project) { create(:project) }
 
   describe '#satisfied_by?' do
-    describe 'paths matching matching' do
+    describe 'paths matching' do
       let(:pipeline) do
         build(:ci_empty_pipeline, project: project,
                                   ref: 'master',
@@ -49,6 +49,12 @@ describe Gitlab::Ci::Build::Policy::Changes do
         expect(policy).to be_satisfied_by(pipeline, seed)
       end
 
+      it 'is satisfied by matching a pattern with a glob' do
+        policy = described_class.new(%w[some/**/*.{rb,txt}])
+
+        expect(policy).to be_satisfied_by(pipeline, seed)
+      end
+
       it 'is not satisfied when pattern does not match path' do
         policy = described_class.new(%w[some/*.rb])
 
@@ -57,6 +63,12 @@ describe Gitlab::Ci::Build::Policy::Changes do
 
       it 'is not satisfied when pattern does not match' do
         policy = described_class.new(%w[invalid/*.md])
+
+        expect(policy).not_to be_satisfied_by(pipeline, seed)
+      end
+
+      it 'is not satified when pattern with glob does not match' do
+        policy = described_class.new(%w[invalid/*.{md,rake}])
 
         expect(policy).not_to be_satisfied_by(pipeline, seed)
       end

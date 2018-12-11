@@ -1,5 +1,5 @@
 # rubocop:disable Migration/SaferBooleanColumn
-class AddHelpPageHideCommercialContentToApplicationSettings < ActiveRecord::Migration
+class AddHelpPageHideCommercialContentToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

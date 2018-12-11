@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'airborne'
 require 'active_support/core_ext/object/deep_dup'
 require 'capybara/dsl'
 
 module QA
   module Resource
     module ApiFabricator
-      include Airborne
       include Capybara::DSL
 
       HTTP_STATUS_OK = 200
@@ -43,6 +41,7 @@ module QA
 
       private
 
+      include Support::Api
       attr_writer :api_resource, :api_response
 
       def resource_web_url(resource)
@@ -82,10 +81,6 @@ module QA
         @api_client ||= begin
           Runtime::API::Client.new(:gitlab, is_new_session: !current_url.start_with?('http'))
         end
-      end
-
-      def parse_body(response)
-        JSON.parse(response.body, symbolize_names: true)
       end
 
       def process_api_response(parsed_response)

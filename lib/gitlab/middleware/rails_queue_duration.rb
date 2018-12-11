@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This Rack middleware is intended to measure the latency between
 # gitlab-workhorse forwarding a request to the Rails application and the
 # time this middleware is reached.

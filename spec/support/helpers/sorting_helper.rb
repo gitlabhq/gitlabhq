@@ -10,7 +10,7 @@
 #
 module SortingHelper
   def sorting_by(value)
-    find('button.dropdown-toggle').click
+    find('.filter-dropdown-container button.dropdown-menu-toggle').click
     page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
       click_link value
     end

@@ -39,7 +39,7 @@ describe('note_edited_text', () => {
   });
 
   it('should render provided user information', () => {
-    const authorLink = vm.$el.querySelector('.js-vue-author');
+    const authorLink = vm.$el.querySelector('.js-user-link');
 
     expect(authorLink.getAttribute('href')).toEqual(props.editedBy.path);
     expect(authorLink.textContent.trim()).toEqual(props.editedBy.name);

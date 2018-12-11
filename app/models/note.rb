@@ -131,7 +131,7 @@ class Note < ActiveRecord::Base
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
     includes(:author, :noteable, :updated_by,
-             project: [:project_members, { group: [:group_members] }])
+             project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
 
@@ -324,7 +324,7 @@ class Note < ActiveRecord::Base
   end
 
   def to_ability_name
-    for_personal_snippet? ? 'personal_snippet' : noteable_type.underscore
+    for_snippet? ? noteable.class.name.underscore : noteable_type.underscore
   end
 
   def can_be_discussion_note?

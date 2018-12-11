@@ -256,16 +256,48 @@ describe IssuesFinder do
           create(:label_link, label: label2, target: issue2)
         end
 
-        it 'returns the unique issues with any of those labels' do
+        it 'returns the unique issues with all those labels' do
+          expect(issues).to contain_exactly(issue2)
+        end
+      end
+
+      context 'filtering by a label that includes any or none in the title' do
+        let(:params) { { label_name: [label.title, label2.title].join(',') } }
+        let(:label) { create(:label, title: 'any foo', project: project2) }
+        let(:label2) { create(:label, title: 'bar none', project: project2) }
+
+        it 'returns the unique issues with all those labels' do
+          create(:label_link, label: label2, target: issue2)
+
           expect(issues).to contain_exactly(issue2)
         end
       end
 
       context 'filtering by no label' do
-        let(:params) { { label_name: Label::None.title } }
+        let(:params) { { label_name: described_class::FILTER_NONE } }
 
         it 'returns issues with no labels' do
           expect(issues).to contain_exactly(issue1, issue3, issue4)
+        end
+      end
+
+      context 'filtering by legacy No+Label' do
+        let(:params) { { label_name: Label::NONE } }
+
+        it 'returns issues with no labels' do
+          expect(issues).to contain_exactly(issue1, issue3, issue4)
+        end
+      end
+
+      context 'filtering by any label' do
+        let(:params) { { label_name: described_class::FILTER_ANY } }
+
+        it 'returns issues that have one or more label' do
+          2.times do
+            create(:label_link, label: create(:label, project: project2), target: issue3)
+          end
+
+          expect(issues).to contain_exactly(issue2, issue3)
         end
       end
 
@@ -605,6 +637,133 @@ describe IssuesFinder do
 
           subject
         end
+      end
+    end
+  end
+
+  describe '#use_subquery_for_search?' do
+    let(:finder) { described_class.new(nil, params) }
+
+    before do
+      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      stub_feature_flags(use_subquery_for_group_issues_search: true)
+    end
+
+    context 'when there is no search param' do
+      let(:params) { { attempt_group_search_optimizations: true } }
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the database is not Postgres' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the attempt_group_search_optimizations param is falsey' do
+      let(:params) { { search: 'foo' } }
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the use_subquery_for_group_issues_search flag is disabled' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_subquery_for_group_issues_search: false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when all conditions are met' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      it 'returns true' do
+        expect(finder.use_subquery_for_search?).to be_truthy
+      end
+    end
+  end
+
+  describe '#use_cte_for_search?' do
+    let(:finder) { described_class.new(nil, params) }
+
+    before do
+      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      stub_feature_flags(use_cte_for_group_issues_search: true)
+      stub_feature_flags(use_subquery_for_group_issues_search: false)
+    end
+
+    context 'when there is no search param' do
+      let(:params) { { attempt_group_search_optimizations: true } }
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the database is not Postgres' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the attempt_group_search_optimizations param is falsey' do
+      let(:params) { { search: 'foo' } }
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the use_cte_for_group_issues_search flag is disabled' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_cte_for_group_issues_search: false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when use_subquery_for_search? is true' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_subquery_for_group_issues_search: true)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when all conditions are met' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      it 'returns true' do
+        expect(finder.use_cte_for_search?).to be_truthy
       end
     end
   end

@@ -1,6 +1,8 @@
 [[ "$TRACE" ]] && set -x
 export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 
+function echoerr() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
+
 function check_kube_domain() {
   if [ -z ${REVIEW_APPS_DOMAIN+x} ]; then
     echo "In order to deploy or use Review Apps, REVIEW_APPS_DOMAIN variable must be set"
@@ -88,19 +90,16 @@ function deploy() {
   replicas="1"
   service_enabled="false"
   postgres_enabled="$POSTGRES_ENABLED"
-  gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ce"
-  gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ce"
-  gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
-  gitlab_gitaly_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly"
-  gitlab_shell_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell"
-  gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ce"
 
-  if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
-    gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
-    gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee"
-    gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ee"
-    gitlab_workhorse_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee"
-  fi
+  IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
+  IMAGE_VERSION="${CI_PROJECT_NAME#gitlab-}"
+  gitlab_migrations_image_repository="${IMAGE_REPOSITORY}/gitlab-rails-${IMAGE_VERSION}"
+  gitlab_sidekiq_image_repository="${IMAGE_REPOSITORY}/gitlab-sidekiq-${IMAGE_VERSION}"
+  gitlab_unicorn_image_repository="${IMAGE_REPOSITORY}/gitlab-unicorn-${IMAGE_VERSION}"
+  gitlab_task_runner_image_repository="${IMAGE_REPOSITORY}/gitlab-task-runner-${IMAGE_VERSION}"
+  gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
+  gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
+  gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${IMAGE_VERSION}"
 
   # canary uses stable db
   [[ "$track" == "canary" ]] && postgres_enabled="false"
@@ -155,6 +154,8 @@ HELM_CMD=$(cat << EOF
     --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_NAME" \
     --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
     --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_NAME" \
+    --set gitlab.task-runner.image.repository="$gitlab_task_runner_image_repository" \
+    --set gitlab.task-runner.image.tag="$CI_COMMIT_REF_NAME" \
     --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
     --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
@@ -227,5 +228,124 @@ function install_external_dns() {
       --set domainFilters[0]="${domain}" \
       --set txtOwnerId="${KUBE_NAMESPACE}" \
       --set rbac.create="true"
+  fi
+}
+
+function get_pod() {
+  local app_name="${1}"
+  local status="${2-Running}"
+  get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
+  echoerr "Running '${get_pod_cmd}'"
+
+  while true; do
+    local pod_name="$(eval $get_pod_cmd)"
+    [[ "${pod_name}" == "" ]] || break
+
+    echoerr "Waiting till '${app_name}' pod is ready";
+    sleep 5;
+  done
+
+  echoerr "The pod name is '${pod_name}'."
+  echo "${pod_name}"
+}
+
+function add_license() {
+  if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
+
+  task_runner_pod=$(get_pod "task-runner");
+  if [ -z "${task_runner_pod}" ]; then echo "Task runner pod not found" && return; fi
+
+  echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
+  kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab ${task_runner_pod}:/tmp/license.gitlab
+  rm /tmp/license.gitlab
+
+  kubectl -n "$KUBE_NAMESPACE" exec -it ${task_runner_pod} -- /srv/gitlab/bin/rails runner -e production \
+    '
+    content = File.read("/tmp/license.gitlab").strip;
+    FileUtils.rm_f("/tmp/license.gitlab");
+
+    unless License.where(data:content).empty?
+      puts "License already exists";
+      Kernel.exit 0;
+    end
+
+    unless License.new(data: content).save
+      puts "Could not add license";
+      Kernel.exit 0;
+    end
+
+    puts "License added";
+    '
+}
+
+function get_job_id() {
+  local job_name="${1}"
+  local query_string="${2:+&${2}}"
+
+  local max_page=3
+  local page=1
+
+  while true; do
+    local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?per_page=100&page=${page}${query_string}"
+    echoerr "GET ${url}"
+
+    local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
+    [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
+
+    ((page++))
+  done
+
+  if [[ "${job_id}" == "" ]]; then
+    echoerr "The '${job_name}' job ID couldn't be retrieved!"
+  else
+    echoerr "The '${job_name}' job ID is ${job_id}"
+    echo "${job_id}"
+  fi
+}
+
+function play_job() {
+  local job_name="${1}"
+  local job_id=$(get_job_id "${job_name}" "scope=manual");
+  if [ -z "${job_id}" ]; then return; fi
+
+  local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}/play"
+  echoerr "POST ${url}"
+
+  local job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".web_url")
+  echo "Manual job '${job_name}' started at: ${job_url}"
+}
+
+function wait_for_job_to_be_done() {
+  local job_name="${1}"
+  local query_string="${2}"
+  local job_id=$(get_job_id "${job_name}" "${query_string}");
+  if [ -z "${job_id}" ]; then return; fi
+
+  echoerr "Waiting for the '${job_name}' job to finish..."
+
+  local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}"
+  echo "GET ${url}"
+
+  # In case the job hasn't finished yet. Keep trying until the job times out.
+  local interval=30
+  local elapsed_seconds=0
+  while true; do
+    local job_status=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".status" | sed -e s/\"//g)
+    [[ "${job_status}" == "pending" || "${job_status}" == "running" ]] || break
+
+    printf "."
+    ((elapsed_seconds+=$interval))
+    sleep ${interval}
+  done
+
+  local elapsed_minutes=$((elapsed_seconds / 60))
+  echoerr "Waited '${job_name}' for ${elapsed_minutes} minutes."
+
+  if [[ "${job_status}" == "failed" ]]; then
+    echo "The '${job_name}' failed."
+  elif [[ "${job_status}" == "manual" ]]; then
+    echo "The '${job_name}' is manual."
+  else
+    echo "The '${job_name}' passed."
   fi
 }

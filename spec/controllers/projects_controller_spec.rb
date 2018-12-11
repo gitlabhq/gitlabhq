@@ -279,7 +279,7 @@ describe ProjectsController do
         expected_query = /#{public_project.fork_network.find_forks_in(other_user.namespace).to_sql}/
 
         expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
-          .not_to exceed_query_limit(1).for_query(expected_query)
+          .not_to exceed_query_limit(2).for_query(expected_query)
       end
     end
   end
@@ -878,6 +878,28 @@ describe ProjectsController do
         post :generate_new_export, namespace_id: project.namespace, id: project
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  context 'private project with token authentication' do
+    let(:private_project) { create(:project, :private) }
+
+    it_behaves_like 'authenticates sessionless user', :show, :atom do
+      before do
+        default_params.merge!(id: private_project, namespace_id: private_project.namespace)
+
+        private_project.add_maintainer(user)
+      end
+    end
+  end
+
+  context 'public project with token authentication' do
+    let(:public_project) { create(:project, :public) }
+
+    it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
+      before do
+        default_params.merge!(id: public_project, namespace_id: public_project.namespace)
       end
     end
   end

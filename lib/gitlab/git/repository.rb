@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -67,6 +69,13 @@ module Gitlab
 
       attr_reader :storage, :gl_repository, :relative_path
 
+      # This remote name has to be stable for all types of repositories that
+      # can join an object pool. If it's structure ever changes, a migration
+      # has to be performed on the object pools to update the remote names.
+      # Else the pool can't be updated anymore and is left in an inconsistent
+      # state.
+      alias_method :object_pool_remote_name, :gl_repository
+
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
       def initialize(storage, relative_path, gl_repository)
@@ -78,7 +87,13 @@ module Gitlab
       end
 
       def ==(other)
-        [storage, relative_path] == [other.storage, other.relative_path]
+        other.is_a?(self.class) && [storage, relative_path] == [other.storage, other.relative_path]
+      end
+
+      alias_method :eql?, :==
+
+      def hash
+        [self.class, storage, relative_path].hash
       end
 
       # This method will be removed when Gitaly reaches v1.1.
@@ -439,7 +454,7 @@ module Gitlab
         gitaly_ref_client.find_ref_name(sha, ref_path)
       end
 
-      # Get refs hash which key is is the commit id
+      # Get refs hash which key is the commit id
       # and value is a Gitlab::Git::Tag or Gitlab::Git::Branch
       # Note that both inherit from Gitlab::Git::Ref
       def refs_hash
@@ -715,11 +730,11 @@ module Gitlab
         delete_refs(tmp_ref)
       end
 
-      def write_ref(ref_path, ref, old_ref: nil, shell: true)
+      def write_ref(ref_path, ref, old_ref: nil)
         ref_path = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref_path}" unless ref_path.start_with?("refs/") || ref_path == "HEAD"
 
         wrapped_gitaly_errors do
-          gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
+          gitaly_repository_client.write_ref(ref_path, ref, old_ref)
         end
       end
 
@@ -881,12 +896,6 @@ module Gitlab
 
       def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
         Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
-      end
-
-      def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-        wrapped_gitaly_errors do
-          Gitlab::GitalyClient.migrate(method, status: status, &block)
-        end
       end
 
       def clean_stale_repository_files

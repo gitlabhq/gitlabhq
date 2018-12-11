@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
@@ -23,6 +25,8 @@ module Gitlab
         end
 
         @project_members = @tree_hash.delete('project_members')
+
+        RelationRenameService.rename(@tree_hash)
 
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
@@ -212,7 +216,7 @@ module Gitlab
       end
 
       def nil_iid_pipeline?(relation_key, relation_item)
-        relation_key == 'pipelines' && relation_item['iid'].nil?
+        relation_key == 'ci_pipelines' && relation_item['iid'].nil?
       end
     end
   end

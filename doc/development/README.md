@@ -23,7 +23,7 @@ description: 'Learn how to contribute to GitLab.'
 
 ## UX and frontend guides
 
-- [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
+- [GitLab Design System](https://design.gitlab.com/) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
 - [Emoji guide](fe_guide/emojis.md)
 

@@ -224,6 +224,37 @@ describe API::Members do
         end
       end
 
+      context 'access levels' do
+        it 'does not create the member if group level is higher', :nested_groups do
+          parent = create(:group)
+
+          group.update(parent: parent)
+          project.update(group: group)
+          parent.add_developer(stranger)
+
+          post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+               user_id: stranger.id, access_level: Member::REPORTER
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']['access_level']).to eq(["should be higher than Developer inherited membership from group #{parent.name}"])
+        end
+
+        it 'creates the member if group level is lower', :nested_groups do
+          parent = create(:group)
+
+          group.update(parent: parent)
+          project.update(group: group)
+          parent.add_developer(stranger)
+
+          post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+               user_id: stranger.id, access_level: Member::MAINTAINER
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['id']).to eq(stranger.id)
+          expect(json_response['access_level']).to eq(Member::MAINTAINER)
+        end
+      end
+
       it "returns 409 if member already exists" do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              user_id: maintainer.id, access_level: Member::MAINTAINER

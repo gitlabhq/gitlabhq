@@ -4,12 +4,14 @@ module Clusters
   class Cluster < ActiveRecord::Base
     include Presentable
     include Gitlab::Utils::StrongMemoize
+    include FromUnion
 
     self.table_name = 'clusters'
 
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
+      Applications::CertManager.application_name => Applications::CertManager,
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
       Applications::Jupyter.application_name => Applications::Jupyter,
@@ -33,6 +35,7 @@ module Clusters
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
+    has_one :application_cert_manager, class_name: 'Clusters::Applications::CertManager'
     has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
     has_one :application_runner, class_name: 'Clusters::Applications::Runner'
     has_one :application_jupyter, class_name: 'Clusters::Applications::Jupyter'
@@ -84,6 +87,29 @@ module Clusters
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
 
+    scope :missing_kubernetes_namespace, -> (kubernetes_namespaces) do
+      subquery = kubernetes_namespaces.select('1').where('clusters_kubernetes_namespaces.cluster_id = clusters.id')
+
+      where('NOT EXISTS (?)', subquery)
+    end
+
+    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.installed) }
+
+    scope :preload_knative, -> {
+      preload(
+        :kubernetes_namespace,
+        :platform_kubernetes,
+        :application_knative
+      )
+    }
+
+    def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
+      hierarchy_groups = clusterable.ancestors_upto(hierarchy_order: hierarchy_order).eager_load(:clusters)
+      hierarchy_groups = hierarchy_groups.merge(current_scope) if current_scope
+
+      hierarchy_groups.flat_map(&:clusters)
+    end
+
     def status_name
       if provider
         provider.status_name
@@ -100,6 +126,7 @@ module Clusters
       [
         application_helm || build_application_helm,
         application_ingress || build_application_ingress,
+        application_cert_manager || build_application_cert_manager,
         application_prometheus || build_application_prometheus,
         application_runner || build_application_runner,
         application_jupyter || build_application_jupyter,
@@ -117,6 +144,16 @@ module Clusters
 
     def managed?
       !user?
+    end
+
+    def all_projects
+      if project_type?
+        projects
+      elsif group_type?
+        first_group.all_projects
+      else
+        Project.none
+      end
     end
 
     def first_project
@@ -137,11 +174,17 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    def find_or_initialize_kubernetes_namespace(cluster_project)
-      kubernetes_namespaces.find_or_initialize_by(
-        project: cluster_project.project,
-        cluster_project: cluster_project
-      )
+    def find_or_initialize_kubernetes_namespace_for_project(project)
+      if project_type?
+        kubernetes_namespaces.find_or_initialize_by(
+          project: project,
+          cluster_project: cluster_project
+        )
+      else
+        kubernetes_namespaces.find_or_initialize_by(
+          project: project
+        )
+      end
     end
 
     def allow_user_defined_namespace?

@@ -6,9 +6,7 @@ module Clusters
       VERSION = '0.1.3'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
 
-      # This is required for helm version <= 2.10.x in order to support
-      # Setting up CRDs
-      ISTIO_CRDS = 'https://storage.googleapis.com/triggermesh-charts/istio-crds.yaml'.freeze
+      FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       self.table_name = 'clusters_applications_knative'
 
@@ -16,10 +14,25 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
+      include AfterCommitQueue
+      include ReactiveCaching
+
+      self.reactive_cache_key = ->(knative) { [knative.class.model_name.singular, knative.id] }
+
+      state_machine :status do
+        before_transition any => [:installed] do |application|
+          application.run_after_commit do
+            ClusterWaitForIngressIpAddressWorker.perform_in(
+              FETCH_IP_ADDRESS_DELAY, application.name, application.id)
+          end
+        end
+      end
 
       default_value_for :version, VERSION
 
       validates :hostname, presence: true, hostname: true
+
+      scope :for_cluster, -> (cluster) { where(cluster: cluster) }
 
       def chart
         'knative/knative'
@@ -36,19 +49,50 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: REPOSITORY,
-          preinstall: install_script
+          repository: REPOSITORY
         )
       end
 
+      def schedule_status_update
+        return unless installed?
+        return if external_ip
+
+        ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
+      end
+
       def client
-        cluster.platform_kubernetes.kubeclient.knative_client
+        cluster.kubeclient.knative_client
+      end
+
+      def services
+        with_reactive_cache do |data|
+          data[:services]
+        end
+      end
+
+      def calculate_reactive_cache
+        { services: read_services }
+      end
+
+      def ingress_service
+        cluster.kubeclient.get_service('knative-ingressgateway', 'istio-system')
+      end
+
+      def services_for(ns: namespace)
+        return unless services
+        return [] unless ns
+
+        services.select do |service|
+          service.dig('metadata', 'namespace') == ns
+        end
       end
 
       private
 
-      def install_script
-        ["/usr/bin/kubectl apply -f #{ISTIO_CRDS}"]
+      def read_services
+        client.get_services.as_json
+      rescue Kubeclient::ResourceNotFoundError
+        []
       end
     end
   end

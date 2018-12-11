@@ -1,7 +1,7 @@
 # rubocop:disable all
 require 'yaml'
 
-class AddSettingsImportSources < ActiveRecord::Migration
+class AddSettingsImportSources < ActiveRecord::Migration[4.2]
   def change
     unless column_exists?(:application_settings, :import_sources)
       add_column :application_settings, :import_sources, :text

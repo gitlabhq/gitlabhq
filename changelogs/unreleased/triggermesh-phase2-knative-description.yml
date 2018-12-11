@@ -1,0 +1,5 @@
+---
+title: Modify the wording for the knative cluster application to match upstream
+merge_request: 23289
+author: Chris Baumbauer
+type: fixed

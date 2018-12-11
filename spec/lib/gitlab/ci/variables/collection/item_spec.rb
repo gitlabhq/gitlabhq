@@ -36,7 +36,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
     shared_examples 'raises error for invalid type' do
       it do
         expect { described_class.new(key: variable_key, value: variable_value) }
-          .to raise_error ArgumentError, /`value` must be of type String, while it was:/
+          .to raise_error ArgumentError, /`#{variable_key}` must be of type String or nil value, while it was:/
       end
     end
 

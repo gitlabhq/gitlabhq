@@ -17,7 +17,6 @@ class Repository
     #{REF_ENVIRONMENTS}
   ].freeze
 
-  include Gitlab::ShellAdapter
   include Gitlab::RepositoryCacheAdapter
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
@@ -35,7 +34,7 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
+  CACHED_METHODS = %i(size commit_count rendered_readme readme_path contribution_guide
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
@@ -48,7 +47,7 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: :rendered_readme,
+    readme: %i(rendered_readme readme_path),
     changelog: :changelog,
     license: %i(license_blob license_key license),
     contributing: :contribution_guide,
@@ -69,7 +68,13 @@ class Repository
   end
 
   def ==(other)
-    @disk_path == other.disk_path
+    other.is_a?(self.class) && @disk_path == other.disk_path
+  end
+
+  alias_method :eql?, :==
+
+  def hash
+    [self.class, @disk_path].hash
   end
 
   def raw_repository
@@ -253,7 +258,7 @@ class Repository
         next if kept_around?(sha)
 
         # This will still fail if the file is corrupted (e.g. 0 bytes)
-        raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
+        raw_repository.write_ref(keep_around_ref_name(sha), sha)
       rescue Gitlab::Git::CommandError => ex
         Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
       end
@@ -584,6 +589,11 @@ class Repository
   def readme
     head_tree&.readme
   end
+
+  def readme_path
+    readme&.path
+  end
+  cache_method :readme_path
 
   def rendered_readme
     return unless readme
@@ -1049,11 +1059,19 @@ class Repository
   end
 
   def cache
-    @cache ||= Gitlab::RepositoryCache.new(self)
+    @cache ||= if is_wiki
+                 Gitlab::RepositoryCache.new(self, extra_namespace: 'wiki')
+               else
+                 Gitlab::RepositoryCache.new(self)
+               end
   end
 
   def request_store_cache
-    @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
+    @request_store_cache ||= if is_wiki
+                               Gitlab::RepositoryCache.new(self, extra_namespace: 'wiki', backend: Gitlab::SafeRequestStore)
+                             else
+                               Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
+                             end
   end
 
   def tags_sorted_by_committed_date

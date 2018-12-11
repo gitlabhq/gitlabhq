@@ -54,6 +54,7 @@ module Projects
       end
 
       attempt_transfer_transaction
+      configure_group_clusters_for_project
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -161,6 +162,10 @@ module Projects
         @old_namespace.full_path,
         @new_namespace.full_path
       )
+    end
+
+    def configure_group_clusters_for_project
+      ClusterProjectConfigureWorker.perform_async(project.id)
     end
   end
 end

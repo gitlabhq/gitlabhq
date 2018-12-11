@@ -11,6 +11,12 @@ module Issues
       move_issue_to_new_project(issue) || update(issue)
     end
 
+    def update(issue)
+      create_merge_request_from_quick_action
+
+      super
+    end
+
     def before_update(issue)
       spam_check(issue, current_user)
     end
@@ -92,6 +98,13 @@ module Issues
     end
 
     private
+
+    def create_merge_request_from_quick_action
+      create_merge_request_params = params.delete(:create_merge_request)
+      return unless create_merge_request_params
+
+      MergeRequests::CreateFromIssueService.new(project, current_user, create_merge_request_params).execute
+    end
 
     def handle_milestone_change(issue)
       return if skip_milestone_email

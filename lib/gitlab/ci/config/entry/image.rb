@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a Docker image.
         #
-        class Image < Node
-          include Validatable
+        class Image < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           ALLOWED_KEYS = %i[name entrypoint].freeze
 

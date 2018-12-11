@@ -65,12 +65,6 @@ class Projects::CompareController < Projects::ApplicationController
 
   private
 
-  def valid_ref?(ref_name)
-    return true unless ref_name.present?
-
-    Gitlab::GitRefValidator.validate(ref_name)
-  end
-
   def validate_refs!
     valid = [head_ref, start_ref].map { |ref| valid_ref?(ref) }
 

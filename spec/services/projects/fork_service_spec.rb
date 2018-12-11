@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Projects::ForkService do
   include ProjectForksHelper
-  let(:gitlab_shell) { Gitlab::Shell.new }
+  include Gitlab::ShellAdapter
+
   context 'when forking a new project' do
     describe 'fork by user' do
       before do
@@ -231,6 +232,33 @@ describe Projects::ForkService do
 
           expect(forked_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
         end
+      end
+    end
+  end
+
+  context 'when forking with object pools' do
+    let(:fork_from_project) { create(:project, :public) }
+    let(:forker) { create(:user) }
+
+    before do
+      stub_feature_flags(object_pools: true)
+    end
+
+    context 'when no pool exists' do
+      it 'creates a new object pool' do
+        forked_project = fork_project(fork_from_project, forker)
+
+        expect(forked_project.pool_repository).to eq(fork_from_project.pool_repository)
+      end
+    end
+
+    context 'when a pool already exists' do
+      let!(:pool_repository) { create(:pool_repository, source_project: fork_from_project) }
+
+      it 'joins the object pool' do
+        forked_project = fork_project(fork_from_project, forker)
+
+        expect(forked_project.pool_repository).to eq(fork_from_project.pool_repository)
       end
     end
   end

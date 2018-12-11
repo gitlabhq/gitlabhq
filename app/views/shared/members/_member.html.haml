@@ -17,15 +17,15 @@
         = render_if_exists 'shared/members/ee/sso_badge', member: member
 
         - if user == current_user
-          %span.badge.badge-success.prepend-left-5 It's you
+          %span.badge.badge-success.prepend-left-5= _("It's you")
 
         - if user.blocked?
           %label.badge.badge-danger
-            %strong Blocked
+            %strong= _("Blocked")
 
         - if user.two_factor_enabled?
           %label.badge.badge-info
-            2FA
+            = _("2FA")
 
         - if source.instance_of?(Group) && source != @group
           &middot;
@@ -33,14 +33,13 @@
 
         .cgray
           - if member.request?
-            Requested
-            = time_ago_with_tooltip(member.requested_at)
+            = _("Requested %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.requested_at) }
           - else
-            Given access #{time_ago_with_tooltip(member.created_at)}
+            = _("Given access %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.created_at) }
           - if member.expires?
             ·
             %span{ class: "#{"text-warning" if member.expires_soon?} has-tooltip", title: member.expires_at.to_time.in_time_zone.to_s(:medium) }
-              Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
+              = _("Expires in %{expires_at}").html_safe % { expires_at: distance_of_time_in_words_to_now(member.expires_at) }
 
     - else
       = image_tag avatar_icon_for_email(member.invite_email, 40), class: "avatar s40", alt: ''
@@ -61,7 +60,7 @@
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
                     class: 'btn btn-default prepend-left-10 d-none d-sm-block',
-                    title: 'Resend invite'
+                    title: _('Resend invite')
 
         - if user != current_user && member.can_update?
           = form_for member, remote: true, html: { class: 'js-edit-member-form form-group row append-right-5' } do |f|
@@ -73,10 +72,10 @@
                   = member.human_access
                 = icon("chevron-down")
               .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
-                = dropdown_title("Change permissions")
+                = dropdown_title(_("Change permissions"))
                 .dropdown-content
                   %ul
-                    - member.access_level_roles.each do |role, role_id|
+                    - member.valid_level_roles.each do |role, role_id|
                       %li
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
@@ -84,7 +83,7 @@
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at,
                 class: 'form-control js-access-expiration-date js-member-update-control',
-                placeholder: 'Expiration date',
+                placeholder: _('Expiration date'),
                 id: "member_expires_at_#{member.id}",
                 data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
@@ -95,15 +94,15 @@
           = link_to polymorphic_path([:approve_access_request, member]),
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
-                    title: 'Grant access' do
+                    title: _('Grant access') do
             %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
-              Grant access
+              = _('Grant access')
             - unless force_mobile_view
               = icon('check inverse', class: 'd-none d-sm-block')
 
         - if member.can_remove?
           - if current_user == user
-            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
+            = link_to icon('sign-out', text: _('Leave')), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,
                       data: { confirm: leave_confirmation_message(member.source) },
                       class: 'btn btn-remove prepend-left-10'
@@ -114,7 +113,7 @@
                       class: 'btn btn-remove prepend-left-10',
                       title: remove_member_title(member) do
               %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
-                Delete
+                = _("Delete")
               - unless force_mobile_view
                 = icon('trash', class: 'd-none d-sm-block')
       - else

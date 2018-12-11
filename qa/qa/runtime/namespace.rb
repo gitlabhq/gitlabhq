@@ -8,7 +8,7 @@ module QA
       end
 
       def name
-        "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}"
+        Runtime::Env.namespace_name || "qa-test-#{time.strftime('%Y-%m-%d-%H-%M-%S')}"
       end
 
       def path

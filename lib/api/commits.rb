@@ -23,7 +23,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project repository commits' do
         success Entities::Commit
       end
@@ -207,7 +207,7 @@ module API
       end
 
       desc 'Revert a commit in a branch' do
-        detail 'This feature was introduced in GitLab 11.6'
+        detail 'This feature was introduced in GitLab 11.5'
         success Entities::Commit
       end
       params do

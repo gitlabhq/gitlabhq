@@ -165,8 +165,14 @@ describe 'Environment' do
 
                 context 'web terminal', :js do
                   before do
-                    # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
-                    allow_any_instance_of(Environment).to receive(:terminals) { nil }
+                    # Stub #terminals as it causes js-enabled feature specs to
+                    # render the page incorrectly
+                    #
+                    # In EE we have to stub EE::Environment since it overwrites
+                    # the "terminals" method.
+                    allow_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+                      .to receive(:terminals) { nil }
+
                     visit terminal_project_environment_path(project, environment)
                   end
 

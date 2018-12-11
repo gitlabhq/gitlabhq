@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class RepoRestorer
       include Gitlab::ImportExport::CommandLineUtil
-      include Gitlab::ShellAdapter
 
       def initialize(project:, shared:, path_to_bundle:)
         @project = project

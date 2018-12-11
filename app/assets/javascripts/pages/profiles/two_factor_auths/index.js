@@ -1,9 +1,10 @@
 import $ from 'jquery';
 import U2FRegister from '~/u2f/register';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
   const twoFactorNode = document.querySelector('.js-two-factor-auth');
-  const skippable = twoFactorNode.dataset.twoFactorSkippable === 'true';
+  const skippable = parseBoolean(twoFactorNode.dataset.twoFactorSkippable);
   if (skippable) {
     const button = `<a class="btn btn-sm btn-warning float-right" data-method="patch" href="${
       twoFactorNode.dataset.two_factor_skip_url

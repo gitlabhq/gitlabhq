@@ -121,6 +121,13 @@ describe API::Files do
       end
     end
 
+    context 'when PATs are used' do
+      it_behaves_like 'repository files' do
+        let(:token) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
+        let(:current_user) { { personal_access_token: token } }
+      end
+    end
+
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository files' do
         let(:current_user) { user }
@@ -178,6 +185,14 @@ describe API::Files do
         expect(response).to have_gitlab_http_status(200)
       end
 
+      it 'forces attachment content disposition' do
+        url = route(file_path) + "/raw"
+
+        get api(url, current_user), params
+
+        expect(headers['Content-Disposition']).to match(/^attachment/)
+      end
+
       context 'when mandatory params are not given' do
         it_behaves_like '400 response' do
           let(:request) { get api(route("any%2Ffile"), current_user) }
@@ -206,6 +221,13 @@ describe API::Files do
       it_behaves_like 'repository files' do
         let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
+      end
+    end
+
+    context 'when PATs are used' do
+      it_behaves_like 'repository files' do
+        let(:token) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
+        let(:current_user) { { personal_access_token: token } }
       end
     end
 
@@ -309,6 +331,21 @@ describe API::Files do
         let(:request) { get api(route(file_path), guest), params }
       end
     end
+
+    context 'when PATs are used' do
+      it 'returns file by commit sha' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        # This file is deleted on HEAD
+        file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
+        params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(route(file_path) + "/raw", personal_access_token: token), params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
   end
 
   describe "POST /projects/:id/repository/files/:file_path" do
@@ -352,6 +389,24 @@ describe API::Files do
       post api(route("any%2Etxt"), user), params
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    context 'with PATs' do
+      it 'returns 403 with `read_repository` scope' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'returns 201 with `api` scope' do
+        token = create(:personal_access_token, scopes: ['api'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params
+
+        expect(response).to have_gitlab_http_status(201)
+      end
     end
 
     context "when specifying an author" do

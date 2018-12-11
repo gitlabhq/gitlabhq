@@ -179,7 +179,7 @@ module IssuablesHelper
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
 
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline", tooltip: true)
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
 
       if status = user_status(issuable.author)
@@ -360,6 +360,10 @@ module IssuablesHelper
     Array(params[:label_name]).map do |label_name|
       Label.new(title: label_name)
     end
+  end
+
+  def has_filter_bar_param?
+    finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
   private

@@ -11,10 +11,6 @@ describe ProjectMember do
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
-  describe 'modules' do
-    it { is_expected.to include_module(Gitlab::ShellAdapter) }
-  end
-
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options)
@@ -124,4 +120,19 @@ describe ProjectMember do
   end
 
   it_behaves_like 'members notifications', :project
+
+  context 'access levels' do
+    context 'with parent group' do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:entity) { create(:project, group: parent_entity) }
+      end
+    end
+
+    context 'with parent group and a subgroup', :nested_groups do
+      it_behaves_like 'inherited access level as a member of entity' do
+        let(:subgroup) { create(:group, parent: parent_entity) }
+        let(:entity) { create(:project, group: subgroup) }
+      end
+    end
+  end
 end

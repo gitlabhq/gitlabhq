@@ -1,0 +1,5 @@
+---
+title: Use Nokogiri as the ActiveSupport XML backend
+merge_request: 23136
+author:
+type: performance

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'omniauth'
+require 'openssl'
 require 'jwt'
 
 module OmniAuth
@@ -37,7 +38,19 @@ module OmniAuth
       end
 
       def decoded
-        @decoded ||= ::JWT.decode(request.params['jwt'], options.secret, options.algorithm).first
+        secret =
+          case options.algorithm
+          when *%w[RS256 RS384 RS512]
+            OpenSSL::PKey::RSA.new(options.secret).public_key
+          when *%w[ES256 ES384 ES512]
+            OpenSSL::PKey::EC.new(options.secret).tap { |key| key.private_key = nil }
+          when *%w(HS256 HS384 HS512)
+            options.secret
+          else
+            raise NotImplementedError, "Unsupported algorithm: #{options.algorithm}"
+          end
+
+        @decoded ||= ::JWT.decode(request.params['jwt'], secret, true, { algorithm: options.algorithm }).first
 
         (options.required_claims || []).each do |field|
           raise ClaimInvalid, "Missing required '#{field}' claim" unless @decoded.key?(field.to_s)
@@ -45,7 +58,7 @@ module OmniAuth
 
         raise ClaimInvalid, "Missing required 'iat' claim" if options.valid_within && !@decoded["iat"]
 
-        if options.valid_within && (Time.now.to_i - @decoded["iat"]).abs > options.valid_within
+        if options.valid_within && (Time.now.to_i - @decoded["iat"]).abs > options.valid_within.to_i
           raise ClaimInvalid, "'iat' timestamp claim is too skewed from present"
         end
 

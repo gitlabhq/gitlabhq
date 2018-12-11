@@ -17,6 +17,7 @@ the [GitHub rake task](../../../administration/raketasks/github_import.md) to im
 GitHub without the constraints of a Sidekiq worker.
 
 The following aspects of a project are imported:
+
   * Repository description (GitLab.com & 7.7+)
   * Git repository data (GitLab.com & 7.7+)
   * Issues (GitLab.com & 7.7+)

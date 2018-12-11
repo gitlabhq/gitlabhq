@@ -336,7 +336,7 @@ The prerequisites for a HA Redis setup are the following:
 1. To prevent database migrations from running on upgrade, run:
 
     ```
-    sudo touch /etc/gitlab/skip-auto-migrations
+    sudo touch /etc/gitlab/skip-auto-reconfigure
     ```
 
     Only the primary GitLab application server should handle migrations.
@@ -458,7 +458,7 @@ multiple machines with the Sentinel daemon.
 1. To prevent database migrations from running on upgrade, run:
 
     ```
-    sudo touch /etc/gitlab/skip-auto-migrations
+    sudo touch /etc/gitlab/skip-auto-reconfigure
     ```
 
     Only the primary GitLab application server should handle migrations.
@@ -684,7 +684,7 @@ cache, queues, and shared_state. To make this work with Sentinel:
     ```
 1. Note that for each persistence class, GitLab will default to using the
    configuration specified in `gitlab_rails['redis_sentinels']` unless
-   overriden by the settings above.
+   overridden by the settings above.
 1. Be sure to include BOTH configuration options for each persistent classes. For example,
    if you choose to configure a cache instance, you must specify both `gitlab_rails['redis_cache_instance']`
    and `gitlab_rails['redis_cache_sentinels']` for GitLab to generate the proper configuration files.

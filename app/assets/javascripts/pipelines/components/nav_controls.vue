@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlButton } from '@gitlab-org/gitlab-ui';
+import { GlLink, GlButton } from '@gitlab/ui';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
 export default {
@@ -60,11 +60,7 @@ export default {
       @click="onClickResetCache"
     />
 
-    <gl-button
-      v-if="ciLintPath"
-      :href="ciLintPath"
-      class="js-ci-lint"
-    >
+    <gl-button v-if="ciLintPath" :href="ciLintPath" class="js-ci-lint">
       {{ s__('Pipelines|CI Lint') }}
     </gl-button>
   </div>

@@ -64,6 +64,8 @@ Below is the table of events users can be notified of:
 |------------------------------|-------------------------------------------------------------------|------------------------------|
 | New SSH key added            | User                                                              | Security email, always sent. |
 | New email added              | User                                                              | Security email, always sent. |
+| Email changed                | User                                                              | Security email, always sent. |
+| Password changed             | User                                                              | Security email, always sent. |
 | New user created             | User                                                              | Sent on user creation, except for omniauth (LDAP)|
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |

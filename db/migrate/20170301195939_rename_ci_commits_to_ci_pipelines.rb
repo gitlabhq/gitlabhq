@@ -1,4 +1,4 @@
-class RenameCiCommitsToCiPipelines < ActiveRecord::Migration
+class RenameCiCommitsToCiPipelines < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

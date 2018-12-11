@@ -181,15 +181,15 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def gcp_cluster
-    @gcp_cluster = ::Clusters::Cluster.new.tap do |cluster|
-      cluster.build_provider_gcp
-    end.present(current_user: current_user)
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_provider_gcp
+    @gcp_cluster = cluster.present(current_user: current_user)
   end
 
   def user_cluster
-    @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
-      cluster.build_platform_kubernetes
-    end.present(current_user: current_user)
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_platform_kubernetes
+    @user_cluster = cluster.present(current_user: current_user)
   end
 
   def validate_gcp_token

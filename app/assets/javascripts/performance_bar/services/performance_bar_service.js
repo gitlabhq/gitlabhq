@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import _ from 'underscore';
 import axios from '../../lib/utils/axios_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 let vueResourceInterceptor;
 
@@ -41,7 +42,8 @@ export default class PerformanceBarService {
     // Vue Resource.
     const requestUrl = (response.config || response).url;
     const apiRequest = requestUrl && requestUrl.match(/^\/api\//);
-    const cachedResponse = response.headers && response.headers['x-gitlab-from-cache'] === 'true';
+    const cachedResponse =
+      response.headers && parseBoolean(response.headers['x-gitlab-from-cache']);
     const fireCallback = requestUrl !== peekUrl && requestId && !apiRequest && !cachedResponse;
 
     return [fireCallback, requestId, requestUrl];

@@ -60,7 +60,17 @@ module API
 
       def find_group_projects(params)
         group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        options = {
+          only_owned: !params[:with_shared],
+          include_subgroups: params[:include_subgroups]
+        }
+
+        projects = GroupProjectsFinder.new(
+          group: group,
+          current_user: current_user,
+          params: project_finder_params,
+          options: options
+        ).execute
         projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = reorder_projects(projects)
@@ -130,7 +140,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update a group. Available only for users who can administrate groups.' do
         success Entities::Group
       end
@@ -201,6 +211,8 @@ module API
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+        optional :with_shared, type: Boolean, default: true, desc: 'Include projects shared to this group'
+        optional :include_subgroups, type: Boolean, default: false, desc: 'Includes projects in subgroups of this group'
 
         use :pagination
         use :with_custom_attributes

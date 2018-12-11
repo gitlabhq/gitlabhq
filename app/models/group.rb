@@ -55,7 +55,7 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  add_authentication_token_field :runners_token
+  add_authentication_token_field :runners_token, encrypted: true, migrating: true
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -398,6 +398,10 @@ class Group < Namespace
   # solution.
   def runners_token
     ensure_runners_token!
+  end
+
+  def group_clusters_enabled?
+    Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
   end
 
   private

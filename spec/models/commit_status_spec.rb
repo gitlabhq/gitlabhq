@@ -13,6 +13,8 @@ describe CommitStatus do
     create(:commit_status, pipeline: pipeline, **opts)
   end
 
+  it_behaves_like 'having unique enum values'
+
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }

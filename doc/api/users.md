@@ -70,8 +70,8 @@ GET /users
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `order_by` | string | no | Return projects ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
-| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by` | string | no | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
+| `sort` | string | no | Return users sorted in `asc` or `desc` order. Default is `desc` |
 | `two_factor` | string | no | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 
 ```json
@@ -1072,7 +1072,6 @@ Example response:
 [
    {
       "active" : true,
-      "token" : "EsMo-vhKfXGwX9RKrwiy",
       "scopes" : [
          "api"
       ],
@@ -1089,7 +1088,6 @@ Example response:
          "read_user"
       ],
       "revoked" : true,
-      "token" : "ZcZRpLeEuQRprkRjYydY",
       "name" : "mytoken2",
       "created_at" : "2017-03-17T17:19:28.697Z",
       "id" : 3,
@@ -1125,7 +1123,6 @@ Example response:
 ```json
 {
    "active" : true,
-   "token" : "EsMo-vhKfXGwX9RKrwiy",
    "scopes" : [
       "api"
    ],
@@ -1141,6 +1138,8 @@ Example response:
 ## Create an impersonation token
 
 > Requires admin permissions.
+
+> Token values are returned once. Make sure you save it - you won't be able to access it again.
 
 It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform

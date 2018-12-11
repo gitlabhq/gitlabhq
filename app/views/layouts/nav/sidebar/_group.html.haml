@@ -108,7 +108,7 @@
           = link_to group_group_members_path(@group) do
             .nav-icon-container
               = sprite_icon('users')
-            %span.nav-item-name
+            %span.nav-item-name.qa-group-members-item
               = _('Members')
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do

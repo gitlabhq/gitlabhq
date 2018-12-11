@@ -259,11 +259,17 @@ types with every project in a group.
 
 Learn more about [Group-level file templates](https://docs.gitlab.com/ee/user/group/index.html#group-level-file-templates-premium).
 
+#### Group-level project templates **[PREMIUM]**
+
+Define project templates at a group-level by setting a group as a template source.
+[Learn more about group-level project templates](custom_project_templates.md).
+
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
+- **Kubernetes cluster integration**: connect your GitLab group with [Kubernetes clusters](clusters/index.md).
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
 for the group. **[STARTER ONLY]**
-- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.

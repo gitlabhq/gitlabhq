@@ -11,6 +11,25 @@ module Clusters
 
       protected
 
+      def log_error(error)
+        meta = {
+          exception: error.class.name,
+          error_code: error.respond_to?(:error_code) ? error.error_code : nil,
+          service: self.class.name,
+          app_id: app.id,
+          project_ids: app.cluster.project_ids,
+          group_ids: app.cluster.group_ids,
+          message: error.message
+        }
+
+        logger.error(meta)
+        Gitlab::Sentry.track_acceptable_exception(error, extra: meta)
+      end
+
+      def logger
+        @logger ||= Gitlab::Kubernetes::Logger.build
+      end
+
       def cluster
         app.cluster
       end

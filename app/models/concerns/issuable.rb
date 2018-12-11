@@ -90,6 +90,7 @@ module Issuable
     scope :order_milestone_due_asc,  -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date ASC') }
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
+    scope :any_label, -> { joins(:label_links).group(:id) }
     scope :join_project, -> { joins(:project) }
     scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
@@ -144,14 +145,16 @@ module Issuable
     def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
-        when 'downvotes_desc'     then order_downvotes_desc
-        when 'label_priority'     then order_labels_priority(excluded_labels: excluded_labels)
-        when 'milestone'          then order_milestone_due_asc
-        when 'milestone_due_asc'  then order_milestone_due_asc
-        when 'milestone_due_desc' then order_milestone_due_desc
-        when 'popularity'         then order_upvotes_desc
-        when 'priority'           then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-        when 'upvotes_desc'       then order_upvotes_desc
+        when 'downvotes_desc'                       then order_downvotes_desc
+        when 'label_priority'                       then order_labels_priority(excluded_labels: excluded_labels)
+        when 'label_priority_desc'                  then order_labels_priority('DESC', excluded_labels: excluded_labels)
+        when 'milestone', 'milestone_due_asc'       then order_milestone_due_asc
+        when 'milestone_due_desc'                   then order_milestone_due_desc
+        when 'popularity', 'popularity_desc'        then order_upvotes_desc
+        when 'popularity_asc'                       then order_upvotes_asc
+        when 'priority', 'priority_asc'             then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'priority_desc'                        then order_due_date_and_labels_priority('DESC', excluded_labels: excluded_labels)
+        when 'upvotes_desc'                         then order_upvotes_desc
         else order_by(method)
         end
 
@@ -159,7 +162,7 @@ module Issuable
       sorted.with_order_id_desc
     end
 
-    def order_due_date_and_labels_priority(excluded_labels: [])
+    def order_due_date_and_labels_priority(direction = 'ASC', excluded_labels: [])
       # The order_ methods also modify the query in other ways:
       #
       # - For milestones, we add a JOIN.
@@ -176,11 +179,11 @@ module Issuable
 
       order_milestone_due_asc
         .order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date])
-        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
-                Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, direction),
+                Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
-    def order_labels_priority(excluded_labels: [], extra_select_columns: [])
+    def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [])
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
@@ -197,7 +200,7 @@ module Issuable
 
       select(select_columns.join(', '))
         .group(arel_table[:id])
-        .reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+        .reorder(Gitlab::Database.nulls_last_order('highest_priority', direction))
     end
 
     def with_label(title, sort = nil)

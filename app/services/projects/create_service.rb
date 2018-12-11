@@ -9,7 +9,7 @@ module Projects
     end
 
     def execute
-      if @params[:template_name]&.present?
+      if @params[:template_name].present?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
@@ -86,6 +86,8 @@ module Projects
         @project.create_wiki unless skip_wiki?
       end
 
+      @project.track_project_repository
+
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
@@ -94,6 +96,8 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       create_readme if @initialize_with_readme
+
+      configure_group_clusters_for_project
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -117,6 +121,10 @@ module Projects
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
+    end
+
+    def configure_group_clusters_for_project
+      ClusterProjectConfigureWorker.perform_async(@project.id)
     end
 
     def skip_wiki?
@@ -148,7 +156,7 @@ module Projects
       Rails.logger.error(log_message)
 
       if @project
-        @project.mark_import_as_failed(message) if @project.persisted? && @project.import?
+        @project.import_state.mark_as_failed(message) if @project.persisted? && @project.import?
       end
 
       @project
@@ -181,7 +189,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_schedule if @project.import? && !@project.bare_repository_import?
+        @project.import_state.schedule if @project.import? && !@project.bare_repository_import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

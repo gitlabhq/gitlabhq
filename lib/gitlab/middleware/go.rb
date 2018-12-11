@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A dumb middleware that returns a Go HTML document if the go-get=1 query string
 # is used irrespective if the namespace/project exists
 module Gitlab

@@ -114,6 +114,9 @@ production: &base
     # The default is 'shared/cache/archive/' relative to the root of the Rails app.
     # repository_downloads_path: shared/cache/archive/
 
+    ## Impersonation settings
+    impersonation_enabled: true
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html
@@ -545,15 +548,15 @@ production: &base
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'jwt',
-      #     app_secret: 'YOUR_APP_SECRET',
       #     args: {
-      #             algorithm: 'HS256',
-      #             uid_claim: 'email',
-      #             required_claims: ["name", "email"],
-      #             info_map: { name: "name", email: "email" },
-      #             auth_url: 'https://example.com/',
-      #             valid_within: null,
-      #           }
+      #       secret: 'YOUR_APP_SECRET',
+      #       algorithm: 'HS256', # Supported algorithms: 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512'
+      #       uid_claim: 'email',
+      #       required_claims: ['name', 'email'],
+      #       info_map: { name: 'name', email: 'email' },
+      #       auth_url: 'https://example.com/',
+      #       valid_within: 3600 # 1 hour
+      #     }
       #   }
       # - { name: 'saml',
       #     label: 'Our SAML Provider',

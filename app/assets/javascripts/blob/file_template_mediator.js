@@ -124,7 +124,7 @@ export default class FileTemplateMediator {
 
   selectTemplateFile(selector, query, data) {
     selector.renderLoading();
-    // in case undo menu is already already there
+    // in case undo menu is already there
     this.destroyUndoMenu();
     this.fetchFileTemplate(selector.config.type, query, data)
       .then(file => {

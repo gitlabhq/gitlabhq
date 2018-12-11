@@ -32,30 +32,19 @@ export default {
       type="button"
       @click="dismissOverviewDialog"
     >
-      <icon
-        name="close"
-      />
+      <icon name="close" />
     </button>
-    <div
-      class="svg-container"
-      v-html="iconCycleAnalyticsSplash"
-    >
-    </div>
+    <div class="svg-container" v-html="iconCycleAnalyticsSplash"></div>
     <div class="inner-content">
-      <h4>
-        {{ __('Introducing Cycle Analytics') }}
-      </h4>
+      <h4>{{ __('Introducing Cycle Analytics') }}</h4>
       <p>
-        {{ __(`Cycle Analytics gives an overview
-of how much time it takes to go from idea to production in your project.`) }}
+        {{
+          __(`Cycle Analytics gives an overview
+of how much time it takes to go from idea to production in your project.`)
+        }}
       </p>
       <p>
-        <a
-          :href="documentationLink"
-          target="_blank"
-          rel="nofollow"
-          class="btn"
-        >
+        <a :href="documentationLink" target="_blank" rel="nofollow" class="btn">
           {{ __('Read more') }}
         </a>
       </p>

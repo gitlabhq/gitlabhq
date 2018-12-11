@@ -5,7 +5,7 @@ module QA
     module Env
       extend self
 
-      attr_writer :personal_access_token
+      attr_writer :personal_access_token, :ldap_username, :ldap_password
 
       # The environment variables used to indicate if the environment under test
       # supports the given feature
@@ -30,12 +30,21 @@ module QA
         enabled?(ENV['CHROME_HEADLESS'])
       end
 
+      # set to 'true' to have Chrome use a fixed profile directory
+      def reuse_chrome_profile?
+        enabled?(ENV['CHROME_REUSE_PROFILE'], default: false)
+      end
+
       def accept_insecure_certs?
         enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end
 
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
+      end
+
+      def qa_cookies
+        ENV['QA_COOKIES'] && ENV['QA_COOKIES'].split(';')
       end
 
       def signup_disabled?
@@ -75,16 +84,40 @@ module QA
         ENV['GITLAB_FORKER_PASSWORD']
       end
 
+      def gitlab_qa_username_1
+        ENV['GITLAB_QA_USERNAME_1'] || 'gitlab-qa-user1'
+      end
+
+      def gitlab_qa_password_1
+        ENV['GITLAB_QA_PASSWORD_1']
+      end
+
+      def gitlab_qa_username_2
+        ENV['GITLAB_QA_USERNAME_2'] || 'gitlab-qa-user2'
+      end
+
+      def gitlab_qa_password_2
+        ENV['GITLAB_QA_PASSWORD_2']
+      end
+
       def ldap_username
-        ENV['GITLAB_LDAP_USERNAME']
+        @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
       end
 
       def ldap_password
-        ENV['GITLAB_LDAP_PASSWORD']
+        @ldap_password ||= ENV['GITLAB_LDAP_PASSWORD']
       end
 
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
+      end
+
+      def namespace_name
+        ENV['GITLAB_NAMESPACE_NAME']
+      end
+
+      def auto_devops_project_name
+        ENV['GITLAB_AUTO_DEVOPS_PROJECT_NAME']
       end
 
       def gcloud_account_key

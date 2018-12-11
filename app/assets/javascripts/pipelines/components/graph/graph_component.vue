@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import StageColumnComponent from './stage_column_component.vue';
 
 export default {
@@ -18,23 +18,19 @@ export default {
       required: true,
     },
   },
-
   computed: {
     graph() {
       return this.pipeline.details && this.pipeline.details.stages;
     },
   },
-
   methods: {
     capitalizeStageName(name) {
       const escapedName = _.escape(name);
       return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
     },
-
     isFirstColumn(index) {
       return index === 0;
     },
-
     stageConnectorClass(index, stage) {
       let className;
 
@@ -48,7 +44,6 @@ export default {
 
       return className;
     },
-
     refreshPipelineGraph() {
       this.$emit('refreshPipelineGraph');
     },
@@ -58,16 +53,9 @@ export default {
 <template>
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
-      <div class="text-center">
-        <gl-loading-icon
-          v-if="isLoading"
-          :size="3"
-        />
-      </div>
+      <div class="text-center"><gl-loading-icon v-if="isLoading" :size="3" /></div>
 
-      <ul
-        v-if="!isLoading"
-        class="stage-column-list">
+      <ul v-if="!isLoading" class="stage-column-list">
         <stage-column-component
           v-for="(stage, index) in graph"
           :key="stage.name"

@@ -36,23 +36,13 @@ export default {
         :key="index"
         class="row prepend-top-10 append-bottom-10"
       >
-        <strong class="col-sm-3 text-right">
-          {{ field.text }}:
-        </strong>
+        <strong class="col-sm-3 text-right"> {{ field.text }}: </strong>
 
         <div class="col-sm-9 text-secondary">
-          <code-block
-            v-if="field.type === $options.fieldTypes.codeBock"
-            :code="field.value"
-          />
+          <code-block v-if="field.type === $options.fieldTypes.codeBock" :code="field.value" />
 
           <template v-else-if="field.type === $options.fieldTypes.link">
-            <a
-              :href="field.value"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="js-modal-link"
-            >
+            <a :href="field.value" target="_blank" rel="noopener noreferrer" class="js-modal-link">
               {{ field.value }}
             </a>
           </template>
@@ -67,7 +57,6 @@ export default {
         </div>
       </div>
     </slot>
-    <div slot="footer">
-    </div>
+    <div slot="footer"></div>
   </modal>
 </template>

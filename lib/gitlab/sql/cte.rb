@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module SQL
     # Class for easily building CTE statements.

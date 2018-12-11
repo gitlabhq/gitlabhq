@@ -128,13 +128,10 @@ export default {
 };
 </script>
 <template>
-  <div class="prepend-top-default js-environment-container">
+  <div class="prepend-top-default append-bottom-default js-environment-container">
     <div class="environment-information">
-      <ci-icon :status="iconStatus"/>
-      <p
-        class="inline append-bottom-0"
-        v-html="environment"
-      ></p>
+      <ci-icon :status="iconStatus" />
+      <p class="inline append-bottom-0" v-html="environment"></p>
     </div>
   </div>
 </template>

@@ -142,27 +142,18 @@ export default {
   <div
     ref="gl-form"
     :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
-    class="md-area js-vue-markdown-field">
+    class="md-area js-vue-markdown-field"
+  >
     <markdown-header
       :preview-markdown="previewMarkdown"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
     />
-    <div
-      v-show="!previewMarkdown"
-      class="md-write-holder"
-    >
+    <div v-show="!previewMarkdown" class="md-write-holder">
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
-        <a
-          class="zen-control zen-control-leave js-zen-leave"
-          href="#"
-          aria-label="Enter zen mode"
-        >
-          <icon
-            :size="32"
-            name="screen-normal"
-          />
+        <a class="zen-control zen-control-leave js-zen-leave" href="#" aria-label="Enter zen mode">
+          <icon :size="32" name="screen-normal" />
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
@@ -171,42 +162,19 @@ export default {
         />
       </div>
     </div>
-    <div
-      v-show="previewMarkdown"
-      class="md md-preview-holder md-preview js-vue-md-preview"
-    >
-      <div
-        ref="markdown-preview"
-        v-html="markdownPreview"
-      >
-      </div>
-      <span v-if="markdownPreviewLoading">
-        Loading...
-      </span>
+    <div v-show="previewMarkdown" class="md md-preview-holder md-preview js-vue-md-preview">
+      <div ref="markdown-preview" v-html="markdownPreview"></div>
+      <span v-if="markdownPreviewLoading"> Loading... </span>
     </div>
     <template v-if="previewMarkdown && !markdownPreviewLoading">
-      <div
-        v-if="referencedCommands"
-        class="referenced-commands"
-        v-html="referencedCommands"
-      >
-      </div>
-      <div
-        v-if="shouldShowReferencedUsers"
-        class="referenced-users"
-      >
+      <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
+      <div v-if="shouldShowReferencedUsers" class="referenced-users">
         <span>
-          <i
-            class="fa fa-exclamation-triangle"
-            aria-hidden="true"
-          >
-          </i>
-          You are about to add
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"> </i> You are about to add
           <strong>
-            <span class="js-referenced-users-count">
-              {{ referencedUsers.length }}
-            </span>
-          </strong> people to the discussion. Proceed with caution.
+            <span class="js-referenced-users-count"> {{ referencedUsers.length }} </span>
+          </strong>
+          people to the discussion. Proceed with caution.
         </span>
       </div>
     </template>

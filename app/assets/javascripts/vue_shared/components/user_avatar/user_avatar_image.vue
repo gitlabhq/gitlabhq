@@ -15,7 +15,7 @@
 
 */
 
-import { GlTooltip } from '@gitlab-org/gitlab-ui';
+import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
 
@@ -67,7 +67,7 @@ export default {
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
       let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
-      if (baseSrc.indexOf('?') === -1) baseSrc += `?width=${this.size}`;
+      if (!baseSrc.startsWith('data:') && !baseSrc.includes('?')) baseSrc += `?width=${this.size}`;
       return baseSrc;
     },
     resultantSrcAttribute() {
@@ -87,7 +87,7 @@ export default {
       :class="{
         lazy: lazy,
         [avatarSizeClass]: true,
-        [cssClasses]: true
+        [cssClasses]: true,
       }"
       :src="resultantSrcAttribute"
       :width="size"
@@ -97,14 +97,13 @@ export default {
       class="avatar"
     />
     <gl-tooltip
+      v-if="tooltipText || $slots.default"
       :target="() => $refs.userAvatarImage"
       :placement="tooltipPlacement"
       boundary="window"
       class="js-user-avatar-image-toolip"
     >
-      <slot>
-        {{ tooltipText }}
-      </slot>
+      <slot> {{ tooltipText }} </slot>
     </gl-tooltip>
   </span>
 </template>

@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all Pipelines of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::PipelineBasic
@@ -81,6 +81,21 @@ module API
         present pipeline, with: Entities::Pipeline
       end
 
+      desc 'Deletes a pipeline' do
+        detail 'This feature was introduced in GitLab 11.6'
+        http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]
+      end
+      params do
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+      end
+      delete ':id/pipelines/:pipeline_id' do
+        authorize! :destroy_pipeline, pipeline
+
+        destroy_conditionally!(pipeline) do
+          ::Ci::DestroyPipelineService.new(user_project, current_user).execute(pipeline)
+        end
+      end
+
       desc 'Retry builds in the pipeline' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Pipeline
@@ -115,7 +130,7 @@ module API
 
     helpers do
       def pipeline
-        @pipeline ||= user_project.pipelines.find(params[:pipeline_id])
+        @pipeline ||= user_project.ci_pipelines.find(params[:pipeline_id])
       end
     end
   end

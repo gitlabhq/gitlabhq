@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreatePrometheusMetrics < ActiveRecord::Migration
+class CreatePrometheusMetrics < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

@@ -249,7 +249,7 @@ describe Namespace do
 
               move_dir_result
             end
-            expect(Gitlab::Sentry).to receive(:should_raise?).and_return(false) # like prod
+            expect(Gitlab::Sentry).to receive(:should_raise_for_dev?).and_return(false) # like prod
 
             namespace.update(path: namespace.full_path + '_new')
           end
@@ -538,7 +538,7 @@ describe Namespace do
     it 'returns member users on every nest level without duplication' do
       group.add_developer(user_a)
       nested_group.add_developer(user_b)
-      deep_nested_group.add_developer(user_a)
+      deep_nested_group.add_maintainer(user_a)
 
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
@@ -560,6 +560,7 @@ describe Namespace do
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
     it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
+    it { expect(child.all_projects.to_a).to match_array([project2]) }
   end
 
   describe '#all_pipelines' do
@@ -720,6 +721,7 @@ describe Namespace do
       deep_nested_group = create(:group, parent: nested_group)
       very_deep_nested_group = create(:group, parent: deep_nested_group)
 
+      expect(root_group.root_ancestor).to eq(root_group)
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)

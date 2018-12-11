@@ -58,9 +58,7 @@ export default {
       type="button"
       @click="clickedScroll"
     >
-      <icon
-        :name="iconName"
-      />
+      <icon :name="iconName" />
     </button>
   </div>
 </template>

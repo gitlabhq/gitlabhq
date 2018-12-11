@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
       class InstallCommand
         include BaseCommand
+        include ClientCommand
 
         attr_reader :name, :files, :chart, :version, :repository, :preinstall, :postinstall
 
@@ -20,6 +23,7 @@ module Gitlab
         def generate_script
           super + [
             init_command,
+            wait_for_tiller_command,
             repository_command,
             repository_update_command,
             preinstall_command,
@@ -33,14 +37,6 @@ module Gitlab
         end
 
         private
-
-        def init_command
-          'helm init --client-only'
-        end
-
-        def repository_command
-          ['helm', 'repo', 'add', name, repository].shelljoin if repository
-        end
 
         def repository_update_command
           'helm repo update' if repository
@@ -68,17 +64,17 @@ module Gitlab
           name_flag +
             optional_tls_flags +
             optional_version_flag +
-            optional_rbac_create_flag +
+            rbac_create_flag +
             namespace_flag +
             value_flag
         end
 
-        def optional_rbac_create_flag
-          return [] unless rbac?
-
-          # jupyterhub helm chart is using rbac.enabled
-          #   https://github.com/jupyterhub/zero-to-jupyterhub-k8s/tree/master/jupyterhub
-          %w[--set rbac.create=true,rbac.enabled=true]
+        def rbac_create_flag
+          if rbac?
+            %w[--set rbac.create=true,rbac.enabled=true]
+          else
+            %w[--set rbac.create=false,rbac.enabled=false]
+          end
         end
 
         def optional_version_flag

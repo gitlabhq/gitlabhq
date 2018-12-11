@@ -50,7 +50,7 @@ class NotificationService
 
   # Always notify the user about gpg key added
   #
-  # This is a security email so it will be sent even if the user user disabled
+  # This is a security email so it will be sent even if the user disabled
   # notifications
   def new_gpg_key(gpg_key)
     if gpg_key.user&.can?(:receive_notifications)
@@ -464,6 +464,14 @@ class NotificationService
     recipients.each do |recipient|
       mailer.send(:issue_due_email, recipient.user.id, issue.id, recipient.reason).deliver_later
     end
+  end
+
+  def repository_cleanup_success(project, user)
+    mailer.send(:repository_cleanup_success_email, project, user).deliver_later
+  end
+
+  def repository_cleanup_failure(project, user, error)
+    mailer.send(:repository_cleanup_failure_email, project, user, error).deliver_later
   end
 
   protected

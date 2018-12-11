@@ -89,9 +89,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-panel ide-right-sidebar"
-  >
+  <div class="multi-file-commit-panel ide-right-sidebar">
     <resizable-panel
       v-show="isOpen"
       :collapsible="false"
@@ -107,32 +105,26 @@ export default {
         :key="tabView.name"
         class="h-100"
       >
-        <component :is="tabView.name" />
+        <component :is="tabView.component || tabView.name" />
       </div>
     </resizable-panel>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
-        <li
-          v-for="tab of tabs"
-          :key="tab.title"
-        >
+        <li v-for="tab of tabs" :key="tab.title">
           <button
             v-tooltip
             :title="tab.title"
             :aria-label="tab.title"
             :class="{
-              active: isActiveTab(tab) && isOpen
+              active: isActiveTab(tab) && isOpen,
             }"
             data-container="body"
             data-placement="left"
             class="ide-sidebar-link is-right"
             type="button"
-            @click="clickTab($event, tab)"
+            @click="clickTab($event, tab);"
           >
-            <icon
-              :size="16"
-              :name="tab.icon"
-            />
+            <icon :size="16" :name="tab.icon" />
           </button>
         </li>
       </ul>

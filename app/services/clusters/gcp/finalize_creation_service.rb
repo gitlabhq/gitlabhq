@@ -12,20 +12,24 @@ module Clusters
         create_gitlab_service_account!
         configure_kubernetes
         cluster.save!
-        configure_project_service_account
+
+        ClusterPlatformConfigureWorker.perform_async(cluster.id)
 
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+        log_service_error(e.class.name, provider.id, e.message)
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue Kubeclient::HttpError => e
+        log_service_error(e.class.name, provider.id, e.message)
         provider.make_errored!("Failed to run Kubeclient: #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
+        log_service_error(e.class.name, provider.id, e.message)
         provider.make_errored!("Failed to configure Google Kubernetes Engine Cluster: #{e.message}")
       end
 
       private
 
       def create_gitlab_service_account!
-        Clusters::Gcp::Kubernetes::CreateServiceAccountService.gitlab_creator(
+        Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.gitlab_creator(
           kube_client,
           rbac: create_rbac_cluster?
         ).execute
@@ -52,15 +56,6 @@ module Clusters
           kube_client,
           Clusters::Gcp::Kubernetes::GITLAB_ADMIN_TOKEN_NAME,
           Clusters::Gcp::Kubernetes::GITLAB_SERVICE_ACCOUNT_NAMESPACE
-        ).execute
-      end
-
-      def configure_project_service_account
-        kubernetes_namespace = cluster.find_or_initialize_kubernetes_namespace(cluster.cluster_project)
-
-        Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
-          cluster: cluster,
-          kubernetes_namespace: kubernetes_namespace
         ).execute
       end
 
@@ -112,6 +107,19 @@ module Clusters
 
       def cluster
         @cluster ||= provider.cluster
+      end
+
+      def logger
+        @logger ||= Gitlab::Kubernetes::Logger.build
+      end
+
+      def log_service_error(exception, provider_id, message)
+        logger.error(
+          exception: exception.class.name,
+          service: self.class.name,
+          provider_id: provider_id,
+          message: message
+        )
       end
     end
   end

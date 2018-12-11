@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
+import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import Graph from './graph.vue';
 import EmptyState from './empty_state.vue';
@@ -12,6 +13,7 @@ import eventHub from '../event_hub';
 
 export default {
   components: {
+    MonitorAreaChart,
     Graph,
     GraphGroup,
     EmptyState,
@@ -102,6 +104,9 @@ export default {
     };
   },
   computed: {
+    graphComponent() {
+      return gon.features && gon.features.areaChart ? MonitorAreaChart : Graph;
+    },
     forceRedraw() {
       return this.elWidth;
     },
@@ -176,35 +181,19 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="!showEmptyState"
-    :key="forceRedraw"
-    class="prometheus-graphs prepend-top-default"
-  >
+  <div v-if="!showEmptyState" :key="forceRedraw" class="prometheus-graphs prepend-top-default">
     <div class="environments d-flex align-items-center">
       {{ s__('Metrics|Environment') }}
       <div class="dropdown prepend-left-10">
-        <button
-          class="dropdown-menu-toggle"
-          data-toggle="dropdown"
-          type="button"
-        >
-          <span>
-            {{ currentEnvironmentName }}
-          </span>
-          <icon
-            name="chevron-down"
-          />
+        <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
+          <span> {{ currentEnvironmentName }} </span> <icon name="chevron-down" />
         </button>
-        <div 
-          v-if="store.environmentsData.length > 0"  
+        <div
+          v-if="store.environmentsData.length > 0"
           class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up"
         >
           <ul>
-            <li
-              v-for="environment in store.environmentsData"
-              :key="environment.latest.id"
-            >
+            <li v-for="environment in store.environmentsData" :key="environment.latest.id">
               <a
                 :href="environment.latest.metrics_path"
                 :class="{ 'is-active': environment.latest.name == currentEnvironmentName }"
@@ -223,7 +212,8 @@ export default {
       :name="groupData.group"
       :show-panels="showPanels"
     >
-      <graph
+      <component
+        :is="graphComponent"
         v-for="(graphData, graphIndex) in groupData.metrics"
         :key="graphIndex"
         :graph-data="graphData"
@@ -236,7 +226,7 @@ export default {
       >
         <!-- EE content -->
         {{ null }}
-      </graph>
+      </component>
     </graph-group>
   </div>
   <empty-state

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddIndexOnIid < ActiveRecord::Migration
+class AddIndexOnIid < ActiveRecord::Migration[4.2]
   def change
     RemoveDuplicateIid.clean(Issue)
     RemoveDuplicateIid.clean(MergeRequest, 'target_project_id')

@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
@@ -78,17 +78,8 @@ export default {
 </script>
 
 <template>
-  <span
-    v-gl-tooltip.right
-    :title="tooltipTitle"
-    class="file-changed-icon ml-auto"
-  >
-    <icon
-      v-if="showIcon"
-      :name="changedIcon"
-      :size="size"
-      :css-classes="changedIconClass"
-    />
+  <span v-gl-tooltip.right :title="tooltipTitle" class="file-changed-icon ml-auto">
+    <icon v-if="showIcon" :name="changedIcon" :size="size" :css-classes="changedIconClass" />
   </span>
 </template>
 

@@ -1,0 +1,5 @@
+---
+title: Remove index for notes on updated_at
+merge_request: 23356
+author:
+type: performance

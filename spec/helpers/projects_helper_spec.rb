@@ -229,6 +229,18 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#link_to_project' do
+    let(:group)   { create(:group, name: 'group name with space') }
+    let(:project) { create(:project, group: group, name: 'project name with space') }
+    subject { link_to_project(project) }
+
+    it 'returns an HTML link to the project' do
+      expect(subject).to match(%r{/#{group.full_path}/#{project.path}})
+      expect(subject).to include('group name with space /')
+      expect(subject).to include('project name with space')
+    end
+  end
+
   describe '#link_to_member_avatar' do
     let(:user) { build_stubbed(:user) }
     let(:expected) { double }
@@ -467,6 +479,31 @@ describe ProjectsHelper do
         allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
 
         expect(helper.show_xcode_link?(project)).to eq(false)
+      end
+    end
+  end
+
+  describe 'link_to_bfg' do
+    subject { helper.link_to_bfg }
+
+    it 'generates a hardcoded link to the BFG Repo-Cleaner' do
+      result = helper.link_to_bfg
+      doc = Nokogiri::HTML.fragment(result)
+
+      expect(doc.children.size).to eq(1)
+
+      link = doc.children.first
+
+      aggregate_failures do
+        expect(result).to be_html_safe
+
+        expect(link.name).to eq('a')
+        expect(link[:target]).to eq('_blank')
+        expect(link[:rel]).to eq('noopener noreferrer')
+        expect(link[:href]).to eq('https://rtyley.github.io/bfg-repo-cleaner/')
+        expect(link.inner_html).to eq('BFG')
+
+        expect(result).to be_html_safe
       end
     end
   end

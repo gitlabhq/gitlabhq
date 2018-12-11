@@ -1,4 +1,4 @@
-class RemoveNotificationSettingNotNullConstraints < ActiveRecord::Migration
+class RemoveNotificationSettingNotNullConstraints < ActiveRecord::Migration[4.2]
   def up
     change_column :notification_settings, :source_type, :string, null: true
     change_column :notification_settings, :source_id, :integer, null: true

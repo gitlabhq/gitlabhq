@@ -19,6 +19,10 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
+          if application.has_attribute?(:email)
+            application.email = params[:email]
+          end
+
           if application.respond_to?(:oauth_application)
             application.oauth_application = create_oauth_application(application, request)
           end
@@ -42,7 +46,8 @@ module Clusters
       def builders
         {
           "helm" => -> (cluster) { cluster.application_helm || cluster.build_application_helm },
-          "ingress" => -> (cluster) { cluster.application_ingress || cluster.build_application_ingress }
+          "ingress" => -> (cluster) { cluster.application_ingress || cluster.build_application_ingress },
+          "cert_manager" => -> (cluster) { cluster.application_cert_manager || cluster.build_application_cert_manager }
         }.tap do |hash|
           hash.merge!(project_builders) if cluster.project_type?
         end

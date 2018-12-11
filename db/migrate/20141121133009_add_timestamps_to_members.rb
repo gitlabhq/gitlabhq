@@ -3,7 +3,7 @@
 # became a problem after commit c8e78d972a5a628870eefca0f2ccea0199c55bda which
 # was added in GitLab 7.5. With this migration we ensure that all rows in
 # 'members' have at least some created_at and updated_at timestamp.
-class AddTimestampsToMembers < ActiveRecord::Migration
+class AddTimestampsToMembers < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE members SET created_at = NOW() WHERE created_at is NULL"
     execute "UPDATE members SET updated_at = NOW() WHERE updated_at is NULL"

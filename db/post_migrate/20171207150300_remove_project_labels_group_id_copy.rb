@@ -1,7 +1,7 @@
 # Copy of 20180202111106 - this one should run before 20171207150343 to fix issues related to
 # the removal of groups with labels.
 
-class RemoveProjectLabelsGroupIdCopy < ActiveRecord::Migration
+class RemoveProjectLabelsGroupIdCopy < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

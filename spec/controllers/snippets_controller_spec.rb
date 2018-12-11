@@ -437,7 +437,10 @@ describe SnippetsController do
         end
 
         context 'when signed in user is the author' do
+          let(:flag_value) { false }
+
           before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
             get :raw, id: personal_snippet.to_param
           end
 
@@ -450,6 +453,24 @@ describe SnippetsController do
             expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
 
             expect(response.header['Content-Disposition']).to match(/inline/)
+          end
+
+          context 'when feature flag workhorse_set_content_type is' do
+            context 'enabled' do
+              let(:flag_value) { true }
+
+              it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
+                expect(response).to have_gitlab_http_status(200)
+                expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+              end
+            end
+
+            context 'disabled' do
+              it "does not set #{Gitlab::Workhorse::DETECT_HEADER} header" do
+                expect(response).to have_gitlab_http_status(200)
+                expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to be nil
+              end
+            end
           end
         end
       end

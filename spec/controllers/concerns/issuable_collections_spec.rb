@@ -60,7 +60,7 @@ describe IssuableCollections do
     end
   end
 
-  describe '#filter_params' do
+  describe '#finder_options' do
     let(:params) do
       {
         assignee_id: '1',
@@ -84,25 +84,21 @@ describe IssuableCollections do
       }
     end
 
-    it 'filters params' do
+    it 'only allows whitelisted params' do
       allow(controller).to receive(:cookies).and_return({})
+      allow(controller).to receive(:current_user).and_return(nil)
 
-      filtered_params = controller.send(:filter_params)
+      finder_options = controller.send(:finder_options)
 
-      expect(filtered_params).to eq({
+      expect(finder_options).to eq({
         'assignee_id' => '1',
         'assignee_username' => 'user1',
         'author_id' => '2',
         'author_username' => 'user2',
-        'authorized_only' => 'true',
-        'due_date' => '2017-01-01',
-        'group_id' => '3',
-        'iids' => '4',
         'label_name' => 'foo',
         'milestone_title' => 'bar',
         'my_reaction_emoji' => 'thumbsup',
-        'non_archived' => 'true',
-        'project_id' => '5',
+        'due_date' => '2017-01-01',
         'scope' => 'all',
         'search' => 'baz',
         'sort' => 'priority',

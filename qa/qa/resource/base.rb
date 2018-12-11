@@ -2,6 +2,7 @@
 
 require 'forwardable'
 require 'capybara/dsl'
+require 'active_support/core_ext/array/extract_options'
 
 module QA
   module Resource

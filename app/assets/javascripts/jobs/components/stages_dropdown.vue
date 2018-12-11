@@ -36,26 +36,13 @@ export default {
 </script>
 <template>
   <div class="block-last dropdown">
-    <ci-icon
-      :status="pipeline.details.status"
-      class="vertical-align-middle"
-    />
+    <ci-icon :status="pipeline.details.status" class="vertical-align-middle" />
 
     {{ __('Pipeline') }}
-    <a
-      :href="pipeline.path"
-      class="js-pipeline-path link-commit"
-    >
-      #{{ pipeline.id }}
-    </a>
+    <a :href="pipeline.path" class="js-pipeline-path link-commit"> #{{ pipeline.id }} </a>
     <template v-if="hasRef">
       {{ __('from') }}
-      <a
-        :href="pipeline.ref.path"
-        class="link-commit ref-name"
-      >
-        {{ pipeline.ref.name }}
-      </a>
+      <a :href="pipeline.ref.path" class="link-commit ref-name"> {{ pipeline.ref.name }} </a>
     </template>
 
     <button
@@ -63,20 +50,12 @@ export default {
       data-toggle="dropdown"
       class="js-selected-stage dropdown-menu-toggle prepend-top-8"
     >
-      {{ selectedStage }}
-      <i class="fa fa-chevron-down" ></i>
+      {{ selectedStage }} <i class="fa fa-chevron-down"></i>
     </button>
 
     <ul class="dropdown-menu">
-      <li
-        v-for="stage in stages"
-        :key="stage.name"
-      >
-        <button
-          type="button"
-          class="js-stage-item stage-item"
-          @click="onStageClick(stage)"
-        >
+      <li v-for="stage in stages" :key="stage.name">
+        <button type="button" class="js-stage-item stage-item" @click="onStageClick(stage);">
           {{ stage.name }}
         </button>
       </li>

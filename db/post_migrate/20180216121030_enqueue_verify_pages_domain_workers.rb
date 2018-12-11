@@ -1,4 +1,4 @@
-class EnqueueVerifyPagesDomainWorkers < ActiveRecord::Migration
+class EnqueueVerifyPagesDomainWorkers < ActiveRecord::Migration[4.2]
   class PagesDomain < ActiveRecord::Base
     include EachBatch
   end

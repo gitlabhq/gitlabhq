@@ -1,5 +1,0 @@
----
-title: Fix 500 error when testing webhooks with redirect loops
-merge_request: 22447
-author: Heinrich Lee Yu
-type: fixed

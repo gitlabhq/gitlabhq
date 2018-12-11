@@ -419,7 +419,7 @@ view. For instance the approval code in the project's settings page.
 **Mitigations**
 
 Blocks of code that are EE-specific should be moved to partials. This
-avoids conflicts with big chunks of HAML code that that are not fun to
+avoids conflicts with big chunks of HAML code that are not fun to
 resolve when you add the indentation to the equation.
 
 EE-specific views should be placed in `ee/app/views/`, using extra
@@ -511,7 +511,7 @@ module EE
         params do
           requires :id, type: String, desc: 'The ID of a project'
         end
-        resource :projects, requirements: ::API::API::PROJECT_ENDPOINT_REQUIREMENTS do
+        resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           # ...
         end
       end

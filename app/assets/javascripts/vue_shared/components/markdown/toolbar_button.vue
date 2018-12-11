@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective } from '@gitlab-org/gitlab-ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '../icon.vue';
 
 export default {
@@ -55,8 +55,6 @@ export default {
     tabindex="-1"
     data-container="body"
   >
-    <icon
-      :name="icon"
-    />
+    <icon :name="icon" />
   </button>
 </template>

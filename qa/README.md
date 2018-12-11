@@ -80,6 +80,15 @@ GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sa
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
 
+### Sending additional cookies
+
+The environment variable `QA_COOKIES` can be set to send additional cookies
+on every request. This is necessary on gitlab.com to direct traffic to the
+canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
+
+To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"` 
+
+
 ### Building a Docker image to test
 
 Once you have made changes to the CE/EE repositories, you may want to build a

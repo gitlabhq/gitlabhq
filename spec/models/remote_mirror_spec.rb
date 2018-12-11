@@ -174,7 +174,15 @@ describe RemoteMirror do
     end
 
     context 'with remote mirroring enabled' do
+      it 'defaults to disabling only protected branches' do
+        expect(remote_mirror.only_protected_branches?).to be_falsey
+      end
+
       context 'with only protected branches enabled' do
+        before do
+          remote_mirror.only_protected_branches = true
+        end
+
         context 'when it did not update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
             expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
@@ -222,11 +230,23 @@ describe RemoteMirror do
 
   context '#ensure_remote!' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+    let(:project) { remote_mirror.project }
+    let(:repository) { project.repository }
 
     it 'adds a remote multiple times with no errors' do
-      expect(remote_mirror.project.repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
+      expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
 
       2.times do
+        remote_mirror.ensure_remote!
+      end
+    end
+
+    context 'SSH public-key authentication' do
+      it 'omits the password from the URL' do
+        remote_mirror.update!(auth_method: 'ssh_public_key', url: 'ssh://git:pass@example.com')
+
+        expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, 'ssh://git@example.com')
+
         remote_mirror.ensure_remote!
       end
     end

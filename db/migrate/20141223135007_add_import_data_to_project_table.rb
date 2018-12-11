@@ -1,4 +1,4 @@
-class AddImportDataToProjectTable < ActiveRecord::Migration
+class AddImportDataToProjectTable < ActiveRecord::Migration[4.2]
   def change
     add_column :projects, :import_type, :string
     add_column :projects, :import_source, :string

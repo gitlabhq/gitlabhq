@@ -23,8 +23,7 @@
 1. Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
-[RuboCop](https://github.com/bbatsov/rubocop),
-[PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
+[RuboCop](https://github.com/bbatsov/rubocop) and [Hound CI](https://houndci.com).
 
 ---
 

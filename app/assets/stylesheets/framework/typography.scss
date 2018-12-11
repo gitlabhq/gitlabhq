@@ -360,10 +360,6 @@ code {
   font-size: 95%;
 }
 
-.git-revision-dropdown-toggle {
-  @extend .monospace;
-}
-
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }
@@ -372,11 +368,11 @@ code {
  * Apply Markdown typography
  *
  */
-.wiki {
+.wiki:not(.use-csslab) {
   @include md-typography;
 }
 
-.md {
+.md:not(.use-csslab) {
   @include md-typography;
 }
 

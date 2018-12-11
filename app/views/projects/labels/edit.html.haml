@@ -1,4 +1,6 @@
 - @no_container = true
+- add_to_breadcrumbs "Labels", project_labels_path(@project)
+- breadcrumb_title "Edit"
 - page_title "Edit", @label.name, "Labels"
 
 %div{ class: container_class }

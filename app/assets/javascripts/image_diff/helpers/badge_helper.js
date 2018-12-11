@@ -12,7 +12,7 @@ export function createImageBadge(noteId, { x, y }, classNames = []) {
 }
 
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
-  const buttonEl = createImageBadge(noteId, coordinate, ['badge']);
+  const buttonEl = createImageBadge(noteId, coordinate, ['badge', 'badge-pill']);
   buttonEl.innerText = badgeText;
 
   containerEl.appendChild(buttonEl);

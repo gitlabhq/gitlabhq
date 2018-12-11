@@ -122,17 +122,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        if @merge_request.valid?
-          redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
-        else
+        if @merge_request.errors.present?
           define_edit_vars
 
           render :edit
+        else
+          redirect_to project_merge_request_path(@merge_request.target_project, @merge_request)
         end
       end
 
       format.json do
-        render json: serializer.represent(@merge_request, serializer: 'basic')
+        if merge_request.errors.present?
+          render json: @merge_request.errors, status: :bad_request
+        else
+          render json: serializer.represent(@merge_request, serializer: 'basic')
+        end
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -213,7 +217,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rebase
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
-    render nothing: true, status: :ok
+    head :ok
   end
 
   protected

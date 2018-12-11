@@ -7,8 +7,8 @@ module API
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-    COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
+    NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+    COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
 
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
@@ -20,7 +20,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
-                    Gitlab::GrapeLogging::Loggers::PerfLogger.new
+                    Gitlab::GrapeLogging::Loggers::PerfLogger.new,
+                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -48,6 +49,10 @@ module API
 
     rescue_from ActiveRecord::RecordNotFound do
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
+    end
+
+    rescue_from ::Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError do
+      rack_response({ 'message' => '409 Conflict: Resource lock' }.to_json, 409)
     end
 
     rescue_from UploadedFile::InvalidPathError do |e|
@@ -80,7 +85,6 @@ module API
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
-    helpers ::SentryHelper
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 

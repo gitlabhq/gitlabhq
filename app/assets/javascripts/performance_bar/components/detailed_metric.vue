@@ -38,20 +38,14 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-if="currentRequest.details"
-    :id="`peek-view-${metric}`"
-    class="view"
-  >
+  <div v-if="currentRequest.details" :id="`peek-view-${metric}`" class="view">
     <button
       :data-target="`#modal-peek-${metric}-details`"
       class="btn-blank btn-link bold"
       type="button"
       data-toggle="modal"
     >
-      {{ metricDetails.duration }}
-      /
-      {{ metricDetails.calls }}
+      {{ metricDetails.duration }} / {{ metricDetails.calls }}
     </button>
     <gl-modal
       :id="`modal-peek-${metric}-details`"
@@ -59,35 +53,23 @@ export default {
       modal-size="xl"
       class="performance-bar-modal"
     >
-      <table
-        class="table"
-      >
+      <table class="table">
         <template v-if="detailsList.length">
-          <tr
-            v-for="(item, index) in detailsList"
-            :key="index"
-          >
-            <td><strong>{{ item.duration }}ms</strong></td>
-            <td
-              v-for="key in keys"
-              :key="key"
-              class="break-word"
-            >
-              {{ item[key] }}
+          <tr v-for="(item, index) in detailsList" :key="index">
+            <td>
+              <strong>{{ item.duration }}ms</strong>
             </td>
+            <td v-for="key in keys" :key="key" class="break-word">{{ item[key] }}</td>
           </tr>
         </template>
         <template v-else>
           <tr>
-            <td>
-              No {{ header.toLowerCase() }} for this request.
-            </td>
+            <td>No {{ header.toLowerCase() }} for this request.</td>
           </tr>
         </template>
       </table>
 
-      <div slot="footer">
-      </div>
+      <div slot="footer"></div>
     </gl-modal>
     {{ metric }}
   </div>

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab-org/gitlab-ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../event_hub';
@@ -67,33 +67,20 @@ export default {
       data-toggle="dropdown"
       aria-label="Manual job"
     >
-      <icon
-        name="play"
-        class="icon-play"
-      />
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true">
-      </i>
+      <icon name="play" class="icon-play" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
       <gl-loading-icon v-if="isLoading" />
     </gl-button>
 
     <ul class="dropdown-menu dropdown-menu-right">
-      <li
-        v-for="action in actions"
-        :key="action.path"
-      >
+      <li v-for="action in actions" :key="action.path">
         <gl-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           class="js-pipeline-action-link no-btn btn"
-          @click="onClickAction(action)"
+          @click="onClickAction(action);"
         >
           {{ action.name }}
-          <span
-            v-if="action.scheduled_at"
-            class="pull-right"
-          >
+          <span v-if="action.scheduled_at" class="pull-right">
             <icon name="clock" />
             <gl-countdown :end-date-string="action.scheduled_at" />
           </span>

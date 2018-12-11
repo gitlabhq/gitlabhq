@@ -32,6 +32,7 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
+  BUILD_ASSETS_IMAGE: "false"
 
 before_script:
   - bundle --version
@@ -47,6 +48,7 @@ after_script:
 stages:
   - build
   - prepare
+  - merge
   - test
   - post-test
   - pages
@@ -150,13 +152,12 @@ stages:
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[-2]}
-    - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - TEST_TOOL=${JOB_NAME[0]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${TEST_TOOL}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export FLAKY_RSPEC_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
@@ -439,11 +440,54 @@ setup-test-env:
       - config/secrets.yml
       - vendor/gitaly-ruby
 
+# GitLab Review apps
+.review-base: &review-base
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  cache: {}
+  dependencies: []
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - master
+      - /(^docs[\/-].*|.*-docs$)/
+  before_script: []
+
+.review-docker: &review-docker
+  <<: *review-base
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
+  services:
+    - docker:stable-dind
+  tags:
+    - gitlab-org
+    - docker
+  variables: &review-docker-variables
+    GIT_DEPTH: "1"
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    LATEST_QA_IMAGE: "gitlab/${CI_PROJECT_NAME}-qa:nightly"
+    QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/${CI_PROJECT_NAME}-qa:${CI_COMMIT_REF_SLUG}"
+
+build-qa-image:
+  <<: *review-docker
+  stage: prepare
+  script:
+    - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
+    - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
+    - time docker push ${QA_IMAGE}
+
 danger-review:
   <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
-  allow_failure: true
   dependencies: []
   before_script: []
   only:
@@ -461,129 +505,21 @@ danger-review:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
 
-rspec-pg 0 30: *rspec-metadata-pg
-rspec-pg 1 30: *rspec-metadata-pg
-rspec-pg 2 30: *rspec-metadata-pg
-rspec-pg 3 30: *rspec-metadata-pg
-rspec-pg 4 30: *rspec-metadata-pg
-rspec-pg 5 30: *rspec-metadata-pg
-rspec-pg 6 30: *rspec-metadata-pg
-rspec-pg 7 30: *rspec-metadata-pg
-rspec-pg 8 30: *rspec-metadata-pg
-rspec-pg 9 30: *rspec-metadata-pg
-rspec-pg 10 30: *rspec-metadata-pg
-rspec-pg 11 30: *rspec-metadata-pg
-rspec-pg 12 30: *rspec-metadata-pg
-rspec-pg 13 30: *rspec-metadata-pg
-rspec-pg 14 30: *rspec-metadata-pg
-rspec-pg 15 30: *rspec-metadata-pg
-rspec-pg 16 30: *rspec-metadata-pg
-rspec-pg 17 30: *rspec-metadata-pg
-rspec-pg 18 30: *rspec-metadata-pg
-rspec-pg 19 30: *rspec-metadata-pg
-rspec-pg 20 30: *rspec-metadata-pg
-rspec-pg 21 30: *rspec-metadata-pg
-rspec-pg 22 30: *rspec-metadata-pg
-rspec-pg 23 30: *rspec-metadata-pg
-rspec-pg 24 30: *rspec-metadata-pg
-rspec-pg 25 30: *rspec-metadata-pg
-rspec-pg 26 30: *rspec-metadata-pg
-rspec-pg 27 30: *rspec-metadata-pg
-rspec-pg 28 30: *rspec-metadata-pg
-rspec-pg 29 30: *rspec-metadata-pg
+rspec-pg:
+  <<: *rspec-metadata-pg
+  parallel: 50
 
-rspec-mysql 0 30: *rspec-metadata-mysql
-rspec-mysql 1 30: *rspec-metadata-mysql
-rspec-mysql 2 30: *rspec-metadata-mysql
-rspec-mysql 3 30: *rspec-metadata-mysql
-rspec-mysql 4 30: *rspec-metadata-mysql
-rspec-mysql 5 30: *rspec-metadata-mysql
-rspec-mysql 6 30: *rspec-metadata-mysql
-rspec-mysql 7 30: *rspec-metadata-mysql
-rspec-mysql 8 30: *rspec-metadata-mysql
-rspec-mysql 9 30: *rspec-metadata-mysql
-rspec-mysql 10 30: *rspec-metadata-mysql
-rspec-mysql 11 30: *rspec-metadata-mysql
-rspec-mysql 12 30: *rspec-metadata-mysql
-rspec-mysql 13 30: *rspec-metadata-mysql
-rspec-mysql 14 30: *rspec-metadata-mysql
-rspec-mysql 15 30: *rspec-metadata-mysql
-rspec-mysql 16 30: *rspec-metadata-mysql
-rspec-mysql 17 30: *rspec-metadata-mysql
-rspec-mysql 18 30: *rspec-metadata-mysql
-rspec-mysql 19 30: *rspec-metadata-mysql
-rspec-mysql 20 30: *rspec-metadata-mysql
-rspec-mysql 21 30: *rspec-metadata-mysql
-rspec-mysql 22 30: *rspec-metadata-mysql
-rspec-mysql 23 30: *rspec-metadata-mysql
-rspec-mysql 24 30: *rspec-metadata-mysql
-rspec-mysql 25 30: *rspec-metadata-mysql
-rspec-mysql 26 30: *rspec-metadata-mysql
-rspec-mysql 27 30: *rspec-metadata-mysql
-rspec-mysql 28 30: *rspec-metadata-mysql
-rspec-mysql 29 30: *rspec-metadata-mysql
+rspec-mysql:
+  <<: *rspec-metadata-mysql
+  parallel: 50
 
-rspec-pg-rails4 0 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 1 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 2 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 3 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 4 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 5 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 6 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 7 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 8 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 9 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 10 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 11 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 12 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 13 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 14 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 15 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 16 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 17 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 18 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 19 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 20 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 21 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 22 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 23 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 24 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 25 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 26 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 27 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 28 30: *rspec-metadata-pg-rails4
-rspec-pg-rails4 29 30: *rspec-metadata-pg-rails4
+rspec-pg-rails4:
+  <<: *rspec-metadata-pg-rails4
+  parallel: 50
 
-rspec-mysql-rails4 0 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 1 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 2 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 3 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 4 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 5 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 6 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 7 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 8 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 9 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 10 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 11 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 12 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 13 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 14 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 15 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 16 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 17 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 18 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 19 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 20 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 21 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 22 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 23 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 24 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 25 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 26 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 27 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 28 30: *rspec-metadata-mysql-rails4
-rspec-mysql-rails4 29 30: *rspec-metadata-mysql-rails4
+rspec-mysql-rails4:
+  <<: *rspec-metadata-mysql-rails4
+  parallel: 50
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -618,7 +554,8 @@ docs lint:
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
-    - bundle exec nanoc check internal_links
+    # Disabled until https://gitlab.com/gitlab-com/gitlab-docs/issues/305 is resolved
+    # - bundle exec nanoc check internal_links
 
 downtime_check:
   <<: *rake-exec
@@ -727,8 +664,14 @@ gitlab:assets:compile:
     paths:
       - webpack-report/
       - public/assets/
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
+    - //@gitlab/gitlabhq
+    - //@gitlab/gitlab-ee
   tags:
-    - docker
+    - gitlab-org-delivery
+    - high-cpu
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
@@ -755,6 +698,32 @@ karma:
       - coverage-javascript/
     reports:
       junit: junit_karma.xml
+
+jest:
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *use-pg
+  dependencies:
+  - compile-assets
+  - setup-test-env
+  script:
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake karma:fixtures
+    - date
+    - yarn jest --ci --coverage
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+    - coverage-frontend/
+    - junit_jest.xml
+    reports:
+      junit: junit_jest.xml
+  cache:
+    key: jest
+    paths:
+      - tmp/jest/jest/
 
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -847,6 +816,40 @@ qa:selectors:
     - bundle install
     - bundle exec bin/qa Test::Sanity::Selectors
 
+.qa-frontend-node: &qa-frontend-node
+  stage: test
+  variables:
+    NODE_OPTIONS: --max_old_space_size=3584
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - .yarn-cache/
+  dependencies: []
+  before_script: []
+  script:
+    - date
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
+    - yarn run webpack-prod
+  <<: *except-docs
+
+qa-frontend-node:6:
+  <<: *qa-frontend-node
+  image: node:6-alpine
+
+qa-frontend-node:8:
+  <<: *qa-frontend-node
+  image: node:8-alpine
+
+qa-frontend-node:10:
+  <<: *qa-frontend-node
+  image: node:10-alpine
+
+qa-frontend-node:latest:
+  <<: *qa-frontend-node
+  image: node:alpine
+  allow_failure: true
+
 coverage:
   # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
   # download artifacts from all the rspec jobs instead of from setup-test-env only
@@ -896,6 +899,8 @@ pages:
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv eslint-report.html public/ || true
     - mv webpack-report/ public/webpack-report/ || true
+    - cp .public/assets/application-*.css public/application.css || true
+    - cp .public/assets/application-*.css.gz public/application.css.gz || true
   artifacts:
     paths:
       - public
@@ -942,85 +947,102 @@ no_ee_check:
     - //@gitlab-org/gitlab-ce
 
 # GitLab Review apps
-review:
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
+review-deploy:
+  <<: *review-base
+  retry: 2
   allow_failure: true
-  before_script:
-    - gem install gitlab --no-document
   variables:
     GIT_DEPTH: "1"
-    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
-    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
+    HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
+    DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "master"
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  environment:
+    <<: *review-environment
+    on_stop: review-stop
+  before_script:
+    - apk update && apk add jq
+    - gem install gitlab --no-document
   script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
     - source ./scripts/review_apps/review-apps.sh
+    - wait_for_job_to_be_done "gitlab:assets:compile"
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
     - check_kube_domain
     - download_gitlab_chart
     - ensure_namespace
     - install_tiller
     - install_external_dns
-    - deploy
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    url: https://gitlab-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN
-    on_stop: stop_review
-  only:
-    refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
-    kubernetes: active
-  except:
-    refs:
-      - master
-      - /(^docs[\/-].*|.*-docs$)/
+    - time deploy
+    - add_license
 
-stop_review:
+.review-qa-base: &review-qa-base
+  <<: *review-docker
+  retry: 2
+  allow_failure: true
+  variables:
+    <<: *review-docker-variables
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+    QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
+    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
+    GITLAB_USERNAME: "root"
+    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITLAB_ADMIN_USERNAME: "root"
+    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
+    EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
+    QA_DEBUG: "true"
+  artifacts:
+    paths:
+      - ./qa/gitlab-qa-run-*
+    expire_in: 7 days
+    when: always
+  before_script:
+    - echo "${QA_IMAGE}"
+    - echo "${CI_ENVIRONMENT_URL}"
+    - apk update && apk add curl jq
+    - source ./scripts/review_apps/review-apps.sh
+    - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
+    - wait_for_job_to_be_done "review-deploy"
+
+review-qa-smoke:
+  <<: *review-qa-base
+  script:
+    - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+
+review-qa-all:
+  <<: *review-qa-base
+  script:
+    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+  when: manual
+
+review-stop:
+  <<: *review-base
   <<: *single-script-job
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
   allow_failure: true
-  cache: {}
-  dependencies: []
   variables:
+    <<: *single-script-job-variables
     SCRIPT_NAME: "review_apps/review-apps.sh"
+  when: manual
+  environment:
+    <<: *review-environment
+    action: stop
   script:
     - source $(basename "${SCRIPT_NAME}")
     - delete
     - cleanup
-  when: manual
-  environment:
-    name: review/$CI_COMMIT_REF_NAME
-    action: stop
-  only:
-    refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
-    kubernetes: active
-  except:
-    - master
-    - /(^docs[\/-].*|.*-docs$)/
 
-schedule:review_apps_cleanup:
-  <<: *dedicated-no-docs-pull-cache-job
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+schedule:review-cleanup:
+  <<: *review-base
   stage: build
   allow_failure: true
-  cache: {}
-  dependencies: []
-  before_script:
-    - gem install gitlab --no-document
   variables:
     GIT_DEPTH: "1"
-  script:
-    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
   environment:
     name: review/auto-cleanup
-    action: stop
   only:
     refs:
       - schedules@gitlab-org/gitlab-ce
@@ -1029,3 +1051,7 @@ schedule:review_apps_cleanup:
   except:
     - tags
     - /(^docs[\/-].*|.*-docs$)/
+  before_script:
+    - gem install gitlab --no-document
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb

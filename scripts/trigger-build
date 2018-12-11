@@ -68,12 +68,19 @@ module Trigger
 
     def base_variables
       {
+        'GITLAB_REF_SLUG' => ref_slug,
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
         'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
         'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
         'TOP_UPSTREAM_SOURCE_JOB' => ENV['CI_JOB_URL'],
         'TOP_UPSTREAM_SOURCE_SHA' => ENV['CI_COMMIT_SHA']
       }
+    end
+
+    def ref_slug
+      return 'master' if ENV['CI_COMMIT_REF_SLUG'] =~ %r{(\Aqa[/-]|-qa\z)}
+
+      ENV['CI_COMMIT_REF_SLUG']
     end
 
     # Read version files from all components

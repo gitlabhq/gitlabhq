@@ -23,11 +23,11 @@ export const diffHasAllExpandedDiscussions = (state, getters) => diff => {
 };
 
 /**
- * Checks if the diff has all discussions collpased
+ * Checks if the diff has all discussions collapsed
  * @param {Object} diff
  * @returns {Boolean}
  */
-export const diffHasAllCollpasedDiscussions = (state, getters) => diff => {
+export const diffHasAllCollapsedDiscussions = (state, getters) => diff => {
   const discussions = getters.getDiffFileDiscussions(diff);
 
   return (
@@ -69,40 +69,6 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
   rootGetters.discussions.filter(
     discussion => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,
   ) || [];
-
-export const shouldRenderParallelCommentRow = state => line => {
-  const hasDiscussion =
-    (line.left && line.left.discussions && line.left.discussions.length) ||
-    (line.right && line.right.discussions && line.right.discussions.length);
-
-  const hasExpandedDiscussionOnLeft =
-    line.left && line.left.discussions && line.left.discussions.length
-      ? line.left.discussions.every(discussion => discussion.expanded)
-      : false;
-  const hasExpandedDiscussionOnRight =
-    line.right && line.right.discussions && line.right.discussions.length
-      ? line.right.discussions.every(discussion => discussion.expanded)
-      : false;
-
-  if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
-    return true;
-  }
-
-  const hasCommentFormOnLeft = line.left && state.diffLineCommentForms[line.left.line_code];
-  const hasCommentFormOnRight = line.right && state.diffLineCommentForms[line.right.line_code];
-
-  return hasCommentFormOnLeft || hasCommentFormOnRight;
-};
-
-export const shouldRenderInlineCommentRow = state => line => {
-  if (state.diffLineCommentForms[line.line_code]) return true;
-
-  if (!line.discussions || line.discussions.length === 0) {
-    return false;
-  }
-
-  return line.discussions.every(discussion => discussion.expanded);
-};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
 export const getDiffFileByHash = state => fileHash =>

@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
+class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   DOWNTIME = false

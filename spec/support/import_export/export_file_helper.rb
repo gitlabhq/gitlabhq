@@ -123,7 +123,7 @@ module ExportFileHelper
     false
   end
 
-  # Compares model attributes with those those found in the hash
+  # Compares model attributes with those found in the hash
   # and returns true if there is a match, ignoring some excluded attributes.
   def safe_model?(model, excluded_attributes, parent)
     excluded_attributes += associations_for(model)

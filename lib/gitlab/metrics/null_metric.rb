@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     # Mocks ::Prometheus::Client::Metric and all derived metrics

@@ -6,6 +6,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import MrWidgetIcon from './mr_widget_icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -13,6 +14,7 @@ export default {
     Icon,
     clipboardButton,
     TooltipOnTruncate,
+    MrWidgetIcon,
   },
   directives: {
     tooltip,
@@ -76,13 +78,11 @@ export default {
 </script>
 <template>
   <div class="mr-source-target append-bottom-default">
-    <div class="git-merge-icon-container append-right-default">
-      <icon name="git-merge" />
-    </div>
+    <mr-widget-icon name="git-merge" />
     <div class="git-merge-container d-flex">
       <div class="normal">
         <strong>
-          {{ s__("mrWidget|Request to merge") }}
+          {{ s__('mrWidget|Request to merge') }}
           <tooltip-on-truncate
             :title="mr.sourceBranch"
             truncate-target="child"
@@ -93,32 +93,23 @@ export default {
             :title="__('Copy branch name to clipboard')"
             css-class="btn-default btn-transparent btn-clipboard"
           />
-          {{ s__("mrWidget|into") }}
+          {{ s__('mrWidget|into') }}
           <tooltip-on-truncate
             :title="mr.targetBranch"
             truncate-target="child"
             class="label-branch label-truncate"
           >
-            <a
-              :href="mr.targetBranchTreePath"
-              class="js-target-branch"
-            >
-              {{ mr.targetBranch }}
-            </a>
+            <a :href="mr.targetBranchTreePath" class="js-target-branch"> {{ mr.targetBranch }} </a>
           </tooltip-on-truncate>
         </strong>
         <div
           v-if="shouldShowCommitsBehindText"
           class="diverged-commits-count"
           v-html="commitsBehindText"
-        >
-        </div>
+        ></div>
       </div>
 
-      <div
-        v-if="mr.isOpen"
-        class="branch-actions d-flex"
-      >
+      <div v-if="mr.isOpen" class="branch-actions d-flex">
         <a
           v-if="!mr.sourceBranchRemoved"
           v-tooltip
@@ -130,7 +121,7 @@ export default {
           tabindex="0"
           role="button"
         >
-          {{ s__("mrWidget|Open in Web IDE") }}
+          {{ s__('mrWidget|Open in Web IDE') }}
         </a>
         <button
           :disabled="mr.sourceBranchRemoved"
@@ -139,7 +130,7 @@ export default {
           class="btn btn-default js-check-out-branch append-right-default"
           type="button"
         >
-          {{ s__("mrWidget|Check out branch") }}
+          {{ s__('mrWidget|Check out branch') }}
         </button>
         <span class="dropdown">
           <button
@@ -150,29 +141,17 @@ export default {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <icon name="download" />
-            <i
-              class="fa fa-caret-down"
-              aria-hidden="true">
-            </i>
+            <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li>
-              <a
-                :href="mr.emailPatchesPath"
-                class="js-download-email-patches"
-                download
-              >
-                {{ s__("mrWidget|Email patches") }}
+              <a :href="mr.emailPatchesPath" class="js-download-email-patches" download>
+                {{ s__('mrWidget|Email patches') }}
               </a>
             </li>
             <li>
-              <a
-                :href="mr.plainDiffPath"
-                class="js-download-plain-diff"
-                download
-              >
-                {{ s__("mrWidget|Plain diff") }}
+              <a :href="mr.plainDiffPath" class="js-download-plain-diff" download>
+                {{ s__('mrWidget|Plain diff') }}
               </a>
             </li>
           </ul>

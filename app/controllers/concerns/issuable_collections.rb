@@ -81,36 +81,62 @@ module IssuableCollections
   end
 
   def issuable_finder_for(finder_class)
-    finder_class.new(current_user, filter_params)
+    finder_class.new(current_user, finder_options)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  # rubocop: disable CodeReuse/ActiveRecord
-  def filter_params
-    set_sort_order_from_cookie
-    set_default_state
+  def finder_options
+    params[:state] = default_state if params[:state].blank?
 
-    # Skip irrelevant Rails routing params
-    @filter_params = params.dup.except(:controller, :action, :namespace_id)
-    @filter_params[:sort] ||= default_sort_order
+    options = {
+      scope: params[:scope],
+      state: params[:state],
+      sort: set_sort_order
+    }
 
-    @sort = @filter_params[:sort]
+    # Used by view to highlight active option
+    @sort = options[:sort]
 
     if @project
-      @filter_params[:project_id] = @project.id
+      options[:project_id] = @project.id
     elsif @group
-      @filter_params[:group_id] = @group.id
-      @filter_params[:include_subgroups] = true
-      @filter_params[:use_cte_for_search] = true
+      options[:group_id] = @group.id
+      options[:include_subgroups] = true
+      options[:attempt_group_search_optimizations] = true
     end
 
-    @filter_params.permit(finder_type.valid_params)
+    params.permit(finder_type.valid_params).merge(options)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  def set_default_state
-    params[:state] = 'opened' if params[:state].blank?
+  def default_state
+    'opened'
+  end
+
+  def set_sort_order
+    set_sort_order_from_user_preference || set_sort_order_from_cookie || default_sort_order
+  end
+
+  def set_sort_order_from_user_preference
+    return unless current_user
+    return unless issuable_sorting_field
+
+    user_preference = current_user.user_preference
+
+    sort_param = params[:sort]
+    sort_param ||= user_preference[issuable_sorting_field]
+
+    if user_preference[issuable_sorting_field] != sort_param
+      user_preference.update_attribute(issuable_sorting_field, sort_param)
+    end
+
+    sort_param
+  end
+
+  # Implement default_sorting_field method on controllers
+  # to choose which column to store the sorting parameter.
+  def issuable_sorting_field
+    nil
   end
 
   def set_sort_order_from_cookie
@@ -121,7 +147,7 @@ module IssuableCollections
 
     sort_value = update_cookie_value(sort_param)
     set_secure_cookie(remember_sorting_key, sort_value)
-    params[:sort] = sort_value
+    sort_value
   end
 
   def remember_sorting_key
@@ -141,12 +167,6 @@ module IssuableCollections
     case value
     when 'id_asc'             then sort_value_oldest_created
     when 'id_desc'            then sort_value_recently_created
-    when 'created_asc'        then sort_value_created_date
-    when 'created_desc'       then sort_value_created_date
-    when 'due_date_asc'       then sort_value_due_date
-    when 'due_date_desc'      then sort_value_due_date
-    when 'milestone_due_asc'  then sort_value_milestone
-    when 'milestone_due_desc' then sort_value_milestone
     when 'downvotes_asc'      then sort_value_popularity
     when 'downvotes_desc'     then sort_value_popularity
     else value

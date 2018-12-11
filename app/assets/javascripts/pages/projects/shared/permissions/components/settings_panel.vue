@@ -200,10 +200,7 @@ export default {
 <template>
   <div>
     <div class="project-visibility-setting">
-      <project-setting-row
-        :help-path="visibilityHelpPath"
-        label="Project visibility"
-      >
+      <project-setting-row :help-path="visibilityHelpPath" label="Project visibility">
         <div class="project-feature-controls">
           <div class="select-wrapper">
             <select
@@ -231,36 +228,21 @@ export default {
                 Public
               </option>
             </select>
-            <i
-              aria-hidden="true"
-              data-hidden="true"
-              class="fa fa-chevron-down"
-            >
-            </i>
+            <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"> </i>
           </div>
         </div>
         <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
-        <label
-          v-if="visibilityLevel !== visibilityOptions.PRIVATE"
-          class="request-access"
-        >
+        <label v-if="visibilityLevel !== visibilityOptions.PRIVATE" class="request-access">
           <input
             :value="requestAccessEnabled"
             type="hidden"
             name="project[request_access_enabled]"
           />
-          <input
-            v-model="requestAccessEnabled"
-            type="checkbox"
-          />
-          Allow users to request access
+          <input v-model="requestAccessEnabled" type="checkbox" /> Allow users to request access
         </label>
       </project-setting-row>
     </div>
-    <div
-      :class="{ 'highlight-changes': highlightChangesClass }"
-      class="project-feature-settings"
-    >
+    <div :class="{ 'highlight-changes': highlightChangesClass }" class="project-feature-settings">
       <project-setting-row
         label="Issues"
         help-text="Lightweight issue tracking system for this project"
@@ -271,10 +253,7 @@ export default {
           name="project[project_feature_attributes][issues_access_level]"
         />
       </project-setting-row>
-      <project-setting-row
-        label="Repository"
-        help-text="View and edit files in this project"
-      >
+      <project-setting-row label="Repository" help-text="View and edit files in this project">
         <project-feature-setting
           v-model="repositoryAccessLevel"
           :options="featureAccessLevelOptions"
@@ -293,10 +272,7 @@ export default {
             name="project[project_feature_attributes][merge_requests_access_level]"
           />
         </project-setting-row>
-        <project-setting-row
-          label="Pipelines"
-          help-text="Build, test, and deploy your changes"
-        >
+        <project-setting-row label="Pipelines" help-text="Build, test, and deploy your changes">
           <project-feature-setting
             v-model="buildsAccessLevel"
             :options="repoFeatureAccessLevelOptions"
@@ -329,10 +305,7 @@ export default {
           />
         </project-setting-row>
       </div>
-      <project-setting-row
-        label="Wiki"
-        help-text="Pages for project documentation"
-      >
+      <project-setting-row label="Wiki" help-text="Pages for project documentation">
         <project-feature-setting
           v-model="wikiAccessLevel"
           :options="featureAccessLevelOptions"

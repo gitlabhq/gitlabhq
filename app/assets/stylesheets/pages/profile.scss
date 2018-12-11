@@ -98,7 +98,6 @@
   // Limits the width of the user bio for readability.
   max-width: 600px;
   margin: 10px auto;
-  padding: 0 16px;
 }
 
 .user-avatar-button {
@@ -144,11 +143,13 @@
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
+  margin-bottom: 10px;
   border: 1px solid $border-color;
   border-radius: 3px;
 
   &:last-child {
     margin-right: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -220,7 +221,11 @@
   }
 
   .profile-header {
-    margin: 0 auto;
+    margin: 0 $gl-padding;
+
+    &.with-no-profile-tabs {
+      margin-bottom: $gl-padding-24;
+    }
 
     .avatar-holder {
       width: 90px;

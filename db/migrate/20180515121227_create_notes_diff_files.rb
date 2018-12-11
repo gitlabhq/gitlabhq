@@ -1,4 +1,4 @@
-class CreateNotesDiffFiles < ActiveRecord::Migration
+class CreateNotesDiffFiles < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   disable_ddl_transaction!

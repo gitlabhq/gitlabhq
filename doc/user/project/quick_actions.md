@@ -53,6 +53,7 @@ discussions, and descriptions:
 | `/target_branch <Local branch Name>` | Set target branch    |       | ✓             |
 | `/wip`                     | Toggle the Work In Progress status |   | ✓             |
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
+| `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 
 
 ## Quick actions for commit messages

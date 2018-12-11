@@ -84,4 +84,36 @@ describe EventsHelper do
       expect(helper.event_feed_url(event)).to eq(push_event_feed_url(event))
     end
   end
+
+  describe '#event_note_target_url' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:event) { create(:event, project: project) }
+    let(:project_base_url) { namespace_project_url(namespace_id: project.namespace, id: project) }
+
+    subject { helper.event_note_target_url(event) }
+
+    it 'returns a commit note url' do
+      event.target = create(:note_on_commit, note: '+1 from me')
+
+      expect(subject).to eq("#{project_base_url}/commit/#{event.target.commit_id}#note_#{event.target.id}")
+    end
+
+    it 'returns a project snippet note url' do
+      event.target = create(:note, :on_snippet, note: 'keep going')
+
+      expect(subject).to eq("#{project_base_url}/snippets/#{event.note_target.id}#note_#{event.target.id}")
+    end
+
+    it 'returns a project issue url' do
+      event.target = create(:note_on_issue, note: 'nice work')
+
+      expect(subject).to eq("#{project_base_url}/issues/#{event.note_target.iid}#note_#{event.target.id}")
+    end
+
+    it 'returns a merge request url' do
+      event.target = create(:note_on_merge_request, note: 'LGTM!')
+
+      expect(subject).to eq("#{project_base_url}/merge_requests/#{event.note_target.iid}#note_#{event.target.id}")
+    end
+  end
 end

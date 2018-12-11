@@ -95,7 +95,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
                              sha: '1234abcdef', status: 'success')
       end
 
-      it 'it does not merge merge request' do
+      it 'it does not merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
         service.trigger(old_pipeline)
       end

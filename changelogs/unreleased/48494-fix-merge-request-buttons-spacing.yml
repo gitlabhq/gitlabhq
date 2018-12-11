@@ -1,5 +1,0 @@
----
-title: Fix incorrect spacing between buttons when commenting on a MR.
-merge_request: 22135
-author:
-type: fixed

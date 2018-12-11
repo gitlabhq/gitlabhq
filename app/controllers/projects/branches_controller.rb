@@ -22,7 +22,7 @@ class Projects::BranchesController < Projects::ApplicationController
         # Fetch branches for the specified mode
         fetch_branches_by_mode
 
-        @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
+        @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
 
         # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992
@@ -105,7 +105,7 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to project_branches_path(@project), status: :see_other
       end
 
-      format.js { render nothing: true, status: result[:return_code] }
+      format.js { head result[:return_code] }
       format.json { render json: { message: result[:message] }, status: result[:return_code] }
     end
   end

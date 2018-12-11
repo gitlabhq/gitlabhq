@@ -150,7 +150,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,
@@ -209,7 +209,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: LEGACY_DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,
@@ -557,6 +557,28 @@ describe('DiffsStoreUtils', () => {
         'app/test/filepathneedstruncating.js',
         'package.json',
       ]);
+    });
+  });
+
+  describe('getDiffMode', () => {
+    it('returns mode when matched in file', () => {
+      expect(
+        utils.getDiffMode({
+          renamed_file: true,
+        }),
+      ).toBe('renamed');
+    });
+
+    it('returns mode_changed if key has no match', () => {
+      expect(
+        utils.getDiffMode({
+          mode_changed: true,
+        }),
+      ).toBe('mode_changed');
+    });
+
+    it('defaults to replaced', () => {
+      expect(utils.getDiffMode({})).toBe('replaced');
     });
   });
 });

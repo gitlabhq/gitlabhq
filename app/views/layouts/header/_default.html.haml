@@ -15,7 +15,7 @@
             = brand_header_logo
             - logo_text = brand_header_logo_type
             - if logo_text.present?
-              %span.logo-text.d-none.d-sm-block
+              %span.logo-text.d-none.d-lg-block.prepend-left-8
                 = logo_text
 
         - if current_user
@@ -71,7 +71,7 @@
               = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = icon('user-secret')
           - if header_link?(:sign_in)
-            %li.nav-item.m-auto
+            %li.nav-item
               %div
                 - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
                 = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'

@@ -14,6 +14,10 @@ class DurationValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     ChronicDuration.parse(value)
   rescue ChronicDuration::DurationParseError
-    record.errors.add(attribute, "is not a correct duration")
+    if options[:message]
+      record.errors.add(:base, options[:message])
+    else
+      record.errors.add(attribute, "is not a correct duration")
+    end
   end
 end

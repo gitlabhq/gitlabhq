@@ -1,4 +1,4 @@
-class AddTmpStagePriorityIndexToCiBuilds < ActiveRecord::Migration
+class AddTmpStagePriorityIndexToCiBuilds < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

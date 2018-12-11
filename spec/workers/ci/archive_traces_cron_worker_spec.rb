@@ -30,6 +30,13 @@ describe Ci::ArchiveTracesCronWorker do
 
     it_behaves_like 'archives trace'
 
+    it 'executes service' do
+      expect_any_instance_of(Ci::ArchiveTraceService)
+        .to receive(:execute).with(build)
+
+      subject
+    end
+
     context 'when a trace had already been archived' do
       let!(:build) { create(:ci_build, :success, :trace_live, :trace_artifact) }
       let!(:build2) { create(:ci_build, :success, :trace_live) }
@@ -46,11 +53,12 @@ describe Ci::ArchiveTracesCronWorker do
       let!(:build) { create(:ci_build, :success, :trace_live) }
 
       before do
+        allow(Gitlab::Sentry).to receive(:track_exception)
         allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!).and_raise('Unexpected error')
       end
 
       it 'puts a log' do
-        expect(Rails.logger).to receive(:error).with("Failed to archive stale live trace. id: #{build.id} message: Unexpected error")
+        expect(Rails.logger).to receive(:error).with("Failed to archive trace. id: #{build.id} message: Unexpected error")
 
         subject
       end

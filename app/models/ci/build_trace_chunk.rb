@@ -15,6 +15,8 @@ module Ci
     WRITE_LOCK_SLEEP = 0.01.seconds
     WRITE_LOCK_TTL = 1.minute
 
+    FailedToPersistDataError = Class.new(StandardError)
+
     # Note: The ordering of this enum is related to the precedence of persist store.
     # The bottom item takes the higest precedence, and the top item takes the lowest precedence.
     enum data_store: {
@@ -76,7 +78,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      in_lock(*lock_params) do # Write opetation is atomic
+      in_lock(*lock_params) do # Write operation is atomic
         unsafe_set_data!(data.byteslice(0, offset) + new_data)
       end
 
@@ -100,7 +102,7 @@ module Ci
     end
 
     def persist_data!
-      in_lock(*lock_params) do # Write opetation is atomic
+      in_lock(*lock_params) do # Write operation is atomic
         unsafe_persist_to!(self.class.persistable_store)
       end
     end
@@ -109,15 +111,18 @@ module Ci
 
     def unsafe_persist_to!(new_store)
       return if data_store == new_store.to_s
-      raise ArgumentError, 'Can not persist empty data' unless size > 0
+
+      current_data = get_data
+
+      unless current_data&.bytesize.to_i == CHUNK_SIZE
+        raise FailedToPersistDataError, 'Data is not fullfilled in a bucket'
+      end
 
       old_store_class = self.class.get_store_class(data_store)
 
-      get_data.tap do |the_data|
-        self.raw_data = nil
-        self.data_store = new_store
-        unsafe_set_data!(the_data)
-      end
+      self.raw_data = nil
+      self.data_store = new_store
+      unsafe_set_data!(current_data)
 
       old_store_class.delete_data(self)
     end

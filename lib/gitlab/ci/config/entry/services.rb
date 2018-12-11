@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a configuration of Docker services.
         #
-        class Services < Node
-          include Validatable
+        class Services < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, type: Array
@@ -18,7 +18,7 @@ module Gitlab
             super do
               @entries = []
               @config.each do |config|
-                @entries << Entry::Factory.new(Entry::Service)
+                @entries << ::Gitlab::Config::Entry::Factory.new(Entry::Service)
                   .value(config || {})
                   .create!
               end

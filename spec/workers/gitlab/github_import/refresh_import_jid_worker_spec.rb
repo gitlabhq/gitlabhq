@@ -29,7 +29,7 @@ describe Gitlab::GithubImport::RefreshImportJidWorker do
     context 'when the job is running' do
       it 'refreshes the import JID and reschedules itself' do
         allow(worker)
-          .to receive(:find_project)
+          .to receive(:find_import_state)
           .with(project.id)
           .and_return(project)
 
@@ -39,7 +39,7 @@ describe Gitlab::GithubImport::RefreshImportJidWorker do
           .and_return(true)
 
         expect(project)
-          .to receive(:refresh_import_jid_expiration)
+          .to receive(:refresh_jid_expiration)
 
         expect(worker.class)
           .to receive(:perform_in_the_future)
@@ -52,7 +52,7 @@ describe Gitlab::GithubImport::RefreshImportJidWorker do
     context 'when the job is no longer running' do
       it 'returns' do
         allow(worker)
-          .to receive(:find_project)
+          .to receive(:find_import_state)
           .with(project.id)
           .and_return(project)
 
@@ -62,18 +62,18 @@ describe Gitlab::GithubImport::RefreshImportJidWorker do
           .and_return(false)
 
         expect(project)
-          .not_to receive(:refresh_import_jid_expiration)
+          .not_to receive(:refresh_jid_expiration)
 
         worker.perform(project.id, '123')
       end
     end
   end
 
-  describe '#find_project' do
-    it 'returns a Project' do
+  describe '#find_import_state' do
+    it 'returns a ProjectImportState' do
       project = create(:project, :import_started)
 
-      expect(worker.find_project(project.id)).to be_an_instance_of(Project)
+      expect(worker.find_import_state(project.id)).to be_an_instance_of(ProjectImportState)
     end
 
     # it 'only selects the import JID field' do
@@ -84,14 +84,14 @@ describe Gitlab::GithubImport::RefreshImportJidWorker do
     #     .to eq({ 'id' => nil, 'import_jid' => '123abc' })
     # end
 
-    it 'returns nil for a project for which the import process failed' do
+    it 'returns nil for a import state for which the import process failed' do
       project = create(:project, :import_failed)
 
-      expect(worker.find_project(project.id)).to be_nil
+      expect(worker.find_import_state(project.id)).to be_nil
     end
 
-    it 'returns nil for a non-existing project' do
-      expect(worker.find_project(-1)).to be_nil
+    it 'returns nil for a non-existing find_import_state' do
+      expect(worker.find_import_state(-1)).to be_nil
     end
   end
 end

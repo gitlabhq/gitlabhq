@@ -1,5 +1,5 @@
-- page_title "Invitation"
-%h3.page-title Invitation
+- page_title _("Invitation")
+%h3.page-title= _("Invitation")
 
 %p
   You have been invited
@@ -24,14 +24,17 @@
 
 - if is_member
   %p
-    However, you are already a member of this #{@member.source.is_a?(Group) ? "group" : "project"}.
-    Sign in using a different account to accept the invitation.
+    - member_source = @member.source.is_a?(Group) ? _("group") : _("project")
+    = _("However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation.") % { member_source: member_source }
 
 - if @member.invite_email != current_user.email
   %p
-    Note that this invitation was sent to #{mail_to @member.invite_email}, but you are signed in as #{link_to current_user.to_reference, user_url(current_user)} with email #{mail_to current_user.email}.
+    - mail_to_invite_email = mail_to(@member.invite_email)
+    - mail_to_current_user = mail_to(current_user.email)
+    - link_to_current_user = link_to(current_user.to_reference, user_url(current_user))
+    = _("Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}.").html_safe % { mail_to_invite_email: mail_to_invite_email, mail_to_current_user: mail_to_current_user, link_to_current_user: link_to_current_user }
 
 - unless is_member
   .actions
-    = link_to "Accept invitation", accept_invite_url(@token), method: :post, class: "btn btn-success"
-    = link_to "Decline", decline_invite_url(@token), method: :post, class: "btn btn-danger prepend-left-10"
+    = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn btn-success"
+    = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn btn-danger prepend-left-10"

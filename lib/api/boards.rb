@@ -16,7 +16,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
         desc 'Get all project boards' do
           detail 'This feature was introduced in 8.13'

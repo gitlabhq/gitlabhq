@@ -2,7 +2,7 @@
 
 module ProjectsHelper
   def link_to_project(project)
-    link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -50,6 +50,12 @@ module ProjectsHelper
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
+    data_attrs = {
+      user_id: author.id,
+      username: author.username,
+      name: author.name
+    }
+
     return "(deleted)" unless author
 
     author_html = []
@@ -65,7 +71,7 @@ module ProjectsHelper
     author_html = author_html.join.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
       link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
@@ -257,6 +263,10 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def link_to_bfg
+    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  end
+
   def legacy_render_context(params)
     params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
   end
@@ -307,6 +317,7 @@ module ProjectsHelper
       settings:         :admin_project,
       builds:           :read_build,
       clusters:         :read_cluster,
+      serverless:       :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -378,6 +389,10 @@ module ProjectsHelper
     else
       'ssh'
     end
+  end
+
+  def sidebar_operations_link_path(project = @project)
+    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
   end
 
   def project_last_activity(project)
@@ -545,6 +560,7 @@ module ProjectsHelper
     %w[
       environments
       clusters
+      functions
       user
       gcp
     ]

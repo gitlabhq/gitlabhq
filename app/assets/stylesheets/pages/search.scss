@@ -101,8 +101,6 @@ input[type='checkbox']:hover {
     .dropdown-header {
       // Necessary because glDropdown doesn't support a second style of headers
       font-weight: $gl-font-weight-bold;
-      // .dropdown-menu li has 1px side padding
-      padding: $gl-padding-8 17px;
       color: $gl-text-color;
       font-size: $gl-font-size;
       line-height: 16px;

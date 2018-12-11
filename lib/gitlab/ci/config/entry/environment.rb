@@ -7,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents an environment.
         #
-        class Environment < Node
-          include Validatable
+        class Environment < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           ALLOWED_KEYS = %i[name url action on_stop].freeze
 

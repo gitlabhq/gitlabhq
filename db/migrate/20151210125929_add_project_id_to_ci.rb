@@ -1,4 +1,4 @@
-class AddProjectIdToCi < ActiveRecord::Migration
+class AddProjectIdToCi < ActiveRecord::Migration[4.2]
   def change
     add_column :ci_builds, :gl_project_id, :integer
     add_column :ci_runner_projects, :gl_project_id, :integer

@@ -15,8 +15,7 @@ module Clusters
           check_timeout
         end
       rescue Kubeclient::HttpError => e
-        Rails.logger.error("Kubernetes error: #{e.error_code} #{e.message}")
-        Gitlab::Sentry.track_acceptable_exception(e, extra: { scope: 'kubernetes', app_id: app.id })
+        log_error(e)
         app.make_errored!("Kubernetes error: #{e.error_code}") unless app.errored?
       end
 
@@ -29,17 +28,13 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!('Installation failed')
-      ensure
-        remove_installation_pod
+        app.make_errored!("Installation failed. Check pod logs for #{install_command.pod_name} for more details.")
       end
 
       def check_timeout
         if timeouted?
           begin
-            app.make_errored!('Installation timed out')
-          ensure
-            remove_installation_pod
+            app.make_errored!("Installation timed out. Check pod logs for #{install_command.pod_name} for more details.")
           end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
@@ -53,9 +48,6 @@ module Clusters
 
       def remove_installation_pod
         helm_api.delete_pod!(install_command.pod_name)
-      rescue => e
-        Rails.logger.error("Kubernetes error: #{e.class.name} #{e.message}")
-        # no-op
       end
 
       def installation_phase
