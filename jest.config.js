@@ -16,6 +16,7 @@ module.exports = {
   testMatch: ['<rootDir>/spec/frontend/**/*_spec.js'],
   moduleNameMapper: {
     '^~(.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^helpers(.*)$': '<rootDir>/spec/frontend/helpers$1',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
   coverageDirectory: '<rootDir>/coverage-frontend/',
@@ -23,5 +24,6 @@ module.exports = {
   cacheDirectory: '<rootDir>/tmp/cache/jest',
   modulePathIgnorePatterns: ['<rootDir>/.yarn-cache/'],
   reporters,
-  rootDir: '..', // necessary because this file is in the config/ subdirectory
+  setupTestFrameworkScriptFile: '<rootDir>/spec/frontend/test_setup.js',
+  restoreMocks: true,
 };
