@@ -754,8 +754,12 @@ class User < ApplicationRecord
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects
-    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil)
+    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+
+    return authorizations unless min_access_level.present?
+
+    authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited

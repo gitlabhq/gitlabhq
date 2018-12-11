@@ -68,20 +68,34 @@ describe MergeRequestsFinder do
       expect(merge_requests.size).to eq(2)
     end
 
-    it 'filters by group' do
-      params = { group_id: group.id }
+    context 'filtering by group' do
+      it 'includes all merge requests when user has access' do
+        params = { group_id: group.id }
 
-      merge_requests = described_class.new(user, params).execute
+        merge_requests = described_class.new(user, params).execute
 
-      expect(merge_requests.size).to eq(3)
-    end
+        expect(merge_requests.size).to eq(3)
+      end
 
-    it 'filters by group including subgroups', :nested_groups do
-      params = { group_id: group.id, include_subgroups: true }
+      it 'excludes merge requests from projects the user does not have access to' do
+        private_project = create_project_without_n_plus_1(:private, group: group)
+        private_mr = create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
+        params = { group_id: group.id }
 
-      merge_requests = described_class.new(user, params).execute
+        private_project.add_guest(user)
+        merge_requests = described_class.new(user, params).execute
 
-      expect(merge_requests.size).to eq(6)
+        expect(merge_requests.size).to eq(3)
+        expect(merge_requests).not_to include(private_mr)
+      end
+
+      it 'filters by group including subgroups', :nested_groups do
+        params = { group_id: group.id, include_subgroups: true }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests.size).to eq(6)
+      end
     end
 
     it 'filters by non_archived' do

@@ -1,0 +1,6 @@
+---
+title: Group guests are no longer able to see merge requests they don't have access
+  to at group level
+merge_request:
+author:
+type: security
