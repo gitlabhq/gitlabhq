@@ -72,9 +72,14 @@ module QA
           end
         end
 
+        def go_to_commit(commit_msg)
+          within_element(:file_tree) do
+            click_on commit_msg
+          end
+        end
+
         def go_to_new_issue
           click_element :new_menu_toggle
-
           click_link 'New issue'
         end
 

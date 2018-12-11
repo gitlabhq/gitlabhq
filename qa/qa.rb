@@ -158,6 +158,10 @@ module QA
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
 
+      module Commit
+        autoload :Show, 'qa/page/project/commit/show'
+      end
+
       module Import
         autoload :Github, 'qa/page/project/import/github'
       end
