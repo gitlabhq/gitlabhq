@@ -176,11 +176,9 @@ class Snippet < ActiveRecord::Base
   end
 
   def embeddable?
-    if project_id?
-      Ability.allowed?(nil, :read_project_snippet, self)
-    else
-      Ability.allowed?(nil, :read_personal_snippet, self)
-    end
+    ability = project_id? ? :read_project_snippet : :read_personal_snippet
+
+    Ability.allowed?(nil, ability, self)
   end
 
   def notes_with_associations
