@@ -30,6 +30,8 @@ describe('note_app', () => {
     jasmine.addMatchers(vueMatchers);
     $('body').attr('data-page', 'projects:merge_requests:show');
 
+    setFixtures('<div class="js-vue-notes-event"><div id="app"></div></div>');
+
     const IssueNotesApp = Vue.extend(notesApp);
 
     store = createStore();
@@ -43,6 +45,7 @@ describe('note_app', () => {
       return mountComponentWithStore(IssueNotesApp, {
         props,
         store,
+        el: document.getElementById('app'),
       });
     };
   });
@@ -281,6 +284,26 @@ describe('note_app', () => {
           done();
         });
       }, 0);
+    });
+  });
+
+  describe('emoji awards', () => {
+    it('dispatches toggleAward after toggleAward event', () => {
+      const toggleAwardEvent = new CustomEvent('toggleAward', {
+        detail: {
+          awardName: 'test',
+          noteId: 1,
+        },
+      });
+
+      spyOn(vm.$store, 'dispatch');
+
+      vm.$el.parentElement.dispatchEvent(toggleAwardEvent);
+
+      expect(vm.$store.dispatch).toHaveBeenCalledWith('toggleAward', {
+        awardName: 'test',
+        noteId: 1,
+      });
     });
   });
 });
