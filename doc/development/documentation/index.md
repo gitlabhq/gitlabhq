@@ -378,6 +378,16 @@ CAUTION: **Caution:**
 Because the rspec tests only run in a full pipeline, and not a special [docs-only pipeline](#branch-naming), it is possible
 to merge changes that will break `master` from a merge request with a successful docs-only pipeline run.
 
+## Docs site architecture
+
+Read through [docs architecture](site_architecture/index.md) to learn
+how we architecture, build, and deploy the docs site, <https://docs.gitlab.com>, and
+to check all the assets and libraries available.
+
+### Global navigation
+
+Read through the [global navigation](site_architecture/global_nav.md) doc.
+
 ## General Documentation vs Technical Articles
 
 ### General documentation
@@ -690,6 +700,3 @@ GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
 code review. For docs changes in merge requests, whenever a change under `/doc`
 is made, the bot leaves a comment for the author to mention `@gl-docsteam`, so
 that the docs can be properly reviewed.
-
-[gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
-[graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
