@@ -356,10 +356,12 @@ describe('DiffsStoreMutations', () => {
                     {
                       id: 1,
                       line_code: 'ABC_1',
+                      notes: [],
                     },
                     {
                       id: 2,
                       line_code: 'ABC_1',
+                      notes: [],
                     },
                   ],
                 },
@@ -376,10 +378,12 @@ describe('DiffsStoreMutations', () => {
                   {
                     id: 1,
                     line_code: 'ABC_1',
+                    notes: [],
                   },
                   {
                     id: 2,
                     line_code: 'ABC_1',
+                    notes: [],
                   },
                 ],
               },
