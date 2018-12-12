@@ -145,6 +145,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.autodevops_disabled_email(pipeline, user.email).message
   end
 
+  def remote_mirror_update_failed_email
+    Notify.remote_mirror_update_failed_email(remote_mirror.id, user.id).message
+  end
+
   private
 
   def project
@@ -165,6 +169,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def pipeline
     @pipeline = Ci::Pipeline.last
+  end
+
+  def remote_mirror
+    @remote_mirror ||= RemoteMirror.last
   end
 
   def user

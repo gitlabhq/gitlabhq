@@ -84,3 +84,4 @@
   - [object_pool, 1]
   - [repository_cleanup, 1]
   - [delete_stored_files, 1]
+  - [remote_mirror_notification, 2]
