@@ -4,17 +4,10 @@ module Ci
   class Bridge < CommitStatus
     include Importable
     include AfterCommitQueue
-    include TokenAuthenticatable
     include Gitlab::Utils::StrongMemoize
 
-    belongs_to :project, inverse_of: :builds
-
-    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
+    belongs_to :project
     validates :ref, presence: true
-
-    before_save :ensure_token
-
-    add_authentication_token_field :token, encrypted: true
 
     def self.retry(bridge, current_user)
       raise NotImplementedError
