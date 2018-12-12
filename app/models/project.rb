@@ -749,15 +749,9 @@ class Project < ActiveRecord::Base
     return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
-    if data
-      project_import_data.data ||= {}
-      project_import_data.data = project_import_data.data.merge(data)
-    end
 
-    if credentials
-      project_import_data.credentials ||= {}
-      project_import_data.credentials = project_import_data.credentials.merge(credentials)
-    end
+    project_import_data.merge_data(data.to_h)
+    project_import_data.merge_credentials(credentials.to_h)
 
     project_import_data
   end
