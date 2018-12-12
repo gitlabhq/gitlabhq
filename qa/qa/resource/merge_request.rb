@@ -58,7 +58,10 @@ module QA
         populate(:target, :source)
 
         project.visit!
-        Page::Project::Show.perform(&:new_merge_request)
+        Page::Project::Show.perform do |project|
+          project.wait_for_push
+          project.new_merge_request
+        end
         Page::MergeRequest::New.perform do |page|
           page.fill_title(@title)
           page.fill_description(@description)
