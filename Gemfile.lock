@@ -1129,6 +1129,7 @@ DEPENDENCIES
   rufus-scheduler (~> 3.4)
   rugged (~> 0.27)
   sanitize (~> 4.6)
+  sass (~> 3.5)
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.56.0)
   seed-fu (~> 2.3.7)
