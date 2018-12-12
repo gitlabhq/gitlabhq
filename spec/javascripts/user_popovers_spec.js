@@ -2,6 +2,9 @@ import initUserPopovers from '~/user_popovers';
 import UsersCache from '~/lib/utils/users_cache';
 
 describe('User Popovers', () => {
+  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  preloadFixtures(fixtureTemplate);
+
   const selector = '.js-user-link';
 
   const dummyUser = { name: 'root' };
@@ -15,11 +18,7 @@ describe('User Popovers', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`
-      <a href="/root" data-user-id="1" class="js-user-link" data-username="root" data-original-title="" title="">
-        Root
-      </a>
-    `);
+    loadFixtures(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     spyOn(UsersCache, 'retrieveById').and.callFake(userId => usersCacheSpy(userId));
@@ -39,7 +38,7 @@ describe('User Popovers', () => {
       expect(shownPopover).not.toBeNull();
 
       expect(shownPopover.innerHTML).toContain(dummyUser.name);
-      expect(UsersCache.retrieveById).toHaveBeenCalledWith('1');
+      expect(UsersCache.retrieveById).toHaveBeenCalledWith('58');
 
       triggerEvent('mouseleave', document.querySelector(selector));
 
