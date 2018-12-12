@@ -101,7 +101,7 @@ export default {
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
-        this.actionToggleAward({ awardName, noteId });
+        this.toggleAward({ awardName, noteId });
       });
     }
   },
