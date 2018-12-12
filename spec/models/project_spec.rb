@@ -4102,6 +4102,29 @@ describe Project do
     end
   end
 
+  describe '#object_pool_params' do
+    let(:project) { create(:project, :repository, :public) }
+
+    subject { project.object_pool_params }
+
+    before do
+      stub_application_setting(hashed_storage_enabled: true)
+    end
+
+    context 'when the objects cannot be pooled' do
+      let(:project) { create(:project, :repository, :private) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'when a pool is created' do
+      it 'returns that pool repository' do
+        expect(subject).not_to be_empty
+        expect(subject[:pool_repository]).to be_persisted
+      end
+    end
+  end
+
   describe '#git_objects_poolable?' do
     subject { project }
 
