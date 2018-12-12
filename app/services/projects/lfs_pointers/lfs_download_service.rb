@@ -4,12 +4,15 @@
 module Projects
   module LfsPointers
     class LfsDownloadService < BaseService
+      VALID_PROTOCOLS = %w[http https].freeze
+
       def execute(oid, url)
         return unless project&.lfs_enabled? && oid.present? && url.present?
 
         return if LfsObject.exists?(oid: oid)
 
         sanitized_uri = Gitlab::UrlSanitizer.new(url)
+        Gitlab::UrlBlocker.validate!(sanitized_uri.sanitized_url, protocols: VALID_PROTOCOLS)
 
         with_tmp_file(oid) do |file|
           size = download_and_save_file(file, sanitized_uri)
