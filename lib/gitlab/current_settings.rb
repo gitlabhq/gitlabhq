@@ -50,7 +50,15 @@ module Gitlab
         # and other callers from failing, use any loaded settings and return
         # defaults for missing columns.
         if ActiveRecord::Migrator.needs_migration?
-          return fake_application_settings(current_settings&.attributes)
+          db_attributes = current_settings&.attributes || {}
+          column_names = ::ApplicationSetting.column_names
+          final_attributes = ::ApplicationSetting
+            .defaults
+            .merge(db_attributes)
+            .stringify_keys
+            .slice(*column_names)
+
+          return ::ApplicationSetting.new(final_attributes)
         end
 
         return current_settings if current_settings.present?
