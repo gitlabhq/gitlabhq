@@ -2009,12 +2009,12 @@ class Project < ActiveRecord::Base
 
   def create_new_pool_repository
     pool = begin
-             create_or_find_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
+             create_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
            rescue ActiveRecord::RecordNotUnique
-             retry
+             pool_repository(true)
            end
 
-    pool.schedule
+    pool.schedule unless pool.scheduled?
     pool
   end
 
