@@ -18,6 +18,7 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ldap_servers, only: [:new, :create]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
+  prepend_before_action :ensure_password_authentication_enabled!, if: :password_based_login?, only: [:create]
 
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
@@ -137,6 +138,14 @@ class SessionsController < Devise::SessionsController
       notice: _("Please create a password for your new account.")
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def ensure_password_authentication_enabled!
+    render_403 unless Gitlab::CurrentSettings.password_authentication_enabled_for_web?
+  end
+
+  def password_based_login?
+    user_params[:login].present? || user_params[:password].present?
+  end
 
   def user_params
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
