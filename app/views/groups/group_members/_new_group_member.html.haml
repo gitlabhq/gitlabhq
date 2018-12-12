@@ -8,7 +8,7 @@
     .col-md-3.col-lg-2
       = select_tag :access_level, options_for_select(GroupMember.access_level_roles, @group_member.access_level), class: "form-control project-access-select"
       .form-text.text-muted.append-bottom-10
-        = link_to "Read more", help_page_path("user/permissions"), class: "vlink"
+        = link_to "Read more", help_page_path("user/permissions")
         about role permissions
 
     .col-md-3.col-lg-2

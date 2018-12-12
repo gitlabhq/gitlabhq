@@ -14,15 +14,13 @@ module QA
 
       attribute :repository_ssh_location do
         Page::Project::Show.perform do |page|
-          page.choose_repository_clone_ssh
-          page.repository_location
+          page.repository_clone_ssh_location
         end
       end
 
       attribute :repository_http_location do
         Page::Project::Show.perform do |page|
-          page.choose_repository_clone_http
-          page.repository_location
+          page.repository_clone_http_location
         end
       end
 

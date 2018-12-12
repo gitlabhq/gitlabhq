@@ -101,7 +101,7 @@
           = _('Add user(s) to the group:')
         .card-body.form-holder
           %p.light
-            - link_to_help = link_to(_("here"), help_page_path("user/permissions"), class: "vlink")
+            - link_to_help = link_to(_("here"), help_page_path("user/permissions"))
             = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
 
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do

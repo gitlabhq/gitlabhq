@@ -11,6 +11,25 @@ storage load between several mount points.
 > - The paths are defined in key-value pairs. The key is an arbitrary name you
 >   can pick to name the file path.
 > - The target directories and any of its subpaths must not be a symlink.
+> - No target directory may be a sub-directory of another; no nesting.
+
+Example: this is OK:
+
+```
+default:
+  path: /mnt/git-storage-1
+storage2:
+  path: /mnt/git-storage-2
+```
+
+This is not OK because it nests storage paths:
+
+```
+default:
+  path: /mnt/git-storage-1
+storage2:
+  path: /mnt/git-storage-1/git-storage-2 # <- NOT OK because of nesting
+```
 
 ## Configure GitLab
 

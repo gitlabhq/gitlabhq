@@ -6,7 +6,7 @@
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
-    "jest": "BABEL_ENV=jest jest --config=config/jest.config.js",
+    "jest": "BABEL_ENV=jest jest",
     "karma": "BABEL_ENV=${BABEL_ENV:=karma} karma start --single-run true config/karma.config.js",
     "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",
     "karma-start": "BABEL_ENV=karma karma start config/karma.config.js",
@@ -157,6 +157,10 @@
     "karma-webpack": "^4.0.0-beta.0",
     "nodemon": "^1.18.4",
     "prettier": "1.15.2",
+    "vue-jest": "^3.0.1",
     "webpack-dev-server": "^3.1.10"
+  },
+  "engines": {
+    "yarn": "^1.10.0"
   }
 }

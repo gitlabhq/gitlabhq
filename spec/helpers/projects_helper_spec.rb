@@ -229,6 +229,18 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#link_to_project' do
+    let(:group)   { create(:group, name: 'group name with space') }
+    let(:project) { create(:project, group: group, name: 'project name with space') }
+    subject { link_to_project(project) }
+
+    it 'returns an HTML link to the project' do
+      expect(subject).to match(%r{/#{group.full_path}/#{project.path}})
+      expect(subject).to include('group name with space /')
+      expect(subject).to include('project name with space')
+    end
+  end
+
   describe '#link_to_member_avatar' do
     let(:user) { build_stubbed(:user) }
     let(:expected) { double }

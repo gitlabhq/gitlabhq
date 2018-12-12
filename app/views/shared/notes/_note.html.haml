@@ -5,7 +5,7 @@
 - note_editable = can?(current_user, :admin_note, note)
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
-%li.timeline-entry.note-wrapper.outlined{ id: dom_id(note),
+%li.timeline-entry.note-wrapper{ id: dom_id(note),
   class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
   data: { author_id: note.author.id,
     editable: note_editable,

@@ -554,8 +554,7 @@ docs lint:
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
-    # Disabled until https://gitlab.com/gitlab-com/gitlab-docs/issues/305 is resolved
-    # - bundle exec nanoc check internal_links
+    - bundle exec nanoc check internal_links
 
 downtime_check:
   <<: *rake-exec
@@ -637,7 +636,7 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.2-graphicsmagick-1.3.29-docker-18.06.1
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
   services:
     - docker:stable-dind

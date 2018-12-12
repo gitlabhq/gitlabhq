@@ -29,11 +29,9 @@ module QA
           element :fly_out, "classList.add('fly-out-list')" # rubocop:disable QA/ElementWithPattern
         end
 
-        def click_repository_settings
-          hover_settings do
-            within_submenu do
-              click_link('Repository')
-            end
+        def click_ci_cd_pipelines
+          within_sidebar do
+            click_element :link_pipelines
           end
         end
 
@@ -45,11 +43,9 @@ module QA
           end
         end
 
-        def click_operations_environments
-          hover_operations do
-            within_submenu do
-              click_element(:operations_environments_link)
-            end
+        def click_issues
+          within_sidebar do
+            click_link('Issues')
           end
         end
 
@@ -57,6 +53,20 @@ module QA
           hover_settings do
             within_submenu do
               click_element :link_members_settings
+            end
+          end
+        end
+
+        def click_merge_requests
+          within_sidebar do
+            click_link('Merge Requests')
+          end
+        end
+
+        def click_operations_environments
+          hover_operations do
+            within_submenu do
+              click_element(:operations_environments_link)
             end
           end
         end
@@ -69,21 +79,35 @@ module QA
           end
         end
 
-        def click_ci_cd_pipelines
+        def click_milestones
           within_sidebar do
-            click_element :link_pipelines
+            click_element :milestones_link
           end
         end
 
-        def go_to_settings
+        def click_repository
           within_sidebar do
-            click_on 'Settings'
+            click_link('Repository')
           end
         end
 
-        def click_issues
+        def click_repository_settings
+          hover_settings do
+            within_submenu do
+              click_link('Repository')
+            end
+          end
+        end
+
+        def click_wiki
           within_sidebar do
-            click_link('Issues')
+            click_link('Wiki')
+          end
+        end
+
+        def go_to_activity
+          within_sidebar do
+            click_on 'Activity'
           end
         end
 
@@ -95,27 +119,9 @@ module QA
           end
         end
 
-        def click_merge_requests
+        def go_to_settings
           within_sidebar do
-            click_link('Merge Requests')
-          end
-        end
-
-        def click_milestones
-          within_sidebar do
-            click_element :milestones_link
-          end
-        end
-
-        def click_wiki
-          within_sidebar do
-            click_link('Wiki')
-          end
-        end
-
-        def click_repository
-          within_sidebar do
-            click_link('Repository')
+            click_on 'Settings'
           end
         end
 
@@ -129,14 +135,6 @@ module QA
           end
         end
 
-        def hover_settings
-          within_sidebar do
-            find('.qa-settings-item').hover
-
-            yield
-          end
-        end
-
         def hover_operations
           within_sidebar do
             find('.shortcuts-operations').hover
@@ -145,15 +143,17 @@ module QA
           end
         end
 
-        def within_sidebar
-          page.within('.sidebar-top-level-items') do
+        def hover_settings
+          within_sidebar do
+            find('.qa-settings-item').hover
+
             yield
           end
         end
 
-        def go_to_activity
-          within_sidebar do
-            click_on 'Activity'
+        def within_sidebar
+          page.within('.sidebar-top-level-items') do
+            yield
           end
         end
 

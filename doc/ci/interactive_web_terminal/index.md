@@ -1,4 +1,4 @@
-# Getting started with interactive web terminals **[CORE ONLY]**
+# Interactive Web Terminals **[CORE ONLY]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
@@ -15,7 +15,7 @@ progress.
 Two things need to be configured for the interactive web terminal to work:
 
 - The Runner needs to have [`[session_server]` configured
-  properly][session-server]
+  properly](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section)
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
@@ -45,9 +45,7 @@ the terminal and type commands like a normal shell.
 
 If you have the terminal open and the job has finished with its tasks, the
 terminal will block the job from finishing for the duration configured in
-[`[session_server].terminal_max_retention_time`][session-server] until you
+[`[session_server].terminal_max_retention_time`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) until you
 close the terminal window.
 
 ![finished job with terminal open](img/finished_job_with_terminal_open.png)
-
-[session-server]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section

@@ -5,7 +5,7 @@ module Gitlab
     module Parsers
       module Test
         class Junit
-          JunitParserError = Class.new(StandardError)
+          JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
 
           def parse!(xml_data, test_suite)
             root = Hash.from_xml(xml_data)
