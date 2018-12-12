@@ -1,0 +1,5 @@
+---
+title: Upgrade Gitaly to v1.7.1 for correlation-id logging
+merge_request: 23732
+author:
+type: other
