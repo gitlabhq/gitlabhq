@@ -21,12 +21,12 @@ Here are some things to keep in mind regarding test performance:
 
 To run rspec tests:
 
-```
+```sh
 # run all tests
-bundle exec rake rspec
+bundle exec rspec
 
 # run test for path
-bundle exec rake rspec spec/[path]/[to]/[spec].rb
+bundle exec rspec spec/[path]/[to]/[spec].rb
 ```
 
 ### General guidelines
