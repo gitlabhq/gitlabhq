@@ -6,6 +6,7 @@ class Release < ActiveRecord::Base
   cache_markdown_field :description
 
   belongs_to :project
+  belongs_to :author, class_name: 'User'
 
   validates :description, :project, :tag, presence: true
 end

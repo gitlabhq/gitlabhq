@@ -6,6 +6,8 @@ describe CreateReleaseService do
   let(:tag_name) { project.repository.tag_names.first }
   let(:description) { 'Awesome release!' }
   let(:service) { described_class.new(project, user) }
+  let(:tag) { project.repository.find_tag(tag_name) }
+  let(:sha) { tag.dereferenced_target.sha }
 
   it 'creates a new release' do
     result = service.execute(tag_name, description)
@@ -13,6 +15,9 @@ describe CreateReleaseService do
     release = project.releases.find_by(tag: tag_name)
     expect(release).not_to be_nil
     expect(release.description).to eq(description)
+    expect(release.name).to eq(tag_name)
+    expect(release.sha).to eq(sha)
+    expect(release.author).to eq(user)
   end
 
   it 'raises an error if the tag does not exist' do
