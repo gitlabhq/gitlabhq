@@ -67,7 +67,7 @@ body:
 For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   DOWNTIME = true
   DOWNTIME_REASON = 'This migration requires downtime because ...'
 
@@ -95,7 +95,7 @@ migration. For this to work your migration needs to include the module
 `Gitlab::Database::MultiThreadedMigration`:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::Database::MultiThreadedMigration
 end
@@ -105,7 +105,7 @@ You can then use the method `with_multiple_threads` to perform work in separate
 threads. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::Database::MultiThreadedMigration
 
@@ -139,7 +139,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
@@ -167,7 +167,7 @@ the method `disable_ddl_transaction!` in the body of your migration class like
 so:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -193,7 +193,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < ActiveRecord::Migration
+class Migration < ActiveRecord::Migration[4.2]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -216,7 +216,7 @@ For example, to add the column `foo` to the `projects` table with a default
 value of `10` you'd write the following:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
@@ -365,7 +365,7 @@ If you need more complex logic you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
   end

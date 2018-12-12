@@ -12,7 +12,7 @@ describe RuboCop::Cop::Migration::Datetime do
 
   let(:migration_with_datetime) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Migration::Datetime do
 
   let(:migration_with_timestamp) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Migration::Datetime do
 
   let(:migration_without_datetime) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Migration::Datetime do
 
   let(:migration_with_datetime_with_timezone) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
