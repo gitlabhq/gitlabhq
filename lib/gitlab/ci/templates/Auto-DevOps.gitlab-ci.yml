@@ -595,6 +595,15 @@ rollout 100%:
     fi
   }
 
+  # Finds any variables prefixed with `K8S_SECRET_`, and exports them as the
+  # global $K8S_VARIABLES with prefix removed.
+  function extract_prefixed_variables() {
+    prefix="K8S_SECRET_"
+    k8s_variables=$(env | (grep "^${prefix}" || [[ $? == 1 ]]) | sed "s/^${prefix}//")
+
+    export K8S_VARIABLES=$k8s_variables
+  }
+
   function deploy() {
     track="${1-stable}"
     percentage="${2:-100}"
@@ -620,6 +629,23 @@ rollout 100%:
       secret_name=''
     fi
 
+    extract_prefixed_variables
+    if [[ -n "$K8S_VARIABLES" ]]; then
+      echo "Prefixed CI variables found, creating secret..."
+      application_secret_name="${name}-secret"
+      fromLiteralArgs=""
+
+      for k8s_variable in ${K8S_VARIABLES}; do
+        fromLiteralArgs="${fromLiteralArgs:+${fromLiteralArgs} }--from-literal=${k8s_variable}"
+      done
+
+      # We want fromLiteralArgs to be interpreted as args, so don't quote it!
+      kubectl create secret -n "$KUBE_NAMESPACE" \
+        generic "$application_secret_name" \
+        ${fromLiteralArgs} \
+        -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+    fi
+
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
       echo "Deploying first release with database initialization..."
       helm upgrade --install \
@@ -632,6 +658,7 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$application_secret_name" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
@@ -664,6 +691,7 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$application_secret_name" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
