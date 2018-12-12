@@ -1,0 +1,5 @@
+---
+title: Prevent bypass of restriction disabling web password sign in
+merge_request:
+author:
+type: security
