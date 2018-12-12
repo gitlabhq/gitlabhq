@@ -128,7 +128,7 @@ class Notify < BaseMailer
         address.display_name = reply_display_name(model)
       end
 
-      fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
+      fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>"
       headers['References'] ||= []
       headers['References'].unshift(fallback_reply_message_id)
 
@@ -166,7 +166,7 @@ class Notify < BaseMailer
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = [message_id(model)]
 
-    headers[:subject]&.prepend('Re: ')
+    headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 
     mail_thread(model, headers)
   end
@@ -178,7 +178,7 @@ class Notify < BaseMailer
 
     headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
 
-    headers[:subject]&.prepend('Re: ')
+    headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 
     mail_thread(model, headers)
   end

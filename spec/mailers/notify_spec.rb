@@ -4,6 +4,7 @@ require 'email_spec'
 describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
+  include EmailHelpers
   include RepoHelpers
 
   include_context 'gitlab email notification'
@@ -25,15 +26,6 @@ describe Notify do
                    assignees: [assignee],
                    project: project,
                    description: 'My awesome description!')
-  end
-
-  def have_referable_subject(referable, reply: false)
-    prefix = referable.project ? "#{referable.project.name} | " : ''
-    prefix.prepend('Re: ') if reply
-
-    suffix = "#{referable.title} (#{referable.to_reference})"
-
-    have_subject [prefix, suffix].compact.join
   end
 
   context 'for a project' do

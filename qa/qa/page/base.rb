@@ -132,6 +132,10 @@ module QA
         Page::Element.new(name).selector_css
       end
 
+      def click_link_with_text(text)
+        click_link text
+      end
+
       def self.path
         raise NotImplementedError
       end

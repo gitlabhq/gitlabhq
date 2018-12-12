@@ -14,6 +14,7 @@ module Gitlab
 
     def self.valid?(url)
       return false unless url.present?
+      return false unless url.is_a?(String)
 
       uri = Addressable::URI.parse(url.strip)
 
