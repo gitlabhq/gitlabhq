@@ -7,7 +7,7 @@ class Import::GithubController < Import::BaseController
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
   def new
-    if logged_in_with_provider?
+    if github_import_configured? && logged_in_with_provider?
       go_to_provider_for_permissions
     elsif session[access_token_key]
       redirect_to status_import_url

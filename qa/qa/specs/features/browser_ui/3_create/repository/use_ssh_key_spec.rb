@@ -16,13 +16,14 @@ module QA
           resource.title = key_title
         end
 
-        Resource::Repository::ProjectPush.fabricate! do |push|
+        project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.ssh_key = key
           push.file_name = 'README.md'
           push.file_content = '# Test Use SSH Key'
           push.commit_message = 'Add README.md'
         end
 
+        project_push.project.visit!
         Page::Project::Show.act { wait_for_push }
 
         expect(page).to have_content('README.md')

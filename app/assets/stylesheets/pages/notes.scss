@@ -14,7 +14,7 @@ $note-form-margin-left: 72px;
 }
 
 @mixin outline-comment() {
-  margin: $gl-padding;
+  margin: $gl-padding $gl-padding 0;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -27,8 +27,10 @@ $note-form-margin-left: 72px;
   }
 }
 
-.main-notes-list {
-  @include vertical-line(36px);
+.issuable-discussion {
+  .main-notes-list {
+    @include vertical-line(36px);
+  }
 }
 
 .notes {
@@ -76,10 +78,10 @@ $note-form-margin-left: 72px;
     .card {
       border: 0;
     }
+  }
 
-    li.note {
-      border-bottom: 1px solid $border-color;
-    }
+  li.note {
+    border-bottom: 1px solid $border-color;
   }
 
   .replies-toggle {
@@ -160,20 +162,6 @@ $note-form-margin-left: 72px;
     display: block;
     position: relative;
     border-bottom: 0;
-
-    &:target,
-    &.target {
-      border-bottom: 1px solid $white-normal;
-
-      &:not(:first-child) {
-        border-top: 1px solid $white-normal;
-        margin-top: -1px;
-      }
-
-      .timeline-entry-inner {
-        border-bottom: 0;
-      }
-    }
 
     &.being-posted {
       pointer-events: none;
@@ -462,7 +450,7 @@ $note-form-margin-left: 72px;
     font-family: $regular-font;
 
     td {
-      border: 1px solid $white-normal;
+      border: 1px solid $border-color;
       border-left: 0;
 
       &.notes_content {
@@ -504,8 +492,6 @@ $note-form-margin-left: 72px;
   }
 
   .note-wrapper {
-    @include outline-comment();
-
     &.system-note {
       border: 0;
       margin-left: 20px;
@@ -514,22 +500,13 @@ $note-form-margin-left: 72px;
 
   .discussion-reply-holder {
     border-radius: 0 0 $border-radius-default $border-radius-default;
-    border-top: 1px solid $border-color;
     position: relative;
   }
 }
 
 .commit-diff {
-  .notes {
-    @include vertical-line(52px);
-  }
-
   .notes_content {
     background-color: $white-light;
-  }
-
-  .discussion-reply-holder {
-    border-top: 1px solid $border-color;
   }
 }
 
@@ -941,12 +918,6 @@ $note-form-margin-left: 72px;
   .discussion-header {
     padding: $gl-padding;
     border-bottom: 1px solid $border-color;
-  }
-
-  .note-wrapper.outlined {
-    margin: 0;
-    border: 0;
-    border-radius: 0;
   }
 
   .discussion-form-container {
