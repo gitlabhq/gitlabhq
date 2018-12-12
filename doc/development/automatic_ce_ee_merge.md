@@ -1,12 +1,13 @@
 # Automatic CE->EE merge
 
 Commits pushed to CE `master` are automatically merged into EE `master` roughly
-every 5 minutes. Changes are merged using the `ours` merge strategy in the
-context of EE. This means that any merge conflicts are resolved by taking the EE
-changes and discarding the CE changes. This removes the need for resolving
-conflicts or reverting changes, at the cost of **absolutely requiring** EE merge
-requests to be created whenever a CE merge request causes merge conflicts.
-Failing to do so can result in changes not making their way into EE.
+every 5 minutes. Changes are merged using the `recursive=ours` merge strategy in
+the context of EE. This means that any merge conflicts are resolved by taking
+the EE changes and discarding the CE changes. This removes the need for
+resolving conflicts or reverting changes, at the cost of **absolutely
+requiring** EE merge requests to be created whenever a CE merge request causes
+merge conflicts.  Failing to do so can result in changes not making their way
+into EE.
 
 ## Always create an EE merge request if there are conflicts
 
@@ -169,10 +170,6 @@ you are not required to submit the EE-equivalent MR, but it's still recommended.
 job failed, you are required to submit the EE MR so that you can fix the conflicts in EE
 before merging your changes into CE.
 
----
-
-[Return to Development documentation](README.md)
-
 ## FAQ
 
 ### How does automatic merging work?
@@ -180,7 +177,8 @@ before merging your changes into CE.
 The automatic merging is performed using a project called [Merge
 Train](https://gitlab.com/gitlab-org/merge-train/). This project will clone CE
 and EE master, and merge CE master into EE master using `git merge
---strategy=ours`. This process runs roughly every 5 minutes.
+--strategy=recursive --strategy-option=ours`. This process runs multiple times
+per hour.
 
 For more information on the exact implementation you can refer to the source
 code.
@@ -225,3 +223,7 @@ so that the EE specific changes are not intertwined with CE code. For Ruby code
 you can do this by moving the EE code to a separate module, which can then be
 injected into the appropriate classes or modules. See [Guidelines for
 implementing Enterprise Edition features](ee_features.md) for more information.
+
+---
+
+[Return to Development documentation](README.md)
