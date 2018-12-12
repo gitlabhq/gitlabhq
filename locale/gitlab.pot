@@ -2656,6 +2656,9 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
+msgid "Empty file"
+msgstr ""
+
 msgid "Enable"
 msgstr ""
 
