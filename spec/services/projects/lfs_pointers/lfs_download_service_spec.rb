@@ -54,6 +54,18 @@ describe Projects::LfsPointers::LfsDownloadService do
       end
     end
 
+    context 'when a bad URL is used' do
+      where(download_link: ['/etc/passwd', 'ftp://example.com', 'http://127.0.0.2'])
+
+      with_them do
+        it 'does not download the file' do
+          expect(subject).not_to receive(:download_and_save_file)
+
+          expect { subject.execute(oid, download_link) }.not_to change { LfsObject.count }
+        end
+      end
+    end
+
     context 'when an lfs object with the same oid already exists'  do
       before do
         create(:lfs_object, oid: 'oid')
