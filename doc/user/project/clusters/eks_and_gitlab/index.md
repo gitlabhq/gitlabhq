@@ -49,7 +49,7 @@ A few details from the EKS cluster will be required to connect it to GitLab:
     -  Get the certificate with:
 
        ```sh
-       kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D
+       kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
        ```
 
 1.  **Create admin token**: A `cluster-admin` token is required to install and
