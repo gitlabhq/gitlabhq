@@ -33,6 +33,7 @@
 
     .close-icon {
       display: block;
+      margin: auto;
     }
   }
 
@@ -167,12 +168,6 @@
       &.active {
         color: currentColor;
         background-color: transparent;
-      }
-
-      .more-icon,
-      .close-icon {
-        fill: $white-light;
-        margin: auto;
       }
     }
 
