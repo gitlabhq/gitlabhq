@@ -11,9 +11,9 @@ describe Gitlab::Email::Handler::UnsubscribeHandler do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}") }
-  let(:project) { create(:project, :public) }
-  let(:user) { create(:user) }
-  let(:noteable) { create(:issue, project: project) }
+  let(:project)   { create(:project, :public) }
+  let(:user)      { create(:user) }
+  let(:noteable)  { create(:issue, project: project) }
 
   let!(:sent_notification) { SentNotification.record(noteable, user.id, mail_key) }
 

@@ -15,16 +15,42 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     TestEnv.clean_test_path
   end
 
-  let(:email_raw) { fixture_file('emails/valid_new_merge_request.eml') }
   let(:namespace) { create(:namespace, path: 'gitlabhq') }
 
   let!(:project)  { create(:project, :public, :repository, namespace: namespace, path: 'gitlabhq') }
+  let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
   let!(:user) do
     create(
       :user,
       email: 'jake@adventuretime.ooo',
       incoming_email_token: 'auth_token'
     )
+  end
+
+  context "when email key" do
+    let(:mail) { Mail::Message.new(email_raw) }
+
+    it "matches the new format" do
+      handler = described_class.new(mail, "h5bp-html5-boilerplate-#{project.project_id}-#{user.incoming_email_token}-merge-request")
+
+      expect(handler.instance_variable_get(:@project_id).to_i).to eq project.project_id
+      expect(handler.instance_variable_get(:@incoming_email_token)).to eq user.incoming_email_token
+      expect(handler.can_handle?).to be_truthy
+    end
+
+    it "matches the legacy format" do
+      handler = described_class.new(mail, "h5bp/html5-boilerplate+merge-request+#{user.incoming_email_token}")
+
+      expect(handler.instance_variable_get(:@project_path)).to eq 'h5bp/html5-boilerplate'
+      expect(handler.instance_variable_get(:@incoming_email_token)).to eq user.incoming_email_token
+      expect(handler.can_handle?).to be_truthy
+    end
+
+    it "doesn't match either format" do
+      handler = described_class.new(mail, "h5bp-html5-boilerplate+merge-request")
+
+      expect(handler.can_handle?).to be_falsey
+    end
   end
 
   context "as a non-developer" do
@@ -67,7 +93,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
       end
 
       context "when we can't find the incoming_email_token" do
-        let(:email_raw) { fixture_file("emails/wrong_incoming_email_token.eml") }
+        let(:email_raw) { email_fixture("emails/wrong_merge_request_incoming_email_token.eml") }
 
         it "raises an UserNotFoundError" do
           expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotFoundError)
@@ -75,7 +101,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
       end
 
       context "when the subject is blank" do
-        let(:email_raw) { fixture_file("emails/valid_new_merge_request_no_subject.eml") }
+        let(:email_raw) { email_fixture("emails/valid_new_merge_request_no_subject.eml") }
 
         it "raises an InvalidMergeRequestError" do
           expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidMergeRequestError)
@@ -83,7 +109,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
       end
 
       context "when the message body is blank" do
-        let(:email_raw) { fixture_file("emails/valid_new_merge_request_no_description.eml") }
+        let(:email_raw) { email_fixture("emails/valid_new_merge_request_no_description.eml") }
 
         it "creates a new merge request with description set from the last commit" do
           expect { receiver.execute }.to change { project.merge_requests.count }.by(1)
@@ -95,7 +121,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     end
 
     context 'when the email contains patch attachments' do
-      let(:email_raw) { fixture_file("emails/valid_merge_request_with_patch.eml") }
+      let(:email_raw) { email_fixture("emails/valid_merge_request_with_patch.eml") }
 
       it 'creates the source branch and applies the patches' do
         receiver.execute
@@ -120,7 +146,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
       end
 
       context 'when the patch could not be applied' do
-        let(:email_raw) { fixture_file("emails/merge_request_with_conflicting_patch.eml") }
+        let(:email_raw) { email_fixture("emails/merge_request_with_conflicting_patch.eml") }
 
         it 'raises an error' do
           expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidAttachment)
@@ -128,7 +154,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
       end
 
       context 'when specifying the target branch using quick actions' do
-        let(:email_raw) { fixture_file('emails/merge_request_with_patch_and_target_branch.eml') }
+        let(:email_raw) { email_fixture('emails/merge_request_with_patch_and_target_branch.eml') }
 
         it 'creates the merge request with the correct target branch' do
           receiver.execute
@@ -150,7 +176,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
   end
 
   describe '#patch_attachments' do
-    let(:email_raw) { fixture_file('emails/merge_request_multiple_patches.eml') }
+    let(:email_raw) { email_fixture('emails/merge_request_multiple_patches.eml') }
     let(:mail) { Mail::Message.new(email_raw) }
     subject(:handler) { described_class.new(mail, mail_key) }
 
@@ -162,5 +188,9 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
 
       expect(attachments).to eq(expected_filenames)
     end
+  end
+
+  def email_fixture(path)
+    fixture_file(path).gsub('project_id', project.project_id.to_s)
   end
 end

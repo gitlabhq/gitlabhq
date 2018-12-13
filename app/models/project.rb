@@ -912,11 +912,16 @@ class Project < ActiveRecord::Base
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
+    # check since this can come from a request parameter
+    return unless %w(issue merge_request).include?(address_type)
+
     author.ensure_incoming_email_token!
 
-    suffix = address_type == 'merge_request' ? '+merge-request' : ''
-    Gitlab::IncomingEmail.reply_address(
-      "#{full_path}#{suffix}+#{author.incoming_email_token}")
+    suffix = address_type.dasherize
+
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-issue@localhost.com
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-merge-request@localhost.com
+    Gitlab::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
   end
 
   def build_commit_note(commit)
