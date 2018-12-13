@@ -151,8 +151,10 @@ export default class UserTabs {
   loadTab(action, endpoint) {
     this.toggleLoading(true);
 
+    const params = action === 'projects' ? { skip_namespace: true } : {};
+
     return axios
-      .get(endpoint)
+      .get(endpoint, { params })
       .then(({ data }) => {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
@@ -188,7 +190,7 @@ export default class UserTabs {
       requestParams: { limit: 10 },
     });
     UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
-      requestParams: { limit: 10, skip_pagination: true },
+      requestParams: { limit: 10, skip_pagination: true, skip_namespace: true, compact_mode: true },
     });
 
     this.loaded.overview = true;
