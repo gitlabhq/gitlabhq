@@ -116,7 +116,7 @@ module API
           end
 
           MergeRequest.where(source_project: @project, source_branch: ref)
-            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
+            .update_all(head_pipeline_id: pipeline.id) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e
