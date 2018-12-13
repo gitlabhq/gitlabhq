@@ -4368,6 +4368,9 @@ msgstr ""
 msgid "No changes"
 msgstr ""
 
+msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}"
+msgstr ""
+
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
