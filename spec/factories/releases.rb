@@ -4,5 +4,6 @@ FactoryBot.define do
     name { tag }
     description "Awesome release"
     project
+    author
   end
 end

@@ -1087,9 +1087,18 @@ module API
       expose :password_authentication_enabled_for_web, as: :signin_enabled
     end
 
-    class Release < Grape::Entity
+    # deprecated old Release representation
+    class TagRelease < Grape::Entity
       expose :tag, as: :tag_name
       expose :description
+    end
+
+    class Release < TagRelease
+      expose :name
+      expose :description_html
+      expose :created_at
+      expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
+      expose :commit, using: Entities::Commit
     end
 
     class Tag < Grape::Entity
@@ -1100,7 +1109,7 @@ module API
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      expose :release, using: Entities::Release do |repo_tag, options|
+      expose :release, using: Entities::TagRelease do |repo_tag, options|
         options[:project].releases.find_by(tag: repo_tag.name)
       end
       # rubocop: enable CodeReuse/ActiveRecord

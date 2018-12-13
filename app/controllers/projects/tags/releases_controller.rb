@@ -4,7 +4,7 @@ class Projects::Tags::ReleasesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :authorize_push_code!
+  before_action :authorize_update_release!
   before_action :tag
   before_action :release
 
