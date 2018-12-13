@@ -68,11 +68,7 @@ module Ci
     # this `Hash` with new values.
     enum_with_nil source: ::Ci::PipelineEnums.sources
 
-    enum_with_nil config_source: {
-      unknown_source: nil,
-      repository_source: 1,
-      auto_devops_source: 2
-    }
+    enum_with_nil config_source: ::Ci::PipelineEnums.config_sources
 
     # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
