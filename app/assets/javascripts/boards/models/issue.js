@@ -55,12 +55,12 @@ class ListIssue {
   }
 
   findLabel(findLabel) {
-    return this.labels.filter(label => label.title === findLabel.title)[0];
+    return this.labels.find(label => label.id === findLabel.id);
   }
 
   removeLabel(removeLabel) {
     if (removeLabel) {
-      this.labels = this.labels.filter(label => removeLabel.title !== label.title);
+      this.labels = this.labels.filter(label => removeLabel.id !== label.id);
     }
   }
 
@@ -75,7 +75,7 @@ class ListIssue {
   }
 
   findAssignee(findAssignee) {
-    return this.assignees.filter(assignee => assignee.id === findAssignee.id)[0];
+    return this.assignees.find(assignee => assignee.id === findAssignee.id);
   }
 
   removeAssignee(removeAssignee) {

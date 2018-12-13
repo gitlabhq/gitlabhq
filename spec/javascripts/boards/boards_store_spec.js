@@ -65,6 +65,13 @@ describe('Store', () => {
       expect(list).toBeDefined();
     });
 
+    it('finds list by label ID', () => {
+      boardsStore.addList(listObj);
+      const list = boardsStore.findListByLabelId(listObj.label.id);
+
+      expect(list.id).toBe(listObj.id);
+    });
+
     it('gets issue when new list added', done => {
       boardsStore.addList(listObj);
       const list = boardsStore.findList('id', listObj.id);

@@ -37,7 +37,7 @@ export default function initNewListDropdown() {
         });
       },
       renderRow(label) {
-        const active = boardsStore.findList('title', label.title);
+        const active = boardsStore.findListByLabelId(label.id);
         const $li = $('<li />');
         const $a = $('<a />', {
           class: active ? `is-active js-board-list-${active.id}` : '',
@@ -63,7 +63,7 @@ export default function initNewListDropdown() {
         const label = options.selectedObj;
         e.preventDefault();
 
-        if (!boardsStore.findList('title', label.title)) {
+        if (!boardsStore.findListByLabelId(label.id)) {
           boardsStore.new({
             title: label.title,
             position: boardsStore.state.lists.length - 2,
