@@ -20,7 +20,7 @@ module Clusters
       self.reactive_cache_key = ->(knative) { [knative.class.model_name.singular, knative.id] }
 
       state_machine :status do
-        before_transition any => [:installed] do |application|
+        after_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)

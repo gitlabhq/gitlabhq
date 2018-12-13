@@ -220,6 +220,10 @@ module Ci
         next unless build.project
 
         build.deployment&.drop
+      end
+
+      after_transition any => [:failed] do |build|
+        next unless build.project
 
         if build.retry_failure?
           begin
