@@ -3,6 +3,8 @@
 module Gitlab
   module Diff
     class File
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
@@ -232,12 +234,12 @@ module Gitlab
         repository.attributes(file_path).fetch('diff') { true }
       end
 
-      def binary?
-        has_binary_notice? || try_blobs(:binary?)
+      def binary_in_repo?
+        has_binary_notice? || try_blobs(:binary_in_repo?)
       end
 
-      def text?
-        !binary?
+      def text_in_repo?
+        !binary_in_repo?
       end
 
       def external_storage_error?
@@ -279,12 +281,16 @@ module Gitlab
         valid_blobs.map(&:empty?).all?
       end
 
-      def raw_binary?
-        try_blobs(:raw_binary?)
+      def binary?
+        strong_memoize(:is_binary) do
+          try_blobs(:binary?)
+        end
       end
 
-      def raw_text?
-        !raw_binary? && !different_type?
+      def text?
+        strong_memoize(:is_text) do
+          !binary? && !different_type?
+        end
       end
 
       def simple_viewer
@@ -367,19 +373,19 @@ module Gitlab
         return DiffViewer::NotDiffable unless diffable?
 
         if content_changed?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::NoPreview
           end
         elsif new_file?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::Added
           end
         elsif deleted_file?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::Deleted
