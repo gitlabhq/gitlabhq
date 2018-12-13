@@ -123,22 +123,23 @@ export default {
         diffPosition: diffPositionByLineCode[line.line_code],
         latestDiff,
       });
+    const mapDiscussions = (line, extraCheck = () => true) => ({
+      ...line,
+      discussions: extraCheck()
+        ? line.discussions
+            .filter(() => !line.discussions.some(({ id }) => discussion.id === id))
+            .concat(lineCheck(line) ? discussion : line.discussions)
+        : [],
+    });
 
     state.diffFiles = state.diffFiles.map(diffFile => {
       if (diffFile.file_hash === fileHash) {
         const file = { ...diffFile };
 
         if (file.highlighted_diff_lines) {
-          file.highlighted_diff_lines = file.highlighted_diff_lines.map(line => {
-            if (!line.discussions.some(({ id }) => discussion.id === id) && lineCheck(line)) {
-              return {
-                ...line,
-                discussions: line.discussions.concat(discussion),
-              };
-            }
-
-            return line;
-          });
+          file.highlighted_diff_lines = file.highlighted_diff_lines.map(line =>
+            mapDiscussions(line),
+          );
         }
 
         if (file.parallel_diff_lines) {
@@ -148,20 +149,8 @@ export default {
 
             if (left || right) {
               return {
-                left: {
-                  ...line.left,
-                  discussions:
-                    left && !line.left.discussions.some(({ id }) => id === discussion.id)
-                      ? line.left.discussions.concat(discussion)
-                      : (line.left && line.left.discussions) || [],
-                },
-                right: {
-                  ...line.right,
-                  discussions:
-                    right && !left && !line.right.discussions.some(({ id }) => id === discussion.id)
-                      ? line.right.discussions.concat(discussion)
-                      : (line.right && line.right.discussions) || [],
-                },
+                left: line.left ? mapDiscussions(line.left) : null,
+                right: line.right ? mapDiscussions(line.right, () => !left) : null,
               };
             }
 
@@ -180,7 +169,7 @@ export default {
     });
   },
 
-  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode, id }) {
+  [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
     const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
     if (selectedFile) {
       if (selectedFile.parallel_diff_lines) {
@@ -193,7 +182,7 @@ export default {
           const side = targetLine.left && targetLine.left.line_code === lineCode ? 'left' : 'right';
 
           Object.assign(targetLine[side], {
-            discussions: [],
+            discussions: targetLine[side].discussions.filter(discussion => discussion.notes.length),
           });
         }
       }
@@ -205,14 +194,14 @@ export default {
 
         if (targetInlineLine) {
           Object.assign(targetInlineLine, {
-            discussions: [],
+            discussions: targetInlineLine.discussions.filter(discussion => discussion.notes.length),
           });
         }
       }
 
       if (selectedFile.discussions && selectedFile.discussions.length) {
         selectedFile.discussions = selectedFile.discussions.filter(
-          discussion => discussion.id !== id,
+          discussion => discussion.notes.length,
         );
       }
     }
