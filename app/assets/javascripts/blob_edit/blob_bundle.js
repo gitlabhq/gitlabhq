@@ -17,6 +17,11 @@ export default () => {
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
     const commitButton = $('.js-commit-button');
+    const cancelLink = $('.btn.btn-cancel');
+
+    cancelLink.on('click', () => {
+      window.onbeforeunload = null;
+    });
 
     commitButton.on('click', () => {
       window.onbeforeunload = null;

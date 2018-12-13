@@ -1,0 +1,5 @@
+---
+title: Only prompt user once when navigating away from file editor
+merge_request: 23820
+author: Sam Bigelow
+type: fixed
