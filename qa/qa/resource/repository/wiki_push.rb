@@ -30,6 +30,11 @@ module QA
             end
           end
         end
+
+        def fabricate!
+          super
+          wiki.visit!
+        end
       end
     end
   end
