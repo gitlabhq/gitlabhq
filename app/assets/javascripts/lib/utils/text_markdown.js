@@ -39,7 +39,14 @@ function blockTagText(text, textArea, blockTag, selected) {
   }
 }
 
-function moveCursor({ textArea, tag, positionBetweenTags, removedLastNewLine, select }) {
+function moveCursor({
+  textArea,
+  tag,
+  cursorOffset,
+  positionBetweenTags,
+  removedLastNewLine,
+  select,
+}) {
   var pos;
   if (!textArea.setSelectionRange) {
     return;
@@ -61,11 +68,24 @@ function moveCursor({ textArea, tag, positionBetweenTags, removedLastNewLine, se
       pos -= 1;
     }
 
+    if (cursorOffset) {
+      pos -= cursorOffset;
+    }
+
     return textArea.setSelectionRange(pos, pos);
   }
 }
 
-export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wrap, select }) {
+export function insertMarkdownText({
+  textArea,
+  text,
+  tag,
+  cursorOffset,
+  blockTag,
+  selected,
+  wrap,
+  select,
+}) {
   var textToInsert,
     selectedSplit,
     startChar,
@@ -154,20 +174,30 @@ export function insertMarkdownText({ textArea, text, tag, blockTag, selected, wr
   return moveCursor({
     textArea,
     tag: tag.replace(textPlaceholder, selected),
+    cursorOffset,
     positionBetweenTags: wrap && selected.length === 0,
     removedLastNewLine,
     select,
   });
 }
 
-function updateText({ textArea, tag, blockTag, wrap, select }) {
+function updateText({ textArea, tag, cursorOffset, blockTag, wrap, select, tagContent }) {
   var $textArea, selected, text;
   $textArea = $(textArea);
   textArea = $textArea.get(0);
   text = $textArea.val();
-  selected = selectedText(text, textArea);
+  selected = selectedText(text, textArea) || tagContent;
   $textArea.focus();
-  return insertMarkdownText({ textArea, text, tag, blockTag, selected, wrap, select });
+  return insertMarkdownText({
+    textArea,
+    text,
+    tag,
+    cursorOffset,
+    blockTag,
+    selected,
+    wrap,
+    select,
+  });
 }
 
 export function addMarkdownListeners(form) {
@@ -178,9 +208,11 @@ export function addMarkdownListeners(form) {
       return updateText({
         textArea: $this.closest('.md-area').find('textarea'),
         tag: $this.data('mdTag'),
+        cursorOffset: $this.data('mdCursorOffset'),
         blockTag: $this.data('mdBlock'),
         wrap: !$this.data('mdPrepend'),
         select: $this.data('mdSelect'),
+        tagContent: $this.data('mdTagContent').toString(),
       });
     });
 }

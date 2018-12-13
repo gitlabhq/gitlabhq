@@ -23,6 +23,7 @@ const Api = {
   usersPath: '/api/:version/users.json',
   userStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  applySuggestionPath: '/api/:version/suggestions/:id/apply',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
@@ -181,6 +182,12 @@ const Api = {
         'Content-Type': 'application/json; charset=utf-8',
       },
     });
+  },
+
+  applySuggestion(id) {
+    const url = Api.buildUrl(Api.applySuggestionPath).replace(':id', encodeURIComponent(id));
+
+    return axios.put(url);
   },
 
   commitPipelines(projectId, sha) {

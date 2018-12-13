@@ -42,6 +42,16 @@ export default {
       type: Object,
       required: true,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    changesEmptyStateIllustration: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -196,6 +206,7 @@ export default {
               v-for="file in diffFiles"
               :key="file.newPath"
               :file="file"
+              :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
             />
           </template>

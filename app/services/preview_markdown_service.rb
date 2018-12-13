@@ -4,10 +4,12 @@ class PreviewMarkdownService < BaseService
   def execute
     text, commands = explain_quick_actions(params[:text])
     users = find_user_references(text)
+    suggestions = find_suggestions(text)
 
     success(
       text: text,
       users: users,
+      suggestions: suggestions,
       commands: commands.join(' '),
       markdown_engine: markdown_engine
     )
@@ -26,6 +28,12 @@ class PreviewMarkdownService < BaseService
     extractor = Gitlab::ReferenceExtractor.new(project, current_user)
     extractor.analyze(text, author: current_user)
     extractor.users.map(&:username)
+  end
+
+  def find_suggestions(text)
+    return [] unless params[:preview_suggestions]
+
+    Banzai::SuggestionsParser.parse(text)
   end
 
   def find_commands_target

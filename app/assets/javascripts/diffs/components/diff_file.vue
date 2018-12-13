@@ -22,6 +22,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -160,6 +165,7 @@ export default {
       v-if="!isCollapsed && file.renderIt"
       :class="{ hidden: isCollapsed || file.too_large }"
       :diff-file="file"
+      :help-page-path="helpPagePath"
     />
     <gl-loading-icon v-if="showLoadingIcon" class="diff-content loading" />
     <div v-else-if="showExpandMessage" class="nothing-here-block diff-collapsed">

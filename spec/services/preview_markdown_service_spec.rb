@@ -19,6 +19,31 @@ describe PreviewMarkdownService do
     end
   end
 
+  describe 'suggestions' do
+    let(:params) { { text: "```suggestion\nfoo\n```", preview_suggestions: preview_suggestions } }
+    let(:service) { described_class.new(project, user, params) }
+
+    context 'when preview markdown param is present' do
+      let(:preview_suggestions) { true }
+
+      it 'returns users referenced in text' do
+        result = service.execute
+
+        expect(result[:suggestions]).to eq(['foo'])
+      end
+    end
+
+    context 'when preview markdown param is not present' do
+      let(:preview_suggestions) { false }
+
+      it 'returns users referenced in text' do
+        result = service.execute
+
+        expect(result[:suggestions]).to eq([])
+      end
+    end
+  end
+
   context 'new note with quick actions' do
     let(:issue) { create(:issue, project: project) }
     let(:params) do

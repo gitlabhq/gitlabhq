@@ -54,7 +54,8 @@ describe 'Database schema' do
     user_agent_details: %w[subject_id],
     users: %w[color_scheme_id created_by_id theme_id],
     users_star_projects: %w[user_id],
-    web_hooks: %w[service_id]
+    web_hooks: %w[service_id],
+    suggestions: %w[commit_id]
   }.with_indifferent_access.freeze
 
   context 'for table' do
