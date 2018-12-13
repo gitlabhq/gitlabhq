@@ -1,7 +1,6 @@
 . scripts/utils.sh
 
 export SETUP_DB=${SETUP_DB:-true}
-export CREATE_DB_USER=${CREATE_DB_USER:-$SETUP_DB}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 export BUNDLE_INSTALL_FLAGS="--without=production --jobs=$(nproc) --path=vendor --retry=3 --quiet"
 
