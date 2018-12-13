@@ -49,8 +49,8 @@
   .login-box,
   .omniauth-container {
     box-shadow: 0 0 0 1px $border-color;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: $border-radius-small;
+    border-bottom-left-radius: $border-radius-small;
     padding: 15px;
 
     .login-heading h3 {
@@ -95,6 +95,7 @@
   }
 
   .omniauth-container {
+    border-radius: $border-radius-small;
     font-size: 13px;
 
     p {
