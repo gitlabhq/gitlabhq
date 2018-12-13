@@ -70,6 +70,34 @@ describe 'Clusters Applications', :js do
         end
       end
 
+      context 'when user installs Knative' do
+        before do
+          create(:clusters_applications_helm, :installed, cluster: cluster)
+        end
+
+        context 'on an abac cluster' do
+          let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled, projects: [project])}
+
+          it 'should show info block and not be installable' do
+            page.within('.js-cluster-application-row-knative') do
+              expect(page).to have_css('.bs-callout-info')
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+            end
+          end
+        end
+
+        context 'on an rbac cluster' do
+          let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project])}
+
+          it 'should not show callout block and be installable' do
+            page.within('.js-cluster-application-row-knative') do
+              expect(page).not_to have_css('.bs-callout-info')
+              expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
+            end
+          end
+        end
+      end
+
       context 'when user installs Cert Manager' do
         before do
           allow(ClusterInstallAppWorker).to receive(:perform_async)
