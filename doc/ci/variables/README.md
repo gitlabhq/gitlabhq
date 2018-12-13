@@ -249,6 +249,19 @@ the project services that you are using to learn which variables they define.
 An example project service that defines deployment variables is the
 [Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
+## Auto DevOps application variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
+
+You can configure [Auto DevOps](../../topics/autodevops/index.md) to
+pass CI variables to the running application by prefixing the key of the
+variable with `K8S_SECRET_`.
+
+These [prefixed
+variables](../../topics/autodevops/index.md#application-secret-variables) will
+then be available as environment variables on the running application
+container.
+
 ## Debug tracing
 
 > Introduced in GitLab Runner 1.7.
