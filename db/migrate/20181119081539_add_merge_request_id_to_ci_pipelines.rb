@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddMergeRequestIdToCiPipelines < ActiveRecord::Migration
+class AddMergeRequestIdToCiPipelines < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

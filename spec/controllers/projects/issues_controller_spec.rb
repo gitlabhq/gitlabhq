@@ -42,6 +42,8 @@ describe Projects::IssuesController do
 
       it_behaves_like "issuables list meta-data", :issue
 
+      it_behaves_like 'set sort order from user preference'
+
       it "returns index" do
         get :index, namespace_id: project.namespace, project_id: project
 

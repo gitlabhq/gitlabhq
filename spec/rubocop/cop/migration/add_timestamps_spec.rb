@@ -11,7 +11,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
   subject(:cop) { described_class.new }
   let(:migration_with_add_timestamps) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
@@ -24,7 +24,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
 
   let(:migration_without_add_timestamps) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change
@@ -36,7 +36,7 @@ describe RuboCop::Cop::Migration::AddTimestamps do
 
   let(:migration_with_add_timestamps_with_timezone) do
     %q(
-      class Users < ActiveRecord::Migration
+      class Users < ActiveRecord::Migration[4.2]
         DOWNTIME = false
 
         def change

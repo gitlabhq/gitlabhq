@@ -24,6 +24,10 @@ module NotificationRecipientService
     Builder::MergeRequestUnmergeable.new(*args).notification_recipients
   end
 
+  def self.build_project_maintainers_recipients(*args)
+    Builder::ProjectMaintainers.new(*args).notification_recipients
+  end
+
   module Builder
     class Base
       def initialize(*)
@@ -374,6 +378,25 @@ module NotificationRecipientService
 
       def custom_action
         :unmergeable_merge_request
+      end
+
+      def acting_user
+        nil
+      end
+    end
+
+    class ProjectMaintainers < Base
+      attr_reader :target
+
+      def initialize(target, action:)
+        @target = target
+        @action = action
+      end
+
+      def build!
+        return [] unless project
+
+        add_recipients(project.team.maintainers, :watch, nil)
       end
 
       def acting_user

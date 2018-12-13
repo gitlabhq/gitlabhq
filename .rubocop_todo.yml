@@ -107,12 +107,6 @@ Lint/UriEscapeUnescape:
 Metrics/LineLength:
   Max: 1310
 
-# Offense count: 2
-Naming/ConstantName:
-  Exclude:
-    - 'lib/gitlab/import_sources.rb'
-    - 'lib/gitlab/ssh_public_key.rb'
-
 # Offense count: 11
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: lowercase, uppercase

@@ -55,27 +55,27 @@ A job is defined by a list of parameters that define the job behavior.
 
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
-| script        | yes      | Defines a shell script which is executed by Runner |
-| extends       | no       | Defines a configuration entry that this job is going to inherit from |
-| image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| stage         | no       | Defines a job stage (default: `test`) |
-| type          | no       | Alias for `stage` |
-| variables     | no       | Define job variables on a job level |
-| only          | no       | Defines a list of git refs for which job is created |
-| except        | no       | Defines a list of git refs for which job is not created |
-| tags          | no       | Defines a list of tags which are used to select Runner |
-| allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status |
-| when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
-| dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
-| artifacts     | no       | Define list of [job artifacts](#artifacts) |
-| cache         | no       | Define list of files that should be cached between subsequent runs |
-| before_script | no       | Override a set of commands that are executed before job |
-| after_script  | no       | Override a set of commands that are executed after job |
-| environment   | no       | Defines a name of environment to which deployment is done by this job |
-| coverage      | no       | Define code coverage settings for a given job |
-| retry         | no       | Define when and how many times a job can be auto-retried in case of a failure |
-| parallel      | no       | Defines how many instances of a job should be run in parallel |
+| [script](#script)                                | yes      | Defines a shell script which is executed by Runner |
+| [extends](#extends)                              | no       | Defines a configuration entry that this job is going to inherit from |
+| [image](#image-and-services)                     | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| [services](#image-and-services)                  | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| [stage](#stage)                                  | no       | Defines a job stage (default: `test`) |
+| type                                             | no       | Alias for `stage` |
+| [variables](#variables)                          | no       | Define job variables on a job level |
+| [only](#only-and-except-simplified)              | no       | Defines a list of git refs for which job is created |
+| [except](#only-and-except-simplified)            | no       | Defines a list of git refs for which job is not created |
+| [tags](#tags)                                    | no       | Defines a list of tags which are used to select Runner |
+| [allow_failure](#allow_failure)                  | no       | Allow job to fail. Failed job doesn't contribute to commit status |
+| [when](#when)                                    | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
+| [dependencies](#dependencies)                    | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
+| [artifacts](#artifacts)                          | no       | Define list of [job artifacts](#artifacts) |
+| [cache](#cache)                                  | no       | Define list of files that should be cached between subsequent runs |
+| [before_script](#before_script-and-after_script) | no       | Override a set of commands that are executed before job |
+| [after_script](#before_script-and-after_script)  | no       | Override a set of commands that are executed after job |
+| [environment](#environment)                      | no       | Defines a name of environment to which deployment is done by this job |
+| [coverage](#coverage)                            | no       | Define code coverage settings for a given job |
+| [retry](#retry)                                  | no       | Define when and how many times a job can be auto-retried in case of a failure |
+| [parallel](#parallel)                            | no       | Defines how many instances of a job should be run in parallel |
 
 ### `extends`
 

@@ -25,12 +25,19 @@ describe RepositoryUpdateRemoteMirrorWorker do
       it 'sets status as failed when update remote mirror service executes with errors' do
         error_message = 'fail!'
 
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :error, message: error_message)
+        expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
+          expect(service).to receive(:execute).with(remote_mirror).and_return(status: :error, message: error_message)
+        end
+
+        # Mock the finder so that it returns an object we can set expectations on
+        expect_next_instance_of(RemoteMirrorFinder) do |finder|
+          expect(finder).to receive(:execute).and_return(remote_mirror)
+        end
+        expect(remote_mirror).to receive(:mark_as_failed).with(error_message)
+
         expect do
           subject.perform(remote_mirror.id, Time.now)
         end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError, error_message)
-
-        expect(remote_mirror.reload.update_status).to eq('failed')
       end
 
       it 'does nothing if last_update_started_at is higher than the time the job was scheduled in' do

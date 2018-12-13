@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RemoteMirror do
+describe RemoteMirror, :mailer do
   include GitHelpers
 
   describe 'URL validation' do
@@ -133,6 +133,43 @@ describe RemoteMirror do
         mirror = create_mirror(url: 'http://test.com')
 
         expect(mirror.safe_url).to eq('http://test.com')
+      end
+    end
+  end
+
+  describe '#mark_as_failed' do
+    let(:remote_mirror) { create(:remote_mirror) }
+    let(:error_message) { 'http://user:pass@test.com/root/repoC.git/' }
+    let(:sanitized_error_message) { 'http://*****:*****@test.com/root/repoC.git/' }
+
+    subject do
+      remote_mirror.update_start
+      remote_mirror.mark_as_failed(error_message)
+    end
+
+    it 'sets the update_status to failed' do
+      subject
+
+      expect(remote_mirror.reload.update_status).to eq('failed')
+    end
+
+    it 'saves the sanitized error' do
+      subject
+
+      expect(remote_mirror.last_error).to eq(sanitized_error_message)
+    end
+
+    context 'notifications' do
+      let(:user) { create(:user) }
+
+      before do
+        remote_mirror.project.add_maintainer(user)
+      end
+
+      it 'notifies the project maintainers' do
+        perform_enqueued_jobs { subject }
+
+        should_email(user)
       end
     end
   end
