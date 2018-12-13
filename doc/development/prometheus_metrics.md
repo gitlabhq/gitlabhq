@@ -30,7 +30,7 @@ You might want to add additional database migration that makes a decision what t
 For example: you might be interested in migrating all dependent data to a different metric.
 
 ```ruby
-class ImportCommonMetrics < ActiveRecord::Migration
+class ImportCommonMetrics < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   require Rails.root.join('db/importers/common_metrics_importer.rb')

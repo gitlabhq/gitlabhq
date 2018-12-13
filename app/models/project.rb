@@ -749,15 +749,9 @@ class Project < ActiveRecord::Base
     return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
-    if data
-      project_import_data.data ||= {}
-      project_import_data.data = project_import_data.data.merge(data)
-    end
 
-    if credentials
-      project_import_data.credentials ||= {}
-      project_import_data.credentials = project_import_data.credentials.merge(credentials)
-    end
+    project_import_data.merge_data(data.to_h)
+    project_import_data.merge_credentials(credentials.to_h)
 
     project_import_data
   end
@@ -2014,12 +2008,12 @@ class Project < ActiveRecord::Base
 
   def create_new_pool_repository
     pool = begin
-             create_or_find_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
+             create_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
            rescue ActiveRecord::RecordNotUnique
-             retry
+             pool_repository(true)
            end
 
-    pool.schedule
+    pool.schedule unless pool.scheduled?
     pool
   end
 

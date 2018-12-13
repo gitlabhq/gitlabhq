@@ -164,7 +164,7 @@ module SortingHelper
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
 
     if reverse_sort
-      reverse_url = page_filter_path(sort: reverse_sort)
+      reverse_url = page_filter_path(sort: reverse_sort, label: true)
     else
       reverse_url = '#'
       link_class += ' disabled'

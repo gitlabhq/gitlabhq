@@ -88,7 +88,7 @@ renaming. For example
 
 ```ruby
 # A regular migration in db/migrate
-class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -118,7 +118,7 @@ We can perform this cleanup using
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class CleanupUsersUpdatedAtRename < ActiveRecord::Migration
+class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -157,7 +157,7 @@ as follows:
 
 ```ruby
 # A regular migration in db/migrate
-class ChangeUsersUsernameStringToText < ActiveRecord::Migration
+class ChangeUsersUsernameStringToText < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -178,7 +178,7 @@ Next we need to clean up our changes using a post-deployment migration:
 
 ```ruby
 # A post-deployment migration in db/post_migrate
-class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration
+class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -213,7 +213,7 @@ the work / load over a longer time period, without slowing down deployments.
 For example, to change the column type using a background migration:
 
 ```ruby
-class ExampleMigration < ActiveRecord::Migration
+class ExampleMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -257,7 +257,7 @@ release) by a cleanup migration, which should steal from the queue and handle
 any remaining rows. For example:
 
 ```ruby
-class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration
+class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -322,7 +322,7 @@ Migrations can take advantage of this by using the method
 `add_concurrent_index`. For example:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
+class MyMigration < ActiveRecord::Migration[4.2]
   def up
     add_concurrent_index :projects, :column_name
   end

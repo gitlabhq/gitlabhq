@@ -4,11 +4,14 @@ describe 'Merge request > User awards emoji', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project, author: create(:user)) }
+  let!(:note) { create(:note, noteable: merge_request, project: merge_request.project) }
 
   describe 'logged in' do
     before do
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
+
+      wait_for_requests
     end
 
     it 'adds award to merge request' do
@@ -34,6 +37,15 @@ describe 'Merge request > User awards emoji', :js do
       expect(page).to have_selector('.emoji-menu')
 
       expect(page).to have_selector('.emoji-menu', count: 1)
+    end
+
+    it 'adds awards to note' do
+      first('.js-note-emoji').click
+      first('.emoji-menu .js-emoji-btn').click
+
+      wait_for_requests
+
+      expect(page).to have_selector('.js-awards-block')
     end
 
     describe 'the project is archived' do

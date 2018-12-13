@@ -3919,6 +3919,9 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+msgid "Loading…"
+msgstr ""
+
 msgid "Lock"
 msgstr ""
 

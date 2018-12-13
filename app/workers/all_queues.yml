@@ -124,6 +124,7 @@
 - propagate_service_template
 - reactive_caching
 - rebase
+- remote_mirror_notification
 - repository_fork
 - repository_import
 - repository_remove_remote

@@ -1,7 +1,14 @@
 # GitLab Helm Chart
 
-This is the official and recommended way to install GitLab on a cloud native environment.
-For more information on other available GitLab Helm Charts, see the [charts overview](index.md#chart-overview).
+This is the official way to install GitLab on a cloud native environment.
+
+NOTE: **Kubernetes experience required:**
+Our Helm charts are recommended for those who are familiar with Kubernetes.
+If you're not sure if Kubernetes is for you, our
+[Omnibus GitLab packages](../README.md#install-gitlab-using-the-omnibus-gitlab-package-recommended)
+are mature, scalable, support [high availability](../../administration/high_availability/README.md)
+and are used today on GitLab.com.
+It is not necessary to have GitLab installed on Kubernetes in order to use [GitLab Kubernetes integration](https://docs.gitlab.com/ee/user/project/clusters/index.html). 
 
 ## Introduction
 

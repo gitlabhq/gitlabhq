@@ -160,6 +160,8 @@ describe Projects::MergeRequestsController do
 
     it_behaves_like "issuables list meta-data", :merge_request
 
+    it_behaves_like 'set sort order from user preference'
+
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }
       let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }

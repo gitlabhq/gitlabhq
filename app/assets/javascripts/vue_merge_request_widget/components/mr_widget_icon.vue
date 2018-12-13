@@ -13,5 +13,7 @@ export default {
 </script>
 
 <template>
-  <div class="circle-icon-container append-right-default"><icon :name="name" /></div>
+  <div class="circle-icon-container append-right-default align-self-start align-self-lg-center">
+    <icon :name="name" />
+  </div>
 </template>

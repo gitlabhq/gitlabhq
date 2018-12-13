@@ -1,6 +1,5 @@
 - @no_container = true
 - page_title _("Environments")
-- add_to_breadcrumbs(_("Pipelines"), project_pipelines_path(@project))
 
 #environments-list-view{ data: { environments_data: environments_list_data,
   "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
