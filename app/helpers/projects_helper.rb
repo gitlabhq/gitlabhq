@@ -549,6 +549,7 @@ module ProjectsHelper
       services#edit
       repository#show
       ci_cd#show
+      operations#show
       badges#index
       pages#show
     ]
