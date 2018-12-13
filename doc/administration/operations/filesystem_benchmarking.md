@@ -44,12 +44,10 @@ user	0m0.025s
 sys	0m0.091s
 ```
 
-From experience with multiple customers, the following are ranges that indicate
-whether your filesystem performance is satisfactory or less than ideal:
+From experience with multiple customers, this task should take under 10
+seconds to indicate good filesystem performance. 
 
-| Rating    | Benchmark result        |
-|:----------|:------------------------|
-| Best      | Less than 10 seconds    |
-| OK        | 10-18 seconds           |
-| Poor      | 18-25 seconds           |
-| Very poor | Greater than 25 seconds |
+NOTE: **Note:**
+This test is naive and only evaluates write performance. It's possible to 
+receive good results on this test but still have poor performance due to read 
+speed and various other factors. 
