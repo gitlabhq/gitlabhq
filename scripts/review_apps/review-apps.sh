@@ -31,7 +31,9 @@ function ensure_namespace() {
 
 function install_tiller() {
   echo "Checking Tiller..."
-  helm init --upgrade
+  helm init \
+    --upgrade \
+    --replicas 2
   kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
   if ! helm version --debug; then
     echo "Failed to init Tiller."
