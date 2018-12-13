@@ -98,4 +98,29 @@ module EmailsHelper
 
     "#{string} on #{Gitlab.config.gitlab.host}"
   end
+
+  def create_list_id_string(project, list_id_max_length = 255)
+    project_path_as_domain = project.full_path.downcase
+      .split('/').reverse.join('/')
+      .gsub(%r{[^a-z0-9\/]}, '-')
+      .gsub(%r{\/+}, '.')
+      .gsub(/(\A\.+|\.+\z)/, '')
+
+    max_domain_length = list_id_max_length - Gitlab.config.gitlab.host.length - project.id.to_s.length - 2
+
+    if max_domain_length < 3
+      return project.id.to_s + "..." + Gitlab.config.gitlab.host
+    end
+
+    if project_path_as_domain.length > max_domain_length
+      project_path_as_domain = project_path_as_domain.slice(0, max_domain_length)
+
+      last_dot_index = project_path_as_domain[0..-2].rindex(".")
+      last_dot_index ||= max_domain_length - 2
+
+      project_path_as_domain = project_path_as_domain.slice(0, last_dot_index).concat("..")
+    end
+
+    project.id.to_s + "." + project_path_as_domain + "." + Gitlab.config.gitlab.host
+  end
 end
