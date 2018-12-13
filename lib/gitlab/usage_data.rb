@@ -85,6 +85,8 @@ module Gitlab
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
             snippets: count(Snippet),
+            suggestions: count(Suggestion),
+            todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
           }.merge(services_usage).merge(approximate_counts)
