@@ -30,10 +30,14 @@ export default {
   computed: {
     jobLine() {
       if (this.user.bio && this.user.organization) {
-        return sprintf(__('%{bio} at %{organization}'), {
-          bio: this.user.bio,
-          organization: this.user.organization,
-        });
+        return sprintf(
+          __('%{bio} at %{organization}'),
+          {
+            bio: this.user.bio,
+            organization: this.user.organization,
+          },
+          false,
+        );
       } else if (this.user.bio) {
         return this.user.bio;
       } else if (this.user.organization) {
@@ -66,7 +70,7 @@ export default {
   <gl-popover :target="target" boundary="viewport" placement="top" show>
     <div class="user-popover d-flex">
       <div class="p-1 flex-shrink-1">
-        <user-avatar-image :img-src="user.avatarUrl" :size="60" css-classes="mr-2" />
+        <user-avatar-image :img-src="user.avatarUrl" :size="60" css-classes="mr-2"/>
       </div>
       <div class="p-1 w-100">
         <h5 class="m-0">
@@ -79,7 +83,7 @@ export default {
         </h5>
         <div class="text-secondary mb-2">
           <span v-if="user.username">@{{ user.username }}</span>
-          <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1" />
+          <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1"/>
         </div>
         <div class="text-secondary">
           {{ jobLine }}
@@ -97,7 +101,9 @@ export default {
             class="animation-container-small mb-1"
           />
         </div>
-        <div v-if="user.status" class="mt-2"><span v-html="statusHtml"></span></div>
+        <div v-if="user.status" class="mt-2">
+          <span v-html="statusHtml"></span>
+        </div>
       </div>
     </div>
   </gl-popover>
