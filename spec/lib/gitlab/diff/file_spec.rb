@@ -686,7 +686,7 @@ describe Gitlab::Diff::File do
         file_content: content
       ).execute
 
-      return project.commit(branch_name).diffs.diff_files.first
+      project.commit(branch_name).diffs.diff_files.first
     end
 
     def update_file(file_name, content)
@@ -700,7 +700,7 @@ describe Gitlab::Diff::File do
         file_content: content
       ).execute
 
-      return project.commit(branch_name).diffs.diff_files.first
+      project.commit(branch_name).diffs.diff_files.first
     end
 
     def delete_file(file_name)
@@ -713,7 +713,7 @@ describe Gitlab::Diff::File do
         file_path: file_name
       ).execute
 
-      return project.commit(branch_name).diffs.diff_files.first
+      project.commit(branch_name).diffs.diff_files.first
     end
 
     context 'when empty file is created' do
