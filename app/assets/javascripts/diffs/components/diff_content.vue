@@ -69,7 +69,8 @@ export default {
 <template>
   <div class="diff-content">
     <div class="diff-viewer">
-      <template v-if="isTextFile">
+      <div v-if="diffFile.empty" class="nothing-here-block">{{ __('Empty file') }}</div>
+      <template v-else-if="isTextFile">
         <inline-diff-view
           v-if="isInlineView"
           :diff-file="diffFile"
