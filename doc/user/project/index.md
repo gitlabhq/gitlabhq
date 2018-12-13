@@ -8,7 +8,7 @@ Your projects can be [available](../../public_access/public_access.md)
 publicly, internally, or privately, at your choice. GitLab does not limit
 the number of private projects you create.
 
-## Project's features
+## Project features
 
 When you create a project in GitLab, you'll have access to a large number of
 [features](https://about.gitlab.com/features/):
@@ -82,7 +82,7 @@ your code blocks, overriding GitLab's default choice of language.
 the source, build output, and other metadata or artifacts
 associated with a released version of your code.
 
-### Project's integrations
+### Project integrations
 
 [Integrate your project](integrations/index.md) with Jira, Mattermost,
 Kubernetes, Slack, and a lot more.
@@ -116,7 +116,7 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Project's members
+## Project members
 
 Learn how to [add members to your projects](members/index.md).
 
@@ -170,3 +170,23 @@ password <personal_access_token>
 
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
+
+## Project APIs
+
+There are numerous [APIs](../../api/README.md) to use with your projects:
+
+- [Badges](../../api/project_badges.md)
+- [Clusters](../../api/project_clusters.md)
+- [Discussions](../../api/discussions.md)
+- [General](../../api/projects.md)
+- [Import/export](../../api/project_import_export.md)
+- [Issue Board](../../api/boards.md)
+- [Labels](../../api/labels.md)
+- [Markdown](../../api/markdown.md)
+- [Merge Requests](../../api/merge_requests.md)
+- [Milestones](../../api/milestones.md)
+- [Services](../../api/services.md)
+- [Snippets](../../api/project_snippets.md)
+- [Templates](../../api/project_templates.md)
+- [Traffic](../../api/project_statistics.md)
+- [Variables](../../api/project_level_variables.md)

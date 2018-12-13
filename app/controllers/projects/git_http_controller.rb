@@ -20,6 +20,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   # POST /foo/bar.git/git-upload-pack (git pull)
   def git_upload_pack
+    enqueue_fetch_statistics_update
+
     render_ok
   end
 
@@ -65,6 +67,13 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_503(exception)
     render plain: exception.message, status: :service_unavailable
+  end
+
+  def enqueue_fetch_statistics_update
+    return if wiki?
+    return unless project.daily_statistics_enabled?
+
+    ProjectDailyStatisticsWorker.perform_async(project.id)
   end
 
   def access
