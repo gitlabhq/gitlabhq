@@ -74,6 +74,20 @@ describe Clusters::ClusterPresenter do
     end
   end
 
+  describe '#cluster_type_description' do
+    subject { described_class.new(cluster).cluster_type_description }
+
+    context 'project_type cluster' do
+      it { is_expected.to eq('Project cluster') }
+    end
+
+    context 'group_type cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :group) }
+
+      it { is_expected.to eq('Group cluster') }
+    end
+  end
+
   describe '#show_path' do
     subject { described_class.new(cluster).show_path }
 

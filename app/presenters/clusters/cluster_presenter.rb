@@ -12,6 +12,14 @@ module Clusters
       can?(current_user, :update_cluster, cluster) && created?
     end
 
+    def cluster_type_description
+      if cluster.project_type?
+        s_("ClusterIntegration|Project cluster")
+      elsif cluster.group_type?
+        s_("ClusterIntegration|Group cluster")
+      end
+    end
+
     def show_path
       if cluster.project_type?
         project_cluster_path(project, cluster)
