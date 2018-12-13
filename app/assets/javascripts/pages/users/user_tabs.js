@@ -208,6 +208,8 @@ export default class UserTabs {
 
   loadActivityCalendar() {
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
+    if (!$calendarWrap.length) return;
+
     const calendarPath = $calendarWrap.data('calendarPath');
 
     AjaxCache.retrieve(calendarPath)
