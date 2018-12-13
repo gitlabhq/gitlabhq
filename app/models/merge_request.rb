@@ -363,6 +363,11 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def supports_suggestion?
+    # Should be `true` when removing the FF.
+    Suggestion.feature_enabled?
+  end
+
   # Calls `MergeWorker` to proceed with the merge process and
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.

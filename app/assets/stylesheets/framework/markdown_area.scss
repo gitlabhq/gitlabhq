@@ -277,6 +277,27 @@
   }
 }
 
+.md-suggestion-diff {
+  display: table !important;
+  border: 1px solid $border-color !important;
+}
+
+.md-suggestion-header {
+  height: $suggestion-header-height;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  padding: $gl-padding;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+
+  svg {
+    vertical-align: middle;
+    margin-bottom: 3px;
+  }
+}
+
 @include media-breakpoint-down(xs) {
   .atwho-view-ul {
     width: 350px;

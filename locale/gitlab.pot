@@ -657,6 +657,12 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
+msgid "Applied"
+msgstr ""
+
+msgid "Apply suggestion"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -3597,6 +3603,9 @@ msgstr ""
 msgid "Input your repository URL"
 msgstr ""
 
+msgid "Insert suggestion"
+msgstr ""
+
 msgid "Install GitLab Runner"
 msgstr ""
 
@@ -6080,6 +6089,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+msgid "Something went wrong while applying the suggestion. Please try again."
+msgstr ""
+
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
@@ -6345,6 +6357,9 @@ msgid "Subscribe at project level"
 msgstr ""
 
 msgid "Subscribed"
+msgstr ""
+
+msgid "Suggested change"
 msgstr ""
 
 msgid "Switch branch/tag"

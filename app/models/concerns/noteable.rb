@@ -26,6 +26,10 @@ module Noteable
     DiscussionNote.noteable_types.include?(base_class_name)
   end
 
+  def supports_suggestion?
+    false
+  end
+
   def discussions_rendered_on_frontend?
     false
   end

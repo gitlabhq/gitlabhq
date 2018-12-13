@@ -318,6 +318,24 @@ describe DiffNote do
     end
   end
 
+  describe '#supports_suggestion?' do
+    context 'when noteable does not support suggestions' do
+      it 'returns false' do
+        allow(subject.noteable).to receive(:supports_suggestion?) { false }
+
+        expect(subject.supports_suggestion?).to be(false)
+      end
+    end
+
+    context 'when line is not suggestible' do
+      it 'returns false' do
+        allow_any_instance_of(Gitlab::Diff::Line).to receive(:suggestible?) { false }
+
+        expect(subject.supports_suggestion?).to be(false)
+      end
+    end
+  end
+
   describe "image diff notes" do
     let(:path) { "files/images/any_image.png" }
 

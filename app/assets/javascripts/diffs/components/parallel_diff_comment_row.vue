@@ -20,6 +20,11 @@ export default {
       type: Number,
       required: true,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     hasExpandedDiscussionOnLeft() {
@@ -87,6 +92,8 @@ export default {
         <diff-discussions
           v-if="line.left.discussions.length"
           :discussions="line.left.discussions"
+          :line="line.left"
+          :help-page-path="helpPagePath"
         />
       </div>
       <diff-line-note-form
@@ -102,6 +109,8 @@ export default {
         <diff-discussions
           v-if="line.right.discussions.length"
           :discussions="line.right.discussions"
+          :line="line.right"
+          :help-page-path="helpPagePath"
         />
       </div>
       <diff-line-note-form
