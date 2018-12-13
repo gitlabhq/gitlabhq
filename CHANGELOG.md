@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.3.13 (2018-12-13)
+
+### Security (1 change)
+
+- Validate LFS hrefs before downloading them.
+
+
 ## 11.3.12 (2018-12-06)
 
 ### Security (1 change)
