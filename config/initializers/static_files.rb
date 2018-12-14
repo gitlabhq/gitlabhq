@@ -1,26 +1,17 @@
 app = Rails.application
 
-if (Gitlab.rails5? && app.config.public_file_server.enabled) || app.config.serve_static_files
+if app.config.public_file_server.enabled
   # The `ActionDispatch::Static` middleware intercepts requests for static files
   # by checking if they exist in the `/public` directory.
   # We're replacing it with our `Gitlab::Middleware::Static` that does the same,
   # except ignoring `/uploads`, letting those go through to the GitLab Rails app.
 
-  if Gitlab.rails5?
-    app.config.middleware.swap(
-      ActionDispatch::Static,
-      Gitlab::Middleware::Static,
-      app.paths["public"].first,
-      headers: app.config.public_file_server.headers
-    )
-  else
-    app.config.middleware.swap(
-      ActionDispatch::Static,
-      Gitlab::Middleware::Static,
-      app.paths["public"].first,
-      app.config.static_cache_control
-    )
-  end
+  app.config.middleware.swap(
+    ActionDispatch::Static,
+    Gitlab::Middleware::Static,
+    app.paths["public"].first,
+    headers: app.config.public_file_server.headers
+  )
 
   # If webpack-dev-server is configured, proxy webpack's public directory
   # instead of looking for static assets

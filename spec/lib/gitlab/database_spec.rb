@@ -462,8 +462,7 @@ describe Gitlab::Database do
         expect(described_class.db_read_only?).to be_truthy
       end
 
-      # TODO: remove rails5-only tag after removing rails4 tests
-      it 'detects a read only database', :rails5 do
+      it 'detects a read only database' do
         allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => true }])
 
         expect(described_class.db_read_only?).to be_truthy
@@ -475,8 +474,7 @@ describe Gitlab::Database do
         expect(described_class.db_read_only?).to be_falsey
       end
 
-      # TODO: remove rails5-only tag after removing rails4 tests
-      it 'detects a read write database', :rails5 do
+      it 'detects a read write database' do
         allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => false }])
 
         expect(described_class.db_read_only?).to be_falsey

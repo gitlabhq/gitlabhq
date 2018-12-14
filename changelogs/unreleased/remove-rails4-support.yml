@@ -1,0 +1,5 @@
+---
+title: Remove rails 4 support in CI, Gemfiles, bin/ and config/
+merge_request: 23717
+author: Jasper Maes
+type: other

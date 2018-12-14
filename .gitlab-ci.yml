@@ -77,18 +77,6 @@ stages:
     - mysql:5.7
     - redis:alpine
 
-.rails4: &rails4
-  allow_failure: false
-  except:
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /(^docs[\/-].*|.*-docs$)/
-      - $CI_COMMIT_REF_NAME =~ /(^qa[\/-].*|.*-qa$)/
-      - $CI_COMMIT_REF_NAME =~ /norails4/
-      - $RAILS5_DISABLED
-  variables:
-    BUNDLE_GEMFILE: "Gemfile.rails4"
-    RAILS5: "false"
-
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
 # https://docs.gitlab.com/ce/development/documentation/#testing
@@ -180,17 +168,9 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
 
-.rspec-metadata-pg-rails4: &rspec-metadata-pg-rails4
-  <<: *rspec-metadata-pg
-  <<: *rails4
-
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-
-.rspec-metadata-mysql-rails4: &rspec-metadata-mysql-rails4
-  <<: *rspec-metadata-mysql
-  <<: *rails4
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -432,7 +412,6 @@ setup-test-env:
   script:
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
-    - BUNDLE_GEMFILE=Gemfile.rails4 bundle install $BUNDLE_INSTALL_FLAGS
   artifacts:
     expire_in: 7d
     paths:
@@ -513,14 +492,6 @@ rspec-mysql:
   <<: *rspec-metadata-mysql
   parallel: 50
 
-rspec-pg-rails4:
-  <<: *rspec-metadata-pg-rails4
-  parallel: 50
-
-rspec-mysql-rails4:
-  <<: *rspec-metadata-mysql-rails4
-  parallel: 50
-
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies:
@@ -564,12 +535,6 @@ downtime_check:
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
-
-rails4_gemfile_lock_check:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  <<: *except-docs-and-qa
-  script:
-    - scripts/rails4-gemfile-lock-check
 
 ee_compat_check:
   <<: *rake-exec
