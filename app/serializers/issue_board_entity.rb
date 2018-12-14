@@ -17,7 +17,7 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :milestone, expose_nil: false do |issue|
-    API::Entities::Project.represent issue.milestone, only: [:id, :title]
+    API::Entities::Milestone.represent issue.milestone, only: [:id, :title]
   end
 
   expose :assignees do |issue|
