@@ -94,11 +94,11 @@ module Projects
 
       return unless project.lfs_enabled?
 
-      oids_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
-      download_service = Projects::LfsPointers::LfsDownloadService.new(project)
+      lfs_objects_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
 
-      oids_to_download.each do |oid, link|
-        download_service.execute(oid, link)
+      lfs_objects_to_download.each do |lfs_download_object|
+        Projects::LfsPointers::LfsDownloadService.new(project, lfs_download_object)
+                                                 .execute
       end
     rescue => e
       # Right now, to avoid aborting the importing process, we silently fail
