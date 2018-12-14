@@ -178,6 +178,16 @@ shared_examples 'discussion comments' do |resource_name|
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
           let(:reply_id) { find("#{comments_selector} .note:last-child", match: :first)['data-note-id'] }
 
+          it 'can be replied to after resolving' do
+            click_button "Resolve discussion"
+            wait_for_requests
+
+            refresh
+            wait_for_requests
+
+            submit_reply('to reply or not reply')
+          end
+
           it 'shows resolved discussion when toggled' do
             submit_reply('a')
 
