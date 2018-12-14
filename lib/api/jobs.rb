@@ -38,6 +38,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs' do
+        authorize_read_builds!
+
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
