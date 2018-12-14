@@ -54,9 +54,10 @@ describe 'Help Pages' do
 
   context 'in a production environment with version check enabled', :js do
     before do
-      allow(Rails.env).to receive(:production?) { true }
       stub_application_setting(version_check_enabled: true)
-      allow_any_instance_of(VersionCheck).to receive(:url) { '/version-check-url' }
+
+      allow(Rails.env).to receive(:production?).and_return(true)
+      allow(VersionCheck).to receive(:url).and_return('/version-check-url')
 
       sign_in(create(:user))
       visit help_path
