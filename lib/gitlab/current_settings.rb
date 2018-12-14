@@ -51,8 +51,7 @@ module Gitlab
         elsif current_settings.present?
           current_settings
         else
-          ::ApplicationSetting.create_from_defaults ||
-            in_memory_application_settings
+          ::ApplicationSetting.create_from_defaults
         end
       end
 

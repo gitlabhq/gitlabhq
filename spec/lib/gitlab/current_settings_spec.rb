@@ -54,7 +54,7 @@ describe Gitlab::CurrentSettings do
           expect(ApplicationSetting).not_to receive(:current)
         end
 
-        it 'returns an in-memory ApplicationSetting object' do
+        it 'returns a FakeApplicationSettings object' do
           expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
         end
 
@@ -157,17 +157,12 @@ describe Gitlab::CurrentSettings do
           end
         end
 
-        context 'when the application_settings table does not exists' do
-          it 'returns an in-memory ApplicationSetting object' do
-            expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::StatementInvalid)
-
-            expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
-          end
-        end
-
-        context 'when the application_settings table is not fully migrated' do
-          it 'returns an in-memory ApplicationSetting object' do
-            expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::UnknownAttributeError)
+        context 'when the application_settings table does not exist' do
+          it 'returns a FakeApplicationSettings object' do
+            expect(Gitlab::Database)
+              .to receive(:cached_table_exists?)
+              .with('application_settings')
+              .and_return(false)
 
             expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
           end

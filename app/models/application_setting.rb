@@ -311,7 +311,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.create_from_defaults
-    create(defaults)
+    build_from_defaults.tap(&:save)
   end
 
   def self.human_attribute_name(attr, _options = {})
