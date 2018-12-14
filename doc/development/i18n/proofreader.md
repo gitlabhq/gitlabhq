@@ -12,7 +12,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Bulgarian
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Catalan
-  - Proofreaders needed.
+  - David Planella - [GitLab](https://gitlab.com/dplanella), [Crowdin](https://crowdin.com/profile/dplanella)
 - Chinese Simplified
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Chinese Traditional
