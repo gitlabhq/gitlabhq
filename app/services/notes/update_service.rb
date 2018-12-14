@@ -14,6 +14,17 @@ module Notes
         TodoService.new.update_note(note, current_user, old_mentioned_users)
       end
 
+      if note.supports_suggestion?
+        Suggestion.transaction do
+          note.suggestions.delete_all
+          Suggestions::CreateService.new(note).execute
+        end
+
+        # We need to refresh the previous suggestions call cache
+        # in order to get the new records.
+        note.reload
+      end
+
       note
     end
   end

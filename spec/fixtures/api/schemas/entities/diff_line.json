@@ -8,7 +8,8 @@
     "new_line": { "type": ["integer", "null"] },
     "text": { "type": ["string"] },
     "rich_text": { "type": ["string"] },
-    "meta_data": { "type": ["object", "null"] }
+    "meta_data": { "type": ["object", "null"] },
+    "can_receive_suggestion": { "type": "boolean" }
   },
   "additionalProperties": false
 }

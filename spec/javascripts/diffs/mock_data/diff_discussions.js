@@ -487,8 +487,19 @@ export default {
     ],
   },
   diff_discussion: true,
-  truncated_diff_lines:
-    '<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="1">\n1\n</td>\n<td class="line_content new noteable_line"><span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n</td>\n</tr>\n<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="2">\n2\n</td>\n<td class="line_content new noteable_line"><span id="LC2" class="line" lang="plaintext"></span>\n</td>\n</tr>\n',
+  truncated_diff_lines: [
+    {
+      text: 'line',
+      rich_text:
+        '<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="1">\n1\n</td>\n<td class="line_content new noteable_line"><span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n</td>\n</tr>\n<tr class="line_holder new" id="">\n<td class="diff-line-num new old_line" data-linenumber="1">\n \n</td>\n<td class="diff-line-num new new_line" data-linenumber="2">\n2\n</td>\n<td class="line_content new noteable_line"><span id="LC2" class="line" lang="plaintext"></span>\n</td>\n</tr>\n',
+      can_receive_suggestion: true,
+      line_code: '6f209374f7e565f771b95720abf46024c41d1885_1_1',
+      type: 'new',
+      old_line: null,
+      new_line: 1,
+      meta_data: null,
+    },
+  ],
 };
 
 export const imageDiffDiscussions = [

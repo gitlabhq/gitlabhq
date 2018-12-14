@@ -14,6 +14,7 @@ describe('EditBlob', () => {
     setFixtures(`
       <div class="js-edit-blob-form">
         <button class="js-commit-button"></button>
+        <a class="btn btn-cancel" href="#"></a>
       </div>`);
     blobBundle();
   });
@@ -24,6 +25,12 @@ describe('EditBlob', () => {
 
   it('removes beforeunload listener if commit button is clicked', () => {
     $('.js-commit-button').click();
+
+    expect(window.onbeforeunload).toBeNull();
+  });
+
+  it('removes beforeunload listener when cancel link is clicked', () => {
+    $('.btn.btn-cancel').click();
 
     expect(window.onbeforeunload).toBeNull();
   });

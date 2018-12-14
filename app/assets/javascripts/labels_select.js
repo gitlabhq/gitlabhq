@@ -7,7 +7,6 @@ import _ from 'underscore';
 import { sprintf, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 import flash from './flash';
 import ModalStore from './boards/stores/modal_store';
@@ -171,23 +170,7 @@ export default class LabelsSelect {
           axios
             .get(labelUrl)
             .then(res => {
-              let data = _.chain(res.data)
-                .groupBy(function(label) {
-                  return label.title;
-                })
-                .map(function(label) {
-                  var color;
-                  color = _.map(label, function(dup) {
-                    return dup.color;
-                  });
-                  return {
-                    id: label[0].id,
-                    title: label[0].title,
-                    color: color,
-                    duplicate: color.length > 1,
-                  };
-                })
-                .value();
+              let { data } = res;
               if ($dropdown.hasClass('js-extra-options')) {
                 var extraData = [];
                 if (showNo) {
@@ -272,15 +255,9 @@ export default class LabelsSelect {
               selectedClass.push('dropdown-clear-active');
             }
           }
-          if (label.duplicate) {
-            color = DropdownUtils.duplicateLabelColor(label.color);
-          } else {
-            if (label.color != null) {
-              [color] = label.color;
-            }
-          }
-          if (color) {
-            colorEl = "<span class='dropdown-label-box' style='background: " + color + "'></span>";
+          if (label.color) {
+            colorEl =
+              "<span class='dropdown-label-box' style='background: " + label.color + "'></span>";
           } else {
             colorEl = '';
           }
@@ -435,7 +412,7 @@ export default class LabelsSelect {
                 new ListLabel({
                   id: label.id,
                   title: label.title,
-                  color: label.color[0],
+                  color: label.color,
                   textColor: '#fff',
                 }),
               );

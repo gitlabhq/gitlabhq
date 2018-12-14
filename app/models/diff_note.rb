@@ -66,8 +66,21 @@ class DiffNote < Note
     self.original_position.diff_refs == diff_refs
   end
 
+  def supports_suggestion?
+    return false unless noteable.supports_suggestion? && on_text?
+    # We don't want to trigger side-effects of `diff_file` call.
+    return false unless file = fetch_diff_file
+    return false unless line = file.line_for_position(self.original_position)
+
+    line&.suggestible?
+  end
+
   def discussion_first_note?
     self == discussion.first_note
+  end
+
+  def banzai_render_context(field)
+    super.merge(suggestions_filter_enabled: supports_suggestion?)
   end
 
   private

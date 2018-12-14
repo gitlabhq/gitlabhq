@@ -1,0 +1,5 @@
+---
+title: Restore Object Pools when restoring an object pool
+merge_request: 23682
+author:
+type: added

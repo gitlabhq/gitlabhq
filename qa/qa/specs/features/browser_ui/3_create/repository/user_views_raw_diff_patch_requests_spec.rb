@@ -7,17 +7,17 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        @project = Resource::Repository::ProjectPush.fabricate! do |push|
+        project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'
           push.file_content = '# This is a test project'
           push.commit_message = 'Add README.md'
         end
+        @project = project_push.project
 
         # first file added has no parent commit, thus no diff data
         # add second file to repo to enable diff from initial commit
         @commit_message = 'Add second file'
 
-        @project.visit!
         Page::Project::Show.perform(&:create_new_file!)
         Page::File::Form.perform do |f|
           f.add_name('second')

@@ -17,6 +17,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    lineContent: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    canSuggest: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     mdTable() {
@@ -26,6 +36,9 @@ export default {
         '| cell | cell |',
         '| cell | cell |',
       ].join('\n');
+    },
+    mdSuggestion() {
+      return ['```suggestion', `{text}`, '```'].join('\n');
     },
   },
   mounted() {
@@ -118,6 +131,16 @@ export default {
           :prepend="true"
           :button-title="__('Add a table')"
           icon="table"
+        />
+        <toolbar-button
+          v-if="canSuggest"
+          :tag="mdSuggestion"
+          :prepend="true"
+          :button-title="__('Insert suggestion')"
+          :cursor-offset="4"
+          :tag-content="lineContent"
+          icon="doc-code"
+          class="qa-suggestion-btn"
         />
         <button
           v-gl-tooltip

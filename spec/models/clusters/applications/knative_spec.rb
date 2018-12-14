@@ -33,10 +33,10 @@ describe Clusters::Applications::Knative do
     end
 
     context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.1.3') }
+      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.2.2') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('0.1.3')
+        expect(application.reload.version).to eq('0.2.2')
       end
     end
   end
@@ -105,7 +105,7 @@ describe Clusters::Applications::Knative do
     it 'should be initialized with knative arguments' do
       expect(subject.name).to eq('knative')
       expect(subject.chart).to eq('knative/knative')
-      expect(subject.version).to eq('0.1.3')
+      expect(subject.version).to eq('0.2.2')
       expect(subject.files).to eq(knative.files)
     end
   end

@@ -534,8 +534,9 @@
 
 .dropdown-title {
   position: relative;
-  padding: 2px 25px 10px;
-  margin: 0 10px 10px;
+  padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+  padding-bottom: #{2 * $dropdown-item-padding-y};
+  margin-bottom: $dropdown-item-padding-y;
   font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;

@@ -49,6 +49,11 @@ export default {
       required: false,
       default: 0,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -206,6 +211,7 @@ export default {
           :key="discussion.id"
           :discussion="discussion"
           :render-diff-file="true"
+          :help-page-path="helpPagePath"
         />
       </template>
     </ul>

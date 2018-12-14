@@ -67,6 +67,7 @@
                 noteable_data: serialize_issuable(@merge_request),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
+                help_page_path: nil,
                 current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
 
       #commits.commits.tab-pane
@@ -76,8 +77,10 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
+        help_page_path: nil,
         current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
-        project_path: project_path(@merge_request.project)} }
+        project_path: project_path(@merge_request.project),
+        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg') } }
 
     .mr-loading-status
       = spinner

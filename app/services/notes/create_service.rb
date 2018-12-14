@@ -36,6 +36,7 @@ module Notes
       if !only_commands && note.save
         todo_service.new_note(note, current_user)
         clear_noteable_diffs_cache(note)
+        Suggestions::CreateService.new(note).execute
       end
 
       if command_params.present?

@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Knative < ActiveRecord::Base
-      VERSION = '0.1.3'.freeze
+      VERSION = '0.2.2'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds

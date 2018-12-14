@@ -73,4 +73,59 @@ describe EmailsHelper do
       end
     end
   end
+
+  describe '#create_list_id_string' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:full_path, :list_id_path) do
+      "01234"  | "01234"
+      "5/0123" | "012.."
+      "45/012" | "012.."
+      "012"    | "012"
+      "23/01"  | "01.23"
+      "2/01"   | "01.2"
+      "234/01" | "01.."
+      "4/2/0"  | "0.2.4"
+      "45/2/0" | "0.2.."
+      "5/23/0" | "0.."
+      "0-2/5"  | "5.0-2"
+      "0_2/5"  | "5.0-2"
+      "0.2/5"  | "5.0-2"
+    end
+
+    with_them do
+      it 'ellipcizes different variants' do
+        project = double("project")
+        allow(project).to receive(:full_path).and_return(full_path)
+        allow(project).to receive(:id).and_return(12345)
+        # Set a max length that gives only 5 chars for the project full path
+        max_length = "12345..#{Gitlab.config.gitlab.host}".length + 5
+        list_id = create_list_id_string(project, max_length)
+
+        expect(list_id).to eq("12345.#{list_id_path}.#{Gitlab.config.gitlab.host}")
+        expect(list_id).to satisfy { |s| s.length <= max_length }
+      end
+    end
+  end
+
+  describe 'Create realistic List-Id identifier' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:full_path, :list_id_path) do
+      "gitlab-org/gitlab-ce" | "gitlab-ce.gitlab-org"
+      "project-name/subproject_name/my.project" | "my-project.subproject-name.project-name"
+    end
+
+    with_them do
+      it 'Produces the right List-Id' do
+        project = double("project")
+        allow(project).to receive(:full_path).and_return(full_path)
+        allow(project).to receive(:id).and_return(12345)
+        list_id = create_list_id_string(project)
+
+        expect(list_id).to eq("12345.#{list_id_path}.#{Gitlab.config.gitlab.host}")
+        expect(list_id).to satisfy { |s| s.length <= 255 }
+      end
+    end
+  end
 end
