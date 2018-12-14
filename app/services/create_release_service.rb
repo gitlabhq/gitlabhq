@@ -13,8 +13,13 @@ class CreateReleaseService < BaseService
       if release
         error('Release already exists', 409)
       else
-        release = project.releases.new({ tag: tag_name, description: release_description })
-        release.save
+        release = project.releases.create!(
+          tag: tag_name,
+          name: tag_name,
+          sha: existing_tag.dereferenced_target.sha,
+          author: current_user,
+          description: release_description
+        )
 
         success(release)
       end

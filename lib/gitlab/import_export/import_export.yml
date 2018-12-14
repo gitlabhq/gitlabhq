@@ -27,7 +27,8 @@ project_tree:
     - :award_emoji
     - notes:
         :author
-  - :releases
+  - releases:
+      :author
   - project_members:
     - :user
   - merge_requests:
