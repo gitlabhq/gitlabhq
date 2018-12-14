@@ -8,15 +8,15 @@
     = icon('chevron-down')
   %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-sort
     %li
-      = link_to page_filter_path(sort: sort_value_due_date_soon, label: true) do
+      = link_to page_filter_path(sort: sort_value_due_date_soon) do
         = sort_title_due_date_soon
-      = link_to page_filter_path(sort: sort_value_due_date_later, label: true) do
+      = link_to page_filter_path(sort: sort_value_due_date_later) do
         = sort_title_due_date_later
-      = link_to page_filter_path(sort: sort_value_start_date_soon, label: true) do
+      = link_to page_filter_path(sort: sort_value_start_date_soon) do
         = sort_title_start_date_soon
-      = link_to page_filter_path(sort: sort_value_start_date_later, label: true) do
+      = link_to page_filter_path(sort: sort_value_start_date_later) do
         = sort_title_start_date_later
-      = link_to page_filter_path(sort: sort_value_name, label: true) do
+      = link_to page_filter_path(sort: sort_value_name) do
         = sort_title_name_asc
-      = link_to page_filter_path(sort: sort_value_name_desc, label: true) do
+      = link_to page_filter_path(sort: sort_value_name_desc) do
         = sort_title_name_desc
