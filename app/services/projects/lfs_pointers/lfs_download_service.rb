@@ -12,28 +12,43 @@ module Projects
 
         return if LfsObject.exists?(oid: oid)
 
-        sanitized_uri = Gitlab::UrlSanitizer.new(url)
-        Gitlab::UrlBlocker.validate!(sanitized_uri.sanitized_url, protocols: VALID_PROTOCOLS)
+        sanitized_uri = sanitize_url!(url)
 
         with_tmp_file(oid) do |file|
-          size = download_and_save_file(file, sanitized_uri)
-          lfs_object = LfsObject.new(oid: oid, size: size, file: file)
+          download_and_save_file(file, sanitized_uri)
+          lfs_object = LfsObject.new(oid: oid, size: file.size, file: file)
 
           project.all_lfs_objects << lfs_object
         end
+      rescue Gitlab::UrlBlocker::BlockedUrlError => e
+        Rails.logger.error("LFS file with oid #{oid} couldn't be downloaded: #{e.message}")
       rescue StandardError => e
-        Rails.logger.error("LFS file with oid #{oid} could't be downloaded from #{sanitized_uri.sanitized_url}: #{e.message}")
+        Rails.logger.error("LFS file with oid #{oid} couldn't be downloaded from #{sanitized_uri.sanitized_url}: #{e.message}")
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
+      def sanitize_url!(url)
+        Gitlab::UrlSanitizer.new(url).tap do |sanitized_uri|
+          # Just validate that HTTP/HTTPS protocols are used. The
+          # subsequent Gitlab::HTTP.get call will do network checks
+          # based on the settings.
+          Gitlab::UrlBlocker.validate!(sanitized_uri.sanitized_url,
+                                       protocols: VALID_PROTOCOLS)
+        end
+      end
+
       def download_and_save_file(file, sanitized_uri)
-        IO.copy_stream(open(sanitized_uri.sanitized_url, headers(sanitized_uri)), file) # rubocop:disable Security/Open
+        response = Gitlab::HTTP.get(sanitized_uri.sanitized_url, headers(sanitized_uri)) do |fragment|
+          file.write(fragment)
+        end
+
+        raise StandardError, "Received error code #{response.code}" unless response.success?
       end
 
       def headers(sanitized_uri)
-        {}.tap do |headers|
+        query_options.tap do |headers|
           credentials = sanitized_uri.credentials
 
           if credentials[:user].present? || credentials[:password].present?
@@ -43,10 +58,14 @@ module Projects
         end
       end
 
+      def query_options
+        { stream_body: true }
+      end
+
       def with_tmp_file(oid)
         create_tmp_storage_dir
 
-        File.open(File.join(tmp_storage_dir, oid), 'w') { |file| yield file }
+        File.open(File.join(tmp_storage_dir, oid), 'wb') { |file| yield file }
       end
 
       def create_tmp_storage_dir
