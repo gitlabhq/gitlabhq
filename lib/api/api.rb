@@ -149,6 +149,7 @@ module API
     mount ::API::Snippets
     mount ::API::Submodules
     mount ::API::Subscriptions
+    mount ::API::Suggestions
     mount ::API::SystemHooks
     mount ::API::Tags
     mount ::API::Templates

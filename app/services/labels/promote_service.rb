@@ -57,7 +57,7 @@ module Labels
     def update_issuables(new_label, label_ids)
       LabelLink
         .where(label: label_ids)
-        .update_all(label_id: new_label)
+        .update_all(label_id: new_label.id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -65,7 +65,7 @@ module Labels
     def update_resource_label_events(new_label, label_ids)
       ResourceLabelEvent
         .where(label: label_ids)
-        .update_all(label_id: new_label)
+        .update_all(label_id: new_label.id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -73,7 +73,7 @@ module Labels
     def update_issue_board_lists(new_label, label_ids)
       List
         .where(label: label_ids)
-        .update_all(label_id: new_label)
+        .update_all(label_id: new_label.id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -81,7 +81,7 @@ module Labels
     def update_priorities(new_label, label_ids)
       LabelPriority
         .where(label: label_ids)
-        .update_all(label_id: new_label)
+        .update_all(label_id: new_label.id)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

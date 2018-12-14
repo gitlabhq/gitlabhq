@@ -14,7 +14,8 @@ module Banzai
         [
           Filter::RedactorFilter,
           Filter::RelativeLinkFilter,
-          Filter::IssuableStateFilter
+          Filter::IssuableStateFilter,
+          Filter::SuggestionFilter
         ]
       end
 

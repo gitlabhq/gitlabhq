@@ -28,6 +28,7 @@ describe('Markdown field header component', () => {
       'Add a numbered list',
       'Add a task list',
       'Add a table',
+      'Insert suggestion',
       'Go full screen',
     ];
     const elements = vm.$el.querySelectorAll('.toolbar-btn');
@@ -92,5 +93,19 @@ describe('Markdown field header component', () => {
     expect(vm.mdTable).toEqual(
       '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |',
     );
+  });
+
+  it('renders suggestion template', () => {
+    vm.lineContent = 'Some content';
+
+    expect(vm.mdSuggestion).toEqual('```suggestion\n{text}\n```');
+  });
+
+  it('does not render suggestion button if `canSuggest` is set to false', () => {
+    vm.canSuggest = false;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('.qa-suggestion-btn')).toBe(null);
+    });
   });
 });

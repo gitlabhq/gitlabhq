@@ -26,6 +26,11 @@ module QA
         def repository_ssh_uri
           @repository_ssh_uri ||= project.repository_ssh_location.uri
         end
+
+        def fabricate!
+          super
+          project.visit!
+        end
       end
     end
   end

@@ -135,6 +135,7 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-Pipeline-Id        | Only in pipeline emails, the ID of the pipeline the notification is for |
 | X-GitLab-Reply-Key          | A unique token to support reply by email                                |
 | X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |
+| List-Id                     | The path of the project in a RFC 2919 mailing list identifier useful for email organization, for example, with GMail filters |
 
 #### X-GitLab-NotificationReason
 

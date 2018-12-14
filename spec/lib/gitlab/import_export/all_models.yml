@@ -37,6 +37,7 @@ notes:
 - events
 - system_note_metadata
 - note_diff_file
+- suggestions
 label_links:
 - target
 - label

@@ -1,5 +1,5 @@
 shared_context 'gitlab email notification' do
-  set(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository, name: 'a-known-name') }
   set(:recipient) { create(:user, email: 'recipient@example.com') }
 
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
@@ -62,9 +62,11 @@ end
 shared_examples 'an email with X-GitLab headers containing project details' do
   it 'has X-GitLab-Project headers' do
     aggregate_failures do
+      full_path_as_domain = "#{project.name}.#{project.namespace.path}"
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
       is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)
+      is_expected.to have_header('List-Id', "#{project.full_path} <#{project.id}.#{full_path_as_domain}.#{Gitlab.config.gitlab.host}>")
     end
   end
 end

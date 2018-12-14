@@ -657,6 +657,12 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
+msgid "Applied"
+msgstr ""
+
+msgid "Apply suggestion"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -703,6 +709,9 @@ msgid "Artifacts"
 msgstr ""
 
 msgid "Ask your group maintainer to set up a group Runner."
+msgstr ""
+
+msgid "Assets"
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -2581,6 +2590,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+msgid "Download asset"
+msgstr ""
+
 msgid "Download tar"
 msgstr ""
 
@@ -3094,6 +3106,9 @@ msgstr ""
 msgid "Forking in progress"
 msgstr ""
 
+msgid "Forks"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -3592,6 +3607,9 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert suggestion"
 msgstr ""
 
 msgid "Install GitLab Runner"
@@ -4366,6 +4384,9 @@ msgid "No branches found"
 msgstr ""
 
 msgid "No changes"
+msgstr ""
+
+msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}"
 msgstr ""
 
 msgid "No connection could be made to a Gitaly Server, please check your logs!"
@@ -6074,6 +6095,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+msgid "Something went wrong while applying the suggestion. Please try again."
+msgstr ""
+
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
@@ -6263,6 +6287,9 @@ msgstr ""
 msgid "Starred projects"
 msgstr ""
 
+msgid "Stars"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
@@ -6338,6 +6365,9 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
+msgid "Suggested change"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -6351,6 +6381,9 @@ msgid "System metrics (Custom)"
 msgstr ""
 
 msgid "System metrics (Kubernetes)"
+msgstr ""
+
+msgid "Tag"
 msgstr ""
 
 msgid "Tags"

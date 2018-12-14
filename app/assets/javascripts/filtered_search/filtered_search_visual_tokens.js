@@ -79,11 +79,7 @@ export default class FilteredSearchVisualTokens {
   static setTokenStyle(tokenContainer, backgroundColor, textColor) {
     const token = tokenContainer;
 
-    // Labels with linear gradient should not override default background color
-    if (backgroundColor.indexOf('linear-gradient') === -1) {
-      token.style.backgroundColor = backgroundColor;
-    }
-
+    token.style.backgroundColor = backgroundColor;
     token.style.color = textColor;
 
     if (textColor === '#FFFFFF') {
@@ -92,18 +88,6 @@ export default class FilteredSearchVisualTokens {
     }
 
     return token;
-  }
-
-  static preprocessLabel(labelsEndpoint, labels) {
-    let processed = labels;
-
-    if (!labels.preprocessed) {
-      processed = DropdownUtils.duplicateLabelPreprocessing(labels);
-      AjaxCache.override(labelsEndpoint, processed);
-      processed.preprocessed = true;
-    }
-
-    return processed;
   }
 
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
@@ -115,7 +99,6 @@ export default class FilteredSearchVisualTokens {
     );
 
     return AjaxCache.retrieve(labelsEndpoint)
-      .then(FilteredSearchVisualTokens.preprocessLabel.bind(null, labelsEndpoint))
       .then(labels => {
         const matchingLabel = (labels || []).find(
           label => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue,

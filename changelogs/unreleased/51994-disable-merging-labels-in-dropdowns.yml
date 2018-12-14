@@ -1,0 +1,5 @@
+---
+title: Disable merging of labels with same names
+merge_request: 23265
+author:
+type: changed
