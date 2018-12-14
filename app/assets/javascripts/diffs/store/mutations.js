@@ -138,7 +138,7 @@ export default {
 
         if (file.highlighted_diff_lines) {
           file.highlighted_diff_lines = file.highlighted_diff_lines.map(line =>
-            mapDiscussions(line),
+            lineCheck(line) ? mapDiscussions(line) : line,
           );
         }
 
