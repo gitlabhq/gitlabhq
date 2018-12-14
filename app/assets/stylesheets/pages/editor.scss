@@ -128,6 +128,10 @@
           width: 100%;
         }
       }
+
+      @media(max-width: map-get($grid-breakpoints, md)-1) {
+        clear: both;
+      }
     }
 
     .editor-ref {
