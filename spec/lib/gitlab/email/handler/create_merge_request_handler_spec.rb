@@ -15,10 +15,10 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     TestEnv.clean_test_path
   end
 
+  let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
   let(:namespace) { create(:namespace, path: 'gitlabhq') }
 
   let!(:project)  { create(:project, :public, :repository, namespace: namespace, path: 'gitlabhq') }
-  let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
   let!(:user) do
     create(
       :user,
@@ -69,15 +69,25 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     end
 
     context "when everything is fine" do
-      it "creates a new merge request" do
-        expect { receiver.execute }.to change { project.merge_requests.count }.by(1)
-        merge_request = project.merge_requests.last
+      shared_examples "a new merge request" do
+        it "creates a new merge request" do
+          expect { receiver.execute }.to change { project.merge_requests.count }.by(1)
+          merge_request = project.merge_requests.last
 
-        expect(merge_request.author).to eq(user)
-        expect(merge_request.source_branch).to eq('feature')
-        expect(merge_request.title).to eq('Feature added')
-        expect(merge_request.description).to eq('Merge request description')
-        expect(merge_request.target_branch).to eq(project.default_branch)
+          expect(merge_request.author).to eq(user)
+          expect(merge_request.source_branch).to eq('feature')
+          expect(merge_request.title).to eq('Feature added')
+          expect(merge_request.description).to eq('Merge request description')
+          expect(merge_request.target_branch).to eq(project.default_branch)
+        end
+      end
+
+      it_behaves_like "a new merge request"
+
+      context "creates a new merge request with legacy email address" do
+        let(:email_raw) { fixture_file('emails/valid_new_merge_request_legacy.eml') }
+
+        it_behaves_like "a new merge request"
       end
     end
 

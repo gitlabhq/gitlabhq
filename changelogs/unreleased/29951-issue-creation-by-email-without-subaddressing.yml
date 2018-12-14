@@ -1,0 +1,5 @@
+---
+title: No longer require email subaddressing for issue creation by email
+merge_request: 23523
+author:
+type: changed

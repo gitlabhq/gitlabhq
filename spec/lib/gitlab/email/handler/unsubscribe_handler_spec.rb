@@ -17,6 +17,28 @@ describe Gitlab::Email::Handler::UnsubscribeHandler do
 
   let!(:sent_notification) { SentNotification.record(noteable, user.id, mail_key) }
 
+  context "when email key" do
+    let(:mail) { Mail::Message.new(email_raw) }
+
+    it "matches the new format" do
+      handler = described_class.new(mail, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}")
+
+      expect(handler.can_handle?).to be_truthy
+    end
+
+    it "matches the legacy format" do
+      handler = described_class.new(mail, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY}")
+
+      expect(handler.can_handle?).to be_truthy
+    end
+
+    it "doesn't match either format" do
+      handler = described_class.new(mail, "+#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}")
+
+      expect(handler.can_handle?).to be_falsey
+    end
+  end
+
   context 'when notification concerns a commit' do
     let(:commit) { create(:commit, project: project) }
     let!(:sent_notification) { SentNotification.record(commit, user.id, mail_key) }
@@ -42,7 +64,7 @@ describe Gitlab::Email::Handler::UnsubscribeHandler do
     end
 
     context 'when using old style unsubscribe link' do
-      let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_OLD}") }
+      let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY}") }
 
       it 'unsubscribes user from notable' do
         expect { receiver.execute }.to change { noteable.subscribed?(user) }.from(true).to(false)

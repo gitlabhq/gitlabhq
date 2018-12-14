@@ -3,7 +3,7 @@
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
-# handles merge request creation emails with these forms:
+# handles merge request creation emails with these formats:
 #   incoming+gitlab-org-gitlab-ce-20-Author_Token12345678-merge-request@incoming.gitlab.com
 #   incoming+gitlab-org/gitlab-ce+merge-request+Author_Token12345678@incoming.gitlab.com (legacy)
 module Gitlab
