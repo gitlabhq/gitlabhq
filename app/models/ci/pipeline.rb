@@ -56,11 +56,7 @@ module Ci
     validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
-
-    # Replace validator below with
-    # `validates :source, presence: { unless: :importing? }, on: :create`
-    # when removing Gitlab.rails5? code.
-    validate :valid_source, unless: :importing?, on: :create
+    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
@@ -737,12 +733,6 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
-    end
-
-    def valid_source
-      if source.nil? || source == "unknown"
-        errors.add(:source, "invalid source")
-      end
     end
   end
 end

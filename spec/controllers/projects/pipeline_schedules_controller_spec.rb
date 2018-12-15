@@ -310,19 +310,11 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      if Gitlab.rails5?
-        put :update, params: { namespace_id: project.namespace.to_param,
-                               project_id: project,
-                               id: pipeline_schedule,
-                               schedule: schedule },
-                     as: :html
-
-      else
-        put :update, namespace_id: project.namespace.to_param,
-                     project_id: project,
-                     id: pipeline_schedule,
-                     schedule: schedule
-      end
+      put :update, params: { namespace_id: project.namespace.to_param,
+                             project_id: project,
+                             id: pipeline_schedule,
+                             schedule: schedule },
+                   as: :html
     end
   end
 

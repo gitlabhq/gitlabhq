@@ -357,11 +357,7 @@ describe Projects::MergeRequestsController do
     context 'when the sha parameter matches the source SHA' do
       def merge_with_sha(params = {})
         post_params = base_params.merge(sha: merge_request.diff_head_sha).merge(params)
-        if Gitlab.rails5?
-          post :merge, params: post_params, as: :json
-        else
-          post :merge, post_params
-        end
+        post :merge, params: post_params, as: :json
       end
 
       it 'returns :success' do

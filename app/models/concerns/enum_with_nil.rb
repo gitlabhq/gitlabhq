@@ -16,7 +16,7 @@ module EnumWithNil
         # E.g. for enum_with_nil failure_reason: { unknown_failure: nil }
         # this overrides auto-generated method `unknown_failure?`
         define_method("#{key_with_nil}?") do
-          Gitlab.rails5? ? self[name].nil? : super()
+          self[name].nil?
         end
 
         # E.g. for enum_with_nil failure_reason: { unknown_failure: nil }
@@ -24,7 +24,6 @@ module EnumWithNil
         define_method(name) do
           orig = super()
 
-          return orig unless Gitlab.rails5?
           return orig unless orig.nil?
 
           self.class.public_send(name.to_s.pluralize).key(nil) # rubocop:disable GitlabSecurity/PublicSend
