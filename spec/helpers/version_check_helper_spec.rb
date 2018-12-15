@@ -13,21 +13,21 @@ describe VersionCheckHelper do
       before do
         allow(Rails.env).to receive(:production?) { true }
         allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { true }
-        allow_any_instance_of(VersionCheck).to receive(:url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
-
-        @image_tag = helper.version_status_badge
+        allow(VersionCheck).to receive(:url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
       end
 
       it 'should return an image tag' do
-        expect(@image_tag).to match(/^<img/)
+        expect(helper.version_status_badge).to start_with('<img')
       end
 
       it 'should have a js prefixed css class' do
-        expect(@image_tag).to match(/class="js-version-status-badge lazy"/)
+        expect(helper.version_status_badge)
+          .to match(/class="js-version-status-badge lazy"/)
       end
 
       it 'should have a VersionCheck url as the src' do
-        expect(@image_tag).to match(%r{src="https://version\.host\.com/check\.svg\?gitlab_info=xxx"})
+        expect(helper.version_status_badge)
+          .to include(%{src="https://version.host.com/check.svg?gitlab_info=xxx"})
       end
     end
   end
