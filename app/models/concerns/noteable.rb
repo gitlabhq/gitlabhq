@@ -34,6 +34,10 @@ module Noteable
     false
   end
 
+  def preloads_discussion_diff_highlighting?
+    false
+  end
+
   def discussion_notes
     notes
   end
