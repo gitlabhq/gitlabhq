@@ -248,13 +248,13 @@ describe Projects::NotesController do
 
     context 'when merge_request_diff_head_sha present' do
       before do
-        service_params = {
+        service_params = ActionController::Parameters.new({
           note: 'some note',
           noteable_id: merge_request.id.to_s,
           noteable_type: 'MergeRequest',
           merge_request_diff_head_sha: 'sha',
           in_reply_to_discussion_id: nil
-        }
+        }).permit!
 
         expect(Notes::CreateService).to receive(:new).with(project, user, service_params).and_return(double(execute: true))
       end
