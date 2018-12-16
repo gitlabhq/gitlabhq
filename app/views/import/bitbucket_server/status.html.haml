@@ -29,7 +29,7 @@
       %tr
         %th= _('From Bitbucket Server')
         %th= _('To GitLab')
-        %th= _(' Status')
+        %th= _('Status')
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
