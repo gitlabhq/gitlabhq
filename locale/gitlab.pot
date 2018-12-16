@@ -16,9 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid " Status"
-msgstr ""
-
 msgid "%d addition"
 msgid_plural "%d additions"
 msgstr[0] ""
