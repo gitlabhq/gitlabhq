@@ -5647,6 +5647,9 @@ msgstr ""
 msgid "Response metrics (HA Proxy)"
 msgstr ""
 
+msgid "Response metrics (NGINX Ingress VTS)"
+msgstr ""
+
 msgid "Response metrics (NGINX Ingress)"
 msgstr ""
 
