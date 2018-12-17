@@ -92,26 +92,17 @@ function queryTimeSeries(query, graphDrawData, lineStyle) {
     if (seriesCustomizationData) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
-      shouldRenderLegend = false;
+      if (timeSeriesParsed.length > 0) {
+        shouldRenderLegend = false;
+      } else {
+        shouldRenderLegend = true;
+      }
     } else {
       metricTag = timeSeriesMetricLabel || query.label || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
       if (timeSeriesParsed.length > 1) {
         shouldRenderLegend = false;
       }
-    }
-
-    if (!shouldRenderLegend) {
-      if (!timeSeriesParsed[0].tracksLegend) {
-        timeSeriesParsed[0].tracksLegend = [];
-      }
-      timeSeriesParsed[0].tracksLegend.push({
-        max: maximumValue,
-        average: accum / timeSeries.values.length,
-        lineStyle,
-        lineColor,
-        metricTag,
-      });
     }
 
     const values = datesWithoutGaps.map(time => ({
@@ -135,6 +126,19 @@ function queryTimeSeries(query, graphDrawData, lineStyle) {
       shouldRenderLegend,
       renderCanary,
     });
+
+    if (!shouldRenderLegend) {
+      if (!timeSeriesParsed[0].tracksLegend) {
+        timeSeriesParsed[0].tracksLegend = [];
+      }
+      timeSeriesParsed[0].tracksLegend.push({
+        max: maximumValue,
+        average: accum / timeSeries.values.length,
+        lineStyle,
+        lineColor,
+        metricTag,
+      });
+    }
   });
 
   return timeSeriesParsed;
