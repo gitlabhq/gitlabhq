@@ -4,20 +4,23 @@ module Issuable
   class CommonSystemNotesService < ::BaseService
     attr_reader :issuable
 
-    def execute(issuable, old_labels)
+    def execute(issuable, old_labels: [], is_update: true)
       @issuable = issuable
 
-      if issuable.previous_changes.include?('title')
-        create_title_change_note(issuable.previous_changes['title'].first)
+      if is_update
+        if issuable.previous_changes.include?('title')
+          create_title_change_note(issuable.previous_changes['title'].first)
+        end
+
+        handle_description_change_note
+
+        handle_time_tracking_note if issuable.is_a?(TimeTrackable)
+        create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
       end
 
-      handle_description_change_note
-
-      handle_time_tracking_note if issuable.is_a?(TimeTrackable)
-      create_labels_note(old_labels) if issuable.labels != old_labels
-      create_discussion_lock_note if issuable.previous_changes.include?('discussion_locked')
-      create_milestone_note if issuable.previous_changes.include?('milestone_id')
       create_due_date_note if issuable.previous_changes.include?('due_date')
+      create_milestone_note if issuable.previous_changes.include?('milestone_id')
+      create_labels_note(old_labels) if issuable.labels != old_labels
     end
 
     private
