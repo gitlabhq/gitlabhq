@@ -1678,9 +1678,9 @@ NOTE: **Note:**
 `include` requires the external YAML files to have the extensions `.yml` or `.yaml`.
 The external file will not be included if the extension is missing.
 
-You can define it either as a single string, or, in case you want to include
-more than one files, an array of different values . The following examples
-are both valid cases:
+You can include your extra YAML file either as a single string or
+as an array of multiple values. You can also use full paths or
+relative URLs. The following examples are both valid:
 
 ```yaml
 # Single string
