@@ -171,7 +171,6 @@ module ApplicationHelper
 
   def page_filter_path(options = {})
     without = options.delete(:without)
-    add_label = options.delete(:label)
 
     options = request.query_parameters.merge(options)
 
@@ -181,11 +180,7 @@ module ApplicationHelper
       end
     end
 
-    params = options.compact
-
-    params.delete(:label_name) unless add_label
-
-    "#{request.path}?#{params.to_param}"
+    "#{request.path}?#{options.compact.to_param}"
   end
 
   def outdated_browser?
