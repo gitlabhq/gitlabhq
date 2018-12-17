@@ -55,5 +55,15 @@ describe Gitlab::GroupSearchResults do
 
       expect(result).to eq []
     end
+
+    it 'does not return the user belonging to an unrelated group' do
+      user = create(:user, username: 'gob_bluth')
+      unrelated_group = create(:group)
+      create(:group_member, :developer, user: user, group: unrelated_group)
+
+      result = described_class.new(user, anything, group, 'gob').objects('users')
+
+      expect(result).to eq []
+    end
   end
 end
