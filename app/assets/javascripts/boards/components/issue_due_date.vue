@@ -15,6 +15,16 @@ export default {
       type: String,
       required: true,
     },
+    cssClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tooltipPlacement: {
+      type: String,
+      required: false,
+      default: 'bottom',
+    },
   },
   computed: {
     title() {
@@ -66,15 +76,13 @@ export default {
 
 <template>
   <span>
-    <span ref="issueDueDate" class="board-card-info card-number">
-      <icon
-        :class="{ 'text-danger': isPastDue, 'board-card-info-icon': true }"
-        name="calendar"
-      /><time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
+    <span ref="issueDueDate" :class="cssClass" class="board-card-info card-number">
+      <icon :class="{ 'text-danger': isPastDue, 'board-card-info-icon': true }" name="calendar" />
+      <time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
         body
       }}</time>
     </span>
-    <gl-tooltip :target="() => $refs.issueDueDate" placement="bottom">
+    <gl-tooltip :target="() => $refs.issueDueDate" :placement="tooltipPlacement">
       <span class="bold">{{ __('Due date') }}</span> <br />
       <span :class="{ 'text-danger-muted': isPastDue }">{{ title }}</span>
     </gl-tooltip>

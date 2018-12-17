@@ -11,6 +11,7 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars, except: :commits_root
   before_action :authorize_download_code!
+  before_action :validate_ref!, except: :commits_root
   before_action :set_commits, except: :commits_root
 
   def commits_root
@@ -53,6 +54,10 @@ class Projects::CommitsController < Projects::ApplicationController
   end
 
   private
+
+  def validate_ref!
+    render_404 unless valid_ref?(@ref)
+  end
 
   def set_commits
     render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?

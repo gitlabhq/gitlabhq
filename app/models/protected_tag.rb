@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProtectedTag < ActiveRecord::Base
-  include Gitlab::ShellAdapter
   include ProtectedRef
 
   validates :name, uniqueness: { scope: :project_id }

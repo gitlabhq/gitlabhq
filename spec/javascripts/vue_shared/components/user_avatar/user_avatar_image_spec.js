@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { placeholderImage } from '~/lazy_loader';
 import userAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
+import defaultAvatarUrl from '~/../images/no_avatar.png';
 
 const DEFAULT_PROPS = {
   size: 99,
@@ -73,6 +74,18 @@ describe('User Avatar Image Component', function() {
       expect(lazyClass).toBe(true);
       expect(imageElement.getAttribute('src')).toBe(placeholderImage);
       expect(imageElement.getAttribute('data-src')).toBe(`${DEFAULT_PROPS.imgSrc}?width=99`);
+    });
+  });
+
+  describe('Initialization without src', function() {
+    beforeEach(function() {
+      vm = mountComponent(UserAvatarImage);
+    });
+
+    it('should have default avatar image', function() {
+      const imageElement = vm.$el.querySelector('img');
+
+      expect(imageElement.getAttribute('src')).toBe(defaultAvatarUrl);
     });
   });
 

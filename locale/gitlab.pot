@@ -97,6 +97,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{bio} at %{organization}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -400,9 +403,6 @@ msgid "Admin Area"
 msgstr ""
 
 msgid "Admin Overview"
-msgstr ""
-
-msgid "Admin area"
 msgstr ""
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
@@ -850,6 +850,9 @@ msgid "Available shared Runners:"
 msgstr ""
 
 msgid "Available specific runners"
+msgstr ""
+
+msgid "Avatar for %{assigneeName}"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -2921,6 +2924,9 @@ msgid "Expand sidebar"
 msgstr ""
 
 msgid "Expiration date"
+msgstr ""
+
+msgid "Expired %{expiredOn}"
 msgstr ""
 
 msgid "Expires in %{expires_at}"
@@ -6285,6 +6291,12 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Started"
+msgstr ""
+
+msgid "Started %{startsIn}"
+msgstr ""
+
+msgid "Starts %{startsIn}"
 msgstr ""
 
 msgid "Starts at (UTC)"

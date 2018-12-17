@@ -1,18 +1,22 @@
 require 'spec_helper'
 
-IDENTIFIER = %r{\h+/\S+}
-
 describe PersonalFileUploader do
   let(:model) { create(:personal_snippet) }
   let(:uploader) { described_class.new(model) }
   let(:upload) { create(:upload, :personal_snippet_upload) }
+  let(:identifier) { %r{\h+/\S+} }
 
   subject { uploader }
 
-  it_behaves_like 'builds correct paths',
-                  store_dir: %r[uploads/-/system/personal_snippet/\d+],
-                  upload_path: IDENTIFIER,
-                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{IDENTIFIER}]
+  it_behaves_like 'builds correct paths' do
+    let(:patterns) do
+      {
+        store_dir: %r[uploads/-/system/personal_snippet/\d+],
+        upload_path: identifier,
+        absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{identifier}]
+      }
+    end
+  end
 
   context "object_store is REMOTE" do
     before do
@@ -21,9 +25,14 @@ describe PersonalFileUploader do
 
     include_context 'with storage', described_class::Store::REMOTE
 
-    it_behaves_like 'builds correct paths',
-                    store_dir: %r[\d+/\h+],
-                    upload_path: IDENTIFIER
+    it_behaves_like 'builds correct paths' do
+      let(:patterns) do
+        {
+          store_dir: %r[\d+/\h+],
+          upload_path: identifier
+        }
+      end
+    end
   end
 
   describe '#to_h' do

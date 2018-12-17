@@ -83,6 +83,7 @@ describe('noteable_discussion component', () => {
       it('expands next unresolved discussion', done => {
         const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
         discussion2.resolved = false;
+        discussion2.active = true;
         discussion2.id = 'next'; // prepare this for being identified as next one (to be jumped to)
         vm.$store.dispatch('setInitialNotes', [discussionMock, discussion2]);
         window.mrTabs.currentAction = 'show';
