@@ -8,11 +8,7 @@ end
 shared_examples 'content not cached without revalidation and no-store' do
   it 'ensures content will not be cached without revalidation' do
     # Fixed in newer versions of ActivePack, it will only output a single `private`.
-    if Gitlab.rails5?
-      expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate, no-store')
-    else
-      expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate, private, no-store')
-    end
+    expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate, no-store')
   end
 end
 
