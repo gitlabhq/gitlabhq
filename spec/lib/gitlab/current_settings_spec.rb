@@ -113,6 +113,8 @@ describe Gitlab::CurrentSettings do
           end
 
           shared_examples 'a non-persisted ApplicationSetting object' do
+            let(:current_settings) { described_class.current_application_settings }
+
             it 'returns a non-persisted ApplicationSetting object' do
               expect(current_settings).to be_a(ApplicationSetting)
               expect(current_settings).not_to be_persisted
@@ -132,9 +134,7 @@ describe Gitlab::CurrentSettings do
           end
 
           context 'with no ApplicationSetting DB record' do
-            it_behaves_like 'a non-persisted ApplicationSetting object' do
-              let(:current_settings) { described_class.current_application_settings }
-            end
+            it_behaves_like 'a non-persisted ApplicationSetting object'
           end
 
           context 'with an existing ApplicationSetting DB record' do
