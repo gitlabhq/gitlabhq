@@ -17,13 +17,13 @@ module Clusters
 
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         log_service_error(e.class.name, provider.id, e.message)
-        provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
+        provider.make_errored!(s_('ClusterIntegration|Failed to request to Google Cloud Platform: %{message}') % { message: e.message })
       rescue Kubeclient::HttpError => e
         log_service_error(e.class.name, provider.id, e.message)
-        provider.make_errored!("Failed to run Kubeclient: #{e.message}")
+        provider.make_errored!(s_('ClusterIntegration|Failed to run Kubeclient: %{message}') % { message: e.message })
       rescue ActiveRecord::RecordInvalid => e
         log_service_error(e.class.name, provider.id, e.message)
-        provider.make_errored!("Failed to configure Google Kubernetes Engine Cluster: #{e.message}")
+        provider.make_errored!(s_('ClusterIntegration|Failed to configure Google Kubernetes Engine Cluster: %{message}') % { message: e.message })
       end
 
       private
