@@ -90,7 +90,7 @@ describe IssuableCollections do
 
       finder_options = controller.send(:finder_options)
 
-      expect(finder_options).to eq({
+      expect(finder_options).to eq(ActionController::Parameters.new({
         'assignee_id' => '1',
         'assignee_username' => 'user1',
         'author_id' => '2',
@@ -103,7 +103,7 @@ describe IssuableCollections do
         'search' => 'baz',
         'sort' => 'priority',
         'state' => 'opened'
-      })
+      }).permit!)
     end
   end
 end
