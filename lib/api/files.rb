@@ -2,13 +2,9 @@
 
 module API
   class Files < Grape::API
-<<<<<<< HEAD
-    FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
-=======
     include APIGuard
 
-    FILE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
->>>>>>> 1c9b10016a3... Merge branch '54826-use-read_repository-scope-on-read-only-files-endpoints' into 'master'
+    FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
 
     # Prevents returning plain/text responses for files with .txt extension
     after_validation { content_type "application/json" }
