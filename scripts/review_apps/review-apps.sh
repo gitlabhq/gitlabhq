@@ -292,7 +292,7 @@ function get_job_id() {
     local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
     [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
 
-    ((page++))
+    let "page++"
   done
 
   if [[ "${job_id}" == "" ]]; then
@@ -334,7 +334,7 @@ function wait_for_job_to_be_done() {
     [[ "${job_status}" == "pending" || "${job_status}" == "running" ]] || break
 
     printf "."
-    ((elapsed_seconds+=$interval))
+    let "elapsed_seconds+=interval"
     sleep ${interval}
   done
 
