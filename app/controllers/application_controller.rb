@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_back_or_default(default: root_path, options: {})
-    redirect_to request.referer.present? ? :back : default, options
+    redirect_back(fallback_location: default, **options)
   end
 
   def not_found
