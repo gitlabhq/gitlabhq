@@ -45,9 +45,45 @@ describe Projects::Serverless::FunctionsController do
     end
   end
 
+  describe 'GET #show' do
+    context 'invalid data' do
+      it 'has a bad function name' do
+        get :show, params: params({ format: :json, environment_id: "*", id: "foo" })
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'valid data', :use_clean_rails_memory_store_caching do
+      before do
+        stub_kubeclient_service_pods
+        stub_reactive_cache(knative,
+          {
+            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+          })
+      end
+
+      it 'has a valid function name' do
+        get :show, params: params({ format: :json, environment_id: "*", id: cluster.project.name })
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response).to include(
+          "name" => project.name,
+          "url" => "http://#{project.name}.#{namespace.namespace}.example.com",
+          "podcount" => 1
+        )
+      end
+    end
+  end
+
   describe 'GET #index with data', :use_clean_rails_memory_store_caching do
     before do
-      stub_reactive_cache(knative, services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"])
+      stub_kubeclient_service_pods
+      stub_reactive_cache(knative,
+        {
+          services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+          pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+        })
     end
 
     it 'has data' do

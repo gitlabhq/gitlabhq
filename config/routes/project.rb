@@ -247,6 +247,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :serverless do
+        get '/functions/:environment_id/:id', to: 'functions#show'
         resources :functions, only: [:index]
       end
 
