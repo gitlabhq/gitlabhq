@@ -35,13 +35,7 @@ module Gitlab
       end
 
       def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
-        arel_from = if Gitlab.rails5?
-                      arel_table.from
-                    else
-                      arel_table
-                    end
-
-        query = arel_from
+        query = arel_table.from
                 .from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name))
                 .project(average([arel_table[column_sym]], 'median'))
                 .where(
@@ -151,13 +145,8 @@ module Gitlab
                 .order(arel_table[column_sym])
             ).as('row_id')
 
-          arel_from = if Gitlab.rails5?
-                        arel_table.from.from(arel_table.alias)
-                      else
-                        arel_table.from(arel_table.alias)
-                      end
-
-          count = arel_from.project('COUNT(*)')
+          count = arel_table.from.from(arel_table.alias)
+                    .project('COUNT(*)')
                     .where(arel_table[partition_column].eq(arel_table.alias[partition_column]))
                     .as('ct')
 

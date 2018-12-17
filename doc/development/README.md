@@ -52,7 +52,6 @@ description: 'Learn how to contribute to GitLab.'
 - [Prometheus metrics](prometheus_metrics.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
 - [DeclarativePolicy framework](policies.md)
-- [Switching to Rails 5](switching_to_rails5.md)
 
 ## Performance guides
 

@@ -41,6 +41,7 @@ Once you have a connected Kubernetes cluster with Helm installed, deploying a ma
 Prometheus is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/prometheus). Prometheus is only accessible within the cluster, with GitLab communicating through the [Kubernetes API](https://kubernetes.io/docs/concepts/overview/kubernetes-api/).
 
 The Prometheus server will [automatically detect and monitor](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#%3Ckubernetes_sd_config%3E) nodes, pods, and endpoints. To configure a resource to be monitored by Prometheus, simply set the following [Kubernetes annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/):
+
 * `prometheus.io/scrape` to `true` to enable monitoring of the resource.
 * `prometheus.io/port` to define the port of the metrics endpoint.
 * `prometheus.io/path` to define the path of the metrics endpoint. Defaults to `/metrics`.

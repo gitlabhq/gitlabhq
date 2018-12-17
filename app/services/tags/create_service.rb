@@ -20,7 +20,7 @@ module Tags
       end
 
       if new_tag
-        if release_description
+        if release_description.present?
           CreateReleaseService.new(@project, @current_user)
             .execute(tag_name, release_description)
         end

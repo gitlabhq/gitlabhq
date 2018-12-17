@@ -6,8 +6,7 @@ module VersionCheckHelper
     return unless Gitlab::CurrentSettings.version_check_enabled
     return if User.single_user&.requires_usage_stats_consent?
 
-    image_url = VersionCheck.new.url
-    image_tag image_url, class: 'js-version-status-badge'
+    image_tag VersionCheck.url, class: 'js-version-status-badge'
   end
 
   def link_to_version

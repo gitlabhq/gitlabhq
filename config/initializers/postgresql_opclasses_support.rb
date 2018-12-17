@@ -41,10 +41,7 @@ module ActiveRecord
     # Abstract representation of an index definition on a table. Instances of
     # this type are typically created and returned by methods in database
     # adapters. e.g. ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#indexes
-    attrs = [:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses]
-
-    # In Rails 5 the second last attribute is newly `:comment`
-    attrs.insert(-2, :comment) if Gitlab.rails5?
+    attrs = [:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :comment, :opclasses]
 
     class IndexDefinition < Struct.new(*attrs) #:nodoc:
     end
@@ -112,15 +109,8 @@ module ActiveRecord
 
           result.map do |row|
             index_name = row[0]
-            unique = if Gitlab.rails5?
-                       row[1]
-                     else
-                       row[1] == 't'
-                     end
-            indkey = row[2].split(" ")
-            if Gitlab.rails5?
-              indkey = indkey.map(&:to_i)
-            end
+            unique = row[1]
+            indkey = row[2].split(" ").map(&:to_i)
             inddef = row[3]
             oid = row[4]
 
@@ -144,8 +134,7 @@ module ActiveRecord
                                  [column, opclass] if opclass
                                end.compact]
 
-              index_attrs = [table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses]
-              index_attrs.insert(-2, nil) if Gitlab.rails5? # include index comment for Rails 5
+              index_attrs = [table_name, index_name, unique, column_names, [], orders, where, nil, using, nil, opclasses]
 
               IndexDefinition.new(*index_attrs)
             end
@@ -205,7 +194,7 @@ module ActiveRecord
         index_parts << "using: #{index.using.inspect}" if index.using
         index_parts << "type: #{index.type.inspect}" if index.type
         index_parts << "opclasses: #{index.opclasses.inspect}" if index.opclasses.present?
-        index_parts << "comment: #{index.comment.inspect}" if Gitlab.rails5? && index.comment
+        index_parts << "comment: #{index.comment.inspect}" if index.comment
         index_parts
       end
 

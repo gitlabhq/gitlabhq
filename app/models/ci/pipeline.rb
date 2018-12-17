@@ -56,11 +56,7 @@ module Ci
     validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
-
-    # Replace validator below with
-    # `validates :source, presence: { unless: :importing? }, on: :create`
-    # when removing Gitlab.rails5? code.
-    validate :valid_source, unless: :importing?, on: :create
+    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
@@ -68,11 +64,7 @@ module Ci
     # this `Hash` with new values.
     enum_with_nil source: ::Ci::PipelineEnums.sources
 
-    enum_with_nil config_source: {
-      unknown_source: nil,
-      repository_source: 1,
-      auto_devops_source: 2
-    }
+    enum_with_nil config_source: ::Ci::PipelineEnums.config_sources
 
     # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
@@ -741,12 +733,6 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
-    end
-
-    def valid_source
-      if source.nil? || source == "unknown"
-        errors.add(:source, "invalid source")
-      end
     end
   end
 end

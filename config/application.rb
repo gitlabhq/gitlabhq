@@ -5,12 +5,6 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 module Gitlab
-  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
-  def self.rails5?
-    !%w[0 false].include?(ENV["RAILS5"])
-  end
-
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -25,9 +19,6 @@ module Gitlab
     # to make sure that all connections have NO_ZERO_DATE
     # setting disabled
     require_dependency Rails.root.join('lib/mysql_zero_date')
-
-    # This can be removed when we drop support for rails 4
-    require_dependency Rails.root.join('lib/rails4_migration_version')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -86,7 +77,7 @@ module Gitlab
     # namespaces/users.
     # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
     # Please change this value when configuring ActionCable for real usage.
-    config.action_cable.mount_path = "/-/cable" if rails5?
+    config.action_cable.mount_path = "/-/cable"
 
     # Configure sensitive parameters which will be filtered from the log file.
     #
@@ -212,8 +203,6 @@ module Gitlab
     end
 
     config.cache_store = :redis_store, caching_config_hash
-
-    config.active_record.raise_in_transactional_callbacks = true unless rails5?
 
     config.active_job.queue_adapter = :sidekiq
 

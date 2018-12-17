@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20170711145320 do
@@ -6,8 +8,18 @@ describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20
   let(:stages) { table(:ci_stages) }
   let(:jobs) { table(:ci_builds) }
 
-  STATUSES = { created: 0, pending: 1, running: 2, success: 3,
-               failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
+  let(:statuses) do
+    {
+      created: 0,
+      pending: 1,
+      running: 2,
+      success: 3,
+      failed: 4,
+      canceled: 5,
+      skipped: 6,
+      manual: 7
+    }
+  end
 
   before do
     projects.create!(id: 1, name: 'gitlab1', path: 'gitlab1')
@@ -26,8 +38,8 @@ describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20
     it 'sets a correct stage status' do
       described_class.new.perform(1, 2)
 
-      expect(stages.first.status).to eq STATUSES[:running]
-      expect(stages.second.status).to eq STATUSES[:failed]
+      expect(stages.first.status).to eq statuses[:running]
+      expect(stages.second.status).to eq statuses[:failed]
     end
   end
 
@@ -35,8 +47,8 @@ describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20
     it 'sets a skipped stage status' do
       described_class.new.perform(1, 2)
 
-      expect(stages.first.status).to eq STATUSES[:skipped]
-      expect(stages.second.status).to eq STATUSES[:skipped]
+      expect(stages.first.status).to eq statuses[:skipped]
+      expect(stages.second.status).to eq statuses[:skipped]
     end
   end
 
@@ -50,8 +62,8 @@ describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20
     it 'sets a correct stage status' do
       described_class.new.perform(1, 2)
 
-      expect(stages.first.status).to eq STATUSES[:canceled]
-      expect(stages.second.status).to eq STATUSES[:success]
+      expect(stages.first.status).to eq statuses[:canceled]
+      expect(stages.second.status).to eq statuses[:success]
     end
   end
 
@@ -65,8 +77,8 @@ describe Gitlab::BackgroundMigration::MigrateStageStatus, :migration, schema: 20
     it 'sets a correct stage status' do
       described_class.new.perform(1, 2)
 
-      expect(stages.first.status).to eq STATUSES[:manual]
-      expect(stages.second.status).to eq STATUSES[:success]
+      expect(stages.first.status).to eq statuses[:manual]
+      expect(stages.second.status).to eq statuses[:success]
     end
   end
 

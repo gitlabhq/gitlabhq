@@ -4,7 +4,7 @@ GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG.freeze
 Usually, when %<gemfile>s is updated, you should run
 ```
 bundle install && \
-  BUNDLE_GEMFILE=Gemfile.rails5 bundle install
+  bundle install
 ```
 
 or

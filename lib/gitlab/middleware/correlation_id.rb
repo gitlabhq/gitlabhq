@@ -20,11 +20,7 @@ module Gitlab
       private
 
       def correlation_id(env)
-        if Gitlab.rails5?
-          request(env).request_id
-        else
-          request(env).uuid
-        end
+        request(env).request_id
       end
 
       def request(env)
