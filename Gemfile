@@ -89,8 +89,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
-# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332 and
+# https://github.com/carrierwaveuploader/carrierwave/pull/2356 are merged.
+# config/initializers/carrierwave_patch.rb can be removed once both changes are released.
 gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 

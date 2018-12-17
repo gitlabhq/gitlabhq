@@ -23,6 +23,19 @@ module CarrierWave
             end
           end
         end
+
+        # Fix for https://github.com/carrierwaveuploader/carrierwave/pull/2356
+        def acl_header
+          if fog_provider == 'AWS'
+            { 'x-amz-acl' => @uploader.fog_public ? 'public-read' : 'private' }
+          else
+            {}
+          end
+        end
+
+        def fog_provider
+          @uploader.fog_credentials[:provider].to_s
+        end
       end
     end
   end
