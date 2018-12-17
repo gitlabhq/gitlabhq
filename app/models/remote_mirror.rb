@@ -65,10 +65,14 @@ class RemoteMirror < ActiveRecord::Base
       )
     end
 
-    after_transition started: :failed do |remote_mirror, _|
+    after_transition started: :failed do |remote_mirror|
       Gitlab::Metrics.add_event(:remote_mirrors_failed)
 
       remote_mirror.update(last_update_at: Time.now)
+
+      remote_mirror.run_after_commit do
+        RemoteMirrorNotificationWorker.perform_async(remote_mirror.id)
+      end
     end
   end
 
@@ -135,8 +139,8 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def mark_as_failed(error_message)
-    update_fail
     update_column(:last_error, Gitlab::UrlSanitizer.sanitize(error_message))
+    update_fail
   end
 
   def url=(value)

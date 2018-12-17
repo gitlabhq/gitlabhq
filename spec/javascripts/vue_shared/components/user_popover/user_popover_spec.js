@@ -101,6 +101,19 @@ describe('User Popover Component', () => {
 
       expect(vm.$el.textContent).toContain('Engineer at GitLab');
     });
+
+    it('should not encode special characters when we have bio and organization', () => {
+      const testProps = Object.assign({}, DEFAULT_PROPS);
+      testProps.user.bio = 'Manager & Team Lead';
+      testProps.user.organization = 'GitLab';
+
+      vm = mountComponent(UserPopover, {
+        ...DEFAULT_PROPS,
+        target: document.querySelector('.js-user-link'),
+      });
+
+      expect(vm.$el.textContent).toContain('Manager & Team Lead at GitLab');
+    });
   });
 
   describe('status data', () => {

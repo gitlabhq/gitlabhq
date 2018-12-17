@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe "User creates issue" do
@@ -64,10 +66,10 @@ describe "User creates issue" do
     end
 
     context "with labels" do
-      LABEL_TITLES = %w(bug feature enhancement).freeze
+      let(:label_titles) { %w(bug feature enhancement) }
 
       before do
-        LABEL_TITLES.each do |title|
+        label_titles.each do |title|
           create(:label, project: project, title: title)
         end
       end
@@ -77,13 +79,13 @@ describe "User creates issue" do
 
         fill_in("Title", with: issue_title)
         click_button("Label")
-        click_link(LABEL_TITLES.first)
+        click_link(label_titles.first)
         click_button("Submit issue")
 
         expect(page).to have_content(issue_title)
           .and have_content(user.name)
           .and have_content(project.name)
-          .and have_content(LABEL_TITLES.first)
+          .and have_content(label_titles.first)
       end
     end
   end

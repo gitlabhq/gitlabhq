@@ -17,6 +17,7 @@ describe('DiffContent', () => {
       current_user: {
         can_create_note: false,
       },
+      preview_note_path: 'path/to/preview',
     };
 
     vm = mountComponentWithStore(Component, {
@@ -43,6 +44,45 @@ describe('DiffContent', () => {
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelectorAll('.parallel').length).toEqual(18);
+
+        done();
+      });
+    });
+  });
+
+  describe('empty files', () => {
+    beforeEach(() => {
+      vm.diffFile.empty = true;
+      vm.diffFile.highlighted_diff_lines = [];
+      vm.diffFile.parallel_diff_lines = [];
+    });
+
+    it('should render a message', done => {
+      vm.$nextTick(() => {
+        const block = vm.$el.querySelector('.diff-viewer .nothing-here-block');
+
+        expect(block).not.toBe(null);
+        expect(block.textContent.trim()).toContain('Empty file');
+
+        done();
+      });
+    });
+
+    it('should not render multiple messages', done => {
+      vm.diffFile.mode_changed = true;
+      vm.diffFile.b_mode = '100755';
+      vm.diffFile.viewer.name = 'mode_changed';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelectorAll('.nothing-here-block').length).toBe(1);
+
+        done();
+      });
+    });
+
+    it('should not render diff table', done => {
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('table')).toBe(null);
 
         done();
       });

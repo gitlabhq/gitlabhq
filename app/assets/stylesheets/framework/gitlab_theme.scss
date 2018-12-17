@@ -22,6 +22,10 @@
     .container-fluid {
       .navbar-toggler {
         border-left: 1px solid lighten($border-and-box-shadow, 10%);
+
+        svg {
+          fill: $search-and-nav-links;
+        }
       }
     }
 
@@ -309,12 +313,14 @@ body {
       .navbar-nav {
         > li {
           > a:hover,
-          > a:focus {
+          > a:focus,
+          > button:hover {
             color: $theme-gray-900;
           }
 
           &.active > a,
-          &.active > a:hover {
+          &.active > a:hover,
+          &.active > button {
             color: $white-light;
           }
         }

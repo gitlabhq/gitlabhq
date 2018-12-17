@@ -73,6 +73,10 @@ module Gitlab
         !meta?
       end
 
+      def suggestible?
+        !removed?
+      end
+
       def rich_text
         @parent_file.try(:highlight_lines!) if @parent_file && !@rich_text
 

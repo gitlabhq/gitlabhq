@@ -37,6 +37,7 @@ notes:
 - events
 - system_note_metadata
 - note_diff_file
+- suggestions
 label_links:
 - target
 - label
@@ -63,6 +64,7 @@ snippets:
 - award_emoji
 - user_agent_detail
 releases:
+- author
 - project
 project_members:
 - created_by

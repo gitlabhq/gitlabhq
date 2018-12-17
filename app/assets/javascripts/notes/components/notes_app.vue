@@ -49,6 +49,11 @@ export default {
       required: false,
       default: 0,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -102,7 +107,7 @@ export default {
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
-        this.actionToggleAward({ awardName, noteId });
+        this.toggleAward({ awardName, noteId });
       });
     }
   },
@@ -206,6 +211,7 @@ export default {
           :key="discussion.id"
           :discussion="discussion"
           :render-diff-file="true"
+          :help-page-path="helpPagePath"
         />
       </template>
     </ul>

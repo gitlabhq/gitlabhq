@@ -1,6 +1,6 @@
 # Web IDE
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) [GitLab Ultimate][ee] 10.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) in [GitLab Ultimate][ee] 10.4.
 > [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/issues/44157) in 10.7.
 
 The Web IDE makes it faster and easier to contribute changes to your projects
@@ -15,7 +15,7 @@ and from merge requests.
 
 ## File finder
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18323) [GitLab Core][ce] 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18323) in [GitLab Core][ce] 10.8.
 
 The file finder allows you to quickly open files in the current branch by
 searching. The file finder is launched using the keyboard shortcut `Command-p`,
@@ -65,7 +65,7 @@ shows you a preview of the merge request diff if you commit your changes.
 
 ## View CI job logs
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19279) [GitLab Core][ce] 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19279) in [GitLab Core][ce] 11.0.
 
 The Web IDE can be used to quickly fix failing tests by opening the branch or
 merge request in the Web IDE and opening the logs of the failed job. The status
@@ -77,7 +77,7 @@ left.
 
 ## Switching merge requests
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) [GitLab Core][ce] 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) in [GitLab Core][ce] 11.0.
 
 Switching between your authored and assigned merge requests can be done without
 leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
@@ -86,7 +86,7 @@ switching to a different merge request.
 
 ## Switching branches
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) [GitLab Core][ce] 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) in [GitLab Core][ce] 11.2.
 
 Switching between branches of the current project repository can be done without
 leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
@@ -95,7 +95,7 @@ switching to a different branch.
 
 ## Client Side Evaluation
 
-> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19764) [GitLab Core][ce] 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19764) in [GitLab Core][ce] 11.2.
 
 The Web IDE can be used to preview JavaScript projects right in the browser.
 This feature uses CodeSandbox to compile and bundle the JavaScript used to

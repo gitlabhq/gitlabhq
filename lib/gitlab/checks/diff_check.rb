@@ -11,6 +11,7 @@ module Gitlab
       }.freeze
 
       def validate!
+        return if deletion? || newrev.nil?
         return unless should_run_diff_validations?
         return if commits.empty?
         return unless uses_raw_delta_validations?
@@ -28,7 +29,7 @@ module Gitlab
       private
 
       def should_run_diff_validations?
-        newrev && oldrev && !deletion? && validate_lfs_file_locks?
+        validate_lfs_file_locks?
       end
 
       def validate_lfs_file_locks?

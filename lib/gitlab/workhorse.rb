@@ -31,7 +31,6 @@ module Gitlab
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,
-          RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
           GitConfigOptions: [],
           GitalyServer: {
             address: Gitlab::GitalyClient.address(project.repository_storage),

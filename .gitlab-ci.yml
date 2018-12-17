@@ -77,18 +77,6 @@ stages:
     - mysql:5.7
     - redis:alpine
 
-.rails4: &rails4
-  allow_failure: false
-  except:
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /(^docs[\/-].*|.*-docs$)/
-      - $CI_COMMIT_REF_NAME =~ /(^qa[\/-].*|.*-qa$)/
-      - $CI_COMMIT_REF_NAME =~ /norails4/
-      - $RAILS5_DISABLED
-  variables:
-    BUNDLE_GEMFILE: "Gemfile.rails4"
-    RAILS5: "false"
-
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
 # https://docs.gitlab.com/ce/development/documentation/#testing
@@ -180,17 +168,9 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
 
-.rspec-metadata-pg-rails4: &rspec-metadata-pg-rails4
-  <<: *rspec-metadata-pg
-  <<: *rails4
-
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-
-.rspec-metadata-mysql-rails4: &rspec-metadata-mysql-rails4
-  <<: *rspec-metadata-mysql
-  <<: *rails4
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -432,7 +412,6 @@ setup-test-env:
   script:
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
-    - BUNDLE_GEMFILE=Gemfile.rails4 bundle install $BUNDLE_INSTALL_FLAGS
   artifacts:
     expire_in: 7d
     paths:
@@ -513,14 +492,6 @@ rspec-mysql:
   <<: *rspec-metadata-mysql
   parallel: 50
 
-rspec-pg-rails4:
-  <<: *rspec-metadata-pg-rails4
-  parallel: 50
-
-rspec-mysql-rails4:
-  <<: *rspec-metadata-mysql-rails4
-  parallel: 50
-
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies:
@@ -554,8 +525,7 @@ docs lint:
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
-    # Disabled until https://gitlab.com/gitlab-com/gitlab-docs/issues/305 is resolved
-    # - bundle exec nanoc check internal_links
+    - bundle exec nanoc check internal_links
 
 downtime_check:
   <<: *rake-exec
@@ -565,12 +535,6 @@ downtime_check:
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
-
-rails4_gemfile_lock_check:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  <<: *except-docs-and-qa
-  script:
-    - scripts/rails4-gemfile-lock-check
 
 ee_compat_check:
   <<: *rake-exec
@@ -637,7 +601,7 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.2-graphicsmagick-1.3.29-docker-18.06.1
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
   services:
     - docker:stable-dind

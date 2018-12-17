@@ -969,34 +969,73 @@ pre.light-well {
     @include basic-list-stats;
     display: flex;
     align-items: center;
+    color: $gl-text-color-secondary;
+    padding: $gl-padding 0;
+
+    @include media-breakpoint-up(lg) {
+      padding: $gl-padding-24 0;
+    }
+
+    &.no-description {
+      @include media-breakpoint-up(sm) {
+        .avatar-container {
+          align-self: center;
+        }
+
+        .metadata-info {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 
-  h3 {
-    font-size: $gl-font-size;
-  }
+  h2 {
+    font-size: $gl-font-size-medium;
+    font-weight: $gl-font-weight-bold;
+    margin-bottom: 0;
 
-  .avatar-container,
-  .controls {
-    flex: 0 0 auto;
+    @include media-breakpoint-up(sm) {
+      .namespace-name {
+        font-weight: $gl-font-weight-normal;
+      }
+    }
   }
 
   .avatar-container {
+    flex: 0 0 auto;
     align-self: flex-start;
   }
 
   .project-details {
     min-width: 0;
+    line-height: $gl-line-height;
+
+    .flex-wrapper {
+      min-width: 0;
+      margin-top: -$gl-padding-8; // negative margin required for flex-wrap
+    }
 
     p,
     .commit-row-message {
       @include str-truncated(100%);
       margin-bottom: 0;
     }
-  }
 
-  .controls {
-    margin-left: auto;
-    text-align: right;
+    .user-access-role {
+      margin: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+      .description {
+        color: $gl-text-color;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      .user-access-role {
+        line-height: $gl-line-height-14;
+      }
+    }
   }
 
   .ci-status-link {
@@ -1006,6 +1045,149 @@ pre.light-well {
 
     &:hover {
       text-decoration: none;
+    }
+  }
+
+  .controls {
+    margin-top: $gl-padding;
+
+    @include media-breakpoint-down(md) {
+      margin-top: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      margin-top: $gl-padding-8;
+    }
+
+    .icon-wrapper {
+      color: inherit;
+      margin-right: $gl-padding;
+
+      @include media-breakpoint-down(md) {
+        margin-right: 0;
+        margin-left: $gl-padding-8;
+      }
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .ci-status-link {
+      display: inline-flex;
+    }
+  }
+
+  .star-button {
+    .icon {
+      top: 0;
+    }
+  }
+
+  .icon-container {
+    @include media-breakpoint-down(xs) {
+      margin-right: $gl-padding-8;
+    }
+  }
+
+  &.compact {
+    .project-row {
+      padding: $gl-padding 0;
+    }
+
+    h2 {
+      font-size: $gl-font-size;
+    }
+
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s64 {
+        font-size: 16px;
+      }
+    }
+
+    .controls {
+      @include media-breakpoint-up(sm) {
+        margin-top: 0;
+      }
+    }
+
+    .updated-note {
+      @include media-breakpoint-up(sm) {
+        margin-top: $gl-padding-8;
+      }
+    }
+
+    .icon-wrapper {
+      margin-left: $gl-padding-8;
+      margin-right: 0;
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .user-access-role {
+      line-height: $gl-line-height-14;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    h2 {
+      font-size: $gl-font-size;
+    }
+
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s64 {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .updated-note {
+      margin-top: $gl-padding-8;
+      text-align: right;
+    }
+  }
+
+  .forks,
+  .pipeline-status,
+  .updated-note {
+    display: flex;
+  }
+
+  @include media-breakpoint-down(md) {
+    &:not(.explore) {
+      .forks {
+        display: none;
+
+      }
+    }
+
+    &.explore {
+      .pipeline-status,
+      .updated-note {
+        display: none !important;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .updated-note {
+      margin-top: 0;
+      text-align: left;
     }
   }
 }

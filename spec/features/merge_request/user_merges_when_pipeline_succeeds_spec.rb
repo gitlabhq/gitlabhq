@@ -88,6 +88,8 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
 
     describe 'enabling Merge when pipeline succeeds via dropdown' do
       it 'activates the Merge when pipeline succeeds feature' do
+        wait_for_requests
+
         find('.js-merge-moment').click
         click_link 'Merge when pipeline succeeds'
 

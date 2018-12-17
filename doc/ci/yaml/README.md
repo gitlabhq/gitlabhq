@@ -55,27 +55,27 @@ A job is defined by a list of parameters that define the job behavior.
 
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
-| script        | yes      | Defines a shell script which is executed by Runner |
-| extends       | no       | Defines a configuration entry that this job is going to inherit from |
-| image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
-| stage         | no       | Defines a job stage (default: `test`) |
-| type          | no       | Alias for `stage` |
-| variables     | no       | Define job variables on a job level |
-| only          | no       | Defines a list of git refs for which job is created |
-| except        | no       | Defines a list of git refs for which job is not created |
-| tags          | no       | Defines a list of tags which are used to select Runner |
-| allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status |
-| when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
-| dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
-| artifacts     | no       | Define list of [job artifacts](#artifacts) |
-| cache         | no       | Define list of files that should be cached between subsequent runs |
-| before_script | no       | Override a set of commands that are executed before job |
-| after_script  | no       | Override a set of commands that are executed after job |
-| environment   | no       | Defines a name of environment to which deployment is done by this job |
-| coverage      | no       | Define code coverage settings for a given job |
-| retry         | no       | Define when and how many times a job can be auto-retried in case of a failure |
-| parallel      | no       | Defines how many instances of a job should be run in parallel |
+| [script](#script)                                | yes      | Defines a shell script which is executed by Runner |
+| [extends](#extends)                              | no       | Defines a configuration entry that this job is going to inherit from |
+| [image](#image-and-services)                     | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| [services](#image-and-services)                  | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| [stage](#stage)                                  | no       | Defines a job stage (default: `test`) |
+| type                                             | no       | Alias for `stage` |
+| [variables](#variables)                          | no       | Define job variables on a job level |
+| [only](#only-and-except-simplified)              | no       | Defines a list of git refs for which job is created |
+| [except](#only-and-except-simplified)            | no       | Defines a list of git refs for which job is not created |
+| [tags](#tags)                                    | no       | Defines a list of tags which are used to select Runner |
+| [allow_failure](#allow_failure)                  | no       | Allow job to fail. Failed job doesn't contribute to commit status |
+| [when](#when)                                    | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` |
+| [dependencies](#dependencies)                    | no       | Define other jobs that a job depends on so that you can pass artifacts between them|
+| [artifacts](#artifacts)                          | no       | Define list of [job artifacts](#artifacts) |
+| [cache](#cache)                                  | no       | Define list of files that should be cached between subsequent runs |
+| [before_script](#before_script-and-after_script) | no       | Override a set of commands that are executed before job |
+| [after_script](#before_script-and-after_script)  | no       | Override a set of commands that are executed after job |
+| [environment](#environment)                      | no       | Defines a name of environment to which deployment is done by this job |
+| [coverage](#coverage)                            | no       | Define code coverage settings for a given job |
+| [retry](#retry)                                  | no       | Define when and how many times a job can be auto-retried in case of a failure |
+| [parallel](#parallel)                            | no       | Defines how many instances of a job should be run in parallel |
 
 ### `extends`
 
@@ -402,7 +402,7 @@ job:
   script: echo 'test'
 ```
 
-is translated to
+is translated to:
 
 ```yaml
 job:
@@ -412,48 +412,63 @@ job:
 
 ## `only` and `except` (complex)
 
-> `refs` and `kubernetes` policies introduced in GitLab 10.0
->
-> `variables` policy introduced in 10.7
->
-> `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in 11.4
+> - `refs` and `kubernetes` policies introduced in GitLab 10.0.
+> - `variables` policy introduced in GitLab 10.7.
+> - `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in GitLab 11.4.
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it is subject to change at any time without
 prior notice!
 
-Since GitLab 10.0 it is possible to define a more elaborate only/except job
-policy configuration.
+GitLab supports both simple and complex strategies, so it's possible to use an
+array and a hash configuration scheme.
 
-GitLab now supports both, simple and complex strategies, so it is possible to
-use an array and a hash configuration scheme.
+Four keys are available:
 
-Four keys are now available: `refs`, `kubernetes` and `variables` and `changes`.
+- `refs`
+- `variables`
+- `changes`
+- `kubernetes`
 
-### `refs` and `kubernetes`
+If you use multiple keys under `only` or `except`, they act as an AND. The logic is:
 
-Refs strategy equals to simplified only/except configuration, whereas
-kubernetes strategy accepts only `active` keyword.
+> (any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active)
 
-### `only:variables`
+### `only:refs` and `except:refs`
 
-`variables` keyword is used to define variables expressions. In other words
-you can use predefined variables / project / group or
-environment-scoped variables to define an expression GitLab is going to
-evaluate in order to decide whether a job should be created or not.
+The `refs` strategy can take the same values as the
+[simplified only/except configuration](#only-and-except-simplified).
 
-See the example below. Job is going to be created only when pipeline has been
-scheduled or runs for a `master` branch, and only if kubernetes service is
-active in the project.
+In the example below, the `deploy` job is going to be created only when the
+pipeline has been [scheduled][schedules] or runs for the `master` branch:
 
 ```yaml
-job:
+deploy:
   only:
     refs:
       - master
       - schedules
+```
+
+### `only:kubernetes` and `except:kubernetes`
+
+The `kubernetes` strategy accepts only the `active` keyword.
+
+In the example below, the `deploy` job is going to be created only when the
+Kubernetes service is active in the project:
+
+```yaml
+deploy:
+  only:
     kubernetes: active
 ```
+
+### `only:variables` and `except:variables`
+
+The `variables` keyword is used to define variables expressions. In other words,
+you can use predefined variables / project / group or
+environment-scoped variables to define an expression GitLab is going to
+evaluate in order to decide whether a job should be created or not.
 
 Examples of using variables expressions:
 
@@ -468,7 +483,7 @@ deploy:
       - $STAGING
 ```
 
-Another use case is exluding jobs depending on a commit message _(added in 11.0)_:
+Another use case is excluding jobs depending on a commit message:
 
 ```yaml
 end-to-end:
@@ -478,11 +493,11 @@ end-to-end:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
 ```
 
-Learn more about variables expressions on [a separate page][variables-expressions].
+Learn more about [variables expressions](../variables/README.md#variables-expressions).
 
-### `only:changes`
+### `only:changes` and `except:changes`
 
-Using `changes` keyword with `only` or `except` makes it possible to define if
+Using the `changes` keyword with `only` or `except`, makes it possible to define if
 a job should be created based on files modified by a git push event.
 
 For example:
@@ -499,13 +514,13 @@ docker build:
 ```
 
 In the scenario above, if you are pushing multiple commits to GitLab to an
-existing branch, GitLab creates and triggers `docker build` job, provided that
+existing branch, GitLab creates and triggers the `docker build` job, provided that
 one of the commits contains changes to either:
 
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
-- Any of the files and subfolders inside `dockerfiles` directory.
-- Any of the files with `rb`, `py`, `sh` extensions inside `more_scripts` directory.
+- Any of the files and subdirectories inside the `dockerfiles` directory.
+- Any of the files with `rb`, `py`, `sh` extensions inside the `more_scripts` directory.
 
 CAUTION: **Warning:**
 There are some caveats when using this feature with new branches and tags. See
@@ -571,7 +586,7 @@ osx job:
 
 `allow_failure` is used when you want to allow a job to fail without impacting
 the rest of the CI suite. Failed jobs don't contribute to the commit status.
-The default value is `false`.
+The default value is `false`, except for [manual](#whenmanual) jobs.
 
 When enabled and the job fails, the pipeline will be successful/green for all
 intents and purposes, but a "CI build passed with warnings" message  will be
@@ -614,7 +629,7 @@ failure.
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.
 1. `manual` - execute job manually (added in GitLab 8.10). Read about
-    [manual actions](#when-manual) below.
+    [manual actions](#whenmanual) below.
 
 For example:
 
@@ -674,7 +689,7 @@ Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
 would be a deployment to a production environment. Manual actions can be started
 from the pipeline, job, environment, and deployment views. Read more at the
-[environments documentation][env-manual].
+[environments documentation](../environments.md#manually-deploying-to-environments).
 
 Manual actions can be either optional or blocking. Blocking manual actions will
 block the execution of the pipeline at the stage this action is defined in. It's
@@ -1323,7 +1338,7 @@ The test reports are collected regardless of the job results (success or failure
 You can use [`artifacts:expire_in`](#artifacts-expire_in) to set up an expiration
 date for their artifacts.
 
-NOTE: **Note:** 
+NOTE: **Note:**
 If you also want the ability to browse the report output files, include the
 [`artifacts:paths`](#artifactspaths) keyword.
 
@@ -1657,7 +1672,7 @@ rspec:
 ```
 
 NOTE: **Note:**
-`include` requires the external YAML files to have the extensions `.yml` or `.yaml`. 
+`include` requires the external YAML files to have the extensions `.yml` or `.yaml`.
 The external file will not be included if the extension is missing.
 
 You can define it either as a single string, or, in case you want to include
@@ -1709,19 +1724,23 @@ include:
     The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
 
     NOTE: **Note:**
-    In order to include files from another repository inside your local network, 
+    In order to include files from another repository inside your local network,
     you may need to enable the **Allow requests to the local network from hooks and services** checkbox
     located in the **Settings > Network > Outbound requests** section within the **Admin area**.
 
 ---
 
 
-Since GitLab 10.8 we are now recursively merging the files defined in `include`
+Since GitLab 10.8 we are now deep merging the files defined in `include`
 with those in `.gitlab-ci.yml`. Files defined by `include` are always
-evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+evaluated first and merged with the content of `.gitlab-ci.yml`, no
 matter the position of the `include` keyword. You can take advantage of
-recursive merging to customize and override details in included CI
+merging to customize and override details in included CI
 configurations with local definitions.
+
+NOTE: **Note:**
+The recursive includes are not supported, meaning your external files
+should not use the `include` keyword, as it will be ignored.
 
 The following example shows specific YAML-defined variables and details of the
 `production` job from an include file being customized in `.gitlab-ci.yml`.
@@ -1772,11 +1791,7 @@ with the environment url of the `production` job defined in
 `autodevops-template.yml` have been overridden by new values defined in
 `.gitlab-ci.yml`.
 
-NOTE: **Note:**
-Recursive includes are not supported meaning your external files
-should not use the `include` keyword, as it will be ignored.
-
-Recursive merging lets you extend and override dictionary mappings, but
+The merging lets you extend and override dictionary mappings, but
 you cannot add or modify items to an included array. For example, to add
 an additional item to the production job script, you must repeat the
 existing script items.
@@ -2195,19 +2210,14 @@ try to quote them, or change them to a different form (e.g., `/bin/true`).
 
 ## Examples
 
-Visit the [examples README][examples] to see a list of examples using GitLab
-CI with various languages.
+See a [list of examples](../examples/README.md "CI/CD examples") for using
+GitLab CI/CD with various languages.
 
-[env-manual]: ../environments.md#manually-deploying-to-environments
-[examples]: ../examples/README.md
 [ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
-[environment]: ../environments.md
 [ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
-[variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
-[schedules]: ../../user/project/pipelines/schedules.md
-[variables-expressions]: ../variables/README.md#variables-expressions
-[ee]: https://about.gitlab.com/gitlab-ee/
-[gitlab-versions]: https://about.gitlab.com/products/
+[environment]: ../environments.md "CI/CD environments"
+[schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
+[variables]: ../variables/README.md "CI/CD variables"

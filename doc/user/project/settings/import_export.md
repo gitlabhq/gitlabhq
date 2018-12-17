@@ -24,6 +24,10 @@
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
 >  - Control project Import/Export with the [API](../../../api/project_import_export.md).
+>  - If an imported project contains merge requests originated from forks, 
+>    then new branches associated with such merge requests will be created 
+>    within a project during the import/export. Thus, the number of branches 
+>    in the exported project could be bigger than in the original project.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.

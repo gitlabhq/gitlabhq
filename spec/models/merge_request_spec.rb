@@ -1339,6 +1339,30 @@ describe MergeRequest do
     end
   end
 
+  describe '#calculate_reactive_cache' do
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    subject { merge_request.calculate_reactive_cache(service_class_name) }
+
+    context 'when given an unknown service class name' do
+      let(:service_class_name) { 'Integer' }
+
+      it 'raises a NameError exception' do
+        expect { subject }.to raise_error(NameError, service_class_name)
+      end
+    end
+
+    context 'when given a known service class name' do
+      let(:service_class_name) { 'Ci::CompareTestReportsService' }
+
+      it 'does not raises a NameError exception' do
+        allow_any_instance_of(service_class_name.constantize).to receive(:execute).and_return(nil)
+
+        expect { subject }.not_to raise_error(NameError)
+      end
+    end
+  end
+
   describe '#compare_test_reports' do
     subject { merge_request.compare_test_reports }
 

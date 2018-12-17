@@ -657,6 +657,7 @@ Restoring database tables:
 - Loading fixture wikis...[SKIPPING]
 Restoring repositories:
 - Restoring repository abcd... [DONE]
+- Object pool 1 ...
 Deleting tmp directories...[DONE]
 ```
 

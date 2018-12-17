@@ -122,6 +122,16 @@ module Gitlab
         old_blob_lazy&.itself
       end
 
+      def new_blob_lines_between(from_line, to_line)
+        return [] unless new_blob
+
+        from_index = from_line - 1
+        to_index = to_line - 1
+
+        new_blob.load_all_data!
+        new_blob.data.lines[from_index..to_index]
+      end
+
       def content_sha
         new_content_sha || old_content_sha
       end
@@ -244,6 +254,10 @@ module Gitlab
         valid_blobs.map(&:raw_size).sum
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def empty?
+        valid_blobs.map(&:empty?).all?
+      end
 
       def raw_binary?
         try_blobs(:raw_binary?)

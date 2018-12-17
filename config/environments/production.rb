@@ -9,11 +9,7 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  if Gitlab.rails5?
-    config.public_file_server.enabled = false
-  else
-    config.serve_static_files = false
-  end
+  config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier

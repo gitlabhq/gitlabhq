@@ -58,11 +58,13 @@ class UsersController < ApplicationController
     load_projects
 
     skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
+    skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
+    compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
 
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination)
+        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
       end
     end
   end

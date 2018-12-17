@@ -25,5 +25,15 @@ module Ci
         merge_request: 10
       }
     end
+
+    # Returns the `Hash` to use for creating the `config_sources` enum for
+    # `Ci::Pipeline`.
+    def self.config_sources
+      {
+        unknown_source: nil,
+        repository_source: 1,
+        auto_devops_source: 2
+      }
+    end
   end
 end

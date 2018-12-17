@@ -42,6 +42,16 @@ export default {
       type: Object,
       required: true,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    changesEmptyStateIllustration: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -63,7 +73,7 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapState('diffs', ['showTreeList', 'isLoading']),
+    ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
     ...mapGetters('diffs', ['isParallelView']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
@@ -78,6 +88,13 @@ export default {
     },
     showCompareVersions() {
       return this.mergeRequestDiffs && this.mergeRequestDiff;
+    },
+    renderDiffFiles() {
+      return (
+        this.diffFiles.length > 0 ||
+        (this.startVersion &&
+          this.startVersion.version_index === this.mergeRequestDiff.version_index)
+      );
     },
   },
   watch: {
@@ -191,15 +208,16 @@ export default {
         <div v-show="showTreeList" class="diff-tree-list"><tree-list /></div>
         <div class="diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" />
-          <template v-if="diffFiles.length > 0">
+          <template v-if="renderDiffFiles">
             <diff-file
               v-for="file in diffFiles"
               :key="file.newPath"
               :file="file"
+              :help-page-path="helpPagePath"
               :can-current-user-fork="canCurrentUserFork"
             />
           </template>
-          <no-changes v-else />
+          <no-changes v-else :changes-empty-state-illustration="changesEmptyStateIllustration" />
         </div>
       </div>
     </div>

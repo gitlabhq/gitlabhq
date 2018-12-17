@@ -160,6 +160,8 @@ describe Projects::MergeRequestsController do
 
     it_behaves_like "issuables list meta-data", :merge_request
 
+    it_behaves_like 'set sort order from user preference'
+
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }
       let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -355,11 +357,7 @@ describe Projects::MergeRequestsController do
     context 'when the sha parameter matches the source SHA' do
       def merge_with_sha(params = {})
         post_params = base_params.merge(sha: merge_request.diff_head_sha).merge(params)
-        if Gitlab.rails5?
-          post :merge, params: post_params, as: :json
-        else
-          post :merge, post_params
-        end
+        post :merge, params: post_params, as: :json
       end
 
       it 'returns :success' do

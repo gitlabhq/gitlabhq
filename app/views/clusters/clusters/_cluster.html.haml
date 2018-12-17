@@ -3,7 +3,7 @@
     .table-section.section-60
       .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Kubernetes cluster")
       .table-mobile-content
-        = link_to cluster.name, cluster.show_path
+        = cluster.item_link(clusterable)
         - unless cluster.enabled?
           %span.badge.badge-danger Connection disabled
     .table-section.section-25
@@ -13,4 +13,4 @@
       .table-mobile-header{ role: "rowheader" }
       .table-mobile-content
         %span.badge.badge-light
-          = cluster.project_type? ? s_("ClusterIntegration|Project cluster") : s_("ClusterIntegration|Group cluster")
+          = cluster.cluster_type_description

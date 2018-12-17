@@ -268,7 +268,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def set_suggested_issues_feature_flags
-    push_frontend_feature_flag(:graphql)
-    push_frontend_feature_flag(:issue_suggestions)
+    push_frontend_feature_flag(:graphql, default_enabled: true)
   end
 end

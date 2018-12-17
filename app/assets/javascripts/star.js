@@ -5,11 +5,12 @@ import { spriteIcon } from './lib/utils/common_utils';
 import axios from './lib/utils/axios_utils';
 
 export default class Star {
-  constructor() {
-    $('.project-home-panel .toggle-star').on('click', function toggleStarClickCallback() {
+  constructor(container = '.project-home-panel') {
+    $(`${container} .toggle-star`).on('click', function toggleStarClickCallback() {
       const $this = $(this);
       const $starSpan = $this.find('span');
-      const $startIcon = $this.find('svg');
+      const $starIcon = $this.find('svg');
+      const iconClasses = $starIcon.attr('class').split(' ');
 
       axios
         .post($this.data('endpoint'))
@@ -22,12 +23,12 @@ export default class Star {
 
           if (isStarred) {
             $starSpan.removeClass('starred').text(s__('StarProject|Star'));
-            $startIcon.remove();
-            $this.prepend(spriteIcon('star-o', 'icon'));
+            $starIcon.remove();
+            $this.prepend(spriteIcon('star-o', iconClasses));
           } else {
             $starSpan.addClass('starred').text(__('Unstar'));
-            $startIcon.remove();
-            $this.prepend(spriteIcon('star', 'icon'));
+            $starIcon.remove();
+            $this.prepend(spriteIcon('star', iconClasses));
           }
         })
         .catch(() => Flash('Star toggle failed. Try again later.'));

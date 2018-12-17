@@ -1,34 +1,51 @@
 <script>
-import { mapState } from 'vuex';
-import emptyImage from '~/../../views/shared/icons/_mr_widget_empty_state.svg';
+import { mapGetters } from 'vuex';
+import _ from 'underscore';
+import { GlButton } from '@gitlab/ui';
+import { __, sprintf } from '~/locale';
 
 export default {
-  data() {
-    return {
-      emptyImage,
-    };
+  components: {
+    GlButton,
+  },
+  props: {
+    changesEmptyStateIllustration: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
-    ...mapState({
-      sourceBranch: state => state.notes.noteableData.source_branch,
-      targetBranch: state => state.notes.noteableData.target_branch,
-      newBlobPath: state => state.notes.noteableData.new_blob_path,
-    }),
+    ...mapGetters(['getNoteableData']),
+    emptyStateText() {
+      return sprintf(
+        __(
+          'No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}',
+        ),
+        {
+          ref_start: '<span class="ref-name">',
+          ref_end: '</span>',
+          source_branch: _.escape(this.getNoteableData.source_branch),
+          target_branch: _.escape(this.getNoteableData.target_branch),
+        },
+        false,
+      );
+    },
   },
 };
 </script>
 
 <template>
-  <div class="row empty-state nothing-here-block">
-    <div class="col-xs-12">
-      <div class="svg-content"><span v-html="emptyImage"></span></div>
+  <div class="row empty-state">
+    <div class="col-12">
+      <div class="svg-content svg-250"><img :src="changesEmptyStateIllustration" /></div>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
       <div class="text-content text-center">
-        No changes between <span class="ref-name">{{ sourceBranch }}</span> and
-        <span class="ref-name">{{ targetBranch }}</span>
+        <span v-html="emptyStateText"></span>
         <div class="text-center">
-          <a :href="newBlobPath" class="btn btn-success"> {{ __('Create commit') }} </a>
+          <gl-button :href="getNoteableData.new_blob_path" variant="success">{{
+            __('Create commit')
+          }}</gl-button>
         </div>
       </div>
     </div>

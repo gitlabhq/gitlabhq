@@ -19,6 +19,16 @@ Here are some things to keep in mind regarding test performance:
 
 ## RSpec
 
+To run rspec tests:
+
+```sh
+# run all tests
+bundle exec rspec
+
+# run test for path
+bundle exec rspec spec/[path]/[to]/[spec].rb
+```
+
 ### General guidelines
 
 - Use a single, top-level `describe ClassName` block.

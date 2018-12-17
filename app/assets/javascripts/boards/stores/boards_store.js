@@ -166,6 +166,9 @@ const boardsStore = {
     });
     return filteredList[0];
   },
+  findListByLabelId(id) {
+    return this.state.lists.find(list => list.type === 'label' && list.label.id === id);
+  },
   updateFiltersUrl() {
     window.history.pushState(null, null, `?${this.filter.path}`);
   },

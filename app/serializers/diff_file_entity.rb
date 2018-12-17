@@ -5,6 +5,7 @@ class DiffFileEntity < DiffFileBaseEntity
   include IconsHelper
 
   expose :too_large?, as: :too_large
+  expose :empty?, as: :empty
   expose :added_lines
   expose :removed_lines
 

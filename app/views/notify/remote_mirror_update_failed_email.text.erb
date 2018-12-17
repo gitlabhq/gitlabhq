@@ -1,0 +1,7 @@
+A remote mirror update has failed.
+
+Project: <%= @project.human_name %> ( <%= project_url(@project) %> )
+Remote mirror: <%= @remote_mirror.safe_url %>
+Last update at: <%= @remote_mirror.last_update_at %>
+Last error:
+<%= @remote_mirror.last_error %>

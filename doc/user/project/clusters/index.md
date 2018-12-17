@@ -140,13 +140,14 @@ To add an existing Kubernetes cluster to your project:
       to grant access.
     - **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
-      - Each project should have a unique namespace.
-      - The project namespace is not necessarily the namespace of the secret, if
-        you're using a secret with broader permissions, like the secret from `default`.
-      - You should **not** use `default` as the project namespace.
-      - If you or someone created a secret specifically for the project, usually
-        with limited permissions, the secret's namespace and project namespace may
-        be the same.
+       - Each project should have a unique namespace.
+       - The project namespace is not necessarily the namespace of the secret, if
+         you're using a secret with broader permissions, like the secret from `default`.
+       - You should **not** use `default` as the project namespace.
+       - If you or someone created a secret specifically for the project, usually
+         with limited permissions, the secret's namespace and project namespace may
+         be the same.
+
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
@@ -157,8 +158,8 @@ To determine the:
 - API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`.
 - Token:
   1. List the secrets by running: `kubectl get secrets`. Note the name of the secret you need the token for.
-  1. Get the token for the appropriate secret by running: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 -D`.
-- CA certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 -D`.
+  1. Get the token for the appropriate secret by running: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 --decode`.
+- CA certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode`.
 
 ## Security implications
 
@@ -168,7 +169,7 @@ are trusted, so **only trusted users should be allowed to control your clusters*
 
 The default cluster configuration grants access to a wide set of
 functionalities needed to successfully build and deploy a containerized
-application. Bare in mind that the same credentials are used for all the
+application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
 ## Access controls
@@ -270,7 +271,7 @@ deployments.
 | [Cert Manager](http://docs.cert-manager.io/en/latest/) | 11.6+ | Cert Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use [this](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) custom Jupyter image that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found at [Nurtch Documentation](http://docs.nurtch.com/en/latest).  **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
+| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 | [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#role-based-access-control-rbac). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
 NOTE: **Note:**
@@ -354,6 +355,18 @@ to reach your apps. This heavily depends on your domain provider, but in case
 you aren't sure, just create an A record with a wildcard host like
 `*.example.com.`.
 
+## Multiple Kubernetes clusters **[PREMIUM]**
+
+> Introduced in [GitLab Premium][ee] 10.3.
+
+With GitLab Premium, you can associate more than one Kubernetes clusters to your
+project. That way you can have different clusters for different environments,
+like dev, staging, production, etc.
+
+Simply add another cluster, like you did the first time, and make sure to
+[set an environment scope](#setting-the-environment-scope) that will
+differentiate the new cluster with the rest.
+
 ## Setting the environment scope **[PREMIUM]**
 
 When adding more than one Kubernetes clusters to your project, you need
@@ -372,11 +385,11 @@ Also, jobs that don't have an environment keyword set will not be able to access
 
 For example, let's say the following Kubernetes clusters exist in a project:
 
-| Cluster    | Environment scope   |
-| ---------- | ------------------- |
-| Development| `*`                 |
-| Staging    | `staging/*`         |
-| Production | `production/*`      |
+| Cluster     | Environment scope |
+| ----------- | ----------------- |
+| Development | `*`               |
+| Staging     | `staging`         |
+| Production  | `production`      |
 
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
@@ -393,14 +406,14 @@ deploy to staging:
   stage: deploy
   script: make deploy
   environment:
-    name: staging/$CI_COMMIT_REF_NAME
+    name: staging
     url: https://staging.example.com/
 
 deploy to production:
   stage: deploy
   script: make deploy
   environment:
-    name: production/$CI_COMMIT_REF_NAME
+    name: production
     url: https://example.com/
 ```
 
@@ -409,18 +422,6 @@ The result will then be:
 - The development cluster will be used for the "test" job.
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
-
-## Multiple Kubernetes clusters
-
-> Introduced in [GitLab Premium][ee] 10.3.
-
-With GitLab Premium, you can associate more than one Kubernetes clusters to your
-project. That way you can have different clusters for different environments,
-like dev, staging, production, etc.
-
-Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that will
-differentiate the new cluster with the rest.
 
 ## Deployment variables
 
@@ -463,6 +464,14 @@ builds is that they must have a matching
 your build has no `environment:name` set, it will not be passed the Kubernetes
 credentials.
 
+## Monitoring your Kubernetes cluster **[ULTIMATE]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
+
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
+
+![Cluster Monitoring](https://docs.gitlab.com/ee/user/project/clusters/img/k8s_cluster_monitoring.png)
+
 ## Enabling or disabling the Kubernetes cluster integration
 
 After you have successfully added your cluster information, you can enable the
@@ -489,13 +498,16 @@ To remove the Kubernetes cluster integration from your project, simply click the
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
 
+## View Kubernetes pod logs from GitLab **[ULTIMATE]**
+
+Learn how to easily
+[view the logs of running pods in connected Kubernetes clusters](https://docs.gitlab.com/ee/user/project/clusters/kubernetes_pod_logs.html).
+
 ## What you can get with the Kubernetes integration
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards
-
-> Available in [GitLab Premium][ee].
+### Deploy Boards **[PREMIUM]**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -503,24 +515,22 @@ displaying the status of the pods in the deployment. Developers and other
 teammates can view the progress and status of a rollout, pod by pod, in the
 workflow they already use without any need to access Kubernetes.
 
-[> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
+[Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
 
-### Canary Deployments
-
-> Available in [GitLab Premium][ee].
+### Canary Deployments **[PREMIUM]**
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without
 the need to leave GitLab.
 
-[> Read more about Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+[Read more about Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
 
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 [NGINX ingress](../integrations/prometheus_library/nginx.md) is also supported.
 
-[> Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
+[Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
 ### Auto DevOps
 
@@ -530,7 +540,7 @@ applications.
 To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
 you will need the Kubernetes project integration enabled.
 
-[> Read more about Auto DevOps](../../../topics/autodevops/index.md)
+[Read more about Auto DevOps](../../../topics/autodevops/index.md)
 
 ### Web terminals
 
@@ -545,8 +555,6 @@ Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
-
-## Read more
 
 ### Integrating Amazon EKS cluster with GitLab
 

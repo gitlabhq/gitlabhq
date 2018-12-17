@@ -84,6 +84,10 @@ class PoolRepository < ActiveRecord::Base
       source_project.repository.raw)
   end
 
+  def inspect
+    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source_project.full_path}>"
+  end
+
   private
 
   def correct_disk_path
