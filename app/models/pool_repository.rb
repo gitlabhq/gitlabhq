@@ -18,6 +18,7 @@ class PoolRepository < ActiveRecord::Base
     state :scheduled
     state :ready
     state :failed
+    state :obsolete
 
     event :schedule do
       transition none: :scheduled
@@ -29,6 +30,10 @@ class PoolRepository < ActiveRecord::Base
 
     event :mark_failed do
       transition all => :failed
+    end
+
+    event :mark_obsolete do
+      transition all => :obsolete
     end
 
     state all - [:ready] do
@@ -54,6 +59,12 @@ class PoolRepository < ActiveRecord::Base
         ::ObjectPool::ScheduleJoinWorker.perform_async(pool.id)
       end
     end
+
+    after_transition any => :obsolete do |pool, _|
+      pool.run_after_commit do
+        ::ObjectPool::DestroyWorker.perform_async(pool.id)
+      end
+    end
   end
 
   def create_object_pool
@@ -71,10 +82,10 @@ class PoolRepository < ActiveRecord::Base
   end
 
   # This RPC can cause data loss, as not all objects are present the local repository
-  # No execution path yet, will be added through:
-  # https://gitlab.com/gitlab-org/gitaly/issues/1415
-  def delete_repository_alternate(repository)
+  def unlink_repository(repository)
     object_pool.unlink_repository(repository.raw)
+
+    mark_obsolete unless member_projects.where.not(id: repository.project.id).exists?
   end
 
   def object_pool

@@ -8,7 +8,7 @@ module Gitlab
       GL_REPOSITORY = ""
 
       delegate :exists?, :size, to: :repository
-      delegate :delete, to: :object_pool_service
+      delegate :unlink_repository, :delete, to: :object_pool_service
 
       attr_reader :storage, :relative_path, :source_repository
 
