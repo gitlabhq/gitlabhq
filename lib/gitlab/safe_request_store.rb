@@ -19,5 +19,13 @@ module Gitlab
         NULL_STORE
       end
     end
+
+    # This method accept an options hash to be compatible with
+    # ActiveSupport::Cache::Store#write method. The options are
+    # not passed to the underlying cache implementation because
+    # RequestStore#write accepts only a key, and value params.
+    def self.write(key, value, options = nil)
+      store.write(key, value)
+    end
   end
 end
