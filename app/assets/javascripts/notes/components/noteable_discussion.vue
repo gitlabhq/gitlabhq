@@ -378,6 +378,14 @@ Please check your network connection and try again.`;
                     :help-page-path="helpPagePath"
                     @handleDeleteNote="deleteNoteHandler"
                   >
+                    <note-edited-text
+                      v-if="discussion.resolved"
+                      slot="discussion-resolved-text"
+                      :edited-at="discussion.resolved_at"
+                      :edited-by="discussion.resolved_by"
+                      :action-text="resolvedText"
+                      class-name="discussion-headline-light js-discussion-headline discussion-resolved-text"
+                    />
                     <slot slot="avatar-badge" name="avatar-badge"></slot>
                   </component>
                   <toggle-replies-widget
