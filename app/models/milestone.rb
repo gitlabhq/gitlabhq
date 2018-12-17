@@ -38,13 +38,14 @@ class Milestone < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  scope :for_projects_and_groups, -> (project_ids, group_ids) do
-    conditions = []
+  scope :for_projects_and_groups, -> (projects, groups) do
+    projects = projects.compact if projects.is_a? Array
+    projects = [] if projects.nil?
 
-    conditions << arel_table[:project_id].in(project_ids) if project_ids&.compact&.any?
-    conditions << arel_table[:group_id].in(group_ids) if group_ids&.compact&.any?
+    groups = groups.compact if groups.is_a? Array
+    groups = [] if groups.nil?
 
-    where(conditions.reduce(:or))
+    where(project: projects).or(where(group: groups))
   end
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
@@ -132,7 +133,7 @@ class Milestone < ActiveRecord::Base
 
   def self.upcoming_ids(projects, groups)
     rel = unscoped
-            .for_projects_and_groups(projects&.map(&:id), groups&.map(&:id))
+            .for_projects_and_groups(projects, groups)
             .active.where('milestones.due_date > NOW()')
 
     if Gitlab::Database.postgresql?

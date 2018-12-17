@@ -155,7 +155,7 @@ class IssuableFinder
     elsif group
       [group]
     elsif current_user
-      Gitlab::GroupHierarchy.new(current_user.authorized_groups, current_user.groups).all_groups
+      Gitlab::ObjectHierarchy.new(current_user.authorized_groups, current_user.groups).all_objects
     else
       []
     end

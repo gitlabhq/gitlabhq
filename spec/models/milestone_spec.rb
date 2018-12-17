@@ -240,6 +240,72 @@ describe Milestone do
     end
   end
 
+  describe '#for_projects_and_groups' do
+    let(:project) { create(:project) }
+    let(:project_other) { create(:project) }
+    let(:group) { create(:group) }
+    let(:group_other) { create(:group) }
+
+    before do
+      create(:milestone, project: project)
+      create(:milestone, project: project_other)
+      create(:milestone, group: group)
+      create(:milestone, group: group_other)
+    end
+
+    subject { described_class.for_projects_and_groups(projects, groups) }
+
+    shared_examples 'filters by projects and groups' do
+      it 'returns milestones filtered by project' do
+        milestones = described_class.for_projects_and_groups(projects, [])
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.first.project_id).to eq(project.id)
+      end
+
+      it 'returns milestones filtered by group' do
+        milestones = described_class.for_projects_and_groups([], groups)
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.first.group_id).to eq(group.id)
+      end
+
+      it 'returns milestones filtered by both project and group' do
+        milestones = described_class.for_projects_and_groups(projects, groups)
+
+        expect(milestones.count).to eq(2)
+        expect(milestones).to contain_exactly(project.milestones.first, group.milestones.first)
+      end
+    end
+
+    context 'ids as params' do
+      let(:projects) { [project.id] }
+      let(:groups) { [group.id] }
+
+      it_behaves_like 'filters by projects and groups'
+    end
+
+    context 'relations as params' do
+      let(:projects) { Project.where(id: project.id) }
+      let(:groups) { Group.where(id: group.id) }
+
+      it_behaves_like 'filters by projects and groups'
+    end
+
+    context 'objects as params' do
+      let(:projects) { [project] }
+      let(:groups) { [group] }
+
+      it_behaves_like 'filters by projects and groups'
+    end
+
+    it 'returns no records if projects and groups are nil' do
+      milestones = described_class.for_projects_and_groups(nil, nil)
+
+      expect(milestones).to be_empty
+    end
+  end
+
   describe '.upcoming_ids' do
     let(:group_1) { create(:group) }
     let(:group_2) { create(:group) }
@@ -271,9 +337,7 @@ describe Milestone do
 
     let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.now - 1.day) }
 
-    # The call to `#try` is because this returns a relation with a Postgres DB,
-    # and an array of IDs with a MySQL DB.
-    let(:milestone_ids) { described_class.upcoming_ids(projects, groups).map { |id| id.try(:id) || id } }
+    let(:milestone_ids) { described_class.upcoming_ids(projects, groups).map(&:id) }
 
     it 'returns the next upcoming open milestone ID for each project and group' do
       expect(milestone_ids).to contain_exactly(
