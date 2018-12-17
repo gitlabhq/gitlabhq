@@ -1358,7 +1358,7 @@ describe MergeRequest do
       it 'does not raises a NameError exception' do
         allow_any_instance_of(service_class_name.constantize).to receive(:execute).and_return(nil)
 
-        expect { subject }.not_to raise_error(NameError)
+        expect { subject }.not_to raise_error
       end
     end
   end
