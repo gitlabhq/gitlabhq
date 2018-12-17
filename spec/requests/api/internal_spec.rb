@@ -156,9 +156,8 @@ describe API::Internal do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
-
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
       it 'returns the correct information about the user' do
@@ -166,9 +165,8 @@ describe API::Internal do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(user).token)
-
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(Gitlab::LfsToken.new(user).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
       it 'returns a 404 when no key or user is provided' do
@@ -198,8 +196,8 @@ describe API::Internal do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
     end
   end
