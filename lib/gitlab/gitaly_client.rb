@@ -26,6 +26,7 @@ module Gitlab
       end
     end
 
+    PEM_REXP = /[-]+BEGIN CERTIFICATE[-]+.+?[-]+END CERTIFICATE[-]+/m
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -62,9 +63,18 @@ module Gitlab
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
       cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
 
-      @certs = cert_paths.map do |cert|
-        File.read(cert)
-      end.join("\n")
+      @certs = []
+      cert_paths.each do |cert_file|
+        begin
+          File.read(cert_file).scan(PEM_REXP).each do |cert|
+            pem = OpenSSL::X509::Certificate.new(cert).to_pem
+            @certs << pem
+          end
+        rescue StandardError => e
+          Rails.logger.error "Could not load certificate #{e}"
+        end
+      end
+      @certs = @certs.uniq.join "\n"
     end
 
     def self.stub_creds(storage)
