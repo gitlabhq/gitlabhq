@@ -147,7 +147,7 @@ describe Projects::MirrorsController do
     end
 
     def do_get(project, url = 'ssh://example.com')
-      get :ssh_host_keys, namespace_id: project.namespace, project_id: project, ssh_url: url
+      get :ssh_host_keys, params: { namespace_id: project.namespace, project_id: project, ssh_url: url }
     end
   end
 
@@ -155,6 +155,6 @@ describe Projects::MirrorsController do
     attrs = extra_attrs.merge(namespace_id: project.namespace.to_param, project_id: project.to_param)
     attrs[:project] = options
 
-    put :update, attrs
+    put :update, params: attrs
   end
 end

@@ -294,14 +294,14 @@ describe API::ProjectExport do
       context 'with upload strategy' do
         context 'when params invalid' do
           it_behaves_like '400 response' do
-            let(:request) { post(api(path, user), 'upload[url]' => 'whatever') }
+            let(:request) { post(api(path, user), params: { 'upload[url]' => 'whatever' }) }
           end
         end
 
         it 'starts' do
           allow_any_instance_of(Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy).to receive(:send_file)
 
-          post(api(path, user), 'upload[url]' => 'http://gitlab.com')
+          post(api(path, user), params: { 'upload[url]' => 'http://gitlab.com' })
 
           expect(response).to have_gitlab_http_status(202)
         end
@@ -374,7 +374,7 @@ describe API::ProjectExport do
           params = { description: "Foo" }
 
           expect_any_instance_of(Projects::ImportExport::ExportService).to receive(:execute)
-          post api(path, project.owner), params
+          post api(path, project.owner), params: params
 
           expect(response).to have_gitlab_http_status(202)
         end

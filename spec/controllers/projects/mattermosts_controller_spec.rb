@@ -17,8 +17,10 @@ describe Projects::MattermostsController do
 
     it 'accepts the request' do
       get(:new,
-          namespace_id: project.namespace.to_param,
-          project_id: project)
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project
+          })
 
       expect(response).to have_gitlab_http_status(200)
     end
@@ -29,9 +31,11 @@ describe Projects::MattermostsController do
 
     subject do
       post(:create,
-           namespace_id: project.namespace.to_param,
-           project_id: project,
-           mattermost: mattermost_params)
+           params: {
+             namespace_id: project.namespace.to_param,
+             project_id: project,
+             mattermost: mattermost_params
+           })
     end
 
     context 'no request can be made to mattermost' do

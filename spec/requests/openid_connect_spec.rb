@@ -47,15 +47,17 @@ describe 'OpenID Connect requests' do
     login_as user
 
     post '/oauth/token',
-      grant_type: 'authorization_code',
-      code: access_grant.token,
-      redirect_uri: application.redirect_uri,
-      client_id: application.uid,
-      client_secret: application.secret
+      params: {
+        grant_type: 'authorization_code',
+        code: access_grant.token,
+        redirect_uri: application.redirect_uri,
+        client_id: application.uid,
+        client_secret: application.secret
+      }
   end
 
   def request_user_info!
-    get '/oauth/userinfo', nil, 'Authorization' => "Bearer #{access_token.token}"
+    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.token}" }
   end
 
   context 'Application without OpenID scope' do

@@ -15,7 +15,7 @@ describe API::ProtectedTags do
 
     shared_examples_for 'protected tags' do
       it 'returns the protected tags' do
-        get api(route, user), per_page: 100
+        get api(route, user), params: { per_page: 100 }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -102,7 +102,7 @@ describe API::ProtectedTags do
       end
 
       it 'protects a single tag with maintainers can create tags' do
-        post api("/projects/#{project.id}/protected_tags", user), name: tag_name
+        post api("/projects/#{project.id}/protected_tags", user), params: { name: tag_name }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(tag_name)
@@ -111,7 +111,7 @@ describe API::ProtectedTags do
 
       it 'protects a single tag with developers can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
-            name: tag_name, create_access_level: 30
+            params: { name: tag_name, create_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(tag_name)
@@ -120,7 +120,7 @@ describe API::ProtectedTags do
 
       it 'protects a single tag with no one can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
-            name: tag_name, create_access_level: 0
+            params: { name: tag_name, create_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(tag_name)
@@ -128,15 +128,15 @@ describe API::ProtectedTags do
       end
 
       it 'returns a 422 error if the same tag is protected twice' do
-        post api("/projects/#{project.id}/protected_tags", user), name: protected_name
+        post api("/projects/#{project.id}/protected_tags", user), params: { name: protected_name }
 
         expect(response).to have_gitlab_http_status(422)
         expect(json_response['message'][0]).to eq('Name has already been taken')
       end
 
       it 'returns 201 if the same tag is proteted on different projects' do
-        post api("/projects/#{project.id}/protected_tags", user), name: protected_name
-        post api("/projects/#{project2.id}/protected_tags", user), name: protected_name
+        post api("/projects/#{project.id}/protected_tags", user), params: { name: protected_name }
+        post api("/projects/#{project2.id}/protected_tags", user), params: { name: protected_name }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(protected_name)
@@ -146,7 +146,7 @@ describe API::ProtectedTags do
         let(:tag_name) { 'feature/*' }
 
         it 'protects multiple tags with a wildcard in the name' do
-          post api("/projects/#{project.id}/protected_tags", user), name: tag_name
+          post api("/projects/#{project.id}/protected_tags", user), params: { name: tag_name }
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['name']).to eq(tag_name)
@@ -161,7 +161,7 @@ describe API::ProtectedTags do
       end
 
       it 'returns a 403 error if guest' do
-        post api("/projects/#{project.id}/protected_tags/", user), name: tag_name
+        post api("/projects/#{project.id}/protected_tags/", user), params: { name: tag_name }
 
         expect(response).to have_gitlab_http_status(403)
       end

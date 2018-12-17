@@ -37,7 +37,7 @@ describe HealthCheckController do
         end
 
         it 'supports passing the token in query params' do
-          get :index, token: token
+          get :index, params: { token: token }
 
           expect(response).to be_success
           expect(response.content_type).to eq 'text/plain'
@@ -74,7 +74,7 @@ describe HealthCheckController do
       end
 
       it 'supports successful responses for specific checks' do
-        get :index, checks: 'email', format: :json
+        get :index, params: { checks: 'email' }, format: :json
 
         expect(response).to be_success
         expect(response.content_type).to eq 'application/json'
@@ -124,7 +124,7 @@ describe HealthCheckController do
       end
 
       it 'supports failure responses for specific checks' do
-        get :index, checks: 'email', format: :json
+        get :index, params: { checks: 'email' }, format: :json
 
         expect(response).to have_gitlab_http_status(500)
         expect(response.content_type).to eq 'application/json'

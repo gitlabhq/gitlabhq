@@ -8,7 +8,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRailsVersion: 4.2
+  TargetRailsVersion: 5.0
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'

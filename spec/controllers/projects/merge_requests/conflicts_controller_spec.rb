@@ -21,9 +21,11 @@ describe Projects::MergeRequests::ConflictsController do
           .and_raise(Gitlab::Git::Conflict::Parser::UnmergeableFile)
 
         get :show,
-            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project,
-            id: merge_request_with_conflicts.iid,
+            params: {
+              namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+              project_id: merge_request_with_conflicts.project,
+              id: merge_request_with_conflicts.iid
+            },
             format: 'json'
       end
 
@@ -39,9 +41,11 @@ describe Projects::MergeRequests::ConflictsController do
     context 'with valid conflicts' do
       before do
         get :show,
-            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project,
-            id: merge_request_with_conflicts.iid,
+            params: {
+              namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+              project_id: merge_request_with_conflicts.project,
+              id: merge_request_with_conflicts.iid
+            },
             format: 'json'
       end
 
@@ -99,11 +103,13 @@ describe Projects::MergeRequests::ConflictsController do
   describe 'GET conflict_for_path' do
     def conflict_for_path(path)
       get :conflict_for_path,
-          namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-          project_id: merge_request_with_conflicts.project,
-          id: merge_request_with_conflicts.iid,
-          old_path: path,
-          new_path: path,
+          params: {
+            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+            project_id: merge_request_with_conflicts.project,
+            id: merge_request_with_conflicts.iid,
+            old_path: path,
+            new_path: path
+          },
           format: 'json'
     end
 
@@ -160,12 +166,14 @@ describe Projects::MergeRequests::ConflictsController do
 
     def resolve_conflicts(files)
       post :resolve_conflicts,
-           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-           project_id: merge_request_with_conflicts.project,
-           id: merge_request_with_conflicts.iid,
-           format: 'json',
-           files: files,
-           commit_message: 'Commit message'
+           params: {
+             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+             project_id: merge_request_with_conflicts.project,
+             id: merge_request_with_conflicts.iid,
+             files: files,
+             commit_message: 'Commit message'
+           },
+           format: 'json'
     end
 
     context 'with valid params' do

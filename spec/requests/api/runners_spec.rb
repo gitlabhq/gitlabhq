@@ -400,14 +400,14 @@ describe API::Runners do
       end
 
       def update_runner(id, user, args)
-        put api("/runners/#{id}", user), args
+        put api("/runners/#{id}", user), params: args
       end
     end
 
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user), description: 'test'
+          put api("/runners/#{shared_runner.id}", user), params: { description: 'test' }
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -415,14 +415,14 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'does not update project runner without access to it' do
-          put api("/runners/#{project_runner.id}", user2), description: 'test'
+          put api("/runners/#{project_runner.id}", user2), params: { description: 'test' }
 
           expect(response).to have_http_status(403)
         end
 
         it 'updates project runner with access to it' do
           description = project_runner.description
-          put api("/runners/#{project_runner.id}", admin), description: 'test'
+          put api("/runners/#{project_runner.id}", admin), params: { description: 'test' }
           project_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
@@ -741,14 +741,14 @@ describe API::Runners do
 
       it 'enables specific runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(+1)
         expect(response).to have_gitlab_http_status(201)
       end
 
       it 'avoids changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner.id }
         end.to change { project.runners.count }.by(0)
         expect(response).to have_gitlab_http_status(400)
       end
@@ -757,20 +757,20 @@ describe API::Runners do
         project_runner2.update(locked: true)
 
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(0)
 
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not enable shared runner' do
-        post api("/projects/#{project.id}/runners", user), runner_id: shared_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: shared_runner.id }
 
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not enable group runner' do
-        post api("/projects/#{project.id}/runners", user), runner_id: group_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: group_runner.id }
 
         expect(response).to have_http_status(403)
       end
@@ -781,7 +781,7 @@ describe API::Runners do
 
           it 'enables any specific runner' do
             expect do
-              post api("/projects/#{project.id}/runners", admin), runner_id: new_project_runner.id
+              post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
             end.to change { project.runners.count }.by(+1)
             expect(response).to have_gitlab_http_status(201)
           end
@@ -789,7 +789,7 @@ describe API::Runners do
 
         it 'enables a instance type runner' do
           expect do
-            post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
+            post api("/projects/#{project.id}/runners", admin), params: { runner_id: shared_runner.id }
           end.to change { project.runners.count }.by(1)
 
           expect(shared_runner.reload).not_to be_instance_type
@@ -808,7 +808,7 @@ describe API::Runners do
       let!(:new_project_runner) { create(:ci_runner, :project) }
 
       it 'does not enable runner without access to' do
-        post api("/projects/#{project.id}/runners", user), runner_id: new_project_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: new_project_runner.id }
 
         expect(response).to have_gitlab_http_status(403)
       end

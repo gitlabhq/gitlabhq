@@ -17,7 +17,7 @@ describe Projects::DeployKeysController do
 
     context 'when html requested' do
       it 'redirects to blob' do
-        get :index, params
+        get :index, params: params
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
       end
@@ -48,7 +48,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'returns json in a correct format' do
-        get :index, params.merge(format: :json)
+        get :index, params: params.merge(format: :json)
 
         json = JSON.parse(response.body)
 
@@ -74,7 +74,7 @@ describe Projects::DeployKeysController do
 
       it 'redirects to login' do
         expect do
-          put :enable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+          put :enable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
         end.not_to change { DeployKeysProject.count }
 
         expect(response).to have_http_status(302)
@@ -89,7 +89,7 @@ describe Projects::DeployKeysController do
 
       it 'returns 404' do
         expect do
-          put :enable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+          put :enable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
         end.not_to change { DeployKeysProject.count }
 
         expect(response).to have_http_status(404)
@@ -103,7 +103,7 @@ describe Projects::DeployKeysController do
 
       it 'returns 302' do
         expect do
-          put :enable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+          put :enable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
         end.to change { DeployKeysProject.count }.by(1)
 
         expect(DeployKeysProject.where(project_id: project.id, deploy_key_id: deploy_key.id).count).to eq(1)
@@ -112,7 +112,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'returns 404' do
-        put :enable, id: 0, namespace_id: project.namespace, project_id: project
+        put :enable, params: { id: 0, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_http_status(404)
       end
@@ -125,7 +125,7 @@ describe Projects::DeployKeysController do
 
       it 'returns 302' do
         expect do
-          put :enable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+          put :enable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
         end.to change { DeployKeysProject.count }.by(1)
 
         expect(DeployKeysProject.where(project_id: project.id, deploy_key_id: deploy_key.id).count).to eq(1)
@@ -145,7 +145,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'redirects to login' do
-        put :disable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+        put :disable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(new_user_session_path)
@@ -159,7 +159,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'returns 404' do
-        put :disable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+        put :disable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_http_status(404)
         expect(DeployKey.find(deploy_key.id)).to eq(deploy_key)
@@ -168,7 +168,7 @@ describe Projects::DeployKeysController do
 
     context 'with user with permission' do
       it 'returns 302' do
-        put :disable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+        put :disable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
@@ -177,7 +177,7 @@ describe Projects::DeployKeysController do
       end
 
       it 'returns 404' do
-        put :disable, id: 0, namespace_id: project.namespace, project_id: project
+        put :disable, params: { id: 0, namespace_id: project.namespace, project_id: project }
 
         expect(response).to have_http_status(404)
       end
@@ -190,7 +190,7 @@ describe Projects::DeployKeysController do
 
       it 'returns 302' do
         expect do
-          put :disable, id: deploy_key.id, namespace_id: project.namespace, project_id: project
+          put :disable, params: { id: deploy_key.id, namespace_id: project.namespace, project_id: project }
         end.to change { DeployKey.count }.by(-1)
 
         expect(response).to have_http_status(302)

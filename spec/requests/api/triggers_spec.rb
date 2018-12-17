@@ -26,13 +26,13 @@ describe API::Triggers do
 
     context 'Handles errors' do
       it 'returns bad request if token is missing' do
-        post api("/projects/#{project.id}/trigger/pipeline"), ref: 'master'
+        post api("/projects/#{project.id}/trigger/pipeline"), params: { ref: 'master' }
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns not found if project is not found' do
-        post api('/projects/0/trigger/pipeline'), options.merge(ref: 'master')
+        post api('/projects/0/trigger/pipeline'), params: options.merge(ref: 'master')
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -42,7 +42,7 @@ describe API::Triggers do
       let(:pipeline) { project.ci_pipelines.last }
 
       it 'creates pipeline' do
-        post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'master')
+        post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'master')
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response).to include('id' => pipeline.id)
@@ -52,7 +52,7 @@ describe API::Triggers do
       end
 
       it 'returns bad request with no pipeline created if there\'s no commit for that ref' do
-        post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
+        post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'other-branch')
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('base' => ["Reference not found"])
@@ -64,21 +64,21 @@ describe API::Triggers do
         end
 
         it 'validates variables to be a hash' do
-          post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: 'value', ref: 'master')
+          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: 'value', ref: 'master')
 
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['error']).to eq('variables is invalid')
         end
 
         it 'validates variables needs to be a map of key-valued strings' do
-          post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: { key: %w(1 2) }, ref: 'master')
+          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: { key: %w(1 2) }, ref: 'master')
 
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end
 
         it 'creates trigger request with variables' do
-          post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: variables, ref: 'master')
+          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_gitlab_http_status(201)
           expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
@@ -91,7 +91,7 @@ describe API::Triggers do
         end
 
         it 'creates pipeline' do
-          post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'master')
+          post api("/projects/#{project.id}/trigger/pipeline"), params: options.merge(ref: 'master')
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response).to include('id' => pipeline.id)
@@ -104,14 +104,14 @@ describe API::Triggers do
 
     context 'when triggering a pipeline from a trigger token' do
       it 'does not leak the presence of project when token is for different project' do
-        post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+        post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
-          post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+          post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' }
         end.to change(project.builds, :count).by(5)
 
         expect(response).to have_gitlab_http_status(201)
@@ -122,7 +122,7 @@ describe API::Triggers do
           project.repository.create_file(user, '.gitlab/gitlabhq/new_feature.md', 'something valid', message: 'new_feature', branch_name: 'v.1-branch')
 
           expect do
-            post api("/projects/#{project.id}/ref/v.1-branch/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+            post api("/projects/#{project.id}/ref/v.1-branch/trigger/pipeline?token=#{trigger_token}"), params: { ref: 'refs/heads/other-branch' }
           end.to change(project.builds, :count).by(4)
 
           expect(response).to have_gitlab_http_status(201)
@@ -199,7 +199,7 @@ describe API::Triggers do
         it 'creates trigger' do
           expect do
             post api("/projects/#{project.id}/triggers", user),
-              description: 'trigger'
+              params: { description: 'trigger' }
           end.to change {project.triggers.count}.by(1)
 
           expect(response).to have_gitlab_http_status(201)
@@ -219,7 +219,7 @@ describe API::Triggers do
     context 'authenticated user with invalid permissions' do
       it 'does not create trigger' do
         post api("/projects/#{project.id}/triggers", user2),
-          description: 'trigger'
+          params: { description: 'trigger' }
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -228,7 +228,7 @@ describe API::Triggers do
     context 'unauthenticated user' do
       it 'does not create trigger' do
         post api("/projects/#{project.id}/triggers"),
-          description: 'trigger'
+          params: { description: 'trigger' }
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -241,7 +241,7 @@ describe API::Triggers do
 
       it 'updates description' do
         put api("/projects/#{project.id}/triggers/#{trigger.id}", user),
-          description: new_description
+          params: { description: new_description }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to include('description' => new_description)

@@ -44,7 +44,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     def visit_pipelines_schedules
-      get :index, namespace_id: project.namespace.to_param, project_id: project, scope: scope
+      get :index, params: { namespace_id: project.namespace.to_param, project_id: project, scope: scope }
     end
   end
 
@@ -57,7 +57,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     it 'initializes a pipeline schedule model' do
-      get :new, namespace_id: project.namespace.to_param, project_id: project
+      get :new, params: { namespace_id: project.namespace.to_param, project_id: project }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:schedule)).to be_a_new(Ci::PipelineSchedule)
@@ -131,7 +131,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      post :create, namespace_id: project.namespace.to_param, project_id: project, schedule: schedule
+      post :create, params: { namespace_id: project.namespace.to_param, project_id: project, schedule: schedule }
     end
   end
 
@@ -328,7 +328,7 @@ describe Projects::PipelineSchedulesController do
       end
 
       it 'loads the pipeline schedule' do
-        get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        get :edit, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:schedule)).to eq(pipeline_schedule)
@@ -348,7 +348,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      get :edit, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+      get :edit, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
     end
   end
 
@@ -366,7 +366,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+      post :take_ownership, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
     end
   end
 
@@ -388,7 +388,7 @@ describe Projects::PipelineSchedulesController do
       it 'does not allow pipeline to be executed' do
         expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
 
-        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -398,7 +398,7 @@ describe Projects::PipelineSchedulesController do
       it 'executes a new pipeline' do
         expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
 
-        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
 
         expect(flash[:notice]).to start_with 'Successfully scheduled a pipeline to run'
         expect(response).to have_gitlab_http_status(302)
@@ -406,7 +406,7 @@ describe Projects::PipelineSchedulesController do
 
       it 'prevents users from scheduling the same pipeline repeatedly' do
         2.times do
-          post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+          post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
         end
 
         expect(flash.to_a.size).to eq(2)
@@ -422,7 +422,7 @@ describe Projects::PipelineSchedulesController do
 
         expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
 
-        post :play, namespace_id: project.namespace.to_param, project_id: project, id: protected_schedule.id
+        post :play, params: { namespace_id: project.namespace.to_param, project_id: project, id: protected_schedule.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -437,7 +437,7 @@ describe Projects::PipelineSchedulesController do
         project.add_developer(user)
         sign_in(user)
 
-        delete :destroy, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        delete :destroy, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
       end
 
       it 'does not delete the pipeline schedule' do
@@ -453,7 +453,7 @@ describe Projects::PipelineSchedulesController do
 
       it 'destroys the pipeline schedule' do
         expect do
-          delete :destroy, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+          delete :destroy, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
         end.to change { project.pipeline_schedules.count }.by(-1)
 
         expect(response).to have_gitlab_http_status(302)

@@ -19,7 +19,7 @@ describe Admin::ApplicationsController do
 
   describe 'GET #edit' do
     it 'renders the application form' do
-      get :edit, id: application.id
+      get :edit, params: { id: application.id }
 
       expect(response).to render_template :edit
       expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -31,7 +31,7 @@ describe Admin::ApplicationsController do
       create_params = attributes_for(:application, trusted: true)
 
       expect do
-        post :create, doorkeeper_application: create_params
+        post :create, params: { doorkeeper_application: create_params }
       end.to change { Doorkeeper::Application.count }.by(1)
 
       application = Doorkeeper::Application.last
@@ -42,7 +42,7 @@ describe Admin::ApplicationsController do
 
     it 'renders the application form on errors' do
       expect do
-        post :create, doorkeeper_application: attributes_for(:application).merge(redirect_uri: nil)
+        post :create, params: { doorkeeper_application: attributes_for(:application).merge(redirect_uri: nil) }
       end.not_to change { Doorkeeper::Application.count }
 
       expect(response).to render_template :new
@@ -52,7 +52,7 @@ describe Admin::ApplicationsController do
 
   describe 'PATCH #update' do
     it 'updates the application' do
-      patch :update, id: application.id, doorkeeper_application: { redirect_uri: 'http://example.com/', trusted: true }
+      patch :update, params: { id: application.id, doorkeeper_application: { redirect_uri: 'http://example.com/', trusted: true } }
 
       application.reload
 
@@ -61,7 +61,7 @@ describe Admin::ApplicationsController do
     end
 
     it 'renders the application form on errors' do
-      patch :update, id: application.id, doorkeeper_application: { redirect_uri: nil }
+      patch :update, params: { id: application.id, doorkeeper_application: { redirect_uri: nil } }
 
       expect(response).to render_template :edit
       expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)

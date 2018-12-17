@@ -10,7 +10,7 @@ describe Groups::AvatarsController do
   end
 
   it 'removes avatar from DB calling destroy' do
-    delete :destroy, group_id: group.path
+    delete :destroy, params: { group_id: group.path }
     @group = assigns(:group)
     expect(@group.avatar.present?).to be_falsey
     expect(@group).to be_valid

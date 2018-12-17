@@ -13,7 +13,7 @@ describe Projects::VariablesController do
     let!(:variable) { create(:ci_variable, project: project) }
 
     subject do
-      get :show, namespace_id: project.namespace.to_param, project_id: project, format: :json
+      get :show, params: { namespace_id: project.namespace.to_param, project_id: project }, format: :json
     end
 
     include_examples 'GET #show lists all variables'
@@ -25,9 +25,11 @@ describe Projects::VariablesController do
 
     subject do
       patch :update,
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        variables_attributes: variables_attributes,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          variables_attributes: variables_attributes
+        },
         format: :json
     end
 
