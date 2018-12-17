@@ -78,7 +78,7 @@ module QA
       end
 
       def browser
-        ENV['QA_BROWSER'] || :chrome
+        ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
       def user_username
