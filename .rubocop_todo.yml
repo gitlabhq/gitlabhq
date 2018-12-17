@@ -149,17 +149,6 @@ RSpec/ExpectChange:
 RSpec/ExpectInHook:
   Enabled: false
 
-# Offense count: 7
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Exclude:
-    - 'spec/spec_helper.rb'
-    - 'spec/support/carrierwave.rb'
-    - 'spec/support/db_cleaner.rb'
-    - 'spec/support/gitaly.rb'
-    - 'spec/support/setup_builds_storage.rb'
-
 # Offense count: 19
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: it_behaves_like, it_should_behave_like

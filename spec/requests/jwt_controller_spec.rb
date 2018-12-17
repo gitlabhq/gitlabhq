@@ -31,7 +31,7 @@ describe JwtController do
       context 'project with enabled CI' do
         subject! { get '/jwt/auth', parameters, headers }
 
-        it { expect(service_class).to have_received(:new).with(project, nil, parameters) }
+        it { expect(service_class).to have_received(:new).with(project, nil, ActionController::Parameters.new(parameters).permit!) }
       end
 
       context 'project with disabled CI' do
@@ -57,7 +57,7 @@ describe JwtController do
 
         it 'authenticates correctly' do
           expect(response).to have_gitlab_http_status(200)
-          expect(service_class).to have_received(:new).with(nil, user, parameters)
+          expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!)
         end
       end
     end
@@ -68,7 +68,7 @@ describe JwtController do
 
       subject! { get '/jwt/auth', parameters, headers }
 
-      it { expect(service_class).to have_received(:new).with(nil, user, parameters) }
+      it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters).permit!) }
 
       context 'when passing a flat array of scopes' do
         # We use this trick to make rails to generate a query_string:
@@ -83,7 +83,7 @@ describe JwtController do
         end
 
         let(:service_parameters) do
-          { service: service_name, scopes: %w(scope1 scope2) }
+          ActionController::Parameters.new({ service: service_name, scopes: %w(scope1 scope2) }).permit!
         end
 
         it { expect(service_class).to have_received(:new).with(nil, user, service_parameters) }

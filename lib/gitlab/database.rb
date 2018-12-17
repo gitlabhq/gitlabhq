@@ -232,11 +232,7 @@ module Gitlab
     end
 
     def self.cached_table_exists?(table_name)
-      if Gitlab.rails5?
-        connection.schema_cache.data_source_exists?(table_name)
-      else
-        connection.schema_cache.table_exists?(table_name)
-      end
+      connection.schema_cache.data_source_exists?(table_name)
     end
 
     private_class_method :connection

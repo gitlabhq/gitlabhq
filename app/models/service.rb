@@ -210,11 +210,7 @@ class Service < ActiveRecord::Base
       class_eval %{
         def #{arg}?
           # '!!' is used because nil or empty string is converted to nil
-          if Gitlab.rails5?
-            !!ActiveRecord::Type::Boolean.new.cast(#{arg})
-          else
-            !!ActiveRecord::Type::Boolean.new.type_cast_from_database(#{arg})
-          end
+          !!ActiveRecord::Type::Boolean.new.cast(#{arg})
         end
       }
     end

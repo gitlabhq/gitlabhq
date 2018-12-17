@@ -413,7 +413,7 @@ Please check your network connection and try again.`;
                 </template>
               </ul>
               <div
-                v-if="!isRepliesCollapsed"
+                v-if="!isRepliesCollapsed || !hasReplies"
                 :class="{ 'is-replying': isReplying }"
                 class="discussion-reply-holder"
               >

@@ -3,9 +3,8 @@ require 'spec_helper'
 describe Projects::ServicesController do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
-  let(:service) { create(:hipchat_service, project: project) }
-  let(:hipchat_client) { { '#room' => double(send: true) } }
-  let(:service_params) { { token: 'hipchat_token_p', room: '#room' } }
+  let(:service) { create(:jira_service, project: project) }
+  let(:service_params) { { username: 'username', password: 'password', url: 'http://example.com' } }
 
   before do
     sign_in(user)
@@ -24,13 +23,13 @@ describe Projects::ServicesController do
     end
 
     context 'when validations fail' do
-      let(:service_params) { { active: 'true', token: '' } }
+      let(:service_params) { { active: 'true', url: '' } }
 
       it 'returns error messages in JSON response' do
-        put :test, namespace_id: project.namespace, project_id: project, id: :hipchat, service: service_params
+        put :test, namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params
 
         expect(json_response['message']).to eq "Validations failed."
-        expect(json_response['service_response']).to eq "Token can't be blank"
+        expect(json_response['service_response']).to include "Url can't be blank"
         expect(response).to have_gitlab_http_status(200)
       end
     end
@@ -52,7 +51,8 @@ describe Projects::ServicesController do
         end
 
         it 'returns success' do
-          expect(HipChat::Client).to receive(:new).with('hipchat_token_p', anything).and_return(hipchat_client)
+          stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
+            .to_return(status: 200, body: '{}')
 
           put :test, namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params
 
@@ -61,7 +61,8 @@ describe Projects::ServicesController do
       end
 
       it 'returns success' do
-        expect(HipChat::Client).to receive(:new).with('hipchat_token_p', anything).and_return(hipchat_client)
+        stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
+          .to_return(status: 200, body: '{}')
 
         put :test, namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params
 
@@ -76,12 +77,16 @@ describe Projects::ServicesController do
         it 'persist the object' do
           do_put
 
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_empty
           expect(BuildkiteService.first).to be_present
         end
 
         it 'creates the ServiceHook object' do
           do_put
 
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_empty
           expect(BuildkiteService.first.service_hook).to be_present
         end
 
@@ -96,13 +101,18 @@ describe Projects::ServicesController do
 
     context 'failure' do
       it 'returns success status code and the error message' do
-        expect(HipChat::Client).to receive(:new).with('hipchat_token_p', anything).and_raise('Bad test')
+        stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
+          .to_return(status: 404)
 
         put :test, namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params
 
-        expect(response.status).to eq(200)
-        expect(JSON.parse(response.body))
-          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test', 'test_failed' => true)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to eq(
+          'error' => true,
+          'message' => 'Test failed.',
+          'service_response' => '',
+          'test_failed' => true
+        )
       end
     end
   end
@@ -114,7 +124,7 @@ describe Projects::ServicesController do
           namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: true }
 
         expect(response).to redirect_to(project_settings_integrations_path(project))
-        expect(flash[:notice]).to eq 'HipChat activated.'
+        expect(flash[:notice]).to eq 'JIRA activated.'
       end
     end
 
@@ -123,7 +133,7 @@ describe Projects::ServicesController do
         put :update,
           namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: false }
 
-        expect(flash[:notice]).to eq 'HipChat settings saved, but not activated.'
+        expect(flash[:notice]).to eq 'JIRA settings saved, but not activated.'
       end
     end
 

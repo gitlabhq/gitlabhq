@@ -19,7 +19,7 @@ export default function deviseState(data) {
     return stateKey.unresolvedDiscussions;
   } else if (this.isPipelineBlocked) {
     return stateKey.pipelineBlocked;
-  } else if (this.hasSHAChanged) {
+  } else if (this.isSHAMismatch) {
     return stateKey.shaMismatch;
   } else if (this.mergeWhenPipelineSucceeds) {
     return this.mergeError ? stateKey.autoMergeFailed : stateKey.mergeWhenPipelineSucceeds;

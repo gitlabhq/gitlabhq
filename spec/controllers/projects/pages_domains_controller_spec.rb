@@ -78,7 +78,7 @@ describe Projects::PagesDomainsController do
     it 'updates the domain' do
       expect(pages_domain)
         .to receive(:update)
-        .with(pages_domain_params)
+        .with(ActionController::Parameters.new(pages_domain_params).permit!)
         .and_return(true)
 
       patch(:update, params)

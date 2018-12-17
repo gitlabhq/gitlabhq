@@ -255,6 +255,10 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def empty?
+        valid_blobs.map(&:empty?).all?
+      end
+
       def raw_binary?
         try_blobs(:raw_binary?)
       end

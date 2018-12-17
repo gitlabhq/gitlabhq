@@ -35,7 +35,7 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('mergeWhenPipelineSucceeds');
 
-    context.hasSHAChanged = true;
+    context.isSHAMismatch = true;
 
     expect(bound()).toEqual('shaMismatch');
 

@@ -6,8 +6,18 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
   let(:stages) { table(:ci_stages) }
   let(:jobs) { table(:ci_builds) }
 
-  STATUSES = { created: 0, pending: 1, running: 2, success: 3,
-               failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
+  let(:statuses) do
+    {
+      created: 0,
+      pending: 1,
+      running: 2,
+      success: 3,
+      failed: 4,
+      canceled: 5,
+      skipped: 6,
+      manual: 7
+    }
+  end
 
   before do
     projects.create!(id: 123, name: 'gitlab', path: 'gitlab-ce')
@@ -36,9 +46,9 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
     expect(stages.all.pluck(:name)).to match_array %w[test build deploy]
     expect(jobs.where(stage_id: nil)).to be_one
     expect(jobs.find_by(stage_id: nil).id).to eq 6
-    expect(stages.all.pluck(:status)).to match_array [STATUSES[:success],
-                                                      STATUSES[:failed],
-                                                      STATUSES[:pending]]
+    expect(stages.all.pluck(:status)).to match_array [statuses[:success],
+                                                      statuses[:failed],
+                                                      statuses[:pending]]
   end
 
   it 'recovers from unique constraint violation only twice' do

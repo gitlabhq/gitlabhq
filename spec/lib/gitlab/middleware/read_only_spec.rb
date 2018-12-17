@@ -8,7 +8,6 @@ describe Gitlab::Middleware::ReadOnly do
     rack = Rack::Builder.new do
       use ActionDispatch::Session::CacheStore
       use ActionDispatch::Flash
-      use ActionDispatch::ParamsParser
     end
 
     rack.run(subject)

@@ -2,14 +2,14 @@
 
 module Constraints
   class FeatureConstrainer
-    attr_reader :feature
+    attr_reader :args
 
-    def initialize(feature)
-      @feature = feature
+    def initialize(*args)
+      @args = args
     end
 
     def matches?(_request)
-      Feature.enabled?(feature)
+      Feature.enabled?(*args)
     end
   end
 end

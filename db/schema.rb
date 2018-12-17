@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181204154019) do
+ActiveRecord::Schema.define(version: 20181212104941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1803,6 +1803,10 @@ ActiveRecord::Schema.define(version: 20181204154019) do
     t.datetime "updated_at"
     t.text "description_html"
     t.integer "cached_markdown_version"
+    t.integer "author_id"
+    t.string "name"
+    t.string "sha"
+    t.index ["author_id"], name: "index_releases_on_author_id", using: :btree
     t.index ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
     t.index ["project_id"], name: "index_releases_on_project_id", using: :btree
   end
@@ -2433,6 +2437,7 @@ ActiveRecord::Schema.define(version: 20181204154019) do
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
+  add_foreign_key "releases", "users", column: "author_id", name: "fk_8e4456f90f", on_delete: :nullify
   add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
   add_foreign_key "repository_languages", "projects", on_delete: :cascade
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
