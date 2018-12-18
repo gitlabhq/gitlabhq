@@ -3,12 +3,12 @@
 module Gitlab
   module BackgroundMigration
     # Class that will fill the project_repositories table for projects that
-    # are on hashed storage and an entry is is missing in this table.
-    class BackfillHashedProjectRepositories < BackfillProjectRepositories
+    # are on legacy storage and an entry is is missing in this table.
+    class BackfillLegacyProjectRepositories < BackfillProjectRepositories
       private
 
       def projects
-        Project.on_hashed_storage
+        Project.with_parent.on_legacy_storage
       end
     end
   end
