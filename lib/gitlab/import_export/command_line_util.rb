@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     module CommandLineUtil
-      UNTAR_MASK = 'u+rwX,go+rX,go-w'
+      UNTAR_MASK = 'u+rwX,go+rX,go-w'.freeze
       DEFAULT_DIR_MODE = 0700
 
       def tar_czf(archive:, dir:)
