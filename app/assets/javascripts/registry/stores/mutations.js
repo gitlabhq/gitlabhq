@@ -48,6 +48,7 @@ export default {
 
   [types.TOGGLE_REGISTRY_LIST_LOADING](state, list) {
     const listToUpdate = state.repos.find(el => el.id === list.id);
+
     listToUpdate.isLoading = !listToUpdate.isLoading;
   },
 };

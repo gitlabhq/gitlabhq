@@ -810,6 +810,95 @@ describe Ci::CreatePipelineService do
             end
           end
         end
+
+        context "when config uses regular expression for only keyword" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                only: ["/^#{ref_name}$/"]
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+
+        context "when config uses variables for only keyword" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                only: {
+                  variables: %w($CI)
+                }
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+
+        context "when config has 'except: [tags]'" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                except: ['tags']
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
       end
 
       context 'when source is web' do

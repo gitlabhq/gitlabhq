@@ -238,6 +238,8 @@ class MergeRequestWidgetEntity < IssuableEntity
     end
   end
 
+  expose :supports_suggestion?, as: :can_receive_suggestion
+
   private
 
   delegate :current_user, to: :request

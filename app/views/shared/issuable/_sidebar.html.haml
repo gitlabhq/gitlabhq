@@ -16,7 +16,7 @@
       - if current_user
         .block.todo.hide-expanded
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
-      .block.assignee
+      .block.assignee.qa-assignee-block
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
 
       = render_if_exists 'shared/issuable/sidebar_item_epic', issuable: issuable

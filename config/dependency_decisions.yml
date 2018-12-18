@@ -592,9 +592,10 @@
       in compiled/distributed product so attribution not needed.
     :versions: []
     :when: 2018-10-02 19:23:54.840151000 Z
-- - :approve
+- - :license
   - echarts
-  - :who: Mike Greiling
+  - Apache 2.0
+  - :who: Adriel Santiago
     :why: https://github.com/apache/incubator-echarts/blob/master/LICENSE
     :versions: []
-    :when: 2018-12-05 22:12:30.550027000 Z
+    :when: 2018-12-07 20:46:12.421256000 Z

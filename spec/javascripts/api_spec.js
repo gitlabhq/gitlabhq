@@ -333,6 +333,40 @@ describe('Api', () => {
     });
   });
 
+  describe('user', () => {
+    it('fetches single user', done => {
+      const userId = '123456';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}`;
+      mock.onGet(expectedUrl).reply(200, {
+        name: 'testuser',
+      });
+
+      Api.user(userId)
+        .then(({ data }) => {
+          expect(data.name).toBe('testuser');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('user status', () => {
+    it('fetches single user status', done => {
+      const userId = '123456';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/users/${userId}/status`;
+      mock.onGet(expectedUrl).reply(200, {
+        message: 'testmessage',
+      });
+
+      Api.userStatus(userId)
+        .then(({ data }) => {
+          expect(data.message).toBe('testmessage');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('commitPipelines', () => {
     it('fetches pipelines for a given commit', done => {
       const projectId = 'example/foobar';

@@ -143,4 +143,33 @@ describe UrlValidator do
       end
     end
   end
+
+  context 'when ascii_only is' do
+    let(:url) { 'https://𝕘itⅼαƄ.com/foo/foo.bar'}
+    let(:validator) { described_class.new(attributes: [:link_url], ascii_only: ascii_only) }
+
+    context 'true' do
+      let(:ascii_only) { true }
+
+      it 'prevents unicode characters' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+    end
+
+    context 'false (default)' do
+      let(:ascii_only) { false }
+
+      it 'does not prevent unicode characters' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+  end
 end

@@ -97,6 +97,9 @@ msgstr[1] ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
+msgid "%{bio} at %{organization}"
+msgstr ""
+
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
@@ -402,9 +405,6 @@ msgstr ""
 msgid "Admin Overview"
 msgstr ""
 
-msgid "Admin area"
-msgstr ""
-
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -657,6 +657,12 @@ msgstr ""
 msgid "Applications"
 msgstr ""
 
+msgid "Applied"
+msgstr ""
+
+msgid "Apply suggestion"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -844,6 +850,9 @@ msgid "Available shared Runners:"
 msgstr ""
 
 msgid "Available specific runners"
+msgstr ""
+
+msgid "Avatar for %{assigneeName}"
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -2917,6 +2926,9 @@ msgstr ""
 msgid "Expiration date"
 msgstr ""
 
+msgid "Expired %{expiredOn}"
+msgstr ""
+
 msgid "Expires in %{expires_at}"
 msgstr ""
 
@@ -3586,6 +3598,9 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert suggestion"
 msgstr ""
 
 msgid "Install GitLab Runner"
@@ -6068,6 +6083,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+msgid "Something went wrong while applying the suggestion. Please try again."
+msgstr ""
+
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
@@ -6275,6 +6293,12 @@ msgstr ""
 msgid "Started"
 msgstr ""
 
+msgid "Started %{startsIn}"
+msgstr ""
+
+msgid "Starts %{startsIn}"
+msgstr ""
+
 msgid "Starts at (UTC)"
 msgstr ""
 
@@ -6324,6 +6348,9 @@ msgid "Subscribe at project level"
 msgstr ""
 
 msgid "Subscribed"
+msgstr ""
+
+msgid "Suggested change"
 msgstr ""
 
 msgid "Switch branch/tag"

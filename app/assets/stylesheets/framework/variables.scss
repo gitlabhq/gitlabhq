@@ -172,6 +172,7 @@ $theme-light-red-700: #a62e21;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$shadow-color: rgba($black, 0.1);
 $almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
@@ -250,6 +251,7 @@ $browserScrollbarSize: 10px;
  * Misc
  */
 $header-height: 40px;
+$suggestion-header-height: 46px;
 $ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
@@ -368,7 +370,9 @@ $gl-btn-line-height: 16px;
 $gl-btn-vert-padding: 8px;
 $gl-btn-horz-padding: 12px;
 $gl-btn-small-font-size: 13px;
-$gl-btn-small-line-height: 13px;
+$gl-btn-small-line-height: 18px;
+$gl-btn-xs-font-size: 13px;
+$gl-btn-xs-line-height: 13px;
 
 /*
 * Badges
@@ -399,7 +403,7 @@ $award-emoji-positive-add-lines: #bb9c13;
  * Search Box
  */
 $search-input-border-color: rgba($blue-400, 0.8);
-$search-input-width: 240px;
+$search-input-width: 200px;
 $search-input-active-width: 320px;
 $location-icon-color: #e7e9ed;
 

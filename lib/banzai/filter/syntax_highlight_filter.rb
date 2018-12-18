@@ -69,7 +69,7 @@ module Banzai
       end
 
       def use_rouge?(language)
-        %w(math mermaid plantuml).exclude?(language)
+        %w(math mermaid plantuml suggestion).exclude?(language)
       end
     end
   end

@@ -655,6 +655,11 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def latest_successful_build_for(job_name, ref = default_branch)
+    builds = latest_successful_builds_for(ref)
+    builds.find_by!(name: job_name)
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     commit_by(oid: sha) if sha
@@ -2009,12 +2014,12 @@ class Project < ActiveRecord::Base
 
   def create_new_pool_repository
     pool = begin
-             create_or_find_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
+             create_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
            rescue ActiveRecord::RecordNotUnique
-             retry
+             pool_repository(true)
            end
 
-    pool.schedule
+    pool.schedule unless pool.scheduled?
     pool
   end
 

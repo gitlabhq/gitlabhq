@@ -8,6 +8,9 @@ module Gitlab
         # Base class for OnlyPolicy and ExceptPolicy
         #
         class Policy < ::Gitlab::Config::Entry::Simplifiable
+          strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
+          strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
+
           class RefsPolicy < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
 

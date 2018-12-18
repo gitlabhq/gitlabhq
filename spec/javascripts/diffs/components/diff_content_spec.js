@@ -17,6 +17,7 @@ describe('DiffContent', () => {
       current_user: {
         can_create_note: false,
       },
+      preview_note_path: 'path/to/preview',
     };
 
     vm = mountComponentWithStore(Component, {

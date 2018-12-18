@@ -3,8 +3,6 @@
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'.freeze
 
-  include Gitlab::ShellAdapter
-
   belongs_to :project, foreign_key: 'source_id'
 
   # Make sure project member points only to project as it source

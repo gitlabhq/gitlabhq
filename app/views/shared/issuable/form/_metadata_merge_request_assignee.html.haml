@@ -5,4 +5,4 @@
 
     = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Select assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
       placeholder: "Search assignee", data: { first_user: current_user.try(:username), null_user: true, current_user: true, project_id: issuable.project.try(:id), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee"} })
-  = link_to 'Assign to me', '#', class: "assign-to-me-link #{'hide' if issuable.assignee_id == current_user.id}"
+  = link_to 'Assign to me', '#', class: "assign-to-me-link qa-assign-to-me-link #{'hide' if issuable.assignee_id == current_user.id}"

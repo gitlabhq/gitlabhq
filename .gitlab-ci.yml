@@ -488,7 +488,6 @@ danger-review:
   <<: *pull-cache
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
-  allow_failure: true
   dependencies: []
   before_script: []
   only:
@@ -555,7 +554,8 @@ docs lint:
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
-    - bundle exec nanoc check internal_links
+    # Disabled until https://gitlab.com/gitlab-com/gitlab-docs/issues/305 is resolved
+    # - bundle exec nanoc check internal_links
 
 downtime_check:
   <<: *rake-exec

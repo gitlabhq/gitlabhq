@@ -192,8 +192,12 @@ export const contentTop = () => {
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
   const diffFilesChanged = $('.js-diff-files-changed').height() || 0;
+  const diffFileLargeEnoughScreen =
+    'matchMedia' in window ? window.matchMedia('min-width: 768') : true;
+  const diffFileTitleBar =
+    (diffFileLargeEnoughScreen && $('.diff-file .file-title-flex-parent:visible').height()) || 0;
 
-  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged;
+  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged + diffFileTitleBar;
 };
 
 export const scrollToElement = element => {

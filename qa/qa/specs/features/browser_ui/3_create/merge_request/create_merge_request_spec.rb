@@ -4,6 +4,8 @@ module QA
   context 'Create' do
     describe 'Merge request creation' do
       it 'user creates a new merge request'  do
+        gitlab_account_username = "@#{Runtime::User.username}"
+
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
@@ -27,6 +29,7 @@ module QA
           merge_request.description = 'Great feature with milestone'
           merge_request.project = current_project
           merge_request.milestone = current_milestone
+          merge_request.assignee = 'me'
           merge_request.labels.push(new_label)
         end
 
@@ -34,6 +37,7 @@ module QA
           expect(merge_request).to have_content('This is a merge request with a milestone')
           expect(merge_request).to have_content('Great feature with milestone')
           expect(merge_request).to have_content(/Opened [\w\s]+ ago/)
+          expect(merge_request).to have_assignee(gitlab_account_username)
           expect(merge_request).to have_label(new_label.title)
         end
 

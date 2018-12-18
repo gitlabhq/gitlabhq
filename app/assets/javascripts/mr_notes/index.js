@@ -33,6 +33,7 @@ export default function initMrNotes() {
         noteableData,
         currentUserData: JSON.parse(notesDataset.currentUserData),
         notesData: JSON.parse(notesDataset.notesData),
+        helpPagePath: notesDataset.helpPagePath,
       };
     },
     computed: {
@@ -71,6 +72,7 @@ export default function initMrNotes() {
           notesData: this.notesData,
           userData: this.currentUserData,
           shouldShow: this.activeTab === 'show',
+          helpPagePath: this.helpPagePath,
         },
       });
     },

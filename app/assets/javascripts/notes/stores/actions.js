@@ -17,7 +17,13 @@ import { __ } from '~/locale';
 
 let eTagPoll;
 
-export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
+export const expandDiscussion = ({ commit, dispatch }, data) => {
+  if (data.discussionId) {
+    dispatch('diffs/renderFileForDiscussionId', data.discussionId, { root: true });
+  }
+
+  commit(types.EXPAND_DISCUSSION, data);
+};
 
 export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
 
@@ -398,6 +404,26 @@ export const startTaskList = ({ dispatch }) =>
 
 export const updateResolvableDiscussonsCounts = ({ commit }) =>
   commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
+
+export const submitSuggestion = (
+  { commit },
+  { discussionId, noteId, suggestionId, flashContainer, callback },
+) => {
+  service
+    .applySuggestion(suggestionId)
+    .then(() => {
+      commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId });
+      callback();
+    })
+    .catch(() => {
+      Flash(
+        __('Something went wrong while applying the suggestion. Please try again.'),
+        'alert',
+        flashContainer,
+      );
+      callback();
+    });
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

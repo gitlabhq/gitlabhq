@@ -3,8 +3,6 @@
 module Gitlab
   module BitbucketServerImport
     class Importer
-      include Gitlab::ShellAdapter
-
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
       attr_accessor :logger
