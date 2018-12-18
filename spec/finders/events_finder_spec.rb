@@ -14,6 +14,10 @@ describe EventsFinder do
   let!(:closed_issue_event2) { create(:event, project: project1, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 2, 2)) }
   let!(:opened_merge_request_event2) { create(:event, project: project2, author: user, target: opened_merge_request, action: Event::CREATED, created_at: Date.new(2017, 2, 2)) }
 
+  let(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
+  let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
+  let!(:confidential_event) { create(:event, project: public_project, author: user, target: confidential_issue, action: Event::CLOSED) }
+
   context 'when targeting a user' do
     it 'returns events between specified dates filtered on action and type' do
       events = described_class.new(source: user, current_user: user, action: 'created', target_type: 'merge_request', after: Date.new(2017, 1, 1), before: Date.new(2017, 2, 1)).execute
@@ -25,6 +29,19 @@ describe EventsFinder do
       events = described_class.new(source: user, current_user: other_user).execute
 
       expect(events).not_to include(opened_merge_request_event)
+    end
+
+    it 'does not include events on confidential issues the user does not have access to' do
+      events = described_class.new(source: user, current_user: other_user).execute
+
+      expect(events).not_to include(confidential_event)
+    end
+
+    it 'includes confidential events user has access to' do
+      public_project.add_developer(other_user)
+      events = described_class.new(source: user, current_user: other_user).execute
+
+      expect(events).to include(confidential_event)
     end
 
     it 'returns nothing when the current user cannot read cross project' do

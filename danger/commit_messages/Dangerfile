@@ -149,7 +149,7 @@ def lint_commits(commits)
     if !details && too_many_changed_lines?(commit)
       fail_commit(
         commit,
-        'Commits that change 30 or more lines in more than three files ' \
+        'Commits that change 30 or more lines across at least three files ' \
           'must describe these changes in the commit body'
       )
 

@@ -89,8 +89,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
-# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332 and
+# https://github.com/carrierwaveuploader/carrierwave/pull/2356 are merged.
+# config/initializers/carrierwave_patch.rb can be removed once both changes are released.
 gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
@@ -164,6 +165,7 @@ gem 'acts-as-taggable-on', '~> 5.0'
 gem 'sidekiq', '~> 5.2.1'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.6.0'
+gem 'gitlab-sidekiq-fetcher', '~> 0.1.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -290,11 +292,10 @@ gem 'batch-loader', '~> 1.2.2'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-mysql2', '~> 1.1.0', group: :mysql
+gem 'peek-mysql2', '~> 1.2.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
-gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Metrics
 group :metrics do

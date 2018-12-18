@@ -124,7 +124,7 @@ describe Gitlab::EncodingHelper do
     end
 
     it 'returns empty string on conversion errors' do
-      expect { ext_class.encode_utf8('') }.not_to raise_error(ArgumentError)
+      expect { ext_class.encode_utf8('') }.not_to raise_error
     end
 
     context 'with strings that can be forcefully encoded into utf8' do
