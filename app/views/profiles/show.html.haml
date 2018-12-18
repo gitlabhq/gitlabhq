@@ -71,43 +71,43 @@
       %h4.prepend-top-0
         = s_("Profiles|Main settings")
       %p
-        = s_("Profiles|This information will appear on your profile.")
+        = s_("Profiles|This information will appear on your profile")
         - if current_user.ldap_user?
           = s_("Profiles|Some options are unavailable for LDAP accounts")
     .col-lg-8
       .row
         - if @user.read_only_attribute?(:name)
           = f.text_field :name, required: true, readonly: true, wrapper: { class: 'col-md-9' },
-          help: s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you.") % { provider_label: attribute_provider_label(:name) }
+          help: s_("Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you") % { provider_label: attribute_provider_label(:name) }
         - else
-          = f.text_field :name, label: 'Full name', required: true, wrapper: { class: 'col-md-9' }, help: "Enter your name, so people you know can recognize you."
+          = f.text_field :name, label: 'Full name', required: true, wrapper: { class: 'col-md-9' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
         = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
 
       - if @user.read_only_attribute?(:email)
-        = f.text_field :email, required: true, readonly: true, help: s_("Profiles|Your email address was automatically set based on your %{provider_label} account.") % { provider_label: attribute_provider_label(:email) }
+        = f.text_field :email, required: true, class: 'input-lg', readonly: true, help: s_("Profiles|Your email address was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:email) }
       - else
-        = f.text_field :email, required: true, value: (@user.email unless @user.temp_oauth_email?),
+        = f.text_field :email, required: true, class: 'input-lg', value: (@user.email unless @user.temp_oauth_email?),
           help: user_email_help_text(@user)
       = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email),
-        { help: s_("Profiles|This email will be displayed on your public profile."), include_blank: s_("Profiles|Do not show on profile") },
-        control_class: 'select2'
+        { help: s_("Profiles|This email will be displayed on your public profile"), include_blank: s_("Profiles|Do not show on profile") },
+        control_class: 'select2 input-lg'
       - commit_email_docs_link = link_to s_('Profiles|Learn more'), help_page_path('user/profile/index', anchor: 'commit-email', target: '_blank')
       = f.select :commit_email, options_for_select(commit_email_select_options(@user), selected: selected_commit_email(@user)),
         { help: s_("Profiles|This email will be used for web based operations, such as edits and merges. %{learn_more}").html_safe % { learn_more: commit_email_docs_link } },
-        control_class: 'select2'
+        control_class: 'select2 input-lg'
       = f.select :preferred_language, Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] },
-        { help: s_("Profiles|This feature is experimental and translations are not complete yet.") },
-        control_class: 'select2'
-      = f.text_field :skype
-      = f.text_field :linkedin
-      = f.text_field :twitter
-      = f.text_field :website_url, label: s_("Profiles|Website")
+        { help: s_("Profiles|This feature is experimental and translations are not complete yet") },
+        control_class: 'select2 input-lg'
+      = f.text_field :skype, class: 'input-md', placeholder: s_("Profiles|username")
+      = f.text_field :linkedin, class: 'input-md', help: s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
+      = f.text_field :twitter, class: 'input-md', placeholder: s_("Profiles|@username")
+      = f.text_field :website_url, class: 'input-lg', placeholder: s_("Profiles|website.com")
       - if @user.read_only_attribute?(:location)
-        = f.text_field :location, readonly: true, help: s_("Profiles|Your location was automatically set based on your %{provider_label} account.") % { provider_label: attribute_provider_label(:location) }
+        = f.text_field :location, readonly: true, help: s_("Profiles|Your location was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:location) }
       - else
-        = f.text_field :location
-      = f.text_field :organization
-      = f.text_area :bio, rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters.")
+        = f.text_field :location, class: 'input-lg', placeholder: s_("Profiles|City, country")
+      = f.text_field :organization, class: 'input-md', help: s_("Profiles|Who you represent or work for")
+      = f.text_area :bio, rows: 4, maxlength: 250, help: s_("Profiles|Tell us about yourself in fewer than 250 characters")
       %hr
       %h5= ("Private profile")
       .checkbox-icon-inline-wrapper
@@ -118,7 +118,7 @@
       %h5= s_("Profiles|Private contributions")
       = f.check_box :include_private_contributions, label: 'Include private contributions on my profile'
       .help-block
-        = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information.")
+        = s_("Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information")
       .prepend-top-default.append-bottom-default
         = f.submit s_("Profiles|Update profile settings"), class: 'btn btn-success'
         = link_to _("Cancel"), user_path(current_user), class: 'btn btn-cancel'

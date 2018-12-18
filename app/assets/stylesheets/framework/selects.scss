@@ -1,6 +1,11 @@
 /** Select2 selectbox style override **/
 .select2-container {
   width: 100% !important;
+
+  &.input-md,
+  &.input-lg {
+    display: block;
+  }
 }
 
 .select2-container,
