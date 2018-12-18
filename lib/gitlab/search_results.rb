@@ -138,6 +138,8 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     def users
+      return User.none unless Ability.allowed?(current_user, :read_users_list)
+
       UsersFinder.new(current_user, search: query).execute
     end
 

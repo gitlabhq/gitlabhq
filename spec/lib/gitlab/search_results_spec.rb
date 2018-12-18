@@ -123,6 +123,14 @@ describe Gitlab::SearchResults do
     end
 
     describe '#users' do
+      it 'does not call the UsersFinder when the current_user is not allowed to read users list' do
+        allow(Ability).to receive(:allowed?).and_return(false)
+
+        expect(UsersFinder).not_to receive(:new).with(user, search: 'foo').and_call_original
+
+        results.objects('users')
+      end
+
       it 'calls the UsersFinder' do
         expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
 
