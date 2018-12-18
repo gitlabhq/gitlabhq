@@ -59,6 +59,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipelines/:pipeline_id/jobs' do
         pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
+        authorize!(:read_pipeline, user_project)
         authorize!(:read_build, pipeline)
 
         builds = pipeline.builds
