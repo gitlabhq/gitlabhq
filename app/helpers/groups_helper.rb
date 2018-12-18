@@ -126,7 +126,7 @@ module GroupsHelper
   end
 
   def supports_nested_groups?
-    Group.supports_nested_groups?
+    Group.supports_nested_objects?
   end
 
   private

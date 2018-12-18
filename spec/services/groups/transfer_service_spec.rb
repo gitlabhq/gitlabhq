@@ -9,7 +9,7 @@ describe Groups::TransferService, :postgresql do
   shared_examples 'ensuring allowed transfer for a group' do
     context 'with other database than PostgreSQL' do
       before do
-        allow(Group).to receive(:supports_nested_groups?).and_return(false)
+        allow(Group).to receive(:supports_nested_objects?).and_return(false)
       end
 
       it 'should return false' do
