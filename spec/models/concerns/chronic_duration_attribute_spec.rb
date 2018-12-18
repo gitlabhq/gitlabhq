@@ -43,7 +43,7 @@ shared_examples 'ChronicDurationAttribute writer' do
     end
 
     it "doesn't raise exception" do
-      expect { subject.send("#{virtual_field}=", '-10m') }.not_to raise_error(ChronicDuration::DurationParseError)
+      expect { subject.send("#{virtual_field}=", '-10m') }.not_to raise_error
     end
 
     it "doesn't change value" do
@@ -87,7 +87,7 @@ shared_examples 'ChronicDurationAttribute writer' do
     end
 
     it "doesn't raise exception" do
-      expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error(NoMethodError)
+      expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error
     end
   end
 end
