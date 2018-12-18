@@ -124,3 +124,11 @@ The result will then be:
 - The Project cluster will be used for the `test` job.
 - The Staging cluster will be used for the `deploy to staging` job.
 - The Production cluster will be used for the `deploy to production` job.
+
+## Unavailable features
+
+The following features are not currently available for group-level clusters:
+
+1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
+1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
+1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
