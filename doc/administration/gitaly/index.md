@@ -1,6 +1,6 @@
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that 
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that
 provides high-level RPC access to Git repositories. Without it, no other
 components can read or write Git data.
 
@@ -133,6 +133,11 @@ gitaly['storage'] = [
   { 'name' => 'default', 'path' => '/mnt/gitlab/default/repositories' },
   { 'name' => 'storage1', 'path' => '/mnt/gitlab/storage1/repositories' },
 ]
+
+# To use tls for gitaly you need to add
+gitaly['tls_listen_addr'] = "0.0.0.0:9999"
+gitaly['certificate_path'] = "path/to/cert.pem"
+gitaly['key_path'] = "path/to/key.pem"
 ```
 
 Source installations:
@@ -140,6 +145,11 @@ Source installations:
 ```toml
 # /home/git/gitaly/config.toml
 listen_addr = '0.0.0.0:8075'
+tls_listen_addr = '0.0.0.0:9999'
+
+[tls]
+certificate_path = /path/to/cert.pem
+key_path = /path/to/key.pem
 
 [auth]
 token = 'abc123secret'
