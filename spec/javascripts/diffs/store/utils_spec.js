@@ -294,10 +294,14 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('prepareDiffData', () => {
-    it('sets the renderIt and collapsed attribute on files', () => {
-      const preparedDiff = { diff_files: [getDiffFileMock()] };
-      utils.prepareDiffData(preparedDiff);
+    let preparedDiff;
 
+    beforeEach(() => {
+      preparedDiff = { diff_files: [getDiffFileMock()] };
+      utils.prepareDiffData(preparedDiff);
+    });
+
+    it('sets the renderIt and collapsed attribute on files', () => {
       const firstParallelDiffLine = preparedDiff.diff_files[0].parallel_diff_lines[2];
 
       expect(firstParallelDiffLine.left.discussions.length).toBe(0);
@@ -322,6 +326,18 @@ describe('DiffsStoreUtils', () => {
 
       expect(preparedDiff.diff_files[0].renderIt).toBeTruthy();
       expect(preparedDiff.diff_files[0].collapsed).toBeFalsy();
+    });
+
+    it('adds line_code to all lines', () => {
+      expect(
+        preparedDiff.diff_files[0].parallel_diff_lines.filter(line => !line.line_code),
+      ).toHaveLength(0);
+    });
+
+    it('uses right line code if left has none', () => {
+      const firstLine = preparedDiff.diff_files[0].parallel_diff_lines[0];
+
+      expect(firstLine.line_code).toEqual(firstLine.right.line_code);
     });
   });
 
