@@ -364,8 +364,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def supports_suggestion?
-    # Should be `true` when removing the FF.
-    Suggestion.feature_enabled?
+    true
   end
 
   # Calls `MergeWorker` to proceed with the merge process and
