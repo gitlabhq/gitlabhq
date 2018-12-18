@@ -32,11 +32,11 @@ deployments.
 
 ## Unavailable features
 
-The following features are not currently available for group-level clusters and will be introduced in a future release:
+The following features are not currently available for group-level clusters:
 
-1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487))
-2. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488))
-3. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488))
+1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
+1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
+1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
 
 ## RBAC compatibility
 
