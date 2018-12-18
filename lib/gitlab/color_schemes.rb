@@ -12,7 +12,8 @@ module Gitlab
       Scheme.new(2, 'Dark',            'dark'),
       Scheme.new(3, 'Solarized Light', 'solarized-light'),
       Scheme.new(4, 'Solarized Dark',  'solarized-dark'),
-      Scheme.new(5, 'Monokai',         'monokai')
+      Scheme.new(5, 'Monokai',         'monokai'),
+      Scheme.new(6, 'None',            'none')
     ].freeze
 
     # Convenience method to get a space-separated String of all the color scheme

@@ -93,8 +93,28 @@ $colors: (
   solarized-dark-line-origin-chosen    : rgba(#2878c9, .35),
   solarized-dark-button-origin-chosen  : #0082cc,
 
-  solarized-dark-header-not-chosen     : rgba(#839496, .25),
-  solarized-dark-line-not-chosen       : rgba(#839496, .15)
+  solarized_dark_header_not_chosen     : rgba(#839496, .25),
+  solarized_dark_line_not_chosen       : rgba(#839496, .15),
+
+  none_header_head_neutral   : $gray-normal,
+  none_line_head_neutral     : $gray-normal,
+  none_button_head_neutral   : $gray-normal,
+
+  none_header_head_chosen    : $gray-darker,
+  none_line_head_chosen      : $gray-darker,
+  none_button_head_chosen    : $gray-darker,
+
+  none_header_origin_neutral : $gray-normal,
+  none_line_origin_neutral   : $gray-normal,
+  none_button_origin_neutral : $gray-normal,
+
+  none_header_origin_chosen  : $gray-darker,
+  none_line_origin_chosen    : $gray-darker,
+  none_button_origin_chosen  : $gray-darker,
+
+  none_header_not_chosen     : $gray-light,
+  none_line_not_chosen       : $gray-light
+
 );
 // scss-lint:enable ColorVariable
 
