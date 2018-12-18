@@ -1,5 +1,5 @@
 - users = capture_haml do
-  - if can?(current_user, :read_users_list)
+  - if search_tabs?(:members)
     %li{ class: active_when(@scope == 'users') }
       = link_to search_filter_path(scope: 'users') do
         Users

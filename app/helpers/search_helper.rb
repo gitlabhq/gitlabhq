@@ -201,4 +201,12 @@ module SearchHelper
   def limited_count(count, limit = 1000)
     count > limit ? "#{limit}+" : count
   end
+
+  def search_tabs?(tab)
+    if @project
+      project_search_tabs?(:members)
+    else
+      can?(current_user, :read_users_list)
+    end
+  end
 end

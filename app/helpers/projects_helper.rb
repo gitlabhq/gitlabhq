@@ -364,7 +364,8 @@ module ProjectsHelper
       blobs:          :download_code,
       commits:        :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet],
+      members:        :read_project_member
     )
   end
 
