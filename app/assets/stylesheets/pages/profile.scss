@@ -456,4 +456,15 @@ table.u2f-registrations {
       }
     }
   }
+
+  @include media-breakpoint-down(sm) {
+    .input-md,
+    .input-lg {
+      max-width: 100%;
+    }
+  }
+}
+
+.help-block {
+  color: $gl-text-color-secondary;
 }
