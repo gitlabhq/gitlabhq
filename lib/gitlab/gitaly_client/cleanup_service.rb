@@ -20,6 +20,7 @@ module Gitlab
 
           while data = io.read(RepositoryService::MAX_MSG_SIZE)
             y.yield Gitaly::ApplyBfgObjectMapRequest.new(object_map: data)
+            break if io&.eof?
           end
         end
 

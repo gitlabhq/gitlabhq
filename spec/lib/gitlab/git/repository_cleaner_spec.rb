@@ -1,31 +1,61 @@
 require 'spec_helper'
 
 describe Gitlab::Git::RepositoryCleaner do
+  include HttpIOHelpers
+
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:head_sha) { repository.head_commit.id }
-
-  let(:object_map) { StringIO.new("#{head_sha} #{'0' * 40}") }
+  let(:object_map_data) { "#{head_sha} #{'0' * 40}" }
 
   subject(:cleaner) { described_class.new(repository.raw) }
 
   describe '#apply_bfg_object_map' do
-    it 'removes internal references pointing at SHAs in the object map' do
-      # Create some refs we expect to be removed
-      repository.keep_around(head_sha)
-      repository.create_ref(head_sha, 'refs/environments/1')
-      repository.create_ref(head_sha, 'refs/merge-requests/1')
-      repository.create_ref(head_sha, 'refs/heads/_keep')
-      repository.create_ref(head_sha, 'refs/tags/_keep')
+    let(:clean_refs) { %W[refs/environments/1 refs/merge-requests/1 refs/keep-around/#{head_sha}] }
+    let(:keep_refs) { %w[refs/heads/_keep refs/tags/_keep] }
 
-      cleaner.apply_bfg_object_map(object_map)
+    before do
+      (clean_refs + keep_refs).each { |ref| repository.create_ref(head_sha, ref) }
+    end
 
-      aggregate_failures do
-        expect(repository.kept_around?(head_sha)).to be_falsy
-        expect(repository.ref_exists?('refs/environments/1')).to be_falsy
-        expect(repository.ref_exists?('refs/merge-requests/1')).to be_falsy
-        expect(repository.ref_exists?('refs/heads/_keep')).to be_truthy
-        expect(repository.ref_exists?('refs/tags/_keep')).to be_truthy
+    context 'from StringIO' do
+      let(:object_map) { StringIO.new(object_map_data) }
+
+      it 'removes internal references' do
+        cleaner.apply_bfg_object_map(object_map)
+
+        aggregate_failures do
+          clean_refs.each { |ref| expect(repository.ref_exists?(ref)).to be_falsy }
+          keep_refs.each { |ref| expect(repository.ref_exists?(ref)).to be_truthy }
+        end
+      end
+    end
+
+    context 'from Gitlab::HttpIO' do
+      let(:url) { 'http://example.com/bfg_object_map.txt' }
+      let(:tempfile) { Tempfile.new }
+      let(:object_map) { Gitlab::HttpIO.new(url, object_map_data.size) }
+
+      around do |example|
+        begin
+          tempfile.write(object_map_data)
+          tempfile.close
+
+          example.run
+        ensure
+          tempfile.unlink
+        end
+      end
+
+      it 'removes internal references' do
+        stub_remote_url_200(url, tempfile.path)
+
+        cleaner.apply_bfg_object_map(object_map)
+
+        aggregate_failures do
+          clean_refs.each { |ref| expect(repository.ref_exists?(ref)).to be_falsy }
+          keep_refs.each { |ref| expect(repository.ref_exists?(ref)).to be_truthy }
+        end
       end
     end
   end

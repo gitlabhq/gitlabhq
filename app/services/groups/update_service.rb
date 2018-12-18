@@ -36,7 +36,7 @@ module Groups
     end
 
     def reject_parent_id!
-      params.except!(:parent_id)
+      params.delete(:parent_id)
     end
 
     def valid_share_with_group_lock_change?

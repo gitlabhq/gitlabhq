@@ -9,7 +9,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_update_build!,
     except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
   before_action :authorize_erase_build!, only: [:erase]
-  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_workhorse_authorize]
+  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   layout 'project'

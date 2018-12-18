@@ -5,11 +5,11 @@ It is not valid for the [GitLab documentation website](https://docs.gitlab.com)
 nor [GitLab's main website](https://about.gitlab.com), as they both use
 [Kramdown](https://kramdown.gettalong.org) as their markdown engine.
 The documentation website uses an extended Kramdown gem, [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown).
-Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference._
+Consult the [GitLab Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
 ## GitLab Flavored Markdown (GFM)
 
-GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification][commonmark-spec] (which is based on standard Markdown) in a few significant ways to add additional useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
 You can use GFM in the following areas:
 
@@ -26,8 +26,7 @@ dependency to do so. Please see the [`github-markup` gem readme](https://github.
 
 > **Notes:**
 >
-> For the best result, we encourage you to check this document out as [rendered
-> by GitLab itself](markdown.md).
+> We encourage you to view this document as [rendered by GitLab itself](markdown.md).
 >
 > As of 11.1, GitLab uses the [CommonMark Ruby Library][commonmarker] for Markdown
 processing of all new issues, merge requests, comments, and other Markdown content
@@ -142,7 +141,7 @@ GFM will autolink almost any URL you copy and paste into your text:
 * <a href="irc://irc.freenode.net/gitlab">irc://irc.freenode.net/gitlab</a>
 * http://localhost:3000
 
-### Multiline Blockquote
+### Multiline blockquote
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#multiline-blockquote
@@ -172,7 +171,7 @@ you can quote that without having to manually prepend `>` to every line!
 <p>you can quote that without having to manually prepend <code>&gt;</code> to every line!</p>
 </blockquote>
 
-### Code and Syntax Highlighting
+### Code and syntax highlighting
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting
@@ -242,7 +241,7 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
-### Inline Diff
+### Inline diff
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-diff
@@ -309,7 +308,7 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 
-### Special GitLab References
+### Special GitLab references
 
 GFM recognizes special references.
 
@@ -363,7 +362,7 @@ It also has a shorthand version to reference other projects from the same namesp
 | `project@9ba12248...b19a04f5` | commit range comparison |
 | `project~"Some label"`        | issues with given label |
 
-### Task Lists
+### Task lists
 
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#task-lists
@@ -504,6 +503,66 @@ Becomes:
 <img src="./img/mermaid_diagram_render_gfm.png" width="200px" height="400px">
 
 For details see the [Mermaid official page][mermaid].
+
+### Front matter
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23331)
+  in GitLab 11.6.
+
+Front matter is metadata included at the beginning of a markdown document, preceding
+its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/) and [Hugo](https://gohugo.io/content-management/front-matter/),
+and many other applications.
+
+In GitLab, front matter is only used in Markdown files and wiki pages, not the other places where Markdown formatting is supported.
+When you view a Markdown file rendered by GitLab, any front matter is displayed as-is, in a box at the top of the document, before the rendered HTML content.
+To view an example, you can toggle between the source and rendered version of a [GitLab documentation file](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/README.md).
+
+The following delimeters are supported:
+
+- YAML (`---`):
+
+  ```
+  ---
+  title: About Front Matter
+  example:
+    language: yaml
+  ---
+  ```
+
+- TOML (`+++`):
+
+  ```
+  +++
+  title = "About Front Matter"
+  [example]
+  language = "toml"
+  +++
+  ```
+
+- JSON (`;;;`):
+
+  ```
+  ;;;
+  {
+    "title": "About Front Matter"
+    "example": {
+      "language": "json"
+    }
+  }
+  ;;;
+  ```
+
+Other languages are supported by adding a specifier to any of the existing
+delimiters. For example:
+
+```
+---php
+$title = "About Front Matter";
+$example = array(
+  'language' => "php",
+);
+---
+```
 
 ## Standard Markdown
 

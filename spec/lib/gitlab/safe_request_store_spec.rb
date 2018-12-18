@@ -78,6 +78,12 @@ describe Gitlab::SafeRequestStore do
           described_class.write('foo', true)
         end.to change { described_class.read('foo') }.from(nil).to(true)
       end
+
+      it 'does not pass the options hash to the underlying store implementation' do
+        expect(described_class.store).to receive(:write).with('foo', true)
+
+        described_class.write('foo', true, expires_in: 15.seconds)
+      end
     end
 
     context 'when RequestStore is NOT active' do
@@ -85,6 +91,12 @@ describe Gitlab::SafeRequestStore do
         expect do
           described_class.write('foo', true)
         end.not_to change { described_class.read('foo') }.from(nil)
+      end
+
+      it 'does not pass the options hash to the underlying store implementation' do
+        expect(described_class.store).to receive(:write).with('foo', true)
+
+        described_class.write('foo', true, expires_in: 15.seconds)
       end
     end
   end

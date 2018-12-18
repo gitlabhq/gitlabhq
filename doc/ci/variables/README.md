@@ -47,6 +47,7 @@ future GitLab releases.**
 | **CI_COMMIT_REF_NAME**                    | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**                    | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**                         | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_SHORT_SHA**                   | 11.7   | all    | The first eight characters of `CI_COMMIT_SHA` |
 | **CI_COMMIT_BEFORE_SHA**                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_TAG**                         | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_COMMIT_MESSAGE**                     | 10.8   | all    | The full commit message. |
@@ -316,6 +317,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_DEBUG_TRACE=false
 ++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_SHORT_SHA=dd648b2e
+++ CI_COMMIT_SHORT_SHA=dd648b2e
 ++ export CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ export CI_COMMIT_REF_NAME=master
@@ -462,6 +465,7 @@ Example values:
 ```bash
 export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
+export CI_COMMIT_SHORT_SHA="1ecfd275"
 export CI_COMMIT_REF_NAME="master"
 export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
 export CI_COMMIT_TAG="1.0.0"

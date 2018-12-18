@@ -293,6 +293,51 @@ Once you select one of the filters in a given issue or MR, GitLab will save
 your preference, so that it will persist when you visit the same page again
 from any device you're logged into.
 
+## Suggest Changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+
+As a reviewer, you're able to suggest code changes with a simple 
+markdown syntax in Merge Request Diff discussions. Then, the
+Merge Request author (or other users with appropriate 
+[permission](../permissions.md)) is able to apply these
+suggestions with a click, which will generate a commit in 
+the Merge Request authored by the user that applied them.
+
+1. Choose a line of code to be changed, add a new comment, then click
+on the **Insert suggestion** icon in the toolbar:
+
+    ![Add a new comment](img/insert_suggestion.png)
+    
+    > **Note:**
+    The suggestion will only affect the commented line. Multi-line
+    suggestions are currently not supported. Will be introduced by 
+    [#53310](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310).
+
+1. In the comment, add your suggestion to the pre-populated code block:
+
+    ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
+
+1. Click **Comment**.
+
+    The suggestions in the comment can be applied by the merge request author
+    directly from the merge request:
+
+    ![Apply suggestions](img/suggestion.png)
+
+    > **Note:**
+    Discussions are _not_ automatically resolved. Will be introduced by 
+    [#54405](https://gitlab.com/gitlab-org/gitlab-ce/issues/54405).
+    
+Once the author applies a suggestion, it will be marked with the **Applied** label,
+and GitLab will create a new commit with the message `Apply suggestion to <file-name>`
+and push the suggested change directly into the codebase in the merge request's branch.
+[Developer permission](../permissions.md) is required to do so.
+
+> **Note:**
+Custom commit messages will be introduced by
+[#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527

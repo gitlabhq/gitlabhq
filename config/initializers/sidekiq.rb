@@ -42,7 +42,9 @@ Sidekiq.configure_server do |config|
   end
 
   if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
-    Sidekiq::ReliableFetcher.setup_reliable_fetch!(config)
+    # By default we're going to use Semi Reliable Fetch
+    config.options[:semi_reliable_fetch] = Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+    Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml

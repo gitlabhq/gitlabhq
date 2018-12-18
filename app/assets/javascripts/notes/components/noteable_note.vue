@@ -195,7 +195,7 @@ export default {
         :img-alt="author.name"
         :img-size="40"
       >
-        <slot slot="avatar-badge" name="avatar-badge"> </slot>
+        <slot slot="avatar-badge" name="avatar-badge"></slot>
       </user-avatar-link>
     </div>
     <div class="timeline-content">
@@ -227,16 +227,19 @@ export default {
           @handleResolve="resolveHandler"
         />
       </div>
-      <note-body
-        ref="noteBody"
-        :note="note"
-        :line="line"
-        :can-edit="note.current_user.can_edit"
-        :is-editing="isEditing"
-        :help-page-path="helpPagePath"
-        @handleFormUpdate="formUpdateHandler"
-        @cancelForm="formCancelHandler"
-      />
+      <div class="timeline-discussion-body">
+        <slot name="discussion-resolved-text"></slot>
+        <note-body
+          ref="noteBody"
+          :note="note"
+          :line="line"
+          :can-edit="note.current_user.can_edit"
+          :is-editing="isEditing"
+          :help-page-path="helpPagePath"
+          @handleFormUpdate="formUpdateHandler"
+          @cancelForm="formCancelHandler"
+        />
+      </div>
     </div>
   </timeline-entry-item>
 </template>
