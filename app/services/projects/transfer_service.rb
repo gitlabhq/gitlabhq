@@ -81,7 +81,7 @@ module Projects
 
         project.old_path_with_namespace = @old_path
 
-        write_repository_config(@new_path)
+        update_repository_configuration(@new_path)
 
         execute_system_hooks
       end
@@ -106,8 +106,9 @@ module Projects
       project.save!
     end
 
-    def write_repository_config(full_path)
+    def update_repository_configuration(full_path)
       project.write_repository_config(gl_full_path: full_path)
+      project.track_project_repository
     end
 
     def refresh_permissions
@@ -123,7 +124,7 @@ module Projects
       rollback_folder_move
       project.reload
       update_namespace_and_visibility(@old_namespace)
-      write_repository_config(@old_path)
+      update_repository_configuration(@old_path)
     end
 
     def rollback_folder_move
