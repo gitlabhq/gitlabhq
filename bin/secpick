@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: false
+
+require 'active_support/core_ext/object/to_query'
 require 'optparse'
 require 'open3'
 require 'rainbow/refinement'
@@ -6,6 +9,7 @@ using Rainbow
 
 BRANCH_PREFIX = 'security'.freeze
 REMOTE = 'dev'.freeze
+NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
 
 options = { version: nil, branch: nil, sha: nil }
 
@@ -48,7 +52,24 @@ end.freeze
 
 command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch} && git checkout #{original_branch}"
 
-_stdin, stdout, stderr = Open3.popen3(command)
+stdin, stdout, stderr, wait_thr = Open3.popen3(command)
 
 puts stdout.read&.green
 puts stderr.read&.red
+
+if wait_thr.value.success?
+  params = {
+    merge_request: {
+      source_branch: branch,
+      target_branch: stable_branch,
+      title: "WIP: [#{options[:version].tr('-', '.')}] ",
+      description: '/label ~security'
+    }
+  }
+
+  puts "#{NEW_MR_URL}?#{params.to_query}".blue
+end
+
+stdin.close
+stdout.close
+stderr.close
