@@ -1,18 +1,12 @@
 # frozen_string_literal: true
 
 class Suggestion < ApplicationRecord
-  FEATURE_FLAG = :diff_suggestions
-
   belongs_to :note, inverse_of: :suggestions
   validates :note, presence: true
   validates :commit_id, presence: true, if: :applied?
 
   delegate :original_position, :position, :diff_file,
     :noteable, to: :note
-
-  def self.feature_enabled?
-    Feature.enabled?(FEATURE_FLAG)
-  end
 
   def project
     noteable.source_project

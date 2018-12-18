@@ -17,15 +17,6 @@ describe Banzai::Filter::SuggestionFilter do
     expect(result[:class]).to include('js-render-suggestion')
   end
 
-  it 'includes no `js-render-suggestion` when feature disabled' do
-    stub_feature_flags(diff_suggestions: false)
-
-    doc = filter(input, default_context)
-    result = doc.css('code').first
-
-    expect(result[:class]).to be_nil
-  end
-
   it 'includes no `js-render-suggestion` when filter is disabled' do
     doc = filter(input)
     result = doc.css('code').first
