@@ -40,6 +40,7 @@ class GroupPolicy < BasePolicy
 
   rule { guest }.policy do
     enable :read_group
+    enable :read_list
     enable :upload_file
     enable :read_label
   end
