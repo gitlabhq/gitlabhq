@@ -13,7 +13,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    if @project.update(safe_import_params)
+    if @project.update(import_params)
       @project.import_state.reload.schedule
     end
 
@@ -66,11 +66,11 @@ class Projects::ImportsController < Projects::ApplicationController
     end
   end
 
-  def import_params
-    params.require(:project).permit(:import_url)
+  def import_params_attributes
+    [:import_url]
   end
 
-  def safe_import_params
-    import_params
+  def import_params
+    params.require(:project).permit(import_params_attributes)
   end
 end
