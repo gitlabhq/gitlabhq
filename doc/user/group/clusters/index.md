@@ -30,6 +30,14 @@ deployments.
 | [Helm Tiller](https://docs.helm.sh)                                        | 10.2+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 10.2+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
 
+## Unavailable features
+
+The following features are not currently available for group-level clusters and will be introduced in a future release:
+
+1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487))
+2. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488))
+3. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488))
+
 ## RBAC compatibility
 
 For each project under a group with a Kubernetes cluster, GitLab will
