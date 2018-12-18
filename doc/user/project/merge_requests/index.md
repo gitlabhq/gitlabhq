@@ -150,6 +150,16 @@ in a Merge Request. To do so, click the **...** button in the gutter of the Merg
 
 ![Comment on any diff file line](img/comment-on-any-diff-line.png)
 
+## Suggest changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+
+As a reviewer, you can add suggestions to change the content in
+merge request discussions, and users with appropriate [permission](../../permissions.md)
+can easily apply them to the codebase directly from the UI. Read
+through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
+to learn more.
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
