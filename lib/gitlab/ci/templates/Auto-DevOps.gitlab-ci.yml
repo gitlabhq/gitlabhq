@@ -919,6 +919,9 @@ rollout 100%:
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
       helm delete --purge "$name"
     fi
+
+    application_secret_name="${name}-secret"
+    kubectl delete secret --ignore-not-found -n "$KUBE_NAMESPACE" "$application_secret_name"
   }
 
 before_script:
