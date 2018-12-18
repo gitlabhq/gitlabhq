@@ -203,7 +203,7 @@ used for time of the job. The configuration of this feature is covered in
 jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts).
 This can be an array or a multi-line string.
 
-`after_script` is used to define the command that will be run after for all
+`after_script` is used to define the command that will be run after all
 jobs, including failed ones. This has to be an array or a multi-line string.
 
 The `before_script` and the main `script` are concatenated and run in a single context/container.
