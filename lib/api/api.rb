@@ -10,14 +10,6 @@ module API
     NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
 
-    def self.root_path(version: 'v4')
-      unless versions.include?(version)
-        raise ArgumentError, 'Unknown API version!'
-      end
-
-      File.join('/', prefix.to_s, version.to_s)
-    end
-
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
                   logger: Logger.new(LOG_FILENAME),

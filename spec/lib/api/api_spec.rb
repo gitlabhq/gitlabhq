@@ -15,22 +15,7 @@ describe API::API do
 
   describe '.versions' do
     it 'returns all available versions' do
-      expect(described_class.versions).to eq ['v3', 'v4']
-    end
-  end
-
-  describe '.root_path' do
-    it 'returns predefined API version path' do
-      expect(described_class.root_path).to eq '/api/v4'
-    end
-
-    it 'returns a version provided as keyword argument' do
-      expect(described_class.root_path(version: 'v3')).to eq '/api/v3'
-    end
-
-    it 'raises an error if version is not known' do
-      expect { described_class.root_path(version: 'v10') }
-        .to raise_error ArgumentError
+      expect(described_class.versions).to eq %w[v3 v4]
     end
   end
 end
