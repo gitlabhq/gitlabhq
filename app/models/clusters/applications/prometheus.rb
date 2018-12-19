@@ -25,11 +25,19 @@ module Clusters
       end
 
       def ready_status
-        [:installed]
+        [:installed, :updating, :updated, :update_errored]
       end
 
       def ready?
         ready_status.include?(status_name)
+      end
+
+      def update_in_progress?
+        status_name == :updating
+      end
+
+      def update_errored?
+        status_name == :update_errored
       end
 
       def chart
@@ -53,6 +61,24 @@ module Clusters
           files: files,
           postinstall: install_knative_metrics
         )
+      end
+
+      def upgrade_command(values)
+        ::Gitlab::Kubernetes::Helm::UpgradeCommand.new(
+          name,
+          version: VERSION,
+          chart: chart,
+          rbac: cluster.platform_kubernetes_rbac?,
+          files: files_with_replaced_values(values)
+        )
+      end
+
+      # Returns a copy of files where the values of 'values.yaml'
+      # are replaced by the argument.
+      #
+      # See #values for the data format required
+      def files_with_replaced_values(replaced_values)
+        files.merge('values.yaml': replaced_values)
       end
 
       def prometheus_client
