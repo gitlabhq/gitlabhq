@@ -4,6 +4,7 @@ module Ci
   class Trigger < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include IgnorableColumn
+    include Presentable
 
     ignore_column :deleted_at
 
