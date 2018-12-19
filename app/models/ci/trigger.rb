@@ -30,7 +30,7 @@ module Ci
     end
 
     def short_token
-      token[0...4]
+      token[0...4] if token.present?
     end
 
     def legacy?
