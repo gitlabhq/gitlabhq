@@ -333,7 +333,7 @@ describe Projects::MergeRequestsController do
 
       before do
         project.add_reporter(user)
-        xhr :post, :merge, params: base_params
+        post :merge, params: base_params, xhr: true
       end
 
       it 'returns 404' do
@@ -681,13 +681,14 @@ describe Projects::MergeRequestsController do
       merge_request.title = merge_request.wip_title
       merge_request.save
 
-      xhr :post, :remove_wip,
-        format: :json,
+      post :remove_wip,
         params: {
+          format: :json,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
           id: merge_request.iid
-        }
+        },
+        xhr: true
     end
 
     it 'removes the wip status' do
@@ -701,13 +702,14 @@ describe Projects::MergeRequestsController do
 
   describe 'POST cancel_merge_when_pipeline_succeeds' do
     subject do
-      xhr :post, :cancel_merge_when_pipeline_succeeds,
-        format: :json,
+      post :cancel_merge_when_pipeline_succeeds,
         params: {
+          format: :json,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
           id: merge_request.iid
-        }
+        },
+        xhr: true
     end
 
     it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
