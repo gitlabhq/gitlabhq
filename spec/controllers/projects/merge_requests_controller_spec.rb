@@ -19,9 +19,11 @@ describe Projects::MergeRequestsController do
   describe 'GET commit_change_content' do
     it 'renders commit_change_content template' do
       get :commit_change_content,
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: merge_request.iid,
+        params: {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid
+        },
         format: 'html'
 
       expect(response).to render_template('_commit_change_content')
@@ -31,9 +33,11 @@ describe Projects::MergeRequestsController do
   shared_examples "loads labels" do |action|
     it "loads labels into the @labels variable" do
       get action,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid
+          },
           format: 'html'
       expect(assigns(:labels)).not_to be_nil
     end
@@ -47,7 +51,7 @@ describe Projects::MergeRequestsController do
         id: merge_request.iid
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
 
     it_behaves_like "loads labels", :show
@@ -153,9 +157,12 @@ describe Projects::MergeRequestsController do
 
     def get_merge_requests(page = nil)
       get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          state: 'opened', page: page.to_param
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            state: 'opened',
+            page: page.to_param
+          }
     end
 
     it_behaves_like "issuables list meta-data", :merge_request
@@ -182,11 +189,13 @@ describe Projects::MergeRequestsController do
       it 'does not redirect to external sites when provided a host field' do
         external_host = "www.example.com"
         get :index,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          state: 'opened',
-          page: (last_page + 1).to_param,
-          host: external_host
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            state: 'opened',
+            page: (last_page + 1).to_param,
+            host: external_host
+          }
 
         expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
@@ -227,7 +236,7 @@ describe Projects::MergeRequestsController do
         merge_request: mr_params
       }.merge(additional_params)
 
-      put :update, params
+      put :update, params: params
     end
 
     context 'changing the assignee' do
@@ -324,7 +333,7 @@ describe Projects::MergeRequestsController do
 
       before do
         project.add_reporter(user)
-        xhr :post, :merge, base_params
+        xhr :post, :merge, params: base_params
       end
 
       it 'returns 404' do
@@ -336,7 +345,7 @@ describe Projects::MergeRequestsController do
       before do
         merge_request.update(title: "WIP: #{merge_request.title}")
 
-        post :merge, base_params
+        post :merge, params: base_params
       end
 
       it 'returns :failed' do
@@ -346,7 +355,7 @@ describe Projects::MergeRequestsController do
 
     context 'when the sha parameter does not match the source SHA' do
       before do
-        post :merge, base_params.merge(sha: 'foo')
+        post :merge, params: base_params.merge(sha: 'foo')
       end
 
       it 'returns :sha_mismatch' do
@@ -396,7 +405,7 @@ describe Projects::MergeRequestsController do
         end
 
         def merge_when_pipeline_succeeds
-          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
+          post :merge, params: base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -513,7 +522,7 @@ describe Projects::MergeRequestsController do
     let(:user) { create(:user) }
 
     it "denies access to users unless they're admin or project owner" do
-      delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+      delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -528,7 +537,7 @@ describe Projects::MergeRequestsController do
       end
 
       it "deletes the merge request" do
-        delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
         expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
@@ -537,7 +546,7 @@ describe Projects::MergeRequestsController do
       it 'delegates the update of the todos count cache to TodoService' do
         expect_any_instance_of(TodoService).to receive(:destroy_target).with(merge_request).once
 
-        delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
       end
     end
   end
@@ -545,9 +554,11 @@ describe Projects::MergeRequestsController do
   describe 'GET commits' do
     def go(format: 'html')
       get :commits,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid
+          },
           format: format
     end
 
@@ -566,9 +577,11 @@ describe Projects::MergeRequestsController do
                            sha: merge_request.diff_head_sha)
 
       get :pipelines,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid
+          },
           format: :json
     end
 
@@ -582,9 +595,11 @@ describe Projects::MergeRequestsController do
   describe 'GET test_reports' do
     subject do
       get :test_reports,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: merge_request.iid
+          },
           format: :json
     end
 
@@ -667,10 +682,12 @@ describe Projects::MergeRequestsController do
       merge_request.save
 
       xhr :post, :remove_wip,
-        namespace_id: merge_request.project.namespace.to_param,
-        project_id: merge_request.project,
-        id: merge_request.iid,
-        format: :json
+        format: :json,
+        params: {
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid
+        }
     end
 
     it 'removes the wip status' do
@@ -685,10 +702,12 @@ describe Projects::MergeRequestsController do
   describe 'POST cancel_merge_when_pipeline_succeeds' do
     subject do
       xhr :post, :cancel_merge_when_pipeline_succeeds,
-        namespace_id: merge_request.project.namespace.to_param,
-        project_id: merge_request.project,
-        id: merge_request.iid,
-        format: :json
+        format: :json,
+        params: {
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid
+        }
     end
 
     it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
@@ -723,9 +742,11 @@ describe Projects::MergeRequestsController do
                             target_branch: 'master')
 
       post :assign_related_issues,
-           namespace_id: project.namespace.to_param,
-           project_id: project,
-           id: merge_request.iid
+           params: {
+             namespace_id: project.namespace.to_param,
+             project_id: project,
+             id: merge_request.iid
+           }
     end
 
     it 'shows a flash message on success' do
@@ -824,7 +845,7 @@ describe Projects::MergeRequestsController do
           format: 'json'
         }
 
-        get :ci_environments_status, params.merge(extra_params)
+        get :ci_environments_status, params: params.merge(extra_params)
       end
     end
   end
@@ -865,9 +886,11 @@ describe Projects::MergeRequestsController do
     end
 
     def get_pipeline_status
-      get :pipeline_status, namespace_id: project.namespace,
-                            project_id: project,
-                            id: merge_request.iid,
+      get :pipeline_status, params: {
+                              namespace_id: project.namespace,
+                              project_id: project,
+                              id: merge_request.iid
+                            },
                             format: :json
     end
   end
@@ -876,7 +899,7 @@ describe Projects::MergeRequestsController do
     let(:viewer)        { user }
 
     def post_rebase
-      post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request
+      post :rebase, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
     end
 
     def expect_rebase_worker_for(user)
@@ -934,13 +957,13 @@ describe Projects::MergeRequestsController do
 
   describe 'GET edit' do
     it 'responds successfully' do
-      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+      get :edit, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
 
       expect(response).to have_gitlab_http_status(:success)
     end
 
     it 'assigns the noteable to make sure autocompletes work' do
-      get :edit, namespace_id: project.namespace, project_id: project, id: merge_request
+      get :edit, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
 
       expect(assigns(:noteable)).not_to be_nil
     end

@@ -15,7 +15,7 @@ describe Projects::ProtectedBranchesController do
     let(:project) { create(:project_empty_repo, :public) }
 
     it "redirects empty repo to projects page" do
-      get(:index, namespace_id: project.namespace.to_param, project_id: project)
+      get(:index, params: { namespace_id: project.namespace.to_param, project_id: project })
     end
   end
 
@@ -33,7 +33,7 @@ describe Projects::ProtectedBranchesController do
 
     it 'creates the protected branch rule' do
       expect do
-        post(:create, project_params.merge(protected_branch: create_params))
+        post(:create, params: project_params.merge(protected_branch: create_params))
       end.to change(ProtectedBranch, :count).by(1)
     end
 
@@ -44,7 +44,7 @@ describe Projects::ProtectedBranchesController do
       end
 
       it "prevents creation of the protected branch rule" do
-        post(:create, project_params.merge(protected_branch: create_params))
+        post(:create, params: project_params.merge(protected_branch: create_params))
 
         expect(ProtectedBranch.count).to eq 0
       end
@@ -59,7 +59,7 @@ describe Projects::ProtectedBranchesController do
     end
 
     it 'updates the protected branch rule' do
-      put(:update, base_params.merge(protected_branch: update_params))
+      put(:update, params: base_params.merge(protected_branch: update_params))
 
       expect(protected_branch.reload.name).to eq('new_name')
       expect(json_response["name"]).to eq('new_name')
@@ -74,7 +74,7 @@ describe Projects::ProtectedBranchesController do
       it "prevents update of the protected branch rule" do
         old_name = protected_branch.name
 
-        put(:update, base_params.merge(protected_branch: update_params))
+        put(:update, params: base_params.merge(protected_branch: update_params))
 
         expect(protected_branch.reload.name).to eq(old_name)
       end
@@ -87,7 +87,7 @@ describe Projects::ProtectedBranchesController do
     end
 
     it "deletes the protected branch rule" do
-      delete(:destroy, base_params)
+      delete(:destroy, params: base_params)
 
       expect { ProtectedBranch.find(protected_branch.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -99,7 +99,7 @@ describe Projects::ProtectedBranchesController do
       end
 
       it "prevents deletion of the protected branch rule" do
-        delete(:destroy, base_params)
+        delete(:destroy, params: base_params)
 
         expect(response.status).to eq(403)
       end

@@ -6,7 +6,7 @@ describe Profiles::KeysController do
   describe "#get_keys" do
     describe "non existent user" do
       it "does not generally work" do
-        get :get_keys, username: 'not-existent'
+        get :get_keys, params: { username: 'not-existent' }
 
         expect(response).not_to be_success
       end
@@ -14,19 +14,19 @@ describe Profiles::KeysController do
 
     describe "user with no keys" do
       it "does generally work" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response).to be_success
       end
 
       it "renders all keys separated with a new line" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response.body).to eq("")
       end
 
       it "responds with text/plain content type" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
         expect(response.content_type).to eq("text/plain")
       end
     end
@@ -37,13 +37,13 @@ describe Profiles::KeysController do
       let!(:deploy_key) { create(:deploy_key, user: user) }
 
       it "does generally work" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response).to be_success
       end
 
       it "renders all non deploy keys separated with a new line" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response.body).not_to eq('')
         expect(response.body).to eq(user.all_ssh_keys.join("\n"))
@@ -55,21 +55,15 @@ describe Profiles::KeysController do
       end
 
       it "does not render the comment of the key" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response.body).not_to match(/dummy@gitlab.com/)
       end
 
       it "responds with text/plain content type" do
-        get :get_keys, username: user.username
+        get :get_keys, params: { username: user.username }
 
         expect(response.content_type).to eq("text/plain")
-      end
-
-      it "responds with attachment content disposition" do
-        get :get_keys, username: user.username
-
-        expect(response.headers['Content-Disposition']).to eq('attachment')
       end
     end
   end

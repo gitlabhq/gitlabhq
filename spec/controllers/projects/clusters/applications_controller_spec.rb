@@ -81,7 +81,7 @@ describe Projects::Clusters::ApplicationsController do
     end
 
     def go
-      post :create, params.merge(namespace_id: project.namespace, project_id: project)
+      post :create, params: params.merge(namespace_id: project.namespace, project_id: project)
     end
   end
 end

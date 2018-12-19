@@ -2092,7 +2092,7 @@ describe MergeRequest do
           head_commit_sha: commit.sha
         )
 
-        subject.merge_request_diff(true)
+        subject.reload_merge_request_diff
       end
     end
 

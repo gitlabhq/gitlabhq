@@ -49,7 +49,7 @@ describe API::Todos do
 
       context 'and using the author filter' do
         it 'filters based on author_id param' do
-          get api('/todos', john_doe), { author_id: author_2.id }
+          get api('/todos', john_doe), params: { author_id: author_2.id }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
@@ -62,7 +62,7 @@ describe API::Todos do
         it 'filters based on type param' do
           create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)
 
-          get api('/todos', john_doe), { type: 'MergeRequest' }
+          get api('/todos', john_doe), params: { type: 'MergeRequest' }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
@@ -73,7 +73,7 @@ describe API::Todos do
 
       context 'and using the state filter' do
         it 'filters based on state param' do
-          get api('/todos', john_doe), { state: 'done' }
+          get api('/todos', john_doe), params: { state: 'done' }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
@@ -84,7 +84,7 @@ describe API::Todos do
 
       context 'and using the project filter' do
         it 'filters based on project_id param' do
-          get api('/todos', john_doe), { project_id: project_2.id }
+          get api('/todos', john_doe), params: { project_id: project_2.id }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
@@ -95,7 +95,7 @@ describe API::Todos do
 
       context 'and using the group filter' do
         it 'filters based on project_id param' do
-          get api('/todos', john_doe), { group_id: group.id, sort: :target_id }
+          get api('/todos', john_doe), params: { group_id: group.id, sort: :target_id }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
@@ -106,7 +106,7 @@ describe API::Todos do
 
       context 'and using the action filter' do
         it 'filters based on action param' do
-          get api('/todos', john_doe), { action: 'mentioned' }
+          get api('/todos', john_doe), params: { action: 'mentioned' }
 
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers

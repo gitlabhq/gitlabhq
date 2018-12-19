@@ -58,7 +58,7 @@ describe API::Jobs do
 
     before do |example|
       unless example.metadata[:skip_before_request]
-        get api("/projects/#{project.id}/jobs", api_user), query
+        get api("/projects/#{project.id}/jobs", api_user), params: query
       end
     end
 
@@ -150,7 +150,7 @@ describe API::Jobs do
     end
 
     def go
-      get api("/projects/#{project.id}/jobs", api_user), query
+      get api("/projects/#{project.id}/jobs", api_user), params: query
     end
   end
 
@@ -160,7 +160,7 @@ describe API::Jobs do
     before do |example|
       unless example.metadata[:skip_before_request]
         job
-        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
       end
     end
 
@@ -229,13 +229,13 @@ describe API::Jobs do
 
       it 'avoids N+1 queries' do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.count
 
         3.times { create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline) }
 
         expect do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.not_to exceed_all_query_limit(control_count)
       end
     end
@@ -479,7 +479,7 @@ describe API::Jobs do
     end
 
     def get_for_ref(ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), job: job_name
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
     end
 
     context 'when not logged in' do
@@ -712,7 +712,7 @@ describe API::Jobs do
     end
 
     def get_artifact_file(artifact_path, ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user), job: job_name
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user), params: { job: job_name }
     end
   end
 

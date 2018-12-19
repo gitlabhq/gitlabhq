@@ -1,55 +1,65 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::ReleasesController do
-  let!(:project) { create(:project, :repository) }
+  let!(:project) { create(:project, :repository, :public) }
   let!(:user)    { create(:user) }
-  let!(:release) { create(:release, project: project) }
-  let!(:tag)     { release.tag }
 
   before do
-    project.add_developer(user)
-    sign_in(user)
+    stub_feature_flags(releases_page: true)
   end
 
-  describe 'GET #edit' do
-    it 'initializes a new release' do
-      tag_id = release.tag
-      project.releases.destroy_all # rubocop: disable DestroyAll
+  describe 'GET #index' do
+    it 'renders a 200' do
+      get_index
 
-      get :edit, namespace_id: project.namespace, project_id: project, tag_id: tag_id
-
-      release = assigns(:release)
-      expect(release).not_to be_nil
-      expect(release).not_to be_persisted
+      expect(response.status).to eq(200)
     end
 
-    it 'retrieves an existing release' do
-      get :edit, namespace_id: project.namespace, project_id: project, tag_id: release.tag
+    context 'when the project is private' do
+      let!(:project) { create(:project, :repository, :private) }
 
-      release = assigns(:release)
-      expect(release).not_to be_nil
-      expect(release).to be_persisted
+      it 'renders a 302' do
+        get_index
+
+        expect(response.status).to eq(302)
+      end
+
+      it 'renders a 200 for a logged in developer' do
+        project.add_developer(user)
+        sign_in(user)
+
+        get_index
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'renders a 404 when logged in but not in the project' do
+        sign_in(user)
+
+        get_index
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when releases_page feature flag is disabled' do
+      before do
+        stub_feature_flags(releases_page: false)
+      end
+
+      it 'renders a 404' do
+        get_index
+
+        expect(response.status).to eq(404)
+      end
     end
   end
 
-  describe 'PUT #update' do
-    it 'updates release note description' do
-      update_release('description updated')
+  private
 
-      release = project.releases.find_by_tag(tag)
-      expect(release.description).to eq("description updated")
-    end
-
-    it 'deletes release note when description is null' do
-      expect { update_release('') }.to change(project.releases, :count).by(-1)
-    end
-  end
-
-  def update_release(description)
-    put :update,
-      namespace_id: project.namespace.to_param,
-      project_id: project,
-      tag_id: release.tag,
-      release: { description: description }
+  def get_index
+    get :index, params: { namespace_id: project.namespace, project_id: project }
   end
 end

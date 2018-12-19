@@ -12,10 +12,12 @@ describe Projects::RefsController do
   describe 'GET #logs_tree' do
     def default_get(format = :html)
       get :logs_tree,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: 'master',
-          path: 'foo/bar/baz.html',
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: 'master',
+            path: 'foo/bar/baz.html'
+          },
           format: format
     end
 

@@ -15,7 +15,7 @@ describe GroupsController do
     it 'renders the new page' do
       sign_in(member)
 
-      get :new, parent_id: group.id
+      get :new, params: { parent_id: group.id }
 
       expect(response).to render_template(:new)
     end
@@ -25,7 +25,7 @@ describe GroupsController do
     it 'renders the 404 page' do
       sign_in(member)
 
-      get :new, parent_id: group.id
+      get :new, params: { parent_id: group.id }
 
       expect(response).not_to render_template(:new)
       expect(response.status).to eq(404)
@@ -42,7 +42,7 @@ describe GroupsController do
       it 'assigns events for all the projects in the group' do
         create(:event, project: project)
 
-        get :show, id: group.to_param, format: :atom
+        get :show, params: { id: group.to_param }, format: :atom
 
         expect(assigns(:events)).not_to be_empty
       end
@@ -53,7 +53,7 @@ describe GroupsController do
     it 'sets the badge API endpoint' do
       sign_in(owner)
 
-      get :edit, id: group.to_param
+      get :edit, params: { id: group.to_param }
 
       expect(assigns(:badge_api_endpoint)).not_to be_nil
     end
@@ -102,7 +102,7 @@ describe GroupsController do
           create(:event, project: project)
         end
 
-        get :activity, id: group.to_param, format: :json
+        get :activity, params: { id: group.to_param }, format: :json
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['count']).to eq(3)
@@ -120,7 +120,7 @@ describe GroupsController do
               owner.update_attribute(:can_create_group, can_create_group_status)
               sign_in(owner)
 
-              post :create, group: { parent_id: group.id, path: 'subgroup' }
+              post :create, params: { group: { parent_id: group.id, path: 'subgroup' } }
 
               expect(response).to be_redirect
               expect(response.body).to match(%r{http://test.host/#{group.path}/subgroup})
@@ -134,7 +134,7 @@ describe GroupsController do
 
               previous_group_count = Group.count
 
-              post :create, group: { parent_id: group.id, path: 'subgroup' }
+              post :create, params: { group: { parent_id: group.id, path: 'subgroup' } }
 
               expect(response).to render_template(:new)
               expect(Group.count).to eq(previous_group_count)
@@ -157,7 +157,7 @@ describe GroupsController do
         it 'creates the Group' do
           original_group_count = Group.count
 
-          post :create, group: { path: 'subgroup' }
+          post :create, params: { group: { path: 'subgroup' } }
 
           expect(Group.count).to eq(original_group_count + 1)
           expect(response).to be_redirect
@@ -172,7 +172,7 @@ describe GroupsController do
         it 'does not create the Group' do
           original_group_count = Group.count
 
-          post :create, group: { path: 'subgroup' }
+          post :create, params: { group: { path: 'subgroup' } }
 
           expect(Group.count).to eq(original_group_count)
           expect(response).to render_template(:new)
@@ -215,12 +215,12 @@ describe GroupsController do
 
     context 'sorting by votes' do
       it 'sorts most popular issues' do
-        get :issues, id: group.to_param, sort: 'upvotes_desc'
+        get :issues, params: { id: group.to_param, sort: 'upvotes_desc' }
         expect(assigns(:issues)).to eq [issue_2, issue_1]
       end
 
       it 'sorts least popular issues' do
-        get :issues, id: group.to_param, sort: 'downvotes_desc'
+        get :issues, params: { id: group.to_param, sort: 'downvotes_desc' }
         expect(assigns(:issues)).to eq [issue_2, issue_1]
       end
     end
@@ -233,19 +233,19 @@ describe GroupsController do
       end
 
       it 'works with popularity sort' do
-        get :issues, id: group.to_param, search: 'foo', sort: 'popularity'
+        get :issues, params: { id: group.to_param, search: 'foo', sort: 'popularity' }
 
         expect(assigns(:issues)).to eq([issue_1])
       end
 
       it 'works with priority sort' do
-        get :issues, id: group.to_param, search: 'foo', sort: 'priority'
+        get :issues, params: { id: group.to_param, search: 'foo', sort: 'priority' }
 
         expect(assigns(:issues)).to eq([issue_1])
       end
 
       it 'works with label priority sort' do
-        get :issues, id: group.to_param, search: 'foo', sort: 'label_priority'
+        get :issues, params: { id: group.to_param, search: 'foo', sort: 'label_priority' }
 
         expect(assigns(:issues)).to eq([issue_1])
       end
@@ -266,12 +266,12 @@ describe GroupsController do
 
     context 'sorting by votes' do
       it 'sorts most popular merge requests' do
-        get :merge_requests, id: group.to_param, sort: 'upvotes_desc'
+        get :merge_requests, params: { id: group.to_param, sort: 'upvotes_desc' }
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
       end
 
       it 'sorts least popular merge requests' do
-        get :merge_requests, id: group.to_param, sort: 'downvotes_desc'
+        get :merge_requests, params: { id: group.to_param, sort: 'downvotes_desc' }
         expect(assigns(:merge_requests)).to eq [merge_request_2, merge_request_1]
       end
     end
@@ -282,7 +282,7 @@ describe GroupsController do
       it 'returns 404' do
         sign_in(create(:user))
 
-        delete :destroy, id: group.to_param
+        delete :destroy, params: { id: group.to_param }
 
         expect(response.status).to eq(404)
       end
@@ -295,12 +295,12 @@ describe GroupsController do
 
       it 'schedules a group destroy' do
         Sidekiq::Testing.fake! do
-          expect { delete :destroy, id: group.to_param }.to change(GroupDestroyWorker.jobs, :size).by(1)
+          expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
         end
       end
 
       it 'redirects to the root path' do
-        delete :destroy, id: group.to_param
+        delete :destroy, params: { id: group.to_param }
 
         expect(response).to redirect_to(root_path)
       end
@@ -313,7 +313,7 @@ describe GroupsController do
     end
 
     it 'updates the path successfully' do
-      post :update, id: group.to_param, group: { path: 'new_path' }
+      post :update, params: { id: group.to_param, group: { path: 'new_path' } }
 
       expect(response).to have_gitlab_http_status(302)
       expect(controller).to set_flash[:notice]
@@ -321,7 +321,7 @@ describe GroupsController do
 
     it 'does not update the path on error' do
       allow_any_instance_of(Group).to receive(:move_dir).and_raise(Gitlab::UpdatePathError)
-      post :update, id: group.to_param, group: { path: 'new_path' }
+      post :update, params: { id: group.to_param, group: { path: 'new_path' } }
 
       expect(assigns(:group).errors).not_to be_empty
       expect(assigns(:group).path).not_to eq('new_path')
@@ -337,7 +337,7 @@ describe GroupsController do
       context 'when requesting groups at the root path' do
         before do
           allow(request).to receive(:original_fullpath).and_return("/#{group_full_path}")
-          get :show, id: group_full_path
+          get :show, params: { id: group_full_path }
         end
 
         context 'when requesting the canonical path with different casing' do
@@ -384,7 +384,7 @@ describe GroupsController do
           context 'non-show path' do
             context 'with exactly matching casing' do
               it 'does not redirect' do
-                get :issues, id: group.to_param
+                get :issues, params: { id: group.to_param }
 
                 expect(response).not_to have_gitlab_http_status(301)
               end
@@ -392,7 +392,7 @@ describe GroupsController do
 
             context 'with different casing' do
               it 'redirects to the correct casing' do
-                get :issues, id: group.to_param.upcase
+                get :issues, params: { id: group.to_param.upcase }
 
                 expect(response).to redirect_to(issues_group_path(group.to_param))
                 expect(controller).not_to set_flash[:notice]
@@ -403,7 +403,7 @@ describe GroupsController do
           context 'show path' do
             context 'with exactly matching casing' do
               it 'does not redirect' do
-                get :show, id: group.to_param
+                get :show, params: { id: group.to_param }
 
                 expect(response).not_to have_gitlab_http_status(301)
               end
@@ -411,7 +411,7 @@ describe GroupsController do
 
             context 'with different casing' do
               it 'redirects to the correct casing at the root path' do
-                get :show, id: group.to_param.upcase
+                get :show, params: { id: group.to_param.upcase }
 
                 expect(response).to redirect_to(group)
                 expect(controller).not_to set_flash[:notice]
@@ -424,7 +424,7 @@ describe GroupsController do
           let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
 
           it 'redirects to the canonical path' do
-            get :issues, id: redirect_route.path
+            get :issues, params: { id: redirect_route.path }
 
             expect(response).to redirect_to(issues_group_path(group.to_param))
             expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -434,7 +434,7 @@ describe GroupsController do
             let(:redirect_route) { group.redirect_routes.create(path: 'http') }
 
             it 'does not modify the requested host' do
-              get :issues, id: redirect_route.path
+              get :issues, params: { id: redirect_route.path }
 
               expect(response).to redirect_to(issues_group_path(group.to_param))
               expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -446,7 +446,7 @@ describe GroupsController do
             let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
 
             it 'does not modify the /groups part of the path' do
-              get :issues, id: redirect_route.path
+              get :issues, params: { id: redirect_route.path }
 
               expect(response).to redirect_to(issues_group_path(group.to_param))
               expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -458,7 +458,7 @@ describe GroupsController do
             let(:redirect_route) { group.redirect_routes.create(path: 'oups/oup') }
 
             it 'does not modify the /groups part of the path' do
-              get :issues, id: redirect_route.path
+              get :issues, params: { id: redirect_route.path }
 
               expect(response).to redirect_to(issues_group_path(group.to_param))
               expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -470,13 +470,13 @@ describe GroupsController do
       context 'for a POST request' do
         context 'when requesting the canonical path with different casing' do
           it 'does not 404' do
-            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+            post :update, params: { id: group.to_param.upcase, group: { path: 'new_path' } }
 
             expect(response).not_to have_gitlab_http_status(404)
           end
 
           it 'does not redirect to the correct casing' do
-            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+            post :update, params: { id: group.to_param.upcase, group: { path: 'new_path' } }
 
             expect(response).not_to have_gitlab_http_status(301)
           end
@@ -486,7 +486,7 @@ describe GroupsController do
           let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
 
           it 'returns not found' do
-            post :update, id: redirect_route.path, group: { path: 'new_path' }
+            post :update, params: { id: redirect_route.path, group: { path: 'new_path' } }
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -496,13 +496,13 @@ describe GroupsController do
       context 'for a DELETE request' do
         context 'when requesting the canonical path with different casing' do
           it 'does not 404' do
-            delete :destroy, id: group.to_param.upcase
+            delete :destroy, params: { id: group.to_param.upcase }
 
             expect(response).not_to have_gitlab_http_status(404)
           end
 
           it 'does not redirect to the correct casing' do
-            delete :destroy, id: group.to_param.upcase
+            delete :destroy, params: { id: group.to_param.upcase }
 
             expect(response).not_to have_gitlab_http_status(301)
           end
@@ -512,7 +512,7 @@ describe GroupsController do
           let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
 
           it 'returns not found' do
-            delete :destroy, id: redirect_route.path
+            delete :destroy, params: { id: redirect_route.path }
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -537,8 +537,10 @@ describe GroupsController do
 
       before do
         put :transfer,
-          id: group.to_param,
-          new_parent_group_id: new_parent_group.id
+          params: {
+            id: group.to_param,
+            new_parent_group_id: new_parent_group.id
+          }
       end
 
       it 'should return a notice' do
@@ -556,8 +558,10 @@ describe GroupsController do
 
       before do
         put :transfer,
-          id: group.to_param,
-          new_parent_group_id: ''
+          params: {
+            id: group.to_param,
+            new_parent_group_id: ''
+          }
       end
 
       it 'should return a notice' do
@@ -578,8 +582,10 @@ describe GroupsController do
         allow_any_instance_of(::Groups::TransferService).to receive(:proceed_to_transfer).and_raise(Gitlab::UpdatePathError, 'namespace directory cannot be moved')
 
         put :transfer,
-          id: group.to_param,
-          new_parent_group_id: new_parent_group.id
+          params: {
+            id: group.to_param,
+            new_parent_group_id: new_parent_group.id
+          }
       end
 
       it 'should return an alert' do
@@ -598,8 +604,10 @@ describe GroupsController do
 
       before do
         put :transfer,
-          id: group.to_param,
-          new_parent_group_id: new_parent_group.id
+          params: {
+            id: group.to_param,
+            new_parent_group_id: new_parent_group.id
+          }
       end
 
       it 'should be denied' do

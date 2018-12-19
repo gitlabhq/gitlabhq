@@ -8,7 +8,7 @@ describe Projects::AvatarsController do
   end
 
   describe 'GET #show' do
-    subject { get :show, namespace_id: project.namespace, project_id: project }
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
 
     context 'when repository has no avatar' do
       it 'shows 404' do
@@ -71,7 +71,7 @@ describe Projects::AvatarsController do
 
   describe 'DELETE #destroy' do
     it 'removes avatar from DB by calling destroy' do
-      delete :destroy, namespace_id: project.namespace.id, project_id: project.id
+      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id }
 
       expect(project.avatar.present?).to be_falsey
       expect(project).to be_valid

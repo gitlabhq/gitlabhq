@@ -56,16 +56,11 @@ describe Gitlab::Git::ObjectPool do
   describe '#link' do
     let!(:pool_repository) { create(:pool_repository, :ready) }
 
-    context 'when no remotes are set' do
+    context 'when linked for the first time' do
       it 'sets a remote' do
-        subject.link(source_repository)
-
-        repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          Rugged::Repository.new(subject.repository.path)
-        end
-
-        expect(repo.remotes.count).to be(1)
-        expect(repo.remotes.first.name).to eq(source_repository.object_pool_remote_name)
+        expect do
+          subject.link(source_repository)
+        end.not_to raise_error
       end
     end
 
@@ -75,14 +70,9 @@ describe Gitlab::Git::ObjectPool do
       end
 
       it "doesn't raise an error" do
-        subject.link(source_repository)
-
-        repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          Rugged::Repository.new(subject.repository.path)
-        end
-
-        expect(repo.remotes.count).to be(1)
-        expect(repo.remotes.first.name).to eq(source_repository.object_pool_remote_name)
+        expect do
+          subject.link(source_repository)
+        end.not_to raise_error
       end
     end
   end

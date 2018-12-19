@@ -46,7 +46,7 @@ describe API::ProjectMilestones do
       expect(Event).to receive(:create!)
 
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
-          state_event: 'close'
+          params: { state_event: 'close' }
     end
   end
 end

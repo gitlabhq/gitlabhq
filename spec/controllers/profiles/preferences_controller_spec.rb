@@ -29,7 +29,7 @@ describe Profiles::PreferencesController do
         theme_id: '1'
       )
 
-      patch :update, user: params, format: format
+      patch :update, params: { user: params }, format: format
     end
 
     context 'on successful update' do

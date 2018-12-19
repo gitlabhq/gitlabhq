@@ -34,7 +34,7 @@ describe Dashboard::MilestonesController do
     render_views
 
     def view_milestone
-      get :show, id: milestone.safe_title, title: milestone.title
+      get :show, params: { id: milestone.safe_title, title: milestone.title }
     end
 
     it 'shows milestone page' do

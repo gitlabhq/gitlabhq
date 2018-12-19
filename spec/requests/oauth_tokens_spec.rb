@@ -6,11 +6,13 @@ describe 'OAuth Tokens requests' do
 
   def request_access_token(user)
     post '/oauth/token',
-      grant_type: 'authorization_code',
-      code: generate_access_grant(user).token,
-      redirect_uri: application.redirect_uri,
-      client_id: application.uid,
-      client_secret: application.secret
+      params: {
+        grant_type: 'authorization_code',
+        code: generate_access_grant(user).token,
+        redirect_uri: application.redirect_uri,
+        client_id: application.uid,
+        client_secret: application.secret
+      }
   end
 
   def generate_access_grant(user)

@@ -103,7 +103,7 @@ describe API::Badges do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/badges", stranger),
-               link_url: example_url, image_url: example_url2
+               params: { link_url: example_url, image_url: example_url2 }
         end
       end
 
@@ -114,7 +114,7 @@ describe API::Badges do
               user = public_send(type)
 
               post api("/#{source_type.pluralize}/#{source.id}/badges", user),
-                   link_url: example_url, image_url: example_url2
+                   params: { link_url: example_url, image_url: example_url2 }
 
               expect(response).to have_gitlab_http_status(403)
             end
@@ -126,7 +126,7 @@ describe API::Badges do
         it 'creates a new badge' do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-                link_url: example_url, image_url: example_url2
+                params: { link_url: example_url, image_url: example_url2 }
 
             expect(response).to have_gitlab_http_status(201)
           end.to change { source.badges.count }.by(1)
@@ -139,21 +139,21 @@ describe API::Badges do
 
       it 'returns 400 when link_url is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             link_url: example_url
+             params: { link_url: example_url }
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when image_url is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             image_url: example_url2
+             params: { image_url: example_url2 }
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             link_url: 'whatever', image_url: 'whatever'
+             params: { link_url: 'whatever', image_url: 'whatever' }
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -173,7 +173,7 @@ describe API::Badges do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", stranger),
-              link_url: example_url
+              params: { link_url: example_url }
         end
       end
 
@@ -184,7 +184,7 @@ describe API::Badges do
               user = public_send(type)
 
               put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user),
-                  link_url: example_url
+                  params: { link_url: example_url }
 
               expect(response).to have_gitlab_http_status(403)
             end
@@ -195,7 +195,7 @@ describe API::Badges do
       context 'when authenticated as a maintainer/owner' do
         it 'updates the member' do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
-              link_url: example_url, image_url: example_url2
+              params: { link_url: example_url, image_url: example_url2 }
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['link_url']).to eq(example_url)
@@ -206,7 +206,7 @@ describe API::Badges do
 
       it 'returns 400 when link_url or image_url is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
-            link_url: 'whatever', image_url: 'whatever'
+            params: { link_url: 'whatever', image_url: 'whatever' }
 
         expect(response).to have_gitlab_http_status(400)
       end

@@ -41,7 +41,7 @@ describe API::Boards do
       group_label = create(:group_label, group: group)
       board_parent.update(group: group)
 
-      post api(url, user), label_id: group_label.id
+      post api(url, user), params: { label_id: group_label.id }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['label']['name']).to eq(group_label.title)
@@ -56,7 +56,7 @@ describe API::Boards do
       group.add_developer(user)
       sub_group.add_developer(user)
 
-      post api(url, user), label_id: group_label.id
+      post api(url, user), params: { label_id: group_label.id }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['label']['name']).to eq(group_label.title)
@@ -73,7 +73,7 @@ describe API::Boards do
       group.add_developer(user)
       group_label = create(:group_label, group: group)
 
-      post api(url, user), label_id: group_label.id
+      post api(url, user), params: { label_id: group_label.id }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['label']['name']).to eq(group_label.title)

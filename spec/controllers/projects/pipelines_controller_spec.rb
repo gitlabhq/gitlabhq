@@ -119,8 +119,10 @@ describe Projects::PipelinesController do
     end
 
     def get_pipelines_index_json
-      get :index, namespace_id: project.namespace,
-                  project_id: project,
+      get :index, params: {
+                    namespace_id: project.namespace,
+                    project_id: project
+                  },
                   format: :json
     end
 
@@ -185,7 +187,7 @@ describe Projects::PipelinesController do
     end
 
     def get_pipeline_json
-      get :show, namespace_id: project.namespace, project_id: project, id: pipeline, format: :json
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :json
     end
 
     def create_build(stage, stage_idx, name)
@@ -240,12 +242,14 @@ describe Projects::PipelinesController do
     end
 
     def get_stage(name, params = {})
-      get :stage, **params.merge(
-        namespace_id: project.namespace,
-        project_id: project,
-        id: pipeline.id,
-        stage: name,
-        format: :json)
+      get :stage, params: {
+**params.merge(
+  namespace_id: project.namespace,
+  project_id: project,
+  id: pipeline.id,
+  stage: name,
+  format: :json)
+}
     end
   end
 
@@ -277,10 +281,12 @@ describe Projects::PipelinesController do
     end
 
     def get_stage_ajax(name)
-      get :stage_ajax, namespace_id: project.namespace,
-                       project_id: project,
-                       id: pipeline.id,
-                       stage: name,
+      get :stage_ajax, params: {
+                         namespace_id: project.namespace,
+                         project_id: project,
+                         id: pipeline.id,
+                         stage: name
+                       },
                        format: :json
     end
   end
@@ -290,9 +296,11 @@ describe Projects::PipelinesController do
     let(:status) { pipeline.detailed_status(double('user')) }
 
     before do
-      get :status, namespace_id: project.namespace,
-                   project_id: project,
-                   id: pipeline.id,
+      get :status, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: pipeline.id
+                   },
                    format: :json
     end
 
@@ -310,9 +318,11 @@ describe Projects::PipelinesController do
     let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
 
     before do
-      post :retry, namespace_id: project.namespace,
-                   project_id: project,
-                   id: pipeline.id,
+      post :retry, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: pipeline.id
+                   },
                    format: :json
     end
 
@@ -337,9 +347,11 @@ describe Projects::PipelinesController do
     let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
     before do
-      post :cancel, namespace_id: project.namespace,
-                    project_id: project,
-                    id: pipeline.id,
+      post :cancel, params: {
+                      namespace_id: project.namespace,
+                      project_id: project,
+                      id: pipeline.id
+                    },
                     format: :json
     end
 

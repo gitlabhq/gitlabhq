@@ -6,9 +6,11 @@ describe Projects::RawController do
   describe 'GET #show' do
     subject do
       get(:show,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: filepath)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: filepath
+          })
     end
 
     context 'regular filename' do

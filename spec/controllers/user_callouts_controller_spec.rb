@@ -8,7 +8,7 @@ describe UserCalloutsController do
   end
 
   describe "POST #create" do
-    subject { post :create, feature_name: feature_name, format: :json }
+    subject { post :create, params: { feature_name: feature_name }, format: :json }
 
     context 'with valid feature name' do
       let(:feature_name) { UserCallout.feature_names.keys.first }

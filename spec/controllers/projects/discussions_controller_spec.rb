@@ -23,7 +23,7 @@ describe Projects::DiscussionsController do
 
     context 'when user is not authorized to read the MR' do
       it 'returns 404' do
-        get :show, request_params, format: :json
+        get :show, params: request_params, session: { format: :json }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -35,7 +35,7 @@ describe Projects::DiscussionsController do
       end
 
       it 'returns status 200' do
-        get :show, request_params, format: :json
+        get :show, params: request_params, session: { format: :json }
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -43,7 +43,7 @@ describe Projects::DiscussionsController do
       it 'returns status 404 if MR does not exists' do
         merge_request.destroy!
 
-        get :show, request_params, format: :json
+        get :show, params: request_params, session: { format: :json }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -56,7 +56,7 @@ describe Projects::DiscussionsController do
       end
 
       it 'returns status 200' do
-        get :show, request_params, format: :json
+        get :show, params: request_params, session: { format: :json }
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -70,7 +70,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is not authorized to resolve the discussion" do
       it "returns status 404" do
-        post :resolve, request_params
+        post :resolve, params: request_params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -87,7 +87,7 @@ describe Projects::DiscussionsController do
         end
 
         it "returns status 404" do
-          post :resolve, request_params
+          post :resolve, params: request_params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -95,7 +95,7 @@ describe Projects::DiscussionsController do
 
       context "when the discussion is resolvable" do
         it "resolves the discussion" do
-          post :resolve, request_params
+          post :resolve, params: request_params
 
           expect(note.reload.discussion.resolved?).to be true
           expect(note.reload.discussion.resolved_by).to eq(user)
@@ -104,17 +104,17 @@ describe Projects::DiscussionsController do
         it "sends notifications if all discussions are resolved" do
           expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(merge_request)
 
-          post :resolve, request_params
+          post :resolve, params: request_params
         end
 
         it "returns the name of the resolving user" do
-          post :resolve, request_params
+          post :resolve, params: request_params
 
           expect(JSON.parse(response.body)['resolved_by']['name']).to eq(user.name)
         end
 
         it "returns status 200" do
-          post :resolve, request_params
+          post :resolve, params: request_params
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -123,7 +123,7 @@ describe Projects::DiscussionsController do
           expect_any_instance_of(DiscussionSerializer).to receive(:represent)
             .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
-          post :resolve, request_params
+          post :resolve, params: request_params
         end
 
         context 'diff discussion' do
@@ -131,7 +131,7 @@ describe Projects::DiscussionsController do
           let(:discussion) { note.discussion }
 
           it "returns truncated diff lines" do
-            post :resolve, request_params
+            post :resolve, params: request_params
 
             expect(JSON.parse(response.body)['truncated_diff_lines']).to be_present
           end
@@ -149,7 +149,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is not authorized to resolve the discussion" do
       it "returns status 404" do
-        delete :unresolve, request_params
+        delete :unresolve, params: request_params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -166,7 +166,7 @@ describe Projects::DiscussionsController do
         end
 
         it "returns status 404" do
-          delete :unresolve, request_params
+          delete :unresolve, params: request_params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -174,13 +174,13 @@ describe Projects::DiscussionsController do
 
       context "when the discussion is resolvable" do
         it "unresolves the discussion" do
-          delete :unresolve, request_params
+          delete :unresolve, params: request_params
 
           expect(note.reload.discussion.resolved?).to be false
         end
 
         it "returns status 200" do
-          delete :unresolve, request_params
+          delete :unresolve, params: request_params
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -194,7 +194,7 @@ describe Projects::DiscussionsController do
             expect_any_instance_of(DiscussionSerializer).to receive(:represent)
               .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
-            delete :unresolve, request_params
+            delete :unresolve, params: request_params
           end
         end
       end

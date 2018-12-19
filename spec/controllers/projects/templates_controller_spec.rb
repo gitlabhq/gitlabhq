@@ -20,7 +20,7 @@ describe Projects::TemplatesController do
 
   describe '#show' do
     it 'renders template name and content as json' do
-      get(:show, namespace_id: project.namespace.to_param, template_type: "issue", key: "bug", project_id: project, format: :json)
+      get(:show, params: { namespace_id: project.namespace.to_param, template_type: "issue", key: "bug", project_id: project }, format: :json)
 
       expect(response.status).to eq(200)
       expect(body["name"]).to eq("bug")
@@ -29,21 +29,21 @@ describe Projects::TemplatesController do
 
     it 'renders 404 when unauthorized' do
       sign_in(user2)
-      get(:show, namespace_id: project.namespace.to_param, template_type: "issue", key: "bug", project_id: project, format: :json)
+      get(:show, params: { namespace_id: project.namespace.to_param, template_type: "issue", key: "bug", project_id: project }, format: :json)
 
       expect(response.status).to eq(404)
     end
 
     it 'renders 404 when template type is not found' do
       sign_in(user)
-      get(:show, namespace_id: project.namespace.to_param, template_type: "dont_exist", key: "bug", project_id: project, format: :json)
+      get(:show, params: { namespace_id: project.namespace.to_param, template_type: "dont_exist", key: "bug", project_id: project }, format: :json)
 
       expect(response.status).to eq(404)
     end
 
     it 'renders 404 without errors' do
       sign_in(user)
-      expect { get(:show, namespace_id: project.namespace.to_param, template_type: "dont_exist", key: "bug", project_id: project, format: :json) }.not_to raise_error
+      expect { get(:show, params: { namespace_id: project.namespace.to_param, template_type: "dont_exist", key: "bug", project_id: project }, format: :json) }.not_to raise_error
     end
   end
 end

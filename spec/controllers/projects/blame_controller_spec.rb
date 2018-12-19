@@ -16,9 +16,11 @@ describe Projects::BlameController do
 
     before do
       get(:show,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: id)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id
+          })
     end
 
     context "valid file" do
