@@ -522,13 +522,13 @@ describe ApplicationController do
     end
 
     it 'renders a 403 when a message is passed to access denied' do
-      get :index, message: 'None shall pass'
+      get :index, params: { message: 'None shall pass' }
 
       expect(response).to have_gitlab_http_status(403)
     end
 
     it 'renders a status passed to access denied' do
-      get :index, status: 401
+      get :index, params: { status: 401 }
 
       expect(response).to have_gitlab_http_status(401)
     end
@@ -548,7 +548,7 @@ describe ApplicationController do
     end
 
     context 'html' do
-      subject { get :index, text: "hi \255" }
+      subject { get :index, params: { text: "hi \255" } }
 
       it 'renders 412' do
         expect { subject }.to raise_error(ActionController::BadRequest)
@@ -556,7 +556,7 @@ describe ApplicationController do
     end
 
     context 'js' do
-      subject { get :index, text: "hi \255", format: :js }
+      subject { get :index, format: :js, params: { text: "hi \255" } }
 
       it 'renders 412' do
         expect { subject }.to raise_error(ActionController::BadRequest)

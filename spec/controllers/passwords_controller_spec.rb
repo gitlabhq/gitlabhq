@@ -22,7 +22,7 @@ describe PasswordsController do
       let(:user) { create(:omniauth_user, provider: 'ldapmain', email: 'ldapuser@gitlab.com') }
 
       it 'prevents a password reset' do
-        post :create, user: { email: user.email }
+        post :create, params: { user: { email: user.email } }
 
         expect(flash[:alert]).to eq 'Password authentication is unavailable.'
       end

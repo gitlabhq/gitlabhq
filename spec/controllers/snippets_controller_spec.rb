@@ -8,7 +8,7 @@ describe SnippetsController do
 
     context 'when username parameter is present' do
       it 'renders snippets of a user when username is present' do
-        get :index, username: user.username
+        get :index, params: { username: user.username }
 
         expect(response).to render_template(:index)
       end
@@ -67,7 +67,7 @@ describe SnippetsController do
           let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
 
           it 'responds with status 404' do
-            get :show, id: other_personal_snippet.to_param
+            get :show, params: { id: other_personal_snippet.to_param }
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -75,7 +75,7 @@ describe SnippetsController do
 
         context 'when signed in user is the author' do
           it 'renders the snippet' do
-            get :show, id: personal_snippet.to_param
+            get :show, params: { id: personal_snippet.to_param }
 
             expect(assigns(:snippet)).to eq(personal_snippet)
             expect(response).to have_gitlab_http_status(200)
@@ -85,7 +85,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :show, id: personal_snippet.to_param
+          get :show, params: { id: personal_snippet.to_param }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -101,7 +101,7 @@ describe SnippetsController do
         end
 
         it 'renders the snippet' do
-          get :show, id: personal_snippet.to_param
+          get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -110,7 +110,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :show, id: personal_snippet.to_param
+          get :show, params: { id: personal_snippet.to_param }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -126,7 +126,7 @@ describe SnippetsController do
         end
 
         it 'renders the snippet' do
-          get :show, id: personal_snippet.to_param
+          get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -135,7 +135,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'renders the snippet' do
-          get :show, id: personal_snippet.to_param
+          get :show, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -150,7 +150,7 @@ describe SnippetsController do
         end
 
         it 'responds with status 404' do
-          get :show, id: 'doesntexist'
+          get :show, params: { id: 'doesntexist' }
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -158,7 +158,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'responds with status 404' do
-          get :show, id: 'doesntexist'
+          get :show, params: { id: 'doesntexist' }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -170,7 +170,7 @@ describe SnippetsController do
     def create_snippet(snippet_params = {}, additional_params = {})
       sign_in(user)
 
-      post :create, {
+      post :create, params: {
         personal_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
 
@@ -279,7 +279,7 @@ describe SnippetsController do
     def update_snippet(snippet_params = {}, additional_params = {})
       sign_in(user)
 
-      put :update, {
+      put :update, params: {
         id: snippet.id,
         personal_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
       }.merge(additional_params)
@@ -406,7 +406,7 @@ describe SnippetsController do
       create(:user_agent_detail, subject: snippet)
       sign_in(admin)
 
-      post :mark_as_spam, id: snippet.id
+      post :mark_as_spam, params: { id: snippet.id }
     end
 
     it 'updates the snippet' do
@@ -430,7 +430,7 @@ describe SnippetsController do
           let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
 
           it 'responds with status 404' do
-            get :raw, id: other_personal_snippet.to_param
+            get :raw, params: { id: other_personal_snippet.to_param }
 
             expect(response).to have_gitlab_http_status(404)
           end
@@ -441,7 +441,7 @@ describe SnippetsController do
 
           before do
             stub_feature_flags(workhorse_set_content_type: flag_value)
-            get :raw, id: personal_snippet.to_param
+            get :raw, params: { id: personal_snippet.to_param }
           end
 
           it 'responds with status 200' do
@@ -477,7 +477,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :raw, id: personal_snippet.to_param
+          get :raw, params: { id: personal_snippet.to_param }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -493,7 +493,7 @@ describe SnippetsController do
         end
 
         it 'responds with status 200' do
-          get :raw, id: personal_snippet.to_param
+          get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -502,7 +502,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in page' do
-          get :raw, id: personal_snippet.to_param
+          get :raw, params: { id: personal_snippet.to_param }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -518,7 +518,7 @@ describe SnippetsController do
         end
 
         it 'responds with status 200' do
-          get :raw, id: personal_snippet.to_param
+          get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -530,13 +530,13 @@ describe SnippetsController do
           end
 
           it 'returns LF line endings by default' do
-            get :raw, id: personal_snippet.to_param
+            get :raw, params: { id: personal_snippet.to_param }
 
             expect(response.body).to eq("first line\nsecond line\nthird line")
           end
 
           it 'does not convert line endings when parameter present' do
-            get :raw, id: personal_snippet.to_param, line_ending: :raw
+            get :raw, params: { id: personal_snippet.to_param, line_ending: :raw }
 
             expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
           end
@@ -545,7 +545,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'responds with status 200' do
-          get :raw, id: personal_snippet.to_param
+          get :raw, params: { id: personal_snippet.to_param }
 
           expect(assigns(:snippet)).to eq(personal_snippet)
           expect(response).to have_gitlab_http_status(200)
@@ -560,7 +560,7 @@ describe SnippetsController do
         end
 
         it 'responds with status 404' do
-          get :raw, id: 'doesntexist'
+          get :raw, params: { id: 'doesntexist' }
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -568,7 +568,7 @@ describe SnippetsController do
 
       context 'when not signed in' do
         it 'redirects to the sign in path' do
-          get :raw, id: 'doesntexist'
+          get :raw, params: { id: 'doesntexist' }
 
           expect(response).to redirect_to(new_user_session_path)
         end
@@ -587,17 +587,17 @@ describe SnippetsController do
     describe 'POST #toggle_award_emoji' do
       it "toggles the award emoji" do
         expect do
-          post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
         end.to change { personal_snippet.award_emoji.count }.from(0).to(1)
 
         expect(response.status).to eq(200)
       end
 
       it "removes the already awarded emoji" do
-        post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+        post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
 
         expect do
-          post(:toggle_award_emoji, id: personal_snippet.to_param, name: "thumbsup")
+          post(:toggle_award_emoji, params: { id: personal_snippet.to_param, name: "thumbsup" })
         end.to change { personal_snippet.award_emoji.count }.from(1).to(0)
 
         expect(response.status).to eq(200)
@@ -611,7 +611,7 @@ describe SnippetsController do
     it 'renders json in a correct format' do
       sign_in(user)
 
-      post :preview_markdown, id: snippet, text: '*Markdown* text'
+      post :preview_markdown, params: { id: snippet, text: '*Markdown* text' }
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end

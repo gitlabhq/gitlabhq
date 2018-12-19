@@ -105,7 +105,7 @@ describe Groups::BoardsController do
     end
 
     def list_boards(format: :html)
-      get :index, group_id: group, format: format
+      get :index, params: { group_id: group }, format: format
     end
   end
 
@@ -183,8 +183,10 @@ describe Groups::BoardsController do
     end
 
     def read_board(board:, format: :html)
-      get :show, group_id: group,
-                 id: board.to_param,
+      get :show, params: {
+                   group_id: group,
+                   id: board.to_param
+                 },
                  format: format
     end
   end

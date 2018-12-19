@@ -13,7 +13,7 @@ describe Projects::Ci::LintsController do
       before do
         project.add_developer(user)
 
-        get :show, namespace_id: project.namespace, project_id: project
+        get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
       it 'should be success' do
@@ -33,7 +33,7 @@ describe Projects::Ci::LintsController do
       before do
         project.add_guest(user)
 
-        get :show, namespace_id: project.namespace, project_id: project
+        get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
       it 'should respond with 404' do
@@ -72,7 +72,7 @@ describe Projects::Ci::LintsController do
         WebMock.stub_request(:get, remote_file_path).to_return(body: remote_file_content)
         project.add_developer(user)
 
-        post :create, namespace_id: project.namespace, project_id: project, content: content
+        post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
       end
 
       it 'should be success' do
@@ -100,7 +100,7 @@ describe Projects::Ci::LintsController do
       before do
         project.add_developer(user)
 
-        post :create, namespace_id: project.namespace, project_id: project, content: content
+        post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
       end
 
       it 'should assign errors' do
@@ -112,7 +112,7 @@ describe Projects::Ci::LintsController do
       before do
         project.add_guest(user)
 
-        post :create, namespace_id: project.namespace, project_id: project, content: content
+        post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
       end
 
       it 'should respond with 404' do

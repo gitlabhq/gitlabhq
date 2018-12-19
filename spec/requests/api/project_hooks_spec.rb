@@ -91,8 +91,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "adds hook to project" do
       expect do
         post api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com", issues_events: true, confidential_issues_events: true, wiki_page_events: true,
-          job_events: true, push_events_branch_filter: 'some-feature-branch'
+          params: { url: "http://example.com", issues_events: true, confidential_issues_events: true, wiki_page_events: true, job_events: true, push_events_branch_filter: 'some-feature-branch' }
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -116,7 +115,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       token = "secret token"
 
       expect do
-        post api("/projects/#{project.id}/hooks", user), url: "http://example.com", token: token
+        post api("/projects/#{project.id}/hooks", user), params: { url: "http://example.com", token: token }
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -135,12 +134,12 @@ describe API::ProjectHooks, 'ProjectHooks' do
     end
 
     it "returns a 422 error if url not valid" do
-      post api("/projects/#{project.id}/hooks", user), url: "ftp://example.com"
+      post api("/projects/#{project.id}/hooks", user), params: { url: "ftp://example.com" }
       expect(response).to have_gitlab_http_status(422)
     end
 
     it "returns a 422 error if branch filter is not valid" do
-      post api("/projects/#{project.id}/hooks", user), url: "http://example.com", push_events_branch_filter: '~badbranchname/'
+      post api("/projects/#{project.id}/hooks", user), params: { url: "http://example.com", push_events_branch_filter: '~badbranchname/' }
       expect(response).to have_gitlab_http_status(422)
     end
   end
@@ -148,7 +147,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "updates an existing project hook" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org', push_events: false, job_events: true
+        params: { url: 'http://example.org', push_events: false, job_events: true }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
@@ -168,7 +167,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "adds the token without including it in the response" do
       token = "secret token"
 
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: "http://example.org", token: token
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: { url: "http://example.org", token: token }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response["url"]).to eq("http://example.org")
@@ -179,7 +178,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     end
 
     it "returns 404 error if hook id not found" do
-      put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
+      put api("/projects/#{project.id}/hooks/1234", user), params: { url: 'http://example.org' }
       expect(response).to have_gitlab_http_status(404)
     end
 
@@ -189,7 +188,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     end
 
     it "returns a 422 error if url is not valid" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
+      put api("/projects/#{project.id}/hooks/#{hook.id}", user), params: { url: 'ftp://example.com' }
       expect(response).to have_gitlab_http_status(422)
     end
   end

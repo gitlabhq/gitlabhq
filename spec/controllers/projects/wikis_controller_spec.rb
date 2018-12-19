@@ -20,7 +20,7 @@ describe Projects::WikisController do
   describe 'GET #show' do
     render_views
 
-    subject { get :show, namespace_id: project.namespace, project_id: project, id: wiki_title }
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: wiki_title } }
 
     it 'limits the retrieved pages for the sidebar' do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
@@ -52,7 +52,7 @@ describe Projects::WikisController do
 
       let(:path) { upload_file_to_wiki(project, user, file_name) }
 
-      subject { get :show, namespace_id: project.namespace, project_id: project, id: path }
+      subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: path } }
 
       context 'when file is an image' do
         let(:file_name) { 'dk.png' }
@@ -142,14 +142,14 @@ describe Projects::WikisController do
 
   describe 'POST #preview_markdown' do
     it 'renders json in a correct format' do
-      post :preview_markdown, namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text'
+      post :preview_markdown, params: { namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text' }
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
   end
 
   describe 'GET #edit' do
-    subject { get(:edit, namespace_id: project.namespace, project_id: project, id: wiki_title) }
+    subject { get(:edit, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }) }
 
     context 'when page content encoding is invalid' do
       it 'redirects to show' do
@@ -178,10 +178,12 @@ describe Projects::WikisController do
     let(:new_content) { 'New content' }
     subject do
       patch(:update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: wiki_title,
-            wiki: { title: new_title, content: new_content })
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: wiki_title,
+              wiki: { title: new_title, content: new_content }
+            })
     end
 
     context 'when page content encoding is invalid' do

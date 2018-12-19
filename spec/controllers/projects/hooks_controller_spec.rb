@@ -11,7 +11,7 @@ describe Projects::HooksController do
 
   describe '#index' do
     it 'redirects to settings/integrations page' do
-      get(:index, namespace_id: project.namespace, project_id: project)
+      get(:index, params: { namespace_id: project.namespace, project_id: project })
 
       expect(response).to redirect_to(
         project_settings_integrations_path(project)
@@ -38,7 +38,7 @@ describe Projects::HooksController do
         wiki_page_events: true
       }
 
-      post :create, namespace_id: project.namespace, project_id: project, hook: hook_params
+      post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }
 
       expect(response).to have_http_status(302)
       expect(ProjectHook.all.size).to eq(1)

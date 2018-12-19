@@ -17,7 +17,7 @@ describe Admin::UsersController do
     end
 
     it 'deletes user and ghosts their contributions' do
-      delete :destroy, id: user.username, format: :json
+      delete :destroy, params: { id: user.username }, format: :json
 
       expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
@@ -25,7 +25,7 @@ describe Admin::UsersController do
     end
 
     it 'deletes the user and their contributions when hard delete is specified' do
-      delete :destroy, id: user.username, hard_delete: true, format: :json
+      delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
 
       expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
@@ -35,7 +35,7 @@ describe Admin::UsersController do
 
   describe 'PUT block/:id' do
     it 'blocks user' do
-      put :block, id: user.username
+      put :block, params: { id: user.username }
       user.reload
       expect(user.blocked?).to be_truthy
       expect(flash[:notice]).to eq 'Successfully blocked'
@@ -51,7 +51,7 @@ describe Admin::UsersController do
       end
 
       it 'does not unblock user' do
-        put :unblock, id: user.username
+        put :unblock, params: { id: user.username }
         user.reload
         expect(user.blocked?).to be_truthy
         expect(flash[:alert]).to eq 'This user cannot be unlocked manually from GitLab'
@@ -64,7 +64,7 @@ describe Admin::UsersController do
       end
 
       it 'unblocks user' do
-        put :unblock, id: user.username
+        put :unblock, params: { id: user.username }
         user.reload
         expect(user.blocked?).to be_falsey
         expect(flash[:notice]).to eq 'Successfully unblocked'
@@ -79,7 +79,7 @@ describe Admin::UsersController do
     end
 
     it 'unlocks user' do
-      put :unlock, id: user.username
+      put :unlock, params: { id: user.username }
       user.reload
       expect(user.access_locked?).to be_falsey
     end
@@ -93,7 +93,7 @@ describe Admin::UsersController do
     end
 
     it 'confirms user' do
-      put :confirm, id: user.username
+      put :confirm, params: { id: user.username }
       user.reload
       expect(user.confirmed?).to be_truthy
     end
@@ -121,17 +121,17 @@ describe Admin::UsersController do
     end
 
     def go
-      patch :disable_two_factor, id: user.to_param
+      patch :disable_two_factor, params: { id: user.to_param }
     end
   end
 
   describe 'POST create' do
     it 'creates the user' do
-      expect { post :create, user: attributes_for(:user) }.to change { User.count }.by(1)
+      expect { post :create, params: { user: attributes_for(:user) } }.to change { User.count }.by(1)
     end
 
     it 'shows only one error message for an invalid email' do
-      post :create, user: attributes_for(:user, email: 'bogus')
+      post :create, params: { user: attributes_for(:user, email: 'bogus') }
       expect(assigns[:user].errors).to contain_exactly("Email is invalid")
     end
   end
@@ -147,7 +147,7 @@ describe Admin::UsersController do
           }
         }
 
-        post :update, params
+        post :update, params: params
       end
 
       context 'when the admin changes his own password' do
@@ -227,13 +227,13 @@ describe Admin::UsersController do
       end
 
       it "shows a notice" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(flash[:alert]).to eq("You cannot impersonate a blocked user")
       end
 
       it "doesn't sign us in as the user" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(warden.user).to eq(admin)
       end
@@ -241,25 +241,25 @@ describe Admin::UsersController do
 
     context "when the user is not blocked" do
       it "stores the impersonator in the session" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(session[:impersonator_id]).to eq(admin.id)
       end
 
       it "signs us in as the user" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(warden.user).to eq(user)
       end
 
       it "redirects to root" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(response).to redirect_to(root_path)
       end
 
       it "shows a notice" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(flash[:alert]).to eq("You are now impersonating #{user.username}")
       end
@@ -271,7 +271,7 @@ describe Admin::UsersController do
       end
 
       it "shows error page" do
-        post :impersonate, id: user.username
+        post :impersonate, params: { id: user.username }
 
         expect(response).to have_gitlab_http_status(404)
       end

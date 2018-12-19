@@ -12,7 +12,7 @@ describe API::Internal do
     it do
       expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
 
-      get api("/internal/check"), secret_token: secret_token
+      get api("/internal/check"), params: { secret_token: secret_token }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['api_version']).to eq(API::API.version)
@@ -22,7 +22,7 @@ describe API::Internal do
     it 'returns false for field `redis` when redis is unavailable' do
       expect_any_instance_of(Redis).to receive(:ping).and_raise(Errno::ENOENT)
 
-      get api("/internal/check"), secret_token: secret_token
+      get api("/internal/check"), params: { secret_token: secret_token }
 
       expect(json_response['redis']).to be(false)
     end
@@ -33,7 +33,7 @@ describe API::Internal do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
       it 'returns one broadcast message'  do
-        get api('/internal/broadcast_message'), secret_token: secret_token
+        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['message']).to eq(broadcast_message.message)
@@ -42,7 +42,7 @@ describe API::Internal do
 
     context 'broadcast message does not exist' do
       it 'returns nothing'  do
-        get api('/internal/broadcast_message'), secret_token: secret_token
+        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
@@ -53,7 +53,7 @@ describe API::Internal do
       it 'returns nothing' do
         allow(BroadcastMessage).to receive(:current).and_return(nil)
 
-        get api('/internal/broadcast_message'), secret_token: secret_token
+        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
@@ -66,7 +66,7 @@ describe API::Internal do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
       it 'returns active broadcast message(s)' do
-        get api('/internal/broadcast_messages'), secret_token: secret_token
+        get api('/internal/broadcast_messages'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response[0]['message']).to eq(broadcast_message.message)
@@ -75,7 +75,7 @@ describe API::Internal do
 
     context 'broadcast message does not exist' do
       it 'returns nothing' do
-        get api('/internal/broadcast_messages'), secret_token: secret_token
+        get api('/internal/broadcast_messages'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
@@ -86,8 +86,10 @@ describe API::Internal do
   describe 'GET /internal/two_factor_recovery_codes' do
     it 'returns an error message when the key does not exist' do
       post api('/internal/two_factor_recovery_codes'),
-           secret_token: secret_token,
-           key_id: 12345
+           params: {
+             secret_token: secret_token,
+             key_id: 12345
+           }
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq('Could not find the given key')
@@ -97,8 +99,10 @@ describe API::Internal do
       deploy_key = create(:deploy_key)
 
       post api('/internal/two_factor_recovery_codes'),
-           secret_token: secret_token,
-           key_id: deploy_key.id
+           params: {
+             secret_token: secret_token,
+             key_id: deploy_key.id
+           }
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq('Deploy keys cannot be used to retrieve recovery codes')
@@ -108,8 +112,10 @@ describe API::Internal do
       key_without_user = create(:key, user: nil)
 
       post api('/internal/two_factor_recovery_codes'),
-           secret_token: secret_token,
-           key_id: key_without_user.id
+           params: {
+             secret_token: secret_token,
+             key_id: key_without_user.id
+           }
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq('Could not find a user for the given key')
@@ -123,8 +129,10 @@ describe API::Internal do
           .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
 
         post api('/internal/two_factor_recovery_codes'),
-             secret_token: secret_token,
-             key_id: key.id
+             params: {
+               secret_token: secret_token,
+               key_id: key.id
+             }
 
         expect(json_response['success']).to be_truthy
         expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
@@ -136,8 +144,10 @@ describe API::Internal do
         allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
 
         post api('/internal/two_factor_recovery_codes'),
-             secret_token: secret_token,
-             key_id: key.id
+             params: {
+               secret_token: secret_token,
+               key_id: key.id
+             }
 
         expect(json_response['success']).to be_falsey
         expect(json_response['recovery_codes']).to be_nil
@@ -204,7 +214,7 @@ describe API::Internal do
 
   describe "GET /internal/discover" do
     it "finds a user by key id" do
-      get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+      get(api("/internal/discover"), params: { key_id: key.id, secret_token: secret_token })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -212,7 +222,7 @@ describe API::Internal do
     end
 
     it "finds a user by user id" do
-      get(api("/internal/discover"), user_id: user.id, secret_token: secret_token)
+      get(api("/internal/discover"), params: { user_id: user.id, secret_token: secret_token })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -220,7 +230,7 @@ describe API::Internal do
     end
 
     it "finds a user by username" do
-      get(api("/internal/discover"), username: user.username, secret_token: secret_token)
+      get(api("/internal/discover"), params: { username: user.username, secret_token: secret_token })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -231,7 +241,7 @@ describe API::Internal do
   describe "GET /internal/authorized_keys" do
     context "using an existing key's fingerprint" do
       it "finds the key" do
-        get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { fingerprint: key.fingerprint, secret_token: secret_token })
 
         expect(response.status).to eq(200)
         expect(json_response["key"]).to eq(key.key)
@@ -240,7 +250,7 @@ describe API::Internal do
 
     context "non existing key's fingerprint" do
       it "returns 404" do
-        get(api('/internal/authorized_keys'), fingerprint: "no:t-:va:li:d0", secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { fingerprint: "no:t-:va:li:d0", secret_token: secret_token })
 
         expect(response.status).to eq(404)
       end
@@ -248,7 +258,7 @@ describe API::Internal do
 
     context "using a partial fingerprint" do
       it "returns 404" do
-        get(api('/internal/authorized_keys'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token })
 
         expect(response.status).to eq(404)
       end
@@ -256,20 +266,20 @@ describe API::Internal do
 
     context "sending the key" do
       it "finds the key" do
-        get(api('/internal/authorized_keys'), key: key.key.split[1], secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1], secret_token: secret_token })
 
         expect(response.status).to eq(200)
         expect(json_response["key"]).to eq(key.key)
       end
 
       it "returns 404 with a partial key" do
-        get(api('/internal/authorized_keys'), key: key.key.split[1][0...-3], secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { key: key.key.split[1][0...-3], secret_token: secret_token })
 
         expect(response.status).to eq(404)
       end
 
       it "returns 404 with an not valid base64 string" do
-        get(api('/internal/authorized_keys'), key: "whatever!", secret_token: secret_token)
+        get(api('/internal/authorized_keys'), params: { key: "whatever!", secret_token: secret_token })
 
         expect(response.status).to eq(404)
       end
@@ -677,7 +687,7 @@ describe API::Internal do
     end
 
     it 'returns link to create new merge request' do
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), params: { secret_token: secret_token }
 
       expect(json_response).to match [{
         "branch_name" => "new_branch",
@@ -689,7 +699,7 @@ describe API::Internal do
     it 'returns empty array if printing_merge_request_link_enabled is false' do
       project.update!(printing_merge_request_link_enabled: false)
 
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), params: { secret_token: secret_token }
 
       expect(json_response).to eq([])
     end
@@ -698,7 +708,7 @@ describe API::Internal do
       let(:gl_repository) { "project-#{project.id}" }
 
       it 'returns link to create new merge request' do
-        get api("/internal/merge_request_urls?gl_repository=#{gl_repository}&changes=#{changes}"), secret_token: secret_token
+        get api("/internal/merge_request_urls?gl_repository=#{gl_repository}&changes=#{changes}"), params: { secret_token: secret_token }
 
         expect(json_response).to match [{
           "branch_name" => "new_branch",
@@ -817,7 +827,7 @@ describe API::Internal do
       expect(PostReceive).to receive(:perform_async)
         .with(gl_repository, identifier, changes)
 
-      post api("/internal/post_receive"), valid_params
+      post api("/internal/post_receive"), params: valid_params
     end
 
     it 'decreases the reference counter and returns the result' do
@@ -825,13 +835,13 @@ describe API::Internal do
         .and_return(reference_counter)
       expect(reference_counter).to receive(:decrease).and_return(true)
 
-      post api("/internal/post_receive"), valid_params
+      post api("/internal/post_receive"), params: valid_params
 
       expect(json_response['reference_counter_decreased']).to be(true)
     end
 
     it 'returns link to create new merge request' do
-      post api("/internal/post_receive"), valid_params
+      post api("/internal/post_receive"), params: valid_params
 
       expect(json_response['merge_request_urls']).to match [{
         "branch_name" => "new_branch",
@@ -843,7 +853,7 @@ describe API::Internal do
     it 'returns empty array if printing_merge_request_link_enabled is false' do
       project.update!(printing_merge_request_link_enabled: false)
 
-      post api("/internal/post_receive"), valid_params
+      post api("/internal/post_receive"), params: valid_params
 
       expect(json_response['merge_request_urls']).to eq([])
     end
@@ -852,7 +862,7 @@ describe API::Internal do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
       it 'returns one broadcast message'  do
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(broadcast_message.message)
@@ -861,7 +871,7 @@ describe API::Internal do
 
     context 'broadcast message does not exist' do
       it 'returns empty string'  do
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
@@ -872,7 +882,7 @@ describe API::Internal do
       it 'returns empty string' do
         allow(BroadcastMessage).to receive(:current).and_return(nil)
 
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
@@ -884,7 +894,7 @@ describe API::Internal do
         project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'http', 'foo/baz')
         project_moved.add_message
 
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["redirected_message"]).to be_present
@@ -897,7 +907,7 @@ describe API::Internal do
         project_created = Gitlab::Checks::ProjectCreated.new(project, user, 'http')
         project_created.add_message
 
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response["project_created_message"]).to be_present
@@ -909,7 +919,7 @@ describe API::Internal do
       it 'does not try to notify that project moved' do
         allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
 
-        post api("/internal/post_receive"), valid_params
+        post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -926,7 +936,7 @@ describe API::Internal do
         .and_return(reference_counter)
       expect(reference_counter).to receive(:increase).and_return(true)
 
-      post api("/internal/pre_receive"), valid_params
+      post api("/internal/pre_receive"), params: valid_params
 
       expect(json_response['reference_counter_increased']).to be(true)
     end
@@ -946,12 +956,14 @@ describe API::Internal do
   def pull(key, project, protocol = 'ssh')
     post(
       api("/internal/allowed"),
-      key_id: key.id,
-      project: project.full_path,
-      gl_repository: gl_repository_for(project),
-      action: 'git-upload-pack',
-      secret_token: secret_token,
-      protocol: protocol
+      params: {
+        key_id: key.id,
+        project: project.full_path,
+        gl_repository: gl_repository_for(project),
+        action: 'git-upload-pack',
+        secret_token: secret_token,
+        protocol: protocol
+      }
     )
   end
 
@@ -976,39 +988,47 @@ describe API::Internal do
   def archive(key, project)
     post(
       api("/internal/allowed"),
-      ref: 'master',
-      key_id: key.id,
-      project: project.full_path,
-      gl_repository: gl_repository_for(project),
-      action: 'git-upload-archive',
-      secret_token: secret_token,
-      protocol: 'ssh'
+      params: {
+        ref: 'master',
+        key_id: key.id,
+        project: project.full_path,
+        gl_repository: gl_repository_for(project),
+        action: 'git-upload-archive',
+        secret_token: secret_token,
+        protocol: 'ssh'
+      }
     )
   end
 
   def lfs_auth_project(project)
     post(
       api("/internal/lfs_authenticate"),
-      secret_token: secret_token,
-      project: project.full_path
+      params: {
+        secret_token: secret_token,
+        project: project.full_path
+      }
     )
   end
 
   def lfs_auth_key(key_id, project)
     post(
       api("/internal/lfs_authenticate"),
-      key_id: key_id,
-      secret_token: secret_token,
-      project: project.full_path
+      params: {
+        key_id: key_id,
+        secret_token: secret_token,
+        project: project.full_path
+      }
     )
   end
 
   def lfs_auth_user(user_id, project)
     post(
       api("/internal/lfs_authenticate"),
-      user_id: user_id,
-      secret_token: secret_token,
-      project: project.full_path
+      params: {
+        user_id: user_id,
+        secret_token: secret_token,
+        project: project.full_path
+      }
     )
   end
 end

@@ -60,6 +60,6 @@ describe Projects::ReleasesController do
   private
 
   def get_index
-    get :index, namespace_id: project.namespace, project_id: project
+    get :index, params: { namespace_id: project.namespace, project_id: project }
   end
 end

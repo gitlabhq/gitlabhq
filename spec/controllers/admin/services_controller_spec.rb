@@ -18,7 +18,7 @@ describe Admin::ServicesController do
         end
 
         it 'successfully displays the template' do
-          get :edit, id: service.id
+          get :edit, params: { id: service.id }
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -44,7 +44,7 @@ describe Admin::ServicesController do
     it 'calls the propagation worker when service is active' do
       expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service.id)
 
-      put :update, id: service.id, service: { active: true }
+      put :update, params: { id: service.id, service: { active: true } }
 
       expect(response).to have_gitlab_http_status(302)
     end
@@ -52,7 +52,7 @@ describe Admin::ServicesController do
     it 'does not call the propagation worker when service is not active' do
       expect(PropagateServiceTemplateWorker).not_to receive(:perform_async)
 
-      put :update, id: service.id, service: { properties: {} }
+      put :update, params: { id: service.id, service: { properties: {} } }
 
       expect(response).to have_gitlab_http_status(302)
     end

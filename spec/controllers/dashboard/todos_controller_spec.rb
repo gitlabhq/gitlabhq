@@ -16,19 +16,19 @@ describe Dashboard::TodosController do
       it 'renders 404 when user does not have read access on given project' do
         unauthorized_project = create(:project, :private)
 
-        get :index, project_id: unauthorized_project.id
+        get :index, params: { project_id: unauthorized_project.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'renders 404 when given project does not exists' do
-        get :index, project_id: 999
+        get :index, params: { project_id: 999 }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'renders 200 when filtering for "any project" todos' do
-        get :index, project_id: ''
+        get :index, params: { project_id: '' }
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -36,7 +36,7 @@ describe Dashboard::TodosController do
       it 'renders 200 when user has access on given project' do
         authorized_project = create(:project, :public)
 
-        get :index, project_id: authorized_project.id
+        get :index, params: { project_id: authorized_project.id }
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -46,7 +46,7 @@ describe Dashboard::TodosController do
       it 'renders 404 when user does not have read access on given group' do
         unauthorized_group = create(:group, :private)
 
-        get :index, group_id: unauthorized_group.id
+        get :index, params: { group_id: unauthorized_group.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -62,13 +62,13 @@ describe Dashboard::TodosController do
       end
 
       it 'redirects to last_page if page number is larger than number of pages' do
-        get :index, page: (last_page + 1).to_param
+        get :index, params: { page: (last_page + 1).to_param }
 
         expect(response).to redirect_to(dashboard_todos_path(page: last_page))
       end
 
       it 'goes to the correct page' do
-        get :index, page: last_page
+        get :index, params: { page: last_page }
 
         expect(assigns(:todos).current_page).to eq(last_page)
         expect(response).to have_gitlab_http_status(200)
@@ -76,7 +76,7 @@ describe Dashboard::TodosController do
 
       it 'does not redirect to external sites when provided a host field' do
         external_host = "www.example.com"
-        get :index, page: (last_page + 1).to_param, host: external_host
+        get :index, params: { page: (last_page + 1).to_param, host: external_host }
 
         expect(response).to redirect_to(dashboard_todos_path(page: last_page))
       end
@@ -87,7 +87,7 @@ describe Dashboard::TodosController do
 
           expect(user).to receive(:todos_pending_count).and_call_original
 
-          get :index, page: (last_page + 1).to_param, sort: :created_asc
+          get :index, params: { page: (last_page + 1).to_param, sort: :created_asc }
 
           expect(response).to redirect_to(dashboard_todos_path(page: last_page, sort: :created_asc))
         end
@@ -99,7 +99,7 @@ describe Dashboard::TodosController do
 
           expect(user).not_to receive(:todos_pending_count)
 
-          get :index, page: (last_page + 1).to_param, project_id: project.id
+          get :index, params: { page: (last_page + 1).to_param, project_id: project.id }
 
           expect(response).to redirect_to(dashboard_todos_path(page: last_page, project_id: project.id))
         end
@@ -111,7 +111,7 @@ describe Dashboard::TodosController do
     let(:todo) { create(:todo, :done, user: user, project: project, author: author) }
 
     it 'restores the todo to pending state' do
-      patch :restore, id: todo.id
+      patch :restore, params: { id: todo.id }
 
       expect(todo.reload).to be_pending
       expect(response).to have_gitlab_http_status(200)
@@ -123,7 +123,7 @@ describe Dashboard::TodosController do
     let(:todos) { create_list(:todo, 2, :done, user: user, project: project, author: author) }
 
     it 'restores the todos to pending state' do
-      patch :bulk_restore, ids: todos.map(&:id)
+      patch :bulk_restore, params: { ids: todos.map(&:id) }
 
       todos.each do |todo|
         expect(todo.reload).to be_pending

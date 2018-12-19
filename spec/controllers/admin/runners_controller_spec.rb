@@ -17,13 +17,13 @@ describe Admin::RunnersController do
 
   describe '#show' do
     it 'shows a particular runner' do
-      get :show, id: runner.id
+      get :show, params: { id: runner.id }
 
       expect(response).to have_gitlab_http_status(200)
     end
 
     it 'shows 404 for unknown runner' do
-      get :show, id: 0
+      get :show, params: { id: 0 }
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -34,7 +34,7 @@ describe Admin::RunnersController do
       new_desc = runner.description.swapcase
 
       expect do
-        post :update, id: runner.id, runner: { description: new_desc }
+        post :update, params: { id: runner.id, runner: { description: new_desc } }
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
@@ -46,7 +46,7 @@ describe Admin::RunnersController do
 
   describe '#destroy' do
     it 'destroys the runner' do
-      delete :destroy, id: runner.id
+      delete :destroy, params: { id: runner.id }
 
       expect(response).to have_gitlab_http_status(302)
       expect(Ci::Runner.find_by(id: runner.id)).to be_nil
@@ -58,7 +58,7 @@ describe Admin::RunnersController do
       runner.update(active: false)
 
       expect do
-        post :resume, id: runner.id
+        post :resume, params: { id: runner.id }
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
@@ -73,7 +73,7 @@ describe Admin::RunnersController do
       runner.update(active: true)
 
       expect do
-        post :pause, id: runner.id
+        post :pause, params: { id: runner.id }
       end.to change { runner.ensure_runner_queue_value }
 
       runner.reload
