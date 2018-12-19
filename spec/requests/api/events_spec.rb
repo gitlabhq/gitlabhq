@@ -226,7 +226,7 @@ describe API::Events do
       end
 
       it 'correctly returns the second page without inaccessible events' do
-        get api("/projects/#{public_project.id}/events", user), per_page: 2, page: 2
+        get api("/projects/#{public_project.id}/events", user), params: { per_page: 2, page: 2 }
 
         titles = json_response.map { |event| event['target_title'] }
 
@@ -235,7 +235,7 @@ describe API::Events do
       end
 
       it 'correctly returns the first page without inaccessible events' do
-        get api("/projects/#{public_project.id}/events", user), per_page: 2, page: 1
+        get api("/projects/#{public_project.id}/events", user), params: { per_page: 2, page: 1 }
 
         titles = json_response.map { |event| event['target_title'] }
 

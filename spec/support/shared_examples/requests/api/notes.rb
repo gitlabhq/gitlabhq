@@ -118,7 +118,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       context 'by an admin' do
         it 'sets the creation time on the new note' do
           admin = create(:admin)
-          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", admin), params
+          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", admin), params: params
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq('hi!')
@@ -131,7 +131,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       if parent_type == 'projects'
         context 'by a project owner' do
           it 'sets the creation time on the new note' do
-            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response['body']).to eq('hi!')
@@ -149,7 +149,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
             parent.update!(namespace: group)
             user2.refresh_authorized_projects
 
-            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params: params
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response['body']).to eq('hi!')
@@ -161,7 +161,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
       elsif parent_type == 'groups'
         context 'by a group owner' do
           it 'sets the creation time on the new note' do
-            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params
+            post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user), params: params
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response['body']).to eq('hi!')
@@ -176,7 +176,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         it 'ignores the given creation time' do
           user2 = create(:user)
           parent.add_developer(user2)
-          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params
+          post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user2), params: params
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq('hi!')

@@ -24,10 +24,10 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
   end
 
   it 'pipelines/pipelines.json' do |example|
-    get :index,
+    get :index, params: {
       namespace_id: namespace,
-      project_id: project,
-      format: :json
+      project_id: project
+    }, format: :json
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)
