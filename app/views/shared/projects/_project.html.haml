@@ -72,13 +72,13 @@
                 title: _('Forks'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('fork', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.forks_count)
-          - if show_merge_request_count?(merge_requests, compact_mode)
+          - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project),
                 class: "d-none d-lg-flex align-items-center icon-wrapper merge-requests has-tooltip",
                 title: _('Merge Requests'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('git-merge', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_merge_requests_count)
-          - if show_issue_count?(issues, compact_mode)
+          - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)
             = link_to project_issues_path(project),
                 class: "d-none d-lg-flex align-items-center icon-wrapper issues has-tooltip",
                 title: _('Issues'), data: { container: 'body', placement: 'top' } do
