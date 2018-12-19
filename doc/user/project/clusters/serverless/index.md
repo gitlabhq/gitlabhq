@@ -86,7 +86,7 @@ At launch, the following runtimes are offered:
 
 You can locate the runtimes souce at https://gitlab.com/triggermesh/runtimes
 
-In order to deploy functions to your Knative instance, the following templates must be present:
+In order to deploy functions to your Knative instance, the following files must be present:
 
 1. `gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
@@ -133,35 +133,35 @@ In order to deploy functions to your Knative instance, the following templates m
        FUNCTION: echo
    ```
 
-    This `serverless.yaml` sample contains three section with distinct parameters:
+The `serverless.yaml` file contains three section with distinct parameters:
 
-    ### `service`
-    
-    | Parameter | Description |
-    |-----------|-------------|
-    | `service` | Name for the Knative service which will serve the function |
-    | `description` | A short description of the `service` |
-    
+### `service`
 
-    ### `provider`
+| Parameter | Description |
+|-----------|-------------|
+| `service` | Name for the Knative service which will serve the function |
+| `description` | A short description of the `service` |
 
-    | Parameter | Description |
-    |-----------|-------------|
-    | `name` | Indicates which provider is used to execute `serverless.yaml` file. In this case the TriggerMesh `tm` CLI |
-    | `registry-secret` | Indicates which registry will be used to store docker images |
-    | `environment` | Includes the environment variables to be passed as part of function execution, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables |
 
-    ### `functions`
+### `provider`
 
-      In the provided sample, line no. 11 contains the function name (in this sample, `"echo"`). The subsequent lines contain the function attributes:
+| Parameter | Description |
+|-----------|-------------|
+| `name` | Indicates which provider is used to execute `serverless.yaml` file. In this case the TriggerMesh `tm` CLI |
+| `registry-secret` | Indicates which registry will be used to store docker images |
+| `environment` | Includes the environment variables to be passed as part of function execution, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables |
 
-    | Parameter | Description |
-    |-----------|-------------|
-    | `handler` | Reference to function file name (in the sample both the function name and the handler are the same) |
-    | `runtime` | Reference to the runtime to be used to execute the function |
-    | `description` | A short description of the function |
-    | `buildargs` | Pointer to the function file in the repo (in the sample the function is located in the `echo` directory) |
-    | `environment` | Pointer to the function file name (in the sample the function is called `echo`) |
+### `functions`
+
+  In the provided sample, line no. 11 contains the function name (in this sample, `"echo"`). The subsequent lines contain the function attributes:
+
+| Parameter | Description |
+|-----------|-------------|
+| `handler` | Reference to function file name (in the sample both the function name and the handler are the same) |
+| `runtime` | Reference to the runtime to be used to execute the function |
+| `description` | A short description of the function |
+| `buildargs` | Pointer to the function file in the repo (in the sample the function is located in the `echo` directory) |
+| `environment` | Sets an environment variable on function invokation. Pointer to the function file name (in the sample the function is called `echo`) |
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yaml` file has been 
 created, each function must be defined as a single file in your repository. Committing a 
