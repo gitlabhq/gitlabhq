@@ -72,5 +72,14 @@ describe 'Project Issues Calendar Feed'  do
         expect(body).to have_text('TRANSP:TRANSPARENT')
       end
     end
+
+    context 'sorted by priority' do
+      it 'renders calendar feed' do
+        visit project_issues_path(project, :ics, sort: 'priority', feed_token: user.feed_token)
+
+        expect(response_headers['Content-Type']).to have_content('text/calendar')
+        expect(body).to have_text('BEGIN:VCALENDAR')
+      end
+    end
   end
 end
