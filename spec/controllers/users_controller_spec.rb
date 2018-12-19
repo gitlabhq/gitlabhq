@@ -15,7 +15,7 @@ describe UsersController do
         end
 
         it 'renders the show template' do
-          get :show, username: user.username
+          get :show, params: { username: user.username }
 
           expect(response).to be_success
           expect(response).to render_template('show')
@@ -24,7 +24,7 @@ describe UsersController do
 
       describe 'when logged out' do
         it 'renders the show template' do
-          get :show, username: user.username
+          get :show, params: { username: user.username }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template('show')
@@ -39,7 +39,7 @@ describe UsersController do
 
       context 'when logged out' do
         it 'redirects to login page' do
-          get :show, username: user.username
+          get :show, params: { username: user.username }
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -50,7 +50,7 @@ describe UsersController do
         end
 
         it 'renders show' do
-          get :show, username: user.username
+          get :show, params: { username: user.username }
           expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template('show')
         end
@@ -60,7 +60,7 @@ describe UsersController do
     context 'when a user by that username does not exist' do
       context 'when logged out' do
         it 'redirects to login page' do
-          get :show, username: 'nonexistent'
+          get :show, params: { username: 'nonexistent' }
           expect(response).to redirect_to new_user_session_path
         end
       end
@@ -71,7 +71,7 @@ describe UsersController do
         end
 
         it 'renders 404' do
-          get :show, username: 'nonexistent'
+          get :show, params: { username: 'nonexistent' }
           expect(response).to have_gitlab_http_status(404)
         end
       end
@@ -87,7 +87,7 @@ describe UsersController do
       end
 
       it 'loads events' do
-        get :show, username: user, format: :json
+        get :show, params: { username: user }, format: :json
 
         expect(assigns(:events)).not_to be_empty
       end
@@ -96,7 +96,7 @@ describe UsersController do
         allow(Ability).to receive(:allowed?).and_call_original
         expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 
-        get :show, username: user, format: :json
+        get :show, params: { username: user }, format: :json
 
         expect(assigns(:events)).to be_empty
       end
@@ -104,7 +104,7 @@ describe UsersController do
       it 'hides events if the user has a private profile' do
         Gitlab::DataBuilder::Push.build_sample(project, private_user)
 
-        get :show, username: private_user.username, format: :json
+        get :show, params: { username: private_user.username }, format: :json
 
         expect(assigns(:events)).to be_empty
       end
@@ -125,7 +125,7 @@ describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
           EventCreateService.new.push(project, public_user, push_data)
 
-          get :calendar, username: public_user.username, format: :json
+          get :calendar, params: { username: public_user.username }, format: :json
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -136,7 +136,7 @@ describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
           EventCreateService.new.push(project, private_user, push_data)
 
-          get :calendar, username: private_user.username, format: :json
+          get :calendar, params: { username: private_user.username }, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -161,7 +161,7 @@ describe UsersController do
       end
 
       it 'includes forked projects' do
-        get :calendar, username: user.username
+        get :calendar, params: { username: user.username }
         expect(assigns(:contributions_calendar).projects.count).to eq(2)
       end
     end
@@ -179,7 +179,7 @@ describe UsersController do
     end
 
     it 'assigns @calendar_date' do
-      get :calendar_activities, username: user.username, date: '2014-07-31'
+      get :calendar_activities, params: { username: user.username, date: '2014-07-31' }
       expect(assigns(:calendar_date)).to eq(Date.parse('2014-07-31'))
     end
 
@@ -189,7 +189,7 @@ describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
           EventCreateService.new.push(project, public_user, push_data)
 
-          get :calendar_activities, username: public_user.username
+          get :calendar_activities, params: { username: public_user.username }
           expect(assigns[:events]).not_to be_empty
         end
       end
@@ -199,7 +199,7 @@ describe UsersController do
           push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
           EventCreateService.new.push(project, private_user, push_data)
 
-          get :calendar_activities, username: private_user.username
+          get :calendar_activities, params: { username: private_user.username }
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
@@ -213,7 +213,7 @@ describe UsersController do
 
     context 'format html' do
       it 'renders snippets page' do
-        get :snippets, username: user.username
+        get :snippets, params: { username: user.username }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template('show')
       end
@@ -221,7 +221,7 @@ describe UsersController do
 
     context 'format json' do
       it 'response with snippets json data' do
-        get :snippets, username: user.username, format: :json
+        get :snippets, params: { username: user.username }, format: :json
         expect(response).to have_gitlab_http_status(200)
         expect(JSON.parse(response.body)).to have_key('html')
       end
@@ -235,7 +235,7 @@ describe UsersController do
 
     context 'when user exists' do
       it 'returns JSON indicating the user exists' do
-        get :exists, username: user.username
+        get :exists, params: { username: user.username }
 
         expected_json = { exists: true }.to_json
         expect(response.body).to eq(expected_json)
@@ -245,7 +245,7 @@ describe UsersController do
         let(:user) { create(:user, username: 'CamelCaseUser') }
 
         it 'returns JSON indicating the user exists' do
-          get :exists, username: user.username.downcase
+          get :exists, params: { username: user.username.downcase }
 
           expected_json = { exists: true }.to_json
           expect(response.body).to eq(expected_json)
@@ -255,7 +255,7 @@ describe UsersController do
 
     context 'when the user does not exist' do
       it 'returns JSON indicating the user does not exist' do
-        get :exists, username: 'foo'
+        get :exists, params: { username: 'foo' }
 
         expected_json = { exists: false }.to_json
         expect(response.body).to eq(expected_json)
@@ -265,7 +265,7 @@ describe UsersController do
         let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-username') }
 
         it 'returns JSON indicating a user by that username does not exist' do
-          get :exists, username: 'old-username'
+          get :exists, params: { username: 'old-username' }
 
           expected_json = { exists: false }.to_json
           expect(response.body).to eq(expected_json)
@@ -286,7 +286,7 @@ describe UsersController do
 
           context 'with exactly matching casing' do
             it 'responds with success' do
-              get :show, username: user.username
+              get :show, params: { username: user.username }
 
               expect(response).to be_success
             end
@@ -294,7 +294,7 @@ describe UsersController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :show, username: user.username.downcase
+              get :show, params: { username: user.username.downcase }
 
               expect(response).to redirect_to(user)
               expect(controller).not_to set_flash[:notice]
@@ -306,7 +306,7 @@ describe UsersController do
           let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
 
           it 'redirects to the canonical path' do
-            get :show, username: redirect_route.path
+            get :show, params: { username: redirect_route.path }
 
             expect(response).to redirect_to(user)
             expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
@@ -316,7 +316,7 @@ describe UsersController do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
 
             it 'does not modify the requested host' do
-              get :show, username: redirect_route.path
+              get :show, params: { username: redirect_route.path }
 
               expect(response).to redirect_to(user)
               expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
@@ -327,7 +327,7 @@ describe UsersController do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'ser') }
 
             it 'redirects to the canonical path' do
-              get :show, username: redirect_route.path
+              get :show, params: { username: redirect_route.path }
 
               expect(response).to redirect_to(user)
               expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
@@ -342,7 +342,7 @@ describe UsersController do
 
           context 'with exactly matching casing' do
             it 'responds with success' do
-              get :projects, username: user.username
+              get :projects, params: { username: user.username }
 
               expect(response).to be_success
             end
@@ -350,7 +350,7 @@ describe UsersController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :projects, username: user.username.downcase
+              get :projects, params: { username: user.username.downcase }
 
               expect(response).to redirect_to(user_projects_path(user))
               expect(controller).not_to set_flash[:notice]
@@ -362,7 +362,7 @@ describe UsersController do
           let(:redirect_route) { user.namespace.redirect_routes.create(path: 'old-path') }
 
           it 'redirects to the canonical path' do
-            get :projects, username: redirect_route.path
+            get :projects, params: { username: redirect_route.path }
 
             expect(response).to redirect_to(user_projects_path(user))
             expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
@@ -372,7 +372,7 @@ describe UsersController do
             let(:redirect_route) { user.namespace.redirect_routes.create(path: 'http') }
 
             it 'does not modify the requested host' do
-              get :projects, username: redirect_route.path
+              get :projects, params: { username: redirect_route.path }
 
               expect(response).to redirect_to(user_projects_path(user))
               expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))
@@ -384,7 +384,7 @@ describe UsersController do
 
             # I.e. /users/ser should not become /ufoos/ser
             it 'does not modify the /users part of the path' do
-              get :projects, username: redirect_route.path
+              get :projects, params: { username: redirect_route.path }
 
               expect(response).to redirect_to(user_projects_path(user))
               expect(controller).to set_flash[:notice].to(user_moved_message(redirect_route, user))

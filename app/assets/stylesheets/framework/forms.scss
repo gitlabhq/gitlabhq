@@ -256,7 +256,12 @@ label {
   }
 }
 
+.input-md {
+  max-width: $input-md-width;
+  width: 100%;
+}
+
 .input-lg {
-  max-width: 320px;
+  max-width: $input-lg-width;
   width: 100%;
 }

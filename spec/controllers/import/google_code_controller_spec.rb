@@ -12,7 +12,7 @@ describe Import::GoogleCodeController do
 
   describe "POST callback" do
     it "stores Google Takeout dump list in session" do
-      post :callback, dump_file: dump_file
+      post :callback, params: { dump_file: dump_file }
 
       expect(session[:google_code_dump]).to be_a(Hash)
       expect(session[:google_code_dump]["kind"]).to eq("projecthosting#user")

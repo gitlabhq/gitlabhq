@@ -23,6 +23,6 @@ describe Projects::BadgesController do
   end
 
   def get_badge(badge)
-    get badge, namespace_id: project.namespace.to_param, project_id: project, ref: pipeline.ref, format: :svg
+    get badge, params: { namespace_id: project.namespace.to_param, project_id: project, ref: pipeline.ref }, format: :svg
   end
 end

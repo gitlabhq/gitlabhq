@@ -58,7 +58,7 @@ describe API::PipelineSchedules do
           end
 
           it 'returns matched pipeline schedules' do
-            get api("/projects/#{project.id}/pipeline_schedules", developer), scope: target
+            get api("/projects/#{project.id}/pipeline_schedules", developer), params: { scope: target }
 
             expect(json_response.map { |r| r['active'] }).to all(eq(active?(target)))
           end
@@ -146,7 +146,7 @@ describe API::PipelineSchedules do
         it 'creates pipeline_schedule' do
           expect do
             post api("/projects/#{project.id}/pipeline_schedules", developer),
-              params
+              params: params
           end.to change { project.pipeline_schedules.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
@@ -170,7 +170,7 @@ describe API::PipelineSchedules do
       context 'when cron has validation error' do
         it 'does not create pipeline_schedule' do
           post api("/projects/#{project.id}/pipeline_schedules", developer),
-            params.merge('cron' => 'invalid-cron')
+            params: params.merge('cron' => 'invalid-cron')
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
@@ -180,7 +180,7 @@ describe API::PipelineSchedules do
 
     context 'authenticated user with invalid permissions' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules", user), params
+        post api("/projects/#{project.id}/pipeline_schedules", user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -188,7 +188,7 @@ describe API::PipelineSchedules do
 
     context 'unauthenticated user' do
       it 'does not create pipeline_schedule' do
-        post api("/projects/#{project.id}/pipeline_schedules"), params
+        post api("/projects/#{project.id}/pipeline_schedules"), params: params
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -203,7 +203,7 @@ describe API::PipelineSchedules do
     context 'authenticated user with valid permissions' do
       it 'updates cron' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-          cron: '1 2 3 4 *'
+          params: { cron: '1 2 3 4 *' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
@@ -213,7 +213,7 @@ describe API::PipelineSchedules do
       context 'when cron has validation error' do
         it 'does not update pipeline_schedule' do
           put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-            cron: 'invalid-cron'
+            params: { cron: 'invalid-cron' }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
@@ -331,7 +331,7 @@ describe API::PipelineSchedules do
         it 'creates pipeline_schedule_variable' do
           expect do
             post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
-              params
+              params: params
           end.to change { pipeline_schedule.variables.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
@@ -352,7 +352,7 @@ describe API::PipelineSchedules do
       context 'when key has validation error' do
         it 'does not create pipeline_schedule_variable' do
           post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
-            params.merge('key' => '!?!?')
+            params: params.merge('key' => '!?!?')
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to have_key('key')
@@ -362,7 +362,7 @@ describe API::PipelineSchedules do
 
     context 'authenticated user with invalid permissions' do
       it 'does not create pipeline_schedule_variable' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", user), params
+        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -370,7 +370,7 @@ describe API::PipelineSchedules do
 
     context 'unauthenticated user' do
       it 'does not create pipeline_schedule_variable' do
-        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables"), params
+        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables"), params: params
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -389,7 +389,7 @@ describe API::PipelineSchedules do
     context 'authenticated user with valid permissions' do
       it 'updates pipeline_schedule_variable' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
-          value: 'updated_value'
+          params: { value: 'updated_value' }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule_variable')

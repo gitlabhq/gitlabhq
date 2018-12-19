@@ -32,13 +32,13 @@ describe Projects::Serverless::FunctionsController do
   describe 'GET #index' do
     context 'empty cache' do
       it 'has no data' do
-        get :index, params({ format: :json })
+        get :index, params: params({ format: :json })
 
         expect(response).to have_gitlab_http_status(204)
       end
 
       it 'renders an html page' do
-        get :index, params
+        get :index, params: params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -51,7 +51,7 @@ describe Projects::Serverless::FunctionsController do
     end
 
     it 'has data' do
-      get :index, params({ format:  :json })
+      get :index, params: params({ format:  :json })
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -64,7 +64,7 @@ describe Projects::Serverless::FunctionsController do
     end
 
     it 'has data in html' do
-      get :index, params
+      get :index, params: params
 
       expect(response).to have_gitlab_http_status(200)
     end

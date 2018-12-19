@@ -7,7 +7,6 @@ module Banzai
       TAG_CLASS = 'js-render-suggestion'.freeze
 
       def call
-        return doc unless Suggestion.feature_enabled?
         return doc unless suggestions_filter_enabled?
 
         doc.search('pre.suggestion > code').each do |node|

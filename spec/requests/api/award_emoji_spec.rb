@@ -148,7 +148,7 @@ describe API::AwardEmoji do
 
     context "on an issue" do
       it "creates a new award emoji" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), name: 'blowfish'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'blowfish' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq('blowfish')
@@ -162,21 +162,21 @@ describe API::AwardEmoji do
       end
 
       it "returns a 401 unauthorized error if the user is not authenticated" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji"), name: 'thumbsup'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji"), params: { name: 'thumbsup' }
 
         expect(response).to have_gitlab_http_status(401)
       end
 
       it "normalizes +1 as thumbsup award" do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), name: '+1'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: '+1' }
 
         expect(issue.award_emoji.last.name).to eq("thumbsup")
       end
 
       context 'when the emoji already has been awarded' do
         it 'returns a 404 status code' do
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), name: 'thumbsup'
-          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), name: 'thumbsup'
+          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'thumbsup' }
+          post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji", user), params: { name: 'thumbsup' }
 
           expect(response).to have_gitlab_http_status(404)
           expect(json_response["message"]).to match("has already been taken")
@@ -188,7 +188,7 @@ describe API::AwardEmoji do
       it 'creates a new award emoji' do
         snippet = create(:project_snippet, :public, project: project)
 
-        post api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user), name: 'blowfish'
+        post api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji", user), params: { name: 'blowfish' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq('blowfish')
@@ -202,7 +202,7 @@ describe API::AwardEmoji do
 
     it 'creates a new award emoji' do
       expect do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), name: 'rocket'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
       end.to change { note.award_emoji.count }.from(0).to(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -210,15 +210,15 @@ describe API::AwardEmoji do
     end
 
     it "normalizes +1 as thumbsup award" do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), name: '+1'
+      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: '+1' }
 
       expect(note.award_emoji.last.name).to eq("thumbsup")
     end
 
     context 'when the emoji already has been awarded' do
       it 'returns a 404 status code' do
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), name: 'rocket'
-        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), name: 'rocket'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note.id}/award_emoji", user), params: { name: 'rocket' }
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response["message"]).to match("has already been taken")

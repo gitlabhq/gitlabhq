@@ -6,7 +6,7 @@ describe Groups::GroupMembersController do
 
   describe 'GET index' do
     it 'renders index with 200 status code' do
-      get :index, group_id: group
+      get :index, params: { group_id: group }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:index)
@@ -26,9 +26,11 @@ describe Groups::GroupMembersController do
       end
 
       it 'returns 403' do
-        post :create, group_id: group,
-                      user_ids: group_user.id,
-                      access_level: Gitlab::Access::GUEST
+        post :create, params: {
+                        group_id: group,
+                        user_ids: group_user.id,
+                        access_level: Gitlab::Access::GUEST
+                      }
 
         expect(response).to have_gitlab_http_status(403)
         expect(group.users).not_to include group_user
@@ -41,9 +43,11 @@ describe Groups::GroupMembersController do
       end
 
       it 'adds user to members' do
-        post :create, group_id: group,
-                      user_ids: group_user.id,
-                      access_level: Gitlab::Access::GUEST
+        post :create, params: {
+                        group_id: group,
+                        user_ids: group_user.id,
+                        access_level: Gitlab::Access::GUEST
+                      }
 
         expect(response).to set_flash.to 'Users were successfully added.'
         expect(response).to redirect_to(group_group_members_path(group))
@@ -51,9 +55,11 @@ describe Groups::GroupMembersController do
       end
 
       it 'adds no user to members' do
-        post :create, group_id: group,
-                      user_ids: '',
-                      access_level: Gitlab::Access::GUEST
+        post :create, params: {
+                        group_id: group,
+                        user_ids: '',
+                        access_level: Gitlab::Access::GUEST
+                      }
 
         expect(response).to set_flash.to 'No users specified.'
         expect(response).to redirect_to(group_group_members_path(group))
@@ -90,7 +96,7 @@ describe Groups::GroupMembersController do
 
     context 'when member is not found' do
       it 'returns 403' do
-        delete :destroy, group_id: group, id: 42
+        delete :destroy, params: { group_id: group, id: 42 }
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -103,7 +109,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'returns 403' do
-          delete :destroy, group_id: group, id: member
+          delete :destroy, params: { group_id: group, id: member }
 
           expect(response).to have_gitlab_http_status(403)
           expect(group.members).to include member
@@ -116,7 +122,7 @@ describe Groups::GroupMembersController do
         end
 
         it '[HTML] removes user from members' do
-          delete :destroy, group_id: group, id: member
+          delete :destroy, params: { group_id: group, id: member }
 
           expect(response).to set_flash.to 'User was successfully removed from group.'
           expect(response).to redirect_to(group_group_members_path(group))
@@ -140,7 +146,7 @@ describe Groups::GroupMembersController do
 
     context 'when member is not found' do
       it 'returns 404' do
-        delete :leave, group_id: group
+        delete :leave, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -153,7 +159,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'removes user from members' do
-          delete :leave, group_id: group
+          delete :leave, params: { group_id: group }
 
           expect(response).to set_flash.to "You left the \"#{group.name}\" group."
           expect(response).to redirect_to(dashboard_groups_path)
@@ -161,7 +167,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'supports json request' do
-          delete :leave, group_id: group, format: :json
+          delete :leave, params: { group_id: group }, format: :json
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['notice']).to eq "You left the \"#{group.name}\" group."
@@ -174,7 +180,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'cannot removes himself from the group' do
-          delete :leave, group_id: group
+          delete :leave, params: { group_id: group }
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -186,7 +192,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'removes user from members' do
-          delete :leave, group_id: group
+          delete :leave, params: { group_id: group }
 
           expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
           expect(response).to redirect_to(group_path(group))
@@ -203,7 +209,7 @@ describe Groups::GroupMembersController do
     end
 
     it 'creates a new GroupMember that is not a team member' do
-      post :request_access, group_id: group
+      post :request_access, params: { group_id: group }
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(group_path(group))
@@ -221,7 +227,7 @@ describe Groups::GroupMembersController do
 
     context 'when member is not found' do
       it 'returns 403' do
-        post :approve_access_request, group_id: group, id: 42
+        post :approve_access_request, params: { group_id: group, id: 42 }
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -234,7 +240,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'returns 403' do
-          post :approve_access_request, group_id: group, id: member
+          post :approve_access_request, params: { group_id: group, id: member }
 
           expect(response).to have_gitlab_http_status(403)
           expect(group.members).not_to include member
@@ -247,7 +253,7 @@ describe Groups::GroupMembersController do
         end
 
         it 'adds user to members' do
-          post :approve_access_request, group_id: group, id: member
+          post :approve_access_request, params: { group_id: group, id: member }
 
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.members).to include member

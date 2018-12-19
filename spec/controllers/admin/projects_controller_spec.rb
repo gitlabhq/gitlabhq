@@ -11,13 +11,13 @@ describe Admin::ProjectsController do
     render_views
 
     it 'retrieves the project for the given visibility level' do
-      get :index, visibility_level: [Gitlab::VisibilityLevel::PUBLIC]
+      get :index, params: { visibility_level: [Gitlab::VisibilityLevel::PUBLIC] }
 
       expect(response.body).to match(project.name)
     end
 
     it 'does not retrieve the project' do
-      get :index, visibility_level: [Gitlab::VisibilityLevel::INTERNAL]
+      get :index, params: { visibility_level: [Gitlab::VisibilityLevel::INTERNAL] }
 
       expect(response.body).not_to match(project.name)
     end
@@ -47,7 +47,7 @@ describe Admin::ProjectsController do
     render_views
 
     it 'renders show page' do
-      get :show, namespace_id: project.namespace.path, id: project.path
+      get :show, params: { namespace_id: project.namespace.path, id: project.path }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response.body).to match(project.name)

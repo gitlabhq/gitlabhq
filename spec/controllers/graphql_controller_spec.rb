@@ -103,7 +103,7 @@ describe GraphqlController do
       }
     QUERY
 
-    post :execute, query: query, operationName: 'Echo', variables: variables, private_token: private_token
+    post :execute, params: { query: query, operationName: 'Echo', variables: variables, private_token: private_token }
   end
 
   def query_response

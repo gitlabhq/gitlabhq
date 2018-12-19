@@ -3,9 +3,9 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
 
   def get_action(action, project)
     if action
-      get action, author_id: project.creator.id
+      get action, params: { author_id: project.creator.id }
     else
-      get :index, namespace_id: project.namespace, project_id: project
+      get :index, params: { namespace_id: project.namespace, project_id: project }
     end
   end
 
@@ -51,9 +51,9 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     it "doesn't execute any queries with false conditions" do
       get_empty =
         if action
-          proc { get action, author_id: project.creator.id }
+          proc { get action, params: { author_id: project.creator.id } }
         else
-          proc { get :index, namespace_id: project2.namespace, project_id: project2 }
+          proc { get :index, params: { namespace_id: project2.namespace, project_id: project2 } }
         end
 
       expect(&get_empty).not_to make_queries_matching(/WHERE (?:1=0|0=1)/)

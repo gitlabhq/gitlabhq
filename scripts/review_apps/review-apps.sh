@@ -227,7 +227,8 @@ function install_external_dns() {
       --set aws.zoneType="public" \
       --set domainFilters[0]="${domain}" \
       --set txtOwnerId="${KUBE_NAMESPACE}" \
-      --set rbac.create="true"
+      --set rbac.create="true" \
+      --set policy="sync"
   fi
 }
 
