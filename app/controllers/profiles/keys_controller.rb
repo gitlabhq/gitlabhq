@@ -40,7 +40,6 @@ class Profiles::KeysController < Profiles::ApplicationController
       begin
         user = UserFinder.new(params[:username]).find_by_username
         if user.present?
-          headers['Content-Disposition'] = 'attachment'
           render plain: user.all_ssh_keys.join("\n")
         else
           return render_404

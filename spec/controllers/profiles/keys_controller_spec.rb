@@ -65,12 +65,6 @@ describe Profiles::KeysController do
 
         expect(response.content_type).to eq("text/plain")
       end
-
-      it "responds with attachment content disposition" do
-        get :get_keys, username: user.username
-
-        expect(response.headers['Content-Disposition']).to eq('attachment')
-      end
     end
   end
 end

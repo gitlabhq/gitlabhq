@@ -149,10 +149,10 @@ performance:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     variables:
       - $PERFORMANCE_DISABLED
-      - $KUBECONFIG == null
 
 sast:
   stage: test
@@ -228,6 +228,7 @@ dast:
   only:
     refs:
       - branches
+    kubernetes: active
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
   except:
@@ -235,7 +236,6 @@ dast:
       - master
     variables:
       - $DAST_DISABLED
-      - $KUBECONFIG == null
 
 review:
   stage: review
@@ -257,12 +257,12 @@ review:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     refs:
       - master
     variables:
       - $REVIEW_DISABLED
-      - $KUBECONFIG == null
 
 stop_review:
   stage: cleanup
@@ -280,12 +280,12 @@ stop_review:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     refs:
       - master
     variables:
       - $REVIEW_DISABLED
-      - $KUBECONFIG == null
 
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
@@ -309,11 +309,9 @@ staging:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $STAGING_ENABLED
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 # Canaries are also disabled by default, but if you want them,
 # and know what the downsides are, you can enable this by setting
@@ -336,11 +334,9 @@ canary:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $CANARY_ENABLED
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 .production: &production_template
   stage: production
@@ -366,13 +362,13 @@ production:
   only:
     refs:
       - master
+    kubernetes: active
   except:
     variables:
       - $STAGING_ENABLED
       - $CANARY_ENABLED
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
-      - $KUBECONFIG == null
 
 production_manual:
   <<: *production_template
@@ -381,6 +377,7 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $STAGING_ENABLED
       - $CANARY_ENABLED
@@ -388,7 +385,6 @@ production_manual:
     variables:
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
-      - $KUBECONFIG == null
 
 # This job implements incremental rollout on for every push to `master`.
 
@@ -418,13 +414,13 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
       - $INCREMENTAL_ROLLOUT_ENABLED
   except:
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
-      - $KUBECONFIG == null
 
 .timed_rollout_template: &timed_rollout_template
   <<: *rollout_template
@@ -433,11 +429,9 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 timed rollout 10%:
   <<: *timed_rollout_template
