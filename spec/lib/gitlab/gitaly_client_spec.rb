@@ -30,6 +30,22 @@ describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.stub_certs' do
+    it 'skips certificates if OpenSSLError is raised and report it' do
+      expect(Rails.logger).to receive(:error).at_least(:once)
+      expect(Gitlab::Sentry)
+        .to receive(:track_exception)
+        .with(
+          a_kind_of(OpenSSL::X509::CertificateError),
+          extra: { cert_file: a_kind_of(String) }).at_least(:once)
+
+      expect(OpenSSL::X509::Certificate)
+        .to receive(:new)
+        .and_raise(OpenSSL::X509::CertificateError).at_least(:once)
+
+      expect(described_class.stub_certs).to be_a(String)
+    end
+  end
   describe '.stub_creds' do
     it 'returns :this_channel_is_insecure if unix' do
       address = 'unix:/tmp/gitaly.sock'

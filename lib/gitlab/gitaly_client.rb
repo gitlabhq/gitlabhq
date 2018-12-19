@@ -57,18 +57,22 @@ module Gitlab
       end
     end
 
+    def self.stub_cert_paths
+      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+      cert_paths
+    end
+
     def self.stub_certs
       return @certs if @certs
 
-      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
-      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
-
-      @certs = cert_paths.flat_map do |cert_file|
+      @certs = stub_cert_paths.flat_map do |cert_file|
         File.read(cert_file).scan(PEM_REGEX).map do |cert|
           begin
             OpenSSL::X509::Certificate.new(cert).to_pem
           rescue OpenSSL::OpenSSLError => e
             Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+            Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
             nil
           end
         end.compact
