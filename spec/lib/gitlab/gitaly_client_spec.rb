@@ -3,6 +3,12 @@ require 'spec_helper'
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
 describe Gitlab::GitalyClient do
+  def stub_repos_storages(address)
+    allow(Gitlab.config.repositories).to receive(:storages).and_return({
+      'default' => { 'gitaly_address' => address }
+    })
+  end
+
   describe '.stub_class' do
     it 'returns the gRPC health check stub' do
       expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)
@@ -15,12 +21,8 @@ describe Gitlab::GitalyClient do
 
   describe '.stub_address' do
     it 'returns the same result after being called multiple times' do
-      address = 'localhost:9876'
-      prefixed_address = "tcp://#{address}"
-
-      allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'default' => { 'gitaly_address' => prefixed_address }
-      })
+      address = 'tcp://localhost:9876'
+      stub_repos_storages address
 
       2.times do
         expect(described_class.stub_address('default')).to eq('localhost:9876')
@@ -29,19 +31,24 @@ describe Gitlab::GitalyClient do
   end
 
   describe '.stub_creds' do
+    it 'returns :this_channel_is_insecure if unix' do
+      address = 'unix:/tmp/gitaly.sock'
+      stub_repos_storages address
+
+      expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
+    end
+
     it 'returns :this_channel_is_insecure if tcp' do
       address = 'tcp://localhost:9876'
-      allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'default' => { 'gitaly_address' => address }
-      })
+      stub_repos_storages address
+
       expect(described_class.stub_creds('default')).to eq(:this_channel_is_insecure)
     end
 
     it 'returns Credentials object if tls' do
       address = 'tls://localhost:9876'
-      allow(Gitlab.config.repositories).to receive(:storages).and_return({
-        'default' => { 'gitaly_address' => address }
-      })
+      stub_repos_storages address
+
       expect(described_class.stub_creds('default')).to be_a(GRPC::Core::ChannelCredentials)
     end
   end
@@ -55,9 +62,7 @@ describe Gitlab::GitalyClient do
     context 'when passed a UNIX socket address' do
       it 'passes the address as-is to GRPC' do
         address = 'unix:/tmp/gitaly.sock'
-        allow(Gitlab.config.repositories).to receive(:storages).and_return({
-          'default' => { 'gitaly_address' => address }
-        })
+        stub_repos_storages address
 
         expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
 
@@ -69,10 +74,7 @@ describe Gitlab::GitalyClient do
       it 'strips tls:// prefix before passing it to GRPC::Core::Channel initializer' do
         address = 'localhost:9876'
         prefixed_address = "tls://#{address}"
-
-        allow(Gitlab.config.repositories).to receive(:storages).and_return({
-          'default' => { 'gitaly_address' => prefixed_address }
-        })
+        stub_repos_storages prefixed_address
 
         expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
 
@@ -84,10 +86,7 @@ describe Gitlab::GitalyClient do
       it 'strips tcp:// prefix before passing it to GRPC::Core::Channel initializer' do
         address = 'localhost:9876'
         prefixed_address = "tcp://#{address}"
-
-        allow(Gitlab.config.repositories).to receive(:storages).and_return({
-          'default' => { 'gitaly_address' => prefixed_address }
-        })
+        stub_repos_storages prefixed_address
 
         expect(Gitaly::CommitService::Stub).to receive(:new).with(address, any_args)
 

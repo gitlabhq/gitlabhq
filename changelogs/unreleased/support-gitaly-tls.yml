@@ -2,4 +2,4 @@
 title: Support tls communication in gitaly
 merge_request: 22602
 author:
-type: changed
+type: added

@@ -26,7 +26,7 @@ module Gitlab
       end
     end
 
-    PEM_REXP = /[-]+BEGIN CERTIFICATE[-]+.+?[-]+END CERTIFICATE[-]+/m
+    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -57,29 +57,27 @@ module Gitlab
       end
     end
 
-    def self.certs
+    def self.stub_certs
       return @certs if @certs
 
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
       cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
 
-      @certs = []
-      cert_paths.each do |cert_file|
-        begin
-          File.read(cert_file).scan(PEM_REXP).each do |cert|
-            pem = OpenSSL::X509::Certificate.new(cert).to_pem
-            @certs << pem
+      @certs = cert_paths.flat_map do |cert_file|
+        File.read(cert_file).scan(PEM_REGEX).map do |cert|
+          begin
+            OpenSSL::X509::Certificate.new(cert).to_pem
+          rescue OpenSSL::OpenSSLError => e
+            Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+            nil
           end
-        rescue StandardError => e
-          Rails.logger.error "Could not load certificate #{e}"
-        end
-      end
-      @certs = @certs.uniq.join "\n"
+        end.compact
+      end.uniq.join("\n")
     end
 
     def self.stub_creds(storage)
       if URI(address(storage)).scheme == 'tls'
-        GRPC::Core::ChannelCredentials.new certs
+        GRPC::Core::ChannelCredentials.new stub_certs
       else
         :this_channel_is_insecure
       end
@@ -94,9 +92,7 @@ module Gitlab
     end
 
     def self.stub_address(storage)
-      addr = address(storage)
-      addr = addr.sub(%r{^tcp://|^tls://}, '') if %w(tcp tls).include? URI(addr).scheme
-      addr
+      address(storage).sub(%r{^tcp://|^tls://}, '')
     end
 
     def self.clear_stubs!

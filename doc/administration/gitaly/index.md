@@ -228,8 +228,8 @@ Omnibus installations:
 ```ruby
 # /etc/gitlab/gitlab.rb
 git_data_dirs({
-  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tls://gitaly.internal:8075' },
-  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tls://gitaly.internal:8075' },
+  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tls://gitaly.internal:9999' },
+  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tls://gitaly.internal:9999' },
 })
 
 gitlab_rails['gitaly_token'] = 'abc123secret'
@@ -244,10 +244,10 @@ gitlab:
     storages:
       default:
         path: /mnt/gitlab/default/repositories
-        gitaly_address: tls://gitaly.internal:8075
+        gitaly_address: tls://gitaly.internal:9999
       storage1:
         path: /mnt/gitlab/storage1/repositories
-        gitaly_address: tls://gitaly.internal:8075
+        gitaly_address: tls://gitaly.internal:9999
 
   gitaly:
     token: 'abc123secret'
