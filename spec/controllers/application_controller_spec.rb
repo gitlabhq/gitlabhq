@@ -519,12 +519,14 @@ describe ApplicationController do
       get :index
 
       expect(response).to have_gitlab_http_status(404)
+      expect(response).to render_template('errors/not_found')
     end
 
     it 'renders a 403 when a message is passed to access denied' do
       get :index, params: { message: 'None shall pass' }
 
       expect(response).to have_gitlab_http_status(403)
+      expect(response).to render_template('errors/access_denied')
     end
 
     it 'renders a status passed to access denied' do
