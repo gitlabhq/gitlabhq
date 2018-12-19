@@ -232,6 +232,11 @@
     @extend .d-flex;
     justify-content: space-between;
     align-items: center;
+
+    .trigger-variables-btn {
+      margin-top: -5px;
+      margin-bottom: -5px;
+    }
   }
 
   .trigger-build-variables {

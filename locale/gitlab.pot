@@ -3756,7 +3756,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed in"
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
@@ -4088,9 +4088,6 @@ msgid "Members"
 msgstr ""
 
 msgid "Merge Request"
-msgstr ""
-
-msgid "Merge Request:"
 msgstr ""
 
 msgid "Merge Requests"
@@ -7113,10 +7110,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trigger"
+msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Trigger this manual action"
+msgid "Trigger token:"
+msgstr ""
+
+msgid "Trigger variables:"
 msgstr ""
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
@@ -7318,9 +7318,6 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
-msgstr ""
-
-msgid "Variables:"
 msgstr ""
 
 msgid "Various container registry settings."
@@ -7850,6 +7847,9 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in"
 msgstr ""
 
 msgid "issue boards"
