@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe API::Triggers do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  set(:user) { create(:user) }
+  set(:user2) { create(:user) }
+
   let!(:trigger_token) { 'secure_token' }
   let!(:trigger_token_2) { 'secure_token_2' }
   let!(:project) { create(:project, :repository, creator: user) }
@@ -132,14 +133,17 @@ describe API::Triggers do
   end
 
   describe 'GET /projects/:id/triggers' do
-    context 'authenticated user with valid permissions' do
-      it 'returns list of triggers' do
+    context 'authenticated user who can access triggers' do
+      it 'returns a list of triggers with tokens exposed correctly' do
         get api("/projects/#{project.id}/triggers", user)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
+
         expect(json_response).to be_a(Array)
-        expect(json_response[0]).to have_key('token')
+        expect(json_response.size).to eq 2
+        expect(json_response.dig(0, 'token')).to eq trigger_token
+        expect(json_response.dig(1, 'token')).to eq trigger_token_2[0..3]
       end
     end
 
