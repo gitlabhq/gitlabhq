@@ -2004,6 +2004,10 @@ class Project < ActiveRecord::Base
       Feature.enabled?(:object_pools, self)
   end
 
+  def leave_pool_repository
+    pool_repository&.unlink_repository(repository)
+  end
+
   private
 
   def create_new_pool_repository
