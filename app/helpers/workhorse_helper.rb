@@ -7,8 +7,7 @@ module WorkhorseHelper
   def send_git_blob(repository, blob, inline: true)
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
 
-    headers['Content-Disposition'] = content_disposition(blob, inline)
-    headers['Content-Type'] = safe_content_type(blob)
+    headers['Content-Disposition'] = inline ? 'inline' : 'attachment'
 
     # If enabled, this will override the values set above
     workhorse_set_content_type!
@@ -47,6 +46,6 @@ module WorkhorseHelper
   end
 
   def workhorse_set_content_type!
-    headers[Gitlab::Workhorse::DETECT_HEADER] = "true" if Feature.enabled?(:workhorse_set_content_type)
+    headers[Gitlab::Workhorse::DETECT_HEADER] = "true"
   end
 end
