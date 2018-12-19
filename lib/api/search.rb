@@ -54,7 +54,14 @@ module API
       end
 
       params :scope do |options|
-        values = SCOPE_ENTITY.stringify_keys.slice(*options[:values]).keys
+        scope_entities =
+          if Feature.enabled?(:users_search, default_enabled: true)
+            SCOPE_ENTITY
+          else
+            SCOPE_ENTITY.reject { |key, value| key == :users }
+          end
+
+        values = scope_entities.stringify_keys.slice(*options[:values]).keys
 
         requires :scope,
           type: String,
