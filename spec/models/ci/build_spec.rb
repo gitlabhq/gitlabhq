@@ -2132,6 +2132,7 @@ describe Ci::Build do
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
           { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
+          { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
           { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
