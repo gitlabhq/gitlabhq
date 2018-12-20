@@ -4,7 +4,7 @@
 
 ### Target audience
 
-<!--- For whom are we doing this? Include either a persona from https://design.gitlab.com/#/getting-started/personas or define a specific company role. e.a. "Release Manager" or "Security Analyst" -->
+<!--- For whom are we doing this? Include either a persona from https://design.gitlab.com/getting-started/personas or define a specific company role. e.a. "Release Manager" or "Security Analyst" -->
 
 ### Further details
 
