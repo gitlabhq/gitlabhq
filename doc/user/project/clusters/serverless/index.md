@@ -34,7 +34,7 @@ To run Knative on Gitlab, you will need:
 1. **`gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
     to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
     deployment of knative services and functions.
-1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yaml` file
+1. **`serverless.yaml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yaml` file
     will contain the information for all the functions being hosted in the repository as well as a reference to the
     runtime being used.
 1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
@@ -79,7 +79,7 @@ Using functions is useful for initiating, responding, or triggering independent
 events without needing to maintain a complex unified infrastructure. This allows
 you to focus on a single task that can be executed/scaled automatically and independently.
 
-At launch, the following runtimes are offered:
+At launch, the following [runtimes](https://gitlab.com/triggermesh/runtimes) are offered:
 
 - node.js
 - kaniko
@@ -123,7 +123,7 @@ In order to deploy functions to your Knative instance, the following files must 
        FOO: BAR
 
    functions:
-    echo:
+     echo:
       handler: echo
       runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
       description: "echo function using node.js runtime"
@@ -133,35 +133,36 @@ In order to deploy functions to your Knative instance, the following files must 
        FUNCTION: echo
    ```
 
-The `serverless.yaml` file contains three section with distinct parameters:
+The `serverless.yaml` file contains three sections with distinct parameters:
 
 ### `service`
 
 | Parameter | Description |
 |-----------|-------------|
-| `service` | Name for the Knative service which will serve the function |
-| `description` | A short description of the `service` |
+| `service` | Name for the Knative service which will serve the function. |
+| `description` | A short description of the `service`. |
 
 
 ### `provider`
 
 | Parameter | Description |
 |-----------|-------------|
-| `name` | Indicates which provider is used to execute `serverless.yaml` file. In this case the TriggerMesh `tm` CLI |
-| `registry-secret` | Indicates which registry will be used to store docker images |
-| `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables |
+| `name` | Indicates which provider is used to execute the `serverless.yaml` file. In this case, the TriggerMesh `tm` CLI. |
+| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the `GitLab registry`, however, you can use other popular registries such as `Docker Hub`, `Google Container Registry`, or `Amazon EC2 Container Registry`. |
+| `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
 
-In the provided sample, line no. 11 contains the function name (in this sample, `"echo"`). The subsequent lines contain the function attributes:
+In the `serverless.yaml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
+
 
 | Parameter | Description |
 |-----------|-------------|
-| `handler` | Reference to function file name (in the sample both the function name and the handler are the same) |
-| `runtime` | Reference to the runtime to be used to execute the function |
-| `description` | A short description of the function |
-| `buildargs` | Pointer to the function file in the repo (in the sample the function is located in the `echo` directory) |
-| `environment` | Sets an environment variable for the specific function only |
+| `handler` | The function's file name. In the example above, both the function name and the handler are the same. |
+| `runtime` | The runtime to be used to execute the function. |
+| `description` | A short description of the function. |
+| `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
+| `environment` | Sets an environment variable for the specific function only. |
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yaml` file has been 
 created, each function must be defined as a single file in your repository. Committing a 
@@ -183,7 +184,7 @@ The function details can be retrieved directly from Knative on the cluster:
 kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 ```
 
-The sample function can now be triggered from any http client using a simple `POST` call
+The sample function can now be triggered from any HTTP client using a simple `POST` call.
 
 ![function exection](img/function-execution.png)
 
