@@ -256,7 +256,7 @@ class Project < ActiveRecord::Base
   # other pipelines, like webide ones, that we won't retrieve
   # if we use this relation.
   has_many :ci_pipelines,
-          -> { Feature.enabled?(:pipeline_ci_sources_only, default_enabled: true) ? ci_sources : all },
+          -> { ci_sources },
           class_name: 'Ci::Pipeline',
           inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
