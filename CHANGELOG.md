@@ -635,6 +635,13 @@ entry.
 - Check frozen string in style builds. (gfyoung)
 
 
+## 11.3.14 (2018-12-20)
+
+### Security (1 change)
+
+- Fix persistent symlink in project import.
+
+
 ## 11.3.13 (2018-12-13)
 
 ### Security (1 change)
