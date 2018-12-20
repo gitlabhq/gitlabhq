@@ -135,6 +135,7 @@
   .build-loader-animation {
     @include build-loader-animation;
     float: left;
+    padding-left: $gl-padding-8;
   }
 }
 
