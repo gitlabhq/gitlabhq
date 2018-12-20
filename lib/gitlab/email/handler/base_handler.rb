@@ -11,7 +11,7 @@ module Gitlab
           @mail_key = mail_key
         end
 
-        def can_execute?
+        def can_handle?
           raise NotImplementedError
         end
 

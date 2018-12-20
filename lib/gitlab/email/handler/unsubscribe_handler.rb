@@ -11,8 +11,9 @@ module Gitlab
       class UnsubscribeHandler < BaseHandler
         delegate :project, to: :sent_notification, allow_nil: true
 
-        HANDLER_REGEX        = /\A(?<reply_token>\w+)#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}\z/.freeze
-        HANDLER_REGEX_LEGACY = /\A(?<reply_token>\w+)#{Regexp.escape(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY)}\z/.freeze
+        HANDLER_REGEX_FOR    = -> (suffix) { /\A(?<reply_token>\w+)#{Regexp.escape(suffix)}\z/ }.freeze
+        HANDLER_REGEX        = HANDLER_REGEX_FOR.call(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX).freeze
+        HANDLER_REGEX_LEGACY = HANDLER_REGEX_FOR.call(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY).freeze
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
@@ -37,8 +38,10 @@ module Gitlab
 
         private
 
+        attr_reader :reply_token
+
         def sent_notification
-          @sent_notification ||= SentNotification.for(@reply_token)
+          @sent_notification ||= SentNotification.for(reply_token)
         end
       end
     end
