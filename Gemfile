@@ -160,12 +160,12 @@ gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.2.1'
-gem 'sidekiq-cron', '~> 0.6.0'
+gem 'sidekiq-cron', '~> 1.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.4'
+gem 'fugit', '~> 1.1'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
