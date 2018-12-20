@@ -178,31 +178,32 @@ export default {
         commitId = `<span class="commit-sha">${truncateSha(commitId)}</span>`;
       }
 
-      let text = s__('MergeRequests|started a discussion');
+      const {
+        for_commit: isForCommit,
+        diff_discussion: isDiffDiscussion,
+        active: isActive,
+      } = this.discussion;
 
-      if (this.discussion.for_commit) {
+      let text = s__('MergeRequests|started a discussion');
+      if (isForCommit) {
         text = s__(
           'MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}',
         );
-      } else if (this.discussion.diff_discussion) {
-        if (this.discussion.active) {
-          text = s__('MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}');
-        } else {
-          text = s__(
-            'MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}',
-          );
-        }
+      } else if (isDiffDiscussion && commitId) {
+        text = isActive
+          ? s__('MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}')
+          : s__(
+              'MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}',
+            );
+      } else if (isDiffDiscussion) {
+        text = isActive
+          ? s__('MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}')
+          : s__(
+              'MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}',
+            );
       }
 
-      return sprintf(
-        text,
-        {
-          commitId,
-          linkStart,
-          linkEnd,
-        },
-        false,
-      );
+      return sprintf(text, { commitId, linkStart, linkEnd }, false);
     },
     diffLine() {
       if (this.discussion.diff_discussion && this.discussion.truncated_diff_lines) {
