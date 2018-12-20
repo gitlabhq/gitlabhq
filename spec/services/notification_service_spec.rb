@@ -2250,7 +2250,7 @@ describe NotificationService, :mailer do
   # Creates a nested group only if supported
   # to avoid errors on MySQL
   def create_nested_group
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       parent_group = create(:group, :public)
       child_group = create(:group, :public, parent: parent_group)
 
@@ -2277,7 +2277,7 @@ describe NotificationService, :mailer do
   end
 
   def add_member_for_parent_group(user, project)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     project.reload
 
@@ -2285,13 +2285,13 @@ describe NotificationService, :mailer do
   end
 
   def should_email_nested_group_user(user, times: 1, recipients: email_recipients)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     should_email(user, times: 1, recipients: email_recipients)
   end
 
   def should_not_email_nested_group_user(user, recipients: email_recipients)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     should_not_email(user, recipients: email_recipients)
   end

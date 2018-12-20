@@ -3675,7 +3675,7 @@ describe Project do
       expect(project.badges.count).to eq 3
     end
 
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       context 'with nested_groups' do
         let(:parent_group) { create(:group) }
 

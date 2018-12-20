@@ -66,7 +66,7 @@ module Ci
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
       joins(:groups).where(namespaces: { id: hierarchy_groups })
     }
