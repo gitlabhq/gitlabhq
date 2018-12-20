@@ -94,6 +94,10 @@ class Milestone < ActiveRecord::Base
       end
     end
 
+    def count_by_state
+      reorder(nil).group(:state).count
+    end
+
     def predefined?(milestone)
       milestone == Any ||
         milestone == None ||
@@ -215,7 +219,7 @@ class Milestone < ActiveRecord::Base
     self.title
   end
 
-  def milestoneish_ids
+  def milestoneish_id
     id
   end
 

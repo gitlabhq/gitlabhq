@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 class DashboardMilestone < GlobalMilestone
-  def issues_finder_params
-    { authorized_only: true }
+  attr_reader :project_name
+
+  def initialize(milestone)
+    super
+
+    @project_name = milestone.project.full_name
   end
 
-  def dashboard_milestone?
+  def project_milestone?
     true
   end
 end

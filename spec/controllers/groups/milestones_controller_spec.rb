@@ -64,7 +64,7 @@ describe Groups::MilestonesController do
 
     context 'when there is a title parameter' do
       it 'searches for a legacy group milestone' do
-        expect(GlobalMilestone).to receive(:build)
+        expect(GroupMilestone).to receive(:build)
         expect(Milestone).not_to receive(:find_by_iid)
 
         get :show, params: { group_id: group.to_param, id: title, title: milestone1.safe_title }

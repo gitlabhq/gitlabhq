@@ -3,69 +3,78 @@
 class GlobalMilestone
   include Milestoneish
 
-  EPOCH = DateTime.parse('1970-01-01')
   STATE_COUNT_HASH = { opened: 0, closed: 0, all: 0 }.freeze
 
-  attr_accessor :title, :milestones
+  attr_reader :milestone
   alias_attribute :name, :title
 
+  delegate :title, :state, :due_date, :start_date, :participants, :project, :group, :expires_at, :closed?, :iid, :group_milestone?, :safe_title, :milestoneish_id, to: :milestone
+
+  def to_hash
+    {
+       name: title,
+       title: title,
+       group_name: group&.full_name,
+       project_name: project&.full_name
+    }
+  end
+
   def for_display
-    @first_milestone
+    @milestone
   end
 
   def self.build_collection(projects, params)
-    params =
-      { project_ids: projects.map(&:id), state: params[:state] }
+    items = Milestone.of_projects(projects)
+                .reorder_by_due_date_asc
+                .order_by_name_asc
 
-    child_milestones = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
-
-    milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
-      milestones_relation = Milestone.where(id: grouped.map(&:id))
-      new(title, milestones_relation)
-    end
-
-    milestones.sort_by { |milestone| milestone.due_date || EPOCH }
+    Milestone.filter_by_state(items, params[:state]).map { |m| new(m) }
   end
 
+  # necessary for legacy milestones
   def self.build(projects, title)
-    child_milestones = Milestone.of_projects(projects).where(title: title)
-    return if child_milestones.blank?
+    milestones = Milestone.of_projects(projects).where(title: title)
+    return if milestones.blank?
 
-    new(title, child_milestones)
+    new(milestones.first)
   end
 
-  def self.count_by_state(milestones_by_state_and_title, state)
-    milestones_by_state_and_title.count do |(milestone_state, _), _|
-      milestone_state == state
+  def self.states_count(projects, group = nil)
+    legacy_group_milestones_count = legacy_group_milestone_states_count(projects)
+    group_milestones_count = group_milestones_states_count(group)
+
+    legacy_group_milestones_count.merge(group_milestones_count) do |k, legacy_group_milestones_count, group_milestones_count|
+      legacy_group_milestones_count + group_milestones_count
     end
   end
-  private_class_method :count_by_state
 
-  def initialize(title, milestones)
-    @title = title
-    @name = title
-    @milestones = milestones
-    @first_milestone = milestones.find {|m| m.description.present? } || milestones.first
+  def self.group_milestones_states_count(group)
+    return STATE_COUNT_HASH unless group
+
+    counts_by_state = Milestone.of_groups(group).count_by_state
+
+    {
+      opened: counts_by_state['active'] || 0,
+      closed: counts_by_state['closed'] || 0,
+      all: counts_by_state.values.sum
+    }
   end
 
-  def milestoneish_ids
-    milestones.select(:id)
+  def self.legacy_group_milestone_states_count(projects)
+    return STATE_COUNT_HASH unless projects
+
+    # We need to reorder(nil) on the projects, because the controller passes them in sorted.
+    relation = Milestone.of_projects(projects.reorder(nil)).count_by_state
+
+    {
+      opened: relation['active'] || 0,
+      closed: relation['closed'] || 0,
+      all: relation.values.sum
+    }
   end
 
-  def safe_title
-    @title.to_slug.normalize.to_s
-  end
-
-  def projects
-    @projects ||= Project.for_milestones(milestoneish_ids)
-  end
-
-  def state
-    milestones.each do |milestone|
-      return 'active' if milestone.state != 'closed'
-    end
-
-    'closed'
+  def initialize(milestone)
+    @milestone = milestone
   end
 
   def active?
@@ -77,37 +86,14 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestoneish_ids).includes(:project, :assignees, :labels)
+    @issues ||= Issue.of_milestones(milestone).includes(:project, :assignees, :labels)
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestoneish_ids).includes(:target_project, :assignee, :labels)
-  end
-
-  def participants
-    @participants ||= milestones.map(&:participants).flatten.uniq
+    @merge_requests ||= MergeRequest.of_milestones(milestone).includes(:target_project, :assignee, :labels)
   end
 
   def labels
-    @labels ||= GlobalLabel.build_collection(milestones.includes(:labels).map(&:labels).flatten)
-                           .sort_by!(&:title)
-  end
-
-  def due_date
-    return @due_date if defined?(@due_date)
-
-    @due_date =
-      if @milestones.all? { |x| x.due_date == @milestones.first.due_date }
-        @milestones.first.due_date
-      end
-  end
-
-  def start_date
-    return @start_date if defined?(@start_date)
-
-    @start_date =
-      if @milestones.all? { |x| x.start_date == @milestones.first.start_date }
-        @milestones.first.start_date
-      end
+    @labels ||= GlobalLabel.build_collection(milestone.labels).sort_by!(&:title)
   end
 end
