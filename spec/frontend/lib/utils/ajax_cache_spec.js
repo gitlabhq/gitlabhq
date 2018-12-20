@@ -94,68 +94,54 @@ describe('AjaxCache', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
 
-      spyOn(axios, 'get').and.callThrough();
+      jest.spyOn(axios, 'get');
     });
 
     afterEach(() => {
       mock.restore();
     });
 
-    it('stores and returns data from Ajax call if cache is empty', done => {
+    it('stores and returns data from Ajax call if cache is empty', () => {
       mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(data => {
-          expect(data).toEqual(dummyResponse);
-          expect(AjaxCache.internalStorage[dummyEndpoint]).toEqual(dummyResponse);
-        })
-        .then(done)
-        .catch(fail);
+      return AjaxCache.retrieve(dummyEndpoint).then(data => {
+        expect(data).toEqual(dummyResponse);
+        expect(AjaxCache.internalStorage[dummyEndpoint]).toEqual(dummyResponse);
+      });
     });
 
-    it('makes no Ajax call if request is pending', done => {
+    it('makes no Ajax call if request is pending', () => {
       mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(done)
-        .catch(fail);
-
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(done)
-        .catch(fail);
-
-      expect(axios.get.calls.count()).toBe(1);
+      return Promise.all([
+        AjaxCache.retrieve(dummyEndpoint),
+        AjaxCache.retrieve(dummyEndpoint),
+      ]).then(() => {
+        expect(axios.get).toHaveBeenCalledTimes(1);
+      });
     });
 
-    it('returns undefined if Ajax call fails and cache is empty', done => {
+    it('returns undefined if Ajax call fails and cache is empty', () => {
       const errorMessage = 'Network Error';
       mock.onGet(dummyEndpoint).networkError();
 
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(data => fail(`Received unexpected data: ${JSON.stringify(data)}`))
-        .catch(error => {
-          expect(error.message).toBe(`${dummyEndpoint}: ${errorMessage}`);
-          expect(error.textStatus).toBe(errorMessage);
-          done();
-        })
-        .catch(fail);
-    });
-
-    it('makes no Ajax call if matching data exists', done => {
-      AjaxCache.internalStorage[dummyEndpoint] = dummyResponse;
-      mock.onGet(dummyEndpoint).reply(() => {
-        fail(new Error('expected no Ajax call!'));
+      expect.assertions(2);
+      return AjaxCache.retrieve(dummyEndpoint).catch(error => {
+        expect(error.message).toBe(`${dummyEndpoint}: ${errorMessage}`);
+        expect(error.textStatus).toBe(errorMessage);
       });
-
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(data => {
-          expect(data).toBe(dummyResponse);
-        })
-        .then(done)
-        .catch(fail);
     });
 
-    it('makes Ajax call even if matching data exists when forceRequest parameter is provided', done => {
+    it('makes no Ajax call if matching data exists', () => {
+      AjaxCache.internalStorage[dummyEndpoint] = dummyResponse;
+
+      return AjaxCache.retrieve(dummyEndpoint).then(data => {
+        expect(data).toBe(dummyResponse);
+        expect(axios.get).not.toHaveBeenCalled();
+      });
+    });
+
+    it('makes Ajax call even if matching data exists when forceRequest parameter is provided', () => {
       const oldDummyResponse = {
         important: 'old dummy data',
       };
@@ -164,21 +150,12 @@ describe('AjaxCache', () => {
 
       mock.onGet(dummyEndpoint).reply(200, dummyResponse);
 
-      // Call without forceRetrieve param
-      AjaxCache.retrieve(dummyEndpoint)
-        .then(data => {
-          expect(data).toBe(oldDummyResponse);
-        })
-        .then(done)
-        .catch(fail);
-
-      // Call with forceRetrieve param
-      AjaxCache.retrieve(dummyEndpoint, true)
-        .then(data => {
-          expect(data).toEqual(dummyResponse);
-        })
-        .then(done)
-        .catch(fail);
+      return Promise.all([
+        AjaxCache.retrieve(dummyEndpoint),
+        AjaxCache.retrieve(dummyEndpoint, true),
+      ]).then(data => {
+        expect(data).toEqual([oldDummyResponse, dummyResponse]);
+      });
     });
   });
 });
