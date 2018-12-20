@@ -149,7 +149,7 @@ The `serverless.yaml` file contains three section with distinct parameters:
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute `serverless.yaml` file. In this case the TriggerMesh `tm` CLI |
 | `registry-secret` | Indicates which registry will be used to store docker images |
-| `environment` | Includes the environment variables to be passed as part of function execution, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables |
+| `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables |
 
 ### `functions`
 
@@ -161,7 +161,7 @@ The `serverless.yaml` file contains three section with distinct parameters:
 | `runtime` | Reference to the runtime to be used to execute the function |
 | `description` | A short description of the function |
 | `buildargs` | Pointer to the function file in the repo (in the sample the function is located in the `echo` directory) |
-| `environment` | Sets an environment variable on function invokation. Pointer to the function file name (in the sample the function is called `echo`) |
+| `environment` | Sets an environment variable for the specific function only |
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yaml` file has been 
 created, each function must be defined as a single file in your repository. Committing a 
