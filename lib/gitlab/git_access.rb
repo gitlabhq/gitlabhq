@@ -266,6 +266,9 @@ module Gitlab
     end
 
     def check_change_access!
+      # Deploy keys with write access can push anything
+      return if deploy_key?
+
       # If there are worktrees with a HEAD pointing to a non-existent object,
       # calls to `git rev-list --all` will fail in git 2.15+. This should also
       # clear stale lock files.
@@ -286,7 +289,6 @@ module Gitlab
         change,
         user_access: user_access,
         project: project,
-        skip_authorization: deploy_key?,
         skip_lfs_integrity_check: skip_lfs_integrity_check,
         protocol: protocol,
         logger: logger
