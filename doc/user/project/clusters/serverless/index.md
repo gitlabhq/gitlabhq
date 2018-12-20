@@ -153,7 +153,7 @@ The `serverless.yaml` file contains three section with distinct parameters:
 
 ### `functions`
 
-  In the provided sample, line no. 11 contains the function name (in this sample, `"echo"`). The subsequent lines contain the function attributes:
+In the provided sample, line no. 11 contains the function name (in this sample, `"echo"`). The subsequent lines contain the function attributes:
 
 | Parameter | Description |
 |-----------|-------------|
