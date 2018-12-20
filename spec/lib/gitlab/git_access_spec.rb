@@ -14,7 +14,7 @@ describe Gitlab::GitAccess do
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
   let(:auth_result_type) { nil }
-  let(:changes) { '_any' }
+  let(:changes) { Gitlab::GitAccess::ANY }
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
 
@@ -437,7 +437,7 @@ describe Gitlab::GitAccess do
         let(:project) { nil }
 
         context 'when changes is _any' do
-          let(:changes) { '_any' }
+          let(:changes) { Gitlab::GitAccess::ANY }
 
           context 'when authentication abilities include push code' do
             let(:authentication_abilities) { [:push_code] }
@@ -483,7 +483,7 @@ describe Gitlab::GitAccess do
       end
 
       context 'when project exists' do
-        let(:changes) { '_any' }
+        let(:changes) { Gitlab::GitAccess::ANY }
         let!(:project) { create(:project) }
 
         it 'does not create a new project' do
@@ -497,7 +497,7 @@ describe Gitlab::GitAccess do
         let(:project_path) { "nonexistent" }
         let(:project) { nil }
         let(:namespace_path) { user.namespace.path }
-        let(:changes) { '_any' }
+        let(:changes) { Gitlab::GitAccess::ANY }
 
         it 'does not create a new project' do
           expect { access.send(:ensure_project_on_push!, cmd, changes) }.not_to change { Project.count }
@@ -507,7 +507,7 @@ describe Gitlab::GitAccess do
 
     context 'when pull' do
       let(:cmd) { 'git-upload-pack' }
-      let(:changes) { '_any' }
+      let(:changes) { Gitlab::GitAccess::ANY }
 
       context 'when project does not exist' do
         let(:project_path) { "new-project" }
