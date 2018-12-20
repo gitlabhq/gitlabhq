@@ -82,10 +82,12 @@ describe Projects::ProjectMembersController do
 
     Gitlab::Access.options.each do |label, value|
       it "can change the access level to #{label}" do
-        xhr :put, :update, project_member: { access_level: value },
-                           namespace_id: project.namespace,
-                           project_id: project,
-                           id: requester
+        put :update, params: {
+          project_member: { access_level: value },
+          namespace_id: project.namespace,
+          project_id: project,
+          id: requester
+        }, xhr: true
 
         expect(requester.reload.human_access).to eq(label)
       end
@@ -148,9 +150,11 @@ describe Projects::ProjectMembersController do
         end
 
         it '[JS] removes user from members' do
-          xhr :delete, :destroy, namespace_id: project.namespace,
-                                 project_id: project,
-                                 id: member
+          delete :destroy, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: member
+          }, xhr: true
 
           expect(response).to be_success
           expect(project.members).not_to include member
