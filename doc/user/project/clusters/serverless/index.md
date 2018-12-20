@@ -229,17 +229,12 @@ deploy:
 
 ## Deploy the application with Knative
 
-With all the pieces in place, you can create a new CI pipeline to deploy the Knative application. Navigate to
-**CI/CD > Pipelines** and click the **Run Pipeline** button at the upper-right part of the screen. Then, on the
-Pipelines page, click **Create pipeline**.
+With all the pieces in place, the next time a CI pipeline runs, the Knative application will be deployed. Navigate to
+**CI/CD > Pipelines** and click the most recent pipeline.
 
 ## Obtain the URL for the Knative deployment
 
-There are two ways to obtain the URL for the Knative deployment.
-
-### Using the CI/CD deployment job output
-
-Once all the stages of the pipeline finish, click the **deploy** stage.
+Use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
