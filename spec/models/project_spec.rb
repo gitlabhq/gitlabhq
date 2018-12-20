@@ -3875,14 +3875,23 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_collaboration_push?' do
-      it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+    describe '#any_branch_allows_collaboration?' do
+      it 'allows access when there are merge requests open allowing collaboration' do
+        expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
 
-      it 'allows access when there are merge requests open but no branch name is given' do
-        expect(project.branch_allows_collaboration?(user, nil))
+      it 'does not allow access when there are no merge requests open allowing collaboration' do
+        merge_request.close!
+
+        expect(project.any_branch_allows_collaboration?(user))
+          .to be_falsey
+      end
+    end
+
+    describe '#branch_allows_collaboration?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
