@@ -39,6 +39,7 @@ module DiscussionOnDiff
 
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines(highlight: true, diff_limit: nil)
+    return [] unless on_text?
     return [] if diff_line.nil? && first_note.is_a?(LegacyDiffNote)
 
     diff_limit = [diff_limit, NUMBER_OF_TRUNCATED_DIFF_LINES].compact.min
