@@ -16,7 +16,7 @@ describe 'instrument_classes' do
   end
 
   it 'can autoload and instrument all files' do
-    require_relative '../../config/initializers/8_metrics'
+    require_relative '../../config/initializers/zz_metrics'
     expect { instrument_classes(config) }.not_to raise_error
   end
 end
