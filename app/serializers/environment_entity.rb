@@ -23,6 +23,10 @@ class EnvironmentEntity < Grape::Entity
     stop_project_environment_path(environment.project, environment)
   end
 
+  expose :cluster_type, if: ->(environment, _) { cluster_platform_kubernetes? } do |environment|
+    cluster.cluster_type
+  end
+
   expose :terminal_path, if: ->(*) { environment.has_terminals? && can_access_terminal? } do |environment|
     terminal_project_environment_path(environment.project, environment)
   end
@@ -47,5 +51,17 @@ class EnvironmentEntity < Grape::Entity
 
   def can_access_terminal?
     can?(request.current_user, :create_environment_terminal, environment)
+  end
+
+  def cluster_platform_kubernetes?
+    deployment_platform && deployment_platform.is_a?(Clusters::Platforms::Kubernetes)
+  end
+
+  def deployment_platform
+    environment.deployment_platform
+  end
+
+  def cluster
+    deployment_platform.cluster
   end
 end
