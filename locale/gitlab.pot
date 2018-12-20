@@ -525,6 +525,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occured while fetching the releases. Please try again."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -3172,6 +3175,9 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
+msgid "Getting started with releases"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 
@@ -4625,6 +4631,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open Documentation"
+msgstr ""
+
 msgid "Open in Xcode"
 msgstr ""
 
@@ -5522,6 +5531,9 @@ msgid "Related merge requests"
 msgstr ""
 
 msgid "Releases"
+msgstr ""
+
+msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
 
 msgid "Remind later"
