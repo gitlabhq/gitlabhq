@@ -120,7 +120,7 @@ module Ci
 
     acts_as_taggable
 
-    add_authentication_token_field :token
+    add_authentication_token_field :token, encrypted: true, fallback: true
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
@@ -742,7 +742,7 @@ module Ci
     def collect_test_reports!(test_reports)
       test_reports.get_suite(group_name).tap do |test_suite|
         each_report(Ci::JobArtifact::TEST_REPORT_FILE_TYPES) do |file_type, blob|
-          Gitlab::Ci::Parsers::Test.fabricate!(file_type).parse!(blob, test_suite)
+          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
         end
       end
     end
@@ -840,6 +840,7 @@ module Ci
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
         variables.append(key: 'CI_COMMIT_SHA', value: sha)
+        variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
         variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
         variables.append(key: 'CI_COMMIT_REF_NAME', value: ref)
         variables.append(key: 'CI_COMMIT_REF_SLUG', value: ref_slug)

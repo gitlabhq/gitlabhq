@@ -3,8 +3,8 @@ import initSettingsPanels from '~/settings_panels';
 import setupProjectEdit from '~/project_edit';
 import initConfirmDangerModal from '~/confirm_danger_modal';
 import mountBadgeSettings from '~/pages/shared/mount_badge_settings';
+import fileUpload from '~/lib/utils/file_upload';
 import initProjectLoadingSpinner from '../shared/save_project_loader';
-import projectAvatar from '../shared/project_avatar';
 import initProjectPermissionsSettings from '../shared/permissions';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupProjectEdit();
   // Initialize expandable settings panels
   initSettingsPanels();
-  projectAvatar();
+  fileUpload('.js-choose-project-avatar-button', '.js-project-avatar-input');
   initProjectPermissionsSettings();
   initConfirmDangerModal();
   mountBadgeSettings(PROJECT_BADGE);

@@ -5,17 +5,19 @@ module Storage
     attr_accessor :project
     delegate :gitlab_shell, :repository_storage, to: :project
 
-    ROOT_PATH_PREFIX = '@hashed'.freeze
+    REPOSITORY_PATH_PREFIX = '@hashed'
+    POOL_PATH_PREFIX = '@pools'
 
-    def initialize(project)
+    def initialize(project, prefix: REPOSITORY_PATH_PREFIX)
       @project = project
+      @prefix = prefix
     end
 
     # Base directory
     #
     # @return [String] directory where repository is stored
     def base_dir
-      "#{ROOT_PATH_PREFIX}/#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
+      "#{@prefix}/#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
     end
 
     # Disk path is used to build repository and project's wiki path on disk

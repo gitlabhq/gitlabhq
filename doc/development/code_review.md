@@ -5,12 +5,12 @@ having your code reviewed.
 
 All merge requests for GitLab CE and EE, whether written by a GitLab team member
 or a volunteer contributor, must go through a code review process to ensure the
-code is effective, understandable, and maintainable.
+code is effective, understandable, maintainable, and secure.
 
 ## Getting your merge request reviewed, approved, and merged
 
 You are strongly encouraged to get your code **reviewed** by a
-[reviewer](https://about.gitlab.com/handbook/engineering/#reviewer) as soon as
+[reviewer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) as soon as
 there is any code to review, to get a second opinion on the chosen solution and
 implementation, and an extra pair of eyes looking for bugs, logic problems, or
 uncovered edge cases. The reviewer can be from a different team, but it is
@@ -20,11 +20,23 @@ importance of involving reviewer(s) in the section on the responsibility of the 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
 
+If you need assistance with security scans or comments, feel free to include the 
+Security Team (`@gitlab-com/gl-security`) in the review.
+
 Depending on the areas your merge request touches, it must be **approved** by one
-or more [maintainers](https://about.gitlab.com/handbook/engineering/#maintainer):
+or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
 For approvals, we use the approval functionality found in the merge request
 widget. Reviewers can add their approval by [approving additionally](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#adding-or-removing-an-approval).
+
+Getting your merge request **merged** also requires a maintainer. If it requires
+more than one approval, the last maintainer to review and approve it will also merge it.
+
+### Approval guidelines
+
+As described in the section on the responsibility of the maintainer below, you
+are recommended to get your merge request approved and merged by maintainer(s)
+from teams other than your own.
 
    1. If your merge request includes backend changes [^1], it must be
       **approved by a [backend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_backend)**.
@@ -39,12 +51,14 @@ widget. Reviewers can add their approval by [approving additionally](https://doc
    1. If your merge request includes a new dependency or a filesystem change, it must be
       **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/dev-backend/distribution/) for more details.
 
-Getting your merge request **merged** also requires a maintainer. If it requires
-more than one approval, the last maintainer to review and approve it will also merge it.
+#### Security requirements
 
-As described in the section on the responsibility of the maintainer below, you
-are recommended to get your merge request approved and merged by maintainer(s)
-from other teams than your own.
+   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data](https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit) (this is a confidential document), it must be
+      **approved by a [Security Engineer][team]**.
+   1. If your merge request involves implementing, utilizing, or is otherwise related to any type of authentication, authorization, or session handling mechanism, it must be
+      **approved by a [Security Engineer][team]**.
+   1. If your merge request has a goal which requires a cryptographic function such as: confidentiality, integrity, authentication, or non-repudiation, it must be
+      **approved by a [Security Engineer][team]**.
 
 ### The responsibility of the merge request author
 
@@ -54,9 +68,10 @@ merge request author.
 Before assigning a merge request to a maintainer for approval and merge, they
 should be confident that it actually solves the problem it was meant to solve,
 that it does so in the most appropriate way, that it satisfies all requirements,
-and that there are no remaining bugs, logical problems, or uncovered edge cases.
-The merge request should also have a completed task list in its description and
-a passing CI pipeline to avoid unnecessary back and forth.
+and that there are no remaining bugs, logical problems, uncovered edge cases,
+or known vulnerabilities. The merge request should also have a completed task
+list in its description and a passing CI pipeline to avoid unnecessary back and
+forth.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
@@ -72,6 +87,23 @@ If an author is unsure if a merge request needs a domain expert's opinion, that'
 usually a pretty good sign that it does, since without it the required level of
 confidence in their solution will not have been reached.
 
+Before the review, the author is requested to submit comments on the merge
+request diff alerting the reviewer to anything important as well as for anything
+that demands further explanation or attention.  Examples of content that may
+warrant a comment could be:
+
+- The addition of a linting rule (Rubocop, JS etc)
+- The addition of a library (Ruby gem, JS lib etc)
+- Where not obvious, a link to the parent class or method
+- Any benchmarking performed to complement the change
+- Potentially insecure code
+
+Do not add these comments directly to the source code, unless the
+reviewer requires you to do so.
+
+This
+[saves reviewers time and helps authors catch mistakes earlier](https://www.ibm.com/developerworks/rational/library/11-proven-practices-for-peer-review/index.html#__RefHeading__97_174136755).
+
 ### The responsibility of the maintainer
 
 Maintainers are responsible for the overall health, quality, and consistency of
@@ -85,8 +117,8 @@ Since a maintainer's job only depends on their knowledge of the overall GitLab
 codebase, and not that of any specific domain, they can review, approve and merge
 merge requests from any team and in any product area.
 
-In fact, authors are recommended to get their merge requests merged by maintainers
-from other teams than their own, to ensure that all code across GitLab is consistent
+In fact, authors are encouraged to get their merge requests merged by maintainers
+from teams other than their own, to ensure that all code across GitLab is consistent
 and can be easily understood by all contributors, from both inside and outside the
 company, without requiring team-specific expertise.
 
@@ -102,6 +134,18 @@ as the maintainer to ultimately approve and merge it.
 
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
+
+Maintainers must check before merging if the merge request is introducing new
+vulnerabilities, by inspecting the list in the Merge Request [Security
+Widget](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate).
+When in doubt, a [Security Engineer][team] can be involved. The list of detected 
+vulnerabilities must be either empty or containing:
+
+- dismissed vulnerabilities in case of false positives
+- vulnerabilities converted to issues
+
+Maintainers should **never** dismiss vulnerabilities to "empty" the list,
+without duly verifying them.
 
 ## Best practices
 
@@ -153,7 +197,7 @@ first time.
 
 ### Assigning a merge request for a review
 
-If you want to have your merge request reviewed you can assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
+If you want to have your merge request reviewed, you can assign it to any reviewer. The list of reviewers can be found on [Engineering projects](https://about.gitlab.com/handbook/engineering/projects/) page.
 
 You can also use `ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
@@ -189,6 +233,9 @@ experience, refactors the existing code). Then:
   subsequent revisions for anything that would be spotted after that.
 - Consider using the [Squash and
   merge][squash-and-merge] feature when the merge request has a lot of commits.
+  When merging code a maintainer should only use the squash feature if the
+  author has already set this option or if the merge request clearly contains a
+  messy commit history that is intended to be squashed.
 
 [squash-and-merge]: https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#squash-and-merge
 

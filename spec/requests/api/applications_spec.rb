@@ -11,7 +11,7 @@ describe API::Applications, :api do
     context 'authenticated and authorized user' do
       it 'creates and returns an OAuth application' do
         expect do
-          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'http://application.url', scopes: ''
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
         end.to change { Doorkeeper::Application.count }.by 1
 
         application = Doorkeeper::Application.find_by(name: 'application_name', redirect_uri: 'http://application.url')
@@ -25,7 +25,7 @@ describe API::Applications, :api do
 
       it 'does not allow creating an application with the wrong redirect_uri format' do
         expect do
-          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'wrong_url_format', scopes: ''
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://', scopes: '' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(400)
@@ -33,9 +33,19 @@ describe API::Applications, :api do
         expect(json_response['message']['redirect_uri'][0]).to eq('must be an absolute URI.')
       end
 
+      it 'does not allow creating an application with a forbidden URI format' do
+        expect do
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'javascript://alert()', scopes: '' }
+        end.not_to change { Doorkeeper::Application.count }
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response).to be_a Hash
+        expect(json_response['message']['redirect_uri'][0]).to eq('is forbidden by the server.')
+      end
+
       it 'does not allow creating an application without a name' do
         expect do
-          post api('/applications', admin_user), redirect_uri: 'http://application.url', scopes: ''
+          post api('/applications', admin_user), params: { redirect_uri: 'http://application.url', scopes: '' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(400)
@@ -45,7 +55,7 @@ describe API::Applications, :api do
 
       it 'does not allow creating an application without a redirect_uri' do
         expect do
-          post api('/applications', admin_user), name: 'application_name', scopes: ''
+          post api('/applications', admin_user), params: { name: 'application_name', scopes: '' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(400)
@@ -55,7 +65,7 @@ describe API::Applications, :api do
 
       it 'does not allow creating an application without scopes' do
         expect do
-          post api('/applications', admin_user), name: 'application_name', redirect_uri: 'http://application.url'
+          post api('/applications', admin_user), params: { name: 'application_name', redirect_uri: 'http://application.url' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(400)
@@ -67,7 +77,7 @@ describe API::Applications, :api do
     context 'authorized user without authorization' do
       it 'does not create application' do
         expect do
-          post api('/applications', user), name: 'application_name', redirect_uri: 'http://application.url', scopes: ''
+          post api('/applications', user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(403)
@@ -77,7 +87,7 @@ describe API::Applications, :api do
     context 'non-authenticated user' do
       it 'does not create application' do
         expect do
-          post api('/applications'), name: 'application_name', redirect_uri: 'http://application.url'
+          post api('/applications'), params: { name: 'application_name', redirect_uri: 'http://application.url' }
         end.not_to change { Doorkeeper::Application.count }
 
         expect(response).to have_gitlab_http_status(401)

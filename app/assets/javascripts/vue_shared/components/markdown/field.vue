@@ -1,17 +1,21 @@
 <script>
 import $ from 'jquery';
-import { s__ } from '~/locale';
+import _ from 'underscore';
+import { __ } from '~/locale';
+import { stripHtml } from '~/lib/utils/text_utility';
 import Flash from '../../../flash';
 import GLForm from '../../../gl_form';
 import markdownHeader from './header.vue';
 import markdownToolbar from './toolbar.vue';
 import icon from '../icon.vue';
+import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 
 export default {
   components: {
     markdownHeader,
     markdownToolbar,
     icon,
+    Suggestions,
   },
   props: {
     markdownPreviewPath: {
@@ -48,12 +52,33 @@ export default {
       required: false,
       default: true,
     },
+    line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    note: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    canSuggest: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       markdownPreview: '',
       referencedCommands: '',
       referencedUsers: '',
+      hasSuggestion: false,
       markdownPreviewLoading: false,
       previewMarkdown: false,
     };
@@ -62,6 +87,39 @@ export default {
     shouldShowReferencedUsers() {
       const referencedUsersThreshold = 10;
       return this.referencedUsers.length >= referencedUsersThreshold;
+    },
+    lineContent() {
+      const FIRST_CHAR_REGEX = /^(\+|-)/;
+      const [firstSuggestion] = this.suggestions;
+      if (firstSuggestion) {
+        return firstSuggestion.from_content;
+      }
+
+      if (this.line) {
+        const { rich_text: richText, text } = this.line;
+
+        if (text) {
+          return text.replace(FIRST_CHAR_REGEX, '');
+        }
+
+        return _.unescape(stripHtml(richText).replace(/\n/g, ''));
+      }
+
+      return '';
+    },
+    lineNumber() {
+      let lineNumber;
+      if (this.line) {
+        const { new_line: newLine, old_line: oldLine } = this.line;
+        lineNumber = newLine || oldLine;
+      }
+      return lineNumber;
+    },
+    suggestions() {
+      return this.note.suggestions || [];
+    },
+    lineType() {
+      return this.line ? this.line.type : '';
     },
   },
   mounted() {
@@ -99,11 +157,12 @@ export default {
 
       if (text) {
         this.markdownPreviewLoading = true;
+        this.markdownPreview = __('Loading…');
         this.$http
           .post(this.versionedPreviewPath(), { text })
           .then(resp => resp.json())
           .then(data => this.renderMarkdown(data))
-          .catch(() => new Flash(s__('Error loading markdown preview')));
+          .catch(() => new Flash(__('Error loading markdown preview')));
       } else {
         this.renderMarkdown();
       }
@@ -121,6 +180,7 @@ export default {
       if (data.references) {
         this.referencedCommands = data.references.commands;
         this.referencedUsers = data.references.users;
+        this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
       }
 
       this.$nextTick(() => {
@@ -146,6 +206,8 @@ export default {
   >
     <markdown-header
       :preview-markdown="previewMarkdown"
+      :line-content="lineContent"
+      :can-suggest="canSuggest"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
     />
@@ -162,17 +224,39 @@ export default {
         />
       </div>
     </div>
-    <div v-show="previewMarkdown" class="md md-preview-holder md-preview js-vue-md-preview">
-      <div ref="markdown-preview" v-html="markdownPreview"></div>
-      <span v-if="markdownPreviewLoading"> Loading... </span>
-    </div>
+    <template v-if="hasSuggestion">
+      <div
+        v-show="previewMarkdown"
+        ref="markdown-preview"
+        class="md-preview js-vue-md-preview md md-preview-holder"
+      >
+        <suggestions
+          v-if="hasSuggestion"
+          :note-html="markdownPreview"
+          :from-line="lineNumber"
+          :from-content="lineContent"
+          :line-type="lineType"
+          :disabled="true"
+          :suggestions="suggestions"
+          :help-page-path="helpPagePath"
+        />
+      </div>
+    </template>
+    <template v-else>
+      <div
+        v-show="previewMarkdown"
+        ref="markdown-preview"
+        class="md-preview js-vue-md-preview md md-preview-holder"
+        v-html="markdownPreview"
+      ></div>
+    </template>
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div v-if="referencedCommands" class="referenced-commands" v-html="referencedCommands"></div>
       <div v-if="shouldShowReferencedUsers" class="referenced-users">
         <span>
-          <i class="fa fa-exclamation-triangle" aria-hidden="true"> </i> You are about to add
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> You are about to add
           <strong>
-            <span class="js-referenced-users-count"> {{ referencedUsers.length }} </span>
+            <span class="js-referenced-users-count">{{ referencedUsers.length }}</span>
           </strong>
           people to the discussion. Proceed with caution.
         </span>

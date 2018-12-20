@@ -33,7 +33,11 @@
 .bs-callout-warning {
   background-color: $orange-100;
   border-color: $orange-200;
-  color: $orange-700;
+  color: $orange-900;
+
+  a {
+    color: $orange-900;
+  }
 }
 
 .bs-callout-info {

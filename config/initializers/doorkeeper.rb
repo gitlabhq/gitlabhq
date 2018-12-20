@@ -48,6 +48,13 @@ Doorkeeper.configure do
   #
   force_ssl_in_redirect_uri false
 
+  # Specify what redirect URI's you want to block during Application creation.
+  # Any redirect URI is whitelisted by default.
+  #
+  # You can use this option in order to forbid URI's with 'javascript' scheme
+  # for example.
+  forbid_redirect_uri { |uri| %w[data vbscript javascript].include?(uri.scheme.to_s.downcase) }
+
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default false) if you want to enforce ownership of
   # a registered application

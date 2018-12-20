@@ -150,7 +150,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,
@@ -209,7 +209,7 @@ describe('DiffsStoreUtils', () => {
         note: {
           noteable_type: options.noteableType,
           noteable_id: options.noteableData.id,
-          commit_id: '',
+          commit_id: undefined,
           type: LEGACY_DIFF_NOTE_TYPE,
           line_code: options.noteTargetLine.line_code,
           note: options.note,
@@ -294,10 +294,14 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('prepareDiffData', () => {
-    it('sets the renderIt and collapsed attribute on files', () => {
-      const preparedDiff = { diff_files: [getDiffFileMock()] };
-      utils.prepareDiffData(preparedDiff);
+    let preparedDiff;
 
+    beforeEach(() => {
+      preparedDiff = { diff_files: [getDiffFileMock()] };
+      utils.prepareDiffData(preparedDiff);
+    });
+
+    it('sets the renderIt and collapsed attribute on files', () => {
       const firstParallelDiffLine = preparedDiff.diff_files[0].parallel_diff_lines[2];
 
       expect(firstParallelDiffLine.left.discussions.length).toBe(0);
@@ -322,6 +326,18 @@ describe('DiffsStoreUtils', () => {
 
       expect(preparedDiff.diff_files[0].renderIt).toBeTruthy();
       expect(preparedDiff.diff_files[0].collapsed).toBeFalsy();
+    });
+
+    it('adds line_code to all lines', () => {
+      expect(
+        preparedDiff.diff_files[0].parallel_diff_lines.filter(line => !line.line_code),
+      ).toHaveLength(0);
+    });
+
+    it('uses right line code if left has none', () => {
+      const firstLine = preparedDiff.diff_files[0].parallel_diff_lines[0];
+
+      expect(firstLine.line_code).toEqual(firstLine.right.line_code);
     });
   });
 
@@ -557,6 +573,28 @@ describe('DiffsStoreUtils', () => {
         'app/test/filepathneedstruncating.js',
         'package.json',
       ]);
+    });
+  });
+
+  describe('getDiffMode', () => {
+    it('returns mode when matched in file', () => {
+      expect(
+        utils.getDiffMode({
+          renamed_file: true,
+        }),
+      ).toBe('renamed');
+    });
+
+    it('returns mode_changed if key has no match', () => {
+      expect(
+        utils.getDiffMode({
+          mode_changed: true,
+        }),
+      ).toBe('mode_changed');
+    });
+
+    it('defaults to replaced', () => {
+      expect(utils.getDiffMode({})).toBe('replaced');
     });
   });
 });

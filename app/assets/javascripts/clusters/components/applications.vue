@@ -84,6 +84,9 @@ export default {
     ingressExternalIp() {
       return this.applications.ingress.externalIp;
     },
+    certManagerInstalled() {
+      return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
+    },
     ingressDescription() {
       const extraCostParagraph = sprintf(
         _.escape(
@@ -130,9 +133,9 @@ export default {
       return sprintf(
         _.escape(
           s__(
-            `ClusterIntegration|cert-manager is a native Kubernetes certificate management controller that helps with issuing certificates.
-            Installing cert-manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
-            are valid and up to date.`,
+            `ClusterIntegration|Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates.
+            Installing Cert-Manager on your cluster will issue a certificate by %{letsEncrypt} and ensure that certificates
+            are valid and up-to-date.`,
           ),
         ),
         {
@@ -259,6 +262,16 @@ export default {
                 </span>
               </div>
               <input v-else type="text" class="form-control js-ip-address" readonly value="?" />
+              <p class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Point a wildcard DNS to this
+                generated IP address in order to access
+                your application after it has been deployed.`)
+                }}
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                  {{ __('More information') }}
+                </a>
+              </p>
             </div>
 
             <p v-if="!ingressExternalIp" class="settings-message js-no-ip-message">
@@ -269,17 +282,6 @@ export default {
               }}
 
               <a :href="ingressHelpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
-            </p>
-
-            <p>
-              {{
-                s__(`ClusterIntegration|Point a wildcard DNS to this
-              generated IP address in order to access
-              your application after it has been deployed.`)
-              }}
-              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
                 {{ __('More information') }}
               </a>
             </p>
@@ -295,11 +297,41 @@ export default {
         :status-reason="applications.cert_manager.statusReason"
         :request-status="applications.cert_manager.requestStatus"
         :request-reason="applications.cert_manager.requestReason"
+        :install-application-request-params="{ email: applications.cert_manager.email }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
       >
-        <div slot="description" v-html="certManagerDescription"></div>
+        <template>
+          <div slot="description">
+            <p v-html="certManagerDescription"></p>
+            <div class="form-group">
+              <label for="cert-manager-issuer-email">
+                {{ s__('ClusterIntegration|Issuer Email') }}
+              </label>
+              <div class="input-group">
+                <input
+                  v-model="applications.cert_manager.email"
+                  :readonly="certManagerInstalled"
+                  type="text"
+                  class="form-control js-email"
+                />
+              </div>
+              <p class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Issuers represent a certificate authority.
+                  You must provide an email address for your Issuer. `)
+                }}
+                <a
+                  href="http://docs.cert-manager.io/en/latest/reference/issuers.html?highlight=email"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __('More information') }}
+                </a>
+              </p>
+            </div>
+          </div>
+        </template>
       </application-row>
       <application-row
         v-if="isProjectCluster"
@@ -382,20 +414,22 @@ export default {
                   />
                 </span>
               </div>
+
+              <p v-if="ingressInstalled" class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                If you do so, point hostname to Ingress IP Address from above.`)
+                }}
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                  {{ __('More information') }}
+                </a>
+              </p>
             </div>
-            <p v-if="ingressInstalled">
-              {{
-                s__(`ClusterIntegration|Replace this with your own hostname if you want.
-              If you do so, point hostname to Ingress IP Address from above.`)
-              }}
-              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
-            </p>
           </template>
         </div>
       </application-row>
       <application-row
+        v-if="isProjectCluster"
         id="knative"
         :logo-url="knativeLogo"
         :title="applications.knative.title"
@@ -405,17 +439,15 @@ export default {
         :request-reason="applications.knative.requestReason"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
         :disabled="!helmInstalled"
-        class="hide-bottom-border rounded-bottom"
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
           <p>
             {{
-              s__(`ClusterIntegration|Knative (pronounced kay-nay-tiv) extends
-              Kubernetes to provide a set of middleware components that are
-              essential to build modern, source-centric, and container-based
-              applications that can run anywhere: on premises, in the cloud, or
-              even in a third-party data center.`)
+              s__(`ClusterIntegration|Knative extends Kubernetes to provide
+              a set of middleware components that are essential to build modern,
+              source-centric, and container-based applications that can run
+              anywhere: on premises, in the cloud, or even in a third-party data center.`)
             }}
           </p>
 
@@ -433,7 +465,7 @@ export default {
               />
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="helmInstalled">
             <div class="form-group">
               <label for="knative-domainname">
                 {{ s__('ClusterIntegration|Knative Domain Name:') }}

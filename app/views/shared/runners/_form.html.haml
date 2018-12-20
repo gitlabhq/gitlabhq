@@ -45,7 +45,7 @@
       = _('Maximum job timeout')
     .col-sm-10
       = f.text_field :maximum_timeout_human_readable, class: 'form-control'
-      .form-text.text-muted= _('This timeout will take precedence when lower than Project-defined timeout')
+      .form-text.text-muted= _('This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like "1 hour". Values without specification represent seconds.')
   .form-group.row
     = label_tag :tag_list, class: 'col-form-label col-sm-2' do
       = _('Tags')

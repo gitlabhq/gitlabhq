@@ -7,14 +7,21 @@ module Gitlab
         ##
         # Entry that represents a concrete CI/CD job.
         #
-        class Job < Node
-          include Configurable
-          include Attributable
+        class Job < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[tags script only except type image services
                             allow_failure type stage when start_in artifacts cache
                             dependencies before_script after_script variables
                             environment coverage retry parallel extends].freeze
+
+          DEFAULT_ONLY_POLICY = {
+            refs: %w(branches tags)
+          }.freeze
+
+          DEFAULT_EXCEPT_POLICY = {
+          }.freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -154,8 +161,8 @@ module Gitlab
               services: services_value,
               stage: stage_value,
               cache: cache_value,
-              only: only_value,
-              except: except_value,
+              only: DEFAULT_ONLY_POLICY.deep_merge(only_value.to_h),
+              except: DEFAULT_EXCEPT_POLICY.deep_merge(except_value.to_h),
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,

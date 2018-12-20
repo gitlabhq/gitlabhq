@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Knative < ActiveRecord::Base
-      VERSION = '0.1.3'.freeze
+      VERSION = '0.2.2'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
 
       FETCH_IP_ADDRESS_DELAY = 30.seconds
@@ -15,6 +15,9 @@ module Clusters
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
+      include ReactiveCaching
+
+      self.reactive_cache_key = ->(knative) { [knative.class.model_name.singular, knative.id] }
 
       state_machine :status do
         before_transition any => [:installed] do |application|
@@ -28,6 +31,8 @@ module Clusters
       default_value_for :version, VERSION
 
       validates :hostname, presence: true, hostname: true
+
+      scope :for_cluster, -> (cluster) { where(cluster: cluster) }
 
       def chart
         'knative/knative'
@@ -55,12 +60,39 @@ module Clusters
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end
 
+      def client
+        cluster.kubeclient.knative_client
+      end
+
+      def services
+        with_reactive_cache do |data|
+          data[:services]
+        end
+      end
+
+      def calculate_reactive_cache
+        { services: read_services }
+      end
+
       def ingress_service
         cluster.kubeclient.get_service('knative-ingressgateway', 'istio-system')
       end
 
-      def client
-        cluster.platform_kubernetes.kubeclient.knative_client
+      def services_for(ns: namespace)
+        return unless services
+        return [] unless ns
+
+        services.select do |service|
+          service.dig('metadata', 'namespace') == ns
+        end
+      end
+
+      private
+
+      def read_services
+        client.get_services.as_json
+      rescue Kubeclient::ResourceNotFoundError
+        []
       end
     end
   end

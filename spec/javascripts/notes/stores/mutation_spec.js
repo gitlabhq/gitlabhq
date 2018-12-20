@@ -9,6 +9,11 @@ import {
   individualNote,
 } from '../mock_data';
 
+const RESOLVED_NOTE = { resolvable: true, resolved: true };
+const UNRESOLVED_NOTE = { resolvable: true, resolved: false };
+const SYSTEM_NOTE = { resolvable: false, resolved: false };
+const WEIRD_NOTE = { resolvable: false, resolved: true };
+
 describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
     let state;
@@ -297,6 +302,16 @@ describe('Notes Store mutations', () => {
 
       expect(state.discussions[0].expanded).toEqual(false);
     });
+
+    it('forces a discussions expanded state', () => {
+      const state = {
+        discussions: [{ ...discussionMock, expanded: false }],
+      };
+
+      mutations.TOGGLE_DISCUSSION(state, { discussionId: discussionMock.id, forceExpanded: true });
+
+      expect(state.discussions[0].expanded).toEqual(true);
+    });
   });
 
   describe('UPDATE_NOTE', () => {
@@ -435,6 +450,65 @@ describe('Notes Store mutations', () => {
       mutations.DISABLE_COMMENTS(state, true);
 
       expect(state.commentsDisabled).toEqual(true);
+    });
+  });
+
+  describe('UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', () => {
+    it('with unresolvable discussions, updates state', () => {
+      const state = {
+        discussions: [
+          { individual_note: false, resolvable: true, notes: [UNRESOLVED_NOTE] },
+          { individual_note: true, resolvable: true, notes: [UNRESOLVED_NOTE] },
+          { individual_note: false, resolvable: false, notes: [UNRESOLVED_NOTE] },
+        ],
+      };
+
+      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
+
+      expect(state).toEqual(
+        jasmine.objectContaining({
+          resolvableDiscussionsCount: 1,
+          unresolvedDiscussionsCount: 1,
+          hasUnresolvedDiscussions: false,
+        }),
+      );
+    });
+
+    it('with resolvable discussions, updates state', () => {
+      const state = {
+        discussions: [
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [RESOLVED_NOTE, SYSTEM_NOTE, RESOLVED_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [RESOLVED_NOTE, SYSTEM_NOTE, WEIRD_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [SYSTEM_NOTE, RESOLVED_NOTE, WEIRD_NOTE, UNRESOLVED_NOTE],
+          },
+          {
+            individual_note: false,
+            resolvable: true,
+            notes: [UNRESOLVED_NOTE],
+          },
+        ],
+      };
+
+      mutations.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS(state);
+
+      expect(state).toEqual(
+        jasmine.objectContaining({
+          resolvableDiscussionsCount: 4,
+          unresolvedDiscussionsCount: 2,
+          hasUnresolvedDiscussions: true,
+        }),
+      );
     });
   });
 });

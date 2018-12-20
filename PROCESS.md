@@ -12,15 +12,18 @@
 - [Assigning issues](#assigning-issues)
 - [Be kind](#be-kind)
 - [Feature freeze on the 7th for the release on the 22nd](#feature-freeze-on-the-7th-for-the-release-on-the-22nd)
+  - [Feature flags](#feature-flags)
   - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
+    - [What happens if these deadlines are missed?](#what-happens-if-these-deadlines-are-missed)
   - [On the 7th](#on-the-7th)
+    - [Feature merge requests](#feature-merge-requests)
+    - [Documentation merge requests](#documentation-merge-requests)
   - [After the 7th](#after-the-7th)
+  - [Asking for an exception](#asking-for-an-exception)
 - [Bugs](#bugs)
   - [Regressions](#regressions)
   - [Managing bugs](#managing-bugs)
 - [Release retrospective and kickoff](#release-retrospective-and-kickoff)
-  - [Retrospective](#retrospective)
-  - [Kickoff](#kickoff)
 - [Copy & paste responses](#copy--paste-responses)
   - [Improperly formatted issue](#improperly-formatted-issue)
   - [Issue report for old version](#issue-report-for-old-version)
@@ -28,11 +31,8 @@
   - [Code format](#code-format)
   - [Issue fixed in newer version](#issue-fixed-in-newer-version)
   - [Improperly formatted merge request](#improperly-formatted-merge-request)
-  - [Inactivity close of an issue](#inactivity-close-of-an-issue)
-  - [Inactivity close of a merge request](#inactivity-close-of-a-merge-request)
   - [Accepting merge requests](#accepting-merge-requests)
   - [Only accepting merge requests with green tests](#only-accepting-merge-requests-with-green-tests)
-  - [Closing down the issue tracker on GitHub](#closing-down-the-issue-tracker-on-github)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -249,7 +249,7 @@ A ~bug is a defect, error, failure which causes the system to behave incorrectly
 
 The level of impact of a ~bug can vary from blocking a whole functionality
 or a feature usability bug. A bug should always be linked to a severity level.
-Refer to our [severity levels](../CONTRIBUTING.md#severity-labels)
+Refer to our [severity levels](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#severity-labels)
 
 Whether the bug is also a regression or not, the triage process should start as soon as possible.
 Ensure that the Engineering Manager and/or the Product Manager for the relative area is involved to prioritize the work as needed.
@@ -281,10 +281,10 @@ The two scenarios below can [bypass the exception request in the release process
 When a bug is found:
 1. Create an issue describing the problem in the most detailed way possible.
 1. If possible, provide links to real examples and how to reproduce the problem.
-1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels),
-   the [subject label](../CONTRIBUTING.md#subject-labels)
+1. Label the issue properly, using the [team label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#team-labels),
+   the [subject label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#subject-labels)
    and any other label that may apply in the specific case
-1. Notify the respective Engineering Manager to evaluate and apply the [Severity label](../CONTRIBUTING.md#bug-severity-labels) and [Priority label](../CONTRIBUTING.md#bug-priority-labels).
+1. Notify the respective Engineering Manager to evaluate and apply the [Severity label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#severity-labels) and [Priority label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#priority-labels).
 The counterpart Product Manager is included to weigh-in on prioritization as needed.
 1. If the ~bug is **NOT** a regression:
    1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied.
@@ -306,67 +306,77 @@ The counterpart Product Manager is included to weigh-in on prioritization as nee
 
 ### Improperly formatted issue
 
-Thanks for the issue report. Please reformat your issue to conform to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+```
+Thanks for the issue report. Please reformat your issue to conform to the
+[contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#issue-tracker-guidelines).
+```
 
 ### Issue report for old version
 
-Thanks for the issue report but we only support issues for the latest stable version of GitLab. I'm closing this issue but if you still experience this problem in the latest stable version, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+```
+Thanks for the issue report but we only support issues for the latest stable version of GitLab.
+I'm closing this issue but if you still experience this problem in the latest stable version,
+please open a new issue (but also reference the old issue(s)).
+Make sure to also include the necessary debugging information conforming to the issue tracker
+guidelines found in our [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#issue-tracker-guidelines).
+```
 
 ### Support requests and configuration questions
 
+```
 Thanks for your interest in GitLab. We don't use the issue tracker for support
 requests and configuration questions. Please check our
 [getting help](https://about.gitlab.com/getting-help/) page to see all of the available
-support options. Also, have a look at the [contribution guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md)
+support options. Also, have a look at the [contribution guidelines](https://docs.gitlab.com/ee/development/contributing/index.html)
 for more information.
+```
 
 ### Code format
 
+```
 Please use \`\`\` to format console output, logs, and code as it's very hard to read otherwise.
+```
 
 ### Issue fixed in newer version
 
-Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please [upgrade](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+```
+Thanks for the issue report. This issue has already been fixed in newer versions of GitLab.
+Due to the size of this project and our limited resources we are only able to support the
+latest stable release as outlined in our [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html).
+In order to get this bug fix and enjoy many new features please
+[upgrade](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update).
+If you still experience issues at that time please open a new issue following our issue
+tracker guidelines found in the [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#issue-tracker-guidelines).
+```
 
 ### Improperly formatted merge request
 
-Thanks for your interest in improving the GitLab codebase! Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-request-guidelines).
-
-### Inactivity close of an issue
-
-It's been at least 2 weeks (and a new release) since we heard from you. I'm closing this issue but if you still experience this problem, please open a new issue (but also reference the old issue(s)). Make sure to also include the necessary debugging information conforming to the issue tracker guidelines found in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
-
-### Inactivity close of a merge request
-
-This merge request has been closed because a request for more information has not been reacted to for more than 2 weeks. If you respond and conform to the merge request guidelines in our [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-requests) we will reopen this merge request.
+```
+Thanks for your interest in improving the GitLab codebase!
+Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
+```
 
 ### Accepting merge requests
 
+```
 Is there an issue on the
 [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) that is
 similar to this? Could you please link it here?
 Please be aware that new functionality that is not marked
-[accepting merge requests](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
+[`Accepting merge requests`](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#label-for-community-contributors)
 might not make it into GitLab.
+```
 
 ### Only accepting merge requests with green tests
 
+```
 We can only accept a merge request if all the tests are green. I've just
 restarted the build. When the tests are still not passing after this restart and
 you're sure that is does not have anything to do with your code changes, please
 rebase with master to see if that solves the issue.
-
-### Closing down the issue tracker on GitHub
-
-We are currently in the process of closing down the issue tracker on GitHub, to
-prevent duplication with the GitLab.com issue tracker.
-Since this is an older issue I'll be closing this for now. If you think this is
-still an issue I encourage you to open it on the [GitLab.com issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+```
 
 [team]: https://about.gitlab.com/team/
-[contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
-["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
-[Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
-[done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
+[done]: https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done
 [automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
 [ee_features]: https://docs.gitlab.com/ce/development/ee_features.html

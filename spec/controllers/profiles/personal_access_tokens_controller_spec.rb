@@ -17,7 +17,7 @@ describe Profiles::PersonalAccessTokensController do
       name = 'My PAT'
       scopes = %w[api read_user]
 
-      post :create, personal_access_token: token_attributes.merge(scopes: scopes, name: name)
+      post :create, params: { personal_access_token: token_attributes.merge(scopes: scopes, name: name) }
 
       expect(created_token).not_to be_nil
       expect(created_token.name).to eq(name)
@@ -28,7 +28,7 @@ describe Profiles::PersonalAccessTokensController do
     it "allows creation of a token with an expiry date" do
       expires_at = 5.days.from_now.to_date
 
-      post :create, personal_access_token: token_attributes.merge(expires_at: expires_at)
+      post :create, params: { personal_access_token: token_attributes.merge(expires_at: expires_at) }
 
       expect(created_token).not_to be_nil
       expect(created_token.expires_at).to eq(expires_at)

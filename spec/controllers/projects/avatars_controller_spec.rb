@@ -8,7 +8,7 @@ describe Projects::AvatarsController do
   end
 
   describe 'GET #show' do
-    subject { get :show, namespace_id: project.namespace, project_id: project }
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
 
     context 'when repository has no avatar' do
       it 'shows 404' do
@@ -26,12 +26,37 @@ describe Projects::AvatarsController do
       context 'when the avatar is stored in the repository' do
         let(:filepath) { 'files/images/logo-white.png' }
 
-        it 'sends the avatar' do
-          subject
+        context 'when feature flag workhorse_set_content_type is' do
+          before do
+            stub_feature_flags(workhorse_set_content_type: flag_value)
+          end
 
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.header['Content-Type']).to eq('image/png')
-          expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+          context 'enabled' do
+            let(:flag_value) { true }
+
+            it 'sends the avatar' do
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response.header['Content-Disposition']).to eq('inline')
+              expect(response.header['Content-Type']).to eq 'image/png'
+              expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+              expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+            end
+          end
+
+          context 'disabled' do
+            let(:flag_value) { false }
+
+            it 'sends the avatar' do
+              subject
+
+              expect(response).to have_gitlab_http_status(200)
+              expect(response.header['Content-Type']).to eq('image/png')
+              expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+              expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
+            end
+          end
         end
       end
 
@@ -46,7 +71,7 @@ describe Projects::AvatarsController do
 
   describe 'DELETE #destroy' do
     it 'removes avatar from DB by calling destroy' do
-      delete :destroy, namespace_id: project.namespace.id, project_id: project.id
+      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id }
 
       expect(project.avatar.present?).to be_falsey
       expect(project).to be_valid

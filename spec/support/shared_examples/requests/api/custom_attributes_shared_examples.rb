@@ -9,7 +9,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an unauthorized user' do
       it 'does not filter by custom attributes' do
-        get api("/#{attributable_name}", user), custom_attributes: { foo: 'foo', bar: 'bar' }
+        get api("/#{attributable_name}", user), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to be 2
@@ -19,7 +19,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an authorized user' do
       it 'filters by custom attributes' do
-        get api("/#{attributable_name}", admin), custom_attributes: { foo: 'foo', bar: 'bar' }
+        get api("/#{attributable_name}", admin), params: { custom_attributes: { foo: 'foo', bar: 'bar' } }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to be 1
@@ -35,7 +35,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
     context 'with an unauthorized user' do
       it 'does not include custom attributes' do
-        get api("/#{attributable_name}", user), with_custom_attributes: true
+        get api("/#{attributable_name}", user), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to be 2
@@ -54,7 +54,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
       end
 
       it 'includes custom attributes if requested' do
-        get api("/#{attributable_name}", admin), with_custom_attributes: true
+        get api("/#{attributable_name}", admin), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to be 2
@@ -75,7 +75,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
   describe "GET /#{attributable_name}/:id with custom attributes" do
     context 'with an unauthorized user' do
       it 'does not include custom attributes' do
-        get api("/#{attributable_name}/#{attributable.id}", user), with_custom_attributes: true
+        get api("/#{attributable_name}/#{attributable.id}", user), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).not_to include 'custom_attributes'
@@ -91,7 +91,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
       end
 
       it 'includes custom attributes if requested' do
-        get api("/#{attributable_name}/#{attributable.id}", admin), with_custom_attributes: true
+        get api("/#{attributable_name}/#{attributable.id}", admin), params: { with_custom_attributes: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['custom_attributes']).to contain_exactly(
@@ -141,7 +141,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
   describe "PUT /#{attributable_name}/:id/custom_attributes/:key" do
     context 'with an unauthorized user' do
-      subject { put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", user), value: 'new' }
+      subject { put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", user), params: { value: 'new' } }
 
       it_behaves_like 'an unauthorized API user'
     end
@@ -149,7 +149,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
     context 'with an authorized user' do
       it 'creates a new custom attribute' do
         expect do
-          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/new", admin), value: 'new'
+          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/new", admin), params: { value: 'new' }
         end.to change { attributable.custom_attributes.count }.by(1)
 
         expect(response).to have_gitlab_http_status(200)
@@ -159,7 +159,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
       it 'updates an existing custom attribute' do
         expect do
-          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin), value: 'new'
+          put api("/#{attributable_name}/#{attributable.id}/custom_attributes/foo", admin), params: { value: 'new' }
         end.not_to change { attributable.custom_attributes.count }
 
         expect(response).to have_gitlab_http_status(200)

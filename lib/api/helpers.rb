@@ -291,7 +291,7 @@ module API
         end
       end
       permitted_attrs = ActionController::Parameters.new(attrs).permit!
-      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
+      permitted_attrs.to_h
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -368,10 +368,10 @@ module API
     end
 
     def handle_api_exception(exception)
-      if sentry_enabled? && report_exception?(exception)
+      if report_exception?(exception)
         define_params_for_grape_middleware
-        sentry_context
-        Raven.capture_exception(exception, extra: params)
+        Gitlab::Sentry.context(current_user)
+        Gitlab::Sentry.track_acceptable_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60

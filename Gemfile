@@ -1,17 +1,6 @@
-# --- Special code for migrating to Rails 5.0 ---
-def rails5?
-  !%w[0 false].include?(ENV["RAILS5"])
-end
-
-gem_versions = {}
-gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'    : '0.2'
-gem_versions['rails']                           = rails5? ? '5.0.7'  : '4.2.10'
-gem_versions['rails-i18n']                      = rails5? ? '~> 5.1' : '~> 4.0.9'
-# --- The end of special code for migrating to Rails 5.0 ---
-
 source 'https://rubygems.org'
 
-gem 'rails', gem_versions['rails']
+gem 'rails', '5.0.7'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Improves copy-on-write performance for MRI
@@ -23,11 +12,7 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-if rails5?
-  gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
-else
-  gem 'default_value_for', '~> 3.0.0'
-end
+gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
@@ -77,7 +62,7 @@ gem 'validates_hostname', '~> 1.0.6'
 gem 'browser', '~> 2.5'
 
 # GPG
-gem 'gpgme'
+gem 'gpgme', '~> 2.0.18'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -86,7 +71,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # API
-gem 'grape', '~> 1.1'
+gem 'grape', '~> 1.1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
@@ -104,8 +89,9 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332/files is merged.
-# config/initializers/carrierwave_patch.rb can be removed once that change is released.
+# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332 and
+# https://github.com/carrierwaveuploader/carrierwave/pull/2356 are merged.
+# config/initializers/carrierwave_patch.rb can be removed once both changes are released.
 gem 'carrierwave', '= 1.2.3'
 gem 'mini_magick'
 
@@ -154,6 +140,11 @@ gem 'icalendar'
 gem 'diffy', '~> 3.1.0'
 
 # Application server
+# The 2.0.6 version of rack requires monkeypatch to be present in
+# `config.ru`. This can be removed once a new update for Rack
+# is available that contains https://github.com/rack/rack/pull/1201.
+gem 'rack', '2.0.6'
+
 group :unicorn do
   gem 'unicorn', '~> 5.1.0'
   gem 'unicorn-worker-killer', '~> 0.4.4'
@@ -174,6 +165,7 @@ gem 'acts-as-taggable-on', '~> 5.0'
 gem 'sidekiq', '~> 5.2.1'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.6.0'
+gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -256,6 +248,9 @@ gem 'ace-rails-ap', '~> 4.1.0'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.5'
 
+# Detect mime content type from content
+gem 'mimemagic', '~> 0.3.2'
+
 # Faster blank
 gem 'fast_blank'
 
@@ -267,6 +262,7 @@ gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
+gem 'sass', '~> 3.5'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.5.2'
@@ -286,21 +282,20 @@ gem 'premailer-rails', '~> 1.9.7'
 
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
-gem 'rails-i18n', gem_versions['rails-i18n']
+gem 'rails-i18n', '~> 5.1'
 gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
-gem 'batch-loader', '~> 1.2.1'
+gem 'batch-loader', '~> 1.2.2'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-mysql2', '~> 1.1.0', group: :mysql
+gem 'peek-mysql2', '~> 1.2.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
-gem 'gitlab-sidekiq-fetcher', require: 'sidekiq-reliable-fetch'
 
 # Metrics
 group :metrics do
@@ -372,7 +367,7 @@ group :development, :test do
   gem 'license_finder', '~> 5.4', require: false
   gem 'knapsack', '~> 1.17'
 
-  gem 'activerecord_sane_schema_dumper', gem_versions['activerecord_sane_schema_dumper']
+  gem 'activerecord_sane_schema_dumper', '1.0'
 
   gem 'stackprof', '~> 0.2.10', require: false
 
@@ -386,8 +381,7 @@ group :test do
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
-  gem 'rails-controller-testing' if rails5? # Rails5 only gem.
-  gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
+  gem 'rails-controller-testing'
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 0.2.5'
@@ -425,7 +419,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.1.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.5.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

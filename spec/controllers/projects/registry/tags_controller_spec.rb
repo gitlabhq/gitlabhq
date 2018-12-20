@@ -65,9 +65,11 @@ describe Projects::Registry::TagsController do
     private
 
     def get_tags
-      get :index, namespace_id: project.namespace,
-                  project_id: project,
-                  repository_id: repository,
+      get :index, params: {
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    repository_id: repository
+                  },
                   format: :json
     end
   end
@@ -100,10 +102,12 @@ describe Projects::Registry::TagsController do
     private
 
     def destroy_tag(name)
-      post :destroy, namespace_id: project.namespace,
-                     project_id: project,
-                     repository_id: repository,
-                     id: name,
+      post :destroy, params: {
+                       namespace_id: project.namespace,
+                       project_id: project,
+                       repository_id: repository,
+                       id: name
+                     },
                      format: :json
     end
   end

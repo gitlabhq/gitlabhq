@@ -429,26 +429,26 @@ class NotificationService
   end
 
   def pages_domain_verification_succeeded(domain)
-    recipients_for_pages_domain(domain).each do |user|
-      mailer.pages_domain_verification_succeeded_email(domain, user).deliver_later
+    project_maintainers_recipients(domain, action: 'succeeded').each do |recipient|
+      mailer.pages_domain_verification_succeeded_email(domain, recipient.user).deliver_later
     end
   end
 
   def pages_domain_verification_failed(domain)
-    recipients_for_pages_domain(domain).each do |user|
-      mailer.pages_domain_verification_failed_email(domain, user).deliver_later
+    project_maintainers_recipients(domain, action: 'failed').each do |recipient|
+      mailer.pages_domain_verification_failed_email(domain, recipient.user).deliver_later
     end
   end
 
   def pages_domain_enabled(domain)
-    recipients_for_pages_domain(domain).each do |user|
-      mailer.pages_domain_enabled_email(domain, user).deliver_later
+    project_maintainers_recipients(domain, action: 'enabled').each do |recipient|
+      mailer.pages_domain_enabled_email(domain, recipient.user).deliver_later
     end
   end
 
   def pages_domain_disabled(domain)
-    recipients_for_pages_domain(domain).each do |user|
-      mailer.pages_domain_disabled_email(domain, user).deliver_later
+    project_maintainers_recipients(domain, action: 'disabled').each do |recipient|
+      mailer.pages_domain_disabled_email(domain, recipient.user).deliver_later
     end
   end
 
@@ -463,6 +463,22 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(:issue_due_email, recipient.user.id, issue.id, recipient.reason).deliver_later
+    end
+  end
+
+  def repository_cleanup_success(project, user)
+    mailer.send(:repository_cleanup_success_email, project, user).deliver_later
+  end
+
+  def repository_cleanup_failure(project, user, error)
+    mailer.send(:repository_cleanup_failure_email, project, user, error).deliver_later
+  end
+
+  def remote_mirror_update_failed(remote_mirror)
+    recipients = project_maintainers_recipients(remote_mirror, action: 'update_failed')
+
+    recipients.each do |recipient|
+      mailer.remote_mirror_update_failed_email(remote_mirror.id, recipient.user.id).deliver_later
     end
   end
 
@@ -561,12 +577,8 @@ class NotificationService
 
   private
 
-  def recipients_for_pages_domain(domain)
-    project = domain.project
-
-    return [] unless project
-
-    notifiable_users(project.team.maintainers, :watch, target: project)
+  def project_maintainers_recipients(target, action:)
+    NotificationRecipientService.build_project_maintainers_recipients(target, action: action)
   end
 
   def notifiable?(*args)

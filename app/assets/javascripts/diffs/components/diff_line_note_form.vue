@@ -73,6 +73,7 @@ export default {
 
       this.cancelCommentForm({
         lineCode: this.line.line_code,
+        fileHash: this.diffFileHash,
       });
       this.$nextTick(() => {
         this.resetAutoSave();
@@ -93,6 +94,7 @@ export default {
       ref="noteForm"
       :is-editing="true"
       :line-code="line.line_code"
+      :line="line"
       save-button-title="Comment"
       class="diff-comment-form"
       @cancelForm="handleCancelCommentForm"

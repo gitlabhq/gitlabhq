@@ -1,57 +1,28 @@
 # Automatic CE->EE merge
 
-GitLab Community Edition is merged automatically every 3 hours into the
-Enterprise Edition (look for the [`CE Upstream` merge requests]).
+Commits pushed to CE `master` are automatically merged into EE `master` roughly
+every 5 minutes. Changes are merged using the `recursive=ours` merge strategy in
+the context of EE. This means that any merge conflicts are resolved by taking
+the EE changes and discarding the CE changes. This removes the need for
+resolving conflicts or reverting changes, at the cost of **absolutely
+requiring** EE merge requests to be created whenever a CE merge request causes
+merge conflicts.  Failing to do so can result in changes not making their way
+into EE.
 
-This merge is done automatically in a
-[scheduled pipeline](https://gitlab.com/gitlab-org/release-tools/-/jobs/43201679).
+## Always create an EE merge request if there are conflicts
 
-## What to do if you are pinged in a `CE Upstream` merge request to resolve a conflict?
-
-1. Please resolve the conflict as soon as possible or ask someone else to do it
-   - It's ok to resolve more conflicts than the one that you are asked to resolve.
-     In that case, it's a good habit to ask for a double-check on your resolution
-     by someone who is familiar with the code you touched.
-1. Once you have resolved your conflicts, push to the branch (no force-push)
-1. Assign the merge request to the next person that has to resolve a conflict
-1. If all conflicts are resolved after your resolution is pushed, keep the merge
-   request assigned to you: **you are now responsible for the merge request to be
-   green**
-1. If you are the last person to resolve the conflicts, the pipeline is green,
-   and you have merge rights, merge the MR, but **do not** choose to squash.
-   Otherwise, assign the MR to someone that can merge.
-1. If you need any help, you can ping the current [release managers], or ask in
-   the `#ce-to-ee` Slack channel
-
-A few notes about the automatic CE->EE merge job:
-
-- If a merge is already in progress, the job
-  [doesn't create a new one](https://gitlab.com/gitlab-org/release-tools/-/jobs/43157687).
-- If there is nothing to merge (i.e. EE is up-to-date with CE), the job doesn't
-  create a new one
-- The job posts messages to the `#ce-to-ee` Slack channel to inform what's the
-  current CE->EE merge status (e.g. "A new MR has been created", "A MR is still pending")
-
-[`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
-[release managers]: https://about.gitlab.com/release-managers/
+In CI there is a job called `ee_compat_check`, which checks if a CE MR causes
+merge conflicts with EE. If this job reports conflicts, you **must** create an
+EE merge request. If you are an external contributor you can ask the reviewer to
+do this for you.
 
 ## Always merge EE merge requests before their CE counterparts
 
 **In order to avoid conflicts in the CE->EE merge, you should always merge the
 EE version of your CE merge request first, if present.**
 
-The rationale for this is that as CE->EE merges are done automatically every few
-hours, it can happen that:
-
-1. A CE merge request that needs EE-specific changes is merged
-1. The automatic CE->EE merge happens
-1. Conflicts due to the CE merge request occur since its EE merge request isn't
-  merged yet
-1. The automatic merge bot will ping someone to resolve the conflict **that are
-  already resolved in the EE merge request that isn't merged yet**
-
-That's a waste of time, and that's why you should merge EE merge request before
-their CE counterpart.
+Failing to do so will lead to CE changes being discarded when merging into EE,
+if they cause merge conflicts.
 
 ## Avoiding CE->EE merge conflicts beforehand
 
@@ -198,6 +169,60 @@ necessary, using the same CE and EE branches.
 you are not required to submit the EE-equivalent MR, but it's still recommended. If the
 job failed, you are required to submit the EE MR so that you can fix the conflicts in EE
 before merging your changes into CE.
+
+## FAQ
+
+### How does automatic merging work?
+
+The automatic merging is performed using a project called [Merge
+Train](https://gitlab.com/gitlab-org/merge-train/). This project will clone CE
+and EE master, and merge CE master into EE master using `git merge
+--strategy=recursive --strategy-option=ours`. This process runs multiple times
+per hour.
+
+For more information on the exact implementation you can refer to the source
+code.
+
+### Why merge automatically?
+
+As we work towards continuous deployments and a single repository for both CE
+and EE, we need to first make sure that all CE changes make their way into CE as
+fast as possible. Past experiences and data have shown that periodic CE to EE
+merge requests do not scale, and often take a very long time to complete. For
+example, [in this
+comment](https://gitlab.com/gitlab-org/release/framework/issues/49#note_114614619)
+we determined that the average time to close an upstream merge request is around
+5 hours, with peaks up to several days. Periodic merge requests are also
+frustrating to work with, because they often include many changes unrelated to
+your own changes.
+
+To resolve these problems, we now merge changes using the `ours` strategy to
+automatically resolve merge conflicts. This removes the need for resolving
+conflicts in a periodic merge request, and allows us to merge changes from CE
+into EE much faster.
+
+### My CE merge request caused conflicts after it was merged. What do I do?
+
+If you notice this, you should set up an EE merge request that resolves these
+conflicts as **soon as possible**. Failing to do so can lead to your changes not
+being available in EE, which may break tests. This in turn would prevent us from
+being able to deploy.
+
+### Won't this setup be risky?
+
+No, not if there is an EE merge request for every CE merge request that causes
+conflicts _and_ that EE merge request is merged first. In the past we may have
+been a bit more relaxed when it comes to enforcing EE merge requests, but to
+enable automatic merging have to start requiring such merge requests even for
+the smallest conflicts.
+
+### Some files I work with often conflict, how can I best deal with this?
+
+If you find you keep running into merge conflicts, consider refactoring the file
+so that the EE specific changes are not intertwined with CE code. For Ruby code
+you can do this by moving the EE code to a separate module, which can then be
+injected into the appropriate classes or modules. See [Guidelines for
+implementing Enterprise Edition features](ee_features.md) for more information.
 
 ---
 

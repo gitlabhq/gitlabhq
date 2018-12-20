@@ -30,6 +30,7 @@ module Projects
 
         if result
           project.write_repository_config
+          project.track_project_repository
         else
           rollback_folder_move
           project.storage_version = nil

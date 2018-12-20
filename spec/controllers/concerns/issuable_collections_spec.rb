@@ -86,10 +86,11 @@ describe IssuableCollections do
 
     it 'only allows whitelisted params' do
       allow(controller).to receive(:cookies).and_return({})
+      allow(controller).to receive(:current_user).and_return(nil)
 
       finder_options = controller.send(:finder_options)
 
-      expect(finder_options).to eq({
+      expect(finder_options).to eq(ActionController::Parameters.new({
         'assignee_id' => '1',
         'assignee_username' => 'user1',
         'author_id' => '2',
@@ -102,7 +103,7 @@ describe IssuableCollections do
         'search' => 'baz',
         'sort' => 'priority',
         'state' => 'opened'
-      })
+      }).permit!)
     end
   end
 end

@@ -1,3 +1,4 @@
+import '~/commons/bootstrap';
 import { AwardsHandler } from '~/awards_handler';
 
 class EmojiMenu extends AwardsHandler {

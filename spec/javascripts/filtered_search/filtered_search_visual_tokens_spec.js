@@ -909,16 +909,6 @@ describe('Filtered Search Visual Tokens', () => {
       expect(token.style.backgroundColor).not.toEqual(originalBackgroundColor);
     });
 
-    it('should not set backgroundColor when it is a linear-gradient', () => {
-      const token = subject.setTokenStyle(
-        bugLabelToken,
-        'linear-gradient(135deg, red, blue)',
-        'white',
-      );
-
-      expect(token.style.backgroundColor).toEqual(bugLabelToken.style.backgroundColor);
-    });
-
     it('should set textColor', () => {
       const token = subject.setTokenStyle(bugLabelToken, 'white', 'black');
 
@@ -932,39 +922,6 @@ describe('Filtered Search Visual Tokens', () => {
       expect(token.style.color).toEqual('rgb(255, 255, 255)');
       expect(token.style.color).not.toEqual(originalTextColor);
       expect(token.querySelector('.remove-token').classList.contains('inverted')).toEqual(true);
-    });
-  });
-
-  describe('preprocessLabel', () => {
-    const endpoint = 'endpoint';
-
-    it('does not preprocess more than once', () => {
-      let labels = [];
-
-      spyOn(DropdownUtils, 'duplicateLabelPreprocessing').and.callFake(() => []);
-
-      labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
-      FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
-
-      expect(DropdownUtils.duplicateLabelPreprocessing.calls.count()).toEqual(1);
-    });
-
-    describe('not preprocessed before', () => {
-      it('returns preprocessed labels', () => {
-        let labels = [];
-
-        expect(labels.preprocessed).not.toEqual(true);
-        labels = FilteredSearchVisualTokens.preprocessLabel(endpoint, labels);
-
-        expect(labels.preprocessed).toEqual(true);
-      });
-
-      it('overrides AjaxCache with preprocessed results', () => {
-        spyOn(AjaxCache, 'override').and.callFake(() => {});
-        FilteredSearchVisualTokens.preprocessLabel(endpoint, []);
-
-        expect(AjaxCache.override.calls.count()).toEqual(1);
-      });
     });
   });
 

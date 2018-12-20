@@ -144,7 +144,6 @@
 .group-home-panel {
   padding-top: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid $border-color;
 
   .group-avatar {
     float: none;
@@ -155,7 +154,6 @@
     }
   }
 
-  .project-title,
   .group-title {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -195,25 +193,69 @@
 }
 
 .project-home-panel {
-  padding-top: $gl-padding-8;
-  padding-bottom: $gl-padding-24;
-
-  .project-title-row {
-    margin-right: $gl-padding-8;
-  }
+  padding-top: $gl-padding;
+  padding-bottom: $gl-padding;
 
   .project-avatar {
     width: $project-title-row-height;
     height: $project-title-row-height;
     flex-shrink: 0;
     flex-basis: $project-title-row-height;
-    margin: 0 $gl-padding-8 0 0;
+    margin: 0 $gl-padding 0 0;
   }
 
   .project-title {
+    margin-top: 8px;
+    margin-bottom: 5px;
     font-size: 20px;
-    line-height: $project-title-row-height;
+    line-height: $gl-line-height-24;
     font-weight: bold;
+
+    .icon {
+      font-size: $gl-font-size-large;
+    }
+
+    .project-visibility {
+      color: $gl-text-color-secondary;
+    }
+
+    .project-tag-list {
+      font-size: $gl-font-size;
+      font-weight: $gl-font-weight-normal;
+
+      .icon {
+        position: relative;
+        top: 3px;
+        margin-right: $gl-padding-4;
+      }
+    }
+  }
+
+  .project-title-row {
+    @include media-breakpoint-down(sm) {
+      .project-avatar {
+        width: $project-avatar-mobile-size;
+        height: $project-avatar-mobile-size;
+        flex-basis: $project-avatar-mobile-size;
+
+        .avatar {
+          font-size: 20px;
+          line-height: 46px;
+        }
+      }
+
+      .project-title {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: $gl-font-size;
+        line-height: $gl-font-size-large;
+      }
+
+      .project-tag-list,
+      .project-metadata {
+        font-size: $gl-font-size-small;
+      }
+    }
   }
 
   .project-metadata {
@@ -222,16 +264,6 @@
     line-height: $gl-btn-line-height;
     color: $gl-text-color-secondary;
 
-    .icon {
-      margin-right: $gl-padding-4;
-      font-size: 16px;
-    }
-
-    .project-visibility,
-    .project-license,
-    .project-tag-list {
-      margin-right: $gl-padding-8;
-    }
 
     .project-license {
       .btn {
@@ -240,12 +272,22 @@
       }
     }
 
-    .project-tag-list,
-    .project-license {
-      .icon {
-        position: relative;
-        top: 2px;
-      }
+    .access-request-link,
+    .project-tag-list {
+      padding-left: $gl-padding-8;
+      border-left: 1px solid $gl-text-color-secondary;
+    }
+  }
+
+  .project-description {
+    @include media-breakpoint-up(md) {
+      font-size: $gl-font-size-large;
+    }
+  }
+
+  .notifications-btn {
+    .fa-bell {
+      margin-right: 0;
     }
   }
 }
@@ -298,14 +340,6 @@
     vertical-align: top;
     margin-top: $gl-padding;
 
-    .count-badge {
-      height: $input-height;
-
-      .icon {
-        top: -1px;
-      }
-    }
-
     .count-badge-count,
     .count-badge-button {
       border: 1px solid $border-color;
@@ -319,27 +353,23 @@
 
     .count-badge-count {
       padding: 0 12px;
-      border-right: 0;
-      border-radius: $border-radius-base 0 0 $border-radius-base;
       background: $gray-light;
+      border-radius: 0 $border-radius-base $border-radius-base 0;
     }
 
     .count-badge-button {
-      border-radius: 0 $border-radius-base $border-radius-base 0;
+      border-right: 0;
+      border-radius: $border-radius-base 0 0 $border-radius-base;
     }
   }
 
   .project-clone-holder {
     display: inline-block;
-    margin: $gl-padding $gl-padding-8 0 0;
+    margin: $gl-padding 0 0;
 
     input {
       height: $input-height;
     }
-  }
-
-  .clone-dropdown-btn {
-    background-color: $white-light;
   }
 
   .clone-options-dropdown {
@@ -352,6 +382,31 @@
 
   .mobile-git-clone {
     margin-top: $gl-padding-8;
+  }
+}
+
+.project-repo-buttons {
+  .icon {
+    top: 0;
+  }
+
+  .count-badge,
+  .btn-xs {
+    height: 24px;
+  }
+
+  .dropdown-toggle,
+  .clone-dropdown-btn {
+    .fa {
+      color: unset;
+    }
+  }
+
+  .btn {
+    .notifications-icon {
+      top: 1px;
+      margin-right: 0;
+    }
   }
 }
 
@@ -715,15 +770,16 @@
   border-bottom: 1px solid $border-color;
 }
 
-.project-stats {
+.project-stats,
+.project-buttons {
   font-size: 0;
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .scrolling-tabs-container {
     .scrolling-tabs {
       margin-top: $gl-padding-8;
-      margin-bottom: $gl-padding-8;
+      margin-bottom: $gl-padding-8 - $browserScrollbarSize;
+      padding-bottom: $browserScrollbarSize;
       flex-wrap: wrap;
       border-bottom: 0;
     }
@@ -731,7 +787,7 @@
     .fade-left,
     .fade-right {
       top: 0;
-      height: 100%;
+      height: calc(100% - #{$browserScrollbarSize});
 
       .fa {
         top: 50%;
@@ -785,28 +841,55 @@
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
       color: $gl-text-color-secondary;
-      white-space: nowrap;
+      white-space: pre-wrap;
     }
 
     .stat-link {
       border-bottom: 0;
+      color: $black;
 
       &:hover,
       &:focus {
-        color: $gl-text-color;
         text-decoration: underline;
         border-bottom: 0;
+      }
+
+      .project-stat-value {
+        color: $gl-text-color;
+      }
+
+      .icon {
+        color: $gl-text-color-secondary;
+      }
+
+      .add-license-link {
+        &,
+        .icon {
+          color: $blue-600;
+        }
       }
     }
 
     .btn {
-      padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+      margin-top: $gl-padding;
+      padding: $gl-btn-vert-padding $gl-btn-padding;
       line-height: $gl-btn-line-height;
+
+      .icon {
+        top: 0;
+      }
     }
 
     .btn-missing {
       @extend .btn-missing;
     }
+  }
+}
+
+.project-buttons {
+  .stat-text {
+    @extend .btn;
+    @extend .btn-default;
   }
 }
 
@@ -886,34 +969,73 @@ pre.light-well {
     @include basic-list-stats;
     display: flex;
     align-items: center;
+    color: $gl-text-color-secondary;
+    padding: $gl-padding 0;
+
+    @include media-breakpoint-up(lg) {
+      padding: $gl-padding-24 0;
+    }
+
+    &.no-description {
+      @include media-breakpoint-up(sm) {
+        .avatar-container {
+          align-self: center;
+        }
+
+        .metadata-info {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 
-  h3 {
-    font-size: $gl-font-size;
-  }
+  h2 {
+    font-size: $gl-font-size-medium;
+    font-weight: $gl-font-weight-bold;
+    margin-bottom: 0;
 
-  .avatar-container,
-  .controls {
-    flex: 0 0 auto;
+    @include media-breakpoint-up(sm) {
+      .namespace-name {
+        font-weight: $gl-font-weight-normal;
+      }
+    }
   }
 
   .avatar-container {
+    flex: 0 0 auto;
     align-self: flex-start;
   }
 
   .project-details {
     min-width: 0;
+    line-height: $gl-line-height;
+
+    .flex-wrapper {
+      min-width: 0;
+      margin-top: -$gl-padding-8; // negative margin required for flex-wrap
+    }
 
     p,
     .commit-row-message {
       @include str-truncated(100%);
       margin-bottom: 0;
     }
-  }
 
-  .controls {
-    margin-left: auto;
-    text-align: right;
+    .user-access-role {
+      margin: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+      .description {
+        color: $gl-text-color;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      .user-access-role {
+        line-height: $gl-line-height-14;
+      }
+    }
   }
 
   .ci-status-link {
@@ -925,6 +1047,149 @@ pre.light-well {
       text-decoration: none;
     }
   }
+
+  .controls {
+    margin-top: $gl-padding;
+
+    @include media-breakpoint-down(md) {
+      margin-top: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      margin-top: $gl-padding-8;
+    }
+
+    .icon-wrapper {
+      color: inherit;
+      margin-right: $gl-padding;
+
+      @include media-breakpoint-down(md) {
+        margin-right: 0;
+        margin-left: $gl-padding-8;
+      }
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .ci-status-link {
+      display: inline-flex;
+    }
+  }
+
+  .star-button {
+    .icon {
+      top: 0;
+    }
+  }
+
+  .icon-container {
+    @include media-breakpoint-down(xs) {
+      margin-right: $gl-padding-8;
+    }
+  }
+
+  &.compact {
+    .project-row {
+      padding: $gl-padding 0;
+    }
+
+    h2 {
+      font-size: $gl-font-size;
+    }
+
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s64 {
+        font-size: 16px;
+      }
+    }
+
+    .controls {
+      @include media-breakpoint-up(sm) {
+        margin-top: 0;
+      }
+    }
+
+    .updated-note {
+      @include media-breakpoint-up(sm) {
+        margin-top: $gl-padding-8;
+      }
+    }
+
+    .icon-wrapper {
+      margin-left: $gl-padding-8;
+      margin-right: 0;
+
+      @include media-breakpoint-down(xs) {
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+
+    .user-access-role {
+      line-height: $gl-line-height-14;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    h2 {
+      font-size: $gl-font-size;
+    }
+
+    .avatar-container {
+      @include avatar-size(40px, 10px);
+      min-height: 40px;
+      min-width: 40px;
+
+      .identicon.s64 {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .updated-note {
+      margin-top: $gl-padding-8;
+      text-align: right;
+    }
+  }
+
+  .forks,
+  .pipeline-status,
+  .updated-note {
+    display: flex;
+  }
+
+  @include media-breakpoint-down(md) {
+    &:not(.explore) {
+      .forks {
+        display: none;
+
+      }
+    }
+
+    &.explore {
+      .pipeline-status,
+      .updated-note {
+        display: none !important;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .updated-note {
+      margin-top: 0;
+      text-align: left;
+    }
+  }
 }
 
 .card .projects-list li {
@@ -933,8 +1198,6 @@ pre.light-well {
 }
 
 .git-clone-holder {
-  width: 320px;
-
   .btn-clipboard {
     border: 1px solid $border-color;
   }
@@ -954,6 +1217,15 @@ pre.light-well {
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
+  }
+}
+
+.git-clone-holder,
+.mobile-git-clone {
+  .btn {
+    .icon {
+      fill: $white;
+    }
   }
 }
 

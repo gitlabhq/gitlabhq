@@ -29,6 +29,11 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
+          - if project_nav_tab?(:releases) && Feature.enabled?(:releases_page)
+            = nav_link(controller: :releases) do
+              = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
+                %span= _('Releases')
+
           = render_if_exists 'projects/sidebar/security_dashboard'
 
           - if can?(current_user, :read_cycle_analytics, @project)
@@ -62,7 +67,7 @@
               = link_to project_branches_path(@project) do
                 = _('Branches')
 
-            = nav_link(controller: [:tags, :releases]) do
+            = nav_link(controller: [:tags]) do
               = link_to project_tags_path(@project) do
                 = _('Tags')
 
@@ -196,7 +201,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
-          = link_to metrics_project_environments_path(@project), class: 'shortcuts-operations' do
+          = link_to sidebar_operations_link_path, class: 'shortcuts-operations' do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
@@ -204,7 +209,7 @@
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: sidebar_operations_paths, html_options: { class: "fly-out-top-item" } ) do
-              = link_to metrics_project_environments_path(@project) do
+              = link_to sidebar_operations_link_path do
                 %strong.fly-out-top-item-name
                   =  _('Operations')
             %li.divider.fly-out-top-item
@@ -221,6 +226,12 @@
                 = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
                   %span
                     = _('Environments')
+
+            - if project_nav_tab? :serverless
+              = nav_link(controller: :functions) do
+                = link_to project_serverless_functions_path(@project), title: _('Serverless') do
+                  %span
+                    = _('Serverless')
 
             - if project_nav_tab? :clusters
               - show_cluster_hint = show_gke_cluster_integration_callout?(@project)

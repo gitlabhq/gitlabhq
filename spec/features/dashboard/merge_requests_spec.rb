@@ -6,7 +6,6 @@ describe 'Dashboard Merge Requests' do
   include ProjectForksHelper
 
   let(:current_user) { create :user }
-  let(:user) { current_user }
   let(:project) { create(:project) }
 
   let(:public_project) { create(:project, :public, :repository) }

@@ -132,7 +132,8 @@ in three places:
 
 - either under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops)
 - or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
-- or at the project or group level as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
+- or at the project as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
+- or at the group level as a variable: `AUTO_DEVOPS_DOMAIN`
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -202,6 +203,12 @@ Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
+
+NOTE: **Note:**
+Auto DevOps is not supported for a group with multiple clusters, as it
+is not possible to set `AUTO_DEVOPS_DOMAIN` per environment on the group
+level. This will be resolved in the future with the [following issue](
+https://gitlab.com/gitlab-org/gitlab-ce/issues/52363).
 
 ## Enabling/Disabling Auto DevOps
 
@@ -479,14 +486,23 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+#### Migrations
+
 > [Introduced][ce-21955] in GitLab 11.4
 
 Database initialization and migrations for PostgreSQL can be configured to run
 within the application pod by setting the project variables `DB_INITIALIZE` and
 `DB_MIGRATE` respectively.
 
-If present, `DB_INITIALIZE` will be run as a shell command within an application pod as a helm
-post-install hook. Note that this means that if any deploy succeeds,
+If present, `DB_INITIALIZE` will be run as a shell command within an
+application pod as a helm post-install hook. As some applications will
+not run without a successful database initialization step, GitLab will
+deploy the first release without the application deployment and only the
+database initialization step. After the database initialization completes,
+GitLab will deploy a second release with the application deployment as
+normal.
+
+Note that a post-install hook means that if any deploy succeeds,
 `DB_INITIALIZE` will not be processed thereafter.
 
 If present, `DB_MIGRATE` will be run as a shell command within an application pod as
@@ -551,7 +567,7 @@ To view the metrics, open the
 While Auto DevOps provides great defaults to get you started, you can customize
 almost everything to fit your needs; from custom [buildpacks](#custom-buildpacks),
 to [`Dockerfile`s](#custom-dockerfile), [Helm charts](#custom-helm-chart), or
-even copying the complete [CI/CD configuration](#customizing-gitlab-ci-yml)
+even copying the complete [CI/CD configuration](#customizing-gitlab-ciyml)
 into your project to enable staging and canary deployments, and more.
 
 ### Custom buildpacks
@@ -657,8 +673,6 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
 | `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
 | `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
-| `OLD_REPORTS_DISABLED`       | From GitLab 11.5, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
-| `NEW_REPORTS_DISABLED`       | From GitLab 11.5, this variable can be used to disable the `sast_dashboard` job. If the variable is present, the job will not be created. |
 
 TIP: **Tip:**
 Set up the replica variables using a

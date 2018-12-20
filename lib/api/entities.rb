@@ -145,7 +145,9 @@ module API
       expose :import_status
 
       # TODO: Use `expose_nil` once we upgrade the grape-entity gem
-      expose :import_error, if: lambda { |status, _ops| status.import_error }
+      expose :import_error, if: lambda { |project, _ops| project.import_state&.last_error } do |project|
+        project.import_state.last_error
+      end
     end
 
     class BasicProjectDetails < ProjectIdentity
@@ -248,7 +250,10 @@ module API
       expose :creator_id
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
-      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
+
+      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
+        project.import_state&.last_error
+      end
 
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -709,6 +714,10 @@ module API
       end
 
       expose :diff_refs, using: Entities::DiffRefs
+
+      # Allow the status of a rebase to be determined
+      expose :merge_error
+      expose :rebase_in_progress?, as: :rebase_in_progress, if: -> (_, options) { options[:include_rebase_in_progress] }
 
       expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
@@ -1485,6 +1494,18 @@ module API
       end
       expose :label, using: Entities::LabelBasic
       expose :action
+    end
+
+    class Suggestion < Grape::Entity
+      expose :id
+      expose :from_original_line
+      expose :to_original_line
+      expose :from_line
+      expose :to_line
+      expose :appliable?, as: :appliable
+      expose :applied
+      expose :from_content
+      expose :to_content
     end
   end
 end

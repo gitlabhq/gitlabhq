@@ -28,27 +28,29 @@ export default {
 </script>
 <template>
   <div class="block">
-    <div class="title">{{ s__('Job|Job artifacts') }}</div>
+    <div class="title font-weight-bold">{{ s__('Job|Job artifacts') }}</div>
 
-    <p v-if="isExpired" class="js-artifacts-removed build-detail-row">
-      {{ s__('Job|The artifacts were removed') }}
+    <p
+      v-if="isExpired || willExpire"
+      :class="{
+        'js-artifacts-removed': isExpired,
+        'js-artifacts-will-be-removed': willExpire,
+      }"
+      class="build-detail-row"
+    >
+      <span v-if="isExpired">{{ s__('Job|The artifacts were removed') }}</span>
+      <span v-if="willExpire">{{ s__('Job|The artifacts will be removed') }}</span>
+      <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
     </p>
 
-    <p v-else-if="willExpire" class="js-artifacts-will-be-removed build-detail-row">
-      {{ s__('Job|The artifacts will be removed in') }}
-    </p>
-
-    <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
-
-    <div class="btn-group d-flex" role="group">
+    <div class="btn-group d-flex prepend-top-10" role="group">
       <gl-link
         v-if="artifact.keep_path"
         :href="artifact.keep_path"
         class="js-keep-artifacts btn btn-sm btn-default"
         data-method="post"
+        >{{ s__('Job|Keep') }}</gl-link
       >
-        {{ s__('Job|Keep') }}
-      </gl-link>
 
       <gl-link
         v-if="artifact.download_path"
@@ -56,17 +58,15 @@ export default {
         class="js-download-artifacts btn btn-sm btn-default"
         download
         rel="nofollow"
+        >{{ s__('Job|Download') }}</gl-link
       >
-        {{ s__('Job|Download') }}
-      </gl-link>
 
       <gl-link
         v-if="artifact.browse_path"
         :href="artifact.browse_path"
         class="js-browse-artifacts btn btn-sm btn-default"
+        >{{ s__('Job|Browse') }}</gl-link
       >
-        {{ s__('Job|Browse') }}
-      </gl-link>
     </div>
   </div>
 </template>

@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 describe Clusters::Applications::Knative do
+  include KubernetesHelpers
+  include ReactiveCachingHelpers
+
   let(:knative) { create(:clusters_applications_knative) }
 
   include_examples 'cluster application core specs', :clusters_applications_knative
@@ -30,10 +33,10 @@ describe Clusters::Applications::Knative do
     end
 
     context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.1.3') }
+      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.2.2') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('0.1.3')
+        expect(application.reload.version).to eq('0.2.2')
       end
     end
   end
@@ -102,7 +105,7 @@ describe Clusters::Applications::Knative do
     it 'should be initialized with knative arguments' do
       expect(subject.name).to eq('knative')
       expect(subject.chart).to eq('knative/knative')
-      expect(subject.version).to eq('0.1.3')
+      expect(subject.version).to eq('0.2.2')
       expect(subject.files).to eq(knative.files)
     end
   end
@@ -120,5 +123,44 @@ describe Clusters::Applications::Knative do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:hostname) }
+  end
+
+  describe '#services' do
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:service) { cluster.platform_kubernetes }
+    let(:knative) { create(:clusters_applications_knative, cluster: cluster) }
+
+    let(:namespace) do
+      create(:cluster_kubernetes_namespace,
+        cluster: cluster,
+        cluster_project: cluster.cluster_project,
+        project: cluster.cluster_project.project)
+    end
+
+    subject { knative.services }
+
+    before do
+      stub_kubeclient_discover(service.api_url)
+      stub_kubeclient_knative_services
+    end
+
+    it 'should have an unintialized cache' do
+      is_expected.to be_nil
+    end
+
+    context 'when using synchronous reactive cache' do
+      before do
+        stub_reactive_cache(knative, services: kube_response(kube_knative_services_body))
+        synchronous_reactive_cache(knative)
+      end
+
+      it 'should have cached services' do
+        is_expected.not_to be_nil
+      end
+
+      it 'should match our namespace' do
+        expect(knative.services_for(ns: namespace)).not_to be_nil
+      end
+    end
   end
 end

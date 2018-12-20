@@ -176,9 +176,9 @@
   display: block;
   font-weight: $gl-font-weight-normal;
   position: relative;
-  padding: 8px 16px;
+  padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   color: $gl-text-color;
-  line-height: normal;
+  line-height: $gl-btn-line-height;
   white-space: normal;
   overflow: hidden;
   text-align: left;
@@ -290,14 +290,18 @@
     }
   }
 
+  .dropdown-item {
+    @include dropdown-link;
+  }
+
   .divider {
     height: 1px;
     margin: #{$grid-size / 2} 0;
     padding: 0;
-    background-color: $dropdown-divider-color;
+    background-color: $dropdown-divider-bg;
 
     &:hover {
-      background-color: $dropdown-divider-color;
+      background-color: $dropdown-divider-bg;
     }
   }
 
@@ -306,7 +310,7 @@
     height: 1px;
     margin-top: 8px;
     margin-bottom: 8px;
-    background-color: $dropdown-divider-color;
+    background-color: $dropdown-divider-bg;
   }
 
   .dropdown-menu-empty-item a {
@@ -319,8 +323,8 @@
   .dropdown-header {
     color: $gl-text-color-secondary;
     font-size: 13px;
-    line-height: 22px;
-    padding: 8px 16px;
+    line-height: $gl-line-height;
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
 
   &.capitalize-header .dropdown-header {
@@ -329,13 +333,8 @@
 
   .dropdown-bold-header {
     font-weight: $gl-font-weight-bold;
-    line-height: 22px;
-    padding: 0 16px;
-  }
-
-  .separator + .dropdown-header,
-  .separator + .dropdown-bold-header {
-    padding-top: 10px;
+    line-height: $gl-line-height;
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
 
   .unclickable {
@@ -535,14 +534,15 @@
 
 .dropdown-title {
   position: relative;
-  padding: 2px 25px 10px;
-  margin: 0 10px 10px;
+  padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+  padding-bottom: #{2 * $dropdown-item-padding-y};
+  margin-bottom: $dropdown-item-padding-y;
   font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border-bottom: 1px solid $dropdown-divider-color;
+  border-bottom: 1px solid $dropdown-divider-bg;
   overflow: hidden;
 }
 
@@ -621,7 +621,7 @@
   padding: 0 7px;
   color: $gl-gray-700;
   line-height: 30px;
-  border: 1px solid $dropdown-divider-color;
+  border: 1px solid $dropdown-divider-bg;
   border-radius: 2px;
   outline: 0;
 
@@ -656,7 +656,7 @@
   padding-top: 10px;
   margin-top: 10px;
   font-size: 13px;
-  border-top: 1px solid $dropdown-divider-color;
+  border-top: 1px solid $dropdown-divider-bg;
 }
 
 .dropdown-footer-content {

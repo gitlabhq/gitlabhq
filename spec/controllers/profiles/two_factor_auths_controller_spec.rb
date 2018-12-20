@@ -32,7 +32,7 @@ describe Profiles::TwoFactorAuthsController do
     let(:pin)  { 'pin-code' }
 
     def go
-      post :create, pin_code: pin
+      post :create, params: { pin_code: pin }
     end
 
     context 'with valid pin' do

@@ -68,6 +68,7 @@ module Trigger
 
     def base_variables
       {
+        'GITLAB_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
         'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
         'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
@@ -106,17 +107,10 @@ module Trigger
     def extra_variables
       {
         'GITLAB_VERSION' => ENV['CI_COMMIT_SHA'],
-        'GITLAB_REF_SLUG' => ref_slug,
         'ALTERNATIVE_SOURCES' => 'true',
         'ee' => Trigger.ee? ? 'true' : 'false',
         'QA_BRANCH' => ENV['QA_BRANCH'] || 'master'
       }
-    end
-
-    def ref_slug
-      return 'master' if ENV['CI_COMMIT_REF_SLUG'] =~ %r{(\Aqa[/-]|-qa\z)}
-
-      ENV['CI_COMMIT_REF_SLUG']
     end
   end
 

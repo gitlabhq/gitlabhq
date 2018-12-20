@@ -150,6 +150,16 @@ in a Merge Request. To do so, click the **...** button in the gutter of the Merg
 
 ![Comment on any diff file line](img/comment-on-any-diff-line.png)
 
+## Suggest changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+
+As a reviewer, you can add suggestions to change the content in
+merge request discussions, and users with appropriate [permission](../../permissions.md)
+can easily apply them to the codebase directly from the UI. Read
+through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
+to learn more.
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
@@ -258,6 +268,16 @@ in a per-branch basis. No need to checkout the branch, install and preview local
 all your changes will be available to preview by anyone with the Review Apps link.
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
+
+## Pipelines for merge requests
+
+When a developer updates a merge request, a pipeline should quickly report back
+its result to the developer, but often pipelines take long time to complete
+because general branch pipelines contain unnecessary jobs from the merge request standpoint.
+You can customize a specific pipeline structure for merge requests in order to
+speed the cycle up by running only important jobs.
+
+Learn more about [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
 
 ## Pipeline status in merge requests
 

@@ -81,7 +81,7 @@ describe Groups::Clusters::ApplicationsController do
     end
 
     def go
-      post :create, params.merge(group_id: group)
+      post :create, params: params.merge(group_id: group)
     end
   end
 end

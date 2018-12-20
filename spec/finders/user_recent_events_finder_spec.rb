@@ -29,8 +29,9 @@ describe UserRecentEventsFinder do
     end
 
     it 'does not include the events if the user cannot read cross project' do
-      expect(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?).and_call_original
       expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
+
       expect(finder.execute).to be_empty
     end
   end

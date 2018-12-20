@@ -55,15 +55,27 @@ describe('Issue model', () => {
     expect(issue.labels.length).toBe(2);
   });
 
-  it('does not add existing label', () => {
+  it('does not add label if label id exists', () => {
+    issue.addLabel({
+      id: 1,
+      title: 'test 2',
+      color: 'blue',
+      description: 'testing',
+    });
+
+    expect(issue.labels.length).toBe(1);
+    expect(issue.labels[0].color).toBe('red');
+  });
+
+  it('adds other label with same title', () => {
     issue.addLabel({
       id: 2,
       title: 'test',
       color: 'blue',
-      description: 'bugs!',
+      description: 'other test',
     });
 
-    expect(issue.labels.length).toBe(1);
+    expect(issue.labels.length).toBe(2);
   });
 
   it('finds label', () => {

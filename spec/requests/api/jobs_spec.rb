@@ -58,7 +58,7 @@ describe API::Jobs do
 
     before do |example|
       unless example.metadata[:skip_before_request]
-        get api("/projects/#{project.id}/jobs", api_user), query
+        get api("/projects/#{project.id}/jobs", api_user), params: query
       end
     end
 
@@ -150,7 +150,7 @@ describe API::Jobs do
     end
 
     def go
-      get api("/projects/#{project.id}/jobs", api_user), query
+      get api("/projects/#{project.id}/jobs", api_user), params: query
     end
   end
 
@@ -160,7 +160,7 @@ describe API::Jobs do
     before do |example|
       unless example.metadata[:skip_before_request]
         job
-        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
       end
     end
 
@@ -229,13 +229,13 @@ describe API::Jobs do
 
       it 'avoids N+1 queries' do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.count
 
         3.times { create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline) }
 
         expect do
-          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
         end.not_to exceed_all_query_limit(control_count)
       end
     end
@@ -479,7 +479,7 @@ describe API::Jobs do
     end
 
     def get_for_ref(ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), job: job_name
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
     end
 
     context 'when not logged in' do
@@ -583,6 +583,136 @@ describe API::Jobs do
 
         it_behaves_like 'a valid file'
       end
+    end
+  end
+
+  describe 'GET id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name' do
+    context 'when job has artifacts' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+      let(:artifact) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
+      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+      let(:public_builds) { true }
+
+      before do
+        stub_artifacts_object_storage
+        job.success
+
+        project.update(visibility_level: visibility_level,
+                       public_builds: public_builds)
+
+        get_artifact_file(artifact)
+      end
+
+      context 'when user is anonymous' do
+        let(:api_user) { nil }
+
+        context 'when project is public' do
+          let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+          let(:public_builds) { true }
+
+          it 'allows to access artifacts' do
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.headers.to_h)
+              .to include('Content-Type' => 'application/json',
+                          'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          end
+        end
+
+        context 'when project is public with builds access disabled' do
+          let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+          let(:public_builds) { false }
+
+          it 'rejects access to artifacts' do
+            expect(response).to have_gitlab_http_status(403)
+            expect(json_response).to have_key('message')
+            expect(response.headers.to_h)
+              .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          end
+        end
+
+        context 'when project is private' do
+          let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+          let(:public_builds) { true }
+
+          it 'rejects access and hides existence of artifacts' do
+            expect(response).to have_gitlab_http_status(404)
+            expect(json_response).to have_key('message')
+            expect(response.headers.to_h)
+              .not_to include('Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          end
+        end
+      end
+
+      context 'when user is authorized' do
+        let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+        let(:public_builds) { true }
+
+        it 'returns a specific artifact file for a valid path' do
+          expect(Gitlab::Workhorse)
+            .to receive(:send_artifacts_entry)
+                  .and_call_original
+
+          get_artifact_file(artifact)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers.to_h)
+            .to include('Content-Type' => 'application/json',
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+        end
+      end
+
+      context 'with branch name containing slash' do
+        before do
+          pipeline.reload
+          pipeline.update(ref: 'improve/awesome',
+                          sha: project.commit('improve/awesome').sha)
+        end
+
+        it 'returns a specific artifact file for a valid path' do
+          get_artifact_file(artifact, 'improve/awesome')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers.to_h)
+            .to include('Content-Type' => 'application/json',
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+        end
+      end
+
+      context 'non-existing job' do
+        shared_examples 'not found' do
+          it { expect(response).to have_gitlab_http_status(:not_found) }
+        end
+
+        context 'has no such ref' do
+          before do
+            get_artifact_file('some/artifact', 'wrong-ref')
+          end
+
+          it_behaves_like 'not found'
+        end
+
+        context 'has no such job' do
+          before do
+            get_artifact_file('some/artifact', pipeline.ref, 'wrong-job-name')
+          end
+
+          it_behaves_like 'not found'
+        end
+      end
+    end
+
+    context 'when job does not have artifacts' do
+      let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
+
+      it 'does not return job artifact file' do
+        get_artifact_file('some/artifact')
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    def get_artifact_file(artifact_path, ref = pipeline.ref, job_name = job.name)
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user), params: { job: job_name }
     end
   end
 

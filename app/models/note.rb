@@ -69,6 +69,12 @@ class Note < ActiveRecord::Base
   belongs_to :last_edited_by, class_name: 'User'
 
   has_many :todos
+
+  # The delete_all definition is required here in order
+  # to generate the correct DELETE sql for
+  # suggestions.delete_all calls
+  has_many :suggestions, -> { order(:relative_order) },
+    inverse_of: :note, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
   has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
@@ -110,7 +116,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
     includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
-             :system_note_metadata, :note_diff_file)
+             :system_note_metadata, :note_diff_file, :suggestions)
   end
 
   scope :with_notes_filter, -> (notes_filter) do
@@ -131,7 +137,7 @@ class Note < ActiveRecord::Base
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits
     includes(:author, :noteable, :updated_by,
-             project: [:project_members, { group: [:group_members] }])
+             project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
 
@@ -224,6 +230,10 @@ class Note < ActiveRecord::Base
 
   def hook_attrs
     Gitlab::HookData::NoteBuilder.new(self).build
+  end
+
+  def supports_suggestion?
+    false
   end
 
   def for_commit?
@@ -324,7 +334,7 @@ class Note < ActiveRecord::Base
   end
 
   def to_ability_name
-    for_personal_snippet? ? 'personal_snippet' : noteable_type.underscore
+    for_snippet? ? noteable.class.name.underscore : noteable_type.underscore
   end
 
   def can_be_discussion_note?

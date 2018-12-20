@@ -33,6 +33,7 @@
 
     .close-icon {
       display: block;
+      margin: auto;
     }
   }
 
@@ -90,12 +91,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        .tanuki-logo {
-          @include media-breakpoint-up(sm) {
-            margin-right: 8px;
-          }
-        }
       }
 
       .project-item-select {
@@ -125,12 +120,6 @@
         }
       }
     }
-  }
-
-  li.dropdown-bold-header {
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    padding: 0 16px;
   }
 
   .navbar-collapse {
@@ -179,12 +168,6 @@
       &.active {
         color: currentColor;
         background-color: transparent;
-      }
-
-      .more-icon,
-      .close-icon {
-        fill: $white-light;
-        margin: auto;
       }
     }
 
@@ -383,6 +366,16 @@
       top: 1px;
     }
   }
+
+  .dropdown-menu li a .identicon {
+    width: 17px;
+    height: 17px;
+    font-size: $gl-font-size-xs;
+    vertical-align: middle;
+    text-indent: 0;
+    line-height: $gl-font-size-xs + 2px;
+    display: inline-block;
+  }
 }
 
 .breadcrumbs-list {
@@ -531,7 +524,7 @@
     left: auto;
 
     li.current-user {
-      padding: 5px 18px;
+      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
 
       .user-name {
         display: block;

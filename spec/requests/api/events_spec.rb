@@ -182,6 +182,68 @@ describe API::Events do
       end
     end
 
+    context 'with inaccessible events' do
+      let(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
+      let(:confidential_issue) { create(:closed_issue, confidential: true, project: public_project, author: user) }
+      let!(:confidential_event) { create(:event, project: public_project, author: user, target: confidential_issue, action: Event::CLOSED) }
+      let(:public_issue) { create(:closed_issue, project: public_project, author: user) }
+      let!(:public_event) { create(:event, project: public_project, author: user, target: public_issue, action: Event::CLOSED) }
+
+      it 'returns only accessible events' do
+        get api("/projects/#{public_project.id}/events", non_member)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.size).to eq(1)
+      end
+
+      it 'returns all events when the user has access' do
+        get api("/projects/#{public_project.id}/events", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.size).to eq(2)
+      end
+    end
+
+    context 'pagination' do
+      let(:public_project) { create(:project, :public) }
+
+      before do
+        create(:event,
+               project: public_project,
+               target: create(:issue, project: public_project, title: 'Issue 1'),
+               action: Event::CLOSED,
+               created_at: Date.parse('2018-12-10'))
+        create(:event,
+               project: public_project,
+               target: create(:issue, confidential: true, project: public_project, title: 'Confidential event'),
+               action: Event::CLOSED,
+               created_at: Date.parse('2018-12-11'))
+        create(:event,
+               project: public_project,
+               target: create(:issue, project: public_project, title: 'Issue 2'),
+               action: Event::CLOSED,
+               created_at: Date.parse('2018-12-12'))
+      end
+
+      it 'correctly returns the second page without inaccessible events' do
+        get api("/projects/#{public_project.id}/events", user), per_page: 2, page: 2
+
+        titles = json_response.map { |event| event['target_title'] }
+
+        expect(titles.first).to eq('Issue 1')
+        expect(titles).not_to include('Confidential event')
+      end
+
+      it 'correctly returns the first page without inaccessible events' do
+        get api("/projects/#{public_project.id}/events", user), per_page: 2, page: 1
+
+        titles = json_response.map { |event| event['target_title'] }
+
+        expect(titles.first).to eq('Issue 2')
+        expect(titles).not_to include('Confidential event')
+      end
+    end
+
     context 'when not permitted to read' do
       it 'returns 404' do
         get api("/projects/#{private_project.id}/events", non_member)
@@ -217,13 +279,13 @@ describe API::Events do
 
       it 'avoids N+1 queries' do
         control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
+          get api("/projects/#{private_project.id}/events", user), params: { target_type: :merge_request }
         end.count
 
         create_event(merge_request2)
 
         expect do
-          get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
+          get api("/projects/#{private_project.id}/events", user), params: { target_type: :merge_request }
         end.not_to exceed_all_query_limit(control_count)
 
         expect(response).to have_gitlab_http_status(200)

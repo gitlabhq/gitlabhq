@@ -22,12 +22,16 @@ import actions, {
   expandAllFiles,
   toggleFileDiscussions,
   saveDiffDiscussion,
+  setHighlightedRow,
   toggleTreeOpen,
   scrollToFile,
   toggleShowTreeList,
+  renderFileForDiscussionId,
 } from '~/diffs/store/actions';
+import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
+import mockDiffFile from 'spec/diffs/mock_data/diff_file';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
@@ -89,6 +93,14 @@ describe('DiffsStoreActions', () => {
           done();
         },
       );
+    });
+  });
+
+  describe('setHighlightedRow', () => {
+    it('should set lineHash and fileHash of highlightedRow', () => {
+      testAction(setHighlightedRow, 'ABC_123', {}, [
+        { type: types.SET_HIGHLIGHTED_ROW, payload: 'ABC_123' },
+      ]);
     });
   });
 
@@ -310,13 +322,13 @@ describe('DiffsStoreActions', () => {
 
   describe('showCommentForm', () => {
     it('should call mutation to show comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         showCommentForm,
         payload,
         {},
-        [{ type: types.ADD_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: true } }],
         [],
         done,
       );
@@ -325,13 +337,13 @@ describe('DiffsStoreActions', () => {
 
   describe('cancelCommentForm', () => {
     it('should call mutation to cancel comment form', done => {
-      const payload = { lineCode: 'lineCode' };
+      const payload = { lineCode: 'lineCode', fileHash: 'hash' };
 
       testAction(
         cancelCommentForm,
         payload,
         {},
-        [{ type: types.REMOVE_COMMENT_FORM_LINE, payload }],
+        [{ type: types.TOGGLE_LINE_HAS_FORM, payload: { ...payload, hasForm: false } }],
         [],
         done,
       );
@@ -370,27 +382,50 @@ describe('DiffsStoreActions', () => {
 
   describe('loadCollapsedDiff', () => {
     it('should fetch data and call mutation with response and the give parameter', done => {
-      const file = { hash: 123, loadCollapsedDiffUrl: '/load/collapsed/diff/url' };
+      const file = { hash: 123, load_collapsed_diff_url: '/load/collapsed/diff/url' };
       const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
       const mock = new MockAdapter(axios);
+      const commit = jasmine.createSpy('commit');
       mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
 
-      testAction(
-        loadCollapsedDiff,
-        file,
-        {},
-        [
-          {
-            type: types.ADD_COLLAPSED_DIFFS,
-            payload: { file, data },
-          },
-        ],
-        [],
-        () => {
+      loadCollapsedDiff({ commit, getters: { commitId: null } }, file)
+        .then(() => {
+          expect(commit).toHaveBeenCalledWith(types.ADD_COLLAPSED_DIFFS, { file, data });
+
           mock.restore();
           done();
-        },
-      );
+        })
+        .catch(done.fail);
+    });
+
+    it('should fetch data without commit ID', () => {
+      const file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+      const getters = {
+        commitId: null,
+      };
+
+      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+
+      loadCollapsedDiff({ commit() {}, getters }, file);
+
+      expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+        params: { commit_id: null },
+      });
+    });
+
+    it('should fetch data with commit ID', () => {
+      const file = { load_collapsed_diff_url: '/load/collapsed/diff/url' };
+      const getters = {
+        commitId: '123',
+      };
+
+      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+
+      loadCollapsedDiff({ commit() {}, getters }, file);
+
+      expect(axios.get).toHaveBeenCalledWith(file.load_collapsed_diff_url, {
+        params: { commit_id: '123' },
+      });
     });
   });
 
@@ -469,7 +504,7 @@ describe('DiffsStoreActions', () => {
 
   describe('scrollToLineIfNeededInline', () => {
     const lineMock = {
-      lineCode: 'ABC_123',
+      line_code: 'ABC_123',
     };
 
     it('should not call handleLocationHash when there is not hash', () => {
@@ -520,7 +555,7 @@ describe('DiffsStoreActions', () => {
     const lineMock = {
       left: null,
       right: {
-        lineCode: 'ABC_123',
+        line_code: 'ABC_123',
       },
     };
 
@@ -575,11 +610,18 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('saveDiffDiscussion', () => {
-    beforeEach(() => {
-      spyOnDependency(actions, 'getNoteFormData').and.returnValue('testData');
-    });
-
     it('dispatches actions', done => {
+      const commitId = 'something';
+      const formData = {
+        diffFile: { ...mockDiffFile },
+        noteableData: {},
+      };
+      const note = {};
+      const state = {
+        commit: {
+          id: commitId,
+        },
+      };
       const dispatch = jasmine.createSpy('dispatch').and.callFake(name => {
         switch (name) {
           case 'saveNote':
@@ -593,11 +635,19 @@ describe('DiffsStoreActions', () => {
         }
       });
 
-      saveDiffDiscussion({ dispatch }, { note: {}, formData: {} })
+      saveDiffDiscussion({ state, dispatch }, { note, formData })
         .then(() => {
-          expect(dispatch.calls.argsFor(0)).toEqual(['saveNote', 'testData', { root: true }]);
-          expect(dispatch.calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
-          expect(dispatch.calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
+          const { calls } = dispatch;
+
+          expect(calls.count()).toBe(5);
+          expect(calls.argsFor(0)).toEqual(['saveNote', jasmine.any(Object), { root: true }]);
+
+          const postData = calls.argsFor(0)[1];
+
+          expect(postData.data.note.commit_id).toBe(commitId);
+
+          expect(calls.argsFor(1)).toEqual(['updateDiscussion', 'test', { root: true }]);
+          expect(calls.argsFor(2)).toEqual(['assignDiscussionsToDiff', ['discussion']]);
         })
         .then(done)
         .catch(done.fail);
@@ -685,6 +735,65 @@ describe('DiffsStoreActions', () => {
       toggleShowTreeList({ commit() {}, state: { showTreeList: true } });
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
+    });
+  });
+
+  describe('renderFileForDiscussionId', () => {
+    const rootState = {
+      notes: {
+        discussions: [
+          {
+            id: '123',
+            diff_file: {
+              file_hash: 'HASH',
+            },
+          },
+          {
+            id: '456',
+            diff_file: {
+              file_hash: 'HASH',
+            },
+          },
+        ],
+      },
+    };
+    let commit;
+    let $emit;
+    let scrollToElement;
+    const state = ({ collapsed, renderIt }) => ({
+      diffFiles: [
+        {
+          file_hash: 'HASH',
+          collapsed,
+          renderIt,
+        },
+      ],
+    });
+
+    beforeEach(() => {
+      commit = jasmine.createSpy('commit');
+      scrollToElement = spyOnDependency(actions, 'scrollToElement').and.stub();
+      $emit = spyOn(eventHub, '$emit');
+    });
+
+    it('renders and expands file for the given discussion id', () => {
+      const localState = state({ collapsed: true, renderIt: false });
+
+      renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
+
+      expect(commit).toHaveBeenCalledWith('RENDER_FILE', localState.diffFiles[0]);
+      expect($emit).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).toHaveBeenCalledTimes(1);
+    });
+
+    it('jumps to discussion on already rendered and expanded file', () => {
+      const localState = state({ collapsed: false, renderIt: true });
+
+      renderFileForDiscussionId({ rootState, state: localState, commit }, '123');
+
+      expect(commit).not.toHaveBeenCalled();
+      expect($emit).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).not.toHaveBeenCalled();
     });
   });
 });

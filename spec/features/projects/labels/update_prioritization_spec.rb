@@ -115,6 +115,21 @@ describe 'Prioritize labels' do
       end
     end
 
+    it 'user can see a primary button when there are only prioritized labels', :js do
+      visit project_labels_path(project)
+
+      page.within('.other-labels') do
+        all('.js-toggle-priority').each do |el|
+          el.click
+        end
+        wait_for_requests
+      end
+
+      page.within('.breadcrumbs-container') do
+        expect(page).to have_link('New label')
+      end
+    end
+
     it 'shows a help message about prioritized labels' do
       visit project_labels_path(project)
 

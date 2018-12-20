@@ -10,7 +10,7 @@
     .card-body
       %pre
         :preserve
-          #{h(@project.import_error)}
+          #{h(@project.import_state.last_error)}
 
 = form_for @project, url: project_import_path(@project), method: :post do |f|
   = render "shared/import_form", f: f

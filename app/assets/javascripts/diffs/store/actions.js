@@ -3,8 +3,9 @@ import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import eventHub from '../../notes/event_hub';
 import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
 import {
@@ -33,6 +34,10 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+export const setHighlightedRow = ({ commit }, lineCode) => {
+  commit(types.SET_HIGHLIGHTED_ROW, lineCode);
+};
+
 // This is adding line discussions to the actual lines in the diff tree
 // once for parallel and once for inline mode
 export const assignDiscussionsToDiff = (
@@ -49,11 +54,36 @@ export const assignDiscussionsToDiff = (
         diffPositionByLineCode,
       });
     });
+
+  Vue.nextTick(() => {
+    eventHub.$emit('scrollToDiscussion');
+  });
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
   const { file_hash, line_code, id } = removeDiscussion;
   commit(types.REMOVE_LINE_DISCUSSIONS_FOR_FILE, { fileHash: file_hash, lineCode: line_code, id });
+};
+
+export const renderFileForDiscussionId = ({ commit, rootState, state }, discussionId) => {
+  const discussion = rootState.notes.discussions.find(d => d.id === discussionId);
+
+  if (discussion) {
+    const file = state.diffFiles.find(f => f.file_hash === discussion.diff_file.file_hash);
+
+    if (file) {
+      if (!file.renderIt) {
+        commit(types.RENDER_FILE, file);
+      }
+
+      if (file.collapsed) {
+        eventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
+        scrollToElement(document.getElementById(file.file_hash));
+      } else {
+        eventHub.$emit('scrollToDiscussion');
+      }
+    }
+  }
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
@@ -99,12 +129,12 @@ export const setParallelDiffViewType = ({ commit }) => {
   historyPushState(url);
 };
 
-export const showCommentForm = ({ commit }, params) => {
-  commit(types.ADD_COMMENT_FORM_LINE, params);
+export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
+  commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: true });
 };
 
-export const cancelCommentForm = ({ commit }, params) => {
-  commit(types.REMOVE_COMMENT_FORM_LINE, params);
+export const cancelCommentForm = ({ commit }, { lineCode, fileHash }) => {
+  commit(types.TOGGLE_LINE_HAS_FORM, { lineCode, fileHash, hasForm: false });
 };
 
 export const loadMoreLines = ({ commit }, options) => {
@@ -127,7 +157,7 @@ export const loadMoreLines = ({ commit }, options) => {
 export const scrollToLineIfNeededInline = (_, line) => {
   const hash = getLocationHash();
 
-  if (hash && line.lineCode === hash) {
+  if (hash && line.line_code === hash) {
     handleLocationHash();
   }
 };
@@ -137,19 +167,25 @@ export const scrollToLineIfNeededParallel = (_, line) => {
 
   if (
     hash &&
-    ((line.left && line.left.lineCode === hash) || (line.right && line.right.lineCode === hash))
+    ((line.left && line.left.line_code === hash) || (line.right && line.right.line_code === hash))
   ) {
     handleLocationHash();
   }
 };
 
-export const loadCollapsedDiff = ({ commit }, file) =>
-  axios.get(file.loadCollapsedDiffUrl).then(res => {
-    commit(types.ADD_COLLAPSED_DIFFS, {
-      file,
-      data: res.data,
+export const loadCollapsedDiff = ({ commit, getters }, file) =>
+  axios
+    .get(file.load_collapsed_diff_url, {
+      params: {
+        commit_id: getters.commitId,
+      },
+    })
+    .then(res => {
+      commit(types.ADD_COLLAPSED_DIFFS, {
+        file,
+        data: res.data,
+      });
     });
-  });
 
 export const expandAllFiles = ({ commit }) => {
   commit(types.EXPAND_ALL_FILES);
@@ -182,8 +218,9 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   });
 };
 
-export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
+export const saveDiffDiscussion = ({ state, dispatch }, { note, formData }) => {
   const postData = getNoteFormData({
+    commit: state.commit,
     note,
     ...formData,
   });
@@ -191,8 +228,8 @@ export const saveDiffDiscussion = ({ dispatch }, { note, formData }) => {
   return dispatch('saveNote', postData, { root: true })
     .then(result => dispatch('updateDiscussion', result.discussion, { root: true }))
     .then(discussion => dispatch('assignDiscussionsToDiff', [discussion]))
+    .then(() => dispatch('updateResolvableDiscussonsCounts', null, { root: true }))
     .then(() => dispatch('closeDiffFileCommentForm', formData.diffFile.file_hash))
-    .then(() => dispatch('startTaskList', null, { root: true }))
     .catch(() => createFlash(s__('MergeRequests|Saving the comment failed')));
 };
 

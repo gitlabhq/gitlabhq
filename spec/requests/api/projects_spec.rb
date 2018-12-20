@@ -52,7 +52,7 @@ describe API::Projects do
   describe 'GET /projects' do
     shared_examples_for 'projects response' do
       it 'returns an array of projects' do
-        get api('/projects', current_user), filter
+        get api('/projects', current_user), params: filter
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -61,7 +61,7 @@ describe API::Projects do
       end
 
       it 'returns the proper security headers' do
-        get api('/projects', current_user), filter
+        get api('/projects', current_user), params: filter
 
         expect(response).to include_security_headers
       end
@@ -192,7 +192,7 @@ describe API::Projects do
       end
 
       it "includes statistics if requested" do
-        get api('/projects', user), statistics: true
+        get api('/projects', user), params: { statistics: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -210,7 +210,7 @@ describe API::Projects do
       end
 
       it "does not include license if requested" do
-        get api('/projects', user), license: true
+        get api('/projects', user), params: { license: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -315,7 +315,7 @@ describe API::Projects do
 
       context 'and using the visibility filter' do
         it 'filters based on private visibility param' do
-          get api('/projects', user), { visibility: 'private' }
+          get api('/projects', user), params: { visibility: 'private' }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -326,7 +326,7 @@ describe API::Projects do
         it 'filters based on internal visibility param' do
           project2.update_attribute(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
 
-          get api('/projects', user), { visibility: 'internal' }
+          get api('/projects', user), params: { visibility: 'internal' }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -335,7 +335,7 @@ describe API::Projects do
         end
 
         it 'filters based on public visibility param' do
-          get api('/projects', user), { visibility: 'public' }
+          get api('/projects', user), params: { visibility: 'public' }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -346,7 +346,7 @@ describe API::Projects do
 
       context 'and using sorting' do
         it 'returns the correct order when sorted by id' do
-          get api('/projects', user), { order_by: 'id', sort: 'desc' }
+          get api('/projects', user), params: { order_by: 'id', sort: 'desc' }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -357,7 +357,7 @@ describe API::Projects do
 
       context 'and with owned=true' do
         it 'returns an array of projects the user owns' do
-          get api('/projects', user4), owned: true
+          get api('/projects', user4), params: { owned: true }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -376,7 +376,7 @@ describe API::Projects do
         end
 
         it 'returns the starred projects viewable by the user' do
-          get api('/projects', user3), starred: true
+          get api('/projects', user3), params: { starred: true }
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
@@ -398,7 +398,7 @@ describe API::Projects do
 
         context 'including owned filter' do
           it 'returns only projects that satisfy all query parameters' do
-            get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
+            get api('/projects', user), params: { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -417,7 +417,7 @@ describe API::Projects do
           end
 
           it 'returns only projects that satisfy all query parameters' do
-            get api('/projects', user), { visibility: 'public', membership: true, starred: true, search: 'gitlab' }
+            get api('/projects', user), params: { visibility: 'public', membership: true, starred: true, search: 'gitlab' }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -436,7 +436,7 @@ describe API::Projects do
         end
 
         it 'returns an array of groups the user has at least developer access' do
-          get api('/projects', user2), { min_access_level: 30 }
+          get api('/projects', user2), params: { min_access_level: 30 }
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
@@ -479,14 +479,14 @@ describe API::Projects do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post api('/projects', user2), name: 'foo' }
+        expect { post api('/projects', user2), params: { name: 'foo' } }
           .to change {Project.count}.by(0)
         expect(response).to have_gitlab_http_status(403)
       end
     end
 
     it 'creates new project without path but with name and returns 201' do
-      expect { post api('/projects', user), name: 'Foo Project' }
+      expect { post api('/projects', user), params: { name: 'Foo Project' } }
         .to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
@@ -497,7 +497,7 @@ describe API::Projects do
     end
 
     it 'creates new project without name but with path and returns 201' do
-      expect { post api('/projects', user), path: 'foo_project' }
+      expect { post api('/projects', user), params: { path: 'foo_project' } }
         .to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
@@ -508,7 +508,7 @@ describe API::Projects do
     end
 
     it 'creates new project with name and path and returns 201' do
-      expect { post api('/projects', user), path: 'path-project-Foo', name: 'Foo Project' }
+      expect { post api('/projects', user), params: { path: 'path-project-Foo', name: 'Foo Project' } }
         .to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
@@ -520,7 +520,7 @@ describe API::Projects do
 
     it 'creates last project before reaching project limit' do
       allow_any_instance_of(User).to receive(:projects_limit_left).and_return(1)
-      post api('/projects', user2), name: 'foo'
+      post api('/projects', user2), params: { name: 'foo' }
       expect(response).to have_gitlab_http_status(201)
     end
 
@@ -544,7 +544,7 @@ describe API::Projects do
         merge_method: 'ff'
       })
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(response).to have_gitlab_http_status(201)
 
@@ -564,7 +564,7 @@ describe API::Projects do
     it 'sets a project as public' do
       project = attributes_for(:project, visibility: 'public')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['visibility']).to eq('public')
     end
@@ -572,7 +572,7 @@ describe API::Projects do
     it 'sets a project as internal' do
       project = attributes_for(:project, visibility: 'internal')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['visibility']).to eq('internal')
     end
@@ -580,7 +580,7 @@ describe API::Projects do
     it 'sets a project as private' do
       project = attributes_for(:project, visibility: 'private')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['visibility']).to eq('private')
     end
@@ -588,7 +588,7 @@ describe API::Projects do
     it 'creates a new project initialized with a README.md' do
       project = attributes_for(:project, initialize_with_readme: 1, name: 'somewhere')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['readme_url']).to eql("#{Gitlab.config.gitlab.url}/#{json_response['namespace']['full_path']}/somewhere/blob/master/README.md")
     end
@@ -596,7 +596,7 @@ describe API::Projects do
     it 'sets tag list to a project' do
       project = attributes_for(:project, tag_list: %w[tagFirst tagSecond])
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
     end
@@ -604,7 +604,7 @@ describe API::Projects do
     it 'uploads avatar for project a project' do
       project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       project_id = json_response['id']
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
@@ -613,7 +613,7 @@ describe API::Projects do
     it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
@@ -621,7 +621,7 @@ describe API::Projects do
     it 'sets a project as allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: true)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
@@ -629,7 +629,7 @@ describe API::Projects do
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
@@ -637,7 +637,7 @@ describe API::Projects do
     it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: true)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
@@ -645,7 +645,7 @@ describe API::Projects do
     it 'sets a project as allowing merge even if discussions are unresolved' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: false)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -653,7 +653,7 @@ describe API::Projects do
     it 'sets a project as allowing merge if only_allow_merge_if_all_discussions_are_resolved is nil' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: nil)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -661,7 +661,7 @@ describe API::Projects do
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: true)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
@@ -669,7 +669,7 @@ describe API::Projects do
     it 'sets the merge method of a project to rebase merge' do
       project = attributes_for(:project, merge_method: 'rebase_merge')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(json_response['merge_method']).to eq('rebase_merge')
     end
@@ -677,7 +677,7 @@ describe API::Projects do
     it 'rejects invalid values for merge_method' do
       project = attributes_for(:project, merge_method: 'totally_not_valid_method')
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -685,7 +685,7 @@ describe API::Projects do
     it 'ignores import_url when it is nil' do
       project = attributes_for(:project, import_url: nil)
 
-      post api('/projects', user), project
+      post api('/projects', user), params: project
 
       expect(response).to have_gitlab_http_status(201)
     end
@@ -698,7 +698,7 @@ describe API::Projects do
       end
 
       it 'does not allow a non-admin to use a restricted visibility level' do
-        post api('/projects', user), project_param
+        post api('/projects', user), params: project_param
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']['visibility_level'].first).to(
@@ -707,7 +707,7 @@ describe API::Projects do
       end
 
       it 'allows an admin to override restricted visibility settings' do
-        post api('/projects', admin), project_param
+        post api('/projects', admin), params: project_param
 
         expect(json_response['visibility']).to eq('public')
       end
@@ -739,7 +739,7 @@ describe API::Projects do
       private_project1.add_developer(user2)
       private_project2.add_reporter(user2)
 
-      get api("/users/#{user4.id}/projects/", user2), { min_access_level: 30 }
+      get api("/users/#{user4.id}/projects/", user2), params: { min_access_level: 30 }
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -750,7 +750,7 @@ describe API::Projects do
 
   describe 'POST /projects/user/:id' do
     it 'creates new project without path but with name and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change { Project.count }.by(1)
+      expect { post api("/projects/user/#{user.id}", admin), params: { name: 'Foo Project' } }.to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
       project = Project.last
@@ -760,7 +760,7 @@ describe API::Projects do
     end
 
     it 'creates new project with name and path and returns 201' do
-      expect { post api("/projects/user/#{user.id}", admin), path: 'path-project-Foo', name: 'Foo Project' }
+      expect { post api("/projects/user/#{user.id}", admin), params: { path: 'path-project-Foo', name: 'Foo Project' } }
         .to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
@@ -787,7 +787,7 @@ describe API::Projects do
         jobs_enabled: true
       })
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(response).to have_gitlab_http_status(201)
 
@@ -801,7 +801,7 @@ describe API::Projects do
     it 'sets a project as public' do
       project = attributes_for(:project, visibility: 'public')
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['visibility']).to eq('public')
@@ -810,7 +810,7 @@ describe API::Projects do
     it 'sets a project as internal' do
       project = attributes_for(:project, visibility: 'internal')
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['visibility']).to eq('internal')
@@ -819,7 +819,7 @@ describe API::Projects do
     it 'sets a project as private' do
       project = attributes_for(:project, visibility: 'private')
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['visibility']).to eq('private')
     end
@@ -827,7 +827,7 @@ describe API::Projects do
     it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
@@ -835,27 +835,27 @@ describe API::Projects do
     it 'sets a project as allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: true)
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
     it 'sets a project as allowing merge only if pipeline succeeds' do
       project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: true)
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: false)
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_falsey
     end
@@ -863,7 +863,7 @@ describe API::Projects do
     it 'sets a project as allowing merge only if all discussions are resolved' do
       project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: true)
 
-      post api("/projects/user/#{user.id}", admin), project
+      post api("/projects/user/#{user.id}", admin), params: project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
@@ -875,7 +875,7 @@ describe API::Projects do
     end
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload("spec/fixtures/dk.png", "image/png")
+      post api("/projects/#{project.id}/uploads", user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['alt']).to eq("dk")
@@ -1020,7 +1020,7 @@ describe API::Projects do
       end
 
       it 'includes license fields when requested' do
-        get api("/projects/#{project.id}", user), license: true
+        get api("/projects/#{project.id}", user), params: { license: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['license']).to eq({
@@ -1040,7 +1040,7 @@ describe API::Projects do
       end
 
       it "includes statistics if requested" do
-        get api("/projects/#{project.id}", user), statistics: true
+        get api("/projects/#{project.id}", user), params: { statistics: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to include 'statistics'
@@ -1397,7 +1397,7 @@ describe API::Projects do
       expires_at = 10.days.from_now.to_date
 
       expect do
-        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at
+        post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER, expires_at: expires_at }
       end.to change { ProjectGroupLink.count }.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -1407,37 +1407,37 @@ describe API::Projects do
     end
 
     it "returns a 400 error when group id is not given" do
-      post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
+      post api("/projects/#{project.id}/share", user), params: { group_access: Gitlab::Access::DEVELOPER }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it "returns a 400 error when access level is not given" do
-      post api("/projects/#{project.id}/share", user), group_id: group.id
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it "returns a 400 error when sharing is disabled" do
       project.namespace.update(share_with_group_lock: true)
-      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns a 404 error when user cannot read group' do
       private_group = create(:group, :private)
 
-      post api("/projects/#{project.id}/share", user), group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER
+      post api("/projects/#{project.id}/share", user), params: { group_id: private_group.id, group_access: Gitlab::Access::DEVELOPER }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns a 404 error when group does not exist' do
-      post api("/projects/#{project.id}/share", user), group_id: 1234, group_access: Gitlab::Access::DEVELOPER
+      post api("/projects/#{project.id}/share", user), params: { group_id: 1234, group_access: Gitlab::Access::DEVELOPER }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns a 400 error when wrong params passed" do
-      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
+      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: 1234 }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq 'group_access does not have a valid value'
@@ -1498,7 +1498,7 @@ describe API::Projects do
     it 'returns 400 when nothing sent' do
       project_param = {}
 
-      put api("/projects/#{project.id}", user), project_param
+      put api("/projects/#{project.id}", user), params: project_param
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to match('at least one parameter must be provided')
@@ -1508,7 +1508,7 @@ describe API::Projects do
       it 'returns authentication error' do
         project_param = { name: 'bar' }
 
-        put api("/projects/#{project.id}"), project_param
+        put api("/projects/#{project.id}"), params: project_param
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -1518,7 +1518,7 @@ describe API::Projects do
       it 'updates name' do
         project_param = { name: 'bar' }
 
-        put api("/projects/#{project.id}", user), project_param
+        put api("/projects/#{project.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1530,7 +1530,7 @@ describe API::Projects do
       it 'updates visibility_level' do
         project_param = { visibility: 'public' }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1543,7 +1543,7 @@ describe API::Projects do
         project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1557,7 +1557,7 @@ describe API::Projects do
       it 'does not update name to existing name' do
         project_param = { name: project3.name }
 
-        put api("/projects/#{project.id}", user), project_param
+        put api("/projects/#{project.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']['name']).to eq(['has already been taken'])
@@ -1566,7 +1566,7 @@ describe API::Projects do
       it 'updates request_access_enabled' do
         project_param = { request_access_enabled: false }
 
-        put api("/projects/#{project.id}", user), project_param
+        put api("/projects/#{project.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['request_access_enabled']).to eq(false)
@@ -1575,7 +1575,7 @@ describe API::Projects do
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1587,7 +1587,7 @@ describe API::Projects do
       it 'updates jobs_enabled' do
         project_param = { jobs_enabled: true }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1599,7 +1599,7 @@ describe API::Projects do
       it 'updates merge_method' do
         project_param = { merge_method: 'ff' }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
 
@@ -1611,7 +1611,7 @@ describe API::Projects do
       it 'rejects to update merge_method when merge_method is invalid' do
         project_param = { merge_method: 'invalid' }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -1622,7 +1622,7 @@ describe API::Projects do
                                       'image/gif')
         }
 
-        put api("/projects/#{project3.id}", user), project_param
+        put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
@@ -1634,7 +1634,7 @@ describe API::Projects do
     context 'when authenticated as project maintainer' do
       it 'updates path' do
         project_param = { path: 'bar' }
-        put api("/projects/#{project3.id}", user4), project_param
+        put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1649,7 +1649,7 @@ describe API::Projects do
                           merge_method: 'ff',
                           description: 'new description' }
 
-        put api("/projects/#{project3.id}", user4), project_param
+        put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
@@ -1658,20 +1658,20 @@ describe API::Projects do
 
       it 'does not update path to existing path' do
         project_param = { path: project.path }
-        put api("/projects/#{project3.id}", user4), project_param
+        put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
       it 'does not update name' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project3.id}", user4), project_param
+        put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not update visibility_level' do
         project_param = { visibility: 'public' }
-        put api("/projects/#{project3.id}", user4), project_param
+        put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(403)
       end
     end
@@ -1685,7 +1685,7 @@ describe API::Projects do
                           merge_requests_enabled: true,
                           description: 'new description',
                           request_access_enabled: true }
-        put api("/projects/#{project.id}", user3), project_param
+        put api("/projects/#{project.id}", user3), params: project_param
         expect(response).to have_gitlab_http_status(403)
       end
     end
@@ -1906,7 +1906,7 @@ describe API::Projects do
     let(:group) { create(:group) }
     let(:group2) do
       group = create(:group, name: 'group2_name')
-      group.add_owner(user2)
+      group.add_maintainer(user2)
       group
     end
 
@@ -1971,41 +1971,41 @@ describe API::Projects do
       end
 
       it 'forks with explicit own user namespace id' do
-        post api("/projects/#{project.id}/fork", user2), namespace: user2.namespace.id
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: user2.namespace.id }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'forks with explicit own user name as namespace' do
-        post api("/projects/#{project.id}/fork", user2), namespace: user2.username
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: user2.username }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'forks to another user when admin' do
-        post api("/projects/#{project.id}/fork", admin), namespace: user2.username
+        post api("/projects/#{project.id}/fork", admin), params: { namespace: user2.username }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['owner']['id']).to eq(user2.id)
       end
 
       it 'fails if trying to fork to another user when not admin' do
-        post api("/projects/#{project.id}/fork", user2), namespace: admin.namespace.id
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: admin.namespace.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'fails if trying to fork to non-existent namespace' do
-        post api("/projects/#{project.id}/fork", user2), namespace: 42424242
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: 42424242 }
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Target Namespace Not Found')
       end
 
       it 'forks to owned group' do
-        post api("/projects/#{project.id}/fork", user2), namespace: group2.name
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: group2.name }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group2.name)
@@ -2013,7 +2013,7 @@ describe API::Projects do
 
       it 'forks to owned subgroup' do
         full_path = "#{group2.path}/#{group3.path}"
-        post api("/projects/#{project.id}/fork", user2), namespace: full_path
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: full_path }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group3.name)
@@ -2021,13 +2021,13 @@ describe API::Projects do
       end
 
       it 'fails to fork to not owned group' do
-        post api("/projects/#{project.id}/fork", user2), namespace: group.name
+        post api("/projects/#{project.id}/fork", user2), params: { namespace: group.name }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'forks to not owned group when admin' do
-        post api("/projects/#{project.id}/fork", admin), namespace: group.name
+        post api("/projects/#{project.id}/fork", admin), params: { namespace: group.name }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group.name)
@@ -2100,19 +2100,19 @@ describe API::Projects do
       it 'transfers the project to the new namespace' do
         group.add_owner(user)
 
-        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+        put api("/projects/#{project.id}/transfer", user), params: { namespace: group.id }
 
         expect(response).to have_gitlab_http_status(200)
       end
 
       it 'fails when transferring to a non owned namespace' do
-        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+        put api("/projects/#{project.id}/transfer", user), params: { namespace: group.id }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'fails when transferring to an unknown namespace' do
-        put api("/projects/#{project.id}/transfer", user), namespace: 'unknown'
+        put api("/projects/#{project.id}/transfer", user), params: { namespace: 'unknown' }
 
         expect(response).to have_gitlab_http_status(404)
       end

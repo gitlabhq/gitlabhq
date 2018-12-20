@@ -1,0 +1,5 @@
+---
+title: Remove limit of 100 when searching repository code.
+merge_request: 8671
+author:
+type: fixed

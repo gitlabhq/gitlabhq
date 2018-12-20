@@ -8,7 +8,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRailsVersion: 4.2
+  TargetRailsVersion: 5.0
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
@@ -173,4 +173,10 @@ GitlabSecurity/PublicSend:
     - 'spec/**/*'
     - 'ee/db/**/*'
     - 'ee/lib/**/*.rake'
+    - 'ee/spec/**/*'
+
+Cop/InjectEnterpriseEditionModule:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
     - 'ee/spec/**/*'

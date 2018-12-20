@@ -8,12 +8,12 @@ Get a list of jobs in a project.
 GET /projects/:id/jobs
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `manual`; showing all jobs if none provided |
+| Attribute | Type                           | Required | Description                                                                                                                                                                                                    |
+|-----------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string                 | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
+| `scope`   | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running'
 ```
 
@@ -140,13 +140,13 @@ Get a list of jobs for a pipeline.
 GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
-| Attribute     | Type                           | Required | Description          |
-|---------------|--------------------------------|----------|----------------------|
-| `id`          | integer/string                        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `pipeline_id` | integer                        | yes      | The ID of a pipeline |
-| `scope`       | string **or** array of strings | no       | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `manual`; showing all jobs if none provided |
+| Attribute     | Type                           | Required | Description                                                                                                                                                                                                    |
+|---------------|--------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | integer/string                 | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user.                                                                                               |
+| `pipeline_id` | integer                        | yes      | The ID of a pipeline.                                                                                                                                                                                          |
+| `scope`       | string **or** array of strings | no       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, or `manual`. All jobs are returned if `scope` is not provided. |
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running'
 ```
 
@@ -273,12 +273,12 @@ Get a single job of a project
 GET /projects/:id/jobs/:job_id
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id` | integer | yes      | The ID of a job   |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8"
 ```
 
@@ -348,18 +348,18 @@ Get job artifacts of a project.
 GET /projects/:id/jobs/:job_id/artifacts
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id` | integer | yes      | The ID of a job   |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
 Example requests:
 
-```
+```sh
 curl --location --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
 ```
 
-Response:
+Possible response status codes:
 
 | Status    | Description                     |
 |-----------|---------------------------------|
@@ -383,19 +383,19 @@ GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 
 Parameters
 
-| Attribute   | Type    | Required | Description               |
-|-------------|---------|----------|-------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
-| `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
-| `job`       | string  | yes      | The name of the job       |
+| Attribute  | Type           | Required | Description                                                                                                      |
+|------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `ref_name` | string         | yes      | Branch or tag name in repository. HEAD or SHA references are not supported.                                      |
+| `job`      | string         | yes      | The name of the job.                                                                                             |
 
 Example requests:
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
 ```
 
-Example response:
+Possible response status codes:
 
 | Status    | Description                     |
 |-----------|---------------------------------|
@@ -404,13 +404,13 @@ Example response:
 
 [ce-5347]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5347
 
-## Download a single artifact file
+## Download a single artifact file by job ID
 
 > Introduced in GitLab 10.0
 
-Download a single artifact file from within the job's artifacts archive.
-
-Only a single file is going to be extracted from the archive and streamed to a client.
+Download a single artifact file from a job with a specified ID from within
+the job's artifacts archive. The file is extracted from the archive and
+streamed to the client.
 
 ```
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
@@ -418,19 +418,54 @@ GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 
 Parameters
 
-| Attribute       | Type    | Required | Description               |
-|-----------------|---------|----------|-------------------------- |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
-| `job_id  `      | integer | yes      | The unique job identifier |
-| `artifact_path` | string  | yes      | Path to a file inside the artifacts archive |
+| Attribute       | Type           | Required | Description                                                                                                      |
+|-----------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id  `      | integer        | yes      | The unique job identifier.                                                                                       |
+| `artifact_path` | string         | yes      | Path to a file inside the artifacts archive.                                                                     |
 
 Example request:
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
 ```
 
-Example response:
+Possible response status codes:
+
+| Status    | Description                          |
+|-----------|--------------------------------------|
+| 200       | Sends a single artifact file         |
+| 400       | Invalid path provided                |
+| 404       | Build not found or no file/artifacts |
+
+## Download a single artifact file from specific tag or branch
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23538) in GitLab 11.5.
+
+Download a single artifact file from a specific tag or branch from within the
+job's artifacts archive. The file is extracted from the archive and streamed to
+the client.
+
+```
+GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
+```
+
+Parameters:
+
+| Attribute       | Type           | Required | Description                                                                                                      |
+|-----------------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `ref_name`      | string         | yes      | Branch or tag name in repository. HEAD or SHA references are not supported.                                      |
+| `artifact_path` | string         | yes      | Path to a file inside the artifacts archive.                                                                     |
+| `job`           | string         | yes      | The name of the job.                                                                                             |
+
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/raw/some/release/file.pdf?job=pdf"
+```
+
+Possible response status codes:
 
 | Status    | Description                          |
 |-----------|--------------------------------------|
@@ -446,16 +481,16 @@ Get a trace of a specific job of a project
 GET /projects/:id/jobs/:job_id/trace
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| id         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| job_id     | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| id        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| job_id    | integer        | yes      | The ID of a job.                                                                                                 |
 
-```
+```sh
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
 ```
 
-Response:
+Possible response status codes:
 
 | Status    | Description                       |
 |-----------|-----------------------------------|
@@ -470,12 +505,12 @@ Cancel a single job of a project
 POST /projects/:id/jobs/:job_id/cancel
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id`   | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
-```
+```sh
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/cancel"
 ```
 
@@ -518,12 +553,12 @@ Retry a single job of a project
 POST /projects/:id/jobs/:job_id/retry
 ```
 
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id`   | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
-```
+```sh
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/retry"
 ```
 
@@ -568,14 +603,14 @@ POST /projects/:id/jobs/:job_id/erase
 
 Parameters
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id`    | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
 Example of request
 
-```
+```sh
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/erase"
 ```
 
@@ -621,14 +656,14 @@ POST /projects/:id/jobs/:job_id/artifacts/keep
 
 Parameters
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id`    | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
 Example request:
 
-```
+```sh
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts/keep"
 ```
 
@@ -672,12 +707,12 @@ Triggers a manual action to start a job.
 POST /projects/:id/jobs/:job_id/play
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `job_id`  | integer | yes      | The ID of a job     |
+| Attribute | Type           | Required | Description                                                                                                      |
+|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `job_id`  | integer        | yes      | The ID of a job.                                                                                                 |
 
-```
+```sh
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/play"
 ```
 

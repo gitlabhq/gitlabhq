@@ -7,8 +7,8 @@ module API
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-    COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
+    NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+    COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
 
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
@@ -20,7 +20,8 @@ module API
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
-                    Gitlab::GrapeLogging::Loggers::PerfLogger.new
+                    Gitlab::GrapeLogging::Loggers::PerfLogger.new,
+                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new
                   ]
 
     allow_access_with_scope :api
@@ -84,7 +85,6 @@ module API
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
-    helpers ::SentryHelper
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
@@ -149,6 +149,7 @@ module API
     mount ::API::Snippets
     mount ::API::Submodules
     mount ::API::Subscriptions
+    mount ::API::Suggestions
     mount ::API::SystemHooks
     mount ::API::Tags
     mount ::API::Templates

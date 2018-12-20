@@ -146,7 +146,8 @@ A few notes:
 The current permissions on the Cycle Analytics dashboard are:
 
 - Public projects - anyone can access
-- Private/internal projects - any member (guest level and above) can access
+- Internal projects - any authenticated user can access
+- Private projects - any member Guest and above can access
 
 You can [read more about permissions][permissions] in general.
 

@@ -21,18 +21,6 @@ describe 'Projects > Show > Collaboration links' do
       end
     end
 
-    # The project header
-    page.within('.project-home-panel') do
-      aggregate_failures 'dropdown links in the project home panel' do
-        expect(page).to have_link('New issue')
-        expect(page).to have_link('New merge request')
-        expect(page).to have_link('New snippet')
-        expect(page).to have_link('New file')
-        expect(page).to have_link('New branch')
-        expect(page).to have_link('New tag')
-      end
-    end
-
     # The dropdown above the tree
     page.within('.repo-breadcrumb') do
       aggregate_failures 'dropdown links above the repo tree' do
@@ -58,17 +46,6 @@ describe 'Projects > Show > Collaboration links' do
         expect(page).not_to have_link('New issue')
         expect(page).not_to have_link('New merge request')
         expect(page).not_to have_link('New snippet', href: new_project_snippet_path(project))
-      end
-    end
-
-    page.within('.project-home-panel') do
-      aggregate_failures 'dropdown links' do
-        expect(page).not_to have_link('New issue')
-        expect(page).not_to have_link('New merge request')
-        expect(page).not_to have_link('New snippet')
-        expect(page).not_to have_link('New file')
-        expect(page).not_to have_link('New branch')
-        expect(page).not_to have_link('New tag')
       end
     end
 

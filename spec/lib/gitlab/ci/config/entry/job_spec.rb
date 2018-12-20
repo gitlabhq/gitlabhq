@@ -258,7 +258,9 @@ describe Gitlab::Ci::Config::Entry::Job do
                    commands: "ls\npwd\nrspec",
                    stage: 'test',
                    ignore: false,
-                   after_script: %w[cleanup])
+                   after_script: %w[cleanup],
+                   only: { refs: %w[branches tags] },
+                   except: {})
         end
       end
     end

@@ -56,9 +56,12 @@ export default {
       return `${noteData.author.name}: ${note}`;
     },
     toggleDiscussions() {
+      const forceExpanded = this.discussions.some(discussion => !discussion.expanded);
+
       this.discussions.forEach(discussion => {
         this.toggleDiscussion({
           discussionId: discussion.id,
+          forceExpanded,
         });
       });
     },

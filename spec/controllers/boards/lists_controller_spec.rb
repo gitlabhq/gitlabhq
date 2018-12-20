@@ -46,9 +46,11 @@ describe Boards::ListsController do
     def read_board_list(user:, board:)
       sign_in(user)
 
-      get :index, namespace_id: project.namespace.to_param,
-                  project_id: project,
-                  board_id: board.to_param,
+      get :index, params: {
+                    namespace_id: project.namespace.to_param,
+                    project_id: project,
+                    board_id: board.to_param
+                  },
                   format: :json
     end
   end
@@ -103,10 +105,12 @@ describe Boards::ListsController do
     def create_board_list(user:, board:, label_id:)
       sign_in(user)
 
-      post :create, namespace_id: project.namespace.to_param,
-                    project_id: project,
-                    board_id: board.to_param,
-                    list: { label_id: label_id },
+      post :create, params: {
+                      namespace_id: project.namespace.to_param,
+                      project_id: project,
+                      board_id: board.to_param,
+                      list: { label_id: label_id }
+                    },
                     format: :json
     end
   end
@@ -163,11 +167,7 @@ describe Boards::ListsController do
                  list: { position: position },
                  format: :json }
 
-      if Gitlab.rails5?
-        patch :update, params: params, as: :json
-      else
-        patch :update, params
-      end
+      patch :update, params: params, as: :json
     end
   end
 
@@ -205,10 +205,12 @@ describe Boards::ListsController do
     def remove_board_list(user:, board:, list:)
       sign_in(user)
 
-      delete :destroy, namespace_id: project.namespace.to_param,
-                       project_id: project,
-                       board_id: board.to_param,
-                       id: list.to_param,
+      delete :destroy, params: {
+                         namespace_id: project.namespace.to_param,
+                         project_id: project,
+                         board_id: board.to_param,
+                         id: list.to_param
+                       },
                        format: :json
     end
   end
@@ -249,9 +251,11 @@ describe Boards::ListsController do
     def generate_default_lists(user:, board:)
       sign_in(user)
 
-      post :generate, namespace_id: project.namespace.to_param,
-                      project_id: project,
-                      board_id: board.to_param,
+      post :generate, params: {
+                        namespace_id: project.namespace.to_param,
+                        project_id: project,
+                        board_id: board.to_param
+                      },
                       format: :json
     end
   end

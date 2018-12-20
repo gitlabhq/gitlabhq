@@ -31,7 +31,7 @@ describe API::Submodules do
   describe "PUT /projects/:id/repository/submodule/:submodule" do
     context 'when unauthenticated' do
       it 'returns 401' do
-        put api(route(submodule)), params
+        put api(route(submodule)), params: params
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -39,7 +39,7 @@ describe API::Submodules do
 
     context 'when authenticated', 'as a guest' do
       it 'returns 403' do
-        put api(route(submodule), guest), params
+        put api(route(submodule), guest), params: params
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -53,13 +53,13 @@ describe API::Submodules do
       end
 
       it 'returns 400 if branch is missing' do
-        put api(route(submodule), user), params.except(:branch)
+        put api(route(submodule), user), params: params.except(:branch)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 if commit_sha is missing' do
-        put api(route(submodule), user), params.except(:commit_sha)
+        put api(route(submodule), user), params: params.except(:commit_sha)
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -67,7 +67,7 @@ describe API::Submodules do
       it 'returns the commmit' do
         head_commit = project.repository.commit.id
 
-        put api(route(submodule), user), params
+        put api(route(submodule), user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['message']).to eq commit_message
@@ -87,7 +87,7 @@ describe API::Submodules do
                   .with(any_args, hash_including(submodule: submodule))
                   .and_call_original
 
-          put api(route(encoded_submodule), user), params
+          put api(route(encoded_submodule), user), params: params
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['id']).to eq project.repository.commit(branch).id

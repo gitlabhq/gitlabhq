@@ -1,4 +1,5 @@
 <script>
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { mapGetters, mapActions } from 'vuex';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -48,13 +49,34 @@ export default {
       required: false,
       default: '',
     },
+    resolveDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    note: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       updatedNoteBody: this.noteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
-      isResolving: false,
+      isResolving: this.resolveDiscussion,
+      isUnresolving: !this.resolveDiscussion,
       resolveAsThread: true,
     };
   },
@@ -73,7 +95,8 @@ export default {
       return '#';
     },
     markdownPreviewPath() {
-      return this.getNoteableDataByProp('preview_note_path');
+      const notable = this.getNoteableDataByProp('preview_note_path');
+      return mergeUrlParams({ preview_suggestions: true }, notable);
     },
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
@@ -86,6 +109,18 @@ export default {
     },
     isDisabled() {
       return !this.updatedNoteBody.length || this.isSubmitting;
+    },
+    discussionNote() {
+      const discussionNote = this.discussion.id
+        ? this.getDiscussionLastNote(this.discussion)
+        : this.note;
+      return discussionNote || {};
+    },
+    canSuggest() {
+      return (
+        this.getNoteableData.can_receive_suggestion &&
+        (this.line && this.line.can_receive_suggestion)
+      );
     },
   },
   watch: {
@@ -149,7 +184,7 @@ export default {
   <div ref="editNoteForm" class="note-edit-form current-note-edit-form js-discussion-note-form">
     <div v-if="conflictWhileEditing" class="js-conflict-edit-warning alert alert-danger">
       This comment has changed since you started editing, please review the
-      <a :href="noteHash" target="_blank" rel="noopener noreferrer"> updated comment </a> to ensure
+      <a :href="noteHash" target="_blank" rel="noopener noreferrer">updated comment</a> to ensure
       information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
@@ -165,7 +200,11 @@ export default {
         :markdown-docs-path="markdownDocsPath"
         :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
+        :line="line"
+        :note="discussionNote"
+        :can-suggest="canSuggest"
         :add-spacing-classes="false"
+        :help-page-path="helpPagePath"
       >
         <textarea
           id="note_note"
@@ -174,22 +213,20 @@ export default {
           v-model="updatedNoteBody"
           :data-supports-quick-actions="!isEditing"
           name="note[note]"
-          class="note-textarea js-gfm-input js-note-text
-js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
+          class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleUpdate();"
           @keydown.ctrl.enter="handleUpdate();"
           @keydown.up="editMyLastNote();"
           @keydown.esc="cancelHandler(true);"
-        >
-        </textarea>
+        ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
           :disabled="isDisabled"
           type="button"
-          class="js-vue-issue-save btn btn-success js-comment-button "
+          class="js-vue-issue-save btn btn-success js-comment-button"
           @click="handleUpdate();"
         >
           {{ saveButtonTitle }}

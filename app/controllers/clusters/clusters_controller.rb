@@ -18,8 +18,20 @@ class Clusters::ClustersController < Clusters::BaseController
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    clusters = ClustersFinder.new(clusterable, current_user, :all).execute
-    @clusters = clusters.page(params[:page]).per(20)
+    finder = ClusterAncestorsFinder.new(clusterable.subject, current_user)
+    clusters = finder.execute
+
+    # Note: We are paginating through an array here but this should OK as:
+    #
+    # In CE, we can have a maximum group nesting depth of 21, so including
+    # project cluster, we can have max 22 clusters for a group hierachy.
+    # In EE (Premium) we can have any number, as multiple clusters are
+    # supported, but the number of clusters are fairly low currently.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/55260 also.
+    @clusters = Kaminari.paginate_array(clusters).page(params[:page]).per(20)
+
+    @has_ancestor_clusters = finder.has_ancestor_clusters?
   end
 
   def new
@@ -181,15 +193,15 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def gcp_cluster
-    @gcp_cluster = ::Clusters::Cluster.new.tap do |cluster|
-      cluster.build_provider_gcp
-    end.present(current_user: current_user)
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_provider_gcp
+    @gcp_cluster = cluster.present(current_user: current_user)
   end
 
   def user_cluster
-    @user_cluster = ::Clusters::Cluster.new.tap do |cluster|
-      cluster.build_platform_kubernetes
-    end.present(current_user: current_user)
+    cluster = Clusters::BuildService.new(clusterable.subject).execute
+    cluster.build_platform_kubernetes
+    @user_cluster = cluster.present(current_user: current_user)
   end
 
   def validate_gcp_token

@@ -3,8 +3,6 @@
 module Gitlab
   module BitbucketServerImport
     class Importer
-      include Gitlab::ShellAdapter
-
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
       attr_accessor :logger
@@ -56,7 +54,7 @@ module Gitlab
       def handle_errors
         return unless errors.any?
 
-        project.update_column(:import_error, {
+        project.import_state.update_column(:last_error, {
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)

@@ -142,8 +142,14 @@
 
   &.btn-sm {
     padding: 4px 10px;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: $gl-btn-small-font-size;
+    line-height: $gl-btn-small-line-height;
+  }
+
+  &.btn-xs {
+    padding: 2px $gl-btn-padding;
+    font-size: $gl-btn-xs-font-size;
+    line-height: $gl-btn-xs-line-height;
   }
 
   &.btn-success,

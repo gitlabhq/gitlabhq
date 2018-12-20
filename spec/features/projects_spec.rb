@@ -277,7 +277,7 @@ describe 'Project' do
       end
     end
 
-    context 'for subgroups', :js do
+    context 'for subgroups', :js, :nested_groups do
       let(:group) { create(:group) }
       let(:subgroup) { create(:group, parent: group) }
       let(:project) { create(:project, :repository, group: subgroup) }

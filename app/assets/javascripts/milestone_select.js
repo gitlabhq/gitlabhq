@@ -155,7 +155,7 @@ export default class MilestoneSelect {
           const { $el, e } = clickEvent;
           let selected = clickEvent.selectedObj;
 
-          let data, boardsStore;
+          let data, modalStoreFilter;
           if (!selected) return;
 
           if (options.handleClick) {
@@ -179,11 +179,11 @@ export default class MilestoneSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsStore = ModalStore.store.filter;
+            modalStoreFilter = ModalStore.store.filter;
           }
 
-          if (boardsStore) {
-            boardsStore[$dropdown.data('fieldName')] = selected.name;
+          if (modalStoreFilter) {
+            modalStoreFilter[$dropdown.data('fieldName')] = selected.name;
             e.preventDefault();
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));

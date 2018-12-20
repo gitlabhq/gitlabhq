@@ -20,8 +20,12 @@ export default () => ({
     userData: {},
     noteableData: {
       current_user: {},
+      preview_note_path: 'path/to/preview',
     },
     commentsDisabled: false,
+    resolvableDiscussionsCount: 0,
+    unresolvedDiscussionsCount: 0,
+    hasUnresolvedDiscussions: false,
   },
   actions,
   getters,

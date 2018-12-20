@@ -17,7 +17,7 @@ describe Groups::ClustersController do
 
   describe 'GET index' do
     def go(params = {})
-      get :index, params.reverse_merge(group_id: group)
+      get :index, params: params.reverse_merge(group_id: group)
     end
 
     context 'when feature flag is not enabled' do
@@ -104,7 +104,7 @@ describe Groups::ClustersController do
 
   describe 'GET new' do
     def go
-      get :new, group_id: group
+      get :new, params: { group_id: group }
     end
 
     describe 'functionality for new cluster' do
@@ -198,7 +198,7 @@ describe Groups::ClustersController do
     end
 
     def go
-      post :create_gcp, params.merge(group_id: group)
+      post :create_gcp, params: params.merge(group_id: group)
     end
 
     describe 'functionality' do
@@ -287,7 +287,7 @@ describe Groups::ClustersController do
     end
 
     def go
-      post :create_user, params.merge(group_id: group)
+      post :create_user, params: params.merge(group_id: group)
     end
 
     describe 'functionality' do
@@ -353,8 +353,10 @@ describe Groups::ClustersController do
 
     def go
       get :cluster_status,
-        group_id: group.to_param,
-        id: cluster,
+        params: {
+          group_id: group.to_param,
+          id: cluster
+        },
         format: :json
     end
 
@@ -390,8 +392,10 @@ describe Groups::ClustersController do
 
     def go
       get :show,
-        group_id: group,
-        id: cluster
+        params: {
+          group_id: group,
+          id: cluster
+        }
     end
 
     describe 'functionality' do
@@ -417,7 +421,7 @@ describe Groups::ClustersController do
 
   describe 'PUT update' do
     def go(format: :html)
-      put :update, params.merge(
+      put :update, params: params.merge(
         group_id: group.to_param,
         id: cluster,
         format: format
@@ -505,8 +509,10 @@ describe Groups::ClustersController do
 
     def go
       delete :destroy,
-        group_id: group,
-        id: cluster
+        params: {
+          group_id: group,
+          id: cluster
+        }
     end
 
     describe 'functionality' do

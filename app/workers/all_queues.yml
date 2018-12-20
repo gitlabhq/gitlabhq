@@ -10,7 +10,6 @@
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
-- cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
@@ -29,6 +28,7 @@
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:cluster_platform_configure
+- gcp_cluster:cluster_project_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -85,6 +85,11 @@
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
 
+- object_pool:object_pool_create
+- object_pool:object_pool_schedule_join
+- object_pool:object_pool_join
+- object_pool:object_pool_destroy
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
@@ -120,6 +125,7 @@
 - propagate_service_template
 - reactive_caching
 - rebase
+- remote_mirror_notification
 - repository_fork
 - repository_import
 - repository_remove_remote
@@ -132,3 +138,5 @@
 - create_note_diff_file
 - delete_diff_files
 - detect_repository_languages
+- repository_cleanup
+- delete_stored_files

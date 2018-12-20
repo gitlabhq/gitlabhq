@@ -9,7 +9,7 @@ describe Gitlab::Auth::UserAuthFinders do
       'rack.input' => ''
     }
   end
-  let(:request) { Rack::Request.new(env)}
+  let(:request) { Rack::Request.new(env) }
 
   def set_param(key, value)
     request.update_param(key, value)
@@ -49,6 +49,7 @@ describe Gitlab::Auth::UserAuthFinders do
   describe '#find_user_from_feed_token' do
     context 'when the request format is atom' do
       before do
+        env['SCRIPT_NAME'] = 'url.atom'
         env['HTTP_ACCEPT'] = 'application/atom+xml'
       end
 
@@ -56,17 +57,17 @@ describe Gitlab::Auth::UserAuthFinders do
         it 'returns user if valid feed_token' do
           set_param(:feed_token, user.feed_token)
 
-          expect(find_user_from_feed_token).to eq user
+          expect(find_user_from_feed_token(:rss)).to eq user
         end
 
         it 'returns nil if feed_token is blank' do
-          expect(find_user_from_feed_token).to be_nil
+          expect(find_user_from_feed_token(:rss)).to be_nil
         end
 
         it 'returns exception if invalid feed_token' do
           set_param(:feed_token, 'invalid_token')
 
-          expect { find_user_from_feed_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
         end
       end
 
@@ -74,34 +75,38 @@ describe Gitlab::Auth::UserAuthFinders do
         it 'returns user if valid rssd_token' do
           set_param(:rss_token, user.feed_token)
 
-          expect(find_user_from_feed_token).to eq user
+          expect(find_user_from_feed_token(:rss)).to eq user
         end
 
         it 'returns nil if rss_token is blank' do
-          expect(find_user_from_feed_token).to be_nil
+          expect(find_user_from_feed_token(:rss)).to be_nil
         end
 
         it 'returns exception if invalid rss_token' do
           set_param(:rss_token, 'invalid_token')
 
-          expect { find_user_from_feed_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
         end
       end
     end
 
     context 'when the request format is not atom' do
       it 'returns nil' do
+        env['SCRIPT_NAME'] = 'json'
+
         set_param(:feed_token, user.feed_token)
 
-        expect(find_user_from_feed_token).to be_nil
+        expect(find_user_from_feed_token(:rss)).to be_nil
       end
     end
 
     context 'when the request format is empty' do
       it 'the method call does not modify the original value' do
+        env['SCRIPT_NAME'] = 'url.atom'
+
         env.delete('action_dispatch.request.formats')
 
-        find_user_from_feed_token
+        find_user_from_feed_token(:rss)
 
         expect(env['action_dispatch.request.formats']).to be_nil
       end
@@ -111,8 +116,12 @@ describe Gitlab::Auth::UserAuthFinders do
   describe '#find_user_from_access_token' do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 
+    before do
+      env['SCRIPT_NAME'] = 'url.atom'
+    end
+
     it 'returns nil if no access_token present' do
-      expect(find_personal_access_token).to be_nil
+      expect(find_user_from_access_token).to be_nil
     end
 
     context 'when validate_access_token! returns valid' do
@@ -131,8 +140,58 @@ describe Gitlab::Auth::UserAuthFinders do
     end
   end
 
+  describe '#find_user_from_web_access_token' do
+    let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    before do
+      env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+    end
+
+    it 'returns exception if token has no user' do
+      allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
+
+      expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+    end
+
+    context 'no feed or API requests' do
+      it 'returns nil if the request is not RSS' do
+        expect(find_user_from_web_access_token(:rss)).to be_nil
+      end
+
+      it 'returns nil if the request is not ICS' do
+        expect(find_user_from_web_access_token(:ics)).to be_nil
+      end
+
+      it 'returns nil if the request is not API' do
+        expect(find_user_from_web_access_token(:api)).to be_nil
+      end
+    end
+
+    it 'returns the user for RSS requests' do
+      env['SCRIPT_NAME'] = 'url.atom'
+
+      expect(find_user_from_web_access_token(:rss)).to eq(user)
+    end
+
+    it 'returns the user for ICS requests' do
+      env['SCRIPT_NAME'] = 'url.ics'
+
+      expect(find_user_from_web_access_token(:ics)).to eq(user)
+    end
+
+    it 'returns the user for API requests' do
+      env['SCRIPT_NAME'] = '/api/endpoint'
+
+      expect(find_user_from_web_access_token(:api)).to eq(user)
+    end
+  end
+
   describe '#find_personal_access_token' do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    before do
+      env['SCRIPT_NAME'] = 'url.atom'
+    end
 
     context 'passed as header' do
       it 'returns token if valid personal_access_token' do
@@ -218,6 +277,21 @@ describe Gitlab::Auth::UserAuthFinders do
 
       it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope' do
         expect { validate_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+      end
+    end
+
+    context 'with impersonation token' do
+      let(:personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
+
+      context 'when impersonation is disabled' do
+        before do
+          stub_config_setting(impersonation_enabled: false)
+          allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+        end
+
+        it 'returns Gitlab::Auth::ImpersonationDisabled' do
+          expect { validate_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
+        end
       end
     end
   end

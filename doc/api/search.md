@@ -722,6 +722,23 @@ Example response:
 
 ### Scope: wiki_blobs
 
+Filters are available for this scope:
+
+- filename
+- path
+- extension
+
+To use a filter simply include it in your query like: `a query filename:some_name*`.
+You may use wildcards (`*`) to use glob matching.
+
+Wiki blobs searches are performed on both filenames and contents. Search
+results:
+
+- Found in filenames are displayed before results found in contents.
+- May contain multiple matches for the same blob because the search string
+  might be found in both the filename and content, or might appear multiple
+  times in the content.
+
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=wiki_blobs&search=bye
 ```
@@ -777,13 +794,20 @@ Example response:
 ### Scope: blobs
 
 Filters are available for this scope:
+
 - filename
 - path
 - extension
 
-to use a filter simply include it in your query like so: `a query filename:some_name*`.
-
+To use a filter simply include it in your query like: `a query filename:some_name*`.
 You may use wildcards (`*`) to use glob matching.
+
+Blobs searches are performed on both filenames and contents. Search results:
+
+- Found in filenames are displayed before results found in contents.
+- May contain multiple matches for the same blob because the search string
+  might be found in both the filename and content, or might appear multiple
+  times in the content.
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation

@@ -7,7 +7,7 @@ module QA
 
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       before(:all) do
@@ -21,14 +21,14 @@ module QA
 
         # Add a file via the regular Files view because the Web IDE isn't
         # available unless there is a file present
-        Page::Project::Show.act { create_new_file! }
+        Page::Project::Show.perform(&:create_first_new_file!)
         Page::File::Form.perform do |page|
           page.add_name('dummy')
           page.add_content('Enable the Web IDE')
           page.commit_changes
         end
 
-        Page::Main::Menu.act { sign_out }
+        Page::Main::Menu.perform(&:sign_out)
       end
 
       templates = [
@@ -65,7 +65,7 @@ module QA
           login
           @project.visit!
 
-          Page::Project::Show.act { open_web_ide! }
+          Page::Project::Show.perform(&:open_web_ide!)
           Page::Project::WebIDE::Edit.perform do |page|
             page.create_new_file_from_template template[:file_name], template[:name]
 
@@ -75,9 +75,7 @@ module QA
           expect(page).to have_button('Undo')
           expect(page).to have_content(content[0..100])
 
-          Page::Project::WebIDE::Edit.perform do |page|
-            page.commit_changes
-          end
+          Page::Project::WebIDE::Edit.perform(&:commit_changes)
 
           expect(page).to have_content(template[:file_name])
           expect(page).to have_content(content[0..100])

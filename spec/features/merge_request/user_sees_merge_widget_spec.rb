@@ -60,7 +60,7 @@ describe 'Merge request > User sees merge widget', :js do
     it 'shows environments link' do
       wait_for_requests
 
-      page.within('.js-pre-merge-deploy') do
+      page.within('.js-pre-deployment') do
         expect(page).to have_content("Deployed to #{environment.name}")
         expect(find('.js-deploy-url')[:href]).to include(environment.formatted_external_url)
       end

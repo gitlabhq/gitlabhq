@@ -346,44 +346,85 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
+      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
 
-      let(:job) do
-        create :ci_build, pipeline: pipeline, trigger_request: trigger_request
-      end
+      context 'when user is a maintainer' do
+        shared_examples 'no reveal button variables behavior' do
+          it 'renders a hidden value with no reveal values button', :js do
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
-      shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', :js do
-          expect(page).to have_content('Token')
-          expect(page).to have_css('.js-reveal-variables')
-          expect(page).not_to have_css('.js-build-variable')
-          expect(page).not_to have_css('.js-build-value')
+            expect(page).not_to have_css('.js-reveal-variables')
 
-          click_button 'Reveal Variables'
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: '••••••')
+          end
+        end
 
-          expect(page).not_to have_css('.js-reveal-variables')
-          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        context 'when variables are stored in trigger_request' do
+          before do
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'no reveal button variables behavior'
+        end
+
+        context 'when variables are stored in pipeline_variables' do
+          before do
+            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'no reveal button variables behavior'
         end
       end
 
-      context 'when variables are stored in trigger_request' do
+      context 'when user is a maintainer' do
         before do
-          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
-
-          visit project_job_path(project, job)
+          project.add_maintainer(user)
         end
 
-        it_behaves_like 'expected variables behavior'
-      end
+        shared_examples 'reveal button variables behavior' do
+          it 'renders a hidden value with a reveal values button', :js do
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
-      context 'when variables are stored in pipeline_variables' do
-        before do
-          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+            expect(page).to have_css('.js-reveal-variables')
 
-          visit project_job_path(project, job)
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: '••••••')
+          end
+
+          it 'reveals values on button click', :js do
+            click_button 'Reveal values'
+
+            expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+            expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+          end
         end
 
-        it_behaves_like 'expected variables behavior'
+        context 'when variables are stored in trigger_request' do
+          before do
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'reveal button variables behavior'
+        end
+
+        context 'when variables are stored in pipeline_variables' do
+          before do
+            create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+            visit project_job_path(project, job)
+          end
+
+          it_behaves_like 'reveal button variables behavior'
+        end
       end
     end
 
@@ -754,7 +795,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because no runners are active' do
           expect(page).to have_css('.js-stuck-no-active-runner')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners that can run this job.")
+          expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
 
@@ -764,7 +805,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_css('.js-stuck-with-tags')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners online with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because you don't have any active runners online with any of these tags assigned to them:")
         end
       end
 
@@ -774,7 +815,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because of no runners with the specified tags' do
           expect(page).to have_css('.js-stuck-with-tags')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners online with any of these tags assigned to them:")
+          expect(page).to have_content("This job is stuck because you don't have any active runners online with any of these tags assigned to them:")
         end
       end
 
@@ -783,7 +824,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because not runners are available' do
           expect(page).to have_css('.js-stuck-no-active-runner')
-          expect(page).to have_content("This job is stuck, because you don't have any active runners that can run this job.")
+          expect(page).to have_content("This job is stuck because you don't have any active runners that can run this job.")
         end
       end
 
@@ -793,7 +834,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'renders message about job being stuck because runners are offline' do
           expect(page).to have_css('.js-stuck-no-runners')
-          expect(page).to have_content("This job is stuck, because the project doesn't have any runners online assigned to it.")
+          expect(page).to have_content("This job is stuck because the project doesn't have any runners online assigned to it.")
         end
       end
     end

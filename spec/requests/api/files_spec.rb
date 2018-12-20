@@ -121,6 +121,13 @@ describe API::Files do
       end
     end
 
+    context 'when PATs are used' do
+      it_behaves_like 'repository files' do
+        let(:token) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
+        let(:current_user) { { personal_access_token: token } }
+      end
+    end
+
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository files' do
         let(:current_user) { user }
@@ -137,7 +144,7 @@ describe API::Files do
   describe "GET /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
       it 'returns file attributes as json' do
-        get api(route(file_path), current_user), params
+        get api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['file_path']).to eq(CGI.unescape(file_path))
@@ -150,7 +157,7 @@ describe API::Files do
       it 'returns json when file has txt extension' do
         file_path = "bar%2Fbranch-test.txt"
 
-        get api(route(file_path), current_user), params
+        get api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.content_type).to eq('application/json')
@@ -161,7 +168,7 @@ describe API::Files do
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
         params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
 
-        get api(route(file_path), current_user), params
+        get api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['file_name']).to eq('commit.js.coffee')
@@ -173,7 +180,7 @@ describe API::Files do
         url = route(file_path) + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params
+        get api(url, current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -181,7 +188,7 @@ describe API::Files do
       it 'forces attachment content disposition' do
         url = route(file_path) + "/raw"
 
-        get api(url, current_user), params
+        get api(url, current_user), params: params
 
         expect(headers['Content-Disposition']).to match(/^attachment/)
       end
@@ -196,7 +203,7 @@ describe API::Files do
         let(:params) { { ref: 'master' } }
 
         it_behaves_like '404 response' do
-          let(:request) { get api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params }
+          let(:request) { get api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params: params }
           let(:message) { '404 File Not Found' }
         end
       end
@@ -205,7 +212,7 @@ describe API::Files do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { get api(route(file_path), current_user), params }
+          let(:request) { get api(route(file_path), current_user), params: params }
         end
       end
     end
@@ -217,9 +224,16 @@ describe API::Files do
       end
     end
 
+    context 'when PATs are used' do
+      it_behaves_like 'repository files' do
+        let(:token) { create(:personal_access_token, scopes: ['read_repository'], user: user) }
+        let(:current_user) { { personal_access_token: token } }
+      end
+    end
+
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { get api(route(file_path)), params }
+        let(:request) { get api(route(file_path)), params: params }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -232,7 +246,7 @@ describe API::Files do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { get api(route(file_path), guest), params }
+        let(:request) { get api(route(file_path), guest), params: params }
       end
     end
   end
@@ -243,7 +257,7 @@ describe API::Files do
         url = route(file_path) + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params
+        get api(url, current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -252,7 +266,7 @@ describe API::Files do
         url = route('.gitignore') + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(url, current_user), params
+        get api(url, current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -263,7 +277,7 @@ describe API::Files do
         params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
-        get api(route(file_path) + "/raw", current_user), params
+        get api(route(file_path) + "/raw", current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -278,7 +292,7 @@ describe API::Files do
         let(:params) { { ref: 'master' } }
 
         it_behaves_like '404 response' do
-          let(:request) { get api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params }
+          let(:request) { get api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params: params }
           let(:message) { '404 File Not Found' }
         end
       end
@@ -287,7 +301,7 @@ describe API::Files do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { get api(route(file_path), current_user), params }
+          let(:request) { get api(route(file_path), current_user), params: params }
         end
       end
     end
@@ -301,7 +315,7 @@ describe API::Files do
 
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { get api(route(file_path)), params }
+        let(:request) { get api(route(file_path)), params: params }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -314,7 +328,22 @@ describe API::Files do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { get api(route(file_path), guest), params }
+        let(:request) { get api(route(file_path), guest), params: params }
+      end
+    end
+
+    context 'when PATs are used' do
+      it 'returns file by commit sha' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        # This file is deleted on HEAD
+        file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
+        params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(route(file_path) + "/raw", personal_access_token: token), params: params
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
@@ -330,7 +359,7 @@ describe API::Files do
     end
 
     it "creates a new file in project repo" do
-      post api(route(file_path), user), params
+      post api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response["file_path"]).to eq(CGI.unescape(file_path))
@@ -348,7 +377,7 @@ describe API::Files do
     it 'returns a 400 bad request if the commit message is empty' do
       params[:commit_message] = ''
 
-      post api(route(file_path), user), params
+      post api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -357,16 +386,34 @@ describe API::Files do
       allow_any_instance_of(Repository).to receive(:create_file)
         .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
 
-      post api(route("any%2Etxt"), user), params
+      post api(route("any%2Etxt"), user), params: params
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    context 'with PATs' do
+      it 'returns 403 with `read_repository` scope' do
+        token = create(:personal_access_token, scopes: ['read_repository'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params: params
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'returns 201 with `api` scope' do
+        token = create(:personal_access_token, scopes: ['api'], user: user)
+
+        post api(route(file_path), personal_access_token: token), params: params
+
+        expect(response).to have_gitlab_http_status(201)
+      end
     end
 
     context "when specifying an author" do
       it "creates a new file with the specified author" do
         params.merge!(author_email: author_email, author_name: author_name)
 
-        post api(route("new_file_with_author%2Etxt"), user), params
+        post api(route("new_file_with_author%2Etxt"), user), params: params
 
         expect(response).to have_gitlab_http_status(201)
         expect(response.content_type).to eq('application/json')
@@ -380,7 +427,7 @@ describe API::Files do
       let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
 
       it "creates a new file in project repo" do
-        post api(route("newfile%2Erb"), user), params
+        post api(route("newfile%2Erb"), user), params: params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['file_path']).to eq('newfile.rb')
@@ -401,7 +448,7 @@ describe API::Files do
     end
 
     it "updates existing file in project repo" do
-      put api(route(file_path), user), params
+      put api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))
@@ -413,7 +460,7 @@ describe API::Files do
     it 'returns a 400 bad request if the commit message is empty' do
       params[:commit_message] = ''
 
-      put api(route(file_path), user), params
+      put api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -421,7 +468,7 @@ describe API::Files do
     it "returns a 400 bad request if update existing file with stale last commit id" do
       params_with_stale_id = params.merge(last_commit_id: 'stale')
 
-      put api(route(file_path), user), params_with_stale_id
+      put api(route(file_path), user), params: params_with_stale_id
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
@@ -432,7 +479,7 @@ describe API::Files do
                         .last_for_path(project.repository, 'master', URI.unescape(file_path))
       params_with_correct_id = params.merge(last_commit_id: last_commit.id)
 
-      put api(route(file_path), user), params_with_correct_id
+      put api(route(file_path), user), params: params_with_correct_id
 
       expect(response).to have_gitlab_http_status(200)
     end
@@ -447,7 +494,7 @@ describe API::Files do
       it "updates a file with the specified author" do
         params.merge!(author_email: author_email, author_name: author_name, content: "New content")
 
-        put api(route(file_path), user), params
+        put api(route(file_path), user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         last_commit = project.repository.commit.raw
@@ -466,7 +513,7 @@ describe API::Files do
     end
 
     it "deletes existing file in project repo" do
-      delete api(route(file_path), user), params
+      delete api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(204)
     end
@@ -480,7 +527,7 @@ describe API::Files do
     it 'returns a 400 bad request if the commit message is empty' do
       params[:commit_message] = ''
 
-      delete api(route(file_path), user), params
+      delete api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -488,7 +535,7 @@ describe API::Files do
     it "returns a 400 if fails to delete file" do
       allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
 
-      delete api(route(file_path), user), params
+      delete api(route(file_path), user), params: params
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -497,7 +544,7 @@ describe API::Files do
       it "removes a file with the specified author" do
         params.merge!(author_email: author_email, author_name: author_name)
 
-        delete api(route(file_path), user), params
+        delete api(route(file_path), user), params: params
 
         expect(response).to have_gitlab_http_status(204)
       end
@@ -521,11 +568,11 @@ describe API::Files do
     end
 
     before do
-      post api(route(file_path), user), put_params
+      post api(route(file_path), user), params: put_params
     end
 
     it "remains unchanged" do
-      get api(route(file_path), user), get_params
+      get api(route(file_path), user), params: get_params
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))

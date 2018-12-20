@@ -27,6 +27,7 @@ export const getReversePosition = linePosition => {
 
 export function getFormData(params) {
   const {
+    commit,
     note,
     noteableType,
     noteableData,
@@ -66,7 +67,7 @@ export function getFormData(params) {
       position,
       noteable_type: noteableType,
       noteable_id: noteableData.id,
-      commit_id: '',
+      commit_id: commit && commit.id,
       type:
         diffFile.diff_refs.start_sha && diffFile.diff_refs.head_sha
           ? DIFF_NOTE_TYPE
@@ -195,6 +196,15 @@ export function trimFirstCharOfLineContent(line = {}) {
   return parsedLine;
 }
 
+function getLineCode({ left, right }, index) {
+  if (left && left.line_code) {
+    return left.line_code;
+  } else if (right && right.line_code) {
+    return right.line_code;
+  }
+  return index;
+}
+
 // This prepares and optimizes the incoming diff data from the server
 // by setting up incremental rendering and removing unneeded data
 export function prepareDiffData(diffData) {
@@ -207,11 +217,15 @@ export function prepareDiffData(diffData) {
       const linesLength = file.parallel_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.parallel_diff_lines[u];
+
+        line.line_code = getLineCode(line, u);
         if (line.left) {
           line.left = trimFirstCharOfLineContent(line.left);
+          line.left.hasForm = false;
         }
         if (line.right) {
           line.right = trimFirstCharOfLineContent(line.right);
+          line.right.hasForm = false;
         }
       }
     }
@@ -220,7 +234,7 @@ export function prepareDiffData(diffData) {
       const linesLength = file.highlighted_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.highlighted_diff_lines[u];
-        Object.assign(line, { ...trimFirstCharOfLineContent(line) });
+        Object.assign(line, { ...trimFirstCharOfLineContent(line), hasForm: false });
       }
       showingLines += file.parallel_diff_lines.length;
     }
@@ -322,5 +336,9 @@ export const generateTreeList = files =>
 
 export const getDiffMode = diffFile => {
   const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}_file`]);
-  return diffModes[diffModeKey] || diffModes.replaced;
+  return (
+    diffModes[diffModeKey] ||
+    (diffFile.mode_changed && diffModes.mode_changed) ||
+    diffModes.replaced
+  );
 };

@@ -95,6 +95,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :releases, only: [:index]
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
@@ -243,6 +244,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :staging
           get :production
         end
+      end
+
+      namespace :serverless do
+        resources :functions, only: [:index]
       end
 
       scope '-' do
@@ -432,6 +437,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
+          post :cleanup
         end
       end
 

@@ -21,7 +21,7 @@ describe Projects::CommitController do
         project_id: project
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
 
     context 'with valid id' do
@@ -102,9 +102,11 @@ describe Projects::CommitController do
 
       it 'renders it' do
         get(:show,
-            namespace_id: fork_project.namespace,
-            project_id: fork_project,
-            id: commit.id)
+            params: {
+              namespace_id: fork_project.namespace,
+              project_id: fork_project,
+              id: commit.id
+            })
 
         expect(response).to be_success
       end
@@ -132,9 +134,11 @@ describe Projects::CommitController do
       commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
 
       get(:branches,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: commit.id)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: commit.id
+          })
 
       expect(assigns(:branches)).to include('master', 'feature_conflict')
       expect(assigns(:branches_limit_exceeded)).to be_falsey
@@ -148,9 +152,11 @@ describe Projects::CommitController do
       allow_any_instance_of(Repository).to receive(:tag_count).and_return(1001)
 
       get(:branches,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: commit.id)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: commit.id
+          })
 
       expect(assigns(:branches)).to eq([])
       expect(assigns(:branches_limit_exceeded)).to be_truthy
@@ -163,9 +169,11 @@ describe Projects::CommitController do
     context 'when target branch is not provided' do
       it 'renders the 404 page' do
         post(:revert,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: commit.id
+            })
 
         expect(response).not_to be_success
         expect(response).to have_gitlab_http_status(404)
@@ -175,10 +183,12 @@ describe Projects::CommitController do
     context 'when the revert was successful' do
       it 'redirects to the commits page' do
         post(:revert,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: commit.id
+            })
 
         expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully reverted.')
@@ -188,19 +198,23 @@ describe Projects::CommitController do
     context 'when the revert failed' do
       before do
         post(:revert,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: commit.id
+            })
       end
 
       it 'redirects to the commit page' do
         # Reverting a commit that has been already reverted.
         post(:revert,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: commit.id
+            })
 
         expect(response).to redirect_to project_commit_path(project, commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot revert this commit automatically.')
@@ -212,9 +226,11 @@ describe Projects::CommitController do
     context 'when target branch is not provided' do
       it 'renders the 404 page' do
         post(:cherry_pick,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: master_pickable_commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: master_pickable_commit.id
+            })
 
         expect(response).not_to be_success
         expect(response).to have_gitlab_http_status(404)
@@ -224,10 +240,12 @@ describe Projects::CommitController do
     context 'when the cherry-pick was successful' do
       it 'redirects to the commits page' do
         post(:cherry_pick,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: master_pickable_commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: master_pickable_commit.id
+            })
 
         expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully cherry-picked into master.')
@@ -237,19 +255,23 @@ describe Projects::CommitController do
     context 'when the cherry_pick failed' do
       before do
         post(:cherry_pick,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: master_pickable_commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: master_pickable_commit.id
+            })
       end
 
       it 'redirects to the commit page' do
         # Cherry-picking a commit that has been already cherry-picked.
         post(:cherry_pick,
-            namespace_id: project.namespace,
-            project_id: project,
-            start_branch: 'master',
-            id: master_pickable_commit.id)
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              start_branch: 'master',
+              id: master_pickable_commit.id
+            })
 
         expect(response).to redirect_to project_commit_path(project, master_pickable_commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
@@ -264,7 +286,7 @@ describe Projects::CommitController do
         project_id: project
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { '.gitmodules' }
@@ -332,7 +354,7 @@ describe Projects::CommitController do
         project_id: project
       }
 
-      get :pipelines, params.merge(extra_params)
+      get :pipelines, params: params.merge(extra_params)
     end
 
     context 'when the commit exists' do

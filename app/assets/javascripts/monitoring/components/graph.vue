@@ -105,6 +105,9 @@ export default {
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
     },
+    shouldRenderData() {
+      return this.graphData.queries.filter(s => s.result.length > 0).length > 0;
+    },
   },
   watch: {
     hoverData() {
@@ -120,17 +123,17 @@ export default {
     },
     draw() {
       const breakpointSize = bp.getBreakpointSize();
-      const query = this.graphData.queries[0];
       const svgWidth = this.$refs.baseSvg.getBoundingClientRect().width;
+
       this.margin = measurements.large.margin;
+
       if (this.smallGraph || breakpointSize === 'xs' || breakpointSize === 'sm') {
         this.graphHeight = 300;
         this.margin = measurements.small.margin;
         this.measurements = measurements.small;
       }
-      this.unitOfDisplay = query.unit || '';
+
       this.yAxisLabel = this.graphData.y_label || 'Values';
-      this.legendTitle = query.label || 'Average';
       this.graphWidth = svgWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
       this.baseGraphHeight = this.graphHeight - 50;
@@ -139,8 +142,15 @@ export default {
       // pixel offsets inside the svg and outside are not 1:1
       this.realPixelRatio = svgWidth / this.baseGraphWidth;
 
-      this.renderAxesPaths();
-      this.formatDeployments();
+      // set the legends on the axes
+      const [query] = this.graphData.queries;
+      this.legendTitle = query ? query.label : 'Average';
+      this.unitOfDisplay = query ? query.unit : '';
+
+      if (this.shouldRenderData) {
+        this.renderAxesPaths();
+        this.formatDeployments();
+      }
     },
     handleMouseOverGraph(e) {
       let point = this.$refs.graphData.createSVGPoint();
@@ -266,7 +276,7 @@ export default {
           :y-axis-label="yAxisLabel"
           :unit-of-display="unitOfDisplay"
         />
-        <svg ref="graphData" :viewBox="innerViewBox" class="graph-data">
+        <svg v-if="shouldRenderData" ref="graphData" :viewBox="innerViewBox" class="graph-data">
           <slot name="additionalSvgContent" :graphDrawData="graphDrawData" />
           <graph-path
             v-for="(path, index) in timeSeries"
@@ -293,8 +303,14 @@ export default {
             @mousemove="handleMouseOverGraph($event);"
           />
         </svg>
+        <svg v-else :viewBox="innerViewBox" class="js-no-data-to-display">
+          <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle">
+            {{ s__('Metrics|No data to display') }}
+          </text>
+        </svg>
       </svg>
       <graph-flag
+        v-if="shouldRenderData"
         :real-pixel-ratio="realPixelRatio"
         :current-x-coordinate="currentXCoordinate"
         :current-data="currentData"

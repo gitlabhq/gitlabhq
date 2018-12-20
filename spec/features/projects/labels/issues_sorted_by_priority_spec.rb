@@ -32,7 +32,7 @@ describe 'Issue prioritization' do
       visit project_issues_path(project, sort: 'label_priority')
 
       # Ensure we are indicating that issues are sorted by priority
-      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
+      expect(page).to have_selector('.dropdown', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
@@ -70,7 +70,7 @@ describe 'Issue prioritization' do
       sign_in user
       visit project_issues_path(project, sort: 'label_priority')
 
-      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
+      expect(page).to have_selector('.dropdown', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)

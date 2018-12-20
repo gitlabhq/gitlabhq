@@ -50,7 +50,7 @@ describe Boards::IssuesController do
 
           parsed_response = JSON.parse(response.body)
 
-          expect(response).to match_response_schema('issues')
+          expect(response).to match_response_schema('entities/issue_boards')
           expect(parsed_response['issues'].length).to eq 2
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
@@ -121,7 +121,7 @@ describe Boards::IssuesController do
 
         parsed_response = JSON.parse(response.body)
 
-        expect(response).to match_response_schema('issues')
+        expect(response).to match_response_schema('entities/issue_boards')
         expect(parsed_response['issues'].length).to eq 2
       end
     end
@@ -153,7 +153,7 @@ describe Boards::IssuesController do
         params[:project_id] = project
       end
 
-      get :index, params.compact
+      get :index, params: params.compact
     end
   end
 
@@ -168,7 +168,7 @@ describe Boards::IssuesController do
       it 'returns the created issue' do
         create_issue user: user, board: board, list: list1, title: 'New issue'
 
-        expect(response).to match_response_schema('issue')
+        expect(response).to match_response_schema('entities/issue_board')
       end
     end
 
@@ -230,9 +230,11 @@ describe Boards::IssuesController do
     def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
-      post :create, board_id: board.to_param,
-                    list_id: list.to_param,
-                    issue: { title: title,  project_id: project.id },
+      post :create, params: {
+                      board_id: board.to_param,
+                      list_id: list.to_param,
+                      issue: { title: title,  project_id: project.id }
+                    },
                     format: :json
     end
   end
@@ -291,12 +293,14 @@ describe Boards::IssuesController do
     def move(user:, board:, issue:, from_list_id:, to_list_id:)
       sign_in(user)
 
-      patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project.id,
-                     board_id: board.to_param,
-                     id: issue.id,
-                     from_list_id: from_list_id,
-                     to_list_id: to_list_id,
+      patch :update, params: {
+                       namespace_id: project.namespace.to_param,
+                       project_id: project.id,
+                       board_id: board.to_param,
+                       id: issue.id,
+                       from_list_id: from_list_id,
+                       to_list_id: to_list_id
+                     },
                      format: :json
     end
   end

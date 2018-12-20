@@ -302,7 +302,7 @@ describe 'Git HTTP requests' do
             it 'rejects pushes with 403 Forbidden' do
               upload(path, env) do |response|
                 expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(change_access_error(:push_code))
+                expect(response.body).to eq('You are not allowed to push code to this project.')
               end
             end
 
@@ -726,7 +726,7 @@ describe 'Git HTTP requests' do
             let(:params) { { service: 'git-upload-pack' } }
 
             before do
-              get path, params
+              get path, params: params
             end
 
             it "redirects to the .git suffix version" do
@@ -738,7 +738,7 @@ describe 'Git HTTP requests' do
             let(:params) { { service: 'git-receive-pack' } }
 
             before do
-              get path, params
+              get path, params: params
             end
 
             it "redirects to the .git suffix version" do
@@ -750,7 +750,7 @@ describe 'Git HTTP requests' do
             let(:params) { { service: 'git-implode-pack' } }
 
             before do
-              get path, params
+              get path, params: params
             end
 
             it "redirects to the sign-in page" do

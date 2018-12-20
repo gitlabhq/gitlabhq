@@ -29,7 +29,7 @@ describe 'Projects > Show > User sees Git instructions' do
         expect(element.text).to include(project.http_url_to_repo)
       end
 
-      expect(page).to have_field('project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
+      expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end
   end
 
@@ -41,7 +41,7 @@ describe 'Projects > Show > User sees Git instructions' do
         expect(page).to have_content(project.title)
       end
 
-      expect(page).to have_field('project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
+      expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end
   end
 

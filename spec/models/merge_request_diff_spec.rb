@@ -105,7 +105,7 @@ describe MergeRequestDiff do
 
     context 'when the raw diffs are empty' do
       before do
-        MergeRequestDiffFile.delete_all(merge_request_diff_id: diff_with_commits.id)
+        MergeRequestDiffFile.where(merge_request_diff_id: diff_with_commits.id).delete_all
       end
 
       it 'returns an empty DiffCollection' do

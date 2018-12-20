@@ -26,4 +26,10 @@ module RendersCommits
 
     commits
   end
+
+  def valid_ref?(ref_name)
+    return true unless ref_name.present?
+
+    Gitlab::GitRefValidator.validate(ref_name)
+  end
 end

@@ -12,7 +12,7 @@ class RepositoryForkWorker
 
     source_project = target_project.forked_from_project
     unless source_project
-      return target_project.mark_import_as_failed('Source project cannot be found.')
+      return target_project.import_state.mark_as_failed(_('Source project cannot be found.'))
     end
 
     fork_repository(target_project, source_project.repository_storage, source_project.disk_path)
@@ -33,7 +33,7 @@ class RepositoryForkWorker
   end
 
   def start_fork(project)
-    return true if start(project)
+    return true if start(project.import_state)
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
     false

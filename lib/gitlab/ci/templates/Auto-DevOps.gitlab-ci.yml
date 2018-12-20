@@ -19,15 +19,6 @@
 # * review: REVIEW_DISABLED
 # * stop_review: REVIEW_DISABLED
 #
-# The sast and sast_dashboard jobs are executed to guarantee full compatibility
-# with the group security dashboard and the security reports with old runners.
-# If you use only runners with version 11.5 or above, you can disable the sast
-# job by setting the OLD_REPORTS_DISABLED environment variable. If you use only
-# runners with version below 11.5, you can disable the sast_dashboard job by
-# setting the NEW_REPORTS_DISABLED environment variable.
-# The sast_dashboard job will be removed in the future, when the sast job will
-# use the new reports syntax.
-#
 # In order to deploy, you must have a Kubernetes cluster configured either
 # via a project integration, or via group/project variables.
 # AUTO_DEVOPS_DOMAIN must also be set as a variable at the group or project
@@ -158,33 +149,12 @@ performance:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     variables:
       - $PERFORMANCE_DISABLED
-      - $KUBECONFIG == null
 
 sast:
-  stage: test
-  image: docker:stable
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - setup_docker
-    - sast
-  artifacts:
-    paths: [gl-sast-report.json]
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bsast\b/
-  except:
-    variables:
-      - $SAST_DISABLED
-      - $OLD_REPORTS_DISABLED
-
-sast_dashboard:
   stage: test
   image: docker:stable
   allow_failure: true
@@ -204,7 +174,6 @@ sast_dashboard:
   except:
     variables:
       - $SAST_DISABLED
-      - $NEW_REPORTS_DISABLED
 
 dependency_scanning:
   stage: test
@@ -259,6 +228,7 @@ dast:
   only:
     refs:
       - branches
+    kubernetes: active
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
   except:
@@ -266,7 +236,6 @@ dast:
       - master
     variables:
       - $DAST_DISABLED
-      - $KUBECONFIG == null
 
 review:
   stage: review
@@ -288,12 +257,12 @@ review:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     refs:
       - master
     variables:
       - $REVIEW_DISABLED
-      - $KUBECONFIG == null
 
 stop_review:
   stage: cleanup
@@ -311,12 +280,12 @@ stop_review:
   only:
     refs:
       - branches
+    kubernetes: active
   except:
     refs:
       - master
     variables:
       - $REVIEW_DISABLED
-      - $KUBECONFIG == null
 
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
@@ -340,11 +309,9 @@ staging:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $STAGING_ENABLED
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 # Canaries are also disabled by default, but if you want them,
 # and know what the downsides are, you can enable this by setting
@@ -367,11 +334,9 @@ canary:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $CANARY_ENABLED
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 .production: &production_template
   stage: production
@@ -397,13 +362,13 @@ production:
   only:
     refs:
       - master
+    kubernetes: active
   except:
     variables:
       - $STAGING_ENABLED
       - $CANARY_ENABLED
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
-      - $KUBECONFIG == null
 
 production_manual:
   <<: *production_template
@@ -412,6 +377,7 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $STAGING_ENABLED
       - $CANARY_ENABLED
@@ -419,7 +385,6 @@ production_manual:
     variables:
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
-      - $KUBECONFIG == null
 
 # This job implements incremental rollout on for every push to `master`.
 
@@ -449,13 +414,13 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
       - $INCREMENTAL_ROLLOUT_ENABLED
   except:
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
-      - $KUBECONFIG == null
 
 .timed_rollout_template: &timed_rollout_template
   <<: *rollout_template
@@ -464,11 +429,9 @@ production_manual:
   only:
     refs:
       - master
+    kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"
-  except:
-    variables:
-      - $KUBECONFIG == null
 
 timed rollout 10%:
   <<: *timed_rollout_template
@@ -658,6 +621,7 @@ rollout 100%:
     fi
 
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
+      echo "Deploying first release with database initialization..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
@@ -680,6 +644,7 @@ rollout 100%:
         "$name" \
         chart/
 
+      echo "Deploying second release..."
       helm upgrade --reuse-values \
         --wait \
         --set application.initializeCommand="" \
@@ -688,6 +653,7 @@ rollout 100%:
         "$name" \
         chart/
     else
+      echo "Deploying new release..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \

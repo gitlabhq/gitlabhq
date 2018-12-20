@@ -24,23 +24,24 @@ The following files require a review from the Documentation team:
 
 * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-When your content is ready for review, mention a technical writer in a separate
-comment and explain what needs to be reviewed.
-
-You are welcome to mention them sooner if you have questions about writing or updating
-the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.
-
-Who to ping [based on DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages):
+When your content is ready for review, assign the MR to a technical writer
+according to the [DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+in the table below. If necessary, mention them in a comment explaining what needs
+to be reviewed.
 
 | Tech writer  | Stage(s)                                                     |
 | ------------ | ------------------------------------------------------------ |
-| `@marcia`    | ~Create ~Release                                             |
-| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Packaging ~Secure |
+| `@marcia`    | ~Create ~Release + ~"development guidelines"                 |
+| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Package ~Secure |
 | `@eread`     | ~Manage ~Configure ~Geo ~Verify                              |
 | `@mikelewis` | ~Plan                                                        |
 
+You are welcome to mention them sooner if you have questions about writing or
+updating the documentation. GitLabbers are also welcome to use the
+[#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.
+
 If you are not sure which category the change falls within, or the change is not
-part of one of these categories, you can mention one of the usernames above.
+part of one of these categories, mention one of the usernames above.
   MARKDOWN
 
   unless gitlab.mr_labels.include?('Documentation')

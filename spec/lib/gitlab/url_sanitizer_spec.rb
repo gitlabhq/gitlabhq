@@ -41,6 +41,7 @@ describe Gitlab::UrlSanitizer do
       false | '123://invalid:url'
       false | 'valid@project:url.git'
       false | 'valid:pass@project:url.git'
+      false | %w(test array)
       true  | 'ssh://example.com'
       true  | 'ssh://:@example.com'
       true  | 'ssh://foo@example.com'

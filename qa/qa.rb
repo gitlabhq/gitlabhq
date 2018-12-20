@@ -158,6 +158,10 @@ module QA
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
 
+      module Commit
+        autoload :Show, 'qa/page/project/commit/show'
+      end
+
       module Import
         autoload :Github, 'qa/page/project/import/github'
       end
@@ -184,6 +188,7 @@ module QA
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'
+        autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
       end
 
       module Issue
@@ -272,6 +277,7 @@ module QA
     #
     module Component
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RemoteMirror do
+describe RemoteMirror, :mailer do
   include GitHelpers
 
   describe 'URL validation' do
@@ -137,6 +137,43 @@ describe RemoteMirror do
     end
   end
 
+  describe '#mark_as_failed' do
+    let(:remote_mirror) { create(:remote_mirror) }
+    let(:error_message) { 'http://user:pass@test.com/root/repoC.git/' }
+    let(:sanitized_error_message) { 'http://*****:*****@test.com/root/repoC.git/' }
+
+    subject do
+      remote_mirror.update_start
+      remote_mirror.mark_as_failed(error_message)
+    end
+
+    it 'sets the update_status to failed' do
+      subject
+
+      expect(remote_mirror.reload.update_status).to eq('failed')
+    end
+
+    it 'saves the sanitized error' do
+      subject
+
+      expect(remote_mirror.last_error).to eq(sanitized_error_message)
+    end
+
+    context 'notifications' do
+      let(:user) { create(:user) }
+
+      before do
+        remote_mirror.project.add_maintainer(user)
+      end
+
+      it 'notifies the project maintainers' do
+        perform_enqueued_jobs { subject }
+
+        should_email(user)
+      end
+    end
+  end
+
   context 'when remote mirror gets destroyed' do
     it 'removes remote' do
       mirror = create_mirror(url: 'http://foo:bar@test.com')
@@ -174,7 +211,15 @@ describe RemoteMirror do
     end
 
     context 'with remote mirroring enabled' do
+      it 'defaults to disabling only protected branches' do
+        expect(remote_mirror.only_protected_branches?).to be_falsey
+      end
+
       context 'with only protected branches enabled' do
+        before do
+          remote_mirror.only_protected_branches = true
+        end
+
         context 'when it did not update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
             expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)

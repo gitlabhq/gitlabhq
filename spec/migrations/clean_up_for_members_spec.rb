@@ -3,6 +3,7 @@ require Rails.root.join('db', 'migrate', '20171216111734_clean_up_for_members.rb
 
 describe CleanUpForMembers, :migration do
   let(:migration) { described_class.new }
+  let(:groups) { table(:namespaces) }
   let!(:group_member) { create_group_member }
   let!(:unbinded_group_member) { create_group_member }
   let!(:invited_group_member) { create_group_member(true) }
@@ -25,7 +26,7 @@ describe CleanUpForMembers, :migration do
   end
 
   def create_group_member(invited = false)
-    fill_member(GroupMember.new(group: create_group), invited)
+    fill_member(GroupMember.new(source_id: create_group.id, source_type: 'Namespace'), invited)
   end
 
   def create_project_member(invited = false)
@@ -54,7 +55,7 @@ describe CleanUpForMembers, :migration do
   def create_group
     name = FFaker::Lorem.characters(10)
 
-    Group.create(name: name, path: name.downcase.gsub(/\s/, '_'))
+    groups.create!(type: 'Group', name: name, path: name.downcase.gsub(/\s/, '_'))
   end
 
   def create_project

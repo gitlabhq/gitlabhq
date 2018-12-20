@@ -28,7 +28,7 @@ describe API::Notes do
       #
       before do
         post api("/projects/#{private_issue.project.id}/issues/#{private_issue.iid}/notes", user),
-             body: 'Hi!'
+             params: { body: 'Hi!' }
       end
 
       it 'responds with resource not found error' do
@@ -154,7 +154,7 @@ describe API::Notes do
       end
 
       context 'when a user is a team member' do
-        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user), body: 'Hi!' }
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user), params: { body: 'Hi!' } }
 
         it 'returns 200 status' do
           subject
@@ -168,7 +168,7 @@ describe API::Notes do
       end
 
       context 'when a user is not a team member' do
-        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", private_user), body: 'Hi!' }
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", private_user), params: { body: 'Hi!' } }
 
         it 'returns 403 status' do
           subject

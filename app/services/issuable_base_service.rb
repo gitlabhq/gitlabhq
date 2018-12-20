@@ -152,6 +152,10 @@ class IssuableBaseService < BaseService
     before_create(issuable)
 
     if issuable.save
+      ActiveRecord::Base.no_touching do
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
+      end
+
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
@@ -207,7 +211,7 @@ class IssuableBaseService < BaseService
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_associations[:labels])
+          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
         end
 
         handle_changes(issuable, old_associations: old_associations)

@@ -85,6 +85,8 @@ module Gitlab
     end
 
     def to_kubeconfig(url:, namespace:, token:, ca_pem: nil)
+      return unless token.present?
+
       config = {
         apiVersion: 'v1',
         clusters: [
@@ -113,7 +115,7 @@ module Gitlab
 
       kubeconfig_embed_ca_pem(config, ca_pem) if ca_pem
 
-      config.deep_stringify_keys
+      YAML.dump(config.deep_stringify_keys)
     end
 
     private

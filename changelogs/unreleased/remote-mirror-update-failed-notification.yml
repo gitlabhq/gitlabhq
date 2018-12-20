@@ -1,0 +1,5 @@
+---
+title: Send a notification email to project maintainers when a mirror update fails
+merge_request: 23595
+author:
+type: added

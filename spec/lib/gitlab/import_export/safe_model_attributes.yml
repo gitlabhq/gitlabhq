@@ -112,8 +112,11 @@ ProjectSnippet:
 - visibility_level
 Release:
 - id
+- name
 - tag
+- sha
 - description
+- author_id
 - project_id
 - created_at
 - updated_at
@@ -243,6 +246,7 @@ Ci::Pipeline:
 - failure_reason
 - protected
 - iid
+- merge_request_id
 Ci::Stage:
 - id
 - name

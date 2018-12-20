@@ -234,26 +234,25 @@ reiterating the importance of HTTPS.
 
 ## Issuing Certificates
 
-GitLab Pages accepts [PEM](https://support.quovadisglobal.com/kb/a37/what-is-pem-format.aspx) certificates issued by
-[Certificate Authorities (CA)](https://en.wikipedia.org/wiki/Certificate_authority)
-and self-signed certificates. Of course,
-[you'd rather issue a certificate than generate a self-signed](https://en.wikipedia.org/wiki/Self-signed_certificate),
-for security reasons and for having browsers trusting your
-site's certificate.
+GitLab Pages accepts certificates provided in the [PEM](https://support.quovadisglobal.com/kb/a37/what-is-pem-format.aspx) format, issued by
+[Certificate Authorities (CAs)](https://en.wikipedia.org/wiki/Certificate_authority) or as
+[self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). Note that [self-signed certificates are typically not used](https://securingtomorrow.mcafee.com/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
+for public websites for security reasons and to ensure that browsers trust your site's certificate.
 
-There are several different kinds of certificates, each one
-with certain security level. A static personal website will
+There are various kinds of certificates, each one
+with a certain security level. A static personal website will
 not require the same security level as an online banking web app,
-for instance. There are a couple Certificate Authorities that
+for instance.
+
+There are some certificate authorities that
 offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most of browsers, it's open
-source, and free to use. Please read through this tutorial to
-understand [how to secure your GitLab Pages website with Let's Encrypt](https://about.gitlab.com/2016/04/11/tutorial-securing-your-gitlab-pages-with-tls-and-letsencrypt/).
+source, and free to use. See our tutorial on [how to secure your GitLab Pages website with Let's Encrypt](lets_encrypt_for_gitlab_pages.md).
 
-With the same popularity, there are [certificates issued by CloudFlare](https://www.cloudflare.com/ssl/),
+Similarly popular are [certificates issued by CloudFlare](https://www.cloudflare.com/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
-Their certs are valid up to 15 years. Read through the tutorial on
+Their certs are valid up to 15 years. See the tutorial on
 [how to add a CloudFlare Certificate to your GitLab Pages website](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/).
 
 ### Adding certificates to your project

@@ -20,6 +20,20 @@ module Projects
         render_show
       end
 
+      def cleanup
+        cleanup_params = params.require(:project).permit(:bfg_object_map)
+        result = Projects::UpdateService.new(project, current_user, cleanup_params).execute
+
+        if result[:status] == :success
+          RepositoryCleanupWorker.perform_async(project.id, current_user.id)
+          flash[:notice] = _('Repository cleanup has started. You will receive an email once the cleanup operation is complete.')
+        else
+          flash[:alert] = _('Failed to upload object map file')
+        end
+
+        redirect_to project_settings_repository_path(project)
+      end
+
       private
 
       def render_show

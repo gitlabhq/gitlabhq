@@ -131,7 +131,7 @@
   width: 100%;
 }
 
-.md {
+.md:not(.use-csslab) {
   &.md-preview-holder {
     // Reset ul style types since we're nested inside a ul already
     @include bulleted-list;
@@ -274,6 +274,27 @@
         color: $gl-text-color;
       }
     }
+  }
+}
+
+.md-suggestion-diff {
+  display: table !important;
+  border: 1px solid $border-color !important;
+}
+
+.md-suggestion-header {
+  height: $suggestion-header-height;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  padding: $gl-padding;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+
+  svg {
+    vertical-align: middle;
+    margin-bottom: 3px;
   }
 }
 

@@ -26,6 +26,10 @@ module QA
           element :issuable_label
         end
 
+        view 'app/views/shared/issuable/form/_metadata_merge_request_assignee.html.haml' do
+          element :assign_to_me_link
+        end
+
         def create_merge_request
           click_element :issuable_create_button
         end
@@ -49,6 +53,10 @@ module QA
           click_element :issuable_label
 
           click_link label.title
+        end
+
+        def assign_to_me
+          click_element :assign_to_me_link
         end
       end
     end

@@ -4,6 +4,8 @@ describe User do
   include ProjectForksHelper
   include TermsHelper
 
+  it_behaves_like 'having unique enum values'
+
   describe 'modules' do
     subject { described_class }
 
@@ -43,6 +45,7 @@ describe User do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
+    it { is_expected.to have_many(:releases).dependent(:nullify) }
 
     describe "#abuse_report" do
       let(:current_user) { create(:user) }
@@ -2323,11 +2326,11 @@ describe User do
 
     context 'user is member of all groups' do
       before do
-        group.add_owner(user)
-        nested_group_1.add_owner(user)
-        nested_group_1_1.add_owner(user)
-        nested_group_2.add_owner(user)
-        nested_group_2_1.add_owner(user)
+        group.add_reporter(user)
+        nested_group_1.add_developer(user)
+        nested_group_1_1.add_maintainer(user)
+        nested_group_2.add_developer(user)
+        nested_group_2_1.add_maintainer(user)
       end
 
       it 'returns all groups' do
@@ -3229,7 +3232,7 @@ describe User do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', false do
+    it_behaves_like 'model with uploads', false do
       let(:model_object) { create(:user, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }

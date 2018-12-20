@@ -26,7 +26,7 @@ describe Oauth::ApplicationsController do
 
     describe 'POST #create' do
       it 'creates an application' do
-        post :create, oauth_params
+        post :create, params: oauth_params
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(oauth_application_path(Doorkeeper::Application.last))
@@ -35,10 +35,27 @@ describe Oauth::ApplicationsController do
       it 'redirects back to profile page if OAuth applications are disabled' do
         disable_user_oauth
 
-        post :create, oauth_params
+        post :create, params: oauth_params
 
         expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(profile_path)
+      end
+
+      context 'redirect_uri' do
+        render_views
+
+        it 'shows an error for a forbidden URI' do
+          invalid_uri_params = {
+            doorkeeper_application: {
+              name: 'foo',
+              redirect_uri: 'javascript://alert()'
+            }
+          }
+
+          post :create, params: invalid_uri_params
+
+          expect(response.body).to include 'Redirect URI is forbidden by the server'
+        end
       end
     end
   end

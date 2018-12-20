@@ -174,7 +174,7 @@
             %h4 Latest projects
             - @projects.each do |project|
               %p
-                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
+                = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
                 %span.light.float-right
                   #{time_ago_with_tooltip(project.created_at)}
       .col-md-4

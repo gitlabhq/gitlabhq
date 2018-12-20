@@ -281,11 +281,11 @@ describe API::Commits do
       it 'does not increment the usage counters using access token authentication' do
         expect(::Gitlab::WebIdeCommitsCounter).not_to receive(:increment)
 
-        post api(url, user), valid_c_params
+        post api(url, user), params: valid_c_params
       end
 
       it 'a new file in project repo' do
-        post api(url, user), valid_c_params
+        post api(url, user), params: valid_c_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
@@ -294,7 +294,7 @@ describe API::Commits do
       end
 
       it 'a new file with utf8 chars in project repo' do
-        post api(url, user), valid_utf8_c_params
+        post api(url, user), params: valid_utf8_c_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
@@ -303,7 +303,7 @@ describe API::Commits do
       end
 
       it 'returns a 400 bad request if file exists' do
-        post api(url, user), invalid_c_params
+        post api(url, user), params: invalid_c_params
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -312,7 +312,7 @@ describe API::Commits do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/repository/commits" }
 
         it 'a new file in project repo' do
-          post api(url, user), valid_c_params
+          post api(url, user), params: valid_c_params
 
           expect(response).to have_gitlab_http_status(201)
         end
@@ -347,14 +347,14 @@ describe API::Commits do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_d_params
+        post api(url, user), params: valid_d_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_d_params
+        post api(url, user), params: invalid_d_params
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -392,14 +392,14 @@ describe API::Commits do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_m_params
+        post api(url, user), params: valid_m_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_m_params
+        post api(url, user), params: invalid_m_params
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -435,14 +435,14 @@ describe API::Commits do
       end
 
       it 'an existing file in project repo' do
-        post api(url, user), valid_u_params
+        post api(url, user), params: valid_u_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
-        post api(url, user), invalid_u_params
+        post api(url, user), params: invalid_u_params
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -467,7 +467,7 @@ describe API::Commits do
       end
 
       it 'responds with success' do
-        post api(url, user), params
+        post api(url, user), params: params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
@@ -477,7 +477,7 @@ describe API::Commits do
         let(:execute_filemode) { false }
 
         it 'responds with success' do
-          post api(url, user), params
+          post api(url, user), params: params
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['title']).to eq(message)
@@ -488,7 +488,7 @@ describe API::Commits do
         let(:file_path) { 'foo/bar.baz' }
 
         it "responds with 400" do
-          post api(url, user), params
+          post api(url, user), params: params
 
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']).to eq("A file with this name doesn't exist")
@@ -566,28 +566,28 @@ describe API::Commits do
       end
 
       it 'are committed as one in project repo' do
-        post api(url, user), valid_mo_params
+        post api(url, user), params: valid_mo_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'includes the commit stats' do
-        post api(url, user), valid_mo_params
+        post api(url, user), params: valid_mo_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response).to include 'stats'
       end
 
       it "doesn't include the commit stats when stats is false" do
-        post api(url, user), valid_mo_params.merge(stats: false)
+        post api(url, user), params: valid_mo_params.merge(stats: false)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response).not_to include 'stats'
       end
 
       it 'return a 400 bad request if there are any issues' do
-        post api(url, user), invalid_mo_params
+        post api(url, user), params: invalid_mo_params
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -613,13 +613,13 @@ describe API::Commits do
       end
 
       it 'allows pushing to the source branch of the merge request' do
-        post api(url, user), push_params('feature')
+        post api(url, user), params: push_params('feature')
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'denies pushing to another branch' do
-        post api(url, user), push_params('other-branch')
+        post api(url, user), params: push_params('other-branch')
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -651,7 +651,7 @@ describe API::Commits do
 
     context 'for a valid commit' do
       it 'returns all refs with no scope' do
-        get api(route, current_user), per_page: 100
+        get api(route, current_user), params: { per_page: 100 }
 
         refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
         refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
@@ -663,7 +663,7 @@ describe API::Commits do
       end
 
       it 'returns all refs' do
-        get api(route, current_user), type: 'all', per_page: 100
+        get api(route, current_user), params: { type: 'all', per_page: 100 }
 
         refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
         refs.concat(project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]})
@@ -673,7 +673,7 @@ describe API::Commits do
       end
 
       it 'returns the branch refs' do
-        get api(route, current_user), type: 'branch', per_page: 100
+        get api(route, current_user), params: { type: 'branch', per_page: 100 }
 
         refs = project.repository.branch_names_contains(commit_id).map {|name| ['branch', name]}
 
@@ -682,7 +682,7 @@ describe API::Commits do
       end
 
       it 'returns the tag refs' do
-        get api(route, current_user), type: 'tag', per_page: 100
+        get api(route, current_user), params: { type: 'tag', per_page: 100 }
 
         refs = project.repository.tag_names_contains(commit_id).map {|name| ['tag', name]}
 
@@ -750,14 +750,14 @@ describe API::Commits do
       end
 
       it "is false it does not include stats" do
-        get api(route, user), stats: false
+        get api(route, user), params: { stats: false }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).not_to include 'stats'
       end
 
       it "is true it includes stats" do
-        get api(route, user), stats: true
+        get api(route, user), params: { stats: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to include 'stats'
@@ -818,7 +818,7 @@ describe API::Commits do
       end
 
       context 'when the ref has a pipeline' do
-        let!(:pipeline) { project.pipelines.create(source: :push, ref: 'master', sha: commit.sha, protected: false) }
+        let!(:pipeline) { project.ci_pipelines.create(source: :push, ref: 'master', sha: commit.sha, protected: false) }
 
         it 'includes a "created" status' do
           get api(route, current_user)
@@ -1063,7 +1063,7 @@ describe API::Commits do
     shared_examples_for 'ref cherry-pick' do
       context 'when ref exists' do
         it 'cherry-picks the ref commit' do
-          post api(route, current_user), branch: branch
+          post api(route, current_user), params: { branch: branch }
 
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
@@ -1078,7 +1078,7 @@ describe API::Commits do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { post api(route, current_user), branch: 'master' }
+          let(:request) { post api(route, current_user), params: { branch: 'master' } }
         end
       end
     end
@@ -1087,13 +1087,13 @@ describe API::Commits do
       let(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '403 response' do
-        let(:request) { post api(route), branch: 'master' }
+        let(:request) { post api(route), params: { branch: 'master' } }
       end
     end
 
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { post api(route), branch: 'master' }
+        let(:request) { post api(route), params: { branch: 'master' } }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -1107,7 +1107,7 @@ describe API::Commits do
         let(:commit_id) { 'unknown' }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), branch: 'master' }
+          let(:request) { post api(route, current_user), params: { branch: 'master' } }
           let(:message) { '404 Commit Not Found' }
         end
       end
@@ -1121,21 +1121,21 @@ describe API::Commits do
       context 'when branch is empty' do
         ['', ' '].each do |branch|
           it_behaves_like '400 response' do
-            let(:request) { post api(route, current_user), branch: branch }
+            let(:request) { post api(route, current_user), params: { branch: branch } }
           end
         end
       end
 
       context 'when branch does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), branch: 'foo' }
+          let(:request) { post api(route, current_user), params: { branch: 'foo' } }
           let(:message) { '404 Branch Not Found' }
         end
       end
 
       context 'when commit is already included in the target branch' do
         it_behaves_like '400 response' do
-          let(:request) { post api(route, current_user), branch: 'markdown' }
+          let(:request) { post api(route, current_user), params: { branch: 'markdown' } }
         end
       end
 
@@ -1150,7 +1150,7 @@ describe API::Commits do
         let(:commit_id) { branch_with_slash.name }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), branch: 'master' }
+          let(:request) { post api(route, current_user), params: { branch: 'master' } }
         end
       end
 
@@ -1181,7 +1181,7 @@ describe API::Commits do
         end
 
         it 'returns 400 if you are not allowed to push to the target branch' do
-          post api(route, current_user), branch: 'feature'
+          post api(route, current_user), params: { branch: 'feature' }
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to match(/You are not allowed to push into this branch/)
@@ -1195,13 +1195,13 @@ describe API::Commits do
       let(:project_id) { forked_project.id }
 
       it 'allows access from a maintainer that to the source branch' do
-        post api(route, user), branch: 'feature'
+        post api(route, user), params: { branch: 'feature' }
 
         expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'denies cherry picking to another branch' do
-        post api(route, user), branch: 'master'
+        post api(route, user), params: { branch: 'master' }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -1217,7 +1217,7 @@ describe API::Commits do
     shared_examples_for 'ref revert' do
       context 'when ref exists' do
         it 'reverts the ref commit' do
-          post api(route, current_user), branch: branch
+          post api(route, current_user), params: { branch: branch }
 
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
@@ -1233,7 +1233,7 @@ describe API::Commits do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { post api(route, current_user), branch: branch }
+          let(:request) { post api(route, current_user), params: { branch: branch } }
         end
       end
     end
@@ -1242,13 +1242,13 @@ describe API::Commits do
       let(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '403 response' do
-        let(:request) { post api(route), branch: branch }
+        let(:request) { post api(route), params: { branch: branch } }
       end
     end
 
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { post api(route), branch: branch }
+        let(:request) { post api(route), params: { branch: branch } }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -1262,7 +1262,7 @@ describe API::Commits do
         let(:commit_id) { 'unknown' }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), branch: branch }
+          let(:request) { post api(route, current_user), params: { branch: branch } }
           let(:message) { '404 Commit Not Found' }
         end
       end
@@ -1276,14 +1276,14 @@ describe API::Commits do
       context 'when branch is empty' do
         ['', ' '].each do |branch|
           it_behaves_like '400 response' do
-            let(:request) { post api(route, current_user), branch: branch }
+            let(:request) { post api(route, current_user), params: { branch: branch } }
           end
         end
       end
 
       context 'when branch does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), branch: 'foo' }
+          let(:request) { post api(route, current_user), params: { branch: 'foo' } }
           let(:message) { '404 Branch Not Found' }
         end
       end
@@ -1311,7 +1311,7 @@ describe API::Commits do
         end
 
         it 'returns 400 if you are not allowed to push to the target branch' do
-          post api(route, current_user), branch: 'feature'
+          post api(route, current_user), params: { branch: 'feature' }
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to match(/You are not allowed to push into this branch/)
@@ -1329,7 +1329,7 @@ describe API::Commits do
     shared_examples_for 'ref new comment' do
       context 'when ref exists' do
         it 'creates the comment' do
-          post api(route, current_user), note: note
+          post api(route, current_user), params: { note: note }
 
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/commit_note')
@@ -1344,7 +1344,7 @@ describe API::Commits do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { post api(route, current_user), note: 'My comment' }
+          let(:request) { post api(route, current_user), params: { note: 'My comment' } }
         end
       end
     end
@@ -1353,13 +1353,13 @@ describe API::Commits do
       let(:project) { create(:project, :public, :repository) }
 
       it_behaves_like '400 response' do
-        let(:request) { post api(route), note: 'My comment' }
+        let(:request) { post api(route), params: { note: 'My comment' } }
       end
     end
 
     context 'when unauthenticated', 'and project is private' do
       it_behaves_like '404 response' do
-        let(:request) { post api(route), note: 'My comment' }
+        let(:request) { post api(route), params: { note: 'My comment' } }
         let(:message) { '404 Project Not Found' }
       end
     end
@@ -1370,7 +1370,7 @@ describe API::Commits do
       it_behaves_like 'ref new comment'
 
       it 'returns the inline comment' do
-        post api(route, current_user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
+        post api(route, current_user), params: { note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(response).to match_response_schema('public_api/v4/commit_note')
@@ -1384,7 +1384,7 @@ describe API::Commits do
         let(:commit_id) { 'unknown' }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), note: 'My comment' }
+          let(:request) { post api(route, current_user), params: { note: 'My comment' } }
           let(:message) { '404 Commit Not Found' }
         end
       end
@@ -1405,7 +1405,7 @@ describe API::Commits do
         let(:commit_id) { branch_with_slash.name }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), note: 'My comment' }
+          let(:request) { post api(route, current_user), params: { note: 'My comment' } }
         end
       end
 

@@ -79,14 +79,6 @@ describe('Sidebar details block', () => {
   });
 
   describe('information', () => {
-    it('should render merge request link', () => {
-      expect(trimText(vm.$el.querySelector('.js-job-mr').textContent)).toEqual('Merge Request: !2');
-
-      expect(vm.$el.querySelector('.js-job-mr a').getAttribute('href')).toEqual(
-        job.merge_request.path,
-      );
-    });
-
     it('should render job duration', () => {
       expect(trimText(vm.$el.querySelector('.js-job-duration').textContent)).toEqual(
         'Duration: 6 seconds',

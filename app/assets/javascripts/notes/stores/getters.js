@@ -53,30 +53,26 @@ export const getCurrentUserLastNote = state =>
 export const getDiscussionLastNote = state => discussion =>
   reverseNotes(discussion.notes).find(el => isLastNote(el, state));
 
-export const discussionCount = state => {
-  const filteredDiscussions = state.discussions.filter(n => !n.individual_note && n.resolvable);
+export const unresolvedDiscussionsCount = state => state.unresolvedDiscussionsCount;
+export const resolvableDiscussionsCount = state => state.resolvableDiscussionsCount;
+export const hasUnresolvedDiscussions = state => state.hasUnresolvedDiscussions;
 
-  return filteredDiscussions.length;
-};
+export const showJumpToNextDiscussion = (state, getters) => (discussionId, mode = 'discussion') => {
+  const orderedDiffs =
+    mode !== 'discussion'
+      ? getters.unresolvedDiscussionsIdsByDiff
+      : getters.unresolvedDiscussionsIdsByDate;
 
-export const unresolvedDiscussions = (state, getters) => {
-  const resolvedMap = getters.resolvedDiscussionsById;
+  const indexOf = orderedDiffs.indexOf(discussionId);
 
-  return state.discussions.filter(n => !n.individual_note && !resolvedMap[n.id]);
-};
-
-export const allDiscussions = (state, getters) => {
-  const resolved = getters.resolvedDiscussionsById;
-  const unresolved = getters.unresolvedDiscussions;
-
-  return Object.values(resolved).concat(unresolved);
+  return indexOf !== -1 && indexOf < orderedDiffs.length - 1;
 };
 
 export const isDiscussionResolved = (state, getters) => discussionId =>
   getters.resolvedDiscussionsById[discussionId] !== undefined;
 
-export const allResolvableDiscussions = (state, getters) =>
-  getters.allDiscussions.filter(d => !d.individual_note && d.resolvable);
+export const allResolvableDiscussions = state =>
+  state.discussions.filter(d => !d.individual_note && d.resolvable);
 
 export const resolvedDiscussionsById = state => {
   const map = {};
@@ -119,7 +115,7 @@ export const unresolvedDiscussionsIdsByDate = (state, getters) =>
 // line numbers.
 export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
   getters.allResolvableDiscussions
-    .filter(d => !d.resolved)
+    .filter(d => !d.resolved && d.active)
     .sort((a, b) => {
       if (!a.diff_file || !b.diff_file) {
         return 0;
@@ -147,15 +143,12 @@ export const resolvedDiscussionCount = (state, getters) => {
   return Object.keys(resolvedMap).length;
 };
 
-export const discussionTabCounter = state => {
-  let all = [];
-
-  state.discussions.forEach(discussion => {
-    all = all.concat(discussion.notes.filter(note => !note.system && !note.placeholder));
-  });
-
-  return all.length;
-};
+export const discussionTabCounter = state =>
+  state.discussions.reduce(
+    (acc, discussion) =>
+      acc + discussion.notes.filter(note => !note.system && !note.placeholder).length,
+    0,
+  );
 
 // Returns the list of discussion IDs ordered according to given parameter
 // @param {Boolean} diffOrder - is ordered by diff?
@@ -182,8 +175,10 @@ export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, dif
 export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
   const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
   const currentIndex = idsOrdered.indexOf(discussionId);
+  const slicedIds = idsOrdered.slice(currentIndex + 1, currentIndex + 2);
 
-  return idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0];
+  // Get the first ID if there is none after the currentIndex
+  return slicedIds.length ? idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0] : idsOrdered[0];
 };
 
 // @param {Boolean} diffOrder - is ordered by diff?

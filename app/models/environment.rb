@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Environment < ActiveRecord::Base
+  include Gitlab::Utils::StrongMemoize
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'
@@ -231,7 +232,9 @@ class Environment < ActiveRecord::Base
   end
 
   def deployment_platform
-    project.deployment_platform(environment: self.name)
+    strong_memoize(:deployment_platform) do
+      project.deployment_platform(environment: self.name)
+    end
   end
 
   private

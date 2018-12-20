@@ -464,7 +464,11 @@ describe('diff_file_header', () => {
           propsCopy.addMergeRequestButtons = true;
           propsCopy.diffFile.deleted_file = true;
 
-          const discussionGetter = () => [diffDiscussionMock];
+          const discussionGetter = () => [
+            {
+              ...diffDiscussionMock,
+            },
+          ];
           const notesModuleMock = notesModule();
           notesModuleMock.getters.discussions = discussionGetter;
           vm = mountComponentWithStore(Component, {

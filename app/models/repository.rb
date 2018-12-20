@@ -17,7 +17,6 @@ class Repository
     #{REF_ENVIRONMENTS}
   ].freeze
 
-  include Gitlab::ShellAdapter
   include Gitlab::RepositoryCacheAdapter
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
@@ -35,7 +34,7 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
+  CACHED_METHODS = %i(size commit_count rendered_readme readme_path contribution_guide
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
@@ -48,7 +47,7 @@ class Repository
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: :rendered_readme,
+    readme: %i(rendered_readme readme_path),
     changelog: :changelog,
     license: %i(license_blob license_key license),
     contributing: :contribution_guide,
@@ -590,6 +589,11 @@ class Repository
   def readme
     head_tree&.readme
   end
+
+  def readme_path
+    readme&.path
+  end
+  cache_method :readme_path
 
   def rendered_readme
     return unless readme

@@ -22,7 +22,7 @@ class Projects::BranchesController < Projects::ApplicationController
         # Fetch branches for the specified mode
         fetch_branches_by_mode
 
-        @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
+        @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
 
         # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992

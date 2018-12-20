@@ -24,3 +24,4 @@ export const REQUEST_FAILURE = 'request-failure';
 export const INGRESS = 'ingress';
 export const JUPYTER = 'jupyter';
 export const KNATIVE = 'knative';
+export const CERT_MANAGER = 'cert_manager';

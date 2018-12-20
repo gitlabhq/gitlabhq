@@ -17,6 +17,9 @@ describe Gitlab::UsageData do
       gcp_cluster = create(:cluster, :provided_by_gcp)
       create(:cluster, :provided_by_user)
       create(:cluster, :provided_by_user, :disabled)
+      create(:cluster, :group)
+      create(:cluster, :group, :disabled)
+      create(:cluster, :group, :disabled)
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
       create(:clusters_applications_cert_managers, :installed, cluster: gcp_cluster)
@@ -77,7 +80,11 @@ describe Gitlab::UsageData do
         environments
         clusters
         clusters_enabled
+        project_clusters_enabled
+        group_clusters_enabled
         clusters_disabled
+        project_clusters_disabled
+        group_clusters_disabled
         clusters_platforms_gke
         clusters_platforms_user
         clusters_applications_helm
@@ -110,6 +117,7 @@ describe Gitlab::UsageData do
         releases
         remote_mirrors
         snippets
+        suggestions
         todos
         uploads
         web_hooks
@@ -127,8 +135,13 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
 
-      expect(count_data[:clusters_enabled]).to eq(6)
-      expect(count_data[:clusters_disabled]).to eq(1)
+      expect(count_data[:clusters_enabled]).to eq(7)
+      expect(count_data[:project_clusters_enabled]).to eq(6)
+      expect(count_data[:group_clusters_enabled]).to eq(1)
+      expect(count_data[:clusters_disabled]).to eq(3)
+      expect(count_data[:project_clusters_disabled]).to eq(1)
+      expect(count_data[:group_clusters_disabled]).to eq(2)
+      expect(count_data[:group_clusters_enabled]).to eq(1)
       expect(count_data[:clusters_platforms_gke]).to eq(1)
       expect(count_data[:clusters_platforms_user]).to eq(1)
       expect(count_data[:clusters_applications_helm]).to eq(1)
@@ -199,6 +212,31 @@ describe Gitlab::UsageData do
       allow(relation).to receive(:count).and_raise(ActiveRecord::StatementInvalid.new(''))
 
       expect(described_class.count(relation, fallback: 15)).to eq(15)
+    end
+  end
+
+  describe '#approximate_counts' do
+    it 'gets approximate counts for selected models' do
+      create(:label)
+
+      expect(Gitlab::Database::Count).to receive(:approximate_counts)
+        .with(described_class::APPROXIMATE_COUNT_MODELS).once.and_call_original
+
+      counts = described_class.approximate_counts.values
+
+      expect(counts.count).to eq(described_class::APPROXIMATE_COUNT_MODELS.count)
+      expect(counts.any? { |count| count < 0 }).to be_falsey
+    end
+
+    it 'returns default values if counts can not be retrieved' do
+      described_class::APPROXIMATE_COUNT_MODELS.map do |model|
+        model.name.underscore.pluralize.to_sym
+      end
+
+      expect(Gitlab::Database::Count).to receive(:approximate_counts)
+        .and_return({})
+
+      expect(described_class.approximate_counts.values.uniq).to eq([-1])
     end
   end
 end

@@ -11,7 +11,11 @@ export default class MergeRequestStore {
     this.setData(data);
   }
 
-  setData(data) {
+  setData(data, isRebased) {
+    if (isRebased) {
+      this.sha = data.diff_head_sha;
+    }
+
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
@@ -84,7 +88,7 @@ export default class MergeRequestStore {
     this.canMerge = !!data.merge_path;
     this.canCreateIssue = currentUser.can_create_issue || false;
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
-    this.hasSHAChanged = this.sha !== data.diff_head_sha;
+    this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;

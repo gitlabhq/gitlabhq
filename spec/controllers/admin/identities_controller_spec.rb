@@ -13,7 +13,7 @@ describe Admin::IdentitiesController do
     it 'repairs ldap blocks' do
       expect_any_instance_of(RepairLdapBlockedUserService).to receive(:execute)
 
-      put :update, user_id: user.username, id: user.ldap_identity.id, identity: { provider: 'twitter' }
+      put :update, params: { user_id: user.username, id: user.ldap_identity.id, identity: { provider: 'twitter' } }
     end
   end
 
@@ -23,7 +23,7 @@ describe Admin::IdentitiesController do
     it 'repairs ldap blocks' do
       expect_any_instance_of(RepairLdapBlockedUserService).to receive(:execute)
 
-      delete :destroy, user_id: user.username, id: user.ldap_identity.id
+      delete :destroy, params: { user_id: user.username, id: user.ldap_identity.id }
     end
   end
 end

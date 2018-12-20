@@ -180,7 +180,7 @@ ul.wiki-pages-list.content-list {
   }
 }
 
-.wiki {
+.wiki:not(.use-csslab) {
   table {
     @include markdown-table;
   }

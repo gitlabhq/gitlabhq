@@ -11,6 +11,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
+  before_action do
+    push_frontend_feature_flag(:area_chart, project)
+  end
+
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
@@ -122,7 +126,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       set_workhorse_internal_api_content_type
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
-      render text: 'Not found', status: :not_found
+      render html: 'Not found', status: :not_found
     end
   end
 

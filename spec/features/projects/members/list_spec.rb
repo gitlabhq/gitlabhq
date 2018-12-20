@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Project members list' do
   include Select2Helper
+  include Spec::Support::Helpers::Features::ListRowsHelpers
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
@@ -81,14 +82,6 @@ describe 'Project members list' do
       expect(page).to have_content('Invited')
       expect(page).to have_button('Reporter')
     end
-  end
-
-  def first_row
-    page.all('ul.content-list > li')[0]
-  end
-
-  def second_row
-    page.all('ul.content-list > li')[1]
   end
 
   def add_user(id, role)
