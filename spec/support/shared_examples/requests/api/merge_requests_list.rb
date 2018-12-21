@@ -123,7 +123,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an empty array if no issue matches milestone' do
-      get api(endpoint_path, user), milestone: '1.0.0'
+      get api(endpoint_path, user), params: { milestone: '1.0.0' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
@@ -131,7 +131,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an empty array if milestone does not exist' do
-      get api(endpoint_path, user), milestone: 'foo'
+      get api(endpoint_path, user), params: { milestone: 'foo' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
@@ -139,7 +139,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an array of merge requests in given milestone' do
-      get api(endpoint_path, user), milestone: '0.9'
+      get api(endpoint_path, user), params: { milestone: '0.9' }
 
       closed_issues = json_response.select { |mr| mr['id'] == merge_request_closed.id }
       expect(closed_issues.length).to eq(1)
@@ -147,7 +147,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an array of merge requests matching state in milestone' do
-      get api(endpoint_path, user), milestone: '0.9', state: 'closed'
+      get api(endpoint_path, user), params: { milestone: '0.9', state: 'closed' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
@@ -187,7 +187,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an array of merge requests with any label when filtering by any label' do
-      get api(endpoint_path, user), labels: IssuesFinder::FILTER_ANY
+      get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_ANY }
 
       expect_paginated_array_response
       expect(json_response.length).to eq(1)
@@ -195,7 +195,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an array of merge requests without a label when filtering by no label' do
-      get api(endpoint_path, user), labels: IssuesFinder::FILTER_NONE
+      get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_NONE }
 
       response_ids = json_response.map { |merge_request| merge_request['id'] }
 
@@ -286,7 +286,7 @@ shared_examples 'merge requests list' do
 
     context 'source_branch param' do
       it 'returns merge requests with the given source branch' do
-        get api(endpoint_path, user), source_branch: merge_request_closed.source_branch, state: 'all'
+        get api(endpoint_path, user), params: { source_branch: merge_request_closed.source_branch, state: 'all' }
 
         expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
       end
@@ -294,7 +294,7 @@ shared_examples 'merge requests list' do
 
     context 'target_branch param' do
       it 'returns merge requests with the given target branch' do
-        get api(endpoint_path, user), target_branch: merge_request_closed.target_branch, state: 'all'
+        get api(endpoint_path, user), params: { target_branch: merge_request_closed.target_branch, state: 'all' }
 
         expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
       end

@@ -43,9 +43,10 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   it 'issues/issue_list.html.raw' do |example|
     create(:issue, project: project)
 
-    get :index,
+    get :index, params: {
       namespace_id: project.namespace.to_param,
       project_id: project
+    }
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)
@@ -54,10 +55,11 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   private
 
   def render_issue(fixture_file_name, issue)
-    get :show,
+    get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: issue.to_param
+    }
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)
