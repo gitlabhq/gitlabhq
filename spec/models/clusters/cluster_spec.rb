@@ -29,6 +29,7 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
 
   it { is_expected.to respond_to :project }
 

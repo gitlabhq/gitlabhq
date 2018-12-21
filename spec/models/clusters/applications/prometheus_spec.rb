@@ -165,6 +165,10 @@ describe Clusters::Applications::Prometheus do
       expect(subject.files).to eq(prometheus.files)
     end
 
+    it 'should not install knative metrics' do
+      expect(subject.postinstall).to be_nil
+    end
+
     context 'on a rbac enabled cluster' do
       before do
         prometheus.cluster.platform_kubernetes.rbac!
@@ -178,6 +182,17 @@ describe Clusters::Applications::Prometheus do
 
       it 'should be initialized with the locked version' do
         expect(subject.version).to eq('6.7.3')
+      end
+    end
+
+    context 'with knative installed' do
+      let(:knative) { create(:clusters_applications_knative, :installed ) }
+      let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
+
+      subject { prometheus.install_command }
+
+      it 'should install metrics' do
+        expect(subject.postinstall).to include("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
       end
     end
   end
