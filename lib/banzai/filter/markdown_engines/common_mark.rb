@@ -32,14 +32,25 @@ module Banzai
           :DEFAULT # default rendering system. Nothing special.
         ].freeze
 
-        def initialize
-          @renderer = Banzai::Renderer::CommonMark::HTML.new(options: RENDER_OPTIONS)
+        RENDER_OPTIONS_SOURCEPOS = RENDER_OPTIONS + [
+          :SOURCEPOS # enable embedding of source position information
+        ].freeze
+
+        def initialize(context)
+          @context  = context
+          @renderer = Banzai::Renderer::CommonMark::HTML.new(options: render_options)
         end
 
         def render(text)
           doc = CommonMarker.render_doc(text, PARSE_OPTIONS, EXTENSIONS)
 
           @renderer.render(doc)
+        end
+
+        private
+
+        def render_options
+          @context&.dig(:no_sourcepos) ? RENDER_OPTIONS : RENDER_OPTIONS_SOURCEPOS
         end
       end
     end

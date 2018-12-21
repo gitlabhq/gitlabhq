@@ -10,6 +10,8 @@
 class MarkdownFeature
   include FactoryBot::Syntax::Methods
 
+  SOURCEPOS_REGEX = 'data-sourcepos="\d*:\d*-\d*:\d*"'.freeze
+
   attr_reader :fixture_path
 
   def initialize(fixture_path = Rails.root.join('spec/fixtures/markdown.md.erb'))

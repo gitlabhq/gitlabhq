@@ -73,7 +73,7 @@ module Banzai
         html = Banzai::Filter::MarkdownFilter.call(transform_markdown(match), context)
 
         # link is wrapped in a <p>, so strip that off
-        html.sub('<p>', '').chomp('</p>')
+        html.sub(/<p[^>]*>/, '').chomp('</p>')
       end
 
       def spaced_link_filter(text)

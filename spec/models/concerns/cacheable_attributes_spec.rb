@@ -177,7 +177,7 @@ describe CacheableAttributes do
           cache_record = Appearance.current
 
           expect(cache_record.description).to eq('**Hello**')
-          expect(cache_record.description_html).to eq('<p dir="auto"><strong>Hello</strong></p>')
+          expect(cache_record.description_html).to eq('<p data-sourcepos="1:1-1:9" dir="auto"><strong>Hello</strong></p>')
         end
       end
     end

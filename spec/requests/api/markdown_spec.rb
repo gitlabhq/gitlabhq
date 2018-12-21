@@ -15,7 +15,7 @@ describe API::Markdown do
         expect(response).to have_http_status(201)
         expect(response.headers["Content-Type"]).to eq("application/json")
         expect(json_response).to be_a(Hash)
-        expect(json_response["html"]).to eq("<p>#{text}</p>")
+        expect(json_response["html"]).to eq("<p data-sourcepos=\"1:1-1:28\">#{text}</p>")
       end
     end
 

@@ -193,7 +193,7 @@ describe IssuablesHelper do
         projectNamespace: @project.namespace.path,
         initialTitleHtml: issue.title,
         initialTitleText: issue.title,
-        initialDescriptionHtml: '<p dir="auto">issue text</p>',
+        initialDescriptionHtml: '<p data-sourcepos="1:1-1:10" dir="auto">issue text</p>',
         initialDescriptionText: 'issue text',
         initialTaskStatus: '0 of 0 tasks completed'
       }
