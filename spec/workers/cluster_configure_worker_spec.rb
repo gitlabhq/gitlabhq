@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ClusterPlatformConfigureWorker, '#perform' do
+describe ClusterConfigureWorker, '#perform' do
   let(:worker) { described_class.new }
 
   context 'when group cluster' do

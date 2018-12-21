@@ -13,7 +13,7 @@ module Clusters
         configure_kubernetes
         cluster.save!
 
-        ClusterPlatformConfigureWorker.perform_async(cluster.id)
+        ClusterConfigureWorker.perform_async(cluster.id)
 
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         log_service_error(e.class.name, provider.id, e.message)
