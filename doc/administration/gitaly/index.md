@@ -221,9 +221,14 @@ Gitaly supports TLS credentials for GRPC authentication. To be able to communica
 with a gitaly instance that listens for secure connections you will need to use `tls://` url
 scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.
 
+The admin needs to bring their own certificate as we do not provide that automatically.
+The certificate to be used needs to be installed on all gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+
 ### Example TLS configuration
 
-Omnibus installations:
+### Omnibus installations:
+
+#### On client nodes:
 
 ```ruby
 # /etc/gitlab/gitlab.rb
@@ -235,7 +240,17 @@ git_data_dirs({
 gitlab_rails['gitaly_token'] = 'abc123secret'
 ```
 
-Source installations:
+#### On gitaly server nodes:
+
+```ruby
+gitaly['tls_listen_addr'] = "0.0.0.0:9999"
+gitaly['certificate_path'] = "path/to/cert.pem"
+gitaly['key_path'] = "path/to/key.pem"
+```
+
+### Source installations:
+
+#### On client nodes:
 
 ```yaml
 # /home/git/gitlab/config/gitlab.yml
@@ -251,6 +266,17 @@ gitlab:
 
   gitaly:
     token: 'abc123secret'
+```
+
+#### On gitaly server nodes:
+
+```toml
+# /home/git/gitaly/config.toml
+tls_listen_addr = '0.0.0.0:9999'
+
+[tls]
+certificate_path = '/path/to/cert.pem'
+key_path = '/path/to/key.pem'
 ```
 
 ## Disabling or enabling the Gitaly service in a cluster environment

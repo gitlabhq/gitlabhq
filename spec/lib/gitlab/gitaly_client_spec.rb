@@ -3,6 +3,14 @@ require 'spec_helper'
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
 describe Gitlab::GitalyClient do
+  let(:sample_cert) { Rails.root.join('spec/fixtures/clusters/sample_cert.pem').to_s }
+
+  before do
+    allow(described_class)
+      .to receive(:stub_cert_paths)
+      .and_return([sample_cert])
+  end
+
   def stub_repos_storages(address)
     allow(Gitlab.config.repositories).to receive(:storages).and_return({
       'default' => { 'gitaly_address' => address }
