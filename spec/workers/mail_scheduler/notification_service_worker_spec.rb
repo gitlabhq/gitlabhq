@@ -17,10 +17,21 @@ describe MailScheduler::NotificationServiceWorker do
     end
 
     context 'when the arguments cannot be deserialized' do
-      it 'does nothing' do
-        expect(worker.notification_service).not_to receive(method)
+      context 'when the arguments are not deserializeable' do
+        it 'raises exception' do
+          expect(worker.notification_service).not_to receive(method)
+          expect { worker.perform(method, key.to_global_id.to_s.succ) }.to raise_exception(ArgumentError)
+        end
+      end
 
-        worker.perform(method, key.to_global_id.to_s.succ)
+      context 'when the arguments are deserializeable' do
+        it 'does nothing' do
+          serialized_arguments = *serialize(key)
+          key.destroy!
+
+          expect(worker.notification_service).not_to receive(method)
+          expect { worker.perform(method, serialized_arguments) }.not_to raise_exception
+        end
       end
     end
 

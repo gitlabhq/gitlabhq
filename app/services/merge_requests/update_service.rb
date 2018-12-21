@@ -45,11 +45,13 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('assignee_id')
+        reassigned_merge_request_args = [merge_request, current_user]
+
         old_assignee_id = merge_request.previous_changes['assignee_id'].first
-        old_assignee = User.find(old_assignee_id) if old_assignee_id
+        reassigned_merge_request_args << User.find(old_assignee_id) if old_assignee_id
 
         create_assignee_note(merge_request)
-        notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignee)
+        notification_service.async.reassigned_merge_request(*reassigned_merge_request_args)
         todo_service.reassigned_merge_request(merge_request, current_user)
       end
 
