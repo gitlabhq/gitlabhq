@@ -37,17 +37,17 @@ module QA
 
           def select_comments_only_filter
             click_element :discussion_filter
-            all_elements(:filter_options)[1].click
+            find_element(:filter_options, "Show comments only").click
           end
 
           def select_history_only_filter
             click_element :discussion_filter
-            all_elements(:filter_options).last.click
+            find_element(:filter_options, "Show history only").click
           end
 
           def select_all_activities_filter
             click_element :discussion_filter
-            all_elements(:filter_options).first.click
+            find_element(:filter_options, "Show all activity").click
           end
         end
       end
