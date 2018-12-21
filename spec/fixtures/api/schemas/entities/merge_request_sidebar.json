@@ -6,8 +6,6 @@
     "author_id": { "type": "integer" },
     "project_id": { "type": "integer" },
     "discussion_locked": { "type": ["boolean", "null"] },
-    "due_date": { "type": "date" },
-    "confidential": { "type": "boolean" },
     "reference": { "type": "string" },
     "current_user": {
       "allOf": [
@@ -25,12 +23,22 @@
     "milestone": {
       "oneOf": [
         { "type": "null" },
-        { "$ref": "../public_api/v4/milestone.json" }
+        { "$ref": "../public_api/v4/milestones.json" }
       ]
     },
     "labels": {
       "type": "array",
       "items": { "$ref": "label.json" }
+    },
+    "assignee": {
+      "allOf": [
+        { "$ref": "../public_api/v4/user/basic.json" },
+        { "type": "object",
+          "properties" : {
+            "can_merge": { "type": "boolean" }
+          }
+        }
+      ]
     },
     "issuable_json_path": { "type": "string" },
     "namespace_path": { "type": "string" },
@@ -43,5 +51,6 @@
     "toggle_subscription_path": { "type": "string" },
     "move_issue_path": { "type": "string" },
     "projects_autocomplete_path": { "type": "string" }
-  }
+  },
+  "additionalProperties": false
 }

@@ -1,0 +1,8 @@
+{
+  "type": ["object", "null"],
+  "properties" : {
+    "id": { "type": "integer" },
+    "delete_path": { "type": "string" }
+  },
+  "additionalProperties": false
+}

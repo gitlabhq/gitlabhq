@@ -1,32 +1,37 @@
-- todo = issuable_todo(issuable)
+-# `assignees` is being passed in for populating selected assignee values in the select box and rendering the assignee link
+  This should be removed when this sidebar is converted to Vue since assignee data is also available in the `issuable_sidebar` hash
 
-%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
-  .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
-    - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+- issuable_type = issuable_sidebar[:type]
+- signed_in = !!issuable_sidebar.dig(:current_user, :id)
+- can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
+
+%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: signed_in } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+  .issuable-sidebar
     .block.issuable-sidebar-header
-      - if current_user
+      - if signed_in
         %span.issuable-header-text.hide-collapsed.float-left
           = _('Todo')
       %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
-      - if current_user
-        = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
+      - if signed_in
+        = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar
 
-    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      - if current_user
+    = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
+      - if signed_in
         .block.todo.hide-expanded
-          = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
+          = render "shared/issuable/sidebar_todo", issuable_sidebar: issuable_sidebar, is_collapsed: true
       .block.assignee.qa-assignee-block
-        = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
+        = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees
 
-      = render_if_exists 'shared/issuable/sidebar_item_epic', issuable: issuable
+      = render_if_exists 'shared/issuable/sidebar_item_epic', issuable_sidebar: issuable_sidebar
 
+      - milestone = issuable_sidebar[:milestone] || {}
       .block.milestone
-        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
+        .sidebar-collapsed-icon.has-tooltip{ title: sidebar_milestone_tooltip_label(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title.collapse-truncated-title
-            - if issuable.milestone
-              = issuable.milestone.title
+            - if milestone.present?
+              = milestone[:title]
             - else
               = _('None')
         .title.hide-collapsed
@@ -35,49 +40,50 @@
           - if can_edit_issuable
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
-          - if issuable.milestone
-            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
+          - if milestone.present?
+            = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
           - else
             %span.no-value
               = _('None')
 
         .selectbox.hide-collapsed
-          = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
-          = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: project_milestones_path(@project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true, default_no: true, selected: (issuable.milestone.name if issuable.milestone), null_default: true, display: 'static' }})
-      - if issuable.has_attribute?(:time_estimate)
-        #issuable-time-tracker.block
-          // Fallback while content is loading
-          .title.hide-collapsed
-            = _('Time tracking')
-            = icon('spinner spin', 'aria-hidden': 'true')
-      - if issuable.has_attribute?(:due_date)
+          = f.hidden_field 'milestone_id', value: milestone[:id], id: nil
+          = dropdown_tag('Milestone', options: { title: _('Assign milestone'), toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: _('Search milestones'), data: { show_no: true, field_name: "#{issuable_type}[milestone_id]", project_id: issuable_sidebar[:project_id], issuable_id: issuable_sidebar[:id], milestones: issuable_sidebar[:project_milestones_path], ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], use_id: true, default_no: true, selected: milestone[:title], null_default: true, display: 'static' }})
+
+      #issuable-time-tracker.block
+        // Fallback while content is loading
+        .title.hide-collapsed
+          = _('Time tracking')
+          = icon('spinner spin', 'aria-hidden': 'true')
+
+      - if issuable_sidebar.has_key?(:due_date)
         .block.due_date
-          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable) }
+          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable_sidebar[:due_date]) }
             = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
-              = issuable.due_date.try(:to_s, :medium) || 'None'
+              = issuable_sidebar[:due_date].try(:to_s, :medium) || 'None'
           .title.hide-collapsed
             = _('Due date')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
-            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            - if can_edit_issuable
               = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
           .value.hide-collapsed
             %span.value-content
-              - if issuable.due_date
-                %span.bold= issuable.due_date.to_s(:medium)
+              - if issuable_sidebar[:due_date]
+                %span.bold= issuable_sidebar[:due_date].to_s(:medium)
               - else
                 %span.no-value
                   = _('No due date')
-            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable.due_date.nil?) }
+            - if can_edit_issuable
+              %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable_sidebar[:due_date].nil?) }
                 \-
                 %a.js-remove-due-date{ href: "#", role: "button" }
                   = _('remove due date')
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_edit_issuable
             .selectbox.hide-collapsed
-              = f.hidden_field :due_date, value: issuable.due_date.try(:strftime, 'yy-mm-dd')
+              = f.hidden_field :due_date, value: issuable_sidebar[:due_date].try(:strftime, 'yy-mm-dd')
               .dropdown
-                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), display: 'static' } }
+                %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable_type}[due_date]", ability_name: issuable_type, issue_update: issuable_sidebar[:issuable_json_path], display: 'static' } }
                   %span.dropdown-toggle-text
                     = _('Due date')
                   = icon('chevron-down', 'aria-hidden': 'true')
@@ -86,56 +92,56 @@
                   = dropdown_content do
                     .js-due-date-calendar
 
-      - if @labels
-        - selected_labels = issuable.labels
-        .block.labels
-          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body", boundary: 'viewport' } }
-            = icon('tags', 'aria-hidden': 'true')
-            %span
-              = selected_labels.size
-          .title.hide-collapsed
-            = _('Labels')
-            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
-            - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
-          .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
-            - if selected_labels.any?
-              - selected_labels.each do |label|
-                = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)
-            - else
-              %span.no-value
-                = _('None')
-          .selectbox.hide-collapsed
+      - selected_labels = issuable_sidebar[:labels]
+      .block.labels
+        .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(selected_labels), data: { placement: "left", container: "body", boundary: 'viewport' } }
+          = icon('tags', 'aria-hidden': 'true')
+          %span
+            = selected_labels.size
+        .title.hide-collapsed
+          = _('Labels')
+          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
+          - if can_edit_issuable
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
+        .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
+          - if selected_labels.any?
             - selected_labels.each do |label|
-              = hidden_field_tag "#{issuable.to_ability_name}[label_names][]", label.id, id: nil
-            .dropdown
-              %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (labels_filter_path_with_defaults if @project), display: 'static' } }
-                %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
-                  = multi_label_name(selected_labels, "Labels")
-                = icon('chevron-down', 'aria-hidden': 'true')
-              .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
-                = render partial: "shared/issuable/label_page_default"
-                - if can? current_user, :admin_label, @project and @project
-                  = render partial: "shared/issuable/label_page_create"
+              = link_to sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label[:title]) do
+                %span.badge.color-label.has-tooltip{ style: "background-color: #{label[:color]}; color: #{label[:text_color]}", title: label[:description], data: { container: "body" } }
+                  = label[:title]
+          - else
+            %span.no-value
+              = _('None')
+        .selectbox.hide-collapsed
+          - selected_labels.each do |label|
+            = hidden_field_tag "#{issuable_type}[label_names][]", label[:id], id: nil
+          .dropdown
+            %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable_type}[label_names][]", ability_name: issuable_type, show_no: "true", show_any: "true", namespace_path: issuable_sidebar[:namespace_path], project_path: issuable_sidebar[:project_path], issue_update: issuable_sidebar[:issuable_json_path], labels: issuable_sidebar[:project_labels_path], display: 'static' } }
+              %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
+                = multi_label_name(selected_labels, "Labels")
+              = icon('chevron-down', 'aria-hidden': 'true')
+            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+              = render partial: "shared/issuable/label_page_default"
+              - if issuable_sidebar.dig(:current_user, :can_admin_label)
+                = render partial: "shared/issuable/label_page_create"
 
-      = render_if_exists 'shared/issuable/sidebar_weight', issuable: issuable
+      = render_if_exists 'shared/issuable/sidebar_weight', issuable_sidebar: issuable_sidebar
 
-      - if issuable.has_attribute?(:confidential)
+      - if issuable_sidebar.has_key?(:confidential)
         -# haml-lint:disable InlineJavaScript
-        %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
+        %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
-      - if issuable.has_attribute?(:discussion_locked)
-        -# haml-lint:disable InlineJavaScript
-        %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
-        #js-lock-entry-point
+      -# haml-lint:disable InlineJavaScript
+      %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable_sidebar[:discussion_locked], is_editable: can_edit_issuable }.to_json.html_safe
+      #js-lock-entry-point
 
       .js-sidebar-participants-entry-point
 
-      - if current_user
+      - if signed_in
         .js-sidebar-subscriptions-entry-point
 
-      - project_ref = cross_project_reference(@project, issuable)
+      - project_ref = issuable_sidebar[:reference]
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
           = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
@@ -145,7 +151,8 @@
             %cite{ title: project_ref }
               = project_ref
           = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
-      - if current_user && issuable.can_move?(current_user)
+
+      - if issuable_sidebar.dig(:current_user, :can_move)
         .block.js-sidebar-move-issue-block
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
             = custom_icon('icon_arrow_right')
@@ -164,4 +171,4 @@
                   = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 
     -# haml-lint:disable InlineJavaScript
-    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe
+    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable_sidebar).to_json.html_safe

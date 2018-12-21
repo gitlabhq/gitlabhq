@@ -1,12 +1,17 @@
-- if issuable.is_a?(Issue)
-  #js-vue-sidebar-assignees{ data: { field: "#{issuable.to_ability_name}[assignee_ids]", signed_in: signed_in } }
+- issuable_type = issuable_sidebar[:type]
+- signed_in = !!issuable_sidebar.dig(:current_user, :id)
+- can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
+
+- if issuable_type == "issue"
+  #js-vue-sidebar-assignees{ data: { field: "#{issuable_type}[assignee_ids]", signed_in: signed_in } }
     .title.hide-collapsed
       = _('Assignee')
       = icon('spinner spin')
 - else
-  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body", boundary: 'viewport' }, title: sidebar_assignee_tooltip_label(issuable) }
-    - if issuable.assignee
-      = link_to_member(@project, issuable.assignee, size: 24)
+  - assignee = assignees.first
+  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body", boundary: 'viewport' }, title: (issuable_sidebar.dig(:assignee, :name) || _('Assignee')) }
+    - if issuable_sidebar[:assignee]
+      = link_to_member(@project, assignee, size: 24)
     - else
       = icon('user', 'aria-hidden': 'true')
   .title.hide-collapsed
@@ -18,13 +23,13 @@
       %a.gutter-toggle.float-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => _('Toggle sidebar') }
         = sidebar_gutter_toggle_icon
   .value.hide-collapsed
-    - if issuable.assignee
-      = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
-        - if !issuable.can_be_merged_by?(issuable.assignee)
+    - if issuable_sidebar[:assignee]
+      = link_to_member(@project, assignee, size: 32, extra_class: 'bold') do
+        - if issuable_sidebar[:assignee][:can_merge]
           %span.float-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: _('Not allowed to merge') }
             = icon('exclamation-triangle', 'aria-hidden': 'true')
         %span.username
-          = issuable.assignee.to_reference
+          @#{issuable_sidebar[:assignee][:username]}
     - else
       %span.assign-yourself.no-value
         = _('No assignee')
@@ -34,19 +39,33 @@
             = _('assign yourself')
 
 .selectbox.hide-collapsed
-  - issuable.assignees.each do |assignee|
-    = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
+  - if assignees.none?
+    = hidden_field_tag "#{issuable_type}[assignee_ids][]", 0, id: nil
+  - else
+    - assignees.each do |assignee|
+      = hidden_field_tag "#{issuable_type}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
 
-  - options = { toggle_class: 'js-user-search js-author-search', title: _('Assign to'), filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: _('Search users'), data: { first_user: current_user&.username, current_user: true, project_id: @project&.id, author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, display: 'static' } }
+  - options = { toggle_class: 'js-user-search js-author-search',
+    title: _('Assign to'),
+    filter: true,
+    dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author',
+    placeholder: _('Search users'),
+    data: { first_user: issuable_sidebar.dig(:current_user, :username),
+      current_user: true,
+      project_id: issuable_sidebar[:project_id],
+      author_id: issuable_sidebar[:author_id],
+      field_name: "#{issuable_type}[assignee_ids][]",
+      issue_update: issuable_sidebar[:issuable_json_path],
+      ability_name: issuable_type,
+      null_user: true,
+      display: 'static' } }
   - title = _('Select assignee')
 
-  - if issuable.is_a?(Issue)
-    - unless issuable.assignees.any?
-      = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
+  - if issuable_type == "issue"
     - dropdown_options = issue_assignees_dropdown_options
     - title = dropdown_options[:title]
     - options[:toggle_class] += ' js-multiselect js-save-user-data'
-    - data = { field_name: "#{issuable.to_ability_name}[assignee_ids][]" }
+    - data = { field_name: "#{issuable_type}[assignee_ids][]" }
     - data[:multi_select] = true
     - data['dropdown-title'] = title
     - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']

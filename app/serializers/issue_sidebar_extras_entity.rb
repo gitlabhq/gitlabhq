@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class IssueSidebarEntity < IssuableSidebarEntity
+class IssueSidebarExtrasEntity < IssuableSidebarExtrasEntity
   expose :assignees, using: API::Entities::UserBasic
 end
