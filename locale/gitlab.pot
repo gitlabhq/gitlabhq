@@ -525,6 +525,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occured while fetching the releases. Please try again."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -3172,6 +3175,9 @@ msgstr ""
 msgid "Geo"
 msgstr ""
 
+msgid "Getting started with releases"
+msgstr ""
+
 msgid "Git"
 msgstr ""
 
@@ -3756,7 +3762,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed in"
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
@@ -4090,9 +4096,6 @@ msgstr ""
 msgid "Merge Request"
 msgstr ""
 
-msgid "Merge Request:"
-msgstr ""
-
 msgid "Merge Requests"
 msgstr ""
 
@@ -4123,6 +4126,9 @@ msgstr ""
 msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
+msgid "MergeRequests|commented on commit %{linkStart}%{commitId}%{linkEnd}"
+msgstr ""
+
 msgid "MergeRequests|started a discussion"
 msgstr ""
 
@@ -4130,6 +4136,9 @@ msgid "MergeRequests|started a discussion on %{linkStart}an old version of the d
 msgstr ""
 
 msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
@@ -4626,6 +4635,9 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
+msgstr ""
+
+msgid "Open Documentation"
 msgstr ""
 
 msgid "Open in Xcode"
@@ -5525,6 +5537,9 @@ msgid "Related merge requests"
 msgstr ""
 
 msgid "Releases"
+msgstr ""
+
+msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
 
 msgid "Remind later"
@@ -7137,10 +7152,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trigger"
+msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Trigger this manual action"
+msgid "Trigger token:"
+msgstr ""
+
+msgid "Trigger variables:"
 msgstr ""
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
@@ -7342,9 +7360,6 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
-msgstr ""
-
-msgid "Variables:"
 msgstr ""
 
 msgid "Various container registry settings."
@@ -7874,6 +7889,9 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in"
 msgstr ""
 
 msgid "issue boards"

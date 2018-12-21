@@ -1,0 +1,5 @@
+---
+title: Hide cluster features that don't work yet with Group Clusters
+merge_request: 23935
+author:
+type: fixed

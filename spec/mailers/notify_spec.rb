@@ -890,22 +890,14 @@ describe Notify do
       shared_examples 'an email for a note on a diff discussion' do  |model|
         let(:note) { create(model, author: note_author) }
 
-        context 'when note is on image' do
+        context 'when note is not on text' do
           before do
-            allow_any_instance_of(DiffDiscussion).to receive(:on_image?).and_return(true)
+            allow_any_instance_of(DiffDiscussion).to receive(:on_text?).and_return(false)
           end
 
           it 'does not include diffs with character-level highlighting' do
             is_expected.not_to have_body_text '<span class="p">}</span></span>'
           end
-
-          it 'ends the intro with a dot' do
-            is_expected.to have_body_text "#{note.diff_file.file_path}</a>."
-          end
-        end
-
-        it 'ends the intro with a colon' do
-          is_expected.to have_body_text "#{note.diff_file.file_path}</a>:"
         end
 
         it 'includes diffs with character-level highlighting' do

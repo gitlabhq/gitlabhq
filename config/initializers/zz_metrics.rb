@@ -1,3 +1,6 @@
+# This file was prefixed with zz_ because we want to load it the last!
+# See: https://gitlab.com/gitlab-org/gitlab-ce/issues/55611
+
 # Autoload all classes that we want to instrument, and instrument the methods we
 # need. This takes the Gitlab::Metrics::Instrumentation module as an argument so
 # that we can stub it for testing, as it is only called when metrics are

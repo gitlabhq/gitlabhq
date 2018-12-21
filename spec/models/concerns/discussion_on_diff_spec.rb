@@ -50,11 +50,17 @@ describe DiscussionOnDiff do
     end
 
     context "when the diff line does not exist on a legacy diff note" do
+      subject { create(:legacy_diff_note_on_merge_request).to_discussion }
+
       it "returns an empty array" do
-        legacy_note = LegacyDiffNote.new
+        expect(truncated_lines).to eq([])
+      end
+    end
 
-        allow(subject).to receive(:first_note).and_return(legacy_note)
+    context 'when the discussion is on an image' do
+      subject { create(:image_diff_note_on_merge_request).to_discussion }
 
+      it 'returns an empty array' do
         expect(truncated_lines).to eq([])
       end
     end

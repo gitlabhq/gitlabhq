@@ -31,12 +31,12 @@ export default {
       block: !isLastBlock,
     }"
   >
-    <p>
-      {{ __('Commit') }}
+    <p class="append-bottom-5">
+      <span class="font-weight-bold">{{ __('Commit') }}</span>
 
-      <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">{{
-        commit.short_id
-      }}</gl-link>
+      <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">
+        {{ commit.short_id }}
+      </gl-link>
 
       <clipboard-button
         :text="commit.short_id"
@@ -44,11 +44,14 @@ export default {
         css-class="btn btn-clipboard btn-transparent"
       />
 
-      <gl-link v-if="mergeRequest" :href="mergeRequest.path" class="js-link-commit link-commit"
-        >!{{ mergeRequest.iid }}</gl-link
-      >
+      <span v-if="mergeRequest">
+        {{ __('in') }}
+        <gl-link :href="mergeRequest.path" class="js-link-commit link-commit"
+          >!{{ mergeRequest.iid }}</gl-link
+        >
+      </span>
     </p>
 
-    <p class="build-light-text append-bottom-0">{{ commit.title }}</p>
+    <p class="append-bottom-0">{{ commit.title }}</p>
   </div>
 </template>

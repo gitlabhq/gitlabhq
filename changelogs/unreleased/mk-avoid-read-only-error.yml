@@ -1,0 +1,5 @@
+---
+title: Prevent admins from attempting hashed storage migration on read only DB
+merge_request: 23597
+author:
+type: fixed

@@ -37,5 +37,9 @@ module Gitlab
     def pick_repository_storage
       repository_storages.sample
     end
+
+    def commit_email_hostname
+      super.presence || ApplicationSetting.default_commit_email_hostname
+    end
   end
 end

@@ -584,15 +584,17 @@ osx job:
 
 ## `allow_failure`
 
-`allow_failure` is used when you want to allow a job to fail without impacting
-the rest of the CI suite. Failed jobs don't contribute to the commit status.
+`allow_failure` allows a job to fail without impacting the rest of the CI
+suite.
 The default value is `false`, except for [manual](#whenmanual) jobs.
 
-When enabled and the job fails, the pipeline will be successful/green for all
-intents and purposes, but a "CI build passed with warnings" message  will be
-displayed on the merge request or commit or job page. This is to be used by
-jobs that are allowed to fail, but where failure indicates some other (manual)
-steps should be taken elsewhere.
+When enabled and the job fails, the job will show an orange warning in the UI.
+However, the logical flow of the pipeline will consider the job a
+success/passed, and is not blocked.
+
+Assuming all other jobs are successful, the job's stage and its pipeline will
+show the same orange warning. However, the associated commit will be marked
+"passed", without warnings.
 
 In the example below, `job1` and `job2` will run in parallel, but if `job1`
 fails, it will not stop the next stage from running, since it's marked with
@@ -624,7 +626,8 @@ failure.
 `when` can be set to one of the following values:
 
 1. `on_success` - execute job only when all jobs from prior stages
-    succeed. This is the default.
+    succeed (or are considered succeeding because they are marked
+    `allow_failure`). This is the default.
 1. `on_failure` - execute job only when at least one job from prior stages
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.

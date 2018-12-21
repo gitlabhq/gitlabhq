@@ -43,23 +43,24 @@ export default {
 
 <template>
   <div class="build-widget block">
-    <h4 class="title">{{ __('Trigger') }}</h4>
-
     <p
       v-if="trigger.short_token"
       class="js-short-token"
-      :class="{ 'append-bottom-0': !hasVariables }"
+      :class="{ 'append-bottom-5': hasVariables, 'append-bottom-0': !hasVariables }"
     >
-      <span class="build-light-text"> {{ __('Token') }} </span> {{ trigger.short_token }}
+      <span class="font-weight-bold">{{ __('Trigger token:') }}</span> {{ trigger.short_token }}
     </p>
 
     <template v-if="hasVariables">
       <p class="trigger-variables-btn-container">
-        <span class="build-light-text"> {{ __('Variables:') }} </span>
+        <span class="font-weight-bold">{{ __('Trigger variables:') }}</span>
 
-        <gl-button v-if="hasValues" class="group js-reveal-variables" @click="toggleValues">
-          {{ getToggleButtonText }}
-        </gl-button>
+        <gl-button
+          v-if="hasValues"
+          class="btn-sm group js-reveal-variables trigger-variables-btn"
+          @click="toggleValues"
+          >{{ getToggleButtonText }}</gl-button
+        >
       </p>
 
       <table class="js-build-variables trigger-build-variables">

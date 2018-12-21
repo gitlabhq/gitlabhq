@@ -1,0 +1,5 @@
+---
+title: Stop autofocusing on diff comment after initial mount
+merge_request: 23849
+author:
+type: fixed

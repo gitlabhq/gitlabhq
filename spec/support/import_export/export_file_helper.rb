@@ -133,6 +133,6 @@ module ExportFileHelper
   end
 
   def file_permissions(file)
-    File.stat(file).mode & 0777
+    File.lstat(file).mode & 0777
   end
 end

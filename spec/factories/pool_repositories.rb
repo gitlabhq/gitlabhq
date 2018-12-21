@@ -15,6 +15,10 @@ FactoryBot.define do
       state :failed
     end
 
+    trait :obsolete do
+      state :obsolete
+    end
+
     trait :ready do
       state :ready
 

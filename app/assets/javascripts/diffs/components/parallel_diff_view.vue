@@ -43,14 +43,14 @@ export default {
       <tbody>
         <template v-for="(line, index) in diffLines">
           <parallel-diff-table-row
-            :key="index"
+            :key="line.line_code"
             :file-hash="diffFile.file_hash"
             :context-lines-path="diffFile.context_lines_path"
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
           />
           <parallel-diff-comment-row
-            :key="`dcr-${index}`"
+            :key="`dcr-${line.line_code || index}`"
             :line="line"
             :diff-file-hash="diffFile.file_hash"
             :line-index="index"

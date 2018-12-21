@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.5 (2018-12-20)
+
+### Security (1 change)
+
+- Fix persistent symlink in project import.
+
+
 ## 11.5.3 (2018-12-06)
 
 ### Security (1 change)
@@ -626,6 +633,13 @@ entry.
 - Log project services errors when executing async.
 - Update docs regarding frozen string. (gfyoung)
 - Check frozen string in style builds. (gfyoung)
+
+
+## 11.3.14 (2018-12-20)
+
+### Security (1 change)
+
+- Fix persistent symlink in project import.
 
 
 ## 11.3.13 (2018-12-13)

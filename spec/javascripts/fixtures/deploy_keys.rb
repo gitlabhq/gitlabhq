@@ -33,10 +33,10 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
     create(:deploy_keys_project, project: project3, deploy_key: project_key)
     create(:deploy_keys_project, project: project4, deploy_key: project_key)
 
-    get :index,
+    get :index, params: {
       namespace_id: project.namespace.to_param,
-      project_id: project,
-      format: :json
+      project_id: project
+    }, format: :json
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

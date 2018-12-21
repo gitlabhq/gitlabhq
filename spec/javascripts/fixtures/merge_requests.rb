@@ -112,21 +112,21 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   private
 
   def render_discussions_json(merge_request, fixture_file_name)
-    get :discussions,
+    get :discussions, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
-      id: merge_request.to_param,
-      format: :json
+      id: merge_request.to_param
+    }, format: :json
 
     store_frontend_fixture(response, fixture_file_name)
   end
 
   def render_merge_request(fixture_file_name, merge_request)
-    get :show,
+    get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
-      id: merge_request.to_param,
-      format: :html
+      id: merge_request.to_param
+    }, format: :html
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)
