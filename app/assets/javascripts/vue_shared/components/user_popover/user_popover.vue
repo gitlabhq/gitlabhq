@@ -1,6 +1,5 @@
 <script>
 import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
 import UserAvatarImage from '../user_avatar/user_avatar_image.vue';
 import { glEmojiTag } from '../../../emoji';
 
@@ -28,23 +27,6 @@ export default {
     },
   },
   computed: {
-    jobLine() {
-      if (this.user.bio && this.user.organization) {
-        return sprintf(
-          __('%{bio} at %{organization}'),
-          {
-            bio: this.user.bio,
-            organization: this.user.organization,
-          },
-          false,
-        );
-      } else if (this.user.bio) {
-        return this.user.bio;
-      } else if (this.user.organization) {
-        return this.user.organization;
-      }
-      return null;
-    },
     statusHtml() {
       if (this.user.status.emoji && this.user.status.message) {
         return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message}`;
@@ -86,7 +68,8 @@ export default {
           <gl-skeleton-loading v-else :lines="1" class="animation-container-small mb-1" />
         </div>
         <div class="text-secondary">
-          {{ jobLine }}
+          <div v-if="user.bio" class="js-bio">{{ user.bio }}</div>
+          <div v-if="user.organization" class="js-organization">{{ user.organization }}</div>
           <gl-skeleton-loading
             v-if="jobInfoIsLoading"
             :lines="1"
