@@ -31,7 +31,7 @@ To run Knative on Gitlab, you will need:
     external IP address for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
     external IP address for that domain.
-1. **`gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
+1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
     to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
     deployment of knative services and functions.
 1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
@@ -81,7 +81,7 @@ you to focus on a single task that can be executed/scaled automatically and inde
 
 In order to deploy functions to your Knative instance, the following templates must be present:
 
-1. `gitlab-ci.yml`: This template allows to define the stage, environment, and
+1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
 
    ```yaml
