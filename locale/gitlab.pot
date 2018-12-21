@@ -4138,6 +4138,9 @@ msgstr ""
 msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
 msgstr ""
 
+msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
+msgstr ""
+
 msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
