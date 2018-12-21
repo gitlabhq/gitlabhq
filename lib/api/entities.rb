@@ -1099,6 +1099,20 @@ module API
       expose :created_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit
+
+      expose :assets do
+        expose :assets_count, as: :count
+        expose :links
+        expose :sources do |release, _opts|
+          archive_path = "#{release.project.path}-#{release.tag.tr('/', '-')}"
+          release.sources_formats.map do |format|
+            {
+              format: format,
+              url: Gitlab::Routing.url_helpers.project_archive_url(release.project, id: File.join(release.tag, archive_path), format: format)
+            }
+          end
+        end
+      end
     end
 
     class Tag < Grape::Entity

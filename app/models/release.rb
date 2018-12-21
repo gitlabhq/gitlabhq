@@ -17,4 +17,17 @@ class Release < ActiveRecord::Base
     git_tag = repository.find_tag(tag)
     repository.commit(git_tag.dereferenced_target)
   end
+
+  def sources_formats
+    @sources_formats ||= %w(zip tar.gz tar.bz2 tar).freeze
+  end
+
+  # TODO: placeholder for frontend API compatibility
+  def links
+    []
+  end
+
+  def assets_count
+    links.size + sources_formats.size
+  end
 end
