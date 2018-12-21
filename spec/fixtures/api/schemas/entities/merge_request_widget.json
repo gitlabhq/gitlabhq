@@ -120,7 +120,9 @@
     "rebase_path": { "type": ["string", "null"] },
     "squash": { "type": "boolean" },
     "test_reports_path": { "type": ["string", "null"] },
-    "can_receive_suggestion": { "type": "boolean" }
+    "can_receive_suggestion": { "type": "boolean" },
+    "source_branch_protected": { "type": "boolean" },
+    "conflicts_docs_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }
