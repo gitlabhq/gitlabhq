@@ -15,6 +15,10 @@ class Release < ActiveRecord::Base
 
   delegate :repository, to: :project
 
+  def self.by_tag(project, tag)
+    self.find_by(project: project, tag: tag)
+  end
+
   def commit
     git_tag = repository.find_tag(tag)
     repository.commit(git_tag.dereferenced_target)

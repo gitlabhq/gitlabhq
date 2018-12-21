@@ -6,12 +6,17 @@ describe CreateReleaseService do
   let(:tag_name) { project.repository.tag_names.first }
   let(:name) { 'Bionic Beaver'}
   let(:description) { 'Awesome release!' }
-  let(:service) { described_class.new(project, user) }
+  let(:params) { { tag: tag_name, name: name, description: description } }
+  let(:service) { described_class.new(project, user, params) }
   let(:ref) { nil }
+
+  before do
+    project.add_maintainer(user)
+  end
 
   shared_examples 'a successful release creation' do
     it 'creates a new release' do
-      result = service.execute(tag_name, description, name: name, ref: ref)
+      result = service.execute(ref)
       expect(result[:status]).to eq(:success)
       release = project.releases.find_by(tag: tag_name)
       expect(release).not_to be_nil
@@ -24,14 +29,16 @@ describe CreateReleaseService do
   it_behaves_like 'a successful release creation'
 
   it 'raises an error if the tag does not exist' do
-    result = service.execute("foobar", description)
+    service.params[:tag] = 'foobar'
+
+    result = service.execute
     expect(result[:status]).to eq(:error)
   end
 
   it 'keeps track of the commit sha' do
     tag = project.repository.find_tag(tag_name)
     sha = tag.dereferenced_target.sha
-    result = service.execute(tag_name, description, name: name)
+    result = service.execute
 
     expect(result[:status]).to eq(:success)
     expect(project.releases.find_by(tag: tag_name).sha).to eq(sha)
@@ -46,7 +53,7 @@ describe CreateReleaseService do
     it 'creates a tag if the tag does not exist' do
       expect(project.repository.ref_exists?("refs/tags/#{tag_name}")).to be_falsey
 
-      result = service.execute(tag_name, description, name: name, ref: ref)
+      result = service.execute(ref)
       expect(result[:status]).to eq(:success)
       expect(project.repository.ref_exists?("refs/tags/#{tag_name}")).to be_truthy
 
@@ -57,11 +64,13 @@ describe CreateReleaseService do
 
   context 'there already exists a release on a tag' do
     before do
-      service.execute(tag_name, description)
+      service.execute
     end
 
     it 'raises an error and does not update the release' do
-      result = service.execute(tag_name, 'The best release!')
+      service.params[:description] = 'The best release!'
+
+      result = service.execute
       expect(result[:status]).to eq(:error)
       expect(project.releases.find_by(tag: tag_name).description).to eq(description)
     end

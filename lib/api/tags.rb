@@ -60,8 +60,10 @@ module API
         if result[:status] == :success
           # Release creation with Tags API was deprecated in GitLab 11.7
           if params[:release_description].present?
-            CreateReleaseService.new(user_project, current_user)
-              .execute(params[:tag_name], params[:release_description])
+            CreateReleaseService.new(
+              user_project, current_user,
+              tag: params[:tag_name], description: params[:release_description]
+            ).execute
           end
 
           present result[:tag],
@@ -99,14 +101,16 @@ module API
         success Entities::TagRelease
       end
       params do
-        requires :tag_name,    type: String, desc: 'The name of the tag'
+        requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
       post ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize_create_release!
 
-        result = CreateReleaseService.new(user_project, current_user)
-          .execute(params[:tag_name], params[:description])
+        attributes = declared(params)
+        attributes.delete(:id)
+        result = CreateReleaseService.new(user_project, current_user, attributes)
+          .execute
 
         if result[:status] == :success
           present result[:release], with: Entities::TagRelease
@@ -129,7 +133,7 @@ module API
         result = UpdateReleaseService.new(
           user_project,
           current_user,
-          params[:tag_name],
+          tag: params[:tag_name],
           description: params[:description]
         ).execute
 

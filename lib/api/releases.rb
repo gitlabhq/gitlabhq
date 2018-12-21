@@ -46,15 +46,19 @@ module API
       end
       params do
         requires :name,                type: String, desc: 'The name of the release'
-        requires :tag_name,            type: String, desc: 'The name of the tag'
+        requires :tag_name,            type: String, desc: 'The name of the tag', as: :tag
         requires :description,         type: String, desc: 'The release notes'
         optional :ref,                 type: String, desc: 'The commit sha or branch name'
       end
       post ':id/releases' do
         authorize_create_release!
 
-        result = ::CreateReleaseService.new(user_project, current_user)
-          .execute(params[:tag_name], params[:description], params[:name], params[:ref])
+        attributes = declared(params)
+        ref = attributes.delete(:ref)
+        attributes.delete(:id)
+
+        result = ::CreateReleaseService.new(user_project, current_user, attributes)
+          .execute(ref)
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
@@ -68,7 +72,7 @@ module API
         success Entities::Release
       end
       params do
-        requires :tag_name,    type: String, desc: 'The name of the tag'
+        requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
         requires :name,        type: String, desc: 'The name of the release'
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
@@ -76,8 +80,8 @@ module API
         authorize_update_release!
 
         attributes = declared(params)
-        tag = attributes.delete(:tag_name)
-        result = UpdateReleaseService.new(user_project, current_user, tag, attributes).execute
+        attributes.delete(:id)
+        result = UpdateReleaseService.new(user_project, current_user, attributes).execute
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
