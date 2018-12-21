@@ -1,6 +1,0 @@
----
-title: 'Auto DevOps: Add echo for each branch of the deploy() function where we run
-  helm upgrade'
-merge_request: 23499
-author:
-type: changed

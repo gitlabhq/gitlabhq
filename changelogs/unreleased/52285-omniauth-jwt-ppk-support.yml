@@ -1,5 +1,0 @@
----
-title: Support RSA and ECDSA algorithms in Omniauth JWT provider
-merge_request: 23411
-author: Michael Tsyganov
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Do not follow redirects in Prometheus service when making http requests to the configured api url
-merge_request:
-author:
-type: security

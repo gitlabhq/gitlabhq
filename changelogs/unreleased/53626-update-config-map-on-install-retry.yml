@@ -1,5 +1,0 @@
----
-title: Update config map for gitlab managed application if already present on install
-merge_request: 22969
-author:
-type: other

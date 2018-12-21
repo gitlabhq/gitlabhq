@@ -1,5 +1,0 @@
----
-title: Remove duplicate primary button in dashboard snippets on small viewports
-merge_request: 22902
-author: George Tsiolis
-type: fixed
