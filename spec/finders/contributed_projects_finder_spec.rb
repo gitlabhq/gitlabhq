@@ -31,4 +31,16 @@ describe ContributedProjectsFinder do
 
     it { is_expected.to match_array([private_project, internal_project, public_project]) }
   end
+
+  context 'user with private profile' do
+    it 'does not return contributed projects' do
+      private_user = create(:user, private_profile: true)
+      public_project.add_maintainer(private_user)
+      create(:push_event, project: public_project, author: private_user)
+
+      projects = described_class.new(private_user).execute(current_user)
+
+      expect(projects).to be_empty
+    end
+  end
 end
