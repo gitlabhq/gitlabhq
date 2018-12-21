@@ -20,7 +20,7 @@
 
 
 <%  end -%>
-<%  if discussion&.diff_discussion? -%>
+<%  if discussion&.diff_discussion? && discussion.on_text? -%>
 <%    discussion.truncated_diff_lines(highlight: false, diff_limit: diff_limit).each do |line| -%>
 <%=     "> #{line.text}\n" -%>
 <%    end -%>

@@ -20,7 +20,7 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
 
     context 'with default params' do
@@ -89,7 +89,7 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/popen.rb' }

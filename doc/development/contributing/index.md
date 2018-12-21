@@ -3,7 +3,8 @@
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
-We want to create a welcoming environment for everyone who is interested in contributing. Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
+We want to create a welcoming environment for everyone who is interested in contributing.
+Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
 
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
@@ -92,9 +93,9 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-## Workflow labels
+## Issues
 
-This [documentation](issue_workflow.md) outlines the current workflow labels.
+This [documentation](issue_workflow.md) outlines the current issue process.
 
 * [Type labels](issue_workflow.md#type-labels)
 * [Subject labels](issue_workflow.md#subject-labels)
@@ -128,6 +129,6 @@ This [documentation](style_guides.md) outlines the current style guidelines.
 [Return to Development documentation](../README.md)
 
 [core team]: https://about.gitlab.com/core-team/
-[team]: https://about.gitlab.com/team/
+[team]: https://about.gitlab.com/company/team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq

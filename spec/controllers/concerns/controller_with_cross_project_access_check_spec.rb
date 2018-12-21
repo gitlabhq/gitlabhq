@@ -70,7 +70,7 @@ describe ControllerWithCrossProjectAccessCheck do
       end
 
       it 'correctly renders an action that does not require cross project access' do
-        get :show, id: 'nothing'
+        get :show, params: { id: 'nothing' }
 
         expect(response).to have_gitlab_http_status(200)
       end
@@ -131,13 +131,13 @@ describe ControllerWithCrossProjectAccessCheck do
       end
 
       it 'does not skip the check on an action that is not skipped' do
-        get :show, id: 'hello'
+        get :show, params: { id: 'hello' }
 
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not skip the check on an action that was not defined to skip' do
-        get :edit, id: 'hello'
+        get :edit, params: { id: 'hello' }
 
         expect(response).to have_gitlab_http_status(403)
       end

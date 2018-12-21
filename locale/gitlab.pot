@@ -525,6 +525,9 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
+msgid "An error occured while fetching the releases. Please try again."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -1497,6 +1500,9 @@ msgstr ""
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters."
+msgstr ""
+
 msgid "ClusterIntegration|Copy API URL"
 msgstr ""
 
@@ -1537,6 +1543,15 @@ msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgstr ""
+
+msgid "ClusterIntegration|Failed to configure Google Kubernetes Engine Cluster: %{message}"
+msgstr ""
+
+msgid "ClusterIntegration|Failed to request to Google Cloud Platform: %{message}"
+msgstr ""
+
+msgid "ClusterIntegration|Failed to run Kubeclient: %{message}"
 msgstr ""
 
 msgid "ClusterIntegration|Fetching machine types"
@@ -2668,6 +2683,9 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
+msgid "Empty file"
+msgstr ""
+
 msgid "Enable"
 msgstr ""
 
@@ -3155,6 +3173,9 @@ msgid "Generate a default set of labels"
 msgstr ""
 
 msgid "Geo"
+msgstr ""
+
+msgid "Getting started with releases"
 msgstr ""
 
 msgid "Git"
@@ -3741,7 +3762,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed in"
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
@@ -4075,9 +4096,6 @@ msgstr ""
 msgid "Merge Request"
 msgstr ""
 
-msgid "Merge Request:"
-msgstr ""
-
 msgid "Merge Requests"
 msgstr ""
 
@@ -4108,6 +4126,9 @@ msgstr ""
 msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
+msgid "MergeRequests|commented on commit %{linkStart}%{commitId}%{linkEnd}"
+msgstr ""
+
 msgid "MergeRequests|started a discussion"
 msgstr ""
 
@@ -4115,6 +4136,9 @@ msgid "MergeRequests|started a discussion on %{linkStart}an old version of the d
 msgstr ""
 
 msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
@@ -4613,6 +4637,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open Documentation"
+msgstr ""
+
 msgid "Open in Xcode"
 msgstr ""
 
@@ -4991,6 +5018,9 @@ msgstr ""
 msgid "Profiles| You are going to change the username %{currentUsernameBold} to %{newUsernameBold}. Profile and projects will be redirected to the %{newUsername} namespace but this redirect will expire once the %{currentUsername} namespace is registered by another user or group. Please update your Git repository remotes as soon as possible."
 msgstr ""
 
+msgid "Profiles|@username"
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -5012,7 +5042,10 @@ msgstr ""
 msgid "Profiles|Choose file..."
 msgstr ""
 
-msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information."
+msgid "Profiles|Choose to show contributions of private projects on your public profile without any project, repository or organization information"
+msgstr ""
+
+msgid "Profiles|City, country"
 msgstr ""
 
 msgid "Profiles|Clear status"
@@ -5043,6 +5076,9 @@ msgid "Profiles|Don't display activity-related personal information on your prof
 msgstr ""
 
 msgid "Profiles|Edit Profile"
+msgstr ""
+
+msgid "Profiles|Enter your name, so people you know can recognize you"
 msgstr ""
 
 msgid "Profiles|Invalid password"
@@ -5084,7 +5120,7 @@ msgstr ""
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
-msgid "Profiles|Tell us about yourself in fewer than 250 characters."
+msgid "Profiles|Tell us about yourself in fewer than 250 characters"
 msgstr ""
 
 msgid "Profiles|The maximum file size allowed is 200KB."
@@ -5093,7 +5129,7 @@ msgstr ""
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
-msgid "Profiles|This email will be displayed on your public profile."
+msgid "Profiles|This email will be displayed on your public profile"
 msgstr ""
 
 msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{learn_more}"
@@ -5102,10 +5138,10 @@ msgstr ""
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
-msgid "Profiles|This feature is experimental and translations are not complete yet."
+msgid "Profiles|This feature is experimental and translations are not complete yet"
 msgstr ""
 
-msgid "Profiles|This information will appear on your profile."
+msgid "Profiles|This information will appear on your profile"
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -5132,10 +5168,10 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
-msgid "Profiles|Website"
+msgid "Profiles|What's your status?"
 msgstr ""
 
-msgid "Profiles|What's your status?"
+msgid "Profiles|Who you represent or work for"
 msgstr ""
 
 msgid "Profiles|You can change your avatar here"
@@ -5156,22 +5192,31 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
+msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"
+msgstr ""
+
 msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr ""
 
-msgid "Profiles|Your email address was automatically set based on your %{provider_label} account."
+msgid "Profiles|Your email address was automatically set based on your %{provider_label} account"
 msgstr ""
 
-msgid "Profiles|Your location was automatically set based on your %{provider_label} account."
+msgid "Profiles|Your location was automatically set based on your %{provider_label} account"
 msgstr ""
 
-msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
+msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you"
 msgstr ""
 
 msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|e.g. My MacBook key"
+msgstr ""
+
+msgid "Profiles|username"
+msgstr ""
+
+msgid "Profiles|website.com"
 msgstr ""
 
 msgid "Profiles|your account"
@@ -5491,6 +5536,12 @@ msgstr ""
 msgid "Related merge requests"
 msgstr ""
 
+msgid "Releases"
+msgstr ""
+
+msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
+msgstr ""
+
 msgid "Remind later"
 msgstr ""
 
@@ -5630,6 +5681,9 @@ msgid "Response metrics (Custom)"
 msgstr ""
 
 msgid "Response metrics (HA Proxy)"
+msgstr ""
+
+msgid "Response metrics (NGINX Ingress VTS)"
 msgstr ""
 
 msgid "Response metrics (NGINX Ingress)"
@@ -7098,10 +7152,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trigger"
+msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Trigger this manual action"
+msgid "Trigger token:"
+msgstr ""
+
+msgid "Trigger variables:"
 msgstr ""
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
@@ -7303,9 +7360,6 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
-msgstr ""
-
-msgid "Variables:"
 msgstr ""
 
 msgid "Various container registry settings."
@@ -7835,6 +7889,9 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in"
 msgstr ""
 
 msgid "issue boards"

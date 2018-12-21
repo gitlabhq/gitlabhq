@@ -16,7 +16,7 @@ class GroupPolicy < BasePolicy
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
-  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
+  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_objects? }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
@@ -40,6 +40,7 @@ class GroupPolicy < BasePolicy
 
   rule { guest }.policy do
     enable :read_group
+    enable :read_list
     enable :upload_file
     enable :read_label
   end

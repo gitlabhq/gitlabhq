@@ -15,7 +15,7 @@ shared_examples 'set sort order from user preference' do
 
         expect_any_instance_of(UserPreference).not_to receive(:update_attribute).with(sorting_field, sorting_param)
 
-        get :index, namespace_id: project.namespace, project_id: project, sort: sorting_param
+        get :index, params: { namespace_id: project.namespace, project_id: project, sort: sorting_param }
       end
     end
 
@@ -25,7 +25,7 @@ shared_examples 'set sort order from user preference' do
 
         expect_any_instance_of(UserPreference).to receive(:update_attribute).with(sorting_field, sorting_param)
 
-        get :index, namespace_id: project.namespace, project_id: project, sort: sorting_param
+        get :index, params: { namespace_id: project.namespace, project_id: project, sort: sorting_param }
       end
     end
   end

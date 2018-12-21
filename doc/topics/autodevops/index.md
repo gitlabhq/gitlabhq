@@ -567,7 +567,7 @@ To view the metrics, open the
 While Auto DevOps provides great defaults to get you started, you can customize
 almost everything to fit your needs; from custom [buildpacks](#custom-buildpacks),
 to [`Dockerfile`s](#custom-dockerfile), [Helm charts](#custom-helm-chart), or
-even copying the complete [CI/CD configuration](#customizing-gitlab-ci-yml)
+even copying the complete [CI/CD configuration](#customizing-gitlab-ciyml)
 into your project to enable staging and canary deployments, and more.
 
 ### Custom buildpacks

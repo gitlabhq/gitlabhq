@@ -1,4 +1,5 @@
-- group: Response metrics (NGINX Ingress)
+  # NGINX Ingress metrics for pre-0.16.0 versions
+- group: Response metrics (NGINX Ingress VTS)
   priority: 10
   metrics:
   - title: "Throughput"
@@ -38,6 +39,51 @@
     queries:
     - id: response_metrics_nginx_ingress_http_error_rate
       query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) * 100'
+      label: 5xx Errors
+      unit: "%"
+# NGINX Ingress metrics for post-0.16.0 versions
+- group: Response metrics (NGINX Ingress)
+  priority: 10
+  metrics:
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - nginx_ingress_controller_requests
+    weight: 1
+    queries:
+    - id: response_metrics_nginx_ingress_16_throughput_status_code
+      query_range: 'sum(label_replace(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m]), "status_code", "${1}xx", "status", "(.)..")) by (status_code)'
+      unit: req / sec
+      label: Status Code
+      series:
+        - label: status_code
+          when:
+            - value: 2xx
+              color: green
+            - value: 3xx
+              color: blue
+            - value: 4xx
+              color: orange
+            - value: 5xx
+              color: red
+  - title: "Latency"
+    y_label: "Latency (ms)"
+    required_metrics:
+      - nginx_ingress_controller_ingress_upstream_latency_seconds_sum
+    weight: 1
+    queries:
+    - id: response_metrics_nginx_ingress_16_latency_pod_average
+      query_range: 'sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 1000'
+      label: Pod average
+      unit: ms
+  - title: "HTTP Error Rate"
+    y_label: "HTTP Errors"
+    required_metrics:
+      - nginx_ingress_controller_requests
+    weight: 1
+    queries:
+    - id: response_metrics_nginx_ingress_16_http_error_rate
+      query_range: 'sum(rate(nginx_ingress_controller_requests{status=~"5.*",namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) / sum(rate(nginx_ingress_controller_requests{namespace="%{kube_namespace}",ingress=~".*%{ci_environment_slug}.*"}[2m])) * 100'
       label: 5xx Errors
       unit: "%"
 - group: Response metrics (HA Proxy)

@@ -13,7 +13,7 @@ describe API::Avatar do
         end
 
         it 'returns the avatar url' do
-          get api('/avatar'), { email: 'public@example.com' }
+          get api('/avatar'), params: { email: 'public@example.com' }
 
           expect(response.status).to eq 200
           expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar.local_url}")
@@ -30,7 +30,7 @@ describe API::Avatar do
         end
 
         it 'returns the avatar url from Gravatar' do
-          get api('/avatar'), { email: 'private@example.com' }
+          get api('/avatar'), params: { email: 'private@example.com' }
 
           expect(response.status).to eq 200
           expect(json_response['avatar_url']).to eq('https://gravatar')
@@ -53,7 +53,7 @@ describe API::Avatar do
         end
 
         it 'returns the avatar url from Gravatar' do
-          get api('/avatar'), { email: 'public@example.com' }
+          get api('/avatar'), params: { email: 'public@example.com' }
 
           expect(response.status).to eq 200
           expect(json_response['avatar_url']).to eq('https://gravatar')
@@ -70,7 +70,7 @@ describe API::Avatar do
         end
 
         it 'returns the avatar url from Gravatar' do
-          get api('/avatar'), { email: 'private@example.com' }
+          get api('/avatar'), params: { email: 'private@example.com' }
 
           expect(response.status).to eq 200
           expect(json_response['avatar_url']).to eq('https://gravatar')
@@ -88,7 +88,7 @@ describe API::Avatar do
 
         context 'when authenticated' do
           it 'returns the avatar url' do
-            get api('/avatar', user), { email: 'public@example.com' }
+            get api('/avatar', user), params: { email: 'public@example.com' }
 
             expect(response.status).to eq 200
             expect(json_response['avatar_url']).to eql("#{::Settings.gitlab.base_url}#{user.avatar.local_url}")
@@ -97,7 +97,7 @@ describe API::Avatar do
 
         context 'when unauthenticated' do
           it_behaves_like '403 response' do
-            let(:request) { get api('/avatar'), { email: 'public@example.com' } }
+            let(:request) { get api('/avatar'), params: { email: 'public@example.com' } }
           end
         end
       end

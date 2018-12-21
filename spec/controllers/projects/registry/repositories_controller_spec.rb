@@ -111,15 +111,19 @@ describe Projects::Registry::RepositoriesController do
   end
 
   def go_to_index(format: :html)
-    get :index, namespace_id: project.namespace,
-                project_id: project,
+    get :index, params: {
+                  namespace_id: project.namespace,
+                  project_id: project
+                },
                 format: format
   end
 
   def delete_repository(repository)
-    delete :destroy, namespace_id: project.namespace,
-                     project_id: project,
-                     id: repository,
+    delete :destroy, params: {
+                       namespace_id: project.namespace,
+                       project_id: project,
+                       id: repository
+                     },
                      format: :json
   end
 end

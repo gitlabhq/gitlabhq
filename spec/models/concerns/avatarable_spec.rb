@@ -33,6 +33,43 @@ describe Avatarable do
   end
 
   describe '#avatar_path' do
+    context 'with caching enabled', :request_store do
+      let!(:avatar_path) { [relative_url_root, project.avatar.local_url].join }
+      let!(:avatar_url) { [gitlab_host, relative_url_root, project.avatar.local_url].join }
+
+      it 'only calls local_url once' do
+        expect(project.avatar).to receive(:local_url).once.and_call_original
+
+        2.times do
+          expect(project.avatar_path).to eq(avatar_path)
+        end
+      end
+
+      it 'calls local_url twice for path and URLs' do
+        expect(project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+
+        expect(project.avatar_path(only_path: true)).to eq(avatar_path)
+        expect(project.avatar_path(only_path: false)).to eq(avatar_url)
+      end
+
+      it 'calls local_url twice for different sizes' do
+        expect(project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+
+        expect(project.avatar_path).to eq(avatar_path)
+        expect(project.avatar_path(size: 40)).to eq(avatar_path + "?width=40")
+      end
+
+      it 'handles unpersisted objects' do
+        new_project = build(:project, :with_avatar)
+        path = [relative_url_root, new_project.avatar.local_url].join
+        expect(new_project.avatar).to receive(:local_url).exactly(2).times.and_call_original
+
+        2.times do
+          expect(new_project.avatar_path).to eq(path)
+        end
+      end
+    end
+
     using RSpec::Parameterized::TableSyntax
 
     where(:has_asset_host, :visibility_level, :only_path, :avatar_path_prefix) do

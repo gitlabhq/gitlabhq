@@ -297,7 +297,7 @@ describe API::Repositories do
         expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
           straight: false
         }).and_call_original
-        get api(route, current_user), from: 'master', to: 'feature'
+        get api(route, current_user), params: { from: 'master', to: 'feature' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
@@ -308,7 +308,7 @@ describe API::Repositories do
         expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
           straight: false
         }).and_call_original
-        get api(route, current_user), from: 'master', to: 'feature', straight: false
+        get api(route, current_user), params: { from: 'master', to: 'feature', straight: false }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
@@ -319,7 +319,7 @@ describe API::Repositories do
         expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
           straight: true
         }).and_call_original
-        get api(route, current_user), from: 'master', to: 'feature', straight: true
+        get api(route, current_user), params: { from: 'master', to: 'feature', straight: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
@@ -327,7 +327,7 @@ describe API::Repositories do
       end
 
       it "compares tags" do
-        get api(route, current_user), from: 'v1.0.0', to: 'v1.1.0'
+        get api(route, current_user), params: { from: 'v1.0.0', to: 'v1.1.0' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
@@ -335,7 +335,7 @@ describe API::Repositories do
       end
 
       it "compares commits" do
-        get api(route, current_user), from: sample_commit.id, to: sample_commit.parent_id
+        get api(route, current_user), params: { from: sample_commit.id, to: sample_commit.parent_id }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
@@ -344,7 +344,7 @@ describe API::Repositories do
       end
 
       it "compares commits in reverse order" do
-        get api(route, current_user), from: sample_commit.parent_id, to: sample_commit.id
+        get api(route, current_user), params: { from: sample_commit.parent_id, to: sample_commit.id }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
@@ -352,7 +352,7 @@ describe API::Repositories do
       end
 
       it "compares same refs" do
-        get api(route, current_user), from: 'master', to: 'master'
+        get api(route, current_user), params: { from: 'master', to: 'master' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
@@ -410,7 +410,7 @@ describe API::Repositories do
       context 'using sorting' do
         context 'by commits desc' do
           it 'returns the repository contribuors sorted by commits desc' do
-            get api(route, current_user), { order_by: 'commits', sort: 'desc' }
+            get api(route, current_user), params: { order_by: 'commits', sort: 'desc' }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to match_response_schema('contributors')
@@ -420,7 +420,7 @@ describe API::Repositories do
 
         context 'by name desc' do
           it 'returns the repository contribuors sorted by name asc case insensitive' do
-            get api(route, current_user), { order_by: 'name', sort: 'asc' }
+            get api(route, current_user), params: { order_by: 'name', sort: 'asc' }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to match_response_schema('contributors')
@@ -478,7 +478,7 @@ describe API::Repositories do
     end
 
     subject(:request) do
-      get(api("/projects/#{project.id}/repository/merge_base", current_user), refs: refs)
+      get(api("/projects/#{project.id}/repository/merge_base", current_user), params: { refs: refs })
     end
 
     shared_examples 'merge base' do

@@ -30,10 +30,14 @@ export default {
   computed: {
     jobLine() {
       if (this.user.bio && this.user.organization) {
-        return sprintf(__('%{bio} at %{organization}'), {
-          bio: this.user.bio,
-          organization: this.user.organization,
-        });
+        return sprintf(
+          __('%{bio} at %{organization}'),
+          {
+            bio: this.user.bio,
+            organization: this.user.organization,
+          },
+          false,
+        );
       } else if (this.user.bio) {
         return this.user.bio;
       } else if (this.user.organization) {

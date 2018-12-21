@@ -46,7 +46,7 @@ class GroupsFinder < UnionFinder
     return [Group.all] if current_user&.full_private_access? && all_available?
 
     groups = []
-    groups << Gitlab::GroupHierarchy.new(groups_for_ancestors, groups_for_descendants).all_groups if current_user
+    groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects if current_user
     groups << Group.unscoped.public_to_user(current_user) if include_public_groups?
     groups << Group.none if groups.empty?
     groups
@@ -66,7 +66,7 @@ class GroupsFinder < UnionFinder
       .groups
       .where('members.access_level >= ?', params[:min_access_level])
 
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(groups)
       .base_and_descendants
   end

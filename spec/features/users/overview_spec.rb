@@ -119,6 +119,12 @@ describe 'Overview tab on a user profile', :js do
       it 'shows a link to the project list' do
         expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
       end
+
+      it 'shows projects in "compact mode"' do
+        page.within('#js-overview .projects-block') do
+          expect(find('.js-projects-list-holder')).to have_selector('.compact')
+        end
+      end
     end
 
     describe 'user has more than ten personal projects' do

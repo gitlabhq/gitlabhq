@@ -34,7 +34,7 @@ describe LfsRequest do
 
   describe '#storage_project' do
     it 'assigns the project as storage project' do
-      get :show, id: project.id
+      get :show, params: { id: project.id }
 
       expect(assigns(:storage_project)).to eq(project)
     end
@@ -42,7 +42,7 @@ describe LfsRequest do
     it 'assigns the source of a forked project' do
       forked_project = fork_project(project)
 
-      get :show, id: forked_project.id
+      get :show, params: { id: forked_project.id }
 
       expect(assigns(:storage_project)).to eq(project)
     end

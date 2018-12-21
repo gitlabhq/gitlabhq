@@ -23,4 +23,25 @@ describe PoolRepository do
       expect(pool.disk_path).to match(%r{\A@pools/\h{2}/\h{2}/\h{64}})
     end
   end
+
+  describe '#unlink_repository' do
+    let(:pool) { create(:pool_repository, :ready) }
+
+    context 'when the last member leaves' do
+      it 'schedules pool removal' do
+        expect(::ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).and_call_original
+
+        pool.unlink_repository(pool.source_project.repository)
+      end
+    end
+
+    context 'when the second member leaves' do
+      it 'does not schedule pool removal' do
+        create(:project, :repository, pool_repository: pool)
+        expect(::ObjectPool::DestroyWorker).not_to receive(:perform_async).with(pool.id)
+
+        pool.unlink_repository(pool.source_project.repository)
+      end
+    end
+  end
 end

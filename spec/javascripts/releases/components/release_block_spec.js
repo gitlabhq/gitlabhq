@@ -28,6 +28,16 @@ describe('Release block', () => {
       committer_name: 'Jack Smith',
       committer_email: 'jack@example.com',
       committed_date: '2012-05-28T04:42:42-07:00',
+      author: {
+        avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
+        id: 482476,
+        name: 'John Doe',
+        path: '/johndoe',
+        state: 'active',
+        status_tooltip_html: null,
+        username: 'johndoe',
+        web_url: 'https://gitlab.com/johndoe',
+      },
     },
     assets: {
       count: 6,
@@ -66,32 +76,10 @@ describe('Release block', () => {
       ],
     },
   };
-
-  const props = {
-    name: release.name,
-    tag: release.tag_name,
-    commit: release.commit,
-    description: release.description_html,
-    author: {
-      avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
-      id: 482476,
-      name: 'John Doe',
-      path: '/johndoe',
-      state: 'active',
-      status_tooltip_html: null,
-      username: 'johndoe',
-      web_url: 'https://gitlab.com/johndoe',
-    },
-    createdAt: release.created_at,
-    assetsCount: release.assets.count,
-    sources: release.assets.sources,
-    links: release.assets.links,
-  };
-
   let vm;
 
   beforeEach(() => {
-    vm = mountComponent(Component, props);
+    vm = mountComponent(Component, { release });
   });
 
   afterEach(() => {

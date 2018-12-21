@@ -17,7 +17,7 @@ shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
     allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
       .to receive(:user).and_return(true)
 
-    post :personal_access_token, personal_access_token: token
+    post :personal_access_token, params: { personal_access_token: token }
 
     expect(session[:"#{provider}_access_token"]).to eq(token)
     expect(controller).to redirect_to(status_import_url)
@@ -29,7 +29,7 @@ shared_examples 'a GitHub-ish import controller: POST personal_access_token' do
     allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
       .to receive(:user).and_return(true)
 
-    post :personal_access_token, personal_access_token: "  #{token} "
+    post :personal_access_token, params: { personal_access_token: "  #{token} " }
 
     expect(session[:"#{provider}_access_token"]).to eq(token)
     expect(controller).to redirect_to(status_import_url)
@@ -214,7 +214,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).and_return(double(execute: project))
 
-          expect { post :create, target_namespace: provider_repo.name, format: :json }.to change(Namespace, :count).by(1)
+          expect { post :create, params: { target_namespace: provider_repo.name }, format: :json }.to change(Namespace, :count).by(1)
         end
 
         it "takes the new namespace" do
@@ -222,7 +222,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             .to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, access_params, type: provider)
               .and_return(double(execute: project))
 
-          post :create, target_namespace: provider_repo.name, format: :json
+          post :create, params: { target_namespace: provider_repo.name }, format: :json
         end
       end
 
@@ -261,7 +261,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, test_namespace, user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: test_namespace.name, new_name: test_name, format: :json }
+        post :create, params: { target_namespace: test_namespace.name, new_name: test_name }, format: :json
       end
 
       it 'takes the selected name and default namespace' do
@@ -269,7 +269,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { new_name: test_name, format: :json }
+        post :create, params: { new_name: test_name }, format: :json
       end
     end
 
@@ -288,7 +288,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, nested_namespace, user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :json }
+        post :create, params: { target_namespace: nested_namespace.full_path, new_name: test_name }, format: :json
       end
     end
 
@@ -300,7 +300,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -308,7 +308,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
 
@@ -317,7 +317,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
 
         expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
       end
@@ -336,7 +336,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -344,7 +344,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
           .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
 
@@ -353,7 +353,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
                     .and_return(double(execute: build_stubbed(:project)))
 
-        expect { post :create, { target_namespace: "#{user.namespace_path}/test_group", new_name: test_name, format: :js } }
+        expect { post :create, params: { target_namespace: "#{user.namespace_path}/test_group", new_name: test_name }, format: :js }
             .not_to change { Namespace.count }
       end
     end
@@ -367,7 +367,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
                     .and_return(double(execute: build_stubbed(:project)))
 
-        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
+        post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :js
       end
 
       it 'does not create the namespaces' do
@@ -375,7 +375,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
                     .and_return(double(execute: build_stubbed(:project)))
 
-        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
+        expect { post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :js }
             .not_to change { Namespace.count }
       end
     end
@@ -392,7 +392,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             .to receive(:new).with(provider_repo, test_name, group, user, access_params, type: provider)
                     .and_return(double(execute: build_stubbed(:project)))
 
-        post :create, { target_namespace: 'foo', new_name: test_name, format: :js }
+        post :create, params: { target_namespace: 'foo', new_name: test_name }, format: :js
       end
     end
 
@@ -400,7 +400,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'returns 422 response' do
         other_namespace = create(:group, name: 'other_namespace')
 
-        post :create, { target_namespace: other_namespace.name, format: :json }
+        post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(422)
       end

@@ -16,7 +16,7 @@ describe Groups::ChildrenController do
         end
 
         it 'shows all children' do
-          get :index, group_id: group.to_param, format: :json
+          get :index, params: { group_id: group.to_param }, format: :json
 
           expect(assigns(:children)).to contain_exactly(public_project, private_project)
         end
@@ -26,7 +26,7 @@ describe Groups::ChildrenController do
             group_member.destroy!
             private_project.add_guest(user)
 
-            get :index, group_id: group.to_param, format: :json
+            get :index, params: { group_id: group.to_param }, format: :json
 
             expect(assigns(:children)).to contain_exactly(public_project, private_project)
           end
@@ -35,7 +35,7 @@ describe Groups::ChildrenController do
 
       context 'as a guest' do
         it 'shows the public children' do
-          get :index, group_id: group.to_param, format: :json
+          get :index, params: { group_id: group.to_param }, format: :json
 
           expect(assigns(:children)).to contain_exactly(public_project)
         end
@@ -54,7 +54,7 @@ describe Groups::ChildrenController do
         end
 
         it 'shows all children' do
-          get :index, group_id: group.to_param, format: :json
+          get :index, params: { group_id: group.to_param }, format: :json
 
           expect(assigns(:children)).to contain_exactly(public_subgroup, private_subgroup, public_project, private_project)
         end
@@ -65,7 +65,7 @@ describe Groups::ChildrenController do
             private_subgroup.add_guest(user)
             private_project.add_guest(user)
 
-            get :index, group_id: group.to_param, format: :json
+            get :index, params: { group_id: group.to_param }, format: :json
 
             expect(assigns(:children)).to contain_exactly(public_subgroup, private_subgroup, public_project, private_project)
           end
@@ -74,7 +74,7 @@ describe Groups::ChildrenController do
 
       context 'as a guest' do
         it 'shows the public children' do
-          get :index, group_id: group.to_param, format: :json
+          get :index, params: { group_id: group.to_param }, format: :json
 
           expect(assigns(:children)).to contain_exactly(public_subgroup, public_project)
         end
@@ -84,7 +84,7 @@ describe Groups::ChildrenController do
         it 'expands the tree for matching projects' do
           project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
 
-          get :index, group_id: group.to_param, filter: 'filter', format: :json
+          get :index, params: { group_id: group.to_param, filter: 'filter' }, format: :json
 
           group_json = json_response.first
           project_json = group_json['children'].first
@@ -96,7 +96,7 @@ describe Groups::ChildrenController do
         it 'expands the tree for matching subgroups' do
           matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
 
-          get :index, group_id: group.to_param, filter: 'filter', format: :json
+          get :index, params: { group_id: group.to_param, filter: 'filter' }, format: :json
 
           group_json = json_response.first
           matched_group_json = group_json['children'].first
@@ -113,7 +113,7 @@ describe Groups::ChildrenController do
           l3_subgroup = create(:group, :public,  parent: l2_subgroup, path: 'wifi-group')
           matched_project_2 = create(:project, :public, namespace: l3_subgroup, name: 'mobile')
 
-          get :index, group_id: group.to_param, filter: 'mobile', format: :json
+          get :index, params: { group_id: group.to_param, filter: 'mobile' }, format: :json
 
           shared_group_json = json_response.first
           expect(shared_group_json['id']).to eq(shared_subgroup.id)
@@ -136,7 +136,7 @@ describe Groups::ChildrenController do
           l2_subgroup = create(:group, :public, parent: subgroup)
           create(:project, :public, namespace: l2_subgroup, name: 'test')
 
-          get :index, group_id: subgroup.to_param, filter: 'test', format: :json
+          get :index, params: { group_id: subgroup.to_param, filter: 'test' }, format: :json
 
           expect(response).to have_http_status(200)
         end
@@ -144,7 +144,7 @@ describe Groups::ChildrenController do
         it 'returns an array with one element when only one result is matched' do
           create(:project, :public, namespace: group, name: 'match')
 
-          get :index, group_id: group.to_param, filter: 'match', format: :json
+          get :index, params: { group_id: group.to_param, filter: 'match' }, format: :json
 
           expect(json_response).to be_kind_of(Array)
           expect(json_response.size).to eq(1)
@@ -155,7 +155,7 @@ describe Groups::ChildrenController do
           l2_subgroup = create(:group, :public, parent: subgroup)
           create(:project, :public, namespace: l2_subgroup, name: 'no-match')
 
-          get :index, group_id: subgroup.to_param, filter: 'test', format: :json
+          get :index, params: { group_id: subgroup.to_param, filter: 'test' }, format: :json
 
           expect(json_response).to eq([])
         end
@@ -179,7 +179,7 @@ describe Groups::ChildrenController do
           end
           group_to_nest.update!(parent: subgroup)
 
-          get :index, group_id: group.to_param, filter: 'filter', per_page: 3, format: :json
+          get :index, params: { group_id: group.to_param, filter: 'filter', per_page: 3 }, format: :json
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -187,7 +187,7 @@ describe Groups::ChildrenController do
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 
-          get :index, group_id: group.to_param, filter: 'filter', per_page: 1, format: :json
+          get :index, params: { group_id: group.to_param, filter: 'filter', per_page: 1 }, format: :json
 
           expect(response).to include_pagination_headers
         end
@@ -203,7 +203,7 @@ describe Groups::ChildrenController do
         let(:expected_queries_per_project) { 0 }
 
         def get_list
-          get :index, group_id: group.to_param, format: :json
+          get :index, params: { group_id: group.to_param }, format: :json
         end
 
         it 'queries the expected amount for a group row' do
@@ -227,7 +227,7 @@ describe Groups::ChildrenController do
           let(:extra_queries_for_hierarchies) { 1 }
 
           def get_filtered_list
-            get :index, group_id: group.to_param, filter: 'filter', format: :json
+            get :index, params: { group_id: group.to_param, filter: 'filter' }, format: :json
           end
 
           it 'queries the expected amount when nested rows are increased for a group' do
@@ -276,13 +276,13 @@ describe Groups::ChildrenController do
         let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group ) }
 
         it 'has projects on the first page' do
-          get :index, group_id: group.to_param, sort: 'id_desc', format: :json
+          get :index, params: { group_id: group.to_param, sort: 'id_desc' }, format: :json
 
           expect(assigns(:children)).to contain_exactly(*first_page_projects)
         end
 
         it 'has projects on the second page' do
-          get :index, group_id: group.to_param, sort: 'id_desc', page: 2, format: :json
+          get :index, params: { group_id: group.to_param, sort: 'id_desc', page: 2 }, format: :json
 
           expect(assigns(:children)).to contain_exactly(other_project)
         end
@@ -294,13 +294,13 @@ describe Groups::ChildrenController do
         let!(:next_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
         it 'contains all subgroups' do
-          get :index, group_id: group.to_param, sort: 'id_asc', format: :json
+          get :index, params: { group_id: group.to_param, sort: 'id_asc' }, format: :json
 
           expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
         end
 
         it 'contains the project and group on the second page' do
-          get :index, group_id: group.to_param, sort: 'id_asc', page: 2, format: :json
+          get :index, params: { group_id: group.to_param, sort: 'id_asc', page: 2 }, format: :json
 
           expect(assigns(:children)).to contain_exactly(other_subgroup, *next_page_projects.take(per_page - 1))
         end
@@ -310,7 +310,7 @@ describe Groups::ChildrenController do
           let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
           it 'correctly calculates the counts' do
-            get :index, group_id: group.to_param, sort: 'id_asc', page: 2, format: :json
+            get :index, params: { group_id: group.to_param, sort: 'id_asc', page: 2 }, format: :json
 
             expect(response).to have_gitlab_http_status(200)
           end

@@ -137,6 +137,8 @@ module Projects
         raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
       end
 
+      project.leave_pool_repository
+
       Project.transaction do
         log_destroy_event
         trash_repositories!

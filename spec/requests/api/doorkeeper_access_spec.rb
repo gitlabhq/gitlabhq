@@ -7,20 +7,20 @@ describe 'doorkeeper access' do
 
   describe "unauthenticated" do
     it "returns authentication success" do
-      get api("/user"), access_token: token.token
+      get api("/user"), params: { access_token: token.token }
       expect(response).to have_gitlab_http_status(200)
     end
 
     include_examples 'user login request with unique ip limit' do
       def request
-        get api('/user'), access_token: token.token
+        get api('/user'), params: { access_token: token.token }
       end
     end
   end
 
   describe "when token invalid" do
     it "returns authentication error" do
-      get api("/user"), access_token: "123a"
+      get api("/user"), params: { access_token: "123a" }
       expect(response).to have_gitlab_http_status(401)
     end
   end
@@ -41,7 +41,7 @@ describe 'doorkeeper access' do
   describe "when user is blocked" do
     it "returns authorization error" do
       user.block
-      get api("/user"), access_token: token.token
+      get api("/user"), params: { access_token: token.token }
 
       expect(response).to have_gitlab_http_status(403)
     end
@@ -50,7 +50,7 @@ describe 'doorkeeper access' do
   describe "when user is ldap_blocked" do
     it "returns authorization error" do
       user.ldap_block
-      get api("/user"), access_token: token.token
+      get api("/user"), params: { access_token: token.token }
 
       expect(response).to have_gitlab_http_status(403)
     end

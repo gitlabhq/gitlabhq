@@ -26,8 +26,8 @@
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@gitlab/csslab": "^1.8.0",
-    "@gitlab/svgs": "^1.42.0",
-    "@gitlab/ui": "^1.15.0",
+    "@gitlab/svgs": "^1.43.0",
+    "@gitlab/ui": "^1.16.0",
     "apollo-boost": "^0.1.20",
     "apollo-client": "^2.4.5",
     "autosize": "^4.0.0",
@@ -158,7 +158,8 @@
     "nodemon": "^1.18.4",
     "prettier": "1.15.2",
     "vue-jest": "^3.0.1",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "yarn-deduplicate": "^1.0.5"
   },
   "engines": {
     "yarn": "^1.10.0"

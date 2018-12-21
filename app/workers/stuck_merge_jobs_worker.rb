@@ -4,6 +4,10 @@ class StuckMergeJobsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  def self.logger
+    Rails.logger
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def perform
     stuck_merge_requests.find_in_batches(batch_size: 100) do |group|
@@ -35,7 +39,7 @@ class StuckMergeJobsWorker
     # We rely on state machine callbacks to update head_pipeline_id
     merge_requests_to_reopen.each(&:unlock_mr)
 
-    Rails.logger.info("Updated state of locked merge jobs. JIDs: #{completed_jids.join(', ')}")
+    self.class.logger.info("Updated state of locked merge jobs. JIDs: #{completed_jids.join(', ')}")
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

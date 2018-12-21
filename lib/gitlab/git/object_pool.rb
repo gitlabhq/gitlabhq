@@ -8,7 +8,7 @@ module Gitlab
       GL_REPOSITORY = ""
 
       delegate :exists?, :size, to: :repository
-      delegate :delete, to: :object_pool_service
+      delegate :unlink_repository, :delete, to: :object_pool_service
 
       attr_reader :storage, :relative_path, :source_repository
 
@@ -23,13 +23,6 @@ module Gitlab
       end
 
       def link(to_link_repo)
-        remote_name = to_link_repo.object_pool_remote_name
-        repository.set_config(
-          "remote.#{remote_name}.url" => relative_path_to(to_link_repo.relative_path),
-          "remote.#{remote_name}.tagOpt" => "--no-tags",
-          "remote.#{remote_name}.fetch" => "+refs/*:refs/remotes/#{remote_name}/*"
-        )
-
         object_pool_service.link_repository(to_link_repo)
       end
 

@@ -185,7 +185,26 @@ your terminal (replacing `gitlab.com` with your GitLab's instance domain):
 ssh -T git@gitlab.com
 ```
 
-You should receive a _Welcome to GitLab, `@username`!_ message.
+The first time you connect to GitLab via SSH, you will be asked to verify the
+authenticity of the GitLab host you are connecting to.
+For example, when connecting to GitLab.com, answer `yes` to add GitLab.com to
+the list of trusted hosts:
+
+```
+The authenticity of host 'gitlab.com (35.231.145.151)' can't be established.
+ECDSA key fingerprint is SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'gitlab.com' (ECDSA) to the list of known hosts.
+```
+
+NOTE: **Note:**
+For GitLab.com, consult the
+[SSH host keys fingerprints](../user/gitlab_com/index.md#ssh-host-keys-fingerprints),
+to make sure you're connecting to the correct server.
+
+Once added to the list of known hosts, you won't be asked to validate the
+authenticity of GitLab's host again. Run the above command once more, and
+you should only receive a _Welcome to GitLab, `@username`!_ message.
 
 If the welcome message doesn't appear, run SSH's verbose mode by replacing `-T`
 with `-vvvT` to understand where the error is.

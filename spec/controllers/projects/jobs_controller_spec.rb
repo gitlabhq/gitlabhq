@@ -96,7 +96,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :index, params.merge(extra_params)
+      get :index, params: params.merge(extra_params)
     end
   end
 
@@ -461,7 +461,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
   end
 
@@ -552,9 +552,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def get_trace
-      get :trace, namespace_id: project.namespace,
-                  project_id: project,
-                  id: job.id,
+      get :trace, params: {
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: job.id
+                  },
                   format: :json
     end
   end
@@ -564,9 +566,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     let(:status) { job.detailed_status(double('user')) }
 
     before do
-      get :status, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id,
+      get :status, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   },
                    format: :json
     end
 
@@ -605,9 +609,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_retry
-      post :retry, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
+      post :retry, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   }
     end
   end
 
@@ -645,9 +651,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_play
-      post :play, namespace_id: project.namespace,
-                  project_id: project,
-                  id: job.id
+      post :play, params: {
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: job.id
+                  }
     end
   end
 
@@ -714,9 +722,9 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_cancel(additional_params = {})
-      post :cancel, { namespace_id: project.namespace,
-                      project_id: project,
-                      id: job.id }.merge(additional_params)
+      post :cancel, params: { namespace_id: project.namespace,
+                              project_id: project,
+                              id: job.id }.merge(additional_params)
     end
   end
 
@@ -754,9 +762,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_unschedule
-      post :unschedule, namespace_id: project.namespace,
-                        project_id: project,
-                        id: job.id
+      post :unschedule, params: {
+                          namespace_id: project.namespace,
+                          project_id: project,
+                          id: job.id
+                        }
     end
   end
 
@@ -797,8 +807,10 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_cancel_all
-      post :cancel_all, namespace_id: project.namespace,
-                        project_id: project
+      post :cancel_all, params: {
+                          namespace_id: project.namespace,
+                          project_id: project
+                        }
     end
   end
 
@@ -860,17 +872,21 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_erase
-      post :erase, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
+      post :erase, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   }
     end
   end
 
   describe 'GET raw' do
     subject do
-      post :raw, namespace_id: project.namespace,
-                 project_id: project,
-                 id: job.id
+      post :raw, params: {
+                   namespace_id: project.namespace,
+                   project_id: project,
+                   id: job.id
+                 }
     end
 
     context "when job has a trace artifact" do
@@ -1020,7 +1036,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :terminal, params.merge(extra_params)
+      get :terminal, params: params.merge(extra_params)
     end
   end
 
@@ -1074,7 +1090,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :terminal_websocket_authorize, params.merge(extra_params)
+      get :terminal_websocket_authorize, params: params.merge(extra_params)
     end
   end
 end

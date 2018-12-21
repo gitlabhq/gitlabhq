@@ -49,4 +49,30 @@ describe 'layouts/nav/sidebar/_project' do
       expect(rendered).to have_css('.sidebar-top-level-items > li.active', text: 'Registry')
     end
   end
+
+  describe 'releases entry' do
+    describe 'when releases feature flag is disabled' do
+      before do
+        stub_feature_flags(releases_page: false)
+      end
+
+      it 'does not render releases link' do
+        render
+
+        expect(rendered).not_to have_link('Releases', href: project_releases_path(project))
+      end
+    end
+
+    describe 'when releases feature flags is enabled' do
+      before do
+        stub_feature_flags(releases_page: true)
+      end
+
+      it 'renders releases link' do
+        render
+
+        expect(rendered).to have_link('Releases', href: project_releases_path(project))
+      end
+    end
+  end
 end

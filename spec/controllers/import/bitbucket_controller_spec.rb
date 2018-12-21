@@ -237,7 +237,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, nested_namespace, user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :json }
+        post :create, params: { target_namespace: nested_namespace.full_path, new_name: test_name }, format: :json
       end
     end
 
@@ -249,7 +249,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -257,7 +257,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
 
@@ -266,7 +266,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/bar', new_name: test_name }, format: :json
 
         expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
       end
@@ -285,7 +285,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json }
+        post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json
       end
 
       it 'creates the namespaces' do
@@ -293,7 +293,7 @@ describe Import::BitbucketController do
           .to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params)
             .and_return(double(execute: project))
 
-        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :json } }
+        expect { post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :json }
           .to change { Namespace.count }.by(2)
       end
     end
@@ -302,7 +302,7 @@ describe Import::BitbucketController do
       it 'returns 422 response' do
         other_namespace = create(:group, name: 'other_namespace')
 
-        post :create, { target_namespace: other_namespace.name, format: :json }
+        post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(422)
       end

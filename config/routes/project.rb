@@ -95,6 +95,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :releases, only: [:index]
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 

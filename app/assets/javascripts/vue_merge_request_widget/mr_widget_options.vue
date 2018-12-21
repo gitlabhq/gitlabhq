@@ -155,13 +155,13 @@ export default {
       };
       return new MRWidgetService(endpoints);
     },
-    checkStatus(cb) {
+    checkStatus(cb, isRebased) {
       return this.service
         .checkStatus()
         .then(res => res.data)
         .then(data => {
           this.handleNotification(data);
-          this.mr.setData(data);
+          this.mr.setData(data, isRebased);
           this.setFaviconHelper();
 
           if (cb) {
@@ -261,6 +261,10 @@ export default {
     bindEventHubListeners() {
       eventHub.$on('MRWidgetUpdateRequested', cb => {
         this.checkStatus(cb);
+      });
+
+      eventHub.$on('MRWidgetRebaseSuccess', cb => {
+        this.checkStatus(cb, true);
       });
 
       // `params` should be an Array contains a Boolean, like `[true]`

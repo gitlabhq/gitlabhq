@@ -12,9 +12,6 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
   include SessionlessAuthentication
-  # this can be removed after switching to rails 5
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/51908
-  include InvalidUTF8ErrorHandler unless Gitlab.rails5?
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -157,7 +154,7 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Gitlab::Sentry.track_acceptable_exception(exception)
 
-    backtrace_cleaner = Gitlab.rails5? ? request.env["action_dispatch.backtrace_cleaner"] : env
+    backtrace_cleaner = request.env["action_dispatch.backtrace_cleaner"]
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -406,7 +403,7 @@ class ApplicationController < ActionController::Base
   end
 
   def manifest_import_enabled?
-    Group.supports_nested_groups? && Gitlab::CurrentSettings.import_sources.include?('manifest')
+    Group.supports_nested_objects? && Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

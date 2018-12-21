@@ -11,7 +11,7 @@ describe SearchController do
     project = create(:project, :public)
     note = create(:note_on_issue, project: project)
 
-    get :show, project_id: project.id, scope: 'notes', search: note.note
+    get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
 
     expect(assigns[:search_objects].first).to eq note
   end
@@ -30,13 +30,13 @@ describe SearchController do
     end
 
     it 'still blocks searches without a project_id' do
-      get :show, search: 'hello'
+      get :show, params: { search: 'hello' }
 
       expect(response).to have_gitlab_http_status(403)
     end
 
     it 'allows searches with a project_id' do
-      get :show, search: 'hello', project_id: create(:project, :public).id
+      get :show, params: { search: 'hello', project_id: create(:project, :public).id }
 
       expect(response).to have_gitlab_http_status(200)
     end
@@ -52,7 +52,7 @@ describe SearchController do
         project = create(:project, :public, :issues_private)
         note = create(:note_on_issue, project: project)
 
-        get :show, project_id: project.id, scope: 'notes', search: note.note
+        get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
 
         expect(assigns[:search_objects].count).to eq(0)
       end
@@ -62,7 +62,7 @@ describe SearchController do
       project = create(:project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
-      get :show, project_id: project.id, scope: 'notes', search: note.note
+      get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
 
       expect(assigns[:search_objects].count).to eq(0)
     end
@@ -71,7 +71,7 @@ describe SearchController do
       project = create(:project, :public, :snippets_private)
       note = create(:note_on_project_snippet, project: project)
 
-      get :show, project_id: project.id, scope: 'notes', search: note.note
+      get :show, params: { project_id: project.id, scope: 'notes', search: note.note }
 
       expect(assigns[:search_objects].count).to eq(0)
     end

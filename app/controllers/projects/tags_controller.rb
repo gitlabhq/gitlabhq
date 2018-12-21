@@ -42,7 +42,7 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def create
-    result = Tags::CreateService.new(@project, current_user)
+    result = ::Tags::CreateService.new(@project, current_user)
       .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
     if result[:status] == :success
@@ -58,7 +58,7 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       if result[:status] == :success

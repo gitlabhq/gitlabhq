@@ -15,11 +15,7 @@ describe StorageHelper do
     end
 
     it "uses commas as thousands separator" do
-      if Gitlab.rails5?
-        expect(helper.storage_counter(100_000_000_000_000_000_000_000)).to eq("86,736.2 EB")
-      else
-        expect(helper.storage_counter(100_000_000_000_000_000)).to eq("90,949.5 TB")
-      end
+      expect(helper.storage_counter(100_000_000_000_000_000_000_000)).to eq("86,736.2 EB")
     end
   end
 end

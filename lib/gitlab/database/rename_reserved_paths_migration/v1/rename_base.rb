@@ -5,8 +5,6 @@ module Gitlab
     module RenameReservedPathsMigration
       module V1
         class RenameBase
-          include Gitlab::Database::ArelMethods
-
           attr_reader :paths, :migration
 
           delegate :update_column_in_batches,
@@ -66,7 +64,7 @@ module Gitlab
                                             old_full_path,
                                             new_full_path)
 
-            update = arel_update_manager
+            update = Arel::UpdateManager.new
               .table(routes)
               .set([[routes[:path], replace_statement]])
               .where(Arel::Nodes::SqlLiteral.new(filter))

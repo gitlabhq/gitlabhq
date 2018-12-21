@@ -17,9 +17,11 @@ describe Projects::FindFileController do
 
     before do
       get(:show,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: id)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id
+          })
     end
 
     context "valid branch" do
@@ -36,9 +38,11 @@ describe Projects::FindFileController do
   describe "GET #list" do
     def go(format: 'json')
       get :list,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: id,
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id
+          },
           format: format
     end
 

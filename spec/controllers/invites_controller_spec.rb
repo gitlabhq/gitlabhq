@@ -12,7 +12,7 @@ describe InvitesController do
 
   describe 'GET #accept' do
     it 'accepts user' do
-      get :accept, id: token
+      get :accept, params: { id: token }
       member.reload
 
       expect(response).to have_gitlab_http_status(302)
@@ -23,7 +23,7 @@ describe InvitesController do
 
   describe 'GET #decline' do
     it 'declines user' do
-      get :decline, id: token
+      get :decline, params: { id: token }
       expect {member.reload}.to raise_error ActiveRecord::RecordNotFound
 
       expect(response).to have_gitlab_http_status(302)

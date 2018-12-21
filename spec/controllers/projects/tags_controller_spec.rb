@@ -7,7 +7,7 @@ describe Projects::TagsController do
 
   describe 'GET index' do
     before do
-      get :index, namespace_id: project.namespace.to_param, project_id: project
+      get :index, params: { namespace_id: project.namespace.to_param, project_id: project }
     end
 
     it 'returns the tags for the page' do
@@ -22,7 +22,7 @@ describe Projects::TagsController do
 
   describe 'GET show' do
     before do
-      get :show, namespace_id: project.namespace.to_param, project_id: project, id: id
+      get :show, params: { namespace_id: project.namespace.to_param, project_id: project, id: id }
     end
 
     context "valid tag" do

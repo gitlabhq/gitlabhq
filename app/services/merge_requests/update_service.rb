@@ -5,14 +5,15 @@ module MergeRequests
     def execute(merge_request)
       # We don't allow change of source/target projects and source branch
       # after merge request was created
-      params.except!(:source_project_id)
-      params.except!(:target_project_id)
-      params.except!(:source_branch)
+      params.delete(:source_project_id)
+      params.delete(:target_project_id)
+      params.delete(:source_branch)
 
       merge_from_quick_action(merge_request) if params[:merge]
 
       if merge_request.closed_without_fork?
-        params.except!(:target_branch, :force_remove_source_branch)
+        params.delete(:target_branch)
+        params.delete(:force_remove_source_branch)
       end
 
       if params[:force_remove_source_branch].present?

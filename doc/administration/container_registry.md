@@ -604,6 +604,52 @@ Registry out of the box, it is possible to make it work if you follow
 [Docker's documentation][docker-insecure-self-signed]. You may find some additional
 information in [issue 18239][ce-18239].
 
+## Troubleshooting
+
+When using AWS S3 with the GitLab registry, an error may occur when pushing 
+large images. Look in the Registry log for the following error:
+
+```
+level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error" 
+```
+
+To resolve the error specify a `chunksize` value in the Registry configuration. 
+Start with a value between `25000000` (25MB) and `50000000` (50MB). 
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['storage'] = {
+      's3' => {
+        'accesskey' => 'AKIAKIAKI',
+        'secretkey' => 'secret123',
+        'bucket'    => 'gitlab-registry-bucket-AKIAKIAKI',
+        'chunksize' => 25000000
+      }
+    }
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    storage:
+      s3:
+        accesskey: 'AKIAKIAKI'
+        secretkey: 'secret123'
+        bucket:    'gitlab-registry-bucket-AKIAKIAKI'
+        chunksize: 25000000
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 [ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
 [docker-insecure-self-signed]: https://docs.docker.com/registry/insecure/#use-self-signed-certificates
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure

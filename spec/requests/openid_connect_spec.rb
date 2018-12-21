@@ -47,15 +47,17 @@ describe 'OpenID Connect requests' do
     login_as user
 
     post '/oauth/token',
-      grant_type: 'authorization_code',
-      code: access_grant.token,
-      redirect_uri: application.redirect_uri,
-      client_id: application.uid,
-      client_secret: application.secret
+      params: {
+        grant_type: 'authorization_code',
+        code: access_grant.token,
+        redirect_uri: application.redirect_uri,
+        client_id: application.uid,
+        client_secret: application.secret
+      }
   end
 
   def request_user_info!
-    get '/oauth/userinfo', nil, 'Authorization' => "Bearer #{access_token.token}"
+    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.token}" }
   end
 
   context 'Application without OpenID scope' do
@@ -102,7 +104,7 @@ describe 'OpenID Connect requests' do
         expect(json_response).to match(id_token_claims.merge(user_info_claims))
 
         expected_groups = [group1.full_path, group3.full_path]
-        expected_groups << group4.full_path if Group.supports_nested_groups?
+        expected_groups << group4.full_path if Group.supports_nested_objects?
         expect(json_response['groups']).to match_array(expected_groups)
       end
 

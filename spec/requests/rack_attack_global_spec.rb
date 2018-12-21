@@ -177,7 +177,7 @@ describe 'Rack Attack global throttles' do
       context 'when the request is to the api internal endpoints' do
         it 'allows requests over the rate limit' do
           (1 + requests_per_period).times do
-            get url_api_internal, secret_token: Gitlab::Shell.secret_token
+            get url_api_internal, params: { secret_token: Gitlab::Shell.secret_token }
             expect(response).to have_http_status 200
           end
         end

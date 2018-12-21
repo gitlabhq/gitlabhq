@@ -209,7 +209,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, nested_namespace, user, access_params)
               .and_return(double(execute: project))
 
-          post :create, { target_namespace: nested_namespace.full_path, format: :json }
+          post :create, params: { target_namespace: nested_namespace.full_path }, format: :json
         end
       end
 
@@ -221,7 +221,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, kind_of(Namespace), user, access_params)
               .and_return(double(execute: project))
 
-          post :create, { target_namespace: 'foo/bar', format: :json }
+          post :create, params: { target_namespace: 'foo/bar' }, format: :json
         end
 
         it 'creates the namespaces' do
@@ -229,7 +229,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, kind_of(Namespace), user, access_params)
               .and_return(double(execute: project))
 
-          expect { post :create, { target_namespace: 'foo/bar', format: :json } }
+          expect { post :create, params: { target_namespace: 'foo/bar' }, format: :json }
             .to change { Namespace.count }.by(2)
         end
 
@@ -238,7 +238,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, kind_of(Namespace), user, access_params)
               .and_return(double(execute: project))
 
-          post :create, { target_namespace: 'foo/bar', format: :json }
+          post :create, params: { target_namespace: 'foo/bar' }, format: :json
 
           expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
         end
@@ -257,7 +257,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, kind_of(Namespace), user, access_params)
               .and_return(double(execute: project))
 
-          post :create, { target_namespace: 'foo/foobar/bar', format: :json }
+          post :create, params: { target_namespace: 'foo/foobar/bar' }, format: :json
         end
 
         it 'creates the namespaces' do
@@ -265,7 +265,7 @@ describe Import::GitlabController do
             .to receive(:new).with(gitlab_repo, kind_of(Namespace), user, access_params)
               .and_return(double(execute: project))
 
-          expect { post :create, { target_namespace: 'foo/foobar/bar', format: :json } }
+          expect { post :create, params: { target_namespace: 'foo/foobar/bar' }, format: :json }
             .to change { Namespace.count }.by(2)
         end
       end
@@ -274,7 +274,7 @@ describe Import::GitlabController do
         it 'returns 422 response' do
           other_namespace = create(:group, name: 'other_namespace')
 
-          post :create, { target_namespace: other_namespace.name, format: :json }
+          post :create, params: { target_namespace: other_namespace.name }, format: :json
 
           expect(response).to have_gitlab_http_status(422)
         end

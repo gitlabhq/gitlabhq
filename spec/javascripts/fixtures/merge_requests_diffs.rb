@@ -57,13 +57,13 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
   private
 
   def render_merge_request(fixture_file_name, merge_request, view: 'inline', **extra_params)
-    get :show,
+    get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.to_param,
-      format: :json,
       view: view,
       **extra_params
+    }, format: :json
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

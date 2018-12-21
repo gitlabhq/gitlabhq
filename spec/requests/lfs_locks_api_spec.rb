@@ -146,11 +146,11 @@ describe 'Git LFS File Locking API' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+    post(url, params: body.try(:to_json), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def do_get(url, params = nil,  headers = nil)
-    get(url, (params || {}), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+    get(url, params: (params || {}), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

@@ -145,25 +145,10 @@ describe Project do
     end
 
     describe 'ci_pipelines association' do
-      context 'when feature flag pipeline_ci_sources_only is enabled' do
-        it 'returns only pipelines from ci_sources' do
-          stub_feature_flags(pipeline_ci_sources_only: true)
+      it 'returns only pipelines from ci_sources' do
+        expect(Ci::Pipeline).to receive(:ci_sources).and_call_original
 
-          expect(Ci::Pipeline).to receive(:ci_sources).and_call_original
-
-          subject.ci_pipelines
-        end
-      end
-
-      context 'when feature flag pipeline_ci_sources_only is disabled' do
-        it 'returns all pipelines' do
-          stub_feature_flags(pipeline_ci_sources_only: false)
-
-          expect(Ci::Pipeline).not_to receive(:ci_sources).and_call_original
-          expect(Ci::Pipeline).to receive(:all).and_call_original.at_least(:once)
-
-          subject.ci_pipelines
-        end
+        subject.ci_pipelines
       end
     end
   end
@@ -3690,7 +3675,7 @@ describe Project do
       expect(project.badges.count).to eq 3
     end
 
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       context 'with nested_groups' do
         let(:parent_group) { create(:group) }
 

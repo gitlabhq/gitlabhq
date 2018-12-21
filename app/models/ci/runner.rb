@@ -58,8 +58,7 @@ module Ci
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
     scope :deprecated_shared, -> { instance_type }
-    # this should get replaced with `project_type.or(group_type)` once using Rails5
-    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
+    scope :deprecated_specific, -> { project_type.or(group_type) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
@@ -67,7 +66,7 @@ module Ci
 
     scope :belonging_to_parent_group_of_project, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
-      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(project_groups).base_and_ancestors
 
       joins(:groups).where(namespaces: { id: hierarchy_groups })
     }

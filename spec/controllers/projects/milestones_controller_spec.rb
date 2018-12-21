@@ -22,7 +22,7 @@ describe Projects::MilestonesController do
 
     def view_milestone(options = {})
       params = { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
-      get :show, params.merge(options)
+      get :show, params: params.merge(options)
     end
 
     it 'shows milestone page' do
@@ -43,9 +43,11 @@ describe Projects::MilestonesController do
   describe "#index" do
     context "as html" do
       def render_index(project:, page:)
-        get :index, namespace_id: project.namespace.id,
-                    project_id: project.id,
-                    page: page
+        get :index, params: {
+                      namespace_id: project.namespace.id,
+                      project_id: project.id,
+                      page: page
+                    }
       end
 
       it "queries only projects milestones" do
@@ -90,7 +92,7 @@ describe Projects::MilestonesController do
       context 'with a single group ancestor' do
         before do
           project.update(namespace: group)
-          get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+          get :index, params: { namespace_id: project.namespace.id, project_id: project.id }, format: :json
         end
 
         it "queries projects milestones and groups milestones" do
@@ -107,7 +109,7 @@ describe Projects::MilestonesController do
 
         before do
           project.update(namespace: subgroup)
-          get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+          get :index, params: { namespace_id: project.namespace.id, project_id: project.id }, format: :json
         end
 
         it "queries projects milestones and all ancestors milestones" do
@@ -124,7 +126,7 @@ describe Projects::MilestonesController do
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
 
-      delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :js
+      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }, format: :js
       expect(response).to be_success
 
       expect(Event.recent.first.action).to eq(Event::DESTROYED)
@@ -155,7 +157,7 @@ describe Projects::MilestonesController do
       end
 
       it 'renders 404' do
-        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+        post :promote, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -167,7 +169,7 @@ describe Projects::MilestonesController do
       end
 
       it 'shows group milestone' do
-        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+        post :promote, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
 
         expect(flash[:notice]).to eq("#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
         expect(response).to redirect_to(project_milestones_path(project))
@@ -176,7 +178,7 @@ describe Projects::MilestonesController do
       it 'renders milestone name without parsing it as HTML' do
         milestone.update!(name: 'CCC&lt;img src=x onerror=alert(document.domain)&gt;')
 
-        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+        post :promote, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
 
         expect(flash[:notice]).to eq("CCC promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
       end
@@ -190,7 +192,7 @@ describe Projects::MilestonesController do
       it 'renders 404' do
         project.update(namespace: user.namespace)
 
-        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+        post :promote, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
 
         expect(response).to have_gitlab_http_status(404)
       end

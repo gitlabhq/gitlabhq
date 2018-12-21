@@ -95,6 +95,7 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
+- [Abuse reports](../user/admin_area/abuse_reports.md): View and resolve abuse reports from your users.
 
 [reply by email]: reply_by_email.md
 [issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email

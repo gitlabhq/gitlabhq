@@ -19,6 +19,11 @@ export default {
       required: false,
       default: '',
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     title() {
@@ -33,6 +38,7 @@ export default {
     :title="title"
     :aria-label="title"
     :href="terminalPath"
+    :class="{ disabled: disabled }"
     class="btn terminal-button d-none d-sm-none d-md-block"
   >
     <icon name="terminal" />

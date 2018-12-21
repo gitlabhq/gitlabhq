@@ -47,7 +47,7 @@ describe API::Environments do
   describe 'POST /projects/:id/environments' do
     context 'as a member' do
       it 'creates a environment with valid params' do
-        post api("/projects/#{project.id}/environments", user), name: "mepmep"
+        post api("/projects/#{project.id}/environments", user), params: { name: "mepmep" }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq('mepmep')
@@ -56,19 +56,19 @@ describe API::Environments do
       end
 
       it 'requires name to be passed' do
-        post api("/projects/#{project.id}/environments", user), external_url: 'test.gitlab.com'
+        post api("/projects/#{project.id}/environments", user), params: { external_url: 'test.gitlab.com' }
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns a 400 if environment already exists' do
-        post api("/projects/#{project.id}/environments", user), name: environment.name
+        post api("/projects/#{project.id}/environments", user), params: { name: environment.name }
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns a 400 if slug is specified' do
-        post api("/projects/#{project.id}/environments", user), name: "foo", slug: "foo"
+        post api("/projects/#{project.id}/environments", user), params: { name: "foo", slug: "foo" }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response["error"]).to eq("slug is automatically generated and cannot be changed")
@@ -77,13 +77,13 @@ describe API::Environments do
 
     context 'a non member' do
       it 'rejects the request' do
-        post api("/projects/#{project.id}/environments", non_member), name: 'gitlab.com'
+        post api("/projects/#{project.id}/environments", non_member), params: { name: 'gitlab.com' }
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 400 when the required params are missing' do
-        post api("/projects/12345/environments", non_member), external_url: 'http://env.git.com'
+        post api("/projects/12345/environments", non_member), params: { external_url: 'http://env.git.com' }
       end
     end
   end
@@ -92,7 +92,7 @@ describe API::Environments do
     it 'returns a 200 if name and external_url are changed' do
       url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          name: 'Mepmep', external_url: url
+          params: { name: 'Mepmep', external_url: url }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('Mepmep')
@@ -102,7 +102,7 @@ describe API::Environments do
     it "won't allow slug to be changed" do
       slug = environment.slug
       api_url = api("/projects/#{project.id}/environments/#{environment.id}", user)
-      put api_url, slug: slug + "-foo"
+      put api_url, params: { slug: slug + "-foo" }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response["error"]).to eq("slug is automatically generated and cannot be changed")
@@ -111,7 +111,7 @@ describe API::Environments do
     it "won't update the external_url if only the name is passed" do
       url = environment.external_url
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          name: 'Mepmep'
+          params: { name: 'Mepmep' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('Mepmep')
