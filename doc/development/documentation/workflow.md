@@ -202,9 +202,9 @@ These guidelines help toward the goal of having every user's search of documenta
 
 Who can and should merge depends on the type of update.
 
-- **If a new troubleshooting section/item, minor correction, or other added note/caveat** If known by the author to be accurate or has been reviewed by SME, can be merged by anyone with master permissions (e.g. Support Manager). However, requests for technical writer review or assistance are always welcome.
+- **If a simple troubleshooting item, minor correction, or other added note/caveat** If known by the author to be accurate or has been reviewed by SME, can be merged by anyone with master permissions (e.g. Support Manager). However, requests for technical writer review or assistance are always welcome.
 
-- **If creating/deleting/moving a page or page subsection, or other larger doc updates**, we require a technical writer review.
+- **If creating/deleting/moving a page or page subsection, or other larger doc updates, including more extensive troubleshooting steps**, we require a technical writer review. However, you can always link a user to your MR, for reference.
 
 ### Other ways to help
 
