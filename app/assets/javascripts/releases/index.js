@@ -14,7 +14,7 @@ export default () => {
     render(createElement) {
       return createElement('app', {
         props: {
-          endpoint: element.dataset.endpoint,
+          projectId: element.dataset.projectId,
           documentationLink: element.dataset.documentationPath,
           illustrationPath: element.dataset.illustrationPath,
         },

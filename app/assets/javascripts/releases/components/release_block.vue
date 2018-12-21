@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -30,8 +31,8 @@ export default {
       });
     },
     userImageAltDescription() {
-      return this.commit.author && this.commit.author.username
-        ? sprintf("%{username}'s avatar", { username: this.commit.author.username })
+      return this.author && this.author.username
+        ? sprintf("%{username}'s avatar", { username: this.author.username })
         : null;
     },
     commit() {
@@ -39,6 +40,12 @@ export default {
     },
     assets() {
       return this.release.assets || {};
+    },
+    author() {
+      return this.release.author || {};
+    },
+    hasAuthor() {
+      return _.isEmpty(this.author);
     },
   },
 };
@@ -66,14 +73,14 @@ export default {
           }}</span>
         </div>
 
-        <div v-if="commit.author" class="d-flex">
+        <div v-if="hasAuthor" class="d-flex">
           by
           <user-avatar-link
             class="prepend-left-4"
-            :link-href="commit.author.path"
-            :img-src="commit.author.avatar_url"
+            :link-href="author.path"
+            :img-src="author.avatar_url"
             :img-alt="userImageAltDescription"
-            :tooltip-text="commit.author.username"
+            :tooltip-text="author.username"
           />
         </div>
       </div>
