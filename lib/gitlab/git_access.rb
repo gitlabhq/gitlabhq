@@ -261,8 +261,6 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
 
-      return if changes.blank? # Allow access this is needed for EE.
-
       check_change_access!
     end
 
