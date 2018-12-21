@@ -2,9 +2,14 @@
 description: Learn the process of shipping documentation for GitLab.
 ---
 
-# Documentation process at GitLab
+# Documentation workflows at GitLab
 
-At GitLab, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
+Documentation workflows at GitLab differ depending on whether documentation is
+being updated due to a feature change (as part of the release process) or is being improved for other reasons, such as a doc revamp or correction.
+
+## Feature change updates
+
+At GitLab, before each release, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
 
 - Product Managers (PMs): in the issue for all new and updated features,
   PMs include specific documentation requirements that the developer who is
@@ -18,7 +23,7 @@ At GitLab, developers contribute new or updated documentation along with their c
   help developers with any questions throughout the process, and act as the final
   reviewer of all new and updated docs content before it's merged.
 
-## Requirements
+### Requirements
 
 Documentation must be delivered whenever:
 
@@ -30,6 +35,8 @@ Documentation is not required when a feature is changed on the backend
 only and does not directly affect the way that any regular user or
 administrator would interact with GitLab.
 
+Documentation pages should follow the [structure](structure.md) guidelines.
+
 NOTE: **Note:**
 When refactoring documentation, it should be submitted in its own MR.
 **Do not** join new features' MRs with refactoring existing docs, as they might have
@@ -38,7 +45,7 @@ different priorities.
 NOTE: **Note:**
 [Smaller MRs are better](https://gitlab.com/gitlab-com/blog-posts/issues/185#note_4401010)! Do not mix subjects, and ship the smallest MR possible.
 
-### Documentation review process
+### Review process
 
 The docs shipped by the developer should be reviewed by the PM (for accuracy) and a Technical Writer (for clarity and structure).
 
@@ -71,19 +78,15 @@ which Tech Writer to assign for.
 #### Skip the entire review
 
 When the MR only contains corrections to the content (typos, grammar,
-broken links, etc), it can be merged without the PM's and Tech Writer's review.
+broken links, etc), it can be merged without the PM's and tech writer's review.
 
-## Documentation structure
-
-Read through the [documentation structure](structure.md) docs for an overview.
-
-## Documentation workflow
+### Feature documentation workflow
 
 To follow a consistent workflow every month, documentation changes
 involve the Product Managers, the developer who shipped the feature,
 and the Technical Writing team. Each role is described below.
 
-### 1. Product Manager's role in the documentation process
+#### 1. Product Manager's role in the documentation process
 
 The Product Manager (PM) should add to the feature issue:
 
@@ -95,7 +98,7 @@ The Product Manager (PM) should add to the feature issue:
 - Label the issue with `Documentation`, `Deliverable`, `docs:P1`, and assign
   the correct milestone
 
-### 2. Developer's role in the documentation process
+#### 2. Developer's role in the documentation process
 
 As a developer, or as a community contributor, you should ship the documentation
 with the feature, as in GitLab the documentation is part of the product.
@@ -104,8 +107,7 @@ The docs can either be shipped along with the MR introducing the code, or,
 alternatively, created from a follow-up issue and MR.
 
 The docs should be shipped **by the feature freeze date**. Justified
-exceptions are accepted, as long as the [following process](#documentation-shipped-late)
-and the missed-deliverable due date (the 14th of each month) are both respected.
+exceptions are accepted, as long as the [following process](#documentation-shipped-late) and the missed-deliverable due date (the 14th of each month) are both respected.
 
 #### Documentation shipped in the feature MR
 
@@ -173,6 +175,40 @@ The **due date** for **merging** `missed-deliverable` MRs is on the
   - Syntax, typos, and broken links
   - Improvements to the content
   - Accordance to the [docs style guide](styleguide.md)
+  
+## Other documentation updates
+
+Anyone can contribute a merge request or create an issue for documentation.
+
+The process for genearl contributions to docs (other than those which arise from release-related feature updates) can be found on the documentation guidelines page under [other documentation contributions](index.md#other-documentation-contributions).
+
+## Role of Support in GitLab Documentation
+
+GitLab support engineers are key contributors to GitLab docs. They should regularly update docs when handling support cases, where a doc update would enable users to accomplish tasks successfully on their own in the future, preventing problems and the need to contact Support.
+
+Support and others should use a docs-first approach; rather than directly responding to a customer with a solution, where possible/applicable, first produce an MR for a new or updated doc and then link it in the customer communication / forum reply. If the MR can get merged immediately, even better—just link to the live doc instead.
+
+Generally, support engineers can contribute to docs in the [same way as other non-feature-enhancement docs are contributed](index.md#, but this section contains additional Support-specific tips.
+
+### Content: what belongs in the docs
+
+In docs, we share any and all helpful info/processes/tips with customers, but warn them in specific terms about the potential ramifications of any mentioned actions. There is no reason to withhold 'risky' steps and store them in another location; simply include them along with the rest of the docs, with all necessary detail including specific warnings and caveats.
+
+A `Troubleshooting` section in doc pages is part of the default [template](structure.md) for a new page, and can freely be added to any page.
+
+These guidelines help toward the goal of having every user's search of documentation yield a useful result.
+
+### Who can merge
+
+Who can and should merge depends on the type of update.
+
+- **If a new troubleshooting section/item, minor correction, or other added note/caveat** If known by the author to be accurate or has been reviewed by SME, can be merged by anyone with master permissions (e.g. Support Manager). However, requests for technical writer review or assistance are always welcome.
+
+- **If creating/deleting/moving a page or page subsection, or other larger doc updates**, we require a technical writer review.
+
+### Other ways to help
+
+If you have ideas for further documentation resources that would be best considered/handled by technical writers, devs, and other SMEs, please create an issue.
 
 <!-- TBA: issue and MR description templates as part of the process -->
 
