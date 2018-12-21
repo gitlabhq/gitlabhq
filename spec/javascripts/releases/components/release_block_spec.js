@@ -133,4 +133,8 @@ describe('Release block', () => {
       release.assets.links[0].name,
     );
   });
+
+  it('renders author avatar', () => {
+    expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
+  });
 });
