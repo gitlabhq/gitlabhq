@@ -435,7 +435,13 @@ msgstr ""
 msgid "AdminProjects|Delete project"
 msgstr ""
 
+msgid "AdminSettings|Environment variables are protected by default"
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
 
 msgid "AdminUsers|Block user"
@@ -2741,6 +2747,15 @@ msgid "Enter the merge request description"
 msgstr ""
 
 msgid "Enter the merge request title"
+msgstr ""
+
+msgid "Environment variables"
+msgstr ""
+
+msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use environment variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
+msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
 msgstr ""
 
 msgid "Environments"
@@ -7351,12 +7366,6 @@ msgid "Users"
 msgstr ""
 
 msgid "Users requesting access to"
-msgstr ""
-
-msgid "Variables"
-msgstr ""
-
-msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
 msgid "Various container registry settings."
