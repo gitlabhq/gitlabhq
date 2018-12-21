@@ -73,11 +73,11 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 > Introduced in GitLab 11.6.
 
-Using functions is useful for initiating, responding, or triggering independent
+Using functions is useful for dealing with independent
 events without needing to maintain a complex unified infrastructure. This allows
 you to focus on a single task that can be executed/scaled automatically and independently.
 
-At launch, the following [runtimes](https://gitlab.com/triggermesh/runtimes) are offered:
+Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are offered:
 
 - node.js
 - kaniko
@@ -145,7 +145,7 @@ The `serverless.yaml` file contains three sections with distinct parameters:
 | Parameter | Description |
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute the `serverless.yaml` file. In this case, the TriggerMesh `tm` CLI. |
-| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission on the `gitlab-ci.yml` file. |
+| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission and the secret value on the `gitlab-ci.yml` file |
 | `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
