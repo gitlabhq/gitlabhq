@@ -6,11 +6,9 @@ class ReleasesFinder
     @current_user = current_user
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute
-    return [] unless Ability.allowed?(@current_user, :read_release, @project)
+    return Release.none unless Ability.allowed?(@current_user, :read_release, @project)
 
-    @project.releases.order('created_at DESC')
+    @project.releases.sorted
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end

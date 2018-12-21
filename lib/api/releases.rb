@@ -21,7 +21,7 @@ module API
         use :pagination
       end
       get ':id/releases' do
-        releases = ::Kaminari.paginate_array(::ReleasesFinder.new(user_project, current_user).execute)
+        releases = ::ReleasesFinder.new(user_project, current_user).execute
 
         present paginate(releases), with: Entities::Release
       end

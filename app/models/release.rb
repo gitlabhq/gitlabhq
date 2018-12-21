@@ -11,6 +11,8 @@ class Release < ActiveRecord::Base
 
   validates :description, :project, :tag, presence: true
 
+  scope :sorted, -> { order(created_at: :desc) }
+
   delegate :repository, to: :project
 
   def commit

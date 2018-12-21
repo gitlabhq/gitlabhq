@@ -6,15 +6,14 @@ describe ReleasesFinder do
   let(:user)       { create(:user) }
   let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0')}
-  let(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0')}
+  let(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
+  let(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
 
   subject { described_class.new(project, user)}
 
   before do
-    now = Time.now
-    v1_0_0.update_attribute(:created_at, now - 2.days)
-    v1_1_0.update_attribute(:created_at, now - 1.day)
+    v1_0_0.update_attribute(:created_at, 2.days.ago)
+    v1_1_0.update_attribute(:created_at, 1.day.ago)
   end
 
   describe '#execute' do
