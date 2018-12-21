@@ -1,5 +1,0 @@
----
-title: Add monkey patch to unicorn to fix eof? problem
-merge_request: 23385
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix error when searching for group issues with priority or popularity sort
-merge_request: 23445
-author:
-type: fixed

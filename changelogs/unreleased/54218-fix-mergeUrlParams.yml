@@ -1,5 +1,0 @@
----
-title: "Fix mergeUrlParams with fragment URL"
-merge_request: 54218
-author: Thomas Holder
-type: fixed

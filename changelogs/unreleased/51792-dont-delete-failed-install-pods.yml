@@ -1,5 +1,0 @@
----
-title: Don't remove failed install pods after installing GitLab managed applications
-merge_request: 23350
-author:
-type: changed
