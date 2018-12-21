@@ -130,6 +130,10 @@ export default {
       required: false,
       default: true,
     },
+    lockVersion: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     const store = new Store({
@@ -141,6 +145,7 @@ export default {
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
       taskStatus: this.initialTaskStatus,
+      lock_version: this.lockVersion,
     });
 
     return {
@@ -214,6 +219,7 @@ export default {
         this.store.setFormState({
           title: this.state.titleText,
           description: this.state.descriptionText,
+          lock_version: this.state.lock_version,
           lockedWarningVisible: false,
           updateLoading: false,
         });

@@ -43,6 +43,7 @@ describe('Issuable output', () => {
         initialTitleText: '',
         initialDescriptionHtml: 'test',
         initialDescriptionText: 'test',
+        lockVersion: 1,
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectNamespace: '/',
@@ -78,6 +79,7 @@ describe('Issuable output', () => {
         expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
         expect(editedText.querySelector('.author-link').href).toMatch(/\/some_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
+        expect(vm.state.lock_version).toEqual(1);
       })
       .then(() => {
         vm.poll.makeRequest();
@@ -95,6 +97,7 @@ describe('Issuable output', () => {
 
         expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
+        expect(vm.state.lock_version).toEqual(2);
       })
       .then(done)
       .catch(done.fail);
@@ -255,15 +258,10 @@ describe('Issuable output', () => {
     describe('error when updating', () => {
       beforeEach(() => {
         spyOn(window, 'Flash').and.callThrough();
-        spyOn(vm.service, 'updateIssuable').and.callFake(
-          () =>
-            new Promise((resolve, reject) => {
-              reject();
-            }),
-        );
       });
 
       it('closes form on error', done => {
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.resolve());
         vm.updateIssuable();
 
         setTimeout(() => {
@@ -276,6 +274,7 @@ describe('Issuable output', () => {
       });
 
       it('returns the correct error message for issuableType', done => {
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
         vm.issuableType = 'merge request';
 
         Vue.nextTick(() => {
@@ -288,6 +287,20 @@ describe('Issuable output', () => {
 
             done();
           });
+        });
+      });
+
+      it('shows error mesage from backend if exists', done => {
+        const msg = 'Custom error message from backend';
+        spyOn(vm.service, 'updateIssuable').and.callFake(() =>
+          Promise.reject({ response: { data: { errors: msg } } }), // eslint-disable-line prefer-promise-reject-errors
+        );
+
+        vm.updateIssuable();
+        setTimeout(() => {
+          expect(window.Flash).toHaveBeenCalledWith(msg);
+
+          done();
         });
       });
     });
@@ -420,6 +433,7 @@ describe('Issuable output', () => {
         .then(vm.$nextTick)
         .then(() => {
           expect(vm.formState.lockedWarningVisible).toEqual(true);
+          expect(vm.formState.lock_version).toEqual(1);
           expect(vm.$el.querySelector('.alert')).not.toBeNull();
         })
         .then(done)
