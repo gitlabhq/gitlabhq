@@ -84,8 +84,6 @@ At launch, the following [runtimes](https://gitlab.com/triggermesh/runtimes) are
 - node.js
 - kaniko
 
-You can locate the runtimes souce at https://gitlab.com/triggermesh/runtimes
-
 In order to deploy functions to your Knative instance, the following files must be present:
 
 1. `gitlab-ci.yml`: This template allows to define the stage, environment, and
@@ -124,14 +122,15 @@ In order to deploy functions to your Knative instance, the following files must 
 
    functions:
      echo:
-      handler: echo
-      runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
-      description: "echo function using node.js runtime"
-      buildargs:
-        - DIRECTORY=echo
+       handler: echo
+       runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
+       description: "echo function using node.js runtime"
+       buildargs:
+         - DIRECTORY=echo
      environment:
        FUNCTION: echo
    ```
+
 
 The `serverless.yaml` file contains three sections with distinct parameters:
 
@@ -148,7 +147,7 @@ The `serverless.yaml` file contains three sections with distinct parameters:
 | Parameter | Description |
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute the `serverless.yaml` file. In this case, the TriggerMesh `tm` CLI. |
-| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the `GitLab registry`, however, you can use other popular registries such as `Docker Hub`, `Google Container Registry`, or `Amazon EC2 Container Registry`. |
+| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission on the `gitlab-ci.yml` file. |
 | `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
