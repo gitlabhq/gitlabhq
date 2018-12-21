@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClusterPlatformConfigureWorker
+class ClusterConfigureWorker
   include ApplicationWorker
   include ClusterQueue
 
