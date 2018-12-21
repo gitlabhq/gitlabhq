@@ -1,5 +1,0 @@
----
-title: Display "commented" only for commit discussions on merge requests
-merge_request: 23622
-author:
-type: fixed
