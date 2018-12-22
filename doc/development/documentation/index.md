@@ -38,7 +38,7 @@ request introducing these changes must be accompanied by the new or updated docu
 
 The individual responsible for writing the first piece of documentation for a new feature, or making the necessary doc changes, is the developer who wrote the new code. It's the job of the Product Manager to ensure all features under their purview are shipped with the necessary documentation, regardless of the size or scope of the feature change. This method helps us ensure that docs remain up to date, despite the high velocity of GitLab releases.
 
-If you have questions before or while writing documentation, ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is displayed automatically in a reply from DangerBot on any merge request that contains changes to doc files. 
+If you have questions before or while writing documentation, ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage) and also displayed in an automatic reply from DangerBot on any merge request that contains changes to doc files. 
 
 When your content is ready for review, request a review from the applicable writer by mentioning them in a comment.
 
@@ -99,15 +99,12 @@ in small iterations. Please do not create new docs in these folders. Organize do
 
 ### Location and naming documents
 
-The documentation hierarchy can be vastly improved by providing a better layout
-and organization of directories.
+Our goal is to have a clear heirarchical structure with meaningful URLs
+like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
+you can immediately tell that you are navigating to user-related documentation
+content about project features; specifically about merge requests.
 
-Having a structured document layout, we will be able to have meaningful URLs
-like `docs.gitlab.com/user/project/merge_requests/index.html`. With this pattern,
-you can immediately tell that you are navigating a user related documentation
-and is about the project and its merge requests.
-
-Do not create summaries of similar types of content (e.g. an index of all articles, videos, etc.),
+Do not create summaries of similar media types (e.g. an index of all articles, videos, etc.),
 rather organize content by its subject (e.g. everything related to CI goes together)
 and cross-link between any related content.
 
@@ -123,8 +120,6 @@ The table below shows what kind of documentation goes where.
 | `doc/install/`        | Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
 | `doc/topics/`         | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs)                                                              |
-
----
 
 **General rules & best practices:**
 
@@ -154,8 +149,13 @@ The table below shows what kind of documentation goes where.
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
 
-If you are unsure where a document should live, you can ping `@axil` or `@marcia` in your
-merge request.
+If you are unsure where a document or a content addition should live,
+you can mention the technical writer assigned to the feature or topic's relevant
+DevOps stage as listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage)
+or the auto reply from DangerBot on any MR that contains changes to doc files.
+If you are not sure of the stage or none applies, you can mention `@gl-docsteam`,
+but if you accidentally mention the 'wrong' technical writer, they'll be glad to
+help or direct you to the right one.
 
 ### Changing document location
 
