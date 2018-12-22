@@ -118,6 +118,8 @@ describe('VariableList', () => {
       loadFixtures('projects/ci_cd_settings.html.raw');
       $wrapper = $('.js-ci-variable-list-section');
 
+      $wrapper.find('.js-ci-variable-input-protected').attr('data-default', 'false');
+
       variableList = new VariableList({
         container: $wrapper,
         formField: 'variables',

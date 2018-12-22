@@ -2,6 +2,283 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.0 (2018-12-22)
+
+### Security (24 changes, 1 of them is from the community)
+
+- Fix possible XSS attack in Markdown urls with spaces. !2599
+- Update rack to 2.0.6 (for QA environments). !23171 (Takuya Noguchi)
+- Bump nokogiri, loofah, and rack gems for security updates. !23204
+- Encrypt runners tokens. !23412
+- Encrypt CI/CD builds authentication tokens. !23436
+- Configure mermaid to not render HTML content in diagrams.
+- Fix a possible symlink time of check to time of use race condition in GitLab Pages.
+- Removed ability to see private group names when the group id is entered in the url.
+- Fix stored XSS for Environments.
+- Fix persistent symlink in project import.
+- Fixed ability of guest users to edit/delete comments on locked or confidential issues.
+- Fixed ability to comment on locked/confidential issues.
+- Fix CRLF vulnerability in Project hooks.
+- Fix SSRF in project integrations.
+- Resolve reflected XSS in Ouath authorize window.
+- Restrict Personal Access Tokens to API scope on web requests.
+- Provide email notification when a user changes their email address.
+- Don't expose confidential information in commit message list.
+- Validate LFS hrefs before downloading them.
+- Do not follow redirects in Prometheus service when making http requests to the configured api url.
+- Escape user fullname while rendering autocomplete template to prevent XSS.
+- Redact sensitive information on gitlab-workhorse log.
+- Fix milestone promotion authorization check.
+- Prevent a path traversal attack on global file templates.
+
+### Removed (1 change)
+
+- Remove obsolete gitlab_shell rake tasks. !22417
+
+### Fixed (86 changes, 13 of them are from the community)
+
+- Remove limit of 100 when searching repository code. !8671
+- Show error message when attempting to reopen an MR and there is an open MR for the same branch. !16447 (Akos Gyimesi)
+- Fix a bug where internal email pattern wasn't respected. !22516
+- Fix project selector consistency in groups issues / MRs / boards pages. !22612 (Heinrich Lee Yu)
+- Add empty state for graphs with no values. !22630
+- Fix navigating by unresolved discussions on Merge Request page. !22789
+- Fix "merged with [commit]" info for merge requests being merged automatically by other actions. !22794
+- Fixing regression issues on pages settings and details. !22821
+- Remove duplicate primary button in dashboard snippets on small viewports. !22902 (George Tsiolis)
+- Fix API::Namespaces routing to accept namepaces with dots. !22912
+- Switch kubernetes:active with checking in Auto-DevOps.gitlab-ci.yml. !22929
+- Avoid Gitaly RPC errors when fetching diff stats. !22995
+- Removes promote to group label for anonymous user. !23042 (Jacopo Beschi @jacopo-beschi)
+- Fix enabling project deploy key for admins. !23043
+- Align issue status label and confidential icon. !23046 (George Tsiolis)
+- Fix default sorting for subgroups and projects list. !23058 (Jacopo Beschi @jacopo-beschi)
+- Hashed Storage: allow migration to be retried in partially migrated projects. !23087
+- Fix line height of numbers in file blame view. !23090 (Johann Hubert Sonntagbauer)
+- Fixes an issue where default values from models would override values set in the interface (e.g. users would be set to external even though their emails matches the internal email address pattern). !23114
+- Remove display of local Sidekiq process in /admin/sidekiq. !23118
+- Fix unrelated deployment status in MR widget. !23175
+- Respect confirmed flag on secondary emails. !23181
+- Restrict member access level to be higher than that of any parent group. !23226
+- Return real deployment status to frontend. !23270
+- Handle force_remove_source_branch when creating merge request. !23281
+- Avoid creating invalid refs using rugged, shelling out for writing refs. !23286
+- Remove needless auto-capitalization on Wiki page titles. !23288
+- Modify the wording for the knative cluster application to match upstream. !23289 (Chris Baumbauer)
+- Change container width for project import. !23318 (George Tsiolis)
+- Validate chunk size when persist. !23341
+- Resolve Main navbar is broken in certain viewport widths. !23348
+- Gracefully handle references with null bytes. !23365
+- Display commit ID for commit diff discussion on merge request. !23370
+- Pass commit when posting diff discussions. !23371
+- Fix flash notice styling for fluid layout. !23382
+- Add monkey patch to unicorn to fix eof? problem. !23385
+- Commits API: Preserve file content in move operations if unspecified. !23387
+- Disable password autocomplete in mirror form fill. !23402
+- Fix "protected branches only" checkbox not set properly at init. !23409
+- Support RSA and ECDSA algorithms in Omniauth JWT provider. !23411 (Michael Tsyganov)
+- Make KUBECONFIG nil if KUBE_TOKEN is nil. !23414
+- Allow search and sort users at same time on admin users page. !23439
+- Fix: Unstar icon button is misaligned. !23444
+- Fix error when searching for group issues with priority or popularity sort. !23445
+- Fix Order By dropdown menu styling in tablet and mobile screens. !23446
+- Fix collapsing discussion replies. !23462
+- Gracefully handle unknown/invalid GPG keys. !23492
+- Fix multiple commits shade overlapping vertical discussion line. !23515
+- Use read_repository scope on read-only files API. !23534
+- Avoid 500's when serializing legacy diff notes. !23544
+- Fix web hook functionality when the database encryption key is too short. !23573
+- Hide Knative from group cluster applications until supported. !23577
+- Add top padding for nested environment items loading icon. !23580 (George Tsiolis)
+- Improve help and validation sections of maximum build timeout inputs. !23586
+- Fix milestone select in issue sidebar of issue boards. !23625
+- Fix gitlab:web_hook tasks. !23635
+- Avoid caching BroadcastMessage as an ActiveRecord object. !23662
+- Only allow strings in URL::Sanitizer.valid?. !23675
+- Fix a frozen string error in app/mailers/notify.rb. !23683
+- Fix a frozen string error in lib/gitlab/utils.rb. !23690
+- Fix MR resolved discussion counts being too low. !23710
+- Fix a potential frozen string error in app/mailers/notify.rb. !23728
+- Remove unnecessary div from MarkdownField to apply list styles correctly. !23733
+- Display reply field if resolved discussion has no replies. !23801
+- Restore kubernetes:active in Auto-DevOps.gitlab-ci.yml (reverts 22929). !23826
+- Fix mergeUrlParams with fragment URL. !54218 (Thomas Holder)
+- Fixed multiple diff line discussions not expanding.
+- Fixed diff files expanding not loading commit content.
+- Fixed styling of image comment badges on commits.
+- Resolve possible cherry pick API race condition.
+- When user clicks linenumber in MR changes, highlight that line.
+- Remove old webhook logs after 90 days, as documented, instead of after 2.
+- Add an external IP address to the knative cluster application page. (Chris Baumbauer)
+- Fixed duplicate discussions getting added to diff lines.
+- Fix deadlock on ChunkedIO.
+- Show tree collapse button for merge request commit diffs.
+- Use approximate count for big tables for usage statistics.
+- Lock writes to trace stream.
+- Ensure that SVG sprite icons are properly rendered in IE11.
+- Make new branch form fields' fonts consistent.
+- Open first 10 merge request files in IDE.
+- Prevent user from navigating away from file edit without commit.
+- Prevent empty button being rendered in empty state.
+- Adds margins between tags when a job is stuck.
+- Fix Image Lazy Loader for some older browsers.
+- Correctly styles tags in sidebar for job page.
+
+### Changed (34 changes, 9 of them are from the community)
+
+- Include new link in breadcrumb for issues, merge requests, milestones, and labels. !18515 (George Tsiolis)
+- Allow sorting issues and MRs in reverse order. !21438
+- Design improvements to project overview page. !22196
+- Remove auto deactivation when failed to create a pipeline via pipeline schedules. !22243
+- Use group clusters when deploying (DeploymentPlatform). !22308
+- Improve initial discussion rendering performance. !22607
+- removes partially matching of No Label filter and makes it case-insensitive. !22622 (Jacopo Beschi @jacopo-beschi)
+- Use search bar for filtering in dashboard issues / MRs. !22641 (Heinrich Lee Yu)
+- Show different empty state for filtered issues and MRs. !22775 (Heinrich Lee Yu)
+- Relocate JSONWebToken::HMACToken from EE. !22906
+- Resolve Add border around the repository file tree. !23018
+- Change breadcrumb title for contribution charts. !23071 (George Tsiolis)
+- Update environments metrics empty state. !23074 (George Tsiolis)
+- Refine cursor positioning in Markdown Editor for wrap tags. !23085 (Johann Hubert Sonntagbauer)
+- Use reports syntax for SAST in Auto DevOps. !23163
+- SystemCheck: Use a more reliable way to detect current Ruby version. !23291
+- Changed frontmatter filtering to support YAML, JSON, TOML, and arbitrary languages. !23331 (Travis Miller)
+- Don't remove failed install pods after installing GitLab managed applications. !23350
+- Expose merge request pipeline variables. !23398
+- Scope default MR search in WebIDE dropdown to current project. !23400
+- Show user contributions in correct timezone within user profile. !23419
+- Redesign of MR header sections (CE). !23465
+- Auto DevOps: Add echo for each branch of the deploy() function where we run helm upgrade. !23499
+- Updates service to update Kubernetes project namespaces and restricted service account if present. !23525
+- Adjust divider margin to comply with design specs. !23548
+- Adjust dropdown item and header padding to comply with design specs. !23552
+- Truncate merge request titles with periods instead of ellipsis. !23558
+- Remove close icon from projects dropdown in issue boards. !23567
+- Change dropdown divider color to gray-200 (#dfdfdf). !23592
+- Define the default value for only/except policies. !23765
+- Don't show Memory Usage for unmerged MRs.
+- reorder notification settings by noisy-ness. (C.J. Jameson)
+- Changed merge request filtering to be by path instead of name.
+- Make diff file headers sticky.
+
+### Performance (22 changes, 6 of them are from the community)
+
+- Upgrade to Ruby 2.5.3. !2806
+- Removes all the irrelevant code and columns that were migrated from the Project table over to the ProjectImportState table. !21497
+- Approximate counting strategy with TABLESAMPLE. !22650
+- Replace tooltip directive with gl-tooltip diretive in badges, cycle analytics, and diffs. !22770 (George Tsiolis)
+- Validate foreign keys being created and indexed for column with _id. !22808
+- Remove monospace extend. !23089 (George Tsiolis)
+- Use Nokogiri as the ActiveSupport XML backend. !23136
+- Improve memory performance by reducing dirty pages after fork(). !23169
+- Add partial index for ci_builds on project_id and status. !23268
+- Reduce Gitaly calls in projects dashboard. !23307
+- Batch load only data from same repository when lazy object is accessed. !23309
+- Add index for events on project_id and created_at. !23354
+- Remove index for notes on updated_at. !23356
+- Improves performance of Project#readme_url by caching the README path. !23357
+- Populate MR metrics with events table information (migration). !23564
+- Remove unused data from discussions endpoint. !23570
+- Speed up issue board lists in groups with many projects.
+- Use cached size when passing artifacts to Runner.
+- Enable even more frozen string for lib/gitlab. (gfyoung)
+- Enable even more frozen string in lib/gitlab/**/*.rb. (gfyoung)
+- Enable even more frozen string in lib/gitlab/**/*.rb. (gfyoung)
+- Enable even more frozen string for lib/gitlab. (gfyoung)
+
+### Added (32 changes, 13 of them are from the community)
+
+- Add ability to create group level clusters and install gitlab managed applications. !22450
+- Creates /create_merge_request quickaction. !22485 (Jacopo Beschi @jacopo-beschi)
+- Filter by None/Any for labels in issues/mrs API. !22622 (Jacopo Beschi @jacopo-beschi)
+- Chat message push notifications now include links back to GitLab branches. !22651 (Tony Castrogiovanni)
+- Added feature flag to signal content headers detection by Workhorse. !22667
+- Add Discord integration. !22684 (@blackst0ne)
+- Upgrade helm to 2.11.0 and upgrade on every install. !22693
+- Add knative client to kubeclient library. !22968 (cab105)
+- Allow SSH public-key authentication for push mirroring. !22982
+- Allow deleting a Pipeline via the API. !22988
+- #40635: Adds support for cert-manager. !23036 (Amit Rathi)
+- WebIDE: Pressing Ctrl-Enter while typing on the commit message now performs the commit action. !23049 (Thomas Pathier)
+- Adds Any option to label filters. !23111 (Jacopo Beschi @jacopo-beschi)
+- Added glob for CI changes detection. !23128 (Kirill Zaitsev)
+- Add model and relation to store repo full path in database. !23143
+- Add ability to render suggestions. !23147
+- Introduce Knative and Serverless Components. !23174 (Chris Baumbauer)
+- Use BFG object maps to clean projects. !23189
+- Merge request pipelines. !23217
+- Extended user centric tooltips on issue and MR page. !23231
+- Add a rebase API endpoint for merge requests. !23296
+- Add config to prohibit impersonation. !23338
+- Merge request pipeline tag, and adds tags to pipeline view. !23364
+- #52753: HTTPS for JupyterHub installation. !23479 (Amit Rathi)
+- Fill project_repositories for hashed storage projects. !23482
+- Ability to override email for cert-manager. !23503 (Amit Rathi)
+- Allow public forks to be deduplicated. !23508
+- Pipeline trigger variable values are hidden in the UI by default. Maintainers have the option to reveal them. !23518 (jhampton)
+- Add new endpoint to download single artifact file for a ref. !23538
+- Log and pass correlation-id between Unicorn, Sidekiq and Gitaly.
+- Allow user to scroll to top of tab on MR page.
+- Adds states to the deployment widget.
+
+### Other (54 changes, 30 of them are from the community)
+
+- Switch to Rails 5. !21492
+- Migration to write fullpath in all repository configs. !22322
+- Rails5: env is deprecated and will be removed from Rails 5.1. !22626 (Jasper Maes)
+- Update haml_lint to 0.28.0. !22660 (Takuya Noguchi)
+- Update ffaker to 2.10.0. !22661 (Takuya Noguchi)
+- Drop gcp_clusters table. !22713
+- Upgrade minimum required Git version to 2.18.0. !22803
+- Adds new icon size to Vue icon component. !22899
+- Make sure there's only one slash as path separator. !22954
+- Show HTTP response code for Kubernetes errors. !22964
+- Update config map for gitlab managed application if already present on install. !22969
+- Drop default value on status column in deployments table. !22971
+- UI improvements to user's profile. !22977
+- Update asana to 0.8.1. !23039 (Takuya Noguchi)
+- Update asciidoctor to 1.5.8. !23047 (Takuya Noguchi)
+- Make auto-generated icons for subgroups in the breadcrumb dropdown display as a circle. !23062 (Thomas Pathier)
+- Make reply shortcut only quote selected discussion text. !23096 (Thomas Pathier)
+- Fix typo in notebook props. !23103 (George Tsiolis)
+- Fix typos in lib. !23106 (George Tsiolis)
+- Rename diffs store variable. !23123 (George Tsiolis)
+- Fix overlapping navbar separator and overflowing navbar dropdown on small displays. !23126 (Thomas Pathier)
+- Show what RPC is called in the performance bar. !23140
+- Updated Gitaly to v0.133.0. !23148
+- Rails5: Passing a class as a value in an Active Record query is deprecated. !23164 (Jasper Maes)
+- Fix project identicon aligning Harry Kiselev. !23166 (Harry Kiselev)
+- Fix horizontal scrollbar overlapping on horizontal scrolling-tabs. !23167 (Harry Kiselev)
+- Fix bottom paddings of profile header and some markup updates of profile. !23168 (Harry Kiselev)
+- Fixes to AWS documentation spelling and grammar. !23198 (Brendan O'Leary)
+- Adds a PHILOSOPHY.md which references GitLab Product Handbook. !23200
+- Externalize strings from `/app/views/invites`. !23205 (Tao Wang)
+- Externalize strings from `/app/views/project/runners`. !23208 (Tao Wang)
+- Fix typo for scheduled pipeline. !23218 (Davy Defaud)
+- Force content disposition attachment to several endpoints. !23223
+- Upgrade kubeclient to 4.0.0. !23261 (Praveen Arimbrathodiyil @pravi)
+- Update used version of Runner Helm Chart to 0.1.38. !23304
+- render :nothing option is deprecated, Use head method to respond with empty response body. !23311 (Jasper Maes)
+- Passing an argument to force an association to reload is now deprecated. !23334 (Jasper Maes)
+- Externalize strings from `/app/views/snippets`. !23351 (Tao Wang)
+- Fix deprecation: You are passing an instance of ActiveRecord::Base to. !23369 (Jasper Maes)
+- Resolve status emoji being replaced by avatar on mobile. !23408
+- Fix deprecation: render :text is deprecated because it does not actually render a text/plain response. !23425 (Jasper Maes)
+- Fix lack of documentation on how to fetch a snippet's content using API. !23448 (Colin Leroy)
+- Upgrade GitLab Workhorse to v7.3.0. !23489
+- Fallback to admin KUBE_TOKEN for project clusters only. !23527
+- Update used version of Runner Helm Chart to 0.1.39. !23633
+- Show primary button when all labels are prioritized. !23648 (George Tsiolis)
+- Upgrade workhorse to 7.6.0. !23694
+- Upgrade Gitaly to v1.7.1 for correlation-id logging. !23732
+- Fix due date test. !23845
+- Remove unused project method. !54103 (George Tsiolis)
+- Uses new gitlab-ui components in Jobs and Pipelines components.
+- Replaces tooltip directive with the new gl-tooltip directive for consistency in some ci/cd code.
+- Bump gpgme gem version from 2.0.13 to 2.0.18. (asaparov)
+- Enable Rubocop on lib/gitlab. (gfyoung)
+
+
 ## 11.5.5 (2018-12-20)
 
 ### Security (1 change)

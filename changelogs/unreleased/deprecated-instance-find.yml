@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: You are passing an instance of ActiveRecord::Base to'
-merge_request: 23369
-author: Jasper Maes
-type: other

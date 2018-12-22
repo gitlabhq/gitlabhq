@@ -337,32 +337,40 @@ describe Namespace do
       end
     end
 
-    it 'updates project full path in .git/config for each project inside namespace' do
-      parent = create(:group, name: 'mygroup', path: 'mygroup')
-      subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
-      project_in_parent_group = create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1')
-      hashed_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo2')
-      legacy_project_in_subgroup = create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3')
+    context 'for each project inside the namespace' do
+      let!(:parent) { create(:group, name: 'mygroup', path: 'mygroup') }
+      let!(:subgroup) { create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent) }
+      let!(:project_in_parent_group) { create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1') }
+      let!(:hashed_project_in_subgroup) { create(:project, :repository, namespace: subgroup, name: 'foo2') }
+      let!(:legacy_project_in_subgroup) { create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3') }
 
-      parent.update(path: 'mygroup_new')
+      it 'updates project full path in .git/config' do
+        parent.update(path: 'mygroup_new')
 
-      # Routes are loaded when creating the projects, so we need to manually
-      # reload them for the below code to be aware of the above UPDATE.
-      [
-        project_in_parent_group,
-        hashed_project_in_subgroup,
-        legacy_project_in_subgroup
-      ].each do |project|
-        project.route.reload
+        expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+        expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+        expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
       end
 
-      expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
-      expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-      expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
-    end
+      it 'updates the project storage location' do
+        repository_project_in_parent_group = create(:project_repository, project: project_in_parent_group)
+        repository_hashed_project_in_subgroup = create(:project_repository, project: hashed_project_in_subgroup)
+        repository_legacy_project_in_subgroup = create(:project_repository, project: legacy_project_in_subgroup)
 
-    def project_rugged(project)
-      rugged_repo(project.repository)
+        parent.update(path: 'mygroup_moved')
+
+        expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
+        expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
+        expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
+      end
+
+      def project_rugged(project)
+        # Routes are loaded when creating the projects, so we need to manually
+        # reload them for the below code to be aware of the above UPDATE.
+        project.route.reload
+
+        rugged_repo(project.repository)
+      end
     end
   end
 

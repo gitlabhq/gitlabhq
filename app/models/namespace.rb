@@ -306,6 +306,7 @@ class Namespace < ActiveRecord::Base
   def write_projects_repository_config
     all_projects.find_each do |project|
       project.write_repository_config
+      project.track_project_repository
     end
   end
 end

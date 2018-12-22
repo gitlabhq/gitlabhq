@@ -5,7 +5,6 @@ module IssuableActions
   include Gitlab::Utils::StrongMemoize
 
   included do
-    before_action :labels, only: [:show, :new, :edit]
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
@@ -25,7 +24,10 @@ module IssuableActions
 
   def show
     respond_to do |format|
-      format.html
+      format.html do
+        @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      end
+
       format.json do
         render json: serializer.represent(issuable, serializer: params[:serializer])
       end
@@ -166,10 +168,6 @@ module IssuableActions
         }, status: :conflict
       end
     end
-  end
-
-  def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def authorize_destroy_issuable!

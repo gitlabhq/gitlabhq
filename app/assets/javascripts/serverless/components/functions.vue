@@ -81,7 +81,7 @@ export default {
           </p>
           <ul>
             <li>Your repository does not have a corresponding <code>serverless.yml</code> file.</li>
-            <li>Your <code>gitlab-ci.yml</code> file is not properly configured.</li>
+            <li>Your <code>.gitlab-ci.yml</code> file is not properly configured.</li>
             <li>
               The functions listed in the <code>serverless.yml</code> file don't match the namespace
               of your cluster.

@@ -89,7 +89,7 @@ describe('User Popover Component', () => {
       expect(vm.$el.textContent).toContain('GitLab');
     });
 
-    it('should have full job line when we have bio and organization', () => {
+    it('should display bio and organization in separate lines', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.bio = 'Engineer';
       testProps.user.organization = 'GitLab';
@@ -99,20 +99,24 @@ describe('User Popover Component', () => {
         target: document.querySelector('.js-user-link'),
       });
 
-      expect(vm.$el.textContent).toContain('Engineer at GitLab');
+      expect(vm.$el.querySelector('.js-bio').textContent).toContain('Engineer');
+      expect(vm.$el.querySelector('.js-organization').textContent).toContain('GitLab');
     });
 
-    it('should not encode special characters when we have bio and organization', () => {
+    it('should not encode special characters in bio and organization', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
       testProps.user.bio = 'Manager & Team Lead';
-      testProps.user.organization = 'GitLab';
+      testProps.user.organization = 'Me & my <funky> Company';
 
       vm = mountComponent(UserPopover, {
         ...DEFAULT_PROPS,
         target: document.querySelector('.js-user-link'),
       });
 
-      expect(vm.$el.textContent).toContain('Manager & Team Lead at GitLab');
+      expect(vm.$el.querySelector('.js-bio').textContent).toContain('Manager & Team Lead');
+      expect(vm.$el.querySelector('.js-organization').textContent).toContain(
+        'Me & my <funky> Company',
+      );
     });
   });
 

@@ -37,7 +37,7 @@ class IssueBoardEntity < Grape::Entity
   end
 
   expose :issue_sidebar_endpoint, if: -> (issue) { issue.project } do |issue|
-    project_issue_path(issue.project, issue, format: :json, serializer: 'sidebar')
+    project_issue_path(issue.project, issue, format: :json, serializer: 'sidebar_extras')
   end
 
   expose :toggle_subscription_endpoint, if: -> (issue) { issue.project } do |issue|
