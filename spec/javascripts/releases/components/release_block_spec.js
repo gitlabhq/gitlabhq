@@ -15,6 +15,16 @@ describe('Release block', () => {
     author_name: 'Release bot',
     author_email: 'release-bot@example.com',
     created_at: '2012-05-28T05:00:00-07:00',
+    author: {
+      avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
+      id: 482476,
+      name: 'John Doe',
+      path: '/johndoe',
+      state: 'active',
+      status_tooltip_html: null,
+      username: 'johndoe',
+      web_url: 'https://gitlab.com/johndoe',
+    },
     commit: {
       id: '2695effb5807a22ff3d138d593fd856244e155e7',
       short_id: '2695effb',
@@ -28,16 +38,6 @@ describe('Release block', () => {
       committer_name: 'Jack Smith',
       committer_email: 'jack@example.com',
       committed_date: '2012-05-28T04:42:42-07:00',
-      author: {
-        avatar_url: 'uploads/-/system/user/avatar/johndoe/avatar.png',
-        id: 482476,
-        name: 'John Doe',
-        path: '/johndoe',
-        state: 'active',
-        status_tooltip_html: null,
-        username: 'johndoe',
-        web_url: 'https://gitlab.com/johndoe',
-      },
     },
     assets: {
       count: 6,

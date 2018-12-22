@@ -1,5 +1,0 @@
----
-title: Fix a bug where internal email pattern wasn't respected
-merge_request: 22516
-author:
-type: fixed

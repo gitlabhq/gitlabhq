@@ -1,5 +1,0 @@
----
-title: Restrict member access level to be higher than that of any parent group
-merge_request: 23226
-author:
-type: fixed

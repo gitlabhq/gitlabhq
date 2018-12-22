@@ -1,5 +1,0 @@
----
-title: Fallback to admin KUBE_TOKEN for project clusters only
-merge_request: 23527
-author:
-type: other

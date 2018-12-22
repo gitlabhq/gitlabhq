@@ -1,5 +1,0 @@
----
-title: Fix API::Namespaces routing to accept namepaces with dots
-merge_request: 22912
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Display commit ID for commit diff discussion on merge request
-merge_request: 23370
-author:
-type: fixed

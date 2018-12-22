@@ -36,7 +36,9 @@ export default class VariableList {
       },
       protected: {
         selector: '.js-ci-variable-input-protected',
-        default: 'false',
+        // use `attr` instead of `data` as we don't want the value to be
+        // converted. we need the value as a string.
+        default: $('.js-ci-variable-input-protected').attr('data-default'),
       },
       environment_scope: {
         // We can't use a `.js-` class here because

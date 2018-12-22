@@ -1,5 +1,0 @@
----
-title: Avoid caching BroadcastMessage as an ActiveRecord object
-merge_request: 23662
-author:
-type: fixed

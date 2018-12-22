@@ -66,7 +66,7 @@ const RESPONSE_MAP = {
       },
       labels: [],
     },
-    '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar': {
+    '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar_extras': {
       assignees: [
         {
           name: 'User 0',
@@ -181,7 +181,7 @@ const RESPONSE_MAP = {
 const mockData = {
   responseMap: RESPONSE_MAP,
   mediator: {
-    endpoint: '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar',
+    endpoint: '/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar_extras',
     toggleSubscriptionEndpoint: '/gitlab-org/gitlab-shell/issues/5/toggle_subscription',
     moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
     projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',

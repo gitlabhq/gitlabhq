@@ -26,6 +26,7 @@ module Gitlab
       end
     end
 
+    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
@@ -50,8 +51,39 @@ module Gitlab
         @stubs[storage][name] ||= begin
           klass = stub_class(name)
           addr = stub_address(storage)
-          klass.new(addr, :this_channel_is_insecure)
+          creds = stub_creds(storage)
+          klass.new(addr, creds)
         end
+      end
+    end
+
+    def self.stub_cert_paths
+      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+      cert_paths
+    end
+
+    def self.stub_certs
+      return @certs if @certs
+
+      @certs = stub_cert_paths.flat_map do |cert_file|
+        File.read(cert_file).scan(PEM_REGEX).map do |cert|
+          begin
+            OpenSSL::X509::Certificate.new(cert).to_pem
+          rescue OpenSSL::OpenSSLError => e
+            Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+            Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
+            nil
+          end
+        end.compact
+      end.uniq.join("\n")
+    end
+
+    def self.stub_creds(storage)
+      if URI(address(storage)).scheme == 'tls'
+        GRPC::Core::ChannelCredentials.new stub_certs
+      else
+        :this_channel_is_insecure
       end
     end
 
@@ -64,9 +96,7 @@ module Gitlab
     end
 
     def self.stub_address(storage)
-      addr = address(storage)
-      addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-      addr
+      address(storage).sub(%r{^tcp://|^tls://}, '')
     end
 
     def self.clear_stubs!
@@ -88,8 +118,8 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless URI(address).scheme.in?(%w(tcp unix))
-        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix'"
+      unless URI(address).scheme.in?(%w(tcp unix tls))
+        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls'"
       end
 
       address

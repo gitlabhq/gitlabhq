@@ -1,5 +1,0 @@
----
-title: Restore kubernetes:active in Auto-DevOps.gitlab-ci.yml (reverts 22929)
-merge_request: 23826
-author:
-type: fixed

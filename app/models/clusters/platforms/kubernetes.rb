@@ -228,7 +228,7 @@ module Clusters
         return unless namespace_changed?
 
         run_after_commit do
-          ClusterPlatformConfigureWorker.perform_async(cluster_id)
+          ClusterConfigureWorker.perform_async(cluster_id)
         end
       end
     end

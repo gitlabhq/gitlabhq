@@ -63,6 +63,15 @@ describe Projects::TransferService do
       expect(rugged_config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
     end
 
+    it 'updates storage location' do
+      transfer_project(project, user, group)
+
+      expect(project.project_repository).to have_attributes(
+        disk_path: "#{group.full_path}/#{project.path}",
+        shard_name: project.repository_storage
+      )
+    end
+
     context 'new group has a kubernetes cluster' do
       let(:group_cluster) { create(:cluster, :group, :provided_by_gcp) }
       let(:group) { group_cluster.group }
@@ -138,6 +147,17 @@ describe Projects::TransferService do
       attempt_project_transfer do |service|
         expect(service).not_to receive(:execute_system_hooks)
       end
+    end
+
+    it 'does not update storage location' do
+      create(:project_repository, project: project)
+
+      attempt_project_transfer
+
+      expect(project.project_repository).to have_attributes(
+        disk_path: project.disk_path,
+        shard_name: project.repository_storage
+      )
     end
   end
 

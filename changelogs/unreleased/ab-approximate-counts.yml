@@ -1,5 +1,0 @@
----
-title: Approximate counting strategy with TABLESAMPLE.
-merge_request: 22650
-author:
-type: performance

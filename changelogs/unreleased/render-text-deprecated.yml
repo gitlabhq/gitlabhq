@@ -1,6 +1,0 @@
----
-title: 'Fix deprecation: render :text is deprecated because it does not actually render
-  a text/plain response'
-merge_request: 23425
-author: Jasper Maes
-type: other
