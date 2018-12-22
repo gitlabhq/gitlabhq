@@ -7,7 +7,7 @@ describe StorageMigratorWorker do
 
   describe '#perform' do
     it 'delegates to MigratorService' do
-      expect_any_instance_of(Gitlab::HashedStorage::Migrator).to receive(:bulk_migrate).with(5, 10)
+      expect_any_instance_of(Gitlab::HashedStorage::Migrator).to receive(:bulk_migrate).with(start: 5, finish: 10, operation: :migrate)
 
       worker.perform(5, 10)
     end

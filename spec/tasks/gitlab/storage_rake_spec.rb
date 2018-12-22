@@ -74,7 +74,7 @@ describe 'rake gitlab:storage:*' do
 
         it 'enqueues one StorageMigratorWorker per project' do
           projects.each do |project|
-            expect(StorageMigratorWorker).to receive(:perform_async).with(project.id, project.id)
+            expect(StorageMigratorWorker).to receive(:perform_async).with(project.id, project.id, :migrate)
           end
 
           run_rake_task(task)
@@ -89,7 +89,7 @@ describe 'rake gitlab:storage:*' do
         it 'enqueues one StorageMigratorWorker per 2 projects' do
           projects.map(&:id).sort.each_slice(2) do |first, last|
             last ||= first
-            expect(StorageMigratorWorker).to receive(:perform_async).with(first, last)
+            expect(StorageMigratorWorker).to receive(:perform_async).with(first, last, :migrate)
           end
 
           run_rake_task(task)
