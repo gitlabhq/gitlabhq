@@ -254,7 +254,7 @@ To ensure our changes don't break the build and all tests still pass, we utilize
 Continuous Integration (CI) to run these checks automatically for every push.
 Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
 and how these methods are leveraged by GitLab.
-From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `gitlab-ci.yml` file set up for building our app from
+From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `.gitlab-ci.yml` file set up for building our app from
 every push. We need to set up a new CI job for testing, which GitLab CI/CD will run after the build job using our generated artifacts from gulp.
 
 Please read through the [documentation on CI/CD configuration](../../../ci/yaml/README.md) file to explore its contents and adjust it to your needs.
