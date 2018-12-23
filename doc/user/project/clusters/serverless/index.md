@@ -94,7 +94,7 @@ In order to deploy functions to your Knative instance, the following files must 
    functions:
      stage: deploy
      environment: test
-     image: gcr.io/triggermesh/tm:v0.0.6
+     image: gcr.io/triggermesh/tm:v0.0.7
      script:
        - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN"
        - tm -n "$KUBE_NAMESPACE" --registry-host "$CI_REGISTRY_IMAGE" deploy --wait
