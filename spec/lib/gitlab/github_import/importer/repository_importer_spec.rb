@@ -15,6 +15,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       repository: repository,
       create_wiki: true,
       import_state: import_state,
+      full_path: 'group/foo',
       lfs_enabled?: true
     )
   end
@@ -195,7 +196,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
     it 'imports the wiki repository' do
       expect(importer.gitlab_shell)
         .to receive(:import_repository)
-        .with('foo', 'foo.wiki', 'foo.wiki.git')
+        .with('foo', 'foo.wiki', 'foo.wiki.git', 'group/foo')
 
       expect(importer.import_wiki_repository).to eq(true)
     end

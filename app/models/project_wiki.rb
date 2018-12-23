@@ -60,7 +60,7 @@ class ProjectWiki
   def wiki
     @wiki ||= begin
       gl_repository = Gitlab::GlRepository.gl_repository(project, true)
-      raw_repository = Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', gl_repository)
+      raw_repository = Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', gl_repository, full_path)
 
       create_repo!(raw_repository) unless raw_repository.exists?
 
@@ -175,7 +175,7 @@ class ProjectWiki
   private
 
   def create_repo!(raw_repository)
-    gitlab_shell.create_repository(project.repository_storage, disk_path)
+    gitlab_shell.create_repository(project.repository_storage, disk_path, project.full_path)
 
     raise CouldNotCreateWikiError unless raw_repository.exists?
 

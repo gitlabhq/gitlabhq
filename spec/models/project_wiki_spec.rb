@@ -7,7 +7,7 @@ describe ProjectWiki do
   let(:repository) { project.repository }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project_wiki) { described_class.new(project, user) }
-  let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo') }
+  let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo', 'group/project.wiki') }
   let(:commit) { project_wiki.repository.head_commit }
 
   subject { project_wiki }

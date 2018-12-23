@@ -27,8 +27,10 @@ describe RepositoryForkWorker do
         expect(shell).to receive(:fork_repository).with(
           'default',
           project.disk_path,
+          project.full_path,
           forked_project.repository_storage,
-          forked_project.disk_path
+          forked_project.disk_path,
+          forked_project.full_path
         )
       end
 

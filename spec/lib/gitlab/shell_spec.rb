@@ -412,7 +412,7 @@ describe Gitlab::Shell do
       end
 
       it 'creates a repository' do
-        expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
+        expect(gitlab_shell.create_repository(repository_storage, repo_name, repo_name)).to be_truthy
 
         expect(File.stat(created_path).mode & 0o777).to eq(0o770)
 
@@ -427,7 +427,7 @@ describe Gitlab::Shell do
         # should cause #create_repository to fail.
         FileUtils.touch(created_path)
 
-        expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
+        expect(gitlab_shell.create_repository(repository_storage, repo_name, repo_name)).to be_falsy
       end
     end
 
@@ -478,7 +478,9 @@ describe Gitlab::Shell do
         gitlab_shell.fork_repository(
           project.repository_storage,
           project.disk_path,
+          project.full_path,
           'nfs-file05',
+          'fork/path',
           'fork/path'
         )
       end
@@ -505,7 +507,7 @@ describe Gitlab::Shell do
         it 'returns true when the command succeeds' do
           expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository).with(import_url)
 
-          result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+          result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url, project.full_path)
 
           expect(result).to be_truthy
         end
@@ -516,7 +518,7 @@ describe Gitlab::Shell do
           expect_any_instance_of(Gitlab::Shell::GitalyGitlabProjects).to receive(:output) { 'error'}
 
           expect do
-            gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+            gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url, project.full_path)
           end.to raise_error(Gitlab::Shell::Error, "error")
         end
       end

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::Git::Branch, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:rugged) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, repository.relative_path))
   end
@@ -64,7 +64,7 @@ describe Gitlab::Git::Branch, :seed_helper do
 
   context 'with active, stale and future branches' do
     let(:repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project')
     end
 
     let(:user) { create(:user) }

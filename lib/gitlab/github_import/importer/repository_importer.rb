@@ -59,7 +59,7 @@ module Gitlab
         def import_wiki_repository
           wiki_path = "#{project.disk_path}.wiki"
 
-          gitlab_shell.import_repository(project.repository_storage, wiki_path, wiki_url)
+          gitlab_shell.import_repository(project.repository_storage, wiki_path, wiki_url, project.full_path)
 
           true
         rescue Gitlab::Shell::Error => e

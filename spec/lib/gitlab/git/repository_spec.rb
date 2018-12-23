@@ -19,8 +19,8 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
-  let(:mutable_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:mutable_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
   let(:repository_rugged) { Rugged::Repository.new(repository_path) }
   let(:storage_path) { TestEnv.repos_path }
@@ -434,13 +434,13 @@ describe Gitlab::Git::Repository, :seed_helper do
 
   describe '#fetch_repository_as_mirror' do
     let(:new_repository) do
-      Gitlab::Git::Repository.new('default', 'my_project.git', '')
+      Gitlab::Git::Repository.new('default', 'my_project.git', '', 'group/project')
     end
 
     subject { new_repository.fetch_repository_as_mirror(repository) }
 
     before do
-      Gitlab::Shell.new.create_repository('default', 'my_project')
+      Gitlab::Shell.new.create_repository('default', 'my_project', 'group/project')
     end
 
     after do
@@ -1230,7 +1230,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#gitattribute' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '') }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '', 'group/project') }
 
     after do
       ensure_seeds
@@ -1249,7 +1249,7 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     context 'without gitattributes file' do
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
       it 'returns nil' do
         expect(repository.gitattribute("README.md", 'gitlab-language')).to eq(nil)
@@ -1513,7 +1513,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     context 'repository does not exist' do
       it 'raises NoRepository and does not call Gitaly WriteConfig' do
-        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
 
         expect(repository.gitaly_repository_client).not_to receive(:write_config)
 
@@ -1803,7 +1803,7 @@ describe Gitlab::Git::Repository, :seed_helper do
              out:   '/dev/null',
              err:   '/dev/null')
 
-      empty_repo = described_class.new('default', 'empty-repo.git', '')
+      empty_repo = described_class.new('default', 'empty-repo.git', '', 'group/empty-repo')
 
       expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
     end
@@ -1818,13 +1818,13 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
 
-      non_valid = described_class.new('default', 'non-valid.git', '')
+      non_valid = described_class.new('default', 'non-valid.git', '', 'a/non-valid')
 
       expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
     end
 
     it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
-      broken_repo = described_class.new('default', 'a/path.git', '')
+      broken_repo = described_class.new('default', 'a/path.git', '', 'a/path')
 
       expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end

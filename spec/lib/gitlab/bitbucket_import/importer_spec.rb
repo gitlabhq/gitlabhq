@@ -230,7 +230,8 @@ describe Gitlab::BitbucketImport::Importer do
         expect(importer.gitlab_shell).to receive(:import_repository).with(
           project.repository_storage,
           project.wiki.disk_path,
-          project.import_url + '/wiki'
+          project.import_url + '/wiki',
+          project.full_path
         )
 
         importer.execute

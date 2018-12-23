@@ -3,7 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Commit, :seed_helper do
   include GitHelpers
 
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:rugged_repo) do
     Rugged::Repository.new(File.join(TestEnv.repos_path, TEST_REPO_PATH))
   end
@@ -146,7 +146,7 @@ describe Gitlab::Git::Commit, :seed_helper do
       end
 
       context 'with broken repo' do
-        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '') }
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH, '', 'group/project') }
 
         it 'returns nil' do
           expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
