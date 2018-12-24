@@ -1,7 +1,8 @@
 require 'rails_helper'
 
-describe 'Admin disables Git access protocol' do
+describe 'Admin disables Git access protocol', :js do
   include StubENV
+  include MobileHelpers
 
   let(:project) { create(:project, :empty_repo) }
   let(:admin) { create(:admin) }
@@ -20,7 +21,24 @@ describe 'Admin disables Git access protocol' do
       visit_project
 
       expect(page).to have_content("git clone #{project.ssh_url_to_repo}")
-      expect(page).not_to have_selector('#clone-dropdown')
+
+      find('.clone-dropdown-btn').click
+
+      within('.git-clone-holder') do
+        expect(page).to have_content('Clone with SSH')
+        expect(page).not_to have_content('Clone with HTTP')
+      end
+    end
+
+    context 'mobile component' do
+      it 'shows only the SSH clone information' do
+        resize_screen_xs
+        visit_project
+        find('.dropdown-toggle').click
+
+        expect(page).to have_content('Copy SSH clone URL')
+        expect(page).not_to have_content('Copy HTTP clone URL')
+      end
     end
   end
 
@@ -31,9 +49,25 @@ describe 'Admin disables Git access protocol' do
 
     it 'shows only HTTP url' do
       visit_project
+      find('.clone-dropdown-btn').click
 
       expect(page).to have_content("git clone #{project.http_url_to_repo}")
-      expect(page).not_to have_selector('#clone-dropdown')
+
+      within('.git-clone-holder') do
+        expect(page).to have_content('Clone with HTTP')
+        expect(page).not_to have_content('Clone with SSH')
+      end
+    end
+
+    context 'mobile component' do
+      it 'shows only the HTTP clone information' do
+        resize_screen_xs
+        visit_project
+        find('.dropdown-toggle').click
+
+        expect(page).to have_content('Copy HTTP clone URL')
+        expect(page).not_to have_content('Copy SSH clone URL')
+      end
     end
   end
 
@@ -46,7 +80,24 @@ describe 'Admin disables Git access protocol' do
       visit_project
 
       expect(page).to have_content("git clone #{project.ssh_url_to_repo}")
-      expect(page).to have_selector('#clone-dropdown')
+
+      find('.clone-dropdown-btn').click
+
+      within('.git-clone-holder') do
+        expect(page).to have_content('Clone with SSH')
+        expect(page).to have_content('Clone with HTTP')
+      end
+    end
+
+    context 'mobile component' do
+      it 'shows both SSH and HTTP clone information' do
+        resize_screen_xs
+        visit_project
+        find('.dropdown-toggle').click
+
+        expect(page).to have_content('Copy HTTP clone URL')
+        expect(page).to have_content('Copy SSH clone URL')
+      end
     end
   end
 

@@ -7,7 +7,9 @@
   %button.btn.btn-primary.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
     = sprite_icon("arrow-down", css_class: "dropdown-btn-icon icon")
   %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown{ data: { dropdown: true } }
-    %li
-      = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' }, default: true)
-    %li
-      = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })
+    - if ssh_enabled?
+      %li
+        = dropdown_item_with_description(ssh_copy_label, project.ssh_url_to_repo, href: project.ssh_url_to_repo, data: { clone_type: 'ssh' }, default: true)
+    - if http_enabled?
+      %li
+        = dropdown_item_with_description(http_copy_label, project.http_url_to_repo, href: project.http_url_to_repo, data: { clone_type: 'http' })
