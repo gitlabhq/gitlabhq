@@ -85,6 +85,14 @@ module QA
           found
         end
 
+        def has_no_text?(text)
+          found = super
+
+          log(%Q{has_no_text?('#{text}') returned #{found}})
+
+          found
+        end
+
         def within_element(name)
           log("within element :#{name}")
 

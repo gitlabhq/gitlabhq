@@ -26,6 +26,18 @@ module ApplicationSettingsHelper
     end
   end
 
+  def all_protocols_enabled?
+    Gitlab::CurrentSettings.enabled_git_access_protocol.blank?
+  end
+
+  def ssh_enabled?
+    all_protocols_enabled? || enabled_protocol == 'ssh'
+  end
+
+  def http_enabled?
+    all_protocols_enabled? || enabled_protocol == 'http'
+  end
+
   def enabled_project_button(project, protocol)
     case protocol
     when 'ssh'

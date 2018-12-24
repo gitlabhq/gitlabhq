@@ -65,7 +65,7 @@ shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_
     it 'returns a 404 error when note id not found' do
       put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
               "discussions/#{note.discussion_id}/notes/12345", user),
-              body: 'Hello!'
+              params: { body: 'Hello!' }
 
       expect(response).to have_gitlab_http_status(404)
     end

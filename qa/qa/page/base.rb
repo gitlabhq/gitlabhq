@@ -112,6 +112,10 @@ module QA
         has_css?(element_selector_css(name))
       end
 
+      def has_no_text?(text)
+        page.has_no_text? text
+      end
+
       def within_element(name)
         page.within(element_selector_css(name)) do
           yield
