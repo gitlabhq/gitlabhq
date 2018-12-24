@@ -268,6 +268,17 @@ module ApplicationHelper
     _('You are on a read-only GitLab instance.')
   end
 
+  def client_class_list
+    "gl-browser-#{browser.id} gl-platform-#{browser.platform.id}"
+  end
+
+  def client_js_flags
+    {
+      "is#{browser.id.to_s.titlecase}": true,
+      "is#{browser.platform.id.to_s.titlecase}": true
+    }
+  end
+
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 
