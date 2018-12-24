@@ -65,6 +65,13 @@ describe QA::Support::Page::Logging do
       .to output(/has_element\? :element returned true/).to_stdout_from_any_process
   end
 
+  it 'logs has_no_text?' do
+    allow(page).to receive(:has_no_text?).with('foo').and_return(true)
+
+    expect { subject.has_no_text? 'foo' }
+      .to output(/has_no_text\?\('foo'\) returned true/).to_stdout_from_any_process
+  end
+
   it 'logs within_element' do
     expect { subject.within_element(:element) }
       .to output(/within element :element/).to_stdout_from_any_process
