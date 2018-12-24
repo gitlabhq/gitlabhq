@@ -104,22 +104,53 @@ describe 'Project' do
     let(:path)    { project_path(project) }
 
     before do
+      stub_application_setting(enabled_git_access_protocol: enabled_protocols)
       sign_in(create(:admin))
       visit path
     end
 
-    context 'desktop component' do
-      it 'shows on md and larger breakpoints' do
-        expect(find('.git-clone-holder')).to be_visible
-        expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+    context 'with all protocols enabled' do
+      let(:enabled_protocols) { nil }
+
+      context 'desktop component' do
+        it 'shows on md and larger breakpoints' do
+          expect(find('.git-clone-holder')).to be_visible
+          expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+        end
+      end
+
+      context 'mobile component' do
+        it 'shows mobile component on sm and smaller breakpoints' do
+          resize_screen_xs
+          expect(find('.mobile-git-clone')).to be_visible
+          expect(find('.git-clone-holder', visible: false)).not_to be_visible
+        end
       end
     end
 
-    context 'mobile component' do
-      it 'shows mobile component on sm and smaller breakpoints' do
-        resize_screen_xs
-        expect(find('.mobile-git-clone')).to be_visible
-        expect(find('.git-clone-holder', visible: false)).not_to be_visible
+    context 'when only HTTP clones are allowed' do
+      let(:enabled_protocols) { 'http' }
+
+      it 'shows only the instructions for HTTP' do
+        find('.clone-dropdown-btn').click
+
+        within('.git-clone-holder') do
+          expect(page).to have_content('Clone with HTTP')
+          expect(page).not_to have_content('Clone with SSH')
+        end
+      end
+    end
+
+    context 'when only SSH clones are allowed' do
+      let(:enabled_protocols) { 'ssh' }
+
+      it 'shows only the instructions for SSH' do
+        find('.clone-dropdown-btn').click
+
+        within('.git-clone-holder') do
+          expect(page).to have_content('Clone with SSH')
+          expect(page).not_to have_content('Clone with HTTP')
+        end
       end
     end
   end
