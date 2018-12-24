@@ -392,8 +392,8 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
 
-If a job does not have neither `only` nor `except` rule,
-`only: ['branches', 'tags']` is set by default.
+If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
+default. If it doesn't have an `except` rule, it is empty.
 
 For example,
 
