@@ -139,6 +139,16 @@ describe 'Project' do
           expect(page).not_to have_content('Clone with SSH')
         end
       end
+
+      context 'mobile component' do
+        it 'shows only the instructions for HTTP' do
+          resize_screen_xs
+          find('.dropdown-toggle').click
+
+          expect(page).to have_content('Copy HTTP clone URL')
+          expect(page).not_to have_content('Copy SSH clone URL')
+        end
+      end
     end
 
     context 'when only SSH clones are allowed' do
@@ -150,6 +160,16 @@ describe 'Project' do
         within('.git-clone-holder') do
           expect(page).to have_content('Clone with SSH')
           expect(page).not_to have_content('Clone with HTTP')
+        end
+      end
+
+      context 'mobile component' do
+        it 'shows only the instructions for SSH' do
+          resize_screen_xs
+          find('.dropdown-toggle').click
+
+          expect(page).to have_content('Copy SSH clone URL')
+          expect(page).not_to have_content('Copy HTTP clone URL')
         end
       end
     end
