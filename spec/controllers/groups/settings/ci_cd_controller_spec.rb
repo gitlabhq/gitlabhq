@@ -15,7 +15,7 @@ describe Groups::Settings::CiCdController do
       end
 
       it 'renders show with 200 status code' do
-        get :show, params: { group_id: group }
+        get :show, group_id: group
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template(:show)
@@ -28,7 +28,7 @@ describe Groups::Settings::CiCdController do
       end
 
       it 'renders a 404' do
-        get :show, params: { group_id: group }
+        get :show, group_id: group
 
         expect(response).to have_gitlab_http_status(404)
       end
