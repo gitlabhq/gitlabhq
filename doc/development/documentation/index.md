@@ -274,13 +274,22 @@ tests. If it doesn't, the whole test suite will run (including docs).
 
 Before getting started, make sure you read the introductory section
 "[contributing to docs](#contributing-to-docs)" above and the
-[tech writing workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/)
+[tech writing workflow](workflow.md)
 for GitLab Team members.
 
 - Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Documentation.md)
 - Use the correct [branch name](#branch-naming)
 - Label the MR `Documentation`
 - Assign the correct milestone (see note below)
+
+Documentation will be merged if it meets our style standards, is clear, and is known to be
+correct by the person merging the MR or the SME (such as a developer) who contributed it.
+Further needs for ‘what would make this doc even better’ should be immediately addressed in a
+follow-up MR or issue.
+
+The individual who merges the documentation must have also reviewed the documentation
+for the above standard. Typically this is a technical writer, but others, such as Support Managers,
+can freely merge smaller changes. See the [Documentation Workflows](workflow.md).
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
