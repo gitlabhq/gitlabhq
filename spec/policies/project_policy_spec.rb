@@ -48,7 +48,7 @@ describe ProjectPolicy do
       update_deployment admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
-      admin_pipeline admin_environment admin_deployment admin_release add_cluster
+      admin_pipeline admin_environment admin_deployment destroy_release add_cluster
     ]
   end
 
@@ -184,7 +184,7 @@ describe ProjectPolicy do
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
-        :admin_release
+        :destroy_release
       ]
 
       expect_disallowed(*repository_permissions)

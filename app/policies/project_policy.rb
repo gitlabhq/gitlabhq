@@ -270,7 +270,7 @@ class ProjectPolicy < BasePolicy
     enable :update_cluster
     enable :admin_cluster
     enable :create_environment_terminal
-    enable :admin_release
+    enable :destroy_release
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

@@ -16,18 +16,4 @@ RSpec.describe Release do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:description) }
   end
-
-  describe '.by_tag' do
-    let(:tag) { release.tag }
-
-    subject { described_class.by_tag(project, tag) }
-
-    it { is_expected.to eq(release) }
-
-    context 'when no releases exists' do
-      let(:tag) { 'not-existing' }
-
-      it { is_expected.to be_nil }
-    end
-  end
 end

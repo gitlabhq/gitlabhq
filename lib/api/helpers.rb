@@ -255,18 +255,6 @@ module API
       authorize! :update_build, user_project
     end
 
-    def authorize_create_release!
-      authorize! :create_release, user_project
-    end
-
-    def authorize_read_release!
-      authorize! :read_release, user_project
-    end
-
-    def authorize_update_release!
-      authorize! :update_release, user_project
-    end
-
     def require_gitlab_workhorse!
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')

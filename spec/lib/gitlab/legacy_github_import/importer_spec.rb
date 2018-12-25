@@ -138,7 +138,7 @@ describe Gitlab::LegacyGithubImport::Importer do
 
     let(:release2) do
       double(
-        tag_name: 'v2.0.0',
+        tag_name: 'v1.1.0',
         name: 'Second release',
         body: nil,
         draft: false,

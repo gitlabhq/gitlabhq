@@ -48,8 +48,15 @@ class Projects::TagsController < Projects::ApplicationController
     if result[:status] == :success
       # Release creation with Tags was deprecated in GitLab 11.7
       if params[:release_description].present?
-        release_params = { tag: params[:tag_name], description: params[:release_description] }
-        CreateReleaseService.new(@project, current_user, release_params).execute
+        release_params = {
+          tag: params[:tag_name],
+          name: params[:tag_name],
+          description: params[:release_description]
+        }
+
+        Releases::CreateService
+          .new(@project, current_user, release_params)
+          .execute
       end
 
       @tag = result[:tag]

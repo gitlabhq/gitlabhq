@@ -2,6 +2,7 @@
 
 class Release < ActiveRecord::Base
   include CacheMarkdownField
+  include Gitlab::Utils::StrongMemoize
 
   cache_markdown_field :description
 
@@ -15,25 +16,25 @@ class Release < ActiveRecord::Base
 
   delegate :repository, to: :project
 
-  def self.by_tag(project, tag)
-    self.find_by(project: project, tag: tag)
-  end
-
   def commit
-    git_tag = repository.find_tag(tag)
-    repository.commit(git_tag.dereferenced_target)
+    strong_memoize(:commit) do
+      repository.commit(actual_sha)
+    end
   end
 
-  def sources_formats
-    @sources_formats ||= %w(zip tar.gz tar.bz2 tar).freeze
+  def tag_missing?
+    actual_tag.nil?
   end
 
-  # TODO: placeholder for frontend API compatibility
-  def links
-    []
+  private
+
+  def actual_sha
+    sha || actual_tag&.dereferenced_target
   end
 
-  def assets_count
-    links.size + sources_formats.size
+  def actual_tag
+    strong_memoize(:actual_tag) do
+      repository.find_tag(tag)
+    end
   end
 end

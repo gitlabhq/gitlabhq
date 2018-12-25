@@ -4,10 +4,11 @@ module API
   class Releases < Grape::API
     include PaginationParams
 
-    RELEASE_ENDPOINT_REQUIREMETS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+    RELEASE_ENDPOINT_REQUIREMETS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+      .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
     before { error!('404 Not Found', 404) unless Feature.enabled?(:releases_page, user_project) }
-    before { authorize_read_release! }
+    before { authorize_read_releases! }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
@@ -31,11 +32,10 @@ module API
         success Entities::Release
       end
       params do
-        requires :tag_name, type: String, desc: 'The name of the tag'
+        requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
       get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
-        release = user_project.releases.find_by_tag(params[:tag_name])
-        not_found!('Release') unless release
+        authorize_read_release!
 
         present release, with: Entities::Release
       end
@@ -45,25 +45,22 @@ module API
         success Entities::Release
       end
       params do
-        requires :name,                type: String, desc: 'The name of the release'
-        requires :tag_name,            type: String, desc: 'The name of the tag', as: :tag
-        requires :description,         type: String, desc: 'The release notes'
-        optional :ref,                 type: String, desc: 'The commit sha or branch name'
+        requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
+        requires :name,        type: String, desc: 'The name of the release'
+        requires :description, type: String, desc: 'The release notes'
+        optional :ref,         type: String, desc: 'The commit sha or branch name'
       end
       post ':id/releases' do
         authorize_create_release!
 
-        attributes = declared(params)
-        ref = attributes.delete(:ref)
-        attributes.delete(:id)
-
-        result = ::CreateReleaseService.new(user_project, current_user, attributes)
-          .execute(ref)
+        result = ::Releases::CreateService
+          .new(user_project, current_user, declared_params(include_missing: false))
+          .execute
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
         else
-          render_api_error!(result[:message], 400)
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 
@@ -73,15 +70,15 @@ module API
       end
       params do
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
-        requires :name,        type: String, desc: 'The name of the release'
-        requires :description, type: String, desc: 'Release notes with markdown support'
+        optional :name,        type: String, desc: 'The name of the release'
+        optional :description, type: String, desc: 'Release notes with markdown support'
       end
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
         authorize_update_release!
 
-        attributes = declared(params)
-        attributes.delete(:id)
-        result = UpdateReleaseService.new(user_project, current_user, attributes).execute
+        result = ::Releases::UpdateService
+          .new(user_project, current_user, declared_params(include_missing: false))
+          .execute
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
@@ -98,17 +95,43 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
       end
       delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
-        authorize_update_release!
+        authorize_destroy_release!
 
-        attributes = declared(params)
-        attributes.delete(:id)
-        result = DeleteReleaseService.new(user_project, current_user, attributes).execute
+        result = ::Releases::DestroyService
+          .new(user_project, current_user, declared_params(include_missing: false))
+          .execute
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
         else
           render_api_error!(result[:message], result[:http_status])
         end
+      end
+    end
+
+    helpers do
+      def authorize_create_release!
+        authorize! :create_release, user_project
+      end
+
+      def authorize_read_releases!
+        authorize! :read_release, user_project
+      end
+
+      def authorize_read_release!
+        authorize! :read_release, release
+      end
+
+      def authorize_update_release!
+        authorize! :update_release, release
+      end
+
+      def authorize_destroy_release!
+        authorize! :destroy_release, release
+      end
+
+      def release
+        @release ||= user_project.releases.find_by_tag(params[:tag])
       end
     end
   end
