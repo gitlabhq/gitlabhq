@@ -89,6 +89,27 @@ module API
           render_api_error!(result[:message], result[:http_status])
         end
       end
+
+      desc 'Delete a release' do
+        detail 'This feature was introduced in GitLab 11.7.'
+        success Entities::Release
+      end
+      params do
+        requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
+      end
+      delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
+        authorize_update_release!
+
+        attributes = declared(params)
+        attributes.delete(:id)
+        result = DeleteReleaseService.new(user_project, current_user, attributes).execute
+
+        if result[:status] == :success
+          present result[:release], with: Entities::Release
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
     end
   end
 end
