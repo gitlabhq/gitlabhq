@@ -132,6 +132,53 @@ describe('mrWidgetOptions', () => {
         expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
       });
     });
+
+    describe('shouldRenderCollaborationStatus', () => {
+      describe('when collaboration is allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = true;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should render collaboration status', () => {
+            expect(vm.$el.textContent).toContain('Allows commits from members');
+          });
+        });
+
+        describe('when merge request is not opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = false;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain('Allows commits from members');
+          });
+        });
+      });
+
+      describe('when collaboration is not allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = false;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain('Allows commits from members');
+          });
+        });
+      });
+    });
   });
 
   describe('methods', () => {
