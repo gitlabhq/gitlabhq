@@ -60,7 +60,7 @@ new Kubernetes cluster to your project:
    **Sign in with Google** button.
 1. From there on, choose your cluster's settings:
    - **Kubernetes cluster name** - The name you wish to give the cluster.
-   - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
+   - **Environment scope** - The [associated environment](#setting-the-environment-scope-premium) to this cluster.
    - **Google Cloud Platform project** - Choose the project you created in your GCP
      console that will host the Kubernetes cluster. Learn more about
      [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
