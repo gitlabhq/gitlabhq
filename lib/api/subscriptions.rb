@@ -11,15 +11,6 @@ module API
       { type: 'labels', source: Group, finder: ->(id) { find_label(user_group, id) }, parent_resource: -> { nil } }
     ]
 
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
-      requires :subscribable_id, type: String, desc: 'The ID of a resource'
-    end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      subscribable_types.each do |type, finder|
-        type_singularized = type.singularize
-        entity_class = Entities.const_get(type_singularized.camelcase)
-
     subscribables.each do |subscribable|
       source_type = subscribable[:source].name.underscore
       entity_class = Entities.const_get(subscribable[:type].singularize.camelcase)
