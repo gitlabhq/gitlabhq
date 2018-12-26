@@ -234,7 +234,11 @@ module Backup
     end
 
     def tar_file
-      @tar_file ||= "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
+      if ENV['BACKUP']
+        @tar_file ||= ENV['BACKUP'] + "#{FILE_NAME_SUFFIX}"
+      else
+        @tar_file ||= "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
+      end
     end
 
     def backup_information
