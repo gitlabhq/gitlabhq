@@ -80,8 +80,8 @@ module QA
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name, wait: Capybara.default_max_wait_time)
-        find(element_selector_css(name), wait: wait)
+      def find_element(name, text_filter = nil, wait: Capybara.default_max_wait_time)
+        find(element_selector_css(name), wait: wait, text: text_filter)
       end
 
       def all_elements(name)
