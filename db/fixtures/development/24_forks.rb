@@ -4,6 +4,8 @@ Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     User.all.sample(10).each do |user|
       source_project = Project.public_only.sample
+      return unless source_project
+
       fork_project = Projects::ForkService.new(source_project, user, namespace: user.namespace).execute
 
       if fork_project.valid?
