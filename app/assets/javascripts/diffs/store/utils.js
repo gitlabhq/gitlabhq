@@ -196,6 +196,15 @@ export function trimFirstCharOfLineContent(line = {}) {
   return parsedLine;
 }
 
+function getLineCode({ left, right }, index) {
+  if (left && left.line_code) {
+    return left.line_code;
+  } else if (right && right.line_code) {
+    return right.line_code;
+  }
+  return index;
+}
+
 // This prepares and optimizes the incoming diff data from the server
 // by setting up incremental rendering and removing unneeded data
 export function prepareDiffData(diffData) {
@@ -208,6 +217,8 @@ export function prepareDiffData(diffData) {
       const linesLength = file.parallel_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.parallel_diff_lines[u];
+
+        line.line_code = getLineCode(line, u);
         if (line.left) {
           line.left = trimFirstCharOfLineContent(line.left);
           line.left.hasForm = false;

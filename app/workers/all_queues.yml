@@ -27,7 +27,7 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
-- gcp_cluster:cluster_platform_configure
+- gcp_cluster:cluster_configure
 - gcp_cluster:cluster_project_configure
 
 - github_import_advance_stage
@@ -88,6 +88,7 @@
 - object_pool:object_pool_create
 - object_pool:object_pool_schedule_join
 - object_pool:object_pool_join
+- object_pool:object_pool_destroy
 
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name

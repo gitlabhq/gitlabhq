@@ -56,7 +56,9 @@ module Emails
 
       @milestone = milestone
       @milestone_url = milestone_url(@milestone)
-      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason).merge({
+        template_name: 'changed_milestone_email'
+      }))
     end
 
     def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id, reason = nil)

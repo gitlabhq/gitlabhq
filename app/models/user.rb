@@ -709,13 +709,13 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
-    Gitlab::GroupHierarchy.new(groups).base_and_descendants
+    Gitlab::ObjectHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
   # and child groups (recursively).
   def all_expanded_groups
-    Gitlab::GroupHierarchy.new(groups).all_groups
+    Gitlab::ObjectHierarchy.new(groups).all_objects
   end
 
   def expanded_groups_requiring_two_factor_authentication
@@ -1153,7 +1153,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    Gitlab::GroupHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+    Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
   end
 
   def namespaces
@@ -1420,6 +1420,10 @@ class User < ActiveRecord::Base
 
   def todos_limited_to(ids)
     todos.where(id: ids)
+  end
+
+  def pending_todo_for(target)
+    todos.find_by(target: target, state: :pending)
   end
 
   # @deprecated

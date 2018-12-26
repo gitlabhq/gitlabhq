@@ -107,7 +107,7 @@ module GraphqlHelpers
   end
 
   def post_graphql(query, current_user: nil, variables: nil)
-    post api('/', current_user, version: 'graphql'), query: query, variables: variables
+    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }
   end
 
   def post_graphql_mutation(mutation, current_user: nil)

@@ -54,7 +54,7 @@ describe API::Files do
   describe "HEAD /projects/:id/repository/files/:file_path" do
     shared_examples_for 'repository files' do
       it 'returns file attributes in headers' do
-        head api(route(file_path), current_user), params
+        head api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(file_path))
@@ -68,7 +68,7 @@ describe API::Files do
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
         params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
 
-        head api(route(file_path), current_user), params
+        head api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.headers['X-Gitlab-File-Name']).to eq('commit.js.coffee')
@@ -87,7 +87,7 @@ describe API::Files do
         it "responds with a 404 status" do
           params[:ref] = 'master'
 
-          head api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params
+          head api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params: params
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -97,7 +97,7 @@ describe API::Files do
         include_context 'disabled repository'
 
         it "responds with a 403 status" do
-          head api(route(file_path), current_user), params
+          head api(route(file_path), current_user), params: params
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -115,7 +115,7 @@ describe API::Files do
       it "responds with a 404 status" do
         current_user = nil
 
-        head api(route(file_path), current_user), params
+        head api(route(file_path), current_user), params: params
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -136,7 +136,7 @@ describe API::Files do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { head api(route(file_path), guest), params }
+        let(:request) { head api(route(file_path), guest), params: params }
       end
     end
   end

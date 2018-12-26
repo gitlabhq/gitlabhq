@@ -14,6 +14,7 @@ import MonitoringButtonComponent from './environment_monitoring.vue';
 import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { CLUSTER_TYPE } from '~/clusters/constants';
 
 /**
  * Environment Item Component
@@ -82,6 +83,15 @@ export default {
      */
     isProtected() {
       return this.model && this.model.is_protected;
+    },
+
+    /**
+     * Hide group cluster features which are not currently implemented.
+     *
+     * @returns {Boolean}
+     */
+    disableGroupClusterFeatures() {
+      return this.model && this.model.cluster_type === CLUSTER_TYPE.GROUP;
     },
 
     /**
@@ -547,6 +557,7 @@ export default {
         <terminal-button-component
           v-if="model && model.terminal_path"
           :terminal-path="model.terminal_path"
+          :disabled="disableGroupClusterFeatures"
         />
 
         <rollback-component

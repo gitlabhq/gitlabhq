@@ -114,12 +114,6 @@ module MilestonesHelper
     end
   end
 
-  def milestone_tooltip_title(milestone)
-    if milestone
-      "#{milestone.title}<br />#{milestone_tooltip_due_date(milestone)}"
-    end
-  end
-
   def milestone_time_for(date, date_type)
     title = date_type == :start ? "Start date" : "End date"
 
@@ -173,7 +167,7 @@ module MilestonesHelper
 
   def milestone_tooltip_due_date(milestone)
     if milestone.due_date
-      "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone)})"
+      "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone.due_date, milestone.start_date)})"
     else
       _('Milestone')
     end

@@ -1,5 +1,0 @@
----
-title: Avoid Gitaly RPC errors when fetching diff stats
-merge_request: 22995
-author:
-type: fixed

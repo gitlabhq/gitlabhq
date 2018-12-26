@@ -77,10 +77,18 @@ module QA
           super
         end
 
-        def has_element?(name)
+        def has_element?(name, wait: Capybara.default_max_wait_time)
           found = super
 
           log("has_element? :#{name} returned #{found}")
+
+          found
+        end
+
+        def has_no_text?(text)
+          found = super
+
+          log(%Q{has_no_text?('#{text}') returned #{found}})
 
           found
         end

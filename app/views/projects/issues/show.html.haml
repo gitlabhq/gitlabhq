@@ -88,4 +88,4 @@
   %section.issuable-discussion
     = render 'projects/issues/discussion'
 
-= render 'shared/issuable/sidebar', issuable: @issue
+= render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

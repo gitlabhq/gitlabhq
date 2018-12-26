@@ -1,5 +1,0 @@
----
-title: Avoid creating invalid refs using rugged, shelling out for writing refs
-merge_request: 23286
-author:
-type: fixed

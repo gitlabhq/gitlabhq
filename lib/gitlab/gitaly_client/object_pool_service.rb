@@ -35,7 +35,10 @@ module Gitlab
       end
 
       def unlink_repository(repository)
-        request = Gitaly::UnlinkRepositoryFromObjectPoolRequest.new(repository: repository.gitaly_repository)
+        request = Gitaly::UnlinkRepositoryFromObjectPoolRequest.new(
+          object_pool: object_pool,
+          repository: repository.gitaly_repository
+        )
 
         GitalyClient.call(storage, :object_pool_service, :unlink_repository_from_object_pool,
                           request, timeout: GitalyClient.fast_timeout)

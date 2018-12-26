@@ -32,6 +32,11 @@ describe 'projects/merge_requests/show.html.haml' do
     assign(:noteable, closed_merge_request)
     assign(:notes, [])
     assign(:pipelines, Ci::Pipeline.none)
+    assign(
+      :issuable_sidebar,
+      MergeRequestSerializer.new(current_user: user, project: project)
+        .represent(closed_merge_request, serializer: 'sidebar')
+    )
 
     preload_view_requirements
 

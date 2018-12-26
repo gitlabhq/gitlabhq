@@ -1,9 +1,7 @@
 # Serverless
 
 > Introduced in GitLab 11.5.
-
-CAUTION: **Caution:**
-Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
+> Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
 Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
 
@@ -31,13 +29,13 @@ To run Knative on Gitlab, you will need:
     external IP address for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
     external IP address for that domain.
-1. **`gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
+1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
     to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
     deployment of knative services and functions.
-1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
+1. **`serverless.yaml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yaml` file
     will contain the information for all the functions being hosted in the repository as well as a reference to the
     runtime being used.
-1. **`Dockerfile`:** Knative requires a `Dockerfile` in order to build your application. It should be included
+1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
     at the root of your project's repo and expose port `8080`.
 
 ## Installing Knative via GitLab's Kubernetes integration
@@ -75,13 +73,18 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 > Introduced in GitLab 11.6.
 
-Using functions is useful for initiating, responding, or triggering independent
+Using functions is useful for dealing with independent
 events without needing to maintain a complex unified infrastructure. This allows
 you to focus on a single task that can be executed/scaled automatically and independently.
 
-In order to deploy functions to your Knative instance, the following templates must be present:
+Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are offered:
 
-1. `gitlab-ci.yml`: This template allows to define the stage, environment, and
+- node.js
+- kaniko
+
+In order to deploy functions to your Knative instance, the following files must be present:
+
+1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
 
    ```yaml
@@ -91,17 +94,22 @@ In order to deploy functions to your Knative instance, the following templates m
    functions:
      stage: deploy
      environment: test
-     image: gcr.io/triggermesh/tm:v0.0.6
+     image: gcr.io/triggermesh/tm:v0.0.7
      script:
        - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN"
        - tm -n "$KUBE_NAMESPACE" --registry-host "$CI_REGISTRY_IMAGE" deploy --wait
    ```
 
-2. `serverless.yml`: This template contains the metadata for your functions,
-   such as name, runtime, and environment. It must be included at the root of your repository:
+    The `gitlab-ci.yml` template creates a `Deploy` stage with a `functions` job that invokes the `tm` CLI with the required parameters.
+
+2. `serverless.yaml`: This file contains the metadata for your functions,
+   such as name, runtime, and environment. It must be included at the root of your repository. The following is a sample `echo` function which shows the required structure for the file.
+
+   NOTE: **Note:**
+   The file extension for the `serverless.yaml` file must be specified as `.yaml` in order to the file to be parsed properly. Specifying the extension as `.yml` will not work.
 
    ```yaml
-   service: knative-test
+   service: my-functions
    description: "Deploying functions from GitLab using Knative"
 
    provider:
@@ -111,27 +119,51 @@ In order to deploy functions to your Knative instance, the following templates m
        FOO: BAR
 
    functions:
-     container:
-       handler: simple
-       description: "knative canonical sample"
-       runtime: https://gitlab.com/triggermesh/runtimes/raw/master/kaniko.yaml
+     echo:
+       handler: echo
+       runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
+       description: "echo function using node.js runtime"
        buildargs:
-         - DIRECTORY=simple
-       environment:
-         SIMPLE_MSG: Hello
-
-   nodejs:
-     handler: nodejs
-     runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
-     description: "nodejs fragment"
-     buildargs:
-       - DIRECTORY=nodejs
+         - DIRECTORY=echo
      environment:
-       FUNCTION: nodejs
+       FUNCTION: echo
    ```
 
-After the templates have been created, each function must be defined as a single
-file in your repository. Committing a function to your project will result in a
+
+The `serverless.yaml` file contains three sections with distinct parameters:
+
+### `service`
+
+| Parameter | Description |
+|-----------|-------------|
+| `service` | Name for the Knative service which will serve the function. |
+| `description` | A short description of the `service`. |
+
+
+### `provider`
+
+| Parameter | Description |
+|-----------|-------------|
+| `name` | Indicates which provider is used to execute the `serverless.yaml` file. In this case, the TriggerMesh `tm` CLI. |
+| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission and the secret value on the `gitlab-ci.yml` file |
+| `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
+
+### `functions`
+
+In the `serverless.yaml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
+
+
+| Parameter | Description |
+|-----------|-------------|
+| `handler` | The function's file name. In the example above, both the function name and the handler are the same. |
+| `runtime` | The runtime to be used to execute the function. |
+| `description` | A short description of the function. |
+| `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
+| `environment` | Sets an environment variable for the specific function only. |
+
+After the `gitlab-ci.yml` template has been added and the `serverless.yaml` file has been 
+created, each function must be defined as a single file in your repository. Committing a 
+function to your project will result in a
 CI pipeline being executed which will deploy each function as a Knative service.
 Once the deploy stage has finished, additional details for the function will
 appear under **Operations > Serverless**.
@@ -148,6 +180,10 @@ The function details can be retrieved directly from Knative on the cluster:
 ```bash
 kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 ```
+
+The sample function can now be triggered from any HTTP client using a simple `POST` call.
+
+![function exection](img/function-execution.png)
 
 Currently, the Serverless page presents all functions available in all clusters registered for the project with Knative installed.
 
@@ -190,17 +226,12 @@ deploy:
 
 ## Deploy the application with Knative
 
-With all the pieces in place, you can create a new CI pipeline to deploy the Knative application. Navigate to
-**CI/CD > Pipelines** and click the **Run Pipeline** button at the upper-right part of the screen. Then, on the
-Pipelines page, click **Create pipeline**.
+With all the pieces in place, the next time a CI pipeline runs, the Knative application will be deployed. Navigate to
+**CI/CD > Pipelines** and click the most recent pipeline.
 
 ## Obtain the URL for the Knative deployment
 
-There are two ways to obtain the URL for the Knative deployment.
-
-### Using the CI/CD deployment job output
-
-Once all the stages of the pipeline finish, click the **deploy** stage.
+Use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 

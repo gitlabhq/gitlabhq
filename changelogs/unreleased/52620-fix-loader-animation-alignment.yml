@@ -1,0 +1,5 @@
+---
+title: Aligns build loader animation with the job log
+merge_request: 23959
+author:
+type: fixed

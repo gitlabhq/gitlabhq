@@ -1966,7 +1966,7 @@ describe User do
 
     subject { user.membership_groups }
 
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       it { is_expected.to contain_exactly parent_group, child_group }
     else
       it { is_expected.to contain_exactly parent_group }
@@ -2347,7 +2347,7 @@ describe User do
         group.add_owner(user)
       end
 
-      if Group.supports_nested_groups?
+      if Group.supports_nested_objects?
         it 'returns all groups' do
           is_expected.to match_array [
             group,

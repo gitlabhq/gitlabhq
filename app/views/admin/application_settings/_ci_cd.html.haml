@@ -49,5 +49,12 @@
         Once that time passes, the jobs will be archived and no longer able to be
         retried. Make it empty to never expire jobs. It has to be no less than 1 day,
         for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
+    .form-group
+      .form-check
+        = f.check_box :protected_ci_variables, class: 'form-check-input'
+        = f.label :protected_ci_variables, class: 'form-check-label' do
+          = s_('AdminSettings|Environment variables are protected by default')
+      .form-text.text-muted
+        = s_('AdminSettings|When creating a new environment variable it will be protected by default.')
 
   = f.submit 'Save changes', class: "btn btn-success"

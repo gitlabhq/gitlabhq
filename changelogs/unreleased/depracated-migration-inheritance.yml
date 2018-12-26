@@ -1,0 +1,5 @@
+---
+title: ActiveRecord::Migration -> ActiveRecord::Migration[5.0]
+merge_request: 23910
+author: Jasper Maes
+type: other

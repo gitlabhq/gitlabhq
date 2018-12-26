@@ -18,9 +18,10 @@ describe Projects::BoardsController, '(JavaScript fixtures)', type: :controller 
   end
 
   it 'boards/show.html.raw' do |example|
-    get(:index,
-        namespace_id: project.namespace,
-        project_id: project)
+    get(:index, params: {
+      namespace_id: project.namespace,
+      project_id: project
+    })
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

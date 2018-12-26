@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import component from '~/jobs/components/artifacts_block.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
+import { trimText } from '../../helpers/vue_component_helper';
 
 describe('Artifacts block', () => {
   const Component = Vue.extend(component);
@@ -9,7 +10,7 @@ describe('Artifacts block', () => {
 
   const expireAt = '2018-08-14T09:38:49.157Z';
   const timeago = getTimeago();
-  const formatedDate = timeago.format(expireAt);
+  const formattedDate = timeago.format(expireAt);
 
   const expiredArtifact = {
     expire_at: expireAt,
@@ -36,9 +37,8 @@ describe('Artifacts block', () => {
 
       expect(vm.$el.querySelector('.js-artifacts-removed')).not.toBeNull();
       expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).toBeNull();
-      expect(vm.$el.textContent).toContain(formatedDate);
-      expect(vm.$el.querySelector('.js-artifacts-removed').textContent.trim()).toEqual(
-        'The artifacts were removed',
+      expect(trimText(vm.$el.querySelector('.js-artifacts-removed').textContent)).toEqual(
+        `The artifacts were removed ${formattedDate}`,
       );
     });
   });
@@ -51,9 +51,8 @@ describe('Artifacts block', () => {
 
       expect(vm.$el.querySelector('.js-artifacts-removed')).toBeNull();
       expect(vm.$el.querySelector('.js-artifacts-will-be-removed')).not.toBeNull();
-      expect(vm.$el.textContent).toContain(formatedDate);
-      expect(vm.$el.querySelector('.js-artifacts-will-be-removed').textContent.trim()).toEqual(
-        'The artifacts will be removed in',
+      expect(trimText(vm.$el.querySelector('.js-artifacts-will-be-removed').textContent)).toEqual(
+        `The artifacts will be removed ${formattedDate}`,
       );
     });
   });

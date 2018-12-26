@@ -38,7 +38,8 @@ describe StuckMergeJobsWorker do
         create(:merge_request, :locked, merge_jid: '123')
         create(:merge_request, :locked, merge_jid: '456')
 
-        expect(Rails).to receive_message_chain(:logger, :info).with('Updated state of locked merge jobs. JIDs: 123, 456')
+        expect(described_class).to receive_message_chain(:logger, :info)
+          .with('Updated state of locked merge jobs. JIDs: 123, 456')
 
         worker.perform
       end

@@ -135,6 +135,7 @@
   .build-loader-animation {
     @include build-loader-animation;
     float: left;
+    padding-left: $gl-padding-8;
   }
 }
 
@@ -232,6 +233,11 @@
     @extend .d-flex;
     justify-content: space-between;
     align-items: center;
+
+    .trigger-variables-btn {
+      margin-top: -5px;
+      margin-bottom: -5px;
+    }
   }
 
   .trigger-build-variables {

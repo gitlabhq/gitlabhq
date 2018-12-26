@@ -323,7 +323,7 @@ module API
       expose :request_access_enabled
       expose :full_name, :full_path
 
-      if ::Group.supports_nested_groups?
+      if ::Group.supports_nested_objects?
         expose :parent_id
       end
 

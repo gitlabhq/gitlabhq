@@ -206,12 +206,12 @@ describe Projects::IssuesController do
   describe 'Redirect after sign in' do
     context 'with an AJAX request' do
       it 'does not store the visited URL' do
-        xhr :get,
-          :show,
+        get :show, params: {
           format: :json,
           namespace_id: project.namespace,
           project_id: project,
           id: issue.iid
+        }, xhr: true
 
         expect(session['user_return_to']).to be_blank
       end

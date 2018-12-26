@@ -16,7 +16,7 @@ describe Projects::DeployKeysController do
     end
 
     context 'when html requested' do
-      it 'redirects to blob' do
+      it 'redirects to project settings with the correct anchor' do
         get :index, params: params
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
@@ -56,6 +56,40 @@ describe Projects::DeployKeysController do
         expect(json['enabled_keys'].count).to eq(1)
         expect(json['available_project_keys'].count).to eq(1)
         expect(json['public_keys'].count).to eq(1)
+      end
+    end
+  end
+
+  describe 'POST create' do
+    def create_params(title = 'my-key')
+      {
+        namespace_id: project.namespace.path,
+        project_id: project.path,
+        deploy_key: {
+          title: title,
+          key: attributes_for(:deploy_key)[:key],
+          deploy_keys_projects_attributes: { '0' => { can_push: '1' } }
+        }
+      }
+    end
+
+    it 'creates a new deploy key for the project' do
+      expect { post :create, params: create_params }.to change(project.deploy_keys, :count).by(1)
+
+      expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
+    end
+
+    it 'redirects to project settings with the correct anchor' do
+      post :create, params: create_params
+
+      expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
+    end
+
+    context 'when the deploy key is invalid' do
+      it 'shows an alert with the validations errors' do
+        post :create, params: create_params(nil)
+
+        expect(flash[:alert]).to eq("Title can't be blank, Deploy keys projects deploy key title can't be blank")
       end
     end
   end

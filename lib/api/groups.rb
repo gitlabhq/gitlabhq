@@ -113,7 +113,7 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
 
-        if ::Group.supports_nested_groups?
+        if ::Group.supports_nested_objects?
           optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
         end
 

@@ -254,15 +254,19 @@ install it manually.
 GitLab provides a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and
-[deployments](../../../ci/environments.md).
+[deployments](../../../ci/environments.md). You can install them after you
+[create a cluster](#adding-and-creating-a-new-gke-cluster-via-gitlab).
+
+To see a list of available applications to install:
+
+1. Navigate to your project's **Operations > Kubernetes**.
+1. Select your cluster.
+
+Install Helm Tiller first because it's used to install other applications.
 
 NOTE: **Note:**
-With the exception of Knative, the applications will be installed in a dedicated namespace called
-`gitlab-managed-apps`. In case you have added an existing Kubernetes cluster
-with Tiller already installed, you should be careful as GitLab cannot
-detect it. In this event, installing Tiller via the applications will
-result in the cluster having it twice. This can lead to confusion during
-deployments.
+As of GitLab 11.6, Helm Tiller will be upgraded to the latest version supported
+by GitLab before installing any of the applications.
 
 | Application | GitLab version | Description | Helm Chart |
 | ----------- | :------------: | ----------- | --------------- |
@@ -274,9 +278,14 @@ deployments.
 | [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 | [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#role-based-access-control-rbac). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
-NOTE: **Note:**
-As of GitLab 11.6 Helm Tiller will be upgraded to the latest version supported
-by GitLab before installing any of the above applications.
+With the exception of Knative, the applications will be installed in a dedicated
+namespace called `gitlab-managed-apps`.
+
+CAUTION: **Caution:**
+If you have an existing Kubernetes cluster with Tiller already installed,
+you should be careful as GitLab cannot detect it. In this case, installing
+Tiller via the applications will result in the cluster having it twice, which
+can lead to confusion during deployments.
 
 ## Getting the external IP address
 

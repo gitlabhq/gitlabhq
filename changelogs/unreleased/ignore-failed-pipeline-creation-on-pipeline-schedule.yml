@@ -1,5 +1,0 @@
----
-title: Remove auto deactivation when failed to create a pipeline via pipeline schedules
-merge_request: 22243
-author:
-type: changed
