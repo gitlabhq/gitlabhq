@@ -1,0 +1,5 @@
+---
+title: Delete confidential todos for user when downgraded to Guest
+merge_request:
+author:
+type: security
