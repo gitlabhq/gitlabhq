@@ -11,7 +11,7 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all labels of the group' do
-        detail 'This feature was added in GitLab 11.3'
+        detail 'This feature was added in GitLab 11.7'
         success Entities::Label
       end
       params do
@@ -24,7 +24,7 @@ module API
       end
 
       desc 'Create a new label' do
-        detail 'This feature was added in GitLab 11.3'
+        detail 'This feature was added in GitLab 11.7'
         success Entities::Label
       end
       params do
@@ -35,7 +35,7 @@ module API
       post ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = available_labels_for(user_group, { title: params[:name] })
+        label = available_labels_for(user_group).find_by_title(params[:name])
         conflict!('Label already exists') if label
 
         label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
@@ -48,7 +48,7 @@ module API
       end
 
       desc 'Delete an existing label' do
-        detail 'This feature was added in GitLab 11.3'
+        detail 'This feature was added in GitLab 11.7'
         success Entities::Label
       end
       params do
@@ -57,14 +57,13 @@ module API
       delete ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = available_labels_for(user_group, { title: params[:name] })
-        not_found!('Label') unless label
+        label = find_label(user_group, params[:name])
 
         destroy_conditionally!(label)
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
-        detail 'This feature was added in GitLab 11.3'
+        detail 'This feature was added in GitLab 11.7'
         success Entities::Label
       end
       params do
@@ -77,11 +76,14 @@ module API
       put ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = available_labels_for(user_group, { title: params[:name] })
-        not_found!('Label not found') unless label
+        label = find_label(user_group, params[:name])
 
-        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
-        render_validation_error!(label) if label.changed?
+        label_params = declared_params(include_missing: false)
+        # Rename new name to the actual label attribute name
+        label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
+
+        label = ::Labels::UpdateService.new(label_params).execute(label)
+        render_validation_error!(label) unless label.valid?
 
         present label, with: Entities::Label, current_user: current_user, parent: user_group
       end
