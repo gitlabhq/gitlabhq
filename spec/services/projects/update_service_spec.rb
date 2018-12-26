@@ -41,7 +41,7 @@ describe Projects::UpdateService do
         end
 
         it 'updates the project to private' do
-          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(1.hour, project.id)
+          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, project.id)
 
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
@@ -191,7 +191,7 @@ describe Projects::UpdateService do
     context 'when changing feature visibility to private' do
       it 'updates the visibility correctly' do
         expect(TodosDestroyer::PrivateFeaturesWorker)
-          .to receive(:perform_in).with(1.hour, project.id)
+          .to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, project.id)
 
         result = update_project(project, user, project_feature_attributes:
                                  { issues_access_level: ProjectFeature::PRIVATE }
