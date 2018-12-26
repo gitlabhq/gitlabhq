@@ -108,8 +108,8 @@ module QA
         element.select value.to_s.capitalize
       end
 
-      def has_element?(name)
-        has_css?(element_selector_css(name))
+      def has_element?(name, wait: Capybara.default_max_wait_time)
+        has_css?(element_selector_css(name), wait: wait)
       end
 
       def has_no_text?(text)
