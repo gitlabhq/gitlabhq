@@ -732,6 +732,12 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+        if source_repository == self
+          return unless commit(source_branch_name).present?
+
+          return Gitlab::Git::Compare.new(self, target_branch_name, source_branch_name, straight: straight)
+        end
+
         tmp_ref = "refs/tmp/#{SecureRandom.hex}"
 
         return unless fetch_source_branch!(source_repository, source_branch_name, tmp_ref)
@@ -743,7 +749,7 @@ module Gitlab
           straight: straight
         )
       ensure
-        delete_refs(tmp_ref)
+        delete_refs(tmp_ref) if tmp_ref
       end
 
       def write_ref(ref_path, ref, old_ref: nil)

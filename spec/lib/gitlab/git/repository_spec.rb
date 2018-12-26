@@ -1966,6 +1966,42 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#compare_source_branch' do
+    context 'within same repository' do
+      it 'does not create a temp ref' do
+        expect(repository).not_to receive(:fetch_source_branch!)
+        expect(repository).not_to receive(:delete_refs)
+
+        compare = repository.compare_source_branch('master', repository, 'feature', straight: false)
+        expect(compare).to be_a(Gitlab::Git::Compare)
+        expect(compare.commits.count).to be > 0
+      end
+
+      it 'returns nil when source ref does not exist' do
+        compare = repository.compare_source_branch('master', repository, 'non-existent-branch', straight: false)
+
+        expect(compare).to be_nil
+      end
+    end
+
+    context 'with different repositories' do
+      it 'creates a temp ref' do
+        expect(repository).to receive(:fetch_source_branch!).and_call_original
+        expect(repository).to receive(:delete_refs).and_call_original
+
+        compare = repository.compare_source_branch('master', mutable_repository, 'feature', straight: false)
+        expect(compare).to be_a(Gitlab::Git::Compare)
+        expect(compare.commits.count).to be > 0
+      end
+
+      it 'returns nil when source ref does not exist' do
+        compare = repository.compare_source_branch('master', mutable_repository, 'non-existent-branch', straight: false)
+
+        expect(compare).to be_nil
+      end
+    end
+  end
+
   describe '#checksum' do
     it 'calculates the checksum for non-empty repo' do
       expect(repository.checksum).to eq '51d0a9662681f93e1fee547a6b7ba2bcaf716059'
