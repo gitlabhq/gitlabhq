@@ -259,8 +259,9 @@ describe 'Runners' do
 
   context 'group runners in group settings' do
     let(:group) { create(:group) }
+
     before do
-      group.add_maintainer(user)
+      group.add_owner(user)
     end
 
     context 'group with no runners' do

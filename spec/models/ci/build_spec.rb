@@ -2041,6 +2041,8 @@ describe Ci::Build do
     end
 
     context 'when protected variable is defined' do
+      let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
+
       let(:protected_variable) do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
@@ -2053,7 +2055,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2061,7 +2063,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2086,6 +2088,8 @@ describe Ci::Build do
     end
 
     context 'when group protected variable is defined' do
+      let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
+
       let(:protected_variable) do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
@@ -2098,7 +2102,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2106,7 +2110,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2358,7 +2362,7 @@ describe Ci::Build do
 
           allow_any_instance_of(Project)
             .to receive(:secret_variables_for)
-            .with(ref: 'master', environment: nil) do
+            .with(ref: 'refs/heads/master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
 
