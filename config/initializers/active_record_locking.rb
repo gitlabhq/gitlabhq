@@ -19,12 +19,7 @@ module ActiveRecord
         return 0 if attribute_names.empty?
 
         lock_col = self.class.locking_column
-
         previous_lock_value = send(lock_col).to_i
-
-        # This line is added as a patch
-        previous_lock_value = nil if previous_lock_value == '0' || previous_lock_value == 0
-
         increment_lock
 
         attribute_names += [lock_col]
@@ -35,7 +30,8 @@ module ActiveRecord
 
           affected_rows = relation.where(
             self.class.primary_key => id,
-            lock_col => previous_lock_value
+            # Patched because when `lock_version` is read as `0`, it may actually be `NULL` in the DB.
+            lock_col => previous_lock_value == 0 ? [nil, 0] : previous_lock_value
           ).update_all(
             attributes_for_update(attribute_names).map do |name|
               [name, _read_attribute(name)]
