@@ -590,10 +590,10 @@ describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:public_project) { create(:project, :public, :repository) }
+    let(:project) { create(:project, :public, :repository) }
 
     it 'gets a list of branches and tags' do
-      get :refs, namespace_id: public_project.namespace, id: public_project, sort: 'updated_desc'
+      get :refs, namespace_id: project.namespace, id: project, sort: 'updated_desc'
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body['Branches']).to include('master')
@@ -603,7 +603,7 @@ describe ProjectsController do
     end
 
     it "gets a list of branches, tags and commits" do
-      get :refs, namespace_id: public_project.namespace, id: public_project, ref: "123456"
+      get :refs, namespace_id: project.namespace, id: project, ref: "123456"
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body["Branches"]).to include("master")
@@ -618,12 +618,28 @@ describe ProjectsController do
       end
 
       it "gets a list of branches, tags and commits" do
-        get :refs, namespace_id: public_project.namespace, id: public_project, ref: "123456"
+        get :refs, namespace_id: project.namespace, id: project, ref: "123456"
 
         parsed_body = JSON.parse(response.body)
         expect(parsed_body["Branches"]).to include("master")
         expect(parsed_body["Tags"]).to include("v1.0.0")
         expect(parsed_body["Commits"]).to include("123456")
+      end
+    end
+
+    context 'when private project' do
+      let(:project) { create(:project, :repository) }
+
+      context 'as a guest' do
+        it 'renders forbidden' do
+          user = create(:user)
+          project.add_guest(user)
+
+          sign_in(user)
+          get :refs, namespace_id: project.namespace, id: project
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
     end
   end
