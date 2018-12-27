@@ -1,7 +1,10 @@
 # rubocop:disable Lint/RescueException
 
-# Remove this monkey-patch when all lock_version values are converted from NULLs to zeros.
-# See https://gitlab.com/gitlab-org/gitlab-ce/issues/25228
+# Remove this monkey patch when we move to Rails 5.1, because the bug has been fixed in https://github.com/rails/rails/pull/26050.
+if Rails.gem_version >= Gem::Version.new("5.1")
+  raise "Remove this monkey patch: #{__FILE__}"
+end
+
 module ActiveRecord
   module Locking
     module Optimistic
