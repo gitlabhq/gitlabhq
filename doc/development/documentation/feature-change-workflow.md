@@ -6,25 +6,26 @@ description: How to add docs for new or enhanced GitLab features.
 
 At GitLab, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
 
-- **Product Managers** (PMs): in the issue for all new and updated features,
-PMs include specific documentation requirements for the developer, and, for new features,
-they also include feature descriptions and use cases. They can bring in a technical
+- **Developers**: Author/update documentation in the same MR as their code, and
+merge it by the feature freeze for the assigned milestone. Request technical writer
+assistance if needed.
+- **Product Managers** (PMs): In the issue for all new and enhanced features,
+confirm the documentation requirements, plus the mentioned feature description
+and use cases, which can be reused in docs. They can bring in a technical
 writer for discussion or help, and can be called upon themselves as a doc reviewer.
-- **Developers**: author documentation and merge it by the feature freeze, leaving
-time for a doc review performed by the cross-functional team's assigned technical writer.
-- **Technical Writers**: review PM requirements in issues, help developers with any
-questions throughout the authoring/editing process, and review all new and
-updated docs content before it's merged.
+- **Technical Writers**: review doc requirements in issues, track issues and MRs
+that contain docs changes, help with any questions throughout the authoring/editing process,
+and review all new and updated docs content after it's merged (unless a pre-merge
+review request is made).
 
-Any of the above roles, or others in the GitLab community, can author documentation
-improvements that are not associated with a new/changed feature, and must also typically
-assign such changes to a technical writer for review.
+Any of the above roles, or others in the GitLab community, can also author documentation
+improvements that are not associated with a new/changed feature.
 
 ## When documentation is required
 
 Documentation must be delivered whenever:
 
-- A new feature is shipped
+- A new or enhanced feature is shipped that impacts the user/admin experience
 - There are changes to the UI or API
 - A process, workflow, or previously documented feature is changed
 - A feature is deprecated or removed
@@ -36,12 +37,8 @@ no difference in functionality may require documentation updates if screenshots
 are now needed, or need to be updated.
 
 NOTE: **Note:**
-When refactoring documentation, it should be submitted in its own MR.
-**Do not** join new features' MRs with those refactoring existing docs, as they
-might have different priorities.
-
-NOTE: **Note:**
-[Smaller MRs are better](https://gitlab.com/gitlab-com/blog-posts/issues/185#note_4401010)! Do not mix subjects (e.g. multiple unrelated pages), and ship the smallest MR possible.
+When revamping documentation, if unrelated to the feature change, this should be submitted
+in its own MR, so that we can ensure the essential doc updates are merged with code by the freeze.
 
 ## Documenting a new or changed feature
 
@@ -106,50 +103,24 @@ the correct milestone.
 - When done, mention the team's technical writer in the MR asking for review (or `@gl\-docsteam` if you are not sure who that is).
 - **Due date**: feature freeze date and time.
 
-#### Including documentation in a separate MR
-
-If the docs aren't being shipped within the feature MR, but are still being shipped on time (by the feature freeze):
-
-- Create a new issue with the Documentation template and mention "docs" or "documentation" in the title, plus the feature name. 
-- Label the issue with: `Documentation`, `Deliverable`, `docs-P1`, `<product-label>`.
-(product label == CI/CD, Pages, etc).
-- Add the milestone matching that of the feature issue.
-- Create a new MR for shipping the docs changes and follow the same
-process [described above](#including-documentation-in-the-feautre-mr-typical).
-- Use the MR description template named "Documentation".
-- Add the same labels and milestone as you did for the issue.
-- Assign the technical writer for review.
-- When done, mention the team's technical writer in the MR asking for review (or `@gl\-docsteam` if you are not sure who that is).
-- **Due date**: feature freeze date and time.
-
-#### Shipping documentation after the freeze (rare)
-
-Typically, if the documentation is not ready, this will block the feature
-for the current GitLab release.
-
-Shipping documentation after the freeze is rare and requires approval of the PM, technical writer, and dev.
-Every effort should be made to avoid this, as it risks a poor user experience and affects the whole feature workflow, along with
-other teams' priorities (PMs, tech writers, release managers, release post reviewers). 
-
-If the aforementioned approval is given:
-1. Use the instructions above for [Documentation shipped in a separate MR](#including-documentation-in-a-separate-mr) and,
-in addition to the usual labels and correct milestone, include the labels `Pick into X.Y` on the MR (where X.Y is the GitLab version) and
-`missed-deliverable` in the issue and the MR.
-2. Obtain a review, as usual.
-3. Ensure that the MR is merged by the 14th of the month.
-
 ### 3. Technical Writer's role
 
 **Planning**
   - Once an issue contains a Documentation label and an upcoming milestone, a
-technical writer reviews the Product Manager's documentation requirements
-  - Once the documentation requirements are approved, the technical writer can
-work with the developer to discuss any documentation questions and plans/outlines, if needed.
+technical writer reviews the listed documentation requirements, which should have
+already been reviewed by the PM. (These are non-blocking reviews; developers should
+not wait to work on docs.)
+  - Participate in any needed discussion on docs (with dev, PM, et al.).
 
 **Review**
-- Every documentation change beyond minor clarifications and corrections requires a Technical Writer review, with greater exceptions in place for GitLab Support.<!--TODO: link-->
-This should apply to docs for every new or changed feature. The technical writer will ensure that the doc is clear, grammatically correct,
-and discoverable, while avoiding redundancy, bad file locations, typos, broken links, etc. The technical writer must review the documentation for:
+- Techncial writers provide non-blocking reviews of all documentation changes,
+typically after the change is merged. However, if the docs are ready in the MR while
+awaiting other code review, etc., the technical writer review can commence early.
+
+- The technical writer will confirm that the doc is clear, grammatically correct,
+and discoverable, while avoiding redundancy, bad file locations, typos, broken links,
+etc. The technical writer will review the documentation for the following, which
+the developer and code reviewer should have already made a good-faith effort to ensure:
   - Clarity
   - Relevance (make sure the content is appropriate given the impact of the feature)
   - Location (make sure the doc is in the correct dir and has the correct name)
