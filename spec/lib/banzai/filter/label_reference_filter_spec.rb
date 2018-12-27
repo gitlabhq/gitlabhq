@@ -236,6 +236,24 @@ describe Banzai::Filter::LabelReferenceFilter do
     end
   end
 
+  context 'References with html entities' do
+    let!(:label)     { create(:label, name: '&lt;html&gt;', project: project) }
+
+    it 'links to a valid reference' do
+      doc = reference_filter('See ~"&lt;html&gt;"')
+
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .project_issues_url(project, label_name: label.name)
+      expect(doc.text).to eq 'See <html>'
+    end
+
+    it 'ignores invalid label names and escapes entities' do
+      act = %(Label #{Label.reference_prefix}"&lt;non valid&gt;")
+
+      expect(reference_filter(act).to_html).to eq act
+    end
+  end
+
   describe 'consecutive references' do
     let(:bug) { create(:label, name: 'bug', project: project) }
     let(:feature_proposal) { create(:label, name: 'feature proposal', project: project) }
