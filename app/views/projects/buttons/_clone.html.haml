@@ -5,18 +5,18 @@
     %span.append-right-4.js-clone-dropdown-label
       = _('Clone')
     = sprite_icon("arrow-down", css_class: "icon")
-    %form.p-3.dropdown-menu.dropdown-menu-right.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown.qa-clone-options
-      - if ssh_enabled?
-        %li.pb-2
-          %label.label-bold
-            = _('Clone with SSH')
-          .input-group
-            = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control qa-ssh-clone-url", readonly: true, aria: { label: 'Project clone URL' }
-            .input-group-append
-              = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
-              = render_if_exists 'projects/buttons/geo'
-        %li
-      - if http_enabled?
+  %ul.p-3.dropdown-menu.dropdown-menu-right.dropdown-menu-large.dropdown-menu-selectable.clone-options-dropdown.qa-clone-options
+    - if ssh_enabled?
+      %li.pb-2
+        %label.label-bold
+          = _('Clone with SSH')
+        .input-group
+          = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control qa-ssh-clone-url", readonly: true, aria: { label: 'Project clone URL' }
+          .input-group-append
+            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
+            = render_if_exists 'projects/buttons/geo'
+    - if http_enabled?
+      %li
         %label.label-bold
           = _('Clone with %{http_label}') % { http_label: gitlab_config.protocol.upcase }
         .input-group

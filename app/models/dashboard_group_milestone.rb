@@ -5,7 +5,6 @@ class DashboardGroupMilestone < GlobalMilestone
 
   attr_reader :group_name
 
-  override :initialize
   def initialize(milestone)
     super(milestone.title, Array(milestone))
 

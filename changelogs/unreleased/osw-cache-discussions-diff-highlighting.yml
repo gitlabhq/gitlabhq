@@ -1,0 +1,6 @@
+---
+title: Improve the loading time on merge request's discussion page by caching diff
+  highlight
+merge_request: 23857
+author:
+type: performance

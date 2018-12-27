@@ -103,19 +103,6 @@
                   = _('Merge Requests')
                 %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
 
-      - if group_sidebar_link?(:group_members)
-        = nav_link(path: 'group_members#index') do
-          = link_to group_group_members_path(@group) do
-            .nav-icon-container
-              = sprite_icon('users')
-            %span.nav-item-name.qa-group-members-item
-              = _('Members')
-          %ul.sidebar-sub-level-items.is-fly-out-only
-            = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
-              = link_to group_group_members_path(@group) do
-                %strong.fly-out-top-item-name
-                  = _('Members')
-
       - if group_sidebar_link?(:kubernetes)
         = nav_link(controller: [:clusters]) do
           = link_to group_clusters_path(@group) do
@@ -128,6 +115,19 @@
               = link_to group_clusters_path(@group), title: _('Kubernetes'), class: 'shortcuts-kubernetes' do
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
+
+      - if group_sidebar_link?(:group_members)
+        = nav_link(path: 'group_members#index') do
+          = link_to group_group_members_path(@group) do
+            .nav-icon-container
+              = sprite_icon('users')
+            %span.nav-item-name.qa-group-members-item
+              = _('Members')
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
+              = link_to group_group_members_path(@group) do
+                %strong.fly-out-top-item-name
+                  = _('Members')
 
       - if group_sidebar_link?(:settings)
         = nav_link(path: group_nav_link_paths) do

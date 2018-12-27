@@ -942,6 +942,70 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET discussions' do
+    context 'when authenticated' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'returns 200' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+
+        expect(response.status).to eq(200)
+      end
+
+      context 'highlight preloading' do
+        context 'with commit diff notes' do
+          let!(:commit_diff_note) do
+            create(:diff_note_on_commit, project: merge_request.project)
+          end
+
+          it 'preloads notes diffs highlights' do
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              note_diff_file = commit_diff_note.note_diff_file
+
+              expect(collection).to receive(:load_highlight).with([note_diff_file.id]).and_call_original
+              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+            end
+
+            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+          end
+        end
+
+        context 'with diff notes' do
+          let!(:diff_note) do
+            create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.project)
+          end
+
+          it 'preloads notes diffs highlights' do
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              note_diff_file = diff_note.note_diff_file
+
+              expect(collection).to receive(:load_highlight).with([note_diff_file.id]).and_call_original
+              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+            end
+
+            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+          end
+
+          it 'does not preload highlights when diff note is resolved' do
+            Notes::ResolveService.new(diff_note.project, user).execute(diff_note)
+
+            expect_next_instance_of(Gitlab::DiscussionsDiff::FileCollection) do |collection|
+              note_diff_file = diff_note.note_diff_file
+
+              expect(collection).to receive(:load_highlight).with([]).and_call_original
+              expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
+            end
+
+            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+          end
+        end
+      end
+    end
+  end
+
   describe 'GET edit' do
     it 'responds successfully' do
       get :edit, params: { namespace_id: project.namespace, project_id: project, id: merge_request }
