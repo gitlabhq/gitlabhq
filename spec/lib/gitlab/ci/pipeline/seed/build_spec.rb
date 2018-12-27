@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Seed::Build do
-  let(:pipeline) { create(:ci_empty_pipeline) }
+  let(:project) { create(:project, :repository) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:attributes) do
     { name: 'rspec',

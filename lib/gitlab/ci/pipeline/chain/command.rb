@@ -51,7 +51,13 @@ module Gitlab # rubocop:disable Naming/FileName
 
           def protected_ref?
             strong_memoize(:protected_ref) do
-              project.protected_for?(ref)
+              project.protected_for?(origin_ref)
+            end
+          end
+
+          def ambiguous_ref?
+            strong_memoize(:ambiguous_ref) do
+              project.repository.ambiguous_ref?(origin_ref)
             end
           end
         end

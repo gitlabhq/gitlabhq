@@ -11,6 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include HasRef
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -355,10 +356,6 @@ module Ci
       @commit ||= Commit.lazy(project, sha)
     end
 
-    def branch?
-      !tag?
-    end
-
     def stuck?
       pending_builds.any?(&:stuck?)
     end
@@ -558,7 +555,7 @@ module Ci
     end
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
     def legacy_trigger
