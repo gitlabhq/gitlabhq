@@ -14,7 +14,7 @@ GET /features
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features
 ```
 
 Example response:
@@ -65,7 +65,7 @@ Note that you can enable or disable a feature for both a `feature_group` and a
 `user` with a single API call.
 
 ```bash
-curl --data "value=30" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/new_library
+curl --data "value=30" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/new_library
 ```
 
 Example response:

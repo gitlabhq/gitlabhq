@@ -639,7 +639,7 @@ Example response:
   "job_events": true,
   "pipeline_events": true,
   "properties": {
-    "token": "9koXpg98eAheJpvBs5tK"
+    "token": "<your_access_token>"
   }
 }
 ```

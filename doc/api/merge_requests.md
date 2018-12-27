@@ -967,7 +967,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
 ```
 
 ## Accept MR
@@ -1230,7 +1230,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
 ```
 
 This is an asynchronous request. The API will return an empty `202 Accepted`
@@ -1286,7 +1286,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response when the GitLab issue tracker is used:
@@ -1362,7 +1362,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
 ```
 
 Example response:
@@ -1483,7 +1483,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
 ```
 
 Example response:
@@ -1604,7 +1604,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
 ```
 
 Example response:
@@ -1707,7 +1707,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
 ```
 
 Example response:
@@ -1749,7 +1749,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `version_id`        | integer | yes      | The ID of the merge request diff version |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
 ```
 
 Example response:
@@ -1816,7 +1816,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
 ```
 
 Example response:
@@ -1844,7 +1844,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
 ```
 
 Example response:
@@ -1873,7 +1873,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
 ```
 
 Example response:
@@ -1901,7 +1901,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
 ```
 
 Example response:
@@ -1927,7 +1927,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
 ```
 
 Example response:
