@@ -23,7 +23,12 @@ module CacheableAttributes
     end
 
     def build_from_defaults(attributes = {})
-      new(defaults.merge(attributes))
+      final_attributes = defaults
+        .merge(attributes)
+        .stringify_keys
+        .slice(*column_names)
+
+      new(final_attributes)
     end
 
     def cached

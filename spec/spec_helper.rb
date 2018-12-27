@@ -216,11 +216,15 @@ RSpec.configure do |config|
 
   # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
+    use_fake_application_settings
+
     schema_migrate_down!
   end
 
   config.after(:context, :migration) do
     schema_migrate_up!
+
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
   config.around(:each, :nested_groups) do |example|
