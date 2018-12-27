@@ -10,6 +10,7 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
     include Deployable
+    include HasRef
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -151,6 +152,10 @@ module Ci
           .new(build.project, current_user)
           .execute(build)
         # rubocop: enable CodeReuse/ServiceClass
+      end
+
+      def find_running_by_token(token)
+        running.find_by_token(token)
       end
     end
 
@@ -640,11 +645,11 @@ module Ci
     def secret_group_variables
       return [] unless project.group
 
-      project.group.ci_variables_for(ref, project)
+      project.group.ci_variables_for(git_ref, project)
     end
 
     def secret_project_variables(environment: persisted_environment)
-      project.ci_variables_for(ref: ref, environment: environment)
+      project.ci_variables_for(ref: git_ref, environment: environment)
     end
 
     def steps

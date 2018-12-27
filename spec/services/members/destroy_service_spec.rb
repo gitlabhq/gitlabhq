@@ -22,7 +22,7 @@ describe Members::DestroyService do
   shared_examples 'a service destroying a member' do
     before do
       type = member.is_a?(GroupMember) ? 'Group' : 'Project'
-      expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(1.hour, member.user_id, member.source_id, type)
+      expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, member.user_id, member.source_id, type)
     end
 
     it 'destroys the member' do
