@@ -77,7 +77,7 @@ before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - ruby -v
   - which ruby
-  - gem install bundler --no-ri --no-rdoc
+  - gem install bundler --no-document
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 
 rspec:
