@@ -23,13 +23,11 @@ Documentation issues and merge requests are part of their respective repositorie
 
 ## Contributing to docs
 
-[Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
+[Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community:
 
 To ensure that GitLab docs keep up with changes to the product, special processes and responsibilities are in place concerning all [feature changes](feature-change-workflow.md)—i.e. development work that impacts the appearance, usage, or administration of a feature.
 
-Meanwhile, anyone can contribute to [documentation improvements](improvement-workflow.md) that are not associated with a feature change.
-
-For additional specifics that pertain to support engineers, see [Role of Support in GitLab Documentation](improvement-workflow.md#role-of-support-in-gitlab-documentation) in our Improvement Workflow doc. 
+Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change.
 
 ### Feature changes
 
