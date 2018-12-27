@@ -4,7 +4,7 @@ description: Learn how to contribute to GitLab Documentation.
 
 # GitLab Documentation guidelines
 
-GitLab's documentation is intended as the single source of truth (SSOT) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions covering every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, as well as the use of GitLab with other applications.
+GitLab's documentation is intended as the single source of truth (SSOT) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions covering every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, as well as the use of GitLab with other applications. For more information about what belongs in GitLab documentation, see the [Documentation](https://about.gitab.com/handbook/documentation/) section of our handbook.
 
 Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
 
