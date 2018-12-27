@@ -300,10 +300,9 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
-                                ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
-                                allow_localhost: false,
-                                enforce_user: true }, if: [:external_import?, :import_url_changed?]
+  validates :import_url, public_url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                       ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
+                                       enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
@@ -1818,10 +1817,21 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    if repository.branch_exists?(ref)
-      ProtectedBranch.protected?(self, ref)
-    elsif repository.tag_exists?(ref)
-      ProtectedTag.protected?(self, ref)
+    raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
+
+    resolved_ref = repository.expand_ref(ref) || ref
+    return false unless Gitlab::Git.tag_ref?(resolved_ref) || Gitlab::Git.branch_ref?(resolved_ref)
+
+    ref_name = if resolved_ref == ref
+                 Gitlab::Git.ref_name(resolved_ref)
+               else
+                 ref
+               end
+
+    if Gitlab::Git.branch_ref?(resolved_ref)
+      ProtectedBranch.protected?(self, ref_name)
+    elsif Gitlab::Git.tag_ref?(resolved_ref)
+      ProtectedTag.protected?(self, ref_name)
     end
   end
 
