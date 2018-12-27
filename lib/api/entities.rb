@@ -1356,7 +1356,17 @@ module API
       end
 
       class Dependency < Grape::Entity
-        expose :id, :name, :token
+        expose :id, :name
+        expose :token do |dependency, options|
+          # overrides the job's dependency authorization token
+          # with the token of the job that is being run
+          # this way we use the parent job auth token
+          #
+          # ideally we would change the runner implementation to
+          # use different token, but this would require upgrade of
+          # all runners which is impossible
+          options[:auth_token]
+        end
         expose :artifacts_file, using: JobArtifactFile, if: ->(job, _) { job.artifacts? }
       end
 
@@ -1384,7 +1394,10 @@ module API
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
-        expose :dependencies, using: Dependency
+        expose :dependencies do |model|
+          Dependency.represent(model.dependencies,
+            options.merge(auth_token: model.token))
+        end
         expose :features
       end
     end
