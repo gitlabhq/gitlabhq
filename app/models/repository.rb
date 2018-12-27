@@ -25,6 +25,7 @@ class Repository
   delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
+  AmbiguousRefError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
   #
@@ -179,6 +180,18 @@ class Repository
 
   def find_tag(name)
     tags.find { |tag| tag.name == name }
+  end
+
+  def ambiguous_ref?(ref)
+    tag_exists?(ref) && branch_exists?(ref)
+  end
+
+  def expand_ref(ref)
+    if tag_exists?(ref)
+      Gitlab::Git::TAG_REF_PREFIX + ref
+    elsif branch_exists?(ref)
+      Gitlab::Git::BRANCH_REF_PREFIX + ref
+    end
   end
 
   def add_branch(user, branch_name, ref)

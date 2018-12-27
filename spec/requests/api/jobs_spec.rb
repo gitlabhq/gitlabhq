@@ -142,10 +142,20 @@ describe API::Jobs do
     end
 
     context 'unauthorized user' do
-      let(:api_user) { nil }
+      context 'when user is not logged in' do
+        let(:api_user) { nil }
 
-      it 'does not return project jobs' do
-        expect(response).to have_gitlab_http_status(401)
+        it 'does not return project jobs' do
+          expect(response).to have_gitlab_http_status(401)
+        end
+      end
+
+      context 'when user is guest' do
+        let(:api_user) { guest }
+
+        it 'does not return project jobs' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
@@ -241,10 +251,20 @@ describe API::Jobs do
     end
 
     context 'unauthorized user' do
-      let(:api_user) { nil }
+      context 'when user is not logged in' do
+        let(:api_user) { nil }
 
-      it 'does not return jobs' do
-        expect(response).to have_gitlab_http_status(401)
+        it 'does not return jobs' do
+          expect(response).to have_gitlab_http_status(401)
+        end
+      end
+
+      context 'when user is guest' do
+        let(:api_user) { guest }
+
+        it 'does not return jobs' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
   end

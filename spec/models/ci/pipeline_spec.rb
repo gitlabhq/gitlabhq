@@ -397,6 +397,10 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#protected_ref?' do
+    before do
+      pipeline.project = create(:project, :repository)
+    end
+
     it 'delegates method to project' do
       expect(pipeline).not_to be_protected_ref
     end

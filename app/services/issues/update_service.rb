@@ -44,7 +44,7 @@ module Issues
 
       if issue.previous_changes.include?('confidential')
         # don't enqueue immediately to prevent todos removal in case of a mistake
-        TodosDestroyer::ConfidentialIssueWorker.perform_in(1.hour, issue.id) if issue.confidential?
+        TodosDestroyer::ConfidentialIssueWorker.perform_in(Todo::WAIT_FOR_DELETE, issue.id) if issue.confidential?
         create_confidentiality_note(issue)
       end
 

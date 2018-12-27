@@ -314,6 +314,13 @@ describe Project do
         expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
       end
 
+      it 'does not allow import_url pointing to the local network' do
+        project = build(:project, import_url: 'https://192.168.1.1')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
+      end
+
       it "does not allow import_url with invalid ports for new projects" do
         project = build(:project, import_url: 'http://github.com:25/t.git')
 
@@ -2530,6 +2537,10 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(false)
+      end
+
       it 'contains only the CI variables' do
         is_expected.to contain_exactly(ci_variable)
       end
@@ -2569,42 +2580,139 @@ describe Project do
   end
 
   describe '#protected_for?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
-    subject { project.protected_for?('ref') }
+    subject { project.protected_for?(ref) }
 
-    context 'when the ref is not protected' do
+    shared_examples 'ref is not protected' do
       before do
         stub_application_setting(
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
 
       it 'returns false' do
-        is_expected.to be_falsey
+        is_expected.to be false
       end
     end
 
-    context 'when the ref is a protected branch' do
+    shared_examples 'ref is protected branch' do
       before do
-        allow(project).to receive(:repository).and_call_original
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
-        create(:protected_branch, name: 'ref', project: project)
+        create(:protected_branch, name: 'master', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
       end
     end
 
-    context 'when the ref is a protected tag' do
+    shared_examples 'ref is protected tag' do
       before do
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
-        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
-        create(:protected_tag, name: 'ref', project: project)
+        create(:protected_tag, name: 'v1.0.0', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
+      end
+    end
+
+    context 'when ref is nil' do
+      let(:ref) { nil }
+
+      it 'returns false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'when ref is ref name' do
+      context 'when ref is ambiguous' do
+        let(:ref) { 'ref' }
+
+        before do
+          project.repository.add_branch(project.creator, 'ref', 'master')
+          project.repository.add_tag(project.creator, 'ref', 'master')
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Repository::AmbiguousRefError)
+        end
+      end
+
+      context 'when the ref is not protected' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
+      end
+    end
+
+    context 'when ref is full ref' do
+      context 'when the ref is not protected' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'refs/tags/v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when branch ref name is a full tag ref' do
+        let(:ref) { 'refs/tags/something' }
+
+        before do
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
+
+        context 'when ref is not protected' do
+          it 'returns false' do
+            is_expected.to be false
+          end
+        end
+
+        context 'when ref is a protected branch' do
+          before do
+            create(:protected_branch, name: 'refs/tags/something', project: project)
+          end
+
+          it 'returns true' do
+            is_expected.to be true
+          end
+        end
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'refs/heads/something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
       end
     end
   end
@@ -2824,7 +2932,7 @@ describe Project do
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
-                      ' Validate fork Source project is not a fork of the target project'
+        ' Validate fork Source project is not a fork of the target project'
 
       expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
