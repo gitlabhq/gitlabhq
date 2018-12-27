@@ -6,7 +6,7 @@ module WorkhorseHelper
   # Send a Git blob through Workhorse
   def send_git_blob(repository, blob, inline: true)
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
-    headers['Content-Disposition'] = inline ? 'inline' : 'attachment'
+    headers['Content-Disposition'] = content_disposition(blob, inline)
     headers['Content-Type'] = safe_content_type(blob)
     render plain: ""
   end

@@ -1,0 +1,5 @@
+---
+title: Don't expose cross project repositories through diffs when creating merge reqeusts
+merge_request:
+author:
+type: security
