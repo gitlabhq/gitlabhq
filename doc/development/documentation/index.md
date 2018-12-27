@@ -51,15 +51,12 @@ If you find content that is missing, incorrect, or could use improvement, you ar
 
 If the doc exists in both the CE and EE repositories, create the issue or merge request in CE. If the doc or feature exists only in the EE repository, create the issue or merge request in EE.
 
-If you have questions before or while writing documentation, ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage) and also displayed in an automatic reply from DangerBot on any merge request that contains changes to doc files.
-
-When your content is ready for review, request a review from the applicable writer by mentioning them in a comment.
-
-<!--Whenever you submit a merge request for the documentation, use the
+Whenever you submit a merge request for the documentation, use the
 "Documentation" MR description template. If you're changing documentation
-location, use the MR description template called "Change documentation
+locations, use the MR description template called "Change documentation
 location" instead.
-^ HIDDEN PENDING MR TEMPLATE CHANGES-->
+
+If you have questions before or while writing documentation, or need a review, you can ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage) and also displayed in an automatic reply from DangerBot on any merge request that contains changes to doc files.
 
 ## Documentation structure
 
