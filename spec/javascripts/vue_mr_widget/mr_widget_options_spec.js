@@ -18,6 +18,8 @@ describe('mrWidgetOptions', () => {
   let vm;
   let MrWidgetOptions;
 
+  const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
+
   beforeEach(() => {
     // Prevent component mounting
     delete mrWidgetOptions.el;
@@ -146,7 +148,7 @@ describe('mrWidgetOptions', () => {
           });
 
           it('should render collaboration status', () => {
-            expect(vm.$el.textContent).toContain('Allows commits from members');
+            expect(vm.$el.textContent).toContain(COLLABORATION_MESSAGE);
           });
         });
 
@@ -157,7 +159,7 @@ describe('mrWidgetOptions', () => {
           });
 
           it('should not render collaboration status', () => {
-            expect(vm.$el.textContent).not.toContain('Allows commits from members');
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
           });
         });
       });
@@ -174,7 +176,7 @@ describe('mrWidgetOptions', () => {
           });
 
           it('should not render collaboration status', () => {
-            expect(vm.$el.textContent).not.toContain('Allows commits from members');
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
           });
         });
       });
