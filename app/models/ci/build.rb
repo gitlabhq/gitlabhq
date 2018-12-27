@@ -153,6 +153,10 @@ module Ci
           .execute(build)
         # rubocop: enable CodeReuse/ServiceClass
       end
+
+      def find_running_by_token(token)
+        running.find_by_token(token)
+      end
     end
 
     state_machine :status do

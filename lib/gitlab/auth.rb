@@ -294,7 +294,7 @@ module Gitlab
       private
 
       def find_build_by_token(token)
-        ::Ci::Build.running.find_by_token(token)
+        ::Ci::Build.find_running_by_token(token)
       end
     end
   end
