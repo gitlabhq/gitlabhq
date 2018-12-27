@@ -325,12 +325,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'with valid pods' do
       let(:pod) { kube_pod(app: environment.slug) }
+      let(:pod_with_no_terminal) { kube_pod(app: environment.slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(app: "should-be-filtered-out")]
         )
       end
 

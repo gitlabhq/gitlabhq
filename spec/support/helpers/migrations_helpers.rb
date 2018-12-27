@@ -62,6 +62,22 @@ module MigrationsHelpers
     klass.reset_column_information
   end
 
+  # In some migration tests, we're using factories to create records,
+  # however those models might be depending on a schema version which
+  # doesn't have the columns we want in application_settings.
+  # In these cases, we'll need to use the fake application settings
+  # as if we have migrations pending
+  def use_fake_application_settings
+    # We stub this way because we can't stub on
+    # `current_application_settings` due to `method_missing` is
+    # depending on current_application_settings...
+    allow(ActiveRecord::Base.connection)
+      .to receive(:active?)
+      .and_return(false)
+
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  end
+
   def previous_migration
     migrations.each_cons(2) do |previous, migration|
       break previous if migration.name == described_class.name

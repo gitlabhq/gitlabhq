@@ -11,7 +11,7 @@ module AppearancesHelper
   end
 
   def brand_image
-    image_tag(current_appearance.logo) if current_appearance&.logo?
+    image_tag(current_appearance.logo_path) if current_appearance&.logo?
   end
 
   def brand_text
@@ -28,7 +28,7 @@ module AppearancesHelper
 
   def brand_header_logo
     if current_appearance&.header_logo?
-      image_tag current_appearance.header_logo
+      image_tag current_appearance.header_logo_path
     else
       render 'shared/logo.svg'
     end

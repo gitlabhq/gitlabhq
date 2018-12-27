@@ -52,56 +52,24 @@ describe Projects::WikisController do
 
       let(:path) { upload_file_to_wiki(project, user, file_name) }
 
-      subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: path } }
+      before do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: path }
+      end
 
       context 'when file is an image' do
         let(:file_name) { 'dk.png' }
 
-        context 'when feature flag workhorse_set_content_type is' do
-          before do
-            stub_feature_flags(workhorse_set_content_type: flag_value)
+        it 'delivers the image' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        end
 
-            subject
-          end
+        context 'when file is a svg' do
+          let(:file_name) { 'unsanitized.svg' }
 
-          context 'enabled' do
-            let(:flag_value) { true }
-
-            it 'delivers the image' do
-              expect(response.headers['Content-Type']).to eq('image/png')
-              expect(response.headers['Content-Disposition']).to match(/^inline/)
-              expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-            end
-
-            context 'when file is a svg' do
-              let(:file_name) { 'unsanitized.svg' }
-
-              it 'delivers the image' do
-                expect(response.headers['Content-Type']).to eq('image/svg+xml')
-                expect(response.headers['Content-Disposition']).to match(/^attachment/)
-                expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-              end
-            end
-          end
-
-          context 'disabled' do
-            let(:flag_value) { false }
-
-            it 'renders the content inline' do
-              expect(response.headers['Content-Type']).to eq('image/png')
-              expect(response.headers['Content-Disposition']).to match(/^inline/)
-              expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
-            end
-
-            context 'when file is a svg' do
-              let(:file_name) { 'unsanitized.svg' }
-
-              it 'renders the content as an attachment' do
-                expect(response.headers['Content-Type']).to eq('image/svg+xml')
-                expect(response.headers['Content-Disposition']).to match(/^attachment/)
-                expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
-              end
-            end
+          it 'delivers the image' do
+            expect(response.headers['Content-Disposition']).to match(/^inline/)
+            expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
           end
         end
       end
@@ -109,32 +77,9 @@ describe Projects::WikisController do
       context 'when file is a pdf' do
         let(:file_name) { 'git-cheat-sheet.pdf' }
 
-        context 'when feature flag workhorse_set_content_type is' do
-          before do
-            stub_feature_flags(workhorse_set_content_type: flag_value)
-
-            subject
-          end
-
-          context 'enabled' do
-            let(:flag_value) { true }
-
-            it 'sets the content type to sets the content response headers' do
-              expect(response.headers['Content-Type']).to eq 'application/octet-stream'
-              expect(response.headers['Content-Disposition']).to match(/^inline/)
-              expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
-            end
-          end
-
-          context 'disabled' do
-            let(:flag_value) { false }
-
-            it 'sets the content response headers' do
-              expect(response.headers['Content-Type']).to eq 'application/octet-stream'
-              expect(response.headers['Content-Disposition']).to match(/^inline/)
-              expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq nil
-            end
-          end
+        it 'sets the content type to sets the content response headers' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
         end
       end
     end

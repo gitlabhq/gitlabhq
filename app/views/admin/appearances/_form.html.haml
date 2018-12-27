@@ -8,7 +8,7 @@
     = f.label :header_logo, 'Header logo', class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.header_logo?
-        = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
+        = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
@@ -25,7 +25,7 @@
     = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.favicon?
-        = image_tag @appearance.favicon_url, class: 'appearance-light-logo-preview'
+        = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
@@ -54,7 +54,7 @@
     = f.label :logo, class: 'col-sm-2 col-form-label pt-0'
     .col-sm-10
       - if @appearance.logo?
-        = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
+        = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
