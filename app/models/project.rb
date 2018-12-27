@@ -305,10 +305,10 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: %w(http https ssh git),
-                                allow_localhost: false,
-                                enforce_user: true,
-                                ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
+  validates :import_url, public_url: { protocols: %w(http https ssh git),
+                                       allow_localhost: false,
+                                       enforce_user: true,
+                                       ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
