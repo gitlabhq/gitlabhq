@@ -86,7 +86,7 @@ The environment variable `QA_COOKIES` can be set to send additional cookies
 on every request. This is necessary on gitlab.com to direct traffic to the
 canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
 
-To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"` 
+To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"`
 
 
 ### Building a Docker image to test
@@ -100,3 +100,24 @@ docker build -t gitlab/gitlab-ce-qa:nightly .
 ```
 
 [GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/
+
+### Quarantined tests
+
+Tests can be put in quarantine by assigning `:quarantine` metadata. This means
+they will be skipped unless run with `--tag quarantine`. This can be used for
+tests that are expected to fail while a fix is in progress (similar to how
+[`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples)
+ can be used).
+
+```
+bin/qa Test::Instance::All http://localhost --tag quarantine
+```
+
+If `quarantine` is used with other tags, tests will only be run if they have at
+least one of the tags other than `quarantine`. This is different from how RSpec
+tags usually work, where all tags are inclusive.
+
+For example, suppose one test has `:smoke` and `:quarantine` metadata, and
+another test has `:ldap` and `:quarantine` metadata. If the tests are run with
+`--tag smoke --tag quarantine`, only the first test will run. The test with
+`:ldap` will not run even though it also has `:quarantine`.
