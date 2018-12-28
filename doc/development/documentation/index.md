@@ -156,8 +156,9 @@ help or direct you to the right one.
 Changing a document's location requires specific steps to be followed to ensure that
 users can seamlessly access the new doc page, whether they are accesing content
 on a GitLab instance domain at `/help` or at docs.gitlab.com. Be sure to ping a
-GitLab technical writer if you have any questions during the process, and at the
-very least, after this change is merged, so that it can be reviewed promptly.
+GitLab technical writer if you have any questions during the process (such as
+whether the move is necessary), and ensure that a technical writer reviews this
+change prior to merging.
 
 If you indeed need to change a document's location, do not remove the old
 document, but rather replace all of its content with a new line:
