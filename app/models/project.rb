@@ -1933,14 +1933,8 @@ class Project < ActiveRecord::Base
 
   def any_branch_allows_collaboration?(user)
     return false unless user
-    return false if empty_repo?
 
-    # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      merge_requests_allowing_collaboration.any? do |merge_request|
-        merge_request.can_be_merged_by?(user)
-      end
-    end
+    fetch_branch_allows_collaboration(user)
   end
 
   def branch_allows_collaboration?(user, branch_name)
@@ -1950,7 +1944,7 @@ class Project < ActiveRecord::Base
 
     memoized_results = strong_memoize(:branch_allows_collaboration) do
       Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
+        result[cache_key] = fetch_branch_allows_collaboration(user, branch_name)
       end
     end
 
@@ -2028,8 +2022,10 @@ class Project < ActiveRecord::Base
 
   private
 
-  def merge_requests_allowing_collaboration
-    source_of_merge_requests.opened.where(allow_collaboration: true)
+  def merge_requests_allowing_collaboration(source_branch = nil)
+    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = relation.where(source_branch: source_branch) if source_branch
+    relation
   end
 
   def create_new_pool_repository
@@ -2156,12 +2152,16 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_collaboration?(user, branch_name)
+  def fetch_branch_allows_collaboration(user, branch_name = nil)
     Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       next false if empty_repo?
 
-      merge_request = merge_requests_allowing_collaboration.find_by(source_branch: branch_name)
-      merge_request&.can_be_merged_by?(user)
+      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
+          merge_request.can_be_merged_by?(user)
+        end
+      end
     end
   end
 

@@ -3831,6 +3831,16 @@ describe Project do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }
     let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:local_merge_request) do
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_collaboration: true
+      )
+    end
     let!(:merge_request) do
       create(
         :merge_request,
