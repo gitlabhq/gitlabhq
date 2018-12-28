@@ -1,0 +1,5 @@
+---
+title: Fix bug commenting on LFS images
+merge_request: 23812
+author:
+type: fixed

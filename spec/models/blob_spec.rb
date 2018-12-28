@@ -122,14 +122,14 @@ describe Blob do
     end
   end
 
-  describe '#raw_binary?' do
+  describe '#binary?' do
     context 'if the blob is stored externally' do
       context 'if the extension has a rich viewer' do
         context 'if the viewer is binary' do
           it 'returns true' do
             blob = fake_blob(path: 'file.pdf', lfs: true)
 
-            expect(blob.raw_binary?).to be_truthy
+            expect(blob.binary?).to be_truthy
           end
         end
 
@@ -137,7 +137,7 @@ describe Blob do
           it 'return false' do
             blob = fake_blob(path: 'file.md', lfs: true)
 
-            expect(blob.raw_binary?).to be_falsey
+            expect(blob.binary?).to be_falsey
           end
         end
       end
@@ -148,7 +148,7 @@ describe Blob do
             it 'returns false' do
               blob = fake_blob(path: 'file.txt', lfs: true)
 
-              expect(blob.raw_binary?).to be_falsey
+              expect(blob.binary?).to be_falsey
             end
           end
 
@@ -156,7 +156,7 @@ describe Blob do
             it 'returns false' do
               blob = fake_blob(path: 'file.ics', lfs: true)
 
-              expect(blob.raw_binary?).to be_falsey
+              expect(blob.binary?).to be_falsey
             end
           end
         end
@@ -166,7 +166,7 @@ describe Blob do
             it 'returns false' do
               blob = fake_blob(path: 'file.rb', lfs: true)
 
-              expect(blob.raw_binary?).to be_falsey
+              expect(blob.binary?).to be_falsey
             end
           end
 
@@ -174,7 +174,7 @@ describe Blob do
             it 'returns true' do
               blob = fake_blob(path: 'file.exe', lfs: true)
 
-              expect(blob.raw_binary?).to be_truthy
+              expect(blob.binary?).to be_truthy
             end
           end
         end
@@ -184,7 +184,7 @@ describe Blob do
             it 'returns false' do
               blob = fake_blob(path: 'file.ini', lfs: true)
 
-              expect(blob.raw_binary?).to be_falsey
+              expect(blob.binary?).to be_falsey
             end
           end
 
@@ -192,7 +192,7 @@ describe Blob do
             it 'returns true' do
               blob = fake_blob(path: 'file.wtf', lfs: true)
 
-              expect(blob.raw_binary?).to be_truthy
+              expect(blob.binary?).to be_truthy
             end
           end
         end
@@ -204,7 +204,7 @@ describe Blob do
         it 'returns true' do
           blob = fake_blob(path: 'file.pdf', binary: true)
 
-          expect(blob.raw_binary?).to be_truthy
+          expect(blob.binary?).to be_truthy
         end
       end
 
@@ -212,7 +212,7 @@ describe Blob do
         it 'return false' do
           blob = fake_blob(path: 'file.md')
 
-          expect(blob.raw_binary?).to be_falsey
+          expect(blob.binary?).to be_falsey
         end
       end
     end

@@ -138,30 +138,6 @@ module DiffHelper
     !diff_file.deleted_file? && @merge_request && @merge_request.source_project
   end
 
-  def diff_render_error_reason(viewer)
-    case viewer.render_error
-    when :too_large
-      "it is too large"
-    when :server_side_but_stored_externally
-      case viewer.diff_file.external_storage
-      when :lfs
-        'it is stored in LFS'
-      else
-        'it is stored externally'
-      end
-    end
-  end
-
-  def diff_render_error_options(viewer)
-    diff_file = viewer.diff_file
-    options = []
-
-    blob_url = project_blob_path(@project, tree_join(diff_file.content_sha, diff_file.file_path))
-    options << link_to('view the blob', blob_url)
-
-    options
-  end
-
   def diff_file_changed_icon(diff_file)
     if diff_file.deleted_file?
       "file-deletion"

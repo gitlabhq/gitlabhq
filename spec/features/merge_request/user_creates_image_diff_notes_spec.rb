@@ -90,9 +90,6 @@ describe 'Merge request > User creates image diff notes', :js do
 
   %w(inline parallel).each do |view|
     context "#{view} view" do
-      let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user) }
-      let(:path)          { "files/images/ee_repo_logo.png" }
-
       let(:position) do
         Gitlab::Diff::Position.new(
           old_path: path,
@@ -108,9 +105,11 @@ describe 'Merge request > User creates image diff notes', :js do
 
       let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
-      describe 'creating a new diff note' do
+      shared_examples 'creates image diff note' do
         before do
           visit diffs_project_merge_request_path(project, merge_request, view: view)
+          wait_for_requests
+
           create_image_diff_note
         end
 
@@ -131,6 +130,32 @@ describe 'Merge request > User creates image diff notes', :js do
 
           expect(page).to have_content('image diff test comment')
         end
+      end
+
+      context 'when images are not stored in LFS' do
+        let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user) }
+        let(:path)          { 'files/images/ee_repo_logo.png' }
+
+        it_behaves_like 'creates image diff note'
+      end
+
+      context 'when images are stored in LFS' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: 'png-lfs', target_branch: 'master', author: user) }
+        let(:path)          { 'files/images/logo-black.png' }
+
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it 'shows lfs badges' do
+          visit diffs_project_merge_request_path(project, merge_request, view: view)
+          wait_for_requests
+
+          expect(page.all('.diff-file span.label-lfs', visible: :all)).not_to be_empty
+        end
+
+        it_behaves_like 'creates image diff note'
       end
     end
   end
