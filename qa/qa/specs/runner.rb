@@ -23,9 +23,6 @@ module QA
           args.push(%w[--tag ~orchestrated]) unless (%w[-t --tag] & options).any?
         end
 
-        # Skip quarantined tests by default
-        args.push(%w[--tag ~quarantine]) unless include_quarantine?
-
         args.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
 
         QA::Runtime::Env.supported_features.each_key do |key|
@@ -40,10 +37,6 @@ module QA
         RSpec::Core::Runner.run(args.flatten, $stderr, $stdout).tap do |status|
           abort if status.nonzero?
         end
-      end
-
-      def include_quarantine?
-        tags.include?(:quarantine) || options.include?('quarantine')
       end
     end
   end
