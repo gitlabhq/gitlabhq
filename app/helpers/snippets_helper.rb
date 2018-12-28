@@ -110,7 +110,7 @@ module SnippetsHelper
 
   def embedded_snippet_raw_button
     blob = @snippet.blob
-    return if blob.empty? || blob.raw_binary? || blob.stored_externally?
+    return if blob.empty? || blob.binary? || blob.stored_externally?
 
     snippet_raw_url = if @snippet.is_a?(PersonalSnippet)
                         raw_snippet_url(@snippet)

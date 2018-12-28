@@ -45,6 +45,9 @@ export default {
     isTextFile() {
       return this.diffFile.viewer.name === 'text';
     },
+    errorMessage() {
+      return this.diffFile.viewer.error;
+    },
     diffFileCommentForm() {
       return this.getCommentFormForDiffFile(this.diffFile.file_hash);
     },
@@ -75,7 +78,7 @@ export default {
 
 <template>
   <div class="diff-content">
-    <div class="diff-viewer">
+    <div v-if="!errorMessage" class="diff-viewer">
       <template v-if="isTextFile">
         <empty-file-viewer v-if="diffFile.empty" />
         <inline-diff-view
@@ -128,6 +131,9 @@ export default {
           />
         </div>
       </diff-viewer>
+    </div>
+    <div v-else class="diff-viewer">
+      <div class="nothing-here-block" v-html="errorMessage"></div>
     </div>
   </div>
 </template>
