@@ -1,0 +1,5 @@
+---
+title: Skip per-commit validations already evaluated
+merge_request: 23984
+author:
+type: performance

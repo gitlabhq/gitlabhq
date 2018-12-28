@@ -709,10 +709,22 @@ describe Gitlab::GitAccess do
       project.add_developer(user)
     end
 
-    it 'checks LFS integrity only for first change' do
-      expect_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).exactly(1).times
+    context 'when LFS is not enabled' do
+      it 'does not run LFSIntegrity check' do
+        expect(Gitlab::Checks::LfsIntegrity).not_to receive(:new)
 
-      push_access_check
+        push_access_check
+      end
+    end
+
+    context 'when LFS is enabled' do
+      it 'checks LFS integrity only for first change' do
+        allow(project).to receive(:lfs_enabled?).and_return(true)
+
+        expect_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).exactly(1).times
+
+        push_access_check
+      end
     end
   end
 
