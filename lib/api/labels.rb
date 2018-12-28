@@ -11,17 +11,17 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all labels of the project' do
-        success Entities::Label
+        success Entities::ProjectLabel
       end
       params do
         use :pagination
       end
       get ':id/labels' do
-        present paginate(available_labels_for(user_project)), with: Entities::Label, current_user: current_user, project: user_project
+        present paginate(available_labels_for(user_project)), with: Entities::ProjectLabel, current_user: current_user, project: user_project
       end
 
       desc 'Create a new label' do
-        success Entities::Label
+        success Entities::ProjectLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be created'
@@ -41,7 +41,7 @@ module API
 
         if label.valid?
           label.prioritize!(user_project, priority) if priority
-          present label, with: Entities::Label, current_user: current_user, project: user_project
+          present label, with: Entities::ProjectLabel, current_user: current_user, project: user_project
         else
           render_validation_error!(label)
         end
@@ -49,7 +49,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing label' do
-        success Entities::Label
+        success Entities::ProjectLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
@@ -66,7 +66,7 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update an existing label. At least one optional parameter is required.' do
-        success Entities::Label
+        success Entities::ProjectLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be updated'
@@ -85,11 +85,8 @@ module API
 
         update_priority = params.key?(:priority)
         priority = params.delete(:priority)
-        label_params = declared_params(include_missing: false)
-        # Rename new name to the actual label attribute name
-        label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
 
-        label = ::Labels::UpdateService.new(label_params).execute(label)
+        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
         render_validation_error!(label) unless label.valid?
 
         if update_priority
@@ -100,7 +97,7 @@ module API
           end
         end
 
-        present label, with: Entities::Label, current_user: current_user, project: user_project
+        present label, with: Entities::ProjectLabel, current_user: current_user, project: user_project
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

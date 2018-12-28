@@ -12,7 +12,7 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all labels of the group' do
         detail 'This feature was added in GitLab 11.7'
-        success Entities::Label
+        success Entities::GroupLabel
       end
       params do
         use :pagination
@@ -20,12 +20,12 @@ module API
       get ':id/labels' do
         group_labels = available_labels_for(user_group)
 
-        present paginate(group_labels), with: Entities::Label, current_user: current_user, parent: user_group
+        present paginate(group_labels), with: Entities::GroupLabel, current_user: current_user, parent: user_group
       end
 
       desc 'Create a new label' do
         detail 'This feature was added in GitLab 11.7'
-        success Entities::Label
+        success Entities::GroupLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be created'
@@ -41,7 +41,7 @@ module API
         label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
 
         if label.persisted?
-          present label, with: Entities::Label, current_user: current_user, parent: user_group
+          present label, with: Entities::GroupLabel, current_user: current_user, parent: user_group
         else
           render_validation_error!(label)
         end
@@ -49,7 +49,7 @@ module API
 
       desc 'Delete an existing label' do
         detail 'This feature was added in GitLab 11.7'
-        success Entities::Label
+        success Entities::GroupLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
@@ -64,7 +64,7 @@ module API
 
       desc 'Update an existing label. At least one optional parameter is required.' do
         detail 'This feature was added in GitLab 11.7'
-        success Entities::Label
+        success Entities::GroupLabel
       end
       params do
         requires :name,  type: String, desc: 'The name of the label to be updated'
@@ -78,14 +78,10 @@ module API
 
         label = find_label(user_group, params[:name])
 
-        label_params = declared_params(include_missing: false)
-        # Rename new name to the actual label attribute name
-        label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
-
-        label = ::Labels::UpdateService.new(label_params).execute(label)
+        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
         render_validation_error!(label) unless label.valid?
 
-        present label, with: Entities::Label, current_user: current_user, parent: user_group
+        present label, with: Entities::GroupLabel, current_user: current_user, parent: user_group
       end
     end
   end

@@ -1006,7 +1006,7 @@ module API
       expose :id, :name, :color, :description
     end
 
-    class Label < LabelBasic
+    class GroupLabel < LabelBasic
       expose :open_issues_count do |label, options|
         label.open_issues_count(options[:current_user])
       end
@@ -1019,12 +1019,14 @@ module API
         label.open_merge_requests_count(options[:current_user])
       end
 
-      expose :priority do |label, options|
-        label.priority(options[:project])
-      end
-
       expose :subscribed do |label, options|
         label.subscribed?(options[:current_user], options[:project])
+      end
+    end
+
+    class ProjectLabel < GroupLabel
+      expose :priority do |label, options|
+        label.priority(options[:project])
       end
     end
 
