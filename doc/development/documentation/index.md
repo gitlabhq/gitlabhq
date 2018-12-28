@@ -153,13 +153,14 @@ help or direct you to the right one.
 
 ### Changing document location
 
-Changing a document's location is not to be taken lightly. Remember that the
-documentation is available to all installations under `help/` and not only to
-GitLab.com or <http://docs.gitlab.com>. Make sure this is discussed with the
-Documentation team beforehand.
+Changing a document's location requires specific steps to be followed to ensure that
+users can seamlessly access the new doc page, whether they are accesing content
+on a GitLab instance domain at `/help` or at docs.gitlab.com. Be sure to ping a
+GitLab technical writer if you have any questions during the process, and at the
+very least, after this change is merged, so that it can be reviewed promptly.
 
-If you indeed need to change a document's location, do NOT remove the old
-document, but rather replace all of its contents with a new line:
+If you indeed need to change a document's location, do not remove the old
+document, but rather replace all of its content with a new line:
 
 ```md
 This document was moved to [another location](path/to/new_doc.md).
@@ -197,6 +198,7 @@ Things to note:
 - Since we also use inline documentation, except for the documentation itself,
   the document might also be referenced in the views of GitLab (`app/`) which will
   render when visiting `/help`, and sometimes in the testing suite (`spec/`).
+  You must search these paths for references to the doc and update them as well.
 - The above `git grep` command will search recursively in the directory you run
   it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
   and will print the file and the line where this file is mentioned.
