@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.1 (2018-12-28)
+
+### Security (15 changes)
+
+- Escape label and milestone titles to prevent XSS in GFM autocomplete. !2740
+- Prevent private snippets from being embeddable.
+- Add subresources removal to member destroy service.
+- Escape html entities in LabelReferenceFilter when no label found.
+- Allow changing group CI/CD settings only for owners.
+- Authorize before reading job information via API.
+- Prevent leaking protected variables for ambiguous refs.
+- Ensure that build token is only used when running.
+- Issuable no longer is visible to users when project can't be viewed.
+- Don't expose cross project repositories through diffs when creating merge reqeusts.
+- Fix SSRF with import_url and remote mirror url.
+- Fix persistent symlink in project import.
+- Set URL rel attribute for broken URLs.
+- Project guests no longer are able to see refs page.
+- Delete confidential todos for user when downgraded to Guest.
+
+### Other (1 change)
+
+- Fix due date test. !23845
+
+
 ## 11.6.0 (2018-12-22)
 
 ### Security (24 changes, 1 of them is from the community)
