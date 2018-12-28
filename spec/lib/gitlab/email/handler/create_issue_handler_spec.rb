@@ -27,9 +27,10 @@ describe Gitlab::Email::Handler::CreateIssueHandler do
     let(:mail) { Mail::Message.new(email_raw) }
 
     it "matches the new format" do
-      handler = described_class.new(mail, "h5bp-html5-boilerplate-#{project.project_id}-#{user.incoming_email_token}-issue")
+      handler = described_class.new(mail, "gitlabhq-gitlabhq-#{project.project_id}-#{user.incoming_email_token}-issue")
 
-      expect(handler.instance_variable_get(:@project_id).to_i).to eq project.project_id
+      expect(handler.instance_variable_get(:@project_id)).to eq project.project_id
+      expect(handler.instance_variable_get(:@project_slug)).to eq project.full_path_slug
       expect(handler.instance_variable_get(:@incoming_email_token)).to eq user.incoming_email_token
       expect(handler.can_handle?).to be_truthy
     end

@@ -6,13 +6,28 @@ module Gitlab
       module ReplyProcessing
         private
 
+        HANDLER_ACTION_BASE_REGEX = /(?<project_slug>.+)-(?<project_id>\d+)-(?<incoming_email_token>.+)/.freeze
+
+        attr_reader :project_id, :project_slug, :project_path, :incoming_email_token
+
         def author
           raise NotImplementedError
         end
 
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables
         def project
-          raise NotImplementedError
+          return @project if instance_variable_defined?(:@project)
+
+          if project_id
+            @project = Project.find_by_id(project_id)
+            @project = nil unless valid_project_slug?(@project)
+          else
+            @project = Project.find_by_full_path(project_path)
+          end
+
+          @project
         end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
         def message
           @message ||= process_message
@@ -57,6 +72,10 @@ module Gitlab
           end.join
 
           raise invalid_exception, msg
+        end
+
+        def valid_project_slug?(found_project)
+          project_slug == found_project.full_path_slug
         end
       end
     end

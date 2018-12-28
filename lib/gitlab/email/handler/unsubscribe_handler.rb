@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def can_handle?
-          @reply_token.present?
+          reply_token.present?
         end
 
         def execute

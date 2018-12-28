@@ -19,7 +19,7 @@ describe Gitlab::Email::Handler do
 
   describe 'regexps are set properly' do
     let(:addresses) do
-      %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX} sent_notification_key path-to-project-project_id-user_email_token-merge-request path-to-project-user_email_token-issue) +
+      %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX} sent_notification_key path-to-project-123-user_email_token-merge-request path-to-project-123-user_email_token-issue) +
         %W(sent_notification_key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY} sent_notification_key path/to/project+merge-request+user_email_token path/to/project+user_email_token)
     end
 

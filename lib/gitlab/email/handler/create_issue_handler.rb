@@ -11,16 +11,19 @@ module Gitlab
       class CreateIssueHandler < BaseHandler
         include ReplyProcessing
 
-        HANDLER_REGEX        = /\A.+-(?<project_id>.+)-(?<incoming_email_token>.+)-issue\z/.freeze
+        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue\z/.freeze
         HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+(?<incoming_email_token>.*)\z/.freeze
 
         def initialize(mail, mail_key)
           super(mail, mail_key)
 
-          if matched = HANDLER_REGEX.match(mail_key.to_s)
-            @project_id, @incoming_email_token = matched.captures
+          if !mail_key&.include?('/') && (matched = HANDLER_REGEX.match(mail_key.to_s))
+            @project_slug         = matched[:project_slug]
+            @project_id           = matched[:project_id]&.to_i
+            @incoming_email_token = matched[:incoming_email_token]
           elsif matched = HANDLER_REGEX_LEGACY.match(mail_key.to_s)
-            @project_path, @incoming_email_token = matched.captures
+            @project_path         = matched[:project_path]
+            @incoming_email_token = matched[:incoming_email_token]
           end
         end
 
@@ -45,17 +48,7 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        def project
-          @project ||= if project_id
-                         Project.find_by_id(project_id)
-                       else
-                         Project.find_by_full_path(project_path)
-                       end
-        end
-
         private
-
-        attr_reader :project_id, :project_path, :incoming_email_token
 
         def create_issue
           Issues::CreateService.new(
