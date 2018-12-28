@@ -351,8 +351,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       context 'when user is a maintainer' do
         shared_examples 'no reveal button variables behavior' do
           it 'renders a hidden value with no reveal values button', :js do
-            expect(page).to have_content('Token')
-            expect(page).to have_content('Variables')
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
             expect(page).not_to have_css('.js-reveal-variables')
 
@@ -389,8 +389,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         shared_examples 'reveal button variables behavior' do
           it 'renders a hidden value with a reveal values button', :js do
-            expect(page).to have_content('Token')
-            expect(page).to have_content('Variables')
+            expect(page).to have_content('Trigger token')
+            expect(page).to have_content('Trigger variables')
 
             expect(page).to have_css('.js-reveal-variables')
 

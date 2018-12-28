@@ -99,6 +99,17 @@ describe Projects::AfterRenameService do
 
         expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
+
+      it 'updates storage location' do
+        allow(project_storage).to receive(:rename_repo).and_return(true)
+
+        described_class.new(project).execute
+
+        expect(project.project_repository).to have_attributes(
+          disk_path: project.disk_path,
+          shard_name: project.repository_storage
+        )
+      end
     end
 
     context 'using hashed storage' do
@@ -192,6 +203,15 @@ describe Projects::AfterRenameService do
         described_class.new(project).execute
 
         expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
+      end
+
+      it 'updates storage location' do
+        described_class.new(project).execute
+
+        expect(project.project_repository).to have_attributes(
+          disk_path: project.disk_path,
+          shard_name: project.repository_storage
+        )
       end
     end
   end

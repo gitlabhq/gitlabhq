@@ -260,7 +260,7 @@ class Projects::BlobController < Projects::ApplicationController
       extension: blob.extension,
       size: blob.raw_size,
       mime_type: blob.mime_type,
-      binary: blob.raw_binary?,
+      binary: blob.binary?,
       simple_viewer: blob.simple_viewer&.class&.partial_name,
       rich_viewer: blob.rich_viewer&.class&.partial_name,
       show_viewer_switcher: !!blob.show_viewer_switcher?,

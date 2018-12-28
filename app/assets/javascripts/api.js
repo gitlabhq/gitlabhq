@@ -29,6 +29,7 @@ const Api = {
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
+  releasesPath: '/api/:version/projects/:id/releases',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -305,6 +306,12 @@ const Api = {
       emoji,
       message,
     });
+  },
+
+  releases(id) {
+    const url = Api.buildUrl(this.releasesPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url);
   },
 
   buildUrl(url) {

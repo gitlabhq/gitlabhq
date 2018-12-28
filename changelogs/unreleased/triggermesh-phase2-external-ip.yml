@@ -1,5 +1,0 @@
----
-title: Add an external IP address to the knative cluster application page
-merge_request:
-author: Chris Baumbauer
-type: fixed

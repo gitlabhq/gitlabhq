@@ -65,7 +65,7 @@ export default {
         v-if="pipeline.flags.latest"
         v-gl-tooltip
         class="js-pipeline-url-latest badge badge-success"
-        title="__('Latest pipeline for this branch')"
+        :title="__('Latest pipeline for this branch')"
       >
         latest
       </span>
@@ -100,7 +100,7 @@ export default {
       <span
         v-if="pipeline.flags.merge_request"
         v-gl-tooltip
-        title="__('This pipeline is run in a merge request context')"
+        :title="__('This pipeline is run in a merge request context')"
         class="js-pipeline-url-mergerequest badge badge-info"
       >
         merge request

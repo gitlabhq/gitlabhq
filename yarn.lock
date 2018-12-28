@@ -641,10 +641,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.43.0.tgz#28dee2122d068cd3b925cd9884d97465ebaca12d"
   integrity sha512-wuN3NITmyBV9bOXsFfAjtndFrjTlH6Kf3+6aqT5kHKKLe/B4w7uTU1L9H/cyR0wGD7HbOh584a05eDcuH04fPA==
 
-"@gitlab/ui@^1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.15.0.tgz#288e189cb99de354aeb4598f9ac8cced5f47e139"
-  integrity sha512-Aiv/WABr8lBVJk0eoanSoO07Lr5Nnvuq82IjDnNzcw9enB1DAKvlstC2r9iiMfg1pVgV/uLdDeRFqH9eI1X4Rg==
+"@gitlab/ui@^1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.18.0.tgz#5cc591b2c7958e59fa7b1b443d4235e0e8f956c9"
+  integrity sha512-JqmiRSGYmK0DbGBQJBpjeRrcgjK25rCqG6QW6/GPTVLtRjbPPZYGvVg5PyA6nJUGAnwFoeApUZVML6X3OpnV1Q==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -654,7 +654,7 @@
     js-beautify "^1.8.8"
     lodash "^4.17.11"
     url-search-params-polyfill "^5.0.0"
-    vue "^2.5.16"
+    vue "^2.5.21"
     vue-loader "^15.4.2"
 
 "@sindresorhus/is@^0.7.0":
@@ -9904,10 +9904,15 @@ vue-virtual-scroll-list@^1.2.5:
   resolved "https://registry.yarnpkg.com/vue-virtual-scroll-list/-/vue-virtual-scroll-list-1.2.5.tgz#bcbd010f7cdb035eba8958ebf807c6214d9a167a"
   integrity sha1-vL0BD3zbA166iVjr+AfGIU2aFno=
 
-vue@^2.5.16, vue@^2.5.17:
+vue@^2.5.17:
   version "2.5.17"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
   integrity sha512-mFbcWoDIJi0w0Za4emyLiW72Jae0yjANHbCVquMKijcavBGypqlF7zHRgMa5k4sesdv7hv2rB4JPdZfR+TPfhQ==
+
+vue@^2.5.21:
+  version "2.5.21"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.21.tgz#3d33dcd03bb813912ce894a8303ab553699c4a85"
+  integrity sha512-Aejvyyfhn0zjVeLvXd70h4hrE4zZDx1wfZqia6ekkobLmUZ+vNFQer53B4fu0EjWBSiqApxPejzkO1Znt3joxQ==
 
 vuex@^3.0.1:
   version "3.0.1"

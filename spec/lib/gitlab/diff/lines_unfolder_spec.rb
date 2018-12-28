@@ -185,7 +185,7 @@ describe Gitlab::Diff::LinesUnfolder do
 
   let(:project) { create(:project) }
 
-  let(:old_blob) { Gitlab::Git::Blob.new(data: raw_old_blob) }
+  let(:old_blob) { Blob.decorate(Gitlab::Git::Blob.new(data: raw_old_blob, size: 10)) }
 
   let(:diff) do
     Gitlab::Git::Diff.new(diff: raw_diff,

@@ -54,7 +54,7 @@ describe Gitlab::CurrentSettings do
           expect(ApplicationSetting).not_to receive(:current)
         end
 
-        it 'returns an in-memory ApplicationSetting object' do
+        it 'returns a FakeApplicationSettings object' do
           expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
         end
 
@@ -91,6 +91,14 @@ describe Gitlab::CurrentSettings do
           allow(ActiveRecord::Base.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
         end
 
+        context 'with RequestStore enabled', :request_store do
+          it 'fetches the settings from DB only once' do
+            described_class.current_application_settings # warm the cache
+
+            expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
+          end
+        end
+
         it 'creates default ApplicationSettings if none are present' do
           settings = described_class.current_application_settings
 
@@ -99,34 +107,45 @@ describe Gitlab::CurrentSettings do
           expect(settings).to have_attributes(settings_from_defaults)
         end
 
-        context 'with migrations pending' do
+        context 'with pending migrations' do
           before do
             expect(ActiveRecord::Migrator).to receive(:needs_migration?).and_return(true)
           end
 
-          it 'returns an in-memory ApplicationSetting object' do
-            settings = described_class.current_application_settings
+          shared_examples 'a non-persisted ApplicationSetting object' do
+            let(:current_settings) { described_class.current_application_settings }
 
-            expect(settings).to be_a(Gitlab::FakeApplicationSettings)
-            expect(settings.sign_in_enabled?).to eq(settings.sign_in_enabled)
-            expect(settings.sign_up_enabled?).to eq(settings.sign_up_enabled)
+            it 'returns a non-persisted ApplicationSetting object' do
+              expect(current_settings).to be_a(ApplicationSetting)
+              expect(current_settings).not_to be_persisted
+            end
+
+            it 'uses the default value from ApplicationSetting.defaults' do
+              expect(current_settings.signup_enabled).to eq(ApplicationSetting.defaults[:signup_enabled])
+            end
+
+            it 'uses the default value from custom ApplicationSetting accessors' do
+              expect(current_settings.commit_email_hostname).to eq(ApplicationSetting.default_commit_email_hostname)
+            end
+
+            it 'responds to predicate methods' do
+              expect(current_settings.signup_enabled?).to eq(current_settings.signup_enabled)
+            end
           end
 
-          it 'uses the existing database settings and falls back to defaults' do
-            db_settings = create(:application_setting,
-                                 home_page_url: 'http://mydomain.com',
-                                 signup_enabled: false)
-            settings = described_class.current_application_settings
-            app_defaults = ApplicationSetting.last
+          context 'with no ApplicationSetting DB record' do
+            it_behaves_like 'a non-persisted ApplicationSetting object'
+          end
 
-            expect(settings).to be_a(Gitlab::FakeApplicationSettings)
-            expect(settings.home_page_url).to eq(db_settings.home_page_url)
-            expect(settings.signup_enabled?).to be_falsey
-            expect(settings.signup_enabled).to be_falsey
+          context 'with an existing ApplicationSetting DB record' do
+            let!(:db_settings) { ApplicationSetting.build_from_defaults(home_page_url: 'http://mydomain.com').save! && ApplicationSetting.last }
+            let(:current_settings) { described_class.current_application_settings }
 
-            # Check that unspecified values use the defaults
-            settings.reject! { |key, _| [:home_page_url, :signup_enabled].include? key }
-            settings.each { |key, _| expect(settings[key]).to eq(app_defaults[key]) }
+            it_behaves_like 'a non-persisted ApplicationSetting object'
+
+            it 'uses the value from the DB attribute if present and not overriden by an accessor' do
+              expect(current_settings.home_page_url).to eq(db_settings.home_page_url)
+            end
           end
         end
 
@@ -138,17 +157,12 @@ describe Gitlab::CurrentSettings do
           end
         end
 
-        context 'when the application_settings table does not exists' do
-          it 'returns an in-memory ApplicationSetting object' do
-            expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::StatementInvalid)
-
-            expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
-          end
-        end
-
-        context 'when the application_settings table is not fully migrated' do
-          it 'returns an in-memory ApplicationSetting object' do
-            expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::UnknownAttributeError)
+        context 'when the application_settings table does not exist' do
+          it 'returns a FakeApplicationSettings object' do
+            expect(Gitlab::Database)
+              .to receive(:cached_table_exists?)
+              .with('application_settings')
+              .and_return(false)
 
             expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
           end

@@ -31,9 +31,9 @@ describe 'Labels (JavaScript fixtures)' do
     end
 
     it 'labels/group_labels.json' do |example|
-      get :index,
-        group_id: group,
-        format: 'json'
+      get :index, params: {
+        group_id: group
+      }, format: 'json'
 
       expect(response).to be_success
       store_frontend_fixture(response, example.description)
@@ -48,10 +48,10 @@ describe 'Labels (JavaScript fixtures)' do
     end
 
     it 'labels/project_labels.json' do |example|
-      get :index,
+      get :index, params: {
         namespace_id: group,
-        project_id: project,
-        format: 'json'
+        project_id: project
+      }, format: 'json'
 
       expect(response).to be_success
       store_frontend_fixture(response, example.description)

@@ -1,6 +1,0 @@
----
-title: Removes all the irrelevant code and columns that were migrated from the Project
-  table over to the ProjectImportState table
-merge_request: 21497
-author:
-type: performance

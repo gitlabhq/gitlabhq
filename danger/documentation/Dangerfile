@@ -32,7 +32,7 @@ to be reviewed.
 | Tech writer  | Stage(s)                                                     |
 | ------------ | ------------------------------------------------------------ |
 | `@marcia`    | ~Create ~Release + ~"development guidelines"                 |
-| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Packaging ~Secure |
+| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitoring ~Package ~Secure |
 | `@eread`     | ~Manage ~Configure ~Geo ~Verify                              |
 | `@mikelewis` | ~Plan                                                        |
 

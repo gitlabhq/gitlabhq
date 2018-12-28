@@ -1,5 +1,0 @@
----
-title: Drop default value on status column in deployments table
-merge_request: 22971
-author:
-type: other

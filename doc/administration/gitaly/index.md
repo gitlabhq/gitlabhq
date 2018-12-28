@@ -1,6 +1,6 @@
 # Gitaly
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that 
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that
 provides high-level RPC access to Git repositories. Without it, no other
 components can read or write Git data.
 
@@ -23,7 +23,7 @@ gitaly['prometheus_listen_addr'] = 'localhost:9236'
 ```
 
 To change a Gitaly setting in installations from source you can edit
-`/home/git/gitaly/config.toml`. Changes will be applied when you run 
+`/home/git/gitaly/config.toml`. Changes will be applied when you run
 `service gitlab restart`.
 
 ```toml
@@ -91,13 +91,13 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-Gitaly must trigger some callbacks to GitLab via GitLab Shell. As a result, 
+Gitaly must trigger some callbacks to GitLab via GitLab Shell. As a result,
 the GitLab Shell secret must be the same between the other GitLab servers and
 the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gitlab-secrets.json`
 from an existing GitLab server to the Gitaly server. Without this shared secret,
-Git operations in GitLab will result in an API error. 
+Git operations in GitLab will result in an API error.
 
-> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+> **NOTE:** In most or all cases the storage paths below end in `/repositories` which is
 different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
@@ -133,6 +133,11 @@ gitaly['storage'] = [
   { 'name' => 'default', 'path' => '/mnt/gitlab/default/repositories' },
   { 'name' => 'storage1', 'path' => '/mnt/gitlab/storage1/repositories' },
 ]
+
+# To use tls for gitaly you need to add
+gitaly['tls_listen_addr'] = "0.0.0.0:9999"
+gitaly['certificate_path'] = "path/to/cert.pem"
+gitaly['key_path'] = "path/to/key.pem"
 ```
 
 Source installations:
@@ -140,6 +145,11 @@ Source installations:
 ```toml
 # /home/git/gitaly/config.toml
 listen_addr = '0.0.0.0:8075'
+tls_listen_addr = '0.0.0.0:9999'
+
+[tls]
+certificate_path = /path/to/cert.pem
+key_path = /path/to/key.pem
 
 [auth]
 token = 'abc123secret'
@@ -204,6 +214,70 @@ Gitaly logs on your Gitaly server (`sudo gitlab-ctl tail gitaly` or
 `tail -f /home/git/gitlab/log/gitaly.log`) you should see requests
 coming in. One sure way to trigger a Gitaly request is to clone a
 repository from your GitLab server over HTTP.
+
+## TLS support
+
+Gitaly supports TLS credentials for GRPC authentication. To be able to communicate
+with a gitaly instance that listens for secure connections you will need to use `tls://` url
+scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.
+
+The admin needs to bring their own certificate as we do not provide that automatically.
+The certificate to be used needs to be installed on all gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+
+### Example TLS configuration
+
+### Omnibus installations:
+
+#### On client nodes:
+
+```ruby
+# /etc/gitlab/gitlab.rb
+git_data_dirs({
+  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tls://gitaly.internal:9999' },
+  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tls://gitaly.internal:9999' },
+})
+
+gitlab_rails['gitaly_token'] = 'abc123secret'
+```
+
+#### On gitaly server nodes:
+
+```ruby
+gitaly['tls_listen_addr'] = "0.0.0.0:9999"
+gitaly['certificate_path'] = "path/to/cert.pem"
+gitaly['key_path'] = "path/to/key.pem"
+```
+
+### Source installations:
+
+#### On client nodes:
+
+```yaml
+# /home/git/gitlab/config/gitlab.yml
+gitlab:
+  repositories:
+    storages:
+      default:
+        path: /mnt/gitlab/default/repositories
+        gitaly_address: tls://gitaly.internal:9999
+      storage1:
+        path: /mnt/gitlab/storage1/repositories
+        gitaly_address: tls://gitaly.internal:9999
+
+  gitaly:
+    token: 'abc123secret'
+```
+
+#### On gitaly server nodes:
+
+```toml
+# /home/git/gitaly/config.toml
+tls_listen_addr = '0.0.0.0:9999'
+
+[tls]
+certificate_path = '/path/to/cert.pem'
+key_path = '/path/to/key.pem'
+```
 
 ## Disabling or enabling the Gitaly service in a cluster environment
 

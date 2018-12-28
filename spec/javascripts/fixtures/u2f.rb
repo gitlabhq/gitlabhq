@@ -21,7 +21,7 @@ context 'U2F' do
     it 'u2f/authenticate.html.raw' do |example|
       allow(controller).to receive(:find_user).and_return(user)
 
-      post :create, user: { login: user.username, password: user.password }
+      post :create, params: { user: { login: user.username, password: user.password } }
 
       expect(response).to be_success
       store_frontend_fixture(response, example.description)

@@ -1,5 +1,0 @@
----
-title: Only allow strings in URL::Sanitizer.valid?
-merge_request: 23675
-author:
-type: fixed

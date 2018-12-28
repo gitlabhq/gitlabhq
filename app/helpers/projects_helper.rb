@@ -271,6 +271,20 @@ module ProjectsHelper
     params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
   end
 
+  def explore_projects_tab?
+    current_page?(explore_projects_path) ||
+      current_page?(trending_explore_projects_path) ||
+      current_page?(starred_explore_projects_path)
+  end
+
+  def show_merge_request_count?(disabled: false, compact_mode: false)
+    !disabled && !compact_mode && Feature.enabled?(:project_list_show_mr_count, default_enabled: true)
+  end
+
+  def show_issue_count?(disabled: false, compact_mode: false)
+    !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -513,20 +527,6 @@ module ProjectsHelper
     else
       "list-label"
     end
-  end
-
-  def explore_projects_tab?
-    current_page?(explore_projects_path) ||
-      current_page?(trending_explore_projects_path) ||
-      current_page?(starred_explore_projects_path)
-  end
-
-  def show_merge_request_count?(merge_requests, compact_mode)
-    merge_requests && !compact_mode && Feature.enabled?(:project_list_show_mr_count, default_enabled: true)
-  end
-
-  def show_issue_count?(issues, compact_mode)
-    issues && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
   end
 
   def sidebar_projects_paths

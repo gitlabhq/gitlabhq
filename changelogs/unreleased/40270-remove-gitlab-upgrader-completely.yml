@@ -1,0 +1,5 @@
+---
+title: Removes all instances of deprecated Gitlab Upgrader calls
+merge_request: 23603
+author: '@jwolen'
+type: removed

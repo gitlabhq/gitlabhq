@@ -1,6 +1,0 @@
----
-title: Show error message when attempting to reopen an MR and there is an open MR
-  for the same branch
-merge_request: 16447
-author: Akos Gyimesi
-type: fixed

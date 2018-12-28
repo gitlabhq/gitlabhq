@@ -106,7 +106,7 @@ module Clusters
       def terminals(environment)
         with_reactive_cache do |data|
           pods = filter_by_label(data[:pods], app: environment.slug)
-          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
           terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
         end
       end
@@ -228,7 +228,7 @@ module Clusters
         return unless namespace_changed?
 
         run_after_commit do
-          ClusterPlatformConfigureWorker.perform_async(cluster_id)
+          ClusterConfigureWorker.perform_async(cluster_id)
         end
       end
     end

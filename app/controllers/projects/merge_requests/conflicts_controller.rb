@@ -8,7 +8,7 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
   def show
     respond_to do |format|
       format.html do
-        labels
+        @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
       end
 
       format.json do
@@ -60,9 +60,15 @@ class Projects::MergeRequests::ConflictsController < Projects::MergeRequests::Ap
     end
   end
 
+  private
+
   def authorize_can_resolve_conflicts!
     @conflicts_list = ::MergeRequests::Conflicts::ListService.new(@merge_request)
 
     return render_404 unless @conflicts_list.can_be_resolved_by?(current_user)
+  end
+
+  def serializer
+    MergeRequestSerializer.new(current_user: current_user, project: project)
   end
 end

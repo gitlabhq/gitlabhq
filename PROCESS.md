@@ -58,6 +58,18 @@ their contributions accepted by meeting our [Definition of done][done].
 
 What you can expect from them is described at https://about.gitlab.com/roles/merge-request-coach/.
 
+### Milestones on community contribution issues
+
+The milestone of an issue that is currently being worked on by a community contributor
+should not be set to a named GitLab milestone (e.g. 11.7, 11.8), until the associated
+merge request is very close to being merged, and we will likely know in which named
+GitLab milestone the issue will land. There are many factors that influence when
+a community contributor finishes an issue, or even at all. So we should set this 
+milestone only when we have more certainty.
+
+Note this only applies to issues currently assigned to community contributors. For
+issues assigned to GitLabbers, we are [ambitious in assigning milestones to issues](https://about.gitlab.com/direction/#how-we-plan-releases).
+
 ## Assigning issues
 
 If an issue is complex and needs the attention of a specific person, assignment is a good option but assigning issues might discourage other people from contributing to that issue. We need all the contributions we can get so this should never be discouraged. Also, an assigned person might not have time for a few weeks, so others should feel free to takeover.

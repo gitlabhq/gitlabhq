@@ -78,9 +78,11 @@ describe Groups::GroupMembersController do
 
     Gitlab::Access.options.each do |label, value|
       it "can change the access level to #{label}" do
-        xhr :put, :update, group_member: { access_level: value },
-                           group_id: group,
-                           id: requester
+        put :update, params: {
+          group_member: { access_level: value },
+          group_id: group,
+          id: requester
+        }, xhr: true
 
         expect(requester.reload.human_access).to eq(label)
       end
@@ -130,7 +132,7 @@ describe Groups::GroupMembersController do
         end
 
         it '[JS] removes user from members' do
-          xhr :delete, :destroy, group_id: group, id: member
+          delete :destroy, params: { group_id: group, id: member }, xhr: true
 
           expect(response).to be_success
           expect(group.members).not_to include member

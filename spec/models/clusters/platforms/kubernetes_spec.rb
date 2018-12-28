@@ -325,12 +325,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'with valid pods' do
       let(:pod) { kube_pod(app: environment.slug) }
+      let(:pod_with_no_terminal) { kube_pod(app: environment.slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(app: "should-be-filtered-out")]
         )
       end
 
@@ -394,7 +395,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when namespace is updated' do
       it 'should call ConfigureWorker' do
-        expect(ClusterPlatformConfigureWorker).to receive(:perform_async).with(cluster.id).once
+        expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id).once
 
         platform.namespace = 'new-namespace'
         platform.save
@@ -403,7 +404,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'when namespace is not updated' do
       it 'should not call ConfigureWorker' do
-        expect(ClusterPlatformConfigureWorker).not_to receive(:perform_async)
+        expect(ClusterConfigureWorker).not_to receive(:perform_async)
 
         platform.username = "new-username"
         platform.save

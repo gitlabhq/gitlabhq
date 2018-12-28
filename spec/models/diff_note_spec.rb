@@ -337,24 +337,9 @@ describe DiffNote do
   end
 
   describe "image diff notes" do
-    let(:path) { "files/images/any_image.png" }
-
-    let!(:position) do
-      Gitlab::Diff::Position.new(
-        old_path: path,
-        new_path: path,
-        width: 10,
-        height: 10,
-        x: 1,
-        y: 1,
-        diff_refs: merge_request.diff_refs,
-        position_type: "image"
-      )
-    end
+    subject { build(:image_diff_note_on_merge_request, project: project, noteable: merge_request) }
 
     describe "validations" do
-      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
-
       it { is_expected.not_to validate_presence_of(:line_code) }
 
       it "does not validate diff line" do

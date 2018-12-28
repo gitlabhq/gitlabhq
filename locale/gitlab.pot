@@ -19,6 +19,9 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid " or "
+msgstr ""
+
 msgid "%d addition"
 msgid_plural "%d additions"
 msgstr[0] ""
@@ -95,9 +98,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{actionText} & %{openOrClose} %{noteable}"
-msgstr ""
-
-msgid "%{bio} at %{organization}"
 msgstr ""
 
 msgid "%{commit_author_link} authored %{commit_timeago}"
@@ -186,6 +186,9 @@ msgid "+ %{count} more"
 msgstr ""
 
 msgid "+ %{moreCount} more"
+msgstr ""
+
+msgid ", or "
 msgstr ""
 
 msgid "- Runner is active and can process any new jobs"
@@ -438,7 +441,13 @@ msgstr ""
 msgid "AdminProjects|Delete project"
 msgstr ""
 
+msgid "AdminSettings|Environment variables are protected by default"
+msgstr ""
+
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
 
 msgid "AdminUsers|Block user"
@@ -523,6 +532,9 @@ msgid "An error accured whilst committing your changes."
 msgstr ""
 
 msgid "An error has occurred"
+msgstr ""
+
+msgid "An error occured while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred creating the new branch."
@@ -2743,6 +2755,15 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
+msgid "Environment variables"
+msgstr ""
+
+msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use environment variables for passwords, secret keys, or whatever you want."
+msgstr ""
+
+msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -3170,6 +3191,9 @@ msgid "Generate a default set of labels"
 msgstr ""
 
 msgid "Geo"
+msgstr ""
+
+msgid "Getting started with releases"
 msgstr ""
 
 msgid "Git"
@@ -3756,7 +3780,7 @@ msgstr ""
 msgid "Job|The artifacts were removed"
 msgstr ""
 
-msgid "Job|The artifacts will be removed in"
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
@@ -4090,9 +4114,6 @@ msgstr ""
 msgid "Merge Request"
 msgstr ""
 
-msgid "Merge Request:"
-msgstr ""
-
 msgid "Merge Requests"
 msgstr ""
 
@@ -4130,6 +4151,9 @@ msgid "MergeRequests|started a discussion on %{linkStart}an old version of the d
 msgstr ""
 
 msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
+msgstr ""
+
+msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
 msgstr ""
 
 msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
@@ -4626,6 +4650,9 @@ msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
+msgstr ""
+
+msgid "Open Documentation"
 msgstr ""
 
 msgid "Open in Xcode"
@@ -5525,6 +5552,9 @@ msgid "Related merge requests"
 msgstr ""
 
 msgid "Releases"
+msgstr ""
+
+msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
 
 msgid "Remind later"
@@ -6674,7 +6704,7 @@ msgstr ""
 msgid "Third party offers"
 msgstr ""
 
-msgid "This %{viewer} could not be displayed because %{reason}."
+msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
@@ -6795,6 +6825,9 @@ msgid "This page is unavailable because you are not allowed to read information 
 msgstr ""
 
 msgid "This page will be removed in a future release."
+msgstr ""
+
+msgid "This pipeline is run in a merge request context"
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
@@ -7137,10 +7170,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-msgid "Trigger"
+msgid "Trigger this manual action"
 msgstr ""
 
-msgid "Trigger this manual action"
+msgid "Trigger token:"
+msgstr ""
+
+msgid "Trigger variables:"
 msgstr ""
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
@@ -7336,15 +7372,6 @@ msgid "Users"
 msgstr ""
 
 msgid "Users requesting access to"
-msgstr ""
-
-msgid "Variables"
-msgstr ""
-
-msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
-msgstr ""
-
-msgid "Variables:"
 msgstr ""
 
 msgid "Various container registry settings."
@@ -7870,13 +7897,28 @@ msgstr ""
 msgid "https://your-bitbucket-server"
 msgstr ""
 
+msgid "image diff"
+msgstr ""
+
 msgid "import flow"
 msgstr ""
 
 msgid "importing"
 msgstr ""
 
+msgid "in"
+msgstr ""
+
 msgid "issue boards"
+msgstr ""
+
+msgid "it is stored externally"
+msgstr ""
+
+msgid "it is stored in LFS"
+msgstr ""
+
+msgid "it is too large"
 msgstr ""
 
 msgid "latest deployment"
@@ -8119,6 +8161,9 @@ msgstr ""
 msgid "remove due date"
 msgstr ""
 
+msgid "rendered diff"
+msgstr ""
+
 msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
@@ -8128,6 +8173,9 @@ msgid "should be higher than %{access} inherited membership from group %{group_n
 msgstr ""
 
 msgid "source"
+msgstr ""
+
+msgid "source diff"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
@@ -8149,6 +8197,9 @@ msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "view it on GitLab"
+msgstr ""
+
+msgid "view the blob"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."

@@ -302,7 +302,8 @@ class ApplicationSetting < ActiveRecord::Base
       user_show_add_ssh_key_message: true,
       usage_stats_set_by_user_id: nil,
       diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-      commit_email_hostname: default_commit_email_hostname
+      commit_email_hostname: default_commit_email_hostname,
+      protected_ci_variables: false
     }
   end
 
@@ -311,7 +312,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.create_from_defaults
-    create(defaults)
+    build_from_defaults.tap(&:save)
   end
 
   def self.human_attribute_name(attr, _options = {})
@@ -382,7 +383,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def restricted_visibility_levels=(levels)
-    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+    super(levels&.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   def strip_sentry_values

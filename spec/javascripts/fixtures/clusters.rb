@@ -23,10 +23,11 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
   end
 
   it 'clusters/show_cluster.html.raw' do |example|
-    get :show,
+    get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: cluster
+    }
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

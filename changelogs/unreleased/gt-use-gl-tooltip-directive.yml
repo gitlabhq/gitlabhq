@@ -1,5 +1,0 @@
----
-title: Replace tooltip directive with gl-tooltip diretive in badges, cycle analytics, and diffs
-merge_request: 22770
-author: George Tsiolis
-type: performance

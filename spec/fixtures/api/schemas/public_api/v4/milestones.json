@@ -1,25 +1,6 @@
 {
   "type": "array",
   "items": {
-    "type": "object",
-    "properties" : {
-      "id": { "type": "integer" },
-      "iid": { "type": "integer" },
-      "project_id": { "type": ["integer", "null"] },
-      "group_id": { "type": ["integer", "null"] },
-      "title": { "type": "string" },
-      "description": { "type": ["string", "null"] },
-      "state": { "type": "string" },
-      "created_at": { "type": "date" },
-      "updated_at": { "type": "date" },
-      "start_date": { "type": "date" },
-      "due_date": { "type": "date" },
-      "web_url": { "type": "string" }
-    },
-    "required": [
-      "id", "iid", "title", "description", "state",
-      "state", "created_at", "updated_at", "start_date", "due_date"
-    ],
-    "additionalProperties": false
+    "$ref": "./milestone.json"
   }
 }

@@ -1,0 +1,5 @@
+---
+title: Fix label and header styles in the job details sidebar.
+merge_request: 23816
+author: Nathan Friend
+type: changed

@@ -33,6 +33,22 @@ module Gitlab
       def tag_exists?
         project.repository.tag_exists?(tag_name)
       end
+
+      def validate_once(resource)
+        Gitlab::SafeRequestStore.fetch(cache_key_for_resource(resource)) do
+          yield(resource)
+
+          true
+        end
+      end
+
+      def cache_key_for_resource(resource)
+        "git_access:#{checker_cache_key}:#{resource.cache_key}"
+      end
+
+      def checker_cache_key
+        self.class.name.demodulize.underscore
+      end
     end
   end
 end

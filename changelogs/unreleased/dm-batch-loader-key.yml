@@ -1,5 +1,0 @@
----
-title: Batch load only data from same repository when lazy object is accessed
-merge_request: 23309
-author:
-type: performance

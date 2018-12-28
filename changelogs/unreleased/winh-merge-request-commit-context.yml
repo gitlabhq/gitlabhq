@@ -1,0 +1,5 @@
+---
+title: Display commit ID for discussions made on merge request commits
+merge_request: 23837
+author:
+type: fixed

@@ -106,6 +106,9 @@ export default {
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
       );
     },
+    shouldRenderCollaborationStatus() {
+      return this.mr.allowCollaboration && this.mr.isOpen;
+    },
     shouldRenderMergedPipeline() {
       return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
     },
@@ -315,7 +318,7 @@ export default {
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />
 
-        <section v-if="mr.allowCollaboration" class="mr-info-list mr-links">
+        <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
           {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
         </section>
 
