@@ -1932,23 +1932,11 @@ class Project < ActiveRecord::Base
   end
 
   def any_branch_allows_collaboration?(user)
-    return false unless user
-
     fetch_branch_allows_collaboration(user)
   end
 
   def branch_allows_collaboration?(user, branch_name)
-    return false unless user
-
-    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
-
-    memoized_results = strong_memoize(:branch_allows_collaboration) do
-      Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_collaboration(user, branch_name)
-      end
-    end
-
-    memoized_results[cache_key]
+    fetch_branch_allows_collaboration(user, branch_name)
   end
 
   def licensed_features
@@ -2153,6 +2141,8 @@ class Project < ActiveRecord::Base
   end
 
   def fetch_branch_allows_collaboration(user, branch_name = nil)
+    return false unless user
+
     Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       next false if empty_repo?
 

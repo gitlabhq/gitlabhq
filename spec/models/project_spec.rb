@@ -3932,13 +3932,6 @@ describe Project do
           .to be_falsy
       end
 
-      it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
-
-        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(control)
-      end
-
       context 'when the requeststore is active', :request_store do
         it 'only queries per project across instances' do
           control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
