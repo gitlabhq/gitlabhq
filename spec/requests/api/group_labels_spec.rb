@@ -115,7 +115,7 @@ describe API::GroupLabels do
       expect(response).to have_gitlab_http_status(400)
     end
 
-    it "does not delete parent's group labels" do
+    it "does not delete parent's group labels", :nested_groups do
       subgroup = create(:group, parent: group)
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
@@ -176,7 +176,7 @@ describe API::GroupLabels do
       expect(json_response['description']).to eq('test')
     end
 
-    it "does not update parent's group label" do
+    it "does not update parent's group label", :nested_groups do
       subgroup = create(:group, parent: group)
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
