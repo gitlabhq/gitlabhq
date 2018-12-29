@@ -18,7 +18,7 @@ module JSONWebToken
     end
 
     def encoded
-      JWT.encode(payload, secret, JWT_ALGORITHM)
+      JWT.encode(payload, secret, JWT_ALGORITHM, { typ: 'JWT' })
     end
 
     private
