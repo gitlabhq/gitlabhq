@@ -431,80 +431,14 @@ to merge changes that will break `master` from a merge request with a successful
 
 ## Docs site architecture
 
-Read through [docs architecture](site_architecture/index.md) to learn
-how we architecture, build, and deploy the docs site, <https://docs.gitlab.com>, and
-to check all the assets and libraries available.
+See the [Docs site architecture](site_architecture/index.md) page to learn
+how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com), and
+to review all the assets and libraries in use.
 
 ### Global navigation
 
-Read through the [global navigation](site_architecture/global_nav.md) doc.
-
-## General Documentation vs Technical Articles
-
-### General documentation
-
-General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
-
-### Technical Articles
-
-Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
-
-They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
-
-A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
-
-They should be placed in a new directory named `/article-title/index.md` under a topic-related folder, and their images should be placed in `/article-title/img/`. For example, a new article on GitLab Pages should be placed in `doc/user/project/pages/article-title/` and a new article on GitLab CI/CD should be placed in `doc/ci/examples/article-title/`.
-
-#### Types of Technical Articles
-
-- **User guides**: technical content to guide regular users from point A to point B
-- **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
-- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
-- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach specific objectives
-
-#### Understanding guides, tutorials, and technical overviews
-
-Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
-
-A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
-
-- Live example: "[Static sites and GitLab Pages domains (Part 1)](../../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../../user/project/pages/getting_started_part_four.md)"
-
-A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
-It does not only describes steps 2 and 3, but also shows you how to accomplish them.
-
-- Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
-
-A **technical overview** is a description of what a certain feature is, and what it does, but does not walk
-through the process of how to use it systematically.
-
-- Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
-
-#### Special format
-
-Every **Technical Article** contains a frontmatter at the beginning of the doc
-with the following information:
-
-- **Type of article** (user guide, admin guide, technical overview, tutorial)
-- **Knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
-- **Author's name** and **GitLab.com handle**
-- **Publication date** (ISO format YYYY-MM-DD)
-
-For example:
-
-```yaml
----
-author: John Doe
-author_gitlab: johnDoe
-level: beginner
-article_type: user guide
-date: 2017-02-01
----
-```
-
-#### Technical Articles - Writing Method
-
-Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
+See the [Global navigation](site_architecture/global_nav.md) doc for information
+on how the left-side navigation menu is built and updated.
 
 ## Previewing the changes live
 
@@ -519,13 +453,13 @@ The live preview is currently enabled for the following projects:
 - <https://gitlab.com/gitlab-org/gitlab-runner>
 
 If your branch contains only documentation changes, you can use
-[special branch names](#branch-naming) to avoid long running pipelines.
+[special branch names](#branch-naming) to avoid long-running pipelines.
 
 For [docs-only changes](#branch-naming), the review app is run automatically.
 For all other branches, you can use the manual `review-docs-deploy-manual` job
 in your merge request. You will need at least Maintainer permissions to be able
-to run it. In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
-reveal the `review-docs-deploy-manual` job. Hit the play button for the job to start.
+to run it. In the mini pipeline graph, you should see a `>>` icon. Clicking it will
+reveal the `review-docs-deploy-manual` job. Click the play button to start the job.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
@@ -745,9 +679,10 @@ For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configur
 placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
 example, `~/.markdownlintrc`.
 
-## Danger bot
+## Danger Bot
 
-GitLab uses [danger bot](https://github.com/danger/danger) for some elements in
-code review. For docs changes in merge requests, whenever a change under `/doc`
-is made, the bot leaves a comment for the author to mention `@gl-docsteam`, so
-that the docs can be properly reviewed.
+GitLab uses [Danger](https://github.com/danger/danger) for some elements in
+code review. For docs changes in merge requests, whenever a change to files under `/doc`
+is made, Danger Bot leaves a comment with further instructions about the documentation
+process. This is configured in the Dangerfile in the GitLab CE and EE repo under
+[/danger/documentation/](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/danger/documentation).
