@@ -59,9 +59,63 @@ describe PrometheusMetric do
       end
     end
 
+    it_behaves_like 'group_title', :nginx_ingress_vts, 'Response metrics (NGINX Ingress VTS)'
+    it_behaves_like 'group_title', :nginx_ingress, 'Response metrics (NGINX Ingress)'
+    it_behaves_like 'group_title', :ha_proxy, 'Response metrics (HA Proxy)'
+    it_behaves_like 'group_title', :aws_elb, 'Response metrics (AWS ELB)'
+    it_behaves_like 'group_title', :nginx, 'Response metrics (NGINX)'
+    it_behaves_like 'group_title', :kubernetes, 'System metrics (Kubernetes)'
     it_behaves_like 'group_title', :business, 'Business metrics (Custom)'
     it_behaves_like 'group_title', :response, 'Response metrics (Custom)'
     it_behaves_like 'group_title', :system, 'System metrics (Custom)'
+  end
+
+  describe '#priority' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:group, :priority) do
+      :nginx_ingress_vts | 10
+      :nginx_ingress     | 10
+      :ha_proxy          | 10
+      :aws_elb           | 10
+      :nginx             | 10
+      :kubernetes        | 5
+      :business          | 0
+      :response          | -5
+      :system            | -10
+    end
+
+    with_them do
+      before do
+        subject.group = group
+      end
+
+      it { expect(subject.priority).to eq(priority) }
+    end
+  end
+
+  describe '#required_metrics' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:group, :required_metrics) do
+      :nginx_ingress_vts | %w(nginx_upstream_responses_total nginx_upstream_response_msecs_avg)
+      :nginx_ingress     | %w(nginx_ingress_controller_requests nginx_ingress_controller_ingress_upstream_latency_seconds_sum)
+      :ha_proxy          | %w(haproxy_frontend_http_requests_total haproxy_frontend_http_responses_total)
+      :aws_elb           | %w(aws_elb_request_count_sum aws_elb_latency_average aws_elb_httpcode_backend_5_xx_sum)
+      :nginx             | %w(nginx_server_requests nginx_server_requestMsec)
+      :kubernetes        | %w(container_memory_usage_bytes container_cpu_usage_seconds_total)
+      :business          | %w()
+      :response          | %w()
+      :system            | %w()
+    end
+
+    with_them do
+      before do
+        subject.group = group
+      end
+
+      it { expect(subject.required_metrics).to eq(required_metrics) }
+    end
   end
 
   describe '#to_query_metric' do

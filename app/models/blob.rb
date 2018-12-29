@@ -102,7 +102,7 @@ class Blob < SimpleDelegator
   # If the blob is a text based blob the content is converted to UTF-8 and any
   # invalid byte sequences are replaced.
   def data
-    if binary?
+    if binary_in_repo?
       super
     else
       @data ||= super.encode(Encoding::UTF_8, invalid: :replace, undef: :replace)
@@ -149,7 +149,7 @@ class Blob < SimpleDelegator
   # an LFS pointer, we assume the file stored in LFS is binary, unless a
   # text-based rich blob viewer matched on the file's extension. Otherwise, this
   # depends on the type of the blob itself.
-  def raw_binary?
+  def binary?
     if stored_externally?
       if rich_viewer
         rich_viewer.binary?
@@ -161,7 +161,7 @@ class Blob < SimpleDelegator
         true
       end
     else
-      binary?
+      binary_in_repo?
     end
   end
 
@@ -180,7 +180,7 @@ class Blob < SimpleDelegator
   end
 
   def readable_text?
-    text? && !stored_externally? && !truncated?
+    text_in_repo? && !stored_externally? && !truncated?
   end
 
   def simple_viewer
@@ -220,7 +220,7 @@ class Blob < SimpleDelegator
   def simple_viewer_class
     if empty?
       BlobViewer::Empty
-    elsif raw_binary?
+    elsif binary?
       BlobViewer::Download
     else # text
       BlobViewer::Text

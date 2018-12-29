@@ -18,6 +18,8 @@ describe('mrWidgetOptions', () => {
   let vm;
   let MrWidgetOptions;
 
+  const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
+
   beforeEach(() => {
     // Prevent component mounting
     delete mrWidgetOptions.el;
@@ -130,6 +132,53 @@ describe('mrWidgetOptions', () => {
         vm.mr.state = 'nothingToMerge';
 
         expect(vm.shouldRenderSourceBranchRemovalStatus).toEqual(false);
+      });
+    });
+
+    describe('shouldRenderCollaborationStatus', () => {
+      describe('when collaboration is allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = true;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should render collaboration status', () => {
+            expect(vm.$el.textContent).toContain(COLLABORATION_MESSAGE);
+          });
+        });
+
+        describe('when merge request is not opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = false;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
+          });
+        });
+      });
+
+      describe('when collaboration is not allowed', () => {
+        beforeEach(() => {
+          vm.mr.allowCollaboration = false;
+        });
+
+        describe('when merge request is opened', () => {
+          beforeEach(done => {
+            vm.mr.isOpen = true;
+            vm.$nextTick(done);
+          });
+
+          it('should not render collaboration status', () => {
+            expect(vm.$el.textContent).not.toContain(COLLABORATION_MESSAGE);
+          });
+        });
       });
     });
   });

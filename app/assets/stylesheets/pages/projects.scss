@@ -973,7 +973,7 @@ pre.light-well {
     padding: $gl-padding 0;
 
     @include media-breakpoint-up(lg) {
-      padding: $gl-padding-24 0;
+      padding: $gl-padding 0;
     }
 
     &.no-description {
@@ -990,7 +990,7 @@ pre.light-well {
   }
 
   h2 {
-    font-size: $gl-font-size-medium;
+    font-size: $gl-font-size-large;
     font-weight: $gl-font-weight-bold;
     margin-bottom: 0;
 
@@ -1049,7 +1049,7 @@ pre.light-well {
   }
 
   .controls {
-    margin-top: $gl-padding;
+    margin-top: $gl-padding-8;
 
     @include media-breakpoint-down(md) {
       margin-top: 0;

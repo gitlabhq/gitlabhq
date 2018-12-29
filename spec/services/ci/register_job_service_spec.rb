@@ -244,7 +244,9 @@ module Ci
 
       context 'when first build is stalled' do
         before do
-          pending_job.update(lock_version: 0)
+          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!).and_call_original
+          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!)
+            .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
         end
 
         subject { described_class.new(specific_runner).execute }

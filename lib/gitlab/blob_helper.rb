@@ -12,7 +12,7 @@ module Gitlab
     end
 
     def viewable?
-      !large? && text?
+      !large? && text_in_repo?
     end
 
     MEGABYTE = 1024 * 1024
@@ -21,7 +21,7 @@ module Gitlab
       size.to_i > MEGABYTE
     end
 
-    def binary?
+    def binary_in_repo?
       # Large blobs aren't even loaded into memory
       if data.nil?
         true
@@ -40,8 +40,8 @@ module Gitlab
       end
     end
 
-    def text?
-      !binary?
+    def text_in_repo?
+      !binary_in_repo?
     end
 
     def image?
@@ -113,7 +113,7 @@ module Gitlab
     def content_type
       # rubocop:disable Style/MultilineTernaryOperator
       # rubocop:disable Style/NestedTernaryOperator
-      @content_type ||= binary_mime_type? || binary? ? mime_type :
+      @content_type ||= binary_mime_type? || binary_in_repo? ? mime_type :
                           (encoding ? "text/plain; charset=#{encoding.downcase}" : "text/plain")
       # rubocop:enable Style/NestedTernaryOperator
       # rubocop:enable Style/MultilineTernaryOperator

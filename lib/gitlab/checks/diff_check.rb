@@ -14,13 +14,17 @@ module Gitlab
         return if deletion? || newrev.nil?
         return unless should_run_diff_validations?
         return if commits.empty?
-        return unless uses_raw_delta_validations?
 
         file_paths = []
-        process_raw_deltas do |diff|
-          file_paths << (diff.new_path || diff.old_path)
 
-          validate_diff(diff)
+        process_commits do |commit|
+          validate_once(commit) do
+            commit.raw_deltas.each do |diff|
+              file_paths << (diff.new_path || diff.old_path)
+
+              validate_diff(diff)
+            end
+          end
         end
 
         validate_file_paths(file_paths)
@@ -28,17 +32,13 @@ module Gitlab
 
       private
 
-      def should_run_diff_validations?
-        validate_lfs_file_locks?
-      end
-
       def validate_lfs_file_locks?
         strong_memoize(:validate_lfs_file_locks) do
           project.lfs_enabled? && project.any_lfs_file_locks?
         end
       end
 
-      def uses_raw_delta_validations?
+      def should_run_diff_validations?
         validations_for_diff.present? || path_validations.present?
       end
 
@@ -59,16 +59,14 @@ module Gitlab
         validate_lfs_file_locks? ? [lfs_file_locks_validation] : []
       end
 
-      def process_raw_deltas
+      def process_commits
         logger.log_timed(LOG_MESSAGES[:diff_content_check]) do
           # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
           ::Gitlab::GitalyClient.allow_n_plus_1_calls do
             commits.each do |commit|
               logger.check_timeout_reached
 
-              commit.raw_deltas.each do |diff|
-                yield(diff)
-              end
+              yield(commit)
             end
           end
         end

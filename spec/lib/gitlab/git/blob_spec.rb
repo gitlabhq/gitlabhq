@@ -59,7 +59,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.data[0..10]).to eq("*.rbc\n*.sas") }
       it { expect(blob.size).to eq(241) }
       it { expect(blob.mode).to eq("100644") }
-      it { expect(blob).not_to be_binary }
+      it { expect(blob).not_to be_binary_in_repo }
     end
 
     context 'file in root with leading slash' do
@@ -92,7 +92,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       end
 
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 
@@ -123,7 +123,7 @@ describe Gitlab::Git::Blob, :seed_helper do
           .with(hash_including(binary: true))
           .and_call_original
 
-        expect(blob).to be_binary
+        expect(blob).to be_binary_in_repo
       end
     end
   end
@@ -196,7 +196,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 

@@ -1,0 +1,5 @@
+---
+title: Don't hide CI dropdown behind diff summary
+merge_request:
+author: gfyoung
+type: fixed

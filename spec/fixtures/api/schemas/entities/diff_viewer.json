@@ -1,8 +1,20 @@
 {
   "type": "object",
-  "required": ["name"],
+  "required": [
+    "name"
+  ],
   "properties": {
-    "name": { "type": ["string"] }
+    "name": {
+      "type": [
+        "string"
+      ]
+    },
+    "error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
   },
   "additionalProperties": false
 }
