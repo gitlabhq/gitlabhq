@@ -21,6 +21,24 @@ The source of the documentation is maintained in the following repository locati
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
+## Content: what belongs in the docs
+
+In docs, we share any and all helpful information, processes, and tips with customers.
+There is no reason to withhold 'risky' steps and store them in another
+location; simply include them in the docs with all necessary detail including
+sufficiently specific warnings and caveats.
+
+Any content that is relevant to users, admins, or IT decision-makers may be included.
+You can freely include presentations, videos, etc.; no matter who it was originally written for,
+if it is helpful to any of our audiences, we can include it.
+
+See the [Documentation Structure](structure.md) page for further details and a sample document template.
+Note that a `Troubleshooting` section in doc pages is part of that default template
+and can freely be added to any page.
+
+These guidelines help toward the goal of having every user's search of documentation
+yield a useful result.
+
 ## Contributing to docs
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community:
@@ -227,7 +245,7 @@ This redirection method will not provide a redirect fallback on GitLab `/help`. 
 it, make sure to add a link to the new page on the doc, otherwise it's a dead end for users that
 land on the doc via `/help`.
 
-### Redirections for pages with Disqus comments
+#### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has any Disqus comments,
 we need to preserve the Disqus thread.
@@ -265,7 +283,7 @@ choices:
 | Ending in `-docs`     | `123-update-api-issues-docs` |
 
 If your branch name matches any of the above, it will run only the docs
-tests. If it doesn't, the whole test suite will run (including docs).
+tests. If it does not, the whole application test suite will run (including docs tests).
 
 ## Merge requests for GitLab documentation
 
