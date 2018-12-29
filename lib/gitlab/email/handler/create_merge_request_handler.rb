@@ -12,7 +12,7 @@ module Gitlab
       class CreateMergeRequestHandler < BaseHandler
         include ReplyProcessing
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-merge-request\z/.freeze
+        HANDLER_REGEX        = /\A#{Gitlab::Email::Handler::HANDLER_ACTION_BASE_REGEX}-merge-request\z/.freeze
         HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+merge-request\+(?<incoming_email_token>.*)/.freeze
 
         def initialize(mail, mail_key)

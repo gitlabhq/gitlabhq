@@ -6,8 +6,6 @@ module Gitlab
       module ReplyProcessing
         private
 
-        HANDLER_ACTION_BASE_REGEX = /(?<project_slug>.+)-(?<project_id>\d+)-(?<incoming_email_token>.+)/.freeze
-
         attr_reader :project_id, :project_slug, :project_path, :incoming_email_token
 
         def author

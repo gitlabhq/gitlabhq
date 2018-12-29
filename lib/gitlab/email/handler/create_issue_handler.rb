@@ -11,7 +11,7 @@ module Gitlab
       class CreateIssueHandler < BaseHandler
         include ReplyProcessing
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue\z/.freeze
+        HANDLER_REGEX        = /\A#{Gitlab::Email::Handler::HANDLER_ACTION_BASE_REGEX}-issue\z/.freeze
         HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\+(?<incoming_email_token>.*)\z/.freeze
 
         def initialize(mail, mail_key)
