@@ -117,32 +117,15 @@ module Gitlab
       end
 
       def current_user(request, project)
-        current_user_from_access_token_and_warden?(request) || current_user_from_basic_authentication?(request, project)
-      end
-
-      def current_user_from_access_token_and_warden?(request)
-        authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
-        user = authenticator.find_user_from_access_token || authenticator.find_user_from_warden
-        return unless user&.can?(:access_api)
-        # Right now, the `api` scope is the only one that should be able to determine private project existence.
-        return unless authenticator.valid_access_token?(scopes: [:api])
-
-        user
-      end
-
-      def current_user_from_basic_authentication?(request, project)
         return unless has_basic_credentials?(request)
 
         login, password = user_name_and_password(request)
         auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
         return unless auth_result.success?
 
-        return unless auth_result.actor&.can?(:access_api)
+        return unless auth_result.actor&.can?(:access_git)
 
-        if auth_result.type == :personal_access_token
-          api_sceope_abilities = Gitlab::Auth.abilities_for_scopes([:api])
-          return unless auth_result.authentication_abilities.sort == api_sceope_abilities.sort
-        end
+        return unless auth_result.authentication_abilities.include?(:read_project)
 
         auth_result.actor
       end
