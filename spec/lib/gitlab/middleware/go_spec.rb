@@ -114,16 +114,16 @@ describe Gitlab::Middleware::Go do
                       env['REMOTE_ADDR'] = "192.168.0.1"
                       env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
                     end
-  
+
                     context 'with api scope' do
                       it_behaves_like 'authenticated'
                     end
-  
+
                     context 'with read_user scope' do
                       before do
                         personal_access_token.update_attribute(:scopes, [:read_user])
                       end
-  
+
                       it_behaves_like 'unauthorized'
                     end
                   end
