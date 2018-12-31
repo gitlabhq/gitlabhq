@@ -12,6 +12,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
       .fabricate!
   end
 
+  def can_add_cluster?
+    can?(current_user, :add_cluster, clusterable)
+  end
+
   def can_create_cluster?
     can?(current_user, :create_cluster, clusterable)
   end
