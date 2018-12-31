@@ -109,4 +109,4 @@ the developer and code reviewer should have already made a good-faith effort to 
   - Location (make sure the doc is in the correct dir and has the correct name).
   - Syntax, typos, and broken links.
   - Improvements to the content.
-  - Accordance to the [Documentation Style Guide](styleguide.md) and [structure/template](stucture.md).
+  - Accordance to the [Documentation Style Guide](styleguide.md) and [structure/template](structure.md).
