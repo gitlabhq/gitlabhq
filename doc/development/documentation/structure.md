@@ -5,27 +5,30 @@ description: What to include in GitLab documentation pages.
 # Documentation structure and template
 
 This document will help you determine how to structure a page within GitLab's
-documentation and what content to include. Following these standards helps
-ensure consistency and completeness throughout the documentation, and makes it
-easier to contribute.
+documentation and what content to include. These standards help ensure consistency
+and completeness throughout the documentation, and they make it easier to contribute.
 
 Before getting started, familiarize yourself with [GitLab's Documentation guidelines](index.md)
 and the section on Content in the [Style Guide](styleguide.md).
 
 ## Components of a documentation page
 
-Every document should include the following content in the following sequence:
+Most pages will be dedicated to a specifig GitLab feature or to a use case that involves
+one or more features and/or third-party tools.
 
-- **Feature name**: defines an intuitive name for the feature that clearly
-  states what it is and is consistent with any relevant UI text.
-- **Feature overview** and description: describe what it is, what it does, and in what context it should be used.
-- **Use cases**: describes real use case scenarios for that feature.
+Every feature or use case document should include the following content in the following sequence.:
+
+- **Title**: Top-level heading with the feature name, or a use case name, which would start with
+a verb, like Configuring, Enabling, etc.
+- **Introduction**: A couple sentences about the subject matter and what's to be found on this page.
+- **Overview** Describe what it is, what it does, and in what context it should be used.
+- **Use cases**: describes real use case scenarios for that feature/configuration.
 - **Requirements**: describes what software and/or configuration is required to be able to
   use the feature and, if applicable, prerequisite knowledge for being able to follow/implement the tutorial.
   For example, familiarity with GitLab CI/CD, an account on a third-party service, dependencies installed, etc.
   Link each one to its most relevant resource; i.e., where the reader can go to begin to fullfil that requirement.
   (Another doc page, a third party application's site, etc.)
-- **Instructions**: clearly describes the steps to use the feature, leaving no gaps.
+- **Instructions**: clearly describes the steps to follow, leaving no gaps.
 - **Troubleshooting** guide (recommended but not required): if you know beforehand what issues
   one might have when setting it up, or when something is changed, or on upgrading, it's
   important to describe those too. Think of things that may go wrong and include them in the
@@ -42,7 +45,7 @@ should present, at the beginning of the document, two main sections: **overview*
 **use cases**. Every GitLab EE-only feature should also contain these sections.
 
 **Overview**: as the name suggests, the goal here is to provide an overview of the feature.
-Describe what is it, what it does, why it is important/cool/nice-to-have,
+Describe what it is, what it does, why it is important/cool/nice-to-have,
 what problem it solves, and what you can do with this feature that you couldn't
 do before.
 
@@ -84,60 +87,71 @@ To start a new document, respect the file tree and file name guidelines,
 as well as the style guidelines. Use the following template:
 
 ```md
+<!--Follow the Style Guide when working on this document. https://docs.gitlab.com/ee/development/documentation/styleguide.html
+When done, remove all of this commented-out text, except a commented-out Troubleshooting section,
+which, if empty, can be left in place to encourage future use.-->
 ---
-description: "short document description." # Up to ~200 chars long. They will be displayed in Google Search Snippets.
+description: "Short document description." # Up to ~200 chars long. They will be displayed in Google Search snippets. It may help to write the page intro first, and then reuse it here.
 ---
 
-# Feature Name **[TIER]** (1)
+# Feature Name or Use Case Name **[TIER]** (1)
+<!--If writing about a use case, drop the tier, and start with a verb, e.g. 'Configuring', 'Implementing', + the goal/scenario-->
 
-> [Introduced](link_to_issue_or_mr) in GitLab Tier X.Y (2).
+<!--For pages on newly introduced features, add the following line. If only some aspects of the feature have been introduced, specify what parts of the feature.-->
+> [Introduced](link_to_issue_or_mr) in GitLab (Tier) X.Y (2).
 
-A short description for the feature (can be the same used in the frontmatter's
-`description`).
+An introduction -- without its own additional header -- goes here.
+Offer a short description of the feature or use case, and what to expect on this page.
+(You can reuse this content, or part of it, for the front matter's `description` at the top of this file).
 
 ## Overview
 
-To write the feature overview, you should consider answering the following questions:
+The feature overview should answer the following questions:
 
-- What is it?
+- What is this feature or use case?
 - Who is it for?
 - What is the context in which it is used and are there any prerequisites/requirements?
-- What can the user do with it? (Be sure to consider multiple audiences, like GitLab admin and developer-user.)
-- What are the benefits to using it over any alternatives?
+- What can the audience do with this? (Be sure to consider all applicable audiences, like GitLab admin and developer-user.)
+- What are the benefits to using this over any alternatives?
 
 ## Use cases
 
-Describe one to three use cases for that feature. Give real-life examples.
+Describe some use cases, typically in bulleted form. Include real-life examples for each.
+
+If the page itself is dedicated to a use case, this section can usually include more specific scenarios
+for use, but if that's not applicable, the section can be omitted.
 
 ## Requirements
 
-State any requirements, if any, for using the feature and/or following along with the tutorial.
+State any requirements for using the feature and/or following along with the instructions.
 
-The only assumption that is redundant and doesn't need to be mentioned is having an account
-on GitLab.
+These can include both:
+- technical requirements (e.g. an account on a third party service, an amount of storage space, prior configuration of another feature)
+- prerequisite knowledge (e.g. familiarity with certain GitLab features, cloud technologies)
+
+Link each one to an appropriate place for more information.
 
 ## Instructions
 
-("Instructions" is not necessarily the name of the heading)
+"Instructions" is usually not the name of the heading.
+This is the part of the document where you can include one or more sets of instructions, each to accomplish a specific task.
+Headers should describe the task the reader will achieve by following the instructions within, typically starting with a verb.
+Larger instruction sets may have subsections covering specific phases of the process. 
 
 - Write a step-by-step guide, with no gaps between the steps.
 - Start with an h2 (`##`), break complex steps into small steps using
-subheadings h3 > h4 > h5 > h6. _Never skip the hierarchy level, such
+subheadings h3 > h4 > h5 > h6. _Never skip a hierarchy level, such
 as h2 > h4_, as it will break the TOC and may affect the breadcrumbs.
 - Use short and descriptive headings (up to ~50 chars). You can use one
-single heading `## How it works` for the instructions when the feature
+single heading like `## Configuring X` for instructions when the feature
 is simple and the document is short.
-- Be clear, concise, and stick to the goal of the doc: explain how to
-use that feature.
-- Use inclusive language and avoid jargons, as well as uncommon and
-fancy words. The docs should be clear and easy to understand.
-- Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
-- Always provide internal and external reference links.
-- Always link the doc from its higher-level index.
 
 <!-- ## Troubleshooting
 
-Add a troubleshooting guide when possible/applicable. -->
+Include any troubleshooting steps that you can foresee.
+Each scenario can be a third-level heading, e.g. ### Getting error message X
+If you have none to add when creating a doc, leave this section in place
+but commented out, to help encourage others to add to it in the future. -->
 
 ---
 
