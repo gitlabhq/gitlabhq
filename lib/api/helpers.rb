@@ -494,7 +494,7 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
-      header['Content-Disposition'] = "attachment; filename=#{blob.name.inspect}"
+      header['Content-Disposition'] = content_disposition('attachment', blob.name)
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
@@ -526,6 +526,12 @@ module API
       return 'only' if params[:archived]
 
       params[:archived]
+    end
+
+    def content_disposition(disposition, filename)
+      disposition += %(; filename=#{filename.inspect}) if filename.present?
+
+      disposition
     end
   end
 end

@@ -190,7 +190,7 @@ describe API::Files do
 
         get api(url, current_user), params
 
-        expect(headers['Content-Disposition']).to match(/^attachment/)
+        expect(headers['Content-Disposition']).to eq('attachment; filename="popen.rb"')
       end
 
       context 'when mandatory params are not given' do
