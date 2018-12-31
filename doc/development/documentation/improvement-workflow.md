@@ -20,7 +20,8 @@ to achieve or improve their DevOps workflows.
 
 ## How to update the docs
 
-Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
+- Follow the described standards and processes listed on the [GitLab Documentation guidelines](index.md) page.
+- Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 ## Merging
 
@@ -32,10 +33,10 @@ that it meets the [Documentation Guidelines](index.md) and [Style Guide](stylegu
 If the author or reviewer has any questions, or would like a techncial writer's review
 before merging, mention the writer who is assigned to the relevant [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
-## Technical Writer Review
+## Technical Writer review
 
-The technical writing team reviews changes after they are merged, unless one of
-the technical writers already reviewed prior to the merge.
+The technical writing team reviews changes after they are merged, unless a prior
+review is requested.
 
 ## Other ways to help
 
