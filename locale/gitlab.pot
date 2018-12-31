@@ -6422,6 +6422,9 @@ msgstr ""
 msgid "Submit as spam"
 msgstr ""
 
+msgid "Submit feedback"
+msgstr ""
+
 msgid "Submit search"
 msgstr ""
 
