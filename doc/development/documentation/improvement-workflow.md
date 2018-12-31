@@ -20,8 +20,13 @@ to achieve or improve their DevOps workflows.
 
 ## How to update the docs
 
-- Follow the described standards and processes listed on the [GitLab Documentation guidelines](index.md) page.
+- Follow the described standards and processes listed on the [GitLab Documentation guidelines](index.md) page,
+including linked resources: the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
 - Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
+- If you need any help to choose the correct place for a doc, discuss a documentation
+idea or outline, or request any other help, ping the Technical Writer for the relevant
+[DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+in your issue or MR, or write within `#docs` if you are a member of GitLab's Slack workspace.
 
 ## Merging
 
