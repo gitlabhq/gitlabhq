@@ -602,6 +602,15 @@ module Gitlab
         end
       end
 
+      describe "Include" do
+        it "does not return any error with a valid configuration" do
+          config = YAML.dump({ include: "/local.gitlab-ci.yml" })
+          expect do
+            Gitlab::Ci::YamlProcessor.new(config)
+          end.not_to raise_error(Gitlab::Ci::YamlProcessor::ValidationError)
+        end
+      end
+
       describe "When" do
         %w(on_success on_failure always).each do |when_state|
           it "returns #{when_state} when defined" do
