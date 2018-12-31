@@ -4,7 +4,19 @@ description: Learn how to contribute to GitLab Documentation.
 
 # GitLab Documentation guidelines
 
-GitLab's documentation is intended as the single source of truth (SSOT) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions covering every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, as well as the use of GitLab with other applications. For more information about what belongs in GitLab documentation, see the [Documentation section of our handbook](https://about.gitab.com/handbook/documentation/).
+GitLab's documentation is [intended as the single source of truth (SSOT)](https://about.gitab.com/handbook/documentation/) for information about how to configure, use, and troubleshoot GitLab. The documentation contains use cases and usage instructions covering every GitLab feature, organized by product area and subject. This includes topics and workflows that span multiple GitLab features, as well as the use of GitLab with other applications.
+
+The following resources are available.
+
+- Style Guide - What belongs in the docs, language guidelines, and more.
+- Structure and template - Learn the typical parts of a doc page and how to write each one.
+- Workflow - A landing page for our two key workflows.
+  - Feature-change documentation work - Adding the required documentation when developing a GitLab feature.
+  - Documentation improvement work - New content not associated with a new feature.
+- Markdown Guide - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
+- Site architecture - How docs.gitlab.com is built.
+
+## Source and rendered locations
 
 Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
 
@@ -29,39 +41,10 @@ To ensure that GitLab docs keep up with changes to the product, special processe
 
 Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change.
 
-### Feature changes
-
-Whenever a feature is changed, updated, introduced, or deprecated, the merge
-request introducing these changes must be accompanied by the new or updated documentation. This means updating existing markdown and image files or creating new ones.
-
-The individual responsible for writing the first piece of documentation for a new feature, or making the necessary doc changes, is the developer who wrote the new code. This method helps us ensure that docs remain up to date, despite the high velocity of GitLab releases.
-
-If you have questions before or while writing documentation, ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage) and also displayed in an automatic reply from DangerBot on any merge request that contains changes to doc files.
-
-We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
-is documented.
-
-For more detail on the steps to follow for developers, product managers, and technical writers in this process, see the [feature-change workflow](feature-change-workflow.md) page.
-
-### Other documentation contributions
-
-If you find content that is missing, incorrect, or could use improvement, you are welcome to create a merge request labeled `Documentation` within the respective repository. This applies both to GitLabbers and anyone else in the wider GitLab community. Alternatively, if you are not able to make the necessary changes on your own, you can create an issue labeled `Documentation`.
-
-If the doc exists in both the CE and EE repositories, create the issue or merge request in CE. If the doc or feature exists only in the EE repository, create the issue or merge request in EE.
-
-Whenever you submit a merge request for the documentation, use the "Documentation" MR description template.
-If you're changing documentation locations, use the MR description template called "Change documentation location" instead.
-
-If you have questions before or while writing documentation, or need a review, you can ask a GitLab technical writer. The technical writer assigned to all features' DevOps stages is listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage) and also displayed in an automatic reply from DangerBot on any merge request that contains changes to doc files.
-
-## Documentation template/structure
-
-Follow the [documentation structure guide](structure.md) for learning how to structure a GitLab doc page and what content it should contain.
-
 ## Markdown and styles
 
 [GitLab docs](https://gitlab.com/gitlab-com/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
-as its markdown engine. See the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
+as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
 Adhere to the [documentation style guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
