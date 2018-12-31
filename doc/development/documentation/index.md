@@ -8,13 +8,13 @@ GitLab's documentation is [intended as the single source of truth (SSOT)](https:
 
 The following resources are available.
 
-- Style Guide - What belongs in the docs, language guidelines, and more.
-- Structure and template - Learn the typical parts of a doc page and how to write each one.
-- Workflow - A landing page for our two key workflows.
-  - Feature-change documentation work - Adding the required documentation when developing a GitLab feature.
-  - Documentation improvement work - New content not associated with a new feature.
-- Markdown Guide - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
-- Site architecture - How docs.gitlab.com is built.
+- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, and more.
+- [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
+- [Workflow](workflow.md) - A landing page for our key workflows:
+  - [Feature-change documentation workflow](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
+  - [Documentation improvement worflow](improvement-workflow.md) - New content not associated with a new feature.
+- [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
+- [Site architecture](/site_architecture/index.md) - How docs.gitlab.com is built.
 
 ## Source and rendered locations
 
@@ -39,7 +39,7 @@ Documentation issues and merge requests are part of their respective repositorie
 
 To ensure that GitLab docs keep up with changes to the product, special processes and responsibilities are in place concerning all [feature changes](feature-change-workflow.md)—i.e. development work that impacts the appearance, usage, or administration of a feature.
 
-Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change.
+Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab, or with third-party tools and GitLab.
 
 ## Markdown and styles
 
