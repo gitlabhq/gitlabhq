@@ -54,15 +54,20 @@ detail, such as specific warnings and caveats about potential ramifications.
 include presentations, videos, etc.; no matter who it was originally written for,
 if it is helpful to any of our audiences, we can include it. If an outside source
 that's under copyright, rephrase, or summarize and link out; do not copy and paste.
-  - Sections like `Use Cases` and `Troubleshooting` can be added to any page where they
-apply. See the [structure and template](structure.md) page for more details.
-- Make sure each markdown file exists in the
-  [correct directory](index.md#documentation-directory-structure), is linked from its
-  higher-level index page, and is linked from other related pages.
+  - All applicable subsections as described on the [structure and template](structure.md) page,
+with files organized in the [correct directory](index.md#documentation-directory-structure).
+- Link each doc from its higher-level index page and other related pages.
+- Link out to relevant pages, whether they exist in the documentation or other sites.
 - Do not duplicate information.
-- Be brief and clear.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
 a logical reason not to (for example, when mirroring the UI or an ordered sequence). 
+
+## Language
+
+- Use inclusive language and avoid jargon, as well as uncommon
+words. The docs should be clear and easy to understand.
+- Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
+- Be brief and clear.
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
