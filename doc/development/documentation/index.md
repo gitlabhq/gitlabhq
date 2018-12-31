@@ -35,18 +35,18 @@ Documentation issues and merge requests are part of their respective repositorie
 
 ## Contributing to docs
 
-[Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community:
+[Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community.
 
 To ensure that GitLab docs keep up with changes to the product, special processes and responsibilities are in place concerning all [feature changes](feature-change-workflow.md)—i.e. development work that impacts the appearance, usage, or administration of a feature.
 
-Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab, or with third-party tools and GitLab.
+Meanwhile, anyone can contribute [documentation improvements](improvement-workflow.md) large or small that are not associated with a feature change. For example, adding a new doc on how to accomplish a use case that's already possible with GitLab or with third-party tools and GitLab.
 
 ## Markdown and styles
 
 [GitLab docs](https://gitlab.com/gitlab-com/gitlab-docs) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown)
 as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) for a complete Kramdown reference.
 
-Adhere to the [documentation style guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
+Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
 ## Documentation directory structure
 
@@ -96,7 +96,7 @@ The table below shows what kind of documentation goes where.
 | `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`.                                                                                                       |
 | `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`.                   |
 | `doc/api/`            | API related documentation.                                                                                                                                                                                     |
-| `doc/development/`    | Documentation related to the development of GitLab. Any styleguides should go here.                                                                                                                            |
+| `doc/development/`    | Documentation related to the development of GitLab. Related process and style guides should go here.                                                                                                                            |
 | `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                                                                                                  |
 | `doc/install/`        | Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
@@ -580,9 +580,10 @@ A file with `proselint` configuration must be placed in a
 #### `markdownlint`
 
 `markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
- are followed for Markdown syntax. Our [style guidelines](styleguide.md) elaborate on which choices
- must be made when selecting Markdown syntax for GitLab documentation and this tool helps
- catch deviations from those guidelines.
+ are followed for Markdown syntax.
+ Our [Documentation Style Guide](styleguide.md) and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
+ elaborate on which choices must be made when selecting Markdown syntax for
+ GitLab documentation. This tool helps catch deviations from those guidelines.
 
 `markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
  either on a single Markdown file or on all Markdown files in a project. For example, to run
@@ -605,7 +606,7 @@ markdownlint **/*.md
 
 The following sample `markdownlint` configuration modifies the available default rules to:
 
-- Adhere to the [style guidelines](styleguide.md).
+- Adhere to the [Documentation Style Guide](styleguide.md).
 - Apply conventions found in the GitLab documentation.
 - Allow the flexibility of using some inline HTML.
 
