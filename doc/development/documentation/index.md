@@ -21,24 +21,6 @@ The source of the documentation is maintained in the following repository locati
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
-## Content: what belongs in the docs
-
-In docs, we share any and all helpful information, processes, and tips with customers.
-There is no reason to withhold 'risky' steps and store them in another
-location; simply include them in the docs with all necessary detail including
-sufficiently specific warnings and caveats.
-
-Any content that is relevant to users, admins, or IT decision-makers may be included.
-You can freely include presentations, videos, etc.; no matter who it was originally written for,
-if it is helpful to any of our audiences, we can include it.
-
-See the [Documentation Structure](structure.md) page for further details and a sample document template.
-Note that a `Troubleshooting` section in doc pages is part of that default template
-and can freely be added to any page.
-
-These guidelines help toward the goal of having every user's search of documentation
-yield a useful result.
-
 ## Contributing to docs
 
 [Contributions to GitLab docs](workflow.md) are welcome from the entire GitLab community:
