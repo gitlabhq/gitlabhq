@@ -40,7 +40,7 @@ module Gitlab
       def add_upload(upload)
         uploader_context = FileUploader.extract_dynamic_path(upload).named_captures.symbolize_keys
 
-        UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
+        UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute.to_h
       end
 
       def copy_project_uploads

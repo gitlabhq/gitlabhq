@@ -7,7 +7,7 @@ module UploadsActions
   UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo favicon).freeze
 
   def create
-    link_to_file = UploadService.new(model, params[:file], uploader_class).execute
+    link_to_file = UploadService.new(model, params[:file], uploader_class).execute.to_h
 
     respond_to do |format|
       if link_to_file

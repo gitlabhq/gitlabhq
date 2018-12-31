@@ -68,6 +68,6 @@ describe UploadService do
   end
 
   def upload_file(project, file)
-    described_class.new(project, file, FileUploader).execute
+    described_class.new(project, file, FileUploader).execute.to_h
   end
 end

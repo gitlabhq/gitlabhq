@@ -23,7 +23,7 @@ module Gitlab
               content_type: attachment.content_type
             }
 
-            link = UploadService.new(project, file).execute
+            link = UploadService.new(project, file).execute.to_h
             attachments << link if link
           ensure
             tmp.close!
