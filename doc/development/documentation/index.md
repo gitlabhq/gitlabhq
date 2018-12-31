@@ -266,9 +266,8 @@ correct by the person merging the MR or the SME (such as a developer) who contri
 Further needs for ‘what would make this doc even better’ should be immediately addressed in a
 follow-up MR or issue.
 
-The individual who merges the documentation must have also reviewed the documentation
-for the above standard. Typically this is a technical writer, but others, such as Support Managers,
-can freely merge smaller changes. See the [Documentation Workflows](workflow.md).
+The individual who merges the documentation must reviewed the documentation
+for the above standard.
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
