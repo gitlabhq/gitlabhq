@@ -85,6 +85,10 @@ it difficult to browse for the information you need and difficult to maintain up
 Instead, organize content by its subject (e.g. everything related to CI goes together)
 and cross-link between any related content.
 
+Do not simply link out to GitLab technical blog posts. There should be an up-to-date
+single source of truth on the topic within the documentation, and the top of the
+blog post should be updated to link to that doc.
+
 The table below shows what kind of documentation goes where.
 
 | Directory             | What belongs here                                                                                                                                                                                              |
