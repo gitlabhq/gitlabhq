@@ -13,13 +13,13 @@ assistance if needed.
 confirm the documentation requirements, plus the mentioned feature description
 and use cases, which can be reused in docs. They can bring in a technical
 writer for discussion or help, and can be called upon themselves as a doc reviewer.
-- **Technical Writers**: review doc requirements in issues, track issues and MRs
+- **Technical Writers**: Review doc requirements in issues, track issues and MRs
 that contain docs changes, help with any questions throughout the authoring/editing process,
 and review all new and updated docs content after it's merged (unless a pre-merge
 review request is made).
 
-Any of the above roles, or others in the GitLab community, can also author documentation
-improvements that are not associated with a new/changed feature.
+Beyond this process, any member of the GitLab community can also author documentation
+improvements that are not associated with a new or changed feature. See the [Documentation improvement workflow](improvement-workflow.md).
 
 ## When documentation is required
 
@@ -38,7 +38,8 @@ are now needed, or need to be updated.
 
 NOTE: **Note:**
 When revamping documentation, if unrelated to the feature change, this should be submitted
-in its own MR, so that we can ensure the essential doc updates are merged with code by the freeze.
+in its own MR (using the [documentation improvement workflow](improvement-workflow.md))
+so that we can ensure the more time-sensitive doc updates are merged with code by the freeze.
 
 ## Documenting a new or changed feature
 
@@ -68,16 +69,15 @@ New and edited docs should be included in the MR introducing the code, and plann
 in the issue that proposed the feature. However, if the new or changed doc requires
 extensive collaboration or conversation, a separate, linked issue can be used for the planning process.
 
-For guidance, see the documentation [Structure](structure.md) guide, [Style Guide](styleguide.md), and
-the [main page](index.md) of this section. For information on what belongs in GitLab's docs,
-see the [Documentation](https://about.gitab.com/handbook/documentation) section of the Handbook.
+Use the [Documentation guidelines](index.md), as well as other resources linked from there,
+including the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
 
 If you need any help to choose the correct place for a doc, discuss a documentation
 idea or outline, or request any other help, ping the Technical Writer for the relevant
 [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 in your issue or MR, or write within `#docs` on the GitLab Slack.
 
-The docs must be merged with the code **by the feature freeze date**, otherwise the feature cannot be included with the release.<!-- TODO: Policy/process for feature-floagged issues-->
+The docs must be merged with the code **by the feature freeze date**, otherwise the feature cannot be included with the release.<!-- TODO: Policy/process for feature-flagged issues-->
 
 Prior to merge, documentation changes commited by the developer must be reviewed by:
 * the person reviewing the code and merging the MR.
@@ -111,5 +111,4 @@ the developer and code reviewer should have already made a good-faith effort to 
   - Location (make sure the doc is in the correct dir and has the correct name).
   - Syntax, typos, and broken links.
   - Improvements to the content.
-  - Accordance to the [docs style guide](styleguide.md).
-<!-- TODO: Clarify differences for completely new features vs. feature enhancemeents. May belong in structure doc. -->
+  - Accordance to the [Documentation Style Guide](styleguide.md) and [template](stucture.md).
