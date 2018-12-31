@@ -2,20 +2,21 @@
 description: How to improve GitLab's documentation.
 ---
 
-# Other documentation updates
+# Documentation improvement workflow
 
 Anyone can contribute a merge request or create an issue for GitLab's documentation.
 
-This page covers the process for general contributions to GitLab's docs (other
-than those which arise from release-related feature updates) can be found on the
-documentation guidelines page under [other documentation contributions](index.md#other-documentation-contributions).
+This page covers the process for any contributions to GitLab's docs that are
+not part of feature development. If you are looking for information on updating
+GitLab's docs as is required with the development and release of a new feature
+or feature enhancement, see the [feature-change documentation workflow](feature-change-workflow.md).
 
 ## Who updates the docs
 
 Anyone can contribute! You can create a merge request with documentation
-when you find errors or other room for improvement, or have an idea for all-new
-documentation that would help a GitLab user or admin achieve or optimize their
-DevOps workflows.
+when you find errors or other room for improvement in an existing doc, or when you
+have an idea for all-new documentation that would help a GitLab user or admin
+to achieve or improve their DevOps workflows.
 
 ## How to update the docs
 
