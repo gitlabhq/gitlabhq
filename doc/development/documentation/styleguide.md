@@ -67,7 +67,7 @@ a logical reason not to (for example, when mirroring the UI or an ordered sequen
 - Use inclusive language and avoid jargon, as well as uncommon
 words. The docs should be clear and easy to understand.
 - Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
-- Be brief and clear.
+- Be clear, concise, and stick to the goal of the doc.
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
