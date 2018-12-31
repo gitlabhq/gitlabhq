@@ -10,18 +10,10 @@ describe('Job Store Getters', () => {
 
   describe('headerActions', () => {
     describe('with new issue path', () => {
-      it('returns an array with action to create a new issue', () => {
+      it('returns an empty array', () => {
         localState.job.new_issue_path = 'issues/new';
 
-        expect(getters.headerActions(localState)).toEqual([
-          {
-            label: 'New issue',
-            path: localState.job.new_issue_path,
-            cssClass:
-              'js-new-issue btn btn-success btn-inverted d-none d-md-block d-lg-block d-xl-block',
-            type: 'link',
-          },
-        ]);
+        expect(getters.headerActions(localState)).toEqual([]);
       });
     });
 
