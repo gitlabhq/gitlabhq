@@ -126,13 +126,11 @@ The table below shows what kind of documentation goes where.
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
 
-If you are unsure where a document or a content addition should live,
-you can mention the technical writer assigned to the feature or topic's relevant
-DevOps stage as listed on the [Product Categories page](https://about.gitlab.com/handbook/product/categories/#devops-stage)
-or the auto reply from DangerBot on any MR that contains changes to doc files.
-If you are not sure of the stage or none applies, you can mention `@gl-docsteam`,
-but if you accidentally mention the 'wrong' technical writer, they'll be glad to
-help or direct you to the right one.
+If you are unsure where a document or a content addition should live, this should
+not stop you from authoring and contributing. You can use your best judgment and
+then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
+at any stage in the process. The techncial writing team will review all documentation
+changes, regardless, and can move content if there is a better place for it.
 
 ### Changing document location
 
