@@ -51,11 +51,11 @@ and the Technical Writing team. Each role is described below.
 
 The Product Manager (PM) should confirm or add the following items in the issue:
 
-- New or updated feature name, overview/description, and use cases, for the feature's [documentation blurb](structure.md#documentation-blurb)
-- The documentation requirements for the developer working on the docs
+- New or updated feature name, overview/description, and use cases, all required per the [Documentation structure and template](structure.md).
+- The documentation requirements for the developer working on the docs.
   - What new page, new subsection of an existing page, or other update to an existing page/subsection is needed.
-  - Just one page/section/update or multiple (perhaps there's an end user and admin change needing docs, or we need to update a previously recommended workflow, or we want to link the new feature from various places; consider and mention all ways documentation should be affected
-  - Suggested title of any page or subsection, if applicable <--!TODO: Add this and previous bullets in some form to issue/MR templates-->
+  - Just one page/section/update or multiple (perhaps there's an end user and admin change needing docs, or we need to update a previously recommended workflow, or we want to link the new feature from various places; consider and mention all ways documentation should be affected.
+  - Suggested title of any page or subsection, if applicable.
 - Label the issue with `Documentation` and `docs:P1` in addition to the `Deliverable` label and correct milestone.
 
 Anyone is welcome to draft the items above in the issue, but a product manager must review and update them whenever the issue is assigned a specific milestone. 
@@ -65,19 +65,17 @@ Anyone is welcome to draft the items above in the issue, but a product manager m
 As a developer, you must ship the documentation with the code of the feature that
 you are creating or updating. The documentation is an essential part of the product.
 
-New and edited docs should be included in the MR introducing the code, and planned
+- New and edited docs should be included in the MR introducing the code, and planned
 in the issue that proposed the feature. However, if the new or changed doc requires
 extensive collaboration or conversation, a separate, linked issue can be used for the planning process.
-
-Use the [Documentation guidelines](index.md), as well as other resources linked from there,
+- Use the [Documentation guidelines](index.md), as well as other resources linked from there,
 including the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
-
-If you need any help to choose the correct place for a doc, discuss a documentation
+- If you need any help to choose the correct place for a doc, discuss a documentation
 idea or outline, or request any other help, ping the Technical Writer for the relevant
 [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 in your issue or MR, or write within `#docs` on the GitLab Slack.
-
-The docs must be merged with the code **by the feature freeze date**, otherwise the feature cannot be included with the release.<!-- TODO: Policy/process for feature-flagged issues-->
+- The docs must be merged with the code **by the feature freeze date**, otherwise
+- the feature cannot be included with the release.<!-- TODO: Policy/process for feature-flagged issues -->
 
 Prior to merge, documentation changes commited by the developer must be reviewed by:
 * the person reviewing the code and merging the MR.
@@ -91,11 +89,11 @@ Any party can raise the item to the PM for review at any point: the dev, the tec
 ### 3. Technical Writer's role
 
 **Planning**
-  - Once an issue contains a Documentation label and an upcoming milestone, a
+- Once an issue contains a Documentation label and an upcoming milestone, a
 technical writer reviews the listed documentation requirements, which should have
 already been reviewed by the PM. (These are non-blocking reviews; developers should
 not wait to work on docs.)
-  - Monitor the documentation needs of issues assigned to the current and next milestone,
+- Monitor the documentation needs of issues assigned to the current and next milestone,
 and participate in any needed discussion on docs planning with the dev, PM, and others.
 
 **Review**
@@ -111,4 +109,4 @@ the developer and code reviewer should have already made a good-faith effort to 
   - Location (make sure the doc is in the correct dir and has the correct name).
   - Syntax, typos, and broken links.
   - Improvements to the content.
-  - Accordance to the [Documentation Style Guide](styleguide.md) and [template](stucture.md).
+  - Accordance to the [Documentation Style Guide](styleguide.md) and [structure/template](stucture.md).
