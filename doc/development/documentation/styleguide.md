@@ -1,5 +1,5 @@
 ---
-description: 'Writing styles, markup, formatting, and reusing regular expressions throughout the GitLab Documentation.'
+description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
 # Documentation style guidelines
@@ -8,9 +8,9 @@ The documentation style guide defines the markup structure used in
 GitLab documentation. Check the
 [documentation guidelines](index.md) for general development instructions.
 
-Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+See the GitLab handbook for the [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
-For help adhering to the guidelines, see [linting](index.md#linting).
+For programmatic help adhering to the guidelines, see [linting](index.md#linting).
 
 ## Files
 
@@ -40,13 +40,34 @@ Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}
 
 ## Content
 
-- Make sure that the documentation is added in the correct
-  [directory](index.md#documentation-directory-structure), linked from its
-  higher-level index, and linked from other related pages.
+In docs, we share any and all helpful information, processes, and tips for implementing,
+using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
+for this information.
+
+There is no reason to withhold 'risky' steps and store them in another
+location; simply include them along with the rest of the docs including all necessary
+detail, such as specific warnings and caveats about potential ramifications.
+
+Any content that is relevant to users or admins may be included. You can freely
+include presentations, videos, etc.; no matter who it was originally written for,
+if it is helpful to any of our audiences, we can include it. 
+
+Among other recommended subsections, a `Troubleshooting` section in doc pages is
+part of the default [template](structure.md) for a new page, and can freely be
+added to any page.
+
+These guidelines help toward the goal of having every user's search of documentation
+yield a useful result, and ensuring content is helpful and easy to consume.
+
+When working on documentation:
+
+- Make sure each markdown file exists in the
+  [correct directory](index.md#documentation-directory-structure), is linked from its
+  higher-level index page, and is linked from other related pages.
 - Do not duplicate information.
 - Be brief and clear.
-- Unless there's a logical reason not to, structure the document in alphabetical order
-(headings, tables, and lists).
+- Structure content in alphabetical order in tables, lists, etc., unless there is
+a logical reason not to (for example, when mirroring the UI or an ordered sequence). 
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
