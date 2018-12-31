@@ -1,11 +1,11 @@
 Your CSV import for project <%= @project.full_name %> (<%= project_url(@project) %>) has been completed.
 
-<%= pluralize(@results[:success], 'issue') %> imported successfully.
+<%= pluralize(@results[:success], 'issue') %> imported.
 
-<% if @results[:errors].present? %>
-Errors found on line <%= 'number'.pluralize(@results[:errors].size) %>: <%= @results[:errors].join(', ') %>.
+<% if @results[:error_lines].present? %>
+Errors found on line <%= 'number'.pluralize(@results[:error_lines].size) %>: <%= @results[:error_lines].join(', ') %>. Please check if these lines have an issue title.
 <% end %>
 
-<% unless @results[:valid_file] %>
-Error parsing CSV file.
+<% if @results[:parse_error] %>
+Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.
 <% end %>

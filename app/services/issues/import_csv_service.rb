@@ -6,7 +6,7 @@ module Issues
       @user = user
       @project = project
       @uploader = upload.build_uploader
-      @results = { success: 0, errors: [], valid_file: true }
+      @results = { success: 0, error_lines: [], parse_error: false }
     end
 
     def execute
@@ -30,11 +30,11 @@ module Issues
         if issue.persisted?
           @results[:success] += 1
         else
-          @results[:errors].push(line_no)
+          @results[:error_lines].push(line_no)
         end
       end
     rescue ArgumentError, CSV::MalformedCSVError
-      @results[:valid_file] = false
+      @results[:parse_error] = true
     end
 
     def email_results_to_user

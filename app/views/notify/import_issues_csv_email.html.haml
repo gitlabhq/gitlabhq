@@ -7,12 +7,12 @@
   has been completed.
 
 %p{ style: text_style }
-  #{pluralize(@results[:success], 'issue')} imported successfully.
+  #{pluralize(@results[:success], 'issue')} imported.
 
-- if @results[:errors].present?
+- if @results[:error_lines].present?
   %p{ style: text_style }
-    Errors found on line #{'number'.pluralize(@results[:errors].size)}: #{@results[:errors].join(', ')}.
+    Errors found on line #{'number'.pluralize(@results[:error_lines].size)}: #{@results[:error_lines].join(', ')}. Please check if these lines have an issue title.
 
-- unless @results[:valid_file]
+- if @results[:parse_error]
   %p{ style: text_style }
-    Error parsing CSV file.
+    Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.

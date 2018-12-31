@@ -63,7 +63,7 @@ describe UploadService do
         @link_to_file = upload_file(@project, txt)
       end
 
-      it { expect(@link_to_file).to eq(nil) }
+      it { expect(@link_to_file).to eq({}) }
     end
   end
 

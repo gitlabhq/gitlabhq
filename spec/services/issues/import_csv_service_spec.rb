@@ -21,7 +21,7 @@ describe Issues::ImportCsvService do
         expect_any_instance_of(Notify).to receive(:import_issues_csv_email)
 
         expect(subject[:success]).to eq(0)
-        expect(subject[:valid_file]).to eq(false)
+        expect(subject[:parse_error]).to eq(true)
       end
     end
 
@@ -32,8 +32,8 @@ describe Issues::ImportCsvService do
         expect_any_instance_of(Notify).to receive(:import_issues_csv_email)
 
         expect(subject[:success]).to eq(3)
-        expect(subject[:errors]).to eq([])
-        expect(subject[:valid_file]).to eq(true)
+        expect(subject[:error_lines]).to eq([])
+        expect(subject[:parse_error]).to eq(false)
       end
     end
 
@@ -44,8 +44,8 @@ describe Issues::ImportCsvService do
         expect_any_instance_of(Notify).to receive(:import_issues_csv_email)
 
         expect(subject[:success]).to eq(2)
-        expect(subject[:errors]).to eq([3])
-        expect(subject[:valid_file]).to eq(true)
+        expect(subject[:error_lines]).to eq([3])
+        expect(subject[:parse_error]).to eq(false)
       end
     end
 
@@ -56,8 +56,8 @@ describe Issues::ImportCsvService do
         expect_any_instance_of(Notify).to receive(:import_issues_csv_email)
 
         expect(subject[:success]).to eq(3)
-        expect(subject[:errors]).to eq([4])
-        expect(subject[:valid_file]).to eq(true)
+        expect(subject[:error_lines]).to eq([4])
+        expect(subject[:parse_error]).to eq(false)
       end
     end
   end
