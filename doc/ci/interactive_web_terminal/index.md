@@ -3,7 +3,10 @@
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
-running one-off commands for their CI pipeline.
+running one-off commands for their CI pipeline. Since this is giving the user
+shell access to the environment where [GitLab Runner](https://docs.gitlab.com/runner/) 
+is deployed, some [security precautions](../../administration/integration/terminal.md#security) were
+taken to protect the users.
 
 NOTE: **Note:**
 GitLab.com does not support interactive web terminal at the moment – neither
