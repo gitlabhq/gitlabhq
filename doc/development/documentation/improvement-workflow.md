@@ -21,24 +21,6 @@ DevOps workflows.
 
 Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
-## Content: what belongs in the docs
-
-In docs, we share any and all helpful info/processes/tips with customers, but
-warn them in specific terms about the potential ramifications of any mentioned
-actions. There is no reason to withhold 'risky' steps and store them in another
-location; simply include them along with the rest of the docs, with all necessary
-detail including specific warnings and caveats.
-
-Any content that is relevant to users or admins may be included. You can freely
-include presentations, videos, etc.; no matter who it was originally written for,
-if it is helpful to any of our audiences, we can include it. 
-
-A `Troubleshooting` section in doc pages is part of the default [template](structure.md)
-for a new page, and can freely be added to any page.
-
-These guidelines help toward the goal of having every user's search of documentation
-yield a useful result.
-
 ## Merging
 
 Anyone with master access to the affected GitLab project can merge documentation changes.
