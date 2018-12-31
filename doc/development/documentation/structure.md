@@ -2,7 +2,7 @@
 description: Learn the how to correctly structure GitLab documentation.
 ---
 
-# Documentation structure
+# Documentation structure and template
 
 For consistency throughout the documentation, it's important to maintain the same
 structure among the docs.
