@@ -1,22 +1,18 @@
 ---
-description: Learn the how to correctly structure GitLab documentation.
+description: What to include in GitLab documentation pages.
 ---
 
 # Documentation structure and template
 
-For consistency throughout the documentation, it's important to maintain the same
-structure among the docs.
+This document will help you determine how to structure a page within GitLab's
+documentation and what content to include. Following these standards helps
+ensure consistency and completeness throughout the documentation, and makes it
+easier to contribute.
 
-Before getting started, read through the following docs:
+Before getting started, familiarize yourself with [GitLab's Documentation guidelines](index.md)
+and the section on Content in the [Style Guide](styleguide.md).
 
-- [Contributing to GitLab documentation](index.md#contributing-to-docs)
-- [Merge requests for GitLab documentation](index.md#merge-requests-for-gitlab-documentation)
-- [Branch naming for docs-only changes](index.md#branch-naming)
-- [Documentation directory structure](index.md#documentation-directory-structure)
-- [Documentation style guidelines](styleguide.md)
-- [Documentation workflow](workflow.md)
-
-## Documentation blurb
+## Components of a documentation page
 
 Every document should include the following content in the following sequence:
 
