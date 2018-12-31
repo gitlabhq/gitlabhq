@@ -14,9 +14,10 @@ and the section on Content in the [Style Guide](styleguide.md).
 ## Components of a documentation page
 
 Most pages will be dedicated to a specifig GitLab feature or to a use case that involves
-one or more features and/or third-party tools.
+one or more features, potentially in conjunction with third-party tools.
 
-Every feature or use case document should include the following content in the following sequence:
+Every feature or use case document should include the following content in the following sequence,
+with exceptions and details noted below and in the template included on this page.
 
 - **Title**: Top-level heading with the feature name, or a use case name, which would start with
 a verb, like Configuring, Enabling, etc.
