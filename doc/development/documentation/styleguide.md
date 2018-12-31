@@ -2,7 +2,7 @@
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
-# Documentation style guidelines
+# Documentation Style Guide
 
 The documentation style guide defines the markup structure used in
 GitLab documentation. Check the
