@@ -56,8 +56,10 @@ if it is helpful to any of our audiences, we can include it. If an outside sourc
 that's under copyright, rephrase, or summarize and link out; do not copy and paste.
   - All applicable subsections as described on the [structure and template](structure.md) page,
 with files organized in the [correct directory](index.md#documentation-directory-structure).
-- Link each doc from its higher-level index page and other related pages.
-- Link out to relevant pages, whether they exist in the documentation or other sites.
+- To ensure discoverability, link to each doc from its higher-level index page and other related pages.
+- When referencing other GitLab products and features, link to their
+  respective docs; when referencing third-party products or technologies,
+  link out to their external sites, documentation, and resources.
 - Do not duplicate information.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
 a logical reason not to (for example, when mirroring the UI or an ordered sequence). 
