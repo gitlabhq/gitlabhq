@@ -259,13 +259,12 @@ Before getting started, make sure you read the introductory section
 - Label the MR `Documentation`
 - Assign the correct milestone (see note below)
 
-Documentation will be merged if it meets our style standards, is clear, and is known to be
-correct by the person merging the MR or the SME (such as a developer) who contributed it.
-Further needs for ‘what would make this doc even better’ should be immediately addressed in a
-follow-up MR or issue.
+Documentation will be merged if it is an improvement on existing content,
+represents a good-faith effort to follow the template and style standards,
+and is believed to be accurate.
 
-The individual who merges the documentation must reviewed the documentation
-for the above standard.
+Further needs for what would make the doc even better should be immediately addressed
+in a follow-up MR or issue.
 
 NOTE: **Note:**
 If the release version you want to add the documentation to has already been
