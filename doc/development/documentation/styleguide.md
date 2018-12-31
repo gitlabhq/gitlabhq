@@ -40,27 +40,22 @@ Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}
 
 ## Content
 
-In docs, we share any and all helpful information, processes, and tips for implementing,
-using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
-for this information.
-
-There is no reason to withhold 'risky' steps and store them in another
-location; simply include them along with the rest of the docs including all necessary
-detail, such as specific warnings and caveats about potential ramifications.
-
-Any content that is relevant to users or admins may be included. You can freely
-include presentations, videos, etc.; no matter who it was originally written for,
-if it is helpful to any of our audiences, we can include it. 
-
-Among other recommended subsections, a `Troubleshooting` section in doc pages is
-part of the default [template](structure.md) for a new page, and can freely be
-added to any page.
-
 These guidelines help toward the goal of having every user's search of documentation
 yield a useful result, and ensuring content is helpful and easy to consume.
 
-When working on documentation:
-
+- What to include:
+  - Any and all helpful information, processes, and tips for implementing,
+using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
+for this information.
+  - 'Risky' or niche problem-solving steps. There is no reason to withhold these or
+store them elsewhere; simply include them along with the rest of the docs including all necessary
+detail, such as specific warnings and caveats about potential ramifications.
+  - Any content types/sources, if relevant to users or admins. You can freely
+include presentations, videos, etc.; no matter who it was originally written for,
+if it is helpful to any of our audiences, we can include it. If an outside source
+that's under copyright, rephrase, or summarize and link out; do not copy and paste.
+  - Sections like `Use Cases` and `Troubleshooting` can be added to any page where they
+apply. See the [structure and template](structure.md) page for more details.
 - Make sure each markdown file exists in the
   [correct directory](index.md#documentation-directory-structure), is linked from its
   higher-level index page, and is linked from other related pages.
