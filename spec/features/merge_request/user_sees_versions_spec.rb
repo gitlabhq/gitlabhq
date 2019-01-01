@@ -64,6 +64,17 @@ describe 'Merge request > User sees versions', :js do
       end
     end
 
+    it 'shows the commit SHAs for every version in the dropdown' do
+      page.within '.mr-version-dropdown' do
+        find('.btn-default').click
+
+        page.within('.dropdown-content') do
+          shas = merge_request.merge_request_diffs.map { |diff| Commit.truncate_sha(diff.head_commit_sha) }
+          shas.each { |sha| expect(page).to have_content(sha) }
+        end
+      end
+    end
+
     it 'shows comments that were last relevant at that version' do
       expect(page).to have_content '5 changed files'
 

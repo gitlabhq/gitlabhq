@@ -129,7 +129,7 @@ export default {
                 </strong>
               </div>
               <div>
-                <small class="commit-sha"> {{ version.truncated_commit_sha }} </small>
+                <small class="commit-sha"> {{ version.short_commit_sha }} </small>
               </div>
               <div>
                 <small>

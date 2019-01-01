@@ -15,7 +15,7 @@ describe ProjectPolicy do
       read_project_for_iids read_issue_iid read_merge_request_iid read_label
       read_milestone read_project_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
-      award_emoji
+      award_emoji read_release
     ]
   end
 
@@ -38,7 +38,7 @@ describe ProjectPolicy do
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image
-      create_environment create_deployment
+      create_environment create_deployment create_release update_release
     ]
   end
 
@@ -48,7 +48,7 @@ describe ProjectPolicy do
       update_deployment admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
-      admin_pipeline admin_environment admin_deployment add_cluster
+      admin_pipeline admin_environment admin_deployment destroy_release add_cluster
     ]
   end
 
@@ -56,7 +56,7 @@ describe ProjectPolicy do
     %i[
       download_code fork_project read_commit_status read_pipeline
       read_container_image build_download_code build_read_container_image
-      download_wiki_code
+      download_wiki_code read_release
     ]
   end
 
@@ -183,7 +183,8 @@ describe ProjectPolicy do
         :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
-        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
+        :destroy_release
       ]
 
       expect_disallowed(*repository_permissions)

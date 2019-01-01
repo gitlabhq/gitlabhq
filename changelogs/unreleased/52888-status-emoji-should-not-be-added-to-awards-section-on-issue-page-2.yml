@@ -1,0 +1,5 @@
+---
+title: Prevent awards emoji being updated when updating status
+merge_request: 23470
+author:
+type: fixed

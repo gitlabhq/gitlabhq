@@ -1,16 +1,16 @@
 ---
-description: 'Writing styles, markup, formatting, and reusing regular expressions throughout the GitLab Documentation.'
+description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
 ---
 
-# Documentation style guidelines
+# Documentation Style Guide
 
 The documentation style guide defines the markup structure used in
 GitLab documentation. Check the
 [documentation guidelines](index.md) for general development instructions.
 
-Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+See the GitLab handbook for the [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
-For help adhering to the guidelines, see [linting](index.md#linting).
+For programmatic help adhering to the guidelines, see [linting](index.md#linting).
 
 ## Files
 
@@ -40,13 +40,36 @@ Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}
 
 ## Content
 
-- Make sure that the documentation is added in the correct
-  [directory](index.md#documentation-directory-structure), linked from its
-  higher-level index, and linked from other related pages.
+These guidelines help toward the goal of having every user's search of documentation
+yield a useful result, and ensuring content is helpful and easy to consume.
+
+- What to include:
+  - Any and all helpful information, processes, and tips for implementing,
+using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
+for this information.
+  - 'Risky' or niche problem-solving steps. There is no reason to withhold these or
+store them elsewhere; simply include them along with the rest of the docs including all necessary
+detail, such as specific warnings and caveats about potential ramifications.
+  - Any content types/sources, if relevant to users or admins. You can freely
+include presentations, videos, etc.; no matter who it was originally written for,
+if it is helpful to any of our audiences, we can include it. If an outside source
+that's under copyright, rephrase, or summarize and link out; do not copy and paste.
+  - All applicable subsections as described on the [structure and template](structure.md) page,
+with files organized in the [correct directory](index.md#documentation-directory-structure).
+- To ensure discoverability, link to each doc from its higher-level index page and other related pages.
+- When referencing other GitLab products and features, link to their
+  respective docs; when referencing third-party products or technologies,
+  link out to their external sites, documentation, and resources.
 - Do not duplicate information.
-- Be brief and clear.
-- Unless there's a logical reason not to, structure the document in alphabetical order
-(headings, tables, and lists).
+- Structure content in alphabetical order in tables, lists, etc., unless there is
+a logical reason not to (for example, when mirroring the UI or an ordered sequence). 
+
+## Language
+
+- Use inclusive language and avoid jargon, as well as uncommon
+words. The docs should be clear and easy to understand.
+- Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
+- Be clear, concise, and stick to the goal of the doc.
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
