@@ -10,7 +10,7 @@ fi
 
 # Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
-retry gem install knapsack --no-ri --no-rdoc
+retry gem install knapsack --no-document
 
 cp config/gitlab.yml.example config/gitlab.yml
 sed -i 's/bin_path: \/usr\/bin\/git/bin_path: \/usr\/local\/bin\/git/' config/gitlab.yml

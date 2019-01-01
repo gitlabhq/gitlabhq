@@ -5,7 +5,7 @@ describe Auth::ContainerRegistryAuthenticationService do
   let(:current_user) { nil }
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
-  let(:payload) { JWT.decode(subject[:token], rsa_key).first }
+  let(:payload) { JWT.decode(subject[:token], rsa_key, true, { algorithm: 'RS256' }).first }
 
   let(:authentication_abilities) do
     [:read_container_image, :create_container_image, :admin_container_image]

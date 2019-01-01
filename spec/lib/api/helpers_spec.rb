@@ -148,4 +148,36 @@ describe API::Helpers do
 
     it_behaves_like 'user namespace finder'
   end
+
+  describe '#send_git_blob' do
+    context 'content disposition' do
+      let(:repository) { double }
+      let(:blob) { double(name: 'foobar') }
+
+      let(:send_git_blob) do
+        subject.send(:send_git_blob, repository, blob)
+      end
+
+      before do
+        allow(subject).to receive(:env).and_return({})
+        allow(subject).to receive(:content_type)
+        allow(subject).to receive(:header).and_return({})
+        allow(Gitlab::Workhorse).to receive(:send_git_blob)
+      end
+
+      context 'when blob name is null' do
+        let(:blob) { double(name: nil) }
+
+        it 'returns only the disposition' do
+          expect(send_git_blob['Content-Disposition']).to eq 'attachment'
+        end
+      end
+
+      context 'when blob name is not null' do
+        it 'returns disposition with the blob name' do
+          expect(send_git_blob['Content-Disposition']).to eq 'attachment; filename="foobar"'
+        end
+      end
+    end
+  end
 end

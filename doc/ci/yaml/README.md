@@ -1660,7 +1660,7 @@ automatically fetched and evaluated along with the content of `.gitlab-ci.yml`:
 
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
-  - gem install bundler --no-ri --no-rdoc
+  - gem install bundler --no-document
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 ```
 

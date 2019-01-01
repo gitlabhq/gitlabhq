@@ -142,7 +142,7 @@ Download Ruby and compile it:
 
 Then install the Bundler Gem:
 
-    sudo gem install bundler --no-ri --no-rdoc
+    sudo gem install bundler --no-document
 
 ## 3. Go
 

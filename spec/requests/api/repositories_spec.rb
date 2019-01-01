@@ -171,7 +171,7 @@ describe API::Repositories do
       it 'forces attachment content disposition' do
         get api(route, current_user)
 
-        expect(headers['Content-Disposition']).to match(/^attachment/)
+        expect(headers['Content-Disposition']).to eq 'attachment'
       end
 
       context 'when sha does not exist' do
