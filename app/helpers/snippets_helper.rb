@@ -130,12 +130,4 @@ module SnippetsHelper
 
     link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', rel: 'noopener noreferrer'
   end
-
-  def public_snippet?
-    if @snippet.project_id?
-      can?(nil, :read_project_snippet, @snippet)
-    else
-      can?(nil, :read_personal_snippet, @snippet)
-    end
-  end
 end
