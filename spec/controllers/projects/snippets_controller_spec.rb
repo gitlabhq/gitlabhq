@@ -379,6 +379,46 @@ describe Projects::SnippetsController do
     end
   end
 
+  describe "GET #show for embeddable content" do
+    let(:project_snippet) { create(:project_snippet, snippet_permission, project: project, author: user) }
+
+    before do
+      sign_in(user)
+
+      get :show, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param, format: :js
+    end
+
+    context 'when snippet is private' do
+      let(:snippet_permission) { :private }
+
+      it 'responds with status 404' do
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when snippet is public' do
+      let(:snippet_permission) { :public }
+
+      it 'responds with status 200' do
+        expect(assigns(:snippet)).to eq(project_snippet)
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    context 'when the project is private' do
+      let(:project) { create(:project_empty_repo, :private) }
+
+      context 'when snippet is public' do
+        let(:project_snippet) { create(:project_snippet, :public, project: project, author: user) }
+
+        it 'responds with status 404' do
+          expect(assigns(:snippet)).to eq(project_snippet)
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+  end
+
   describe 'GET #raw' do
     let(:project_snippet) do
       create(
