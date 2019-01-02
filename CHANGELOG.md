@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.2 (2019-01-02)
+
+### Fixed (7 changes)
+
+- Hide cluster features that don't work yet with Group Clusters. !23935
+- Fix a 500 error that could occur until all migrations are done. !23939
+- Fix missing Git clone button when protocol restriction setting enabled. !24015
+- Fix clone dropdown parent inheritance issues in HAML. !24029
+- Fix content-disposition in blobs and files API endpoint. !24078
+- Fixed markdown toolbar buttons.
+- Adjust line-height of blame view line numbers.
+
+
 ## 11.6.1 (2018-12-28)
 
 ### Security (15 changes)
