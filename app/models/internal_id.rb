@@ -66,6 +66,17 @@ class InternalId < ActiveRecord::Base
       InternalIdGenerator.new(subject, scope, usage, init).generate
     end
 
+    # Flushing records is generally safe in a sense that those
+    # records are going to be re-created when needed.
+    #
+    # A filter condition has to be provided to not accidentally flush
+    # records for all projects.
+    def flush_records!(filter)
+      raise ArgumentError, "filter cannot be empty" if filter.blank?
+
+      where(filter).delete_all
+    end
+
     def available?
       @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
     end
