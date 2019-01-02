@@ -231,12 +231,15 @@ module MilestonesHelper
     end
   end
 
-  def group_or_dashboard_milestone_path(milestone)
-    if milestone.group_milestone?
-      group_milestone_path(milestone.group, milestone.iid, milestone: { title: milestone.title })
-    else
-      dashboard_milestone_path(milestone.safe_title, title: milestone.title)
-    end
+  def group_or_project_milestone_path(milestone)
+    params =
+      if milestone.group_milestone?
+        { milestone: { title: milestone.title } }
+      else
+        { title: milestone.title }
+      end
+
+    milestone_path(milestone.milestone, params)
   end
 
   def can_admin_project_milestones?
