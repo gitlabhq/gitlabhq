@@ -1320,7 +1320,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 end
 
                 before do
-                  fog_connection.directories.get('artifacts').files.create(
+                  fog_connection.directories.new(key: 'artifacts').files.create(
                     key: 'tmp/uploads/12312300',
                     body: 'content'
                   )
