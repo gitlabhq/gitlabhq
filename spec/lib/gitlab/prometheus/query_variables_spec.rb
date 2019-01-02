@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Prometheus::QueryVariables do
   describe '.call' do
-    set(:environment) { create(:environment) }
+    let(:environment) { create(:environment) }
     let(:slug) { environment.slug }
 
     subject { described_class.call(environment) }
@@ -20,7 +20,7 @@ describe Gitlab::Prometheus::QueryVariables do
       it { is_expected.to include(kube_namespace: '') }
     end
 
-    context 'with deplyoment platform' do
+    context 'with deployment platform' do
       let(:kube_namespace) { environment.deployment_platform.actual_namespace }
 
       before do

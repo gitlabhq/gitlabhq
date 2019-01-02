@@ -6740,6 +6740,9 @@ msgstr ""
 msgid "This page will be removed in a future release."
 msgstr ""
 
+msgid "This pipeline is run in a merge request context"
+msgstr ""
+
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
 msgstr ""
 

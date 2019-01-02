@@ -1,0 +1,5 @@
+---
+title: Fix clone dropdown parent inheritance issues in HAML
+merge_request: 24029
+author:
+type: fixed

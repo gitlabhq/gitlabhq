@@ -82,7 +82,7 @@ export function insertMarkdownText({
   tag,
   cursorOffset,
   blockTag,
-  selected,
+  selected = '',
   wrap,
   select,
 }) {
@@ -212,7 +212,7 @@ export function addMarkdownListeners(form) {
         blockTag: $this.data('mdBlock'),
         wrap: !$this.data('mdPrepend'),
         select: $this.data('mdSelect'),
-        tagContent: $this.data('mdTagContent').toString(),
+        tagContent: $this.data('mdTagContent'),
       });
     });
 }

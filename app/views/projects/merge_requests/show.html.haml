@@ -5,6 +5,7 @@
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
+- suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
@@ -67,7 +68,7 @@
                 noteable_data: serialize_issuable(@merge_request),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
-                help_page_path: nil,
+                help_page_path: suggest_changes_help_path,
                 current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
 
       #commits.commits.tab-pane
@@ -77,7 +78,7 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
-        help_page_path: nil,
+        help_page_path: suggest_changes_help_path,
         current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
         project_path: project_path(@merge_request.project)} }
 
