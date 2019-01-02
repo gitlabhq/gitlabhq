@@ -80,7 +80,13 @@ class SnippetsController < ApplicationController
         render_blob_json(blob)
       end
 
-      format.js { render 'shared/snippets/show' }
+      format.js do
+        if @snippet.embeddable?
+          render 'shared/snippets/show'
+        else
+          head :not_found
+        end
+      end
     end
   end
 
