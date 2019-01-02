@@ -667,7 +667,7 @@ describe Ci::CreatePipelineService do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
       end
 
-      let(:ref_name) { 'feature' }
+      let(:ref_name) { 'refs/heads/feature' }
 
       context 'when source is merge request' do
         let(:source) { :merge_request }
@@ -696,7 +696,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
@@ -709,7 +709,7 @@ describe Ci::CreatePipelineService do
             end
 
             context 'when ref is tag' do
-              let(:ref_name) { 'v1.1.0' }
+              let(:ref_name) { 'refs/tags/v1.1.0' }
 
               it 'does not create a merge request pipeline' do
                 expect(pipeline).not_to be_persisted
@@ -721,7 +721,7 @@ describe Ci::CreatePipelineService do
               let(:merge_request) do
                 create(:merge_request,
                   source_project: project,
-                  source_branch: ref_name,
+                  source_branch: Gitlab::Git.ref_name(ref_name),
                   target_project: target_project,
                   target_branch: 'master')
               end
@@ -786,7 +786,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
@@ -928,7 +928,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
