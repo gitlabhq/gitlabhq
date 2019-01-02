@@ -4416,6 +4416,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No activities found"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
