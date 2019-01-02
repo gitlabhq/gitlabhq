@@ -340,6 +340,9 @@ Any security warnings are also
 NOTE: **Note:**
 The Auto SAST stage will be skipped on licenses other than Ultimate.
 
+NOTE: **Note:**
+The Auto SAST job requires GitLab Runner 11.5 or above.
+
 ### Auto Dependency Scanning **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.7.
