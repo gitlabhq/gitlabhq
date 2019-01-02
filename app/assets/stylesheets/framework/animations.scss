@@ -260,3 +260,25 @@ $skeleton-line-widths: (
 .slide-down-leave-to {
   transform: translateY(-30%);
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+
+/** COMMON ANIMATION CLASSES **/
+.transform-origin-center { @include webkit-prefix(transform-origin, 50% 50%); }
+.animate-n-spin { @include webkit-prefix(animation-name, spin); }
+.animate-c-infinite { @include webkit-prefix(animation-iteration-count, infinite); }
+.animate-t-linear { @include webkit-prefix(animation-timing-function, linear); }
+.animate-d-1 { @include webkit-prefix(animation-duration, 1s); }
+.animate-d-2 { @include webkit-prefix(animation-duration, 2s); }
+
+/** COMPOSITE ANIMATION CLASSES **/
+.gl-spinner {
+  @include webkit-prefix(animation-name, spin);
+  @include webkit-prefix(animation-iteration-count, infinite);
+  @include webkit-prefix(animation-timing-function, linear);
+  @include webkit-prefix(animation-duration, 1s);
+  transform-origin: 50% 50%;
+}
