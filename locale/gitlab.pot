@@ -106,6 +106,9 @@ msgstr ""
 msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
 msgstr ""
 
+msgid "%{count} more"
+msgstr ""
+
 msgid "%{count} more assignees"
 msgstr ""
 
@@ -8173,6 +8176,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "should be higher than %{access} inherited membership from group %{group_name}"
+msgstr ""
+
+msgid "show less"
 msgstr ""
 
 msgid "source"
