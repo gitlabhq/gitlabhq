@@ -43,7 +43,8 @@ module Releases
         description: description,
         author: current_user,
         tag: tag.name,
-        sha: tag.dereferenced_target.sha
+        sha: tag.dereferenced_target.sha,
+        links_attributes: params[:links_attributes] || []
       )
 
       success(tag: tag, release: release)

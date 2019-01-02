@@ -121,12 +121,59 @@ describe API::Releases do
         expect(json_response['description']).to eq('This is v0.1')
         expect(json_response['author']['name']).to eq(maintainer.name)
         expect(json_response['commit']['id']).to eq(commit.id)
+        expect(json_response['assets']['count']).to eq(4)
       end
 
       it 'matches response schema' do
         get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
         expect(response).to match_response_schema('release')
+      end
+
+      it 'contains source information as assets' do
+        get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+        expect(json_response['assets']['sources'].map { |h| h['format'] })
+          .to match_array(release.sources.map(&:format))
+        expect(json_response['assets']['sources'].map { |h| h['url'] })
+          .to match_array(release.sources.map(&:url))
+      end
+
+      context 'when release has link asset' do
+        let!(:link) do
+          create(:release_link,
+                 release: release,
+                 name: 'release-18.04.dmg',
+                 url: url)
+        end
+
+        let(:url) { 'https://my-external-hosting.example.com/scrambled-url/app.zip' }
+
+        it 'contains link information as assets' do
+          get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+          expect(json_response['assets']['links'].count).to eq(1)
+          expect(json_response['assets']['links'].first['name'])
+            .to eq('release-18.04.dmg')
+          expect(json_response['assets']['links'].first['url'])
+            .to eq('https://my-external-hosting.example.com/scrambled-url/app.zip')
+          expect(json_response['assets']['links'].first['external'])
+            .to be_truthy
+        end
+
+        context 'when link is internal' do
+          let(:url) do
+            "#{project.web_url}/-/jobs/artifacts/v11.6.0-rc4/download?" \
+            "job=rspec-mysql+41%2F50"
+          end
+
+          it 'has external false' do
+            get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+            expect(json_response['assets']['links'].first['external'])
+              .to be_falsy
+          end
+        end
       end
     end
 
@@ -252,6 +299,76 @@ describe API::Releases do
                params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when create assets altogether' do
+        context 'when create one asset' do
+          let(:params) do
+            {
+              name: 'New release',
+              tag_name: 'v0.1',
+              description: 'Super nice release',
+              links_attributes: [
+                {
+                  name: 'beta',
+                  url: 'https://dosuken.example.com/inspection.exe'
+                }
+              ]
+            }
+          end
+
+          it 'accepts the request' do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+
+            expect(response).to have_gitlab_http_status(:created)
+          end
+
+          it 'creates an asset with specified parameters' do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+
+            expect(json_response['assets']['links'].count).to eq(1)
+            expect(json_response['assets']['links'].first['name']).to eq('beta')
+            expect(json_response['assets']['links'].first['url'])
+              .to eq('https://dosuken.example.com/inspection.exe')
+          end
+
+          it 'matches response schema' do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+
+            expect(response).to match_response_schema('release')
+          end
+        end
+
+        context 'when create two assets' do
+          let(:params) do
+            {
+              name: 'New release',
+              tag_name: 'v0.1',
+              description: 'Super nice release',
+              links_attributes: [
+                {
+                  name: 'alpha',
+                  url: 'https://dosuken.example.com/alpha.exe'
+                },
+                {
+                  name: 'beta',
+                  url: 'https://dosuken.example.com/beta.exe'
+                }
+              ]
+            }
+          end
+
+          it 'creates two assets with specified parameters' do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+
+            expect(json_response['assets']['links'].count).to eq(2)
+            expect(json_response['assets']['links'].map { |h| h['name'] })
+              .to match_array(%w[alpha beta])
+            expect(json_response['assets']['links'].map { |h| h['url'] })
+              .to match_array(%w[https://dosuken.example.com/alpha.exe
+                                 https://dosuken.example.com/beta.exe])
+          end
         end
       end
     end
@@ -430,6 +547,90 @@ describe API::Releases do
                params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'when links_attributes param is specified' do
+      context 'when the release does not have any link assets' do
+        let(:params) do
+          { links_attributes: [{ name: 'Beta release',
+                                 url: 'http://dosuken.com/win.exe' }] }
+        end
+
+        it 'creates an asset' do
+          put api("/projects/#{project.id}/releases/v0.1", maintainer),
+              params: params
+
+          expect(json_response['assets']['links'].count).to eq(1)
+          expect(json_response['assets']['links'].first['name'])
+            .to eq('Beta release')
+          expect(json_response['assets']['links'].first['url'])
+            .to eq('http://dosuken.com/win.exe')
+        end
+
+        context 'when url is invalid' do
+          let(:params) do
+            { links_attributes: [{ name: 'Beta release',
+                                   url: 'SELECT 1 from ci_builds;' }] }
+          end
+
+          it 'returns an error' do
+            put api("/projects/#{project.id}/releases/v0.1", maintainer),
+                params: params
+
+            expect(json_response['message']['links.url'].first)
+              .to include('Only allowed protocols are http, https')
+          end
+        end
+      end
+
+      context 'when the release has asset links' do
+        let!(:release_link_1) do
+          create(:release_link,
+                 name: 'gcc',
+                 url: 'http://dosuken.com/executable-gcc',
+                 release: release,
+                 created_at: 1.day.ago)
+        end
+
+        let!(:release_link_2) do
+          create(:release_link,
+                 name: 'llvm',
+                 url: 'http://dosuken.com/executable-llvm',
+                 release: release,
+                 created_at: 2.days.ago)
+        end
+
+        context 'when updates link names' do
+          let(:params) do
+            { links_attributes: [{ id: release_link_1.id, name: 'bin-gcc' },
+                                 { id: release_link_2.id, name: 'bin-llvm' }] }
+          end
+
+          it 'updates the asset' do
+            put api("/projects/#{project.id}/releases/v0.1", maintainer),
+                params: params
+
+            expect(json_response['assets']['links'].first['name'])
+              .to eq('bin-gcc')
+            expect(json_response['assets']['links'].second['name'])
+              .to eq('bin-llvm')
+          end
+        end
+
+        context 'when destroys an asset' do
+          let(:params) do
+            { links_attributes: [{ id: release_link_1.id, _destroy: '1' }] }
+          end
+
+          it 'updates the asset' do
+            put api("/projects/#{project.id}/releases/v0.1", maintainer),
+                params: params
+
+            expect(json_response['assets']['links'].count).to eq(1)
+            expect(json_response['assets']['links'].first['name']).to eq('llvm')
+          end
         end
       end
     end
