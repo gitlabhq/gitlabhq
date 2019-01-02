@@ -188,7 +188,7 @@ class NotificationService
   #  * merge_request assignee if their notification level is not Disabled
   #  * users with custom level checked with "reassign merge request"
   #
-  def reassigned_merge_request(merge_request, current_user, previous_assignee)
+  def reassigned_merge_request(merge_request, current_user, previous_assignee = nil)
     recipients = NotificationRecipientService.build_recipients(
       merge_request,
       current_user,
