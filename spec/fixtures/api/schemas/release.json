@@ -18,6 +18,7 @@
       "links": {
         "type": "array",
         "items": {
+          "id": "integer",
           "name": "string",
           "url": "string",
           "external": "boolean"

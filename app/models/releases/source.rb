@@ -21,13 +21,13 @@ module Releases
       Gitlab::Routing
         .url_helpers
         .project_archive_url(project,
-                             id: File.join(tag_name, archive_path),
+                             id: File.join(tag_name, archive_prefix),
                              format: format)
     end
 
     private
 
-    def archive_path
+    def archive_prefix
       "#{project.path}-#{tag_name.tr('/', '-')}"
     end
   end
