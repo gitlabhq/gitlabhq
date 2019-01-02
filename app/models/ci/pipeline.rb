@@ -178,6 +178,14 @@ module Ci
 
     scope :for_user, -> (user) { where(user: user) }
 
+    scope :for_merge_request, -> (merge_request, ref, sha) do
+      ##
+      # We have to filter out unrelated MR pipelines, in case,
+      # there are two merge requests from the same source branch
+      where(merge_request: [nil, merge_request], ref: ref, sha: sha)
+        .sort_by_merge_request_pipelines
+    end
+
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #
@@ -263,6 +271,10 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
+    end
+
+    def self.latest_for_merge_request(merge_request, ref, sha)
+      for_merge_request(merge_request, ref, sha).first
     end
 
     def self.ci_sources_values

@@ -26,7 +26,7 @@ module MergeRequests
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
       create_merge_request_pipeline(issuable, current_user)
-      update_merge_requests_head_pipeline(issuable)
+      issuable.update_head_pipeline
 
       super
     end
@@ -44,20 +44,6 @@ module MergeRequests
     end
 
     private
-
-    def update_merge_requests_head_pipeline(merge_request)
-      pipeline = head_pipeline_for(merge_request)
-      merge_request.update(head_pipeline_id: pipeline.id) if pipeline
-    end
-
-    def head_pipeline_for(merge_request)
-      return unless merge_request.source_project
-
-      sha = merge_request.source_branch_sha
-      return unless sha
-
-      merge_request.all_pipelines(shas: sha).first
-    end
 
     def set_projects!
       # @project is used to determine whether the user can set the merge request's

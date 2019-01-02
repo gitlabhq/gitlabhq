@@ -1092,10 +1092,15 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines(shas: all_commit_shas)
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.ci_pipelines
-      .where(sha: shas, ref: source_branch)
-      .where(merge_request: [nil, self])
-      .sort_by_merge_request_pipelines
+    @all_pipelines ||=
+      source_project.ci_pipelines
+                    .for_merge_request(self, source_branch, all_commit_shas)
+  end
+
+  def update_head_pipeline
+    self.head_pipeline = find_actual_head_pipeline
+
+    update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
   end
 
   def merge_request_pipeline_exists?
@@ -1293,6 +1298,11 @@ class MergeRequest < ActiveRecord::Base
     @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
       .find_by(sha: diff_base_sha)
+  end
+
+  def find_actual_head_pipeline
+    source_project&.ci_pipelines
+                  &.latest_for_merge_request(self, source_branch, diff_head_sha)
   end
 
   def discussions_rendered_on_frontend?

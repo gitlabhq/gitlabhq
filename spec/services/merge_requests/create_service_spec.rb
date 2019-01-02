@@ -128,9 +128,9 @@ describe MergeRequests::CreateService do
       end
 
       context 'when head pipelines already exist for merge request source branch' do
-        let(:sha) { project.commit(opts[:source_branch]).id }
-        let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
-        let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
+        let(:shas) { project.repository.commits(opts[:source_branch], limit: 2).map(&:id) }
+        let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+        let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[0]) }
         let!(:pipeline_3) { create(:ci_pipeline, project: project, ref: "other_branch", project_id: project.id) }
 
         before do
@@ -144,17 +144,30 @@ describe MergeRequests::CreateService do
         it 'sets head pipeline' do
           merge_request = service.execute
 
-          expect(merge_request.head_pipeline).to eq(pipeline_2)
+          expect(merge_request.reload.head_pipeline).to eq(pipeline_2)
           expect(merge_request).to be_persisted
         end
 
-        context 'when merge request head commit sha does not match pipeline sha' do
-          it 'sets the head pipeline correctly' do
-            pipeline_2.update(sha: 1234)
+        context 'when the new pipeline is associated with an old sha' do
+          let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[0]) }
+          let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
 
+          it 'sets an old pipeline with associated with the latest sha as the head pipeline' do
             merge_request = service.execute
 
-            expect(merge_request.head_pipeline).to eq(pipeline_1)
+            expect(merge_request.reload.head_pipeline).to eq(pipeline_1)
+            expect(merge_request).to be_persisted
+          end
+        end
+
+        context 'when there are no pipelines with the diff head sha' do
+          let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+          let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+
+          it 'does not set the head pipeline' do
+            merge_request = service.execute
+
+            expect(merge_request.reload.head_pipeline).to be_nil
             expect(merge_request).to be_persisted
           end
         end
