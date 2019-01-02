@@ -70,6 +70,17 @@ h6,
   margin-bottom: 10px;
 }
 
+/* Our adjustments to hx & .hx above add unnecessary margins to modal-title
+   and page-title in modals, so we set them to 0 in order to have properly
+   formatted modal headers. */
+.modal-header {
+  .modal-title,
+  .page-title {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
 h5,
 .h5 {
   font-size: $gl-font-size;
@@ -142,7 +153,9 @@ table {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
-    .d#{$infix}-table-header-group { display: table-header-group !important; }
+    .d#{$infix}-table-header-group {
+      display: table-header-group !important;
+    }
   }
 }
 
