@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Remote do
-  let(:remote_file) { described_class.new(location) }
+  let(:context) { described_class::Context.new(nil, '12345') }
+  let(:params) { { remote: location } }
+  let(:remote_file) { described_class.new(params, context) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do
     <<~HEREDOC
@@ -13,6 +15,32 @@ describe Gitlab::Ci::Config::External::File::Remote do
         - which ruby
         - bundle install --jobs $(nproc)  "${FLAGS[@]}"
     HEREDOC
+  end
+
+  describe '#matching?' do
+    context 'when a remote is specified' do
+      let(:params) { { remote: 'http://remote' } }
+
+      it 'should return true' do
+        expect(remote_file).to be_matching
+      end
+    end
+
+    context 'with a missing remote' do
+      let(:params) { { remote: nil } }
+
+      it 'should return false' do
+        expect(remote_file).not_to be_matching
+      end
+    end
+
+    context 'with a missing remote key' do
+      let(:params) { {} }
+
+      it 'should return false' do
+        expect(remote_file).not_to be_matching
+      end
+    end
   end
 
   describe "#valid?" do
