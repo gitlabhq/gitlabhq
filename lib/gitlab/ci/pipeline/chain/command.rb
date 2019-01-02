@@ -10,7 +10,7 @@ module Gitlab
           :origin_ref, :checkout_sha, :after_sha, :before_sha,
           :trigger_request, :schedule, :merge_request,
           :ignore_skip_ci, :save_incompleted,
-          :seeds_block, :variables_attributes
+          :seeds_block, :variables_attributes, :push_options
         ) do
           include Gitlab::Utils::StrongMemoize
 
