@@ -12,6 +12,7 @@ class CreateReleasesLinkTable < ActiveRecord::Migration[5.0]
       t.string :name, null: false
       t.timestamps_with_timezone null: false
 
+      t.index [:release_id, :url], unique: true
       t.index [:release_id, :name], unique: true
     end
   end

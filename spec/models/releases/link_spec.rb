@@ -1,6 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
 
-RSpec.describe Releases::Link do
+describe Releases::Link do
   let(:release) { create(:release, project: project) }
   let(:project) { create(:project) }
 

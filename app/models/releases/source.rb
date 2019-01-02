@@ -3,6 +3,7 @@
 module Releases
   class Source
     include ActiveModel::Model
+
     attr_accessor :project, :tag_name, :format
 
     FORMATS = %w(zip tar.gz tar.bz2 tar).freeze

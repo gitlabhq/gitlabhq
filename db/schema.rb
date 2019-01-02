@@ -1805,6 +1805,7 @@ ActiveRecord::Schema.define(version: 20190103140724) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.index ["release_id", "name"], name: "index_release_links_on_release_id_and_name", unique: true, using: :btree
+    t.index ["release_id", "url"], name: "index_release_links_on_release_id_and_url", unique: true, using: :btree
   end
 
   create_table "releases", force: :cascade do |t|

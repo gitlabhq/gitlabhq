@@ -1,6 +1,6 @@
-require 'rails_helper'
+require 'spec_helper'
 
-RSpec.describe Releases::Source do
+describe Releases::Source do
   set(:project) { create(:project, :repository, name: 'finance-cal') }
   let(:tag_name) { 'v1.0' }
 

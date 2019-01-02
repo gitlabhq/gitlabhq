@@ -315,9 +315,9 @@ describe API::Releases do
         context 'when create one asset' do
           let(:params) do
             base_params.merge({
-              links_attributes: [
-                { name: 'beta', url: 'https://dosuken.example.com/inspection.exe' }
-              ]
+              assets: {
+                links: [{ name: 'beta', url: 'https://dosuken.example.com/inspection.exe' }]
+              }
             })
           end
 
@@ -346,10 +346,12 @@ describe API::Releases do
         context 'when create two assets' do
           let(:params) do
             base_params.merge({
-              links_attributes: [
-                { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
-                { name: 'beta', url: 'https://dosuken.example.com/beta.exe' }
-              ]
+              assets: {
+                links: [
+                  { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
+                  { name: 'beta', url: 'https://dosuken.example.com/beta.exe' }
+                ]
+              }
             })
           end
 
@@ -367,10 +369,12 @@ describe API::Releases do
           context 'when link names are duplicates' do
             let(:params) do
               base_params.merge({
-                links_attributes: [
-                  { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
-                  { name: 'alpha', url: 'https://dosuken.example.com/beta.exe' }
-                ]
+                assets: {
+                  links: [
+                    { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
+                    { name: 'alpha', url: 'https://dosuken.example.com/beta.exe' }
+                  ]
+                }
               })
             end
 
@@ -558,90 +562,6 @@ describe API::Releases do
                params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
-        end
-      end
-    end
-
-    context 'when links_attributes param is specified' do
-      context 'when the release does not have any link assets' do
-        let(:params) do
-          { links_attributes: [{ name: 'Beta release',
-                                 url: 'http://dosuken.com/win.exe' }] }
-        end
-
-        it 'creates an asset' do
-          put api("/projects/#{project.id}/releases/v0.1", maintainer),
-              params: params
-
-          expect(json_response['assets']['links'].count).to eq(1)
-          expect(json_response['assets']['links'].first['name'])
-            .to eq('Beta release')
-          expect(json_response['assets']['links'].first['url'])
-            .to eq('http://dosuken.com/win.exe')
-        end
-
-        context 'when url is invalid' do
-          let(:params) do
-            { links_attributes: [{ name: 'Beta release',
-                                   url: 'SELECT 1 from ci_builds;' }] }
-          end
-
-          it 'returns an error' do
-            put api("/projects/#{project.id}/releases/v0.1", maintainer),
-                params: params
-
-            expect(json_response['message']['links.url'].first)
-              .to include('Only allowed protocols are http, https')
-          end
-        end
-      end
-
-      context 'when the release has asset links' do
-        let!(:release_link_1) do
-          create(:release_link,
-                 name: 'gcc',
-                 url: 'http://dosuken.com/executable-gcc',
-                 release: release,
-                 created_at: 1.day.ago)
-        end
-
-        let!(:release_link_2) do
-          create(:release_link,
-                 name: 'llvm',
-                 url: 'http://dosuken.com/executable-llvm',
-                 release: release,
-                 created_at: 2.days.ago)
-        end
-
-        context 'when updates link names' do
-          let(:params) do
-            { links_attributes: [{ id: release_link_1.id, name: 'bin-gcc' },
-                                 { id: release_link_2.id, name: 'bin-llvm' }] }
-          end
-
-          it 'updates the asset' do
-            put api("/projects/#{project.id}/releases/v0.1", maintainer),
-                params: params
-
-            expect(json_response['assets']['links'].first['name'])
-              .to eq('bin-gcc')
-            expect(json_response['assets']['links'].second['name'])
-              .to eq('bin-llvm')
-          end
-        end
-
-        context 'when destroys an asset' do
-          let(:params) do
-            { links_attributes: [{ id: release_link_1.id, _destroy: '1' }] }
-          end
-
-          it 'updates the asset' do
-            put api("/projects/#{project.id}/releases/v0.1", maintainer),
-                params: params
-
-            expect(json_response['assets']['links'].count).to eq(1)
-            expect(json_response['assets']['links'].first['name']).to eq('llvm')
-          end
         end
       end
     end
