@@ -667,7 +667,7 @@ describe ProjectsController do
           project.add_guest(user)
 
           sign_in(user)
-          get :refs, namespace_id: project.namespace, id: project
+          get :refs, params: { namespace_id: project.namespace, id: project }
 
           expect(response).to have_gitlab_http_status(404)
         end

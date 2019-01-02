@@ -385,7 +385,7 @@ describe Projects::SnippetsController do
     before do
       sign_in(user)
 
-      get :show, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param, format: :js
+      get :show, params: { namespace_id: project.namespace, project_id: project, id: project_snippet.to_param }, format: :js
     end
 
     context 'when snippet is private' do
