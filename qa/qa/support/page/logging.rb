@@ -37,8 +37,11 @@ module QA
           exists
         end
 
-        def find_element(name, wait: Capybara.default_max_wait_time)
-          log("finding :#{name} (wait: #{wait})")
+        def find_element(name, text_filter = nil, wait: Capybara.default_max_wait_time)
+          msg = ["finding :#{name}"]
+          msg << %Q(with text_filter "#{text_filter}") if text_filter
+          msg << "(wait: #{wait})"
+          log(msg.compact.join(' '))
 
           element = super
 
