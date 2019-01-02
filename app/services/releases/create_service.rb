@@ -48,7 +48,7 @@ module Releases
       )
 
       success(tag: tag, release: release)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue => e
       error(e.message, 400)
     end
   end

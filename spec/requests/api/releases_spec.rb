@@ -153,6 +153,7 @@ describe API::Releases do
           get api("/projects/#{project.id}/releases/v0.1", maintainer)
 
           expect(json_response['assets']['links'].count).to eq(1)
+          expect(json_response['assets']['links'].first['id']).to eq(link.id)
           expect(json_response['assets']['links'].first['name'])
             .to eq('release-18.04.dmg')
           expect(json_response['assets']['links'].first['url'])
@@ -303,19 +304,21 @@ describe API::Releases do
       end
 
       context 'when create assets altogether' do
+        let(:base_params) do
+          {
+            name: 'New release',
+            tag_name: 'v0.1',
+            description: 'Super nice release'
+          }
+        end
+
         context 'when create one asset' do
           let(:params) do
-            {
-              name: 'New release',
-              tag_name: 'v0.1',
-              description: 'Super nice release',
+            base_params.merge({
               links_attributes: [
-                {
-                  name: 'beta',
-                  url: 'https://dosuken.example.com/inspection.exe'
-                }
+                { name: 'beta', url: 'https://dosuken.example.com/inspection.exe' }
               ]
-            }
+            })
           end
 
           it 'accepts the request' do
@@ -342,21 +345,12 @@ describe API::Releases do
 
         context 'when create two assets' do
           let(:params) do
-            {
-              name: 'New release',
-              tag_name: 'v0.1',
-              description: 'Super nice release',
+            base_params.merge({
               links_attributes: [
-                {
-                  name: 'alpha',
-                  url: 'https://dosuken.example.com/alpha.exe'
-                },
-                {
-                  name: 'beta',
-                  url: 'https://dosuken.example.com/beta.exe'
-                }
+                { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
+                { name: 'beta', url: 'https://dosuken.example.com/beta.exe' }
               ]
-            }
+            })
           end
 
           it 'creates two assets with specified parameters' do
@@ -368,6 +362,23 @@ describe API::Releases do
             expect(json_response['assets']['links'].map { |h| h['url'] })
               .to match_array(%w[https://dosuken.example.com/alpha.exe
                                  https://dosuken.example.com/beta.exe])
+          end
+
+          context 'when link names are duplicates' do
+            let(:params) do
+              base_params.merge({
+                links_attributes: [
+                  { name: 'alpha', url: 'https://dosuken.example.com/alpha.exe' },
+                  { name: 'alpha', url: 'https://dosuken.example.com/beta.exe' }
+                ]
+              })
+            end
+
+            it 'recognizes as a bad request' do
+              post api("/projects/#{project.id}/releases", maintainer), params: params
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
           end
         end
       end
