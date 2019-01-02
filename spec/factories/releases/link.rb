@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :release_link, class: ::Releases::Link do
     release
-    name "release-18.04.dmg"
-    url 'https://my-external-hosting.example.com/scrambled-url/app.zip'
+    sequence(:name) { |n| "release-18.#{n}.dmg" }
+    sequence(:url) { |n| "https://example.com/scrambled-url/app-#{n}.zip" }
   end
 end
