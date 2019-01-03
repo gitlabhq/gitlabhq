@@ -127,7 +127,7 @@ gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.4'
+gem 'nokogiri', '~> 1.8.5'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -322,7 +322,7 @@ end
 group :development, :test do
   gem 'bootsnap', '~> 1.3'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
-  gem 'pry-byebug', '~> 3.4.1', platform: :mri
+  gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', require: false
@@ -342,8 +342,8 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'capybara', '~> 2.15'
-  gem 'capybara-screenshot', '~> 1.0.0'
+  gem 'capybara', '~> 2.16.1'
+  gem 'capybara-screenshot', '~> 1.0.18'
   gem 'selenium-webdriver', '~> 3.12'
 
   gem 'spring', '~> 2.0.0'
