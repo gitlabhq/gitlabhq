@@ -8,7 +8,7 @@ describe Ci::TriggerPresenter do
     create(:ci_trigger, token: '123456789abcd', project: project)
   end
 
-  let(:subject) do
+  subject do
     described_class.new(trigger, current_user: user)
   end
 
