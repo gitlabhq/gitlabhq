@@ -31,7 +31,7 @@ class Release < ActiveRecord::Base
   end
 
   def assets_count
-    links&.size.to_i + sources&.size.to_i
+    links.count + sources.count
   end
 
   def sources
