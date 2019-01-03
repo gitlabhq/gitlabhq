@@ -71,6 +71,7 @@ The following items will NOT be exported:
 - Build traces and artifacts
 - Container registry images
 - CI variables
+- Webhooks
 - Any encrypted tokens
 
 ## Exporting a project and its data
