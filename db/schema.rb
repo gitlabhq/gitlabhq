@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219145520) do
+ActiveRecord::Schema.define(version: 20190103140724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -630,7 +630,7 @@ ActiveRecord::Schema.define(version: 20181219145520) do
     t.string "endpoint"
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
-    t.boolean "legacy_abac", default: true, null: false
+    t.boolean "legacy_abac", default: false, null: false
     t.index ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
   end
 

@@ -65,6 +65,8 @@ module Clusters
         abac: 2
       }
 
+      default_value_for :authorization_type, :rbac
+
       def actual_namespace
         if namespace.present?
           namespace
