@@ -35,6 +35,9 @@ A Todo appears in your Todos dashboard when:
   - the author, or
   - have set it to automatically merge once pipeline succeeds.
 
+NOTE: **Note:**
+When an user no longer has access to a resource related to a Todo like an issue, merge request, project or group the related Todos, for security reasons, gets deleted within the next hour. The delete is delayed to prevent data loss in case user got their access revoked by mistake.
+
 ### Directly addressed Todos
 
 > [Introduced][ce-7926] in GitLab 9.0.

@@ -1,3 +1,5 @@
+$status-box-line-height: 26px;
+
 .issues-sortable-list .str-truncated {
   max-width: 90%;
 }
@@ -38,6 +40,7 @@
       font-size: $tooltip-font-size;
       margin-top: 0;
       margin-right: $gl-padding-4;
+      line-height: $status-box-line-height;
 
       @include media-breakpoint-down(xs) {
         line-height: unset;

@@ -3,7 +3,12 @@ import dateFormat from 'dateformat';
 import { GlTooltip } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
-import { getDayDifference, getTimeago, dateInWords } from '~/lib/utils/datetime_utility';
+import {
+  getDayDifference,
+  getTimeago,
+  dateInWords,
+  parsePikadayDate,
+} from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -54,7 +59,7 @@ export default {
       return standardDateFormat;
     },
     issueDueDate() {
-      return new Date(this.date);
+      return parsePikadayDate(this.date);
     },
     timeDifference() {
       const today = new Date();

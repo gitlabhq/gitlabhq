@@ -65,56 +65,103 @@ describe GlobalMilestone do
       )
     end
 
-    before do
-      projects = [
+    let!(:projects) do
+      [
         project1,
         project2,
         project3
       ]
-
-      @global_milestones = described_class.build_collection(projects, {})
     end
 
-    it 'has all project milestones' do
-      expect(@global_milestones.count).to eq(2)
+    let!(:global_milestones) { described_class.build_collection(projects, {}) }
+
+    context 'when building a collection of milestones' do
+      it 'has all project milestones' do
+        expect(global_milestones.count).to eq(6)
+      end
+
+      it 'has all project milestones titles' do
+        expect(global_milestones.map(&:title)).to match_array(['Milestone v1.2', 'Milestone v1.2', 'Milestone v1.2', 'VD-123', 'VD-123', 'VD-123'])
+      end
+
+      it 'has all project milestones' do
+        expect(global_milestones.size).to eq(6)
+      end
+
+      it 'sorts collection by due date' do
+        expect(global_milestones.map(&:due_date)).to eq [milestone1_due_date, milestone1_due_date, milestone1_due_date, nil, nil, nil]
+      end
     end
 
-    it 'has all project milestones titles' do
-      expect(@global_milestones.map(&:title)).to match_array(['Milestone v1.2', 'VD-123'])
+    context 'when adding new milestones' do
+      it 'does not add more queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          described_class.build_collection(projects, {})
+        end.count
+
+        create_list(:milestone, 3, project: project3)
+
+        expect do
+          described_class.build_collection(projects, {})
+        end.not_to exceed_all_query_limit(control_count)
+      end
+    end
+  end
+
+  describe '.states_count' do
+    context 'when the projects have milestones' do
+      before do
+        create(:closed_milestone, title: 'Active Group Milestone', project: project3)
+        create(:active_milestone, title: 'Active Group Milestone', project: project1)
+        create(:active_milestone, title: 'Active Group Milestone', project: project2)
+        create(:closed_milestone, title: 'Closed Group Milestone', project: project1)
+        create(:closed_milestone, title: 'Closed Group Milestone', project: project2)
+        create(:closed_milestone, title: 'Closed Group Milestone', project: project3)
+        create(:closed_milestone, title: 'Closed Group Milestone 4', group: group)
+      end
+
+      it 'returns the quantity of global milestones and group milestones in each possible state' do
+        expected_count = { opened: 2, closed: 5, all: 7 }
+
+        count = described_class.states_count(Project.all, group)
+
+        expect(count).to eq(expected_count)
+      end
+
+      it 'returns the quantity of global milestones in each possible state' do
+        expected_count = { opened: 2, closed: 4, all: 6 }
+
+        count = described_class.states_count(Project.all)
+
+        expect(count).to eq(expected_count)
+      end
     end
 
-    it 'has all project milestones' do
-      expect(@global_milestones.map { |group_milestone| group_milestone.milestones.count }.sum).to eq(6)
-    end
+    context 'when the projects do not have milestones' do
+      before do
+        project1
+      end
 
-    it 'sorts collection by due date' do
-      expect(@global_milestones.map(&:due_date)).to eq [nil, milestone1_due_date]
+      it 'returns 0 as the quantity of global milestones in each state' do
+        expected_count = { opened: 0, closed: 0, all: 0 }
+
+        count = described_class.states_count(Project.all)
+
+        expect(count).to eq(expected_count)
+      end
     end
   end
 
   describe '#initialize' do
     let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
-    let(:milestone1_project2) { create(:milestone, title: "Milestone v1.2", project: project2) }
-    let(:milestone1_project3) { create(:milestone, title: "Milestone v1.2", project: project3) }
-
-    before do
-      milestones =
-        [
-          milestone1_project1,
-          milestone1_project2,
-          milestone1_project3
-        ]
-      milestones_relation = Milestone.where(id: milestones.map(&:id))
-
-      @global_milestone = described_class.new(milestone1_project1.title, milestones_relation)
-    end
+    subject(:global_milestone) { described_class.new(milestone1_project1) }
 
     it 'has exactly one group milestone' do
-      expect(@global_milestone.title).to eq('Milestone v1.2')
+      expect(global_milestone.title).to eq('Milestone v1.2')
     end
 
     it 'has all project milestones with the same title' do
-      expect(@global_milestone.milestones.count).to eq(3)
+      expect(global_milestone.milestone).to eq(milestone1_project1)
     end
   end
 
@@ -122,7 +169,7 @@ describe GlobalMilestone do
     let(:milestone) { create(:milestone, title: "git / test", project: project1) }
 
     it 'strips out slashes and spaces' do
-      global_milestone = described_class.new(milestone.title, Milestone.where(id: milestone.id))
+      global_milestone = described_class.new(milestone)
 
       expect(global_milestone.safe_title).to eq('git-test')
     end
@@ -132,11 +179,8 @@ describe GlobalMilestone do
     context 'when at least one milestone is active' do
       it 'returns active' do
         title = 'Active Group Milestone'
-        milestones = [
-          create(:active_milestone, title: title),
-          create(:closed_milestone, title: title)
-        ]
-        global_milestone = described_class.new(title, milestones)
+
+        global_milestone = described_class.new(create(:active_milestone, title: title))
 
         expect(global_milestone.state).to eq('active')
       end
@@ -145,11 +189,8 @@ describe GlobalMilestone do
     context 'when all milestones are closed' do
       it 'returns closed' do
         title = 'Closed Group Milestone'
-        milestones = [
-          create(:closed_milestone, title: title),
-          create(:closed_milestone, title: title)
-        ]
-        global_milestone = described_class.new(title, milestones)
+
+        global_milestone = described_class.new(create(:closed_milestone, title: title))
 
         expect(global_milestone.state).to eq('closed')
       end

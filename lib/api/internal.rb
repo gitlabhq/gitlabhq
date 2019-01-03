@@ -256,8 +256,9 @@ module API
 
       post '/post_receive' do
         status 200
+
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
-          params[:changes])
+          params[:changes], params[:push_options].to_a)
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 

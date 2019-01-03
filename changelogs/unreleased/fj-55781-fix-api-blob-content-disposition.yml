@@ -1,5 +1,0 @@
----
-title: Fix content-disposition in blobs and files API endpoint
-merge_request: 24078
-author:
-type: fixed

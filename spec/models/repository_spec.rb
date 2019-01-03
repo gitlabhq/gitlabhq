@@ -1005,6 +1005,67 @@ describe Repository do
     end
   end
 
+  describe '#ambiguous_ref?' do
+    let(:ref) { 'ref' }
+
+    subject { repository.ambiguous_ref?(ref) }
+
+    context 'when ref is ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+        repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'should be true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when ref is not ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'should be false' do
+        is_expected.to eq(false)
+      end
+    end
+  end
+
+  describe '#expand_ref' do
+    let(:ref) { 'ref' }
+
+    subject { repository.expand_ref(ref) }
+
+    context 'when ref is not tag or branch name' do
+      let(:ref) { 'refs/heads/master' }
+
+      it 'returns nil' do
+        is_expected.to eq(nil)
+      end
+    end
+
+    context 'when ref is tag name' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'returns the tag ref' do
+        is_expected.to eq("refs/tags/#{ref}")
+      end
+    end
+
+    context 'when ref is branch name' do
+      before do
+        repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'returns the branch ref' do
+        is_expected.to eq("refs/heads/#{ref}")
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:branch_name) { 'new_feature' }
     let(:target) { 'master' }

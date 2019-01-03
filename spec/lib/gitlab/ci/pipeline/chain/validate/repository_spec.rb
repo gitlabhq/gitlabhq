@@ -42,6 +42,27 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     end
   end
 
+  context 'when ref is ambiguous' do
+    let(:project) do
+      create(:project, :repository).tap do |proj|
+        proj.repository.add_tag(user, 'master', 'master')
+      end
+    end
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: 'master')
+    end
+
+    it 'breaks the chain' do
+      expect(step.break?).to be true
+    end
+
+    it 'adds an error about missing ref' do
+      expect(pipeline.errors.to_a)
+        .to include 'Ref is ambiguous'
+    end
+  end
+
   context 'when does not have existing SHA set' do
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(

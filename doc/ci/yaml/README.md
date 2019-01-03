@@ -2200,6 +2200,12 @@ with an API call.
 If your commit message contains `[ci skip]` or `[skip ci]`, using any
 capitalization, the commit will be created but the pipeline will be skipped.
 
+Alternatively, one can pass the `ci.skip` [Git push option][push-option] if
+using Git 2.10 or newer:
+```
+$ git push -o ci.skip
+```
+
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
@@ -2224,3 +2230,4 @@ GitLab CI/CD with various languages.
 [environment]: ../environments.md "CI/CD environments"
 [schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
 [variables]: ../variables/README.md "CI/CD variables"
+[push-option]: https://git-scm.com/docs/git-push#git-push--oltoptiongt

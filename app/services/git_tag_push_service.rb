@@ -45,7 +45,8 @@ class GitTagPushService < BaseService
       params[:newrev],
       params[:ref],
       commits,
-      message)
+      message,
+      push_options: params[:push_options] || [])
   end
 
   def build_system_push_data

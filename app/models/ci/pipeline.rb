@@ -11,6 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include HasRef
 
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
@@ -380,7 +381,7 @@ module Ci
     end
 
     def branch?
-      !tag? && !merge_request?
+      super && !merge_request?
     end
 
     def stuck?
@@ -580,7 +581,7 @@ module Ci
     end
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
     def legacy_trigger
@@ -712,14 +713,10 @@ module Ci
     end
 
     def git_ref
-      if branch?
+      if merge_request?
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif merge_request?
-        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif tag?
-        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
       else
-        raise ArgumentError, 'Invalid pipeline type!'
+        super
       end
     end
 
