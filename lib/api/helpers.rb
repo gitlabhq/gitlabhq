@@ -84,8 +84,8 @@ module API
       page || not_found!('Wiki Page')
     end
 
-    def available_labels_for(label_parent, search_params = {})
-      search_params.merge(include_ancestor_groups: true)
+    def available_labels_for(label_parent, include_ancestor_groups = true)
+      search_params = { include_ancestor_groups: include_ancestor_groups }
 
       if label_parent.is_a?(Project)
         search_params[:project_id] = label_parent.id
@@ -170,8 +170,8 @@ module API
       end
     end
 
-    def find_label(parent, id)
-      labels = available_labels_for(parent)
+    def find_label(parent, id, include_ancestor_groups = true)
+      labels = available_labels_for(parent, include_ancestor_groups)
       label = labels.find_by_id(id) || labels.find_by_title(id)
 
       label || not_found!('Label')

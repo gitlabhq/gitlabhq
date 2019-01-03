@@ -57,7 +57,7 @@ module API
       delete ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = find_label(user_group, params[:name])
+        label = find_label(user_group, params[:name], false)
 
         destroy_conditionally!(label)
       end
@@ -76,7 +76,7 @@ module API
       put ':id/labels' do
         authorize! :admin_label, user_group
 
-        label = find_label(user_group, params[:name])
+        label = find_label(user_group, params[:name], false)
 
         label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
         render_validation_error!(label) unless label.valid?
