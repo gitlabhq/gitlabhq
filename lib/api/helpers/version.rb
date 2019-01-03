@@ -18,7 +18,7 @@ module API
       end
 
       def root_url
-        expose_url(root_path)
+       @root_url ||= expose_url(root_path)
       end
 
       def to_s

@@ -3504,7 +3504,7 @@ describe Project do
       expect(project.api_variables.first[:value]).to include '/api/v4'
     end
 
-    it 'contains an URL variable for every supported API version' do
+    it 'contains a URL variable for every supported API version' do
       supported_versions = API::API.versions.select do |version|
         API::API.routes.select { |route| route.version == version }.many?
       end
