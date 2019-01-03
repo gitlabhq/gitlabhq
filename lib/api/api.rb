@@ -141,6 +141,7 @@ module API
     mount ::API::ProtectedBranches
     mount ::API::ProtectedTags
     mount ::API::Releases
+    mount ::API::Release::Links
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
