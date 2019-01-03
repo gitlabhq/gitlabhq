@@ -27,11 +27,11 @@ parser = OptionParser.new do |opts|
     options[:sha] = sha
   end
 
-  opts.on('-r', '--remote abcd', 'Git remote name of dev.gitlab.org (optional, default to `dev`)') do |remote|
+  opts.on('-r', '--remote abcd', 'Git remote name of dev.gitlab.org (optional, defaults to `dev`)') do |remote|
     options[:remote] = remote
   end
 
-  opts.on('-d', '--dry-run', 'Show resulting Git commands without calling them') do |remote|
+  opts.on('-d', '--dry-run', 'Only show Git commands, without calling them') do |remote|
     options[:try] = true
   end
 
@@ -100,6 +100,14 @@ class SecurityFix
     }
   end
 
+  def new_mr_url
+    if ee?
+      NEW_MR_URL.sub('gitlabhq', 'gitlab-ee')
+    else
+      NEW_MR_URL
+    end
+  end
+
   def create!
     if dry_run?
       puts git_commands.join("\n").green
@@ -113,7 +121,7 @@ class SecurityFix
       puts stderr.read&.red
 
       if wait_thr.value.success?
-        puts "#{NEW_MR_URL}?#{gitlab_params.to_query}".blue
+        puts "#{new_mr_url}?#{gitlab_params.to_query}".blue
       end
 
       stdin.close
