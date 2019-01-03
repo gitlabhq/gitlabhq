@@ -598,40 +598,24 @@ rollout 100%:
   # Extracts variables prefixed with K8S_SECRET_
   # and creates a Kubernetes secret.
   #
-  # e.g. if we have the following vars
+  # e.g. If we have the following environment variables:
   #   K8S_SECRET_A=value1
   #   K8S_SECRET_B=multi\ word\ value
   #
-  # Then we get:
-  #   --from-literal K8S_SECRET_A=value1 --from-literal 'K8S_SECRET_B=multi word value'
-  #
-  # NOTE: We set IFS as we need to split by newline so that we can loop through
-  # multi word variables correctly.
+  # Then we will create a secret with the following key-value pairs:
+  #   data:
+  #     A: dmFsdWUxCg==
+  #     B: bXVsdGkgd29yZCB2YWx1ZQo=
   function create_application_secret() {
     bash -c '
-      function extract_prefixed_variables() {
-        prefix="K8S_SECRET_"
-        k8s_variables=$(env | (grep "^${prefix}" || [[ $? == 1 ]]))
-
-        export K8S_VARIABLES=$k8s_variables
+      function k8s_prefixed_variables() {
+        env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p"
       }
 
-      function create_secret() {
-        local IFS=$(echo -en "\n\b")
-        for k8s_variable in $K8S_VARIABLES; do
-          param="${k8s_variable#K8S_SECRET_}"
-
-          fromLiteralArgs+=("--from-literal")
-          fromLiteralArgs+=("${param}")
-        done
-
-        kubectl create secret \
-          -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" ${fromLiteralArgs[@]} -o yaml \
-          --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
-      }
-
-      extract_prefixed_variables
-      create_secret
+      kubectl create secret \
+        -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
+        --from-env-file <(k8s_prefixed_variables) -o yaml --dry-run |
+        kubectl replace -n "$KUBE_NAMESPACE" --force -f -
     '
   }
 
