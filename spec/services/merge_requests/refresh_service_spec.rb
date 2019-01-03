@@ -509,7 +509,7 @@ describe MergeRequests::RefreshService do
           committed_date: Time.now
         )
 
-        allow_any_instance_of(MergeRequest).to receive(:commits).and_return([commit])
+        allow_any_instance_of(MergeRequest).to receive(:commits).and_return(CommitCollection.new(@project, [commit], 'feature'))
       end
 
       context 'when the merge request is sourced from the same project' do

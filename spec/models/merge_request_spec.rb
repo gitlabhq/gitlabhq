@@ -991,6 +991,34 @@ describe MergeRequest do
     end
   end
 
+  describe '#committers' do
+    it 'returns all the committers of every commit in the merge request' do
+      users = subject.commits.map(&:committer_email).uniq.map do |email|
+        create(:user, email: email)
+      end
+
+      expect(subject.committers).to match_array(users)
+    end
+
+    it 'returns an empty array if no committer is associated with a user' do
+      expect(subject.committers).to be_empty
+    end
+  end
+
+  describe '#authors' do
+    it 'returns a list with all the committers in the merge request and author' do
+      users = subject.commits.map(&:committer_email).uniq.map do |email|
+        create(:user, email: email)
+      end
+
+      expect(subject.authors).to match_array([subject.author, *users])
+    end
+
+    it 'returns only the author if no committer is associated with a user' do
+      expect(subject.authors).to contain_exactly(subject.author)
+    end
+  end
+
   describe '#hook_attrs' do
     it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
       builder = double
