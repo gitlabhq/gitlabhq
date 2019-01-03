@@ -359,6 +359,9 @@ Any security warnings are also
 NOTE: **Note:**
 The Auto Dependency Scanning stage will be skipped on licenses other than Ultimate.
 
+NOTE: **Note:**
+The Auto Dependency Scanning job requires GitLab Runner 11.5 or above.
+
 ### Auto License Management **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 11.0.
