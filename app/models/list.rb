@@ -54,6 +54,6 @@ class List < ActiveRecord::Base
   private
 
   def can_be_destroyed
-    destroyable?
+    throw(:abort) unless destroyable?
   end
 end
