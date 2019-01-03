@@ -105,7 +105,9 @@ class MergeRequest < ActiveRecord::Base
 
     before_transition any => :opened do |merge_request|
       merge_request.merge_jid = nil
+    end
 
+    after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end

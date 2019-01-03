@@ -62,20 +62,19 @@
           %th Open issues
           %th State
           %th Due date
-      - milestone.milestones.each do |ms|
         %tr
           %td
-            - project_name = group ? ms.project.name : ms.project.full_name
-            = link_to project_name, project_milestone_path(ms.project, ms)
+            - project_name = group ? milestone.project.name : milestone.project.full_name
+            = link_to project_name, milestone_path(milestone.milestone)
           %td
-            = ms.issues_visible_to_user(current_user).opened.count
+            = milestone.milestone.issues_visible_to_user(current_user).opened.count
           %td
-            - if ms.closed?
+            - if milestone.closed?
               Closed
             - else
               Open
           %td
-            = ms.expires_at
+            = milestone.expires_at
 - elsif milestone.group_milestone?
   %br
   View

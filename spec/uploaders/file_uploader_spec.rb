@@ -201,7 +201,7 @@ describe FileUploader do
       end
 
       let!(:fog_file) do
-        fog_connection.directories.get('uploads').files.create(
+        fog_connection.directories.new(key: 'uploads').files.create(
           key: 'tmp/uploads/test/123123',
           body: 'content'
         )

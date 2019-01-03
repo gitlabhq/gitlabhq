@@ -234,7 +234,7 @@ module SortingHelper
   end
 
   def sort_title_milestone
-    s_('SortOptions|Milestone')
+    s_('SortOptions|Milestone due date')
   end
 
   def sort_title_milestone_later

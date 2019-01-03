@@ -1,5 +1,5 @@
 - dashboard = local_assigns[:dashboard]
-- custom_dom_id = dom_id(milestone.try(:milestones) ? milestone.milestones.first : milestone)
+- custom_dom_id = dom_id(milestone.try(:milestone) ? milestone.milestone : milestone)
 - milestone_type = milestone.group_milestone? ? 'Group Milestone' : 'Project Milestone'
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
@@ -21,10 +21,12 @@
               = milestone.group.full_name
           - if milestone.legacy_group_milestone?
             .projects
-              - milestone.milestones.each do |milestone|
-                = link_to milestone_path(milestone) do
-                  %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5
-                    = dashboard ? milestone.project.full_name : milestone.project.name
+              - link_to milestone_path(milestone.milestone) do
+                %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5
+                  = dashboard ? milestone.project.full_name : milestone.project.name
+          - if milestone.project
+            .label-badge.label-badge-gray.d-inline-block
+              = milestone.project.full_name
 
     .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)
@@ -58,5 +60,5 @@
             - else
               = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
         - if dashboard
-          .status-box.status-box-milestone
+          .label-badge.label-badge-gray
             = milestone_type
