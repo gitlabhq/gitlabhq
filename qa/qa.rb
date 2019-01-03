@@ -283,6 +283,7 @@ module QA
       autoload :Select2, 'qa/page/component/select2'
       autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
       autoload :UsersSelect, 'qa/page/component/users_select'
+      autoload :Note, 'qa/page/component/note'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
