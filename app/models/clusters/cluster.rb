@@ -63,6 +63,7 @@ module Clusters
     delegate :available?, to: :application_helm, prefix: true, allow_nil: true
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
+    delegate :available?, to: :application_knative, prefix: true, allow_nil: true
 
     enum cluster_type: {
       instance_type: 1,
