@@ -13,19 +13,19 @@ describe Emails::Issues do
     subject { Notify.import_issues_csv_email(user.id, project.id, @results) }
 
     it "shows number of successful issues imported" do
-      @results = { success: 165, errors: [], valid_file: true }
+      @results = { success: 165, error_lines: [], parse_error: false }
 
       expect(subject).to have_body_text "165 issues imported"
     end
 
     it "shows error when file is invalid" do
-      @results = { success: 0, errors: [], valid_file: false }
+      @results = { success: 0, error_lines: [], parse_error: true }
 
       expect(subject).to have_body_text "Error parsing CSV"
     end
 
     it "shows line numbers with errors" do
-      @results = { success: 0, errors: [23, 34, 58], valid_file: false }
+      @results = { success: 0, error_lines: [23, 34, 58], parse_error: false }
 
       expect(subject).to have_body_text "23, 34, 58"
     end

@@ -10,7 +10,7 @@ describe Issues::ImportCsvService do
     uploader = FileUploader.new(project)
     uploader.store!(file)
 
-    described_class.new(user, project, uploader.upload).execute
+    described_class.new(user, project, uploader).execute
   end
 
   describe '#execute' do

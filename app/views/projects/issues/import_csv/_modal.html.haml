@@ -15,7 +15,7 @@
             .form-group
               = label_tag :file, _('Upload CSV file'), class: 'label-bold'
               %div
-                = file_field_tag :file, accept: 'text/csv', required: true
+                = file_field_tag :file, accept: '.csv,text/csv', required: true
             %p.text-secondary
               = _('It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected.')
               = _('The maximum file size allowed is %{size}.') % { size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes) }

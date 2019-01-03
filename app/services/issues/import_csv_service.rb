@@ -2,21 +2,16 @@
 
 module Issues
   class ImportCsvService
-    def initialize(user, project, upload)
+    def initialize(user, project, csv_io)
       @user = user
       @project = project
-      @uploader = upload.build_uploader
+      @csv_io = csv_io
       @results = { success: 0, error_lines: [], parse_error: false }
     end
 
     def execute
-      # Cache remote file locally for processing
-      @uploader.cache_stored_file! unless @uploader.file_storage?
-
       process_csv
       email_results_to_user
-
-      cleanup_cache unless @uploader.file_storage?
 
       @results
     end
@@ -24,7 +19,9 @@ module Issues
     private
 
     def process_csv
-      CSV.foreach(@uploader.file.path, col_sep: detect_col_sep, headers: true).with_index(2) do |row, line_no|
+      csv_data = @csv_io.open(&:read).force_encoding(Encoding::UTF_8)
+
+      CSV.new(csv_data, col_sep: detect_col_sep(csv_data.lines.first), headers: true).each.with_index(2) do |row, line_no|
         issue = Issues::CreateService.new(@project, @user, title: row[0], description: row[1]).execute
 
         if issue.persisted?
@@ -41,9 +38,7 @@ module Issues
       Notify.import_issues_csv_email(@user.id, @project.id, @results).deliver_now
     end
 
-    def detect_col_sep
-      header = File.open(@uploader.file.path, &:readline)
-
+    def detect_col_sep(header)
       if header.include?(",")
         ","
       elsif header.include?(";")
@@ -53,13 +48,6 @@ module Issues
       else
         raise CSV::MalformedCSVError
       end
-    end
-
-    def cleanup_cache
-      cached_file_path = @uploader.file.cache_path
-
-      File.delete(cached_file_path)
-      Dir.delete(File.dirname(cached_file_path))
     end
   end
 end

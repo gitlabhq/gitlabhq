@@ -222,7 +222,7 @@ class ProjectPolicy < BasePolicy
   rule { owner | admin | guest | group_member }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
-  rule { developer & can?(:create_issue) }.enable :import_issues
+  rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
 
   rule { can?(:developer_access) }.policy do
     enable :admin_merge_request
