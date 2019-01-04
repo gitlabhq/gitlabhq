@@ -714,6 +714,12 @@ module Ci
 
     def git_ref
       if merge_request?
+        ##
+        # In the future, we're going to change this ref to
+        # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
+        # In order to do that, we have to update GitLab-Runner's source pulling
+        # logic.
+        # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
       else
         super
