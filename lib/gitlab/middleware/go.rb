@@ -6,6 +6,7 @@ module Gitlab
   module Middleware
     class Go
       include ActionView::Helpers::TagHelper
+      include ActionController::HttpAuthentication::Basic
 
       PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}.freeze
 
@@ -14,7 +15,7 @@ module Gitlab
       end
 
       def call(env)
-        request = Rack::Request.new(env)
+        request = ActionDispatch::Request.new(env)
 
         render_go_doc(request) || @app.call(env)
       end
@@ -110,21 +111,23 @@ module Gitlab
 
       def project_for_paths(paths, request)
         project = Project.where_full_path_in(paths).first
-        return unless Ability.allowed?(current_user(request), :read_project, project)
+        return unless  Ability.allowed?(current_user(request, project), :read_project, project)
 
         project
       end
 
-      def current_user(request)
-        authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
-        user = authenticator.find_user_from_access_token || authenticator.find_user_from_warden
+      def current_user(request, project)
+        return unless has_basic_credentials?(request)
 
-        return unless user&.can?(:access_api)
+        login, password = user_name_and_password(request)
+        auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
+        return unless auth_result.success?
 
-        # Right now, the `api` scope is the only one that should be able to determine private project existence.
-        return unless authenticator.valid_access_token?(scopes: [:api])
+        return unless auth_result.actor&.can?(:access_git)
 
-        user
+        return unless auth_result.authentication_abilities.include?(:read_project)
+
+        auth_result.actor
       end
     end
   end

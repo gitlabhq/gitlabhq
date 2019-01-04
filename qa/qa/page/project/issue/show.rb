@@ -6,6 +6,7 @@ module QA
       module Issue
         class Show < Page::Base
           include Page::Component::Issuable::Common
+          include Page::Component::Note
 
           view 'app/views/shared/notes/_form.html.haml' do
             element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern

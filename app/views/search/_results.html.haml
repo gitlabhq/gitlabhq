@@ -1,4 +1,4 @@
-- if @search_objects.empty?
+- if @search_objects.to_a.empty?
   = render partial: "search/results/empty"
 - else
   .row-content-block
