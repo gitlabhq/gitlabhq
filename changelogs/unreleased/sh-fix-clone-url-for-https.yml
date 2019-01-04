@@ -1,0 +1,5 @@
+---
+title: Fix clone URL not showing if protocol is HTTPS
+merge_request: 24131
+author:
+type: fixed
