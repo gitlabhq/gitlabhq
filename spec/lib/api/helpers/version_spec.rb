@@ -20,7 +20,7 @@ describe API::Helpers::Version do
   describe '#root_url' do
     it 'returns an URL for a root path for the API version' do
       expect(described_class.new('v4').root_url)
-        .to match %r{^http?://.*/api/v4$}
+        .to eq 'http://localhost/api/v4'
     end
   end
 end

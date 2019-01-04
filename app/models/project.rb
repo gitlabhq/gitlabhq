@@ -1705,9 +1705,7 @@ class Project < ActiveRecord::Base
 
   def api_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      API::Helpers::Version.new('v4').tap do |version|
-        variables.append(key: 'CI_API_V4_URL', value: version.root_url)
-      end
+      variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
     end
   end
 
