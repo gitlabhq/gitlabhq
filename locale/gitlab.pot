@@ -6836,6 +6836,9 @@ msgstr ""
 msgid "This pipeline is run in a merge request context"
 msgstr ""
 
+msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
+msgstr ""
+
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
 msgstr ""
 
@@ -7885,6 +7888,9 @@ msgstr ""
 msgid "enabled"
 msgstr ""
 
+msgid "error"
+msgstr ""
+
 msgid "error code:"
 msgstr ""
 
@@ -7928,6 +7934,9 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
+msgstr ""
+
+msgid "latest"
 msgstr ""
 
 msgid "latest deployment"
@@ -8193,6 +8202,9 @@ msgstr ""
 msgid "started"
 msgstr ""
 
+msgid "stuck"
+msgstr ""
+
 msgid "this document"
 msgstr ""
 
@@ -8218,3 +8230,6 @@ msgid "within %d minute "
 msgid_plural "within %d minutes "
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "yaml invalid"
+msgstr ""
