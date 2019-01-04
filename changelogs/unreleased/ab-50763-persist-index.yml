@@ -1,0 +1,5 @@
+---
+title: Add indexes to speed up CI query.
+merge_request: 23188
+author:
+type: performance
