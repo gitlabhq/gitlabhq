@@ -5,6 +5,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CIIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import initUserPopovers from '../../user_popovers';
 
 /**
  * CommitItem
@@ -38,6 +39,12 @@ export default {
     authorName() {
       return (this.commit.author && this.commit.author.name) || this.commit.author_name;
     },
+    authorClass() {
+      return this.commit.author && this.commit.author.name ? 'js-user-link' : '';
+    },
+    authorId() {
+      return this.commit.author && this.commit.author.name ? this.commit.author.id : '';
+    },
     authorUrl() {
       return (
         (this.commit.author && this.commit.author.web_url) || `mailto:${this.commit.author_email}`
@@ -48,6 +55,11 @@ export default {
         (this.commit.author && this.commit.author.avatar_url) || this.commit.author_gravatar_url
       );
     },
+  },
+  created() {
+    this.$nextTick(() => {
+      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
+    });
   },
 };
 </script>
@@ -81,7 +93,13 @@ export default {
         </button>
 
         <div class="commiter">
-          <a :href="authorUrl" v-text="authorName"></a> {{ s__('CommitWidget|authored') }}
+          <a
+            :href="authorUrl"
+            :class="authorClass"
+            :data-user-id="authorId"
+            v-text="authorName"
+          ></a>
+          {{ s__('CommitWidget|authored') }}
           <time-ago-tooltip :time="commit.authored_date" />
         </div>
 
