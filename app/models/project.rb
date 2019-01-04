@@ -1705,6 +1705,13 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
+      .concat(api_variables)
+  end
+
+  def api_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+    end
   end
 
   def container_registry_variables
