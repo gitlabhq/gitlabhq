@@ -21,7 +21,7 @@ describe CommitsHelper do
       expect(helper.commit_author_link(commit))
         .to include('Foo &lt;script&gt;')
       expect(helper.commit_author_link(commit, avatar: true))
-        .to include('commit-author-name', 'Foo &lt;script&gt;')
+        .to include('commit-author-name', 'js-user-link', 'Foo &lt;script&gt;')
     end
   end
 
