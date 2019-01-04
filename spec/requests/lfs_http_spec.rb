@@ -1123,7 +1123,7 @@ describe 'Git LFS API and storage' do
 
                 context 'with valid remote_id' do
                   before do
-                    fog_connection.directories.get('lfs-objects').files.create(
+                    fog_connection.directories.new(key: 'lfs-objects').files.create(
                       key: 'tmp/uploads/12312300',
                       body: 'content'
                     )

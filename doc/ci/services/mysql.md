@@ -16,7 +16,7 @@ services:
   - mysql:latest
 
 variables:
-  # Configure mysql environment variables (https://hub.docker.com/r/_/mysql/)
+  # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
   MYSQL_DATABASE: el_duderino
   MYSQL_ROOT_PASSWORD: mysql_strong_password
 ```
@@ -114,5 +114,5 @@ available [shared runners](../runners/README.md).
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
 
-[hub-mysql]: https://hub.docker.com/r/_/mysql/
+[hub-mysql]: https://hub.docker.com/_/mysql/
 [mysql-example-repo]: https://gitlab.com/gitlab-examples/mysql

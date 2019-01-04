@@ -27,7 +27,7 @@
       - if can?(current_user, :push_code, @project)
         = link_to new_project_tag_path(@project), class: 'btn btn-success new-tag-btn' do
           = s_('TagsPage|New tag')
-      = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn rss-btn has-tooltip' do
+      = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn d-none d-sm-inline-block has-tooltip' do
         = icon("rss")
 
   = render_if_exists 'projects/commits/mirror_status'

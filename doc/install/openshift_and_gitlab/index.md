@@ -18,7 +18,7 @@ In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
 official Docker image while getting familiar with the web interface and CLI
 tools that will help us achieve our goal.
 
-For a video demonstration on installing GitLab on Openshift, check the article [In 13 minutes from Kubernetes to a complete application development tool](https://about.gitlab.com/2016/11/14/idea-to-production/).
+For a video demonstration on installing GitLab on OpenShift, check the article [In 13 minutes from Kubernetes to a complete application development tool](https://about.gitlab.com/2016/11/14/idea-to-production/).
 
 ---
 
@@ -518,7 +518,7 @@ PaaS and managing your applications with the ease of containers.
 [templates]: https://docs.openshift.org/latest/architecture/core_concepts/templates.html "Documentation - OpenShift templates"
 [old-post]: https://blog.openshift.com/deploy-gitlab-openshift/ "Old post - Deploy GitLab on OpenShift"
 [line]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/658c065c8d022ce858dd63eaeeadb0b2ddc8deea/docker/openshift-template.json#L239 "GitLab - OpenShift template"
-[oc-gh]: https://github.com/openshift/origin/releases/tag/v1.3.0 "Openshift 1.3.0 release on GitHub"
+[oc-gh]: https://github.com/openshift/origin/releases/tag/v1.3.0 "OpenShift Origin 1.3.0 release on GitHub"
 [ha]: ../../administration/high_availability/gitlab.html "Documentation - GitLab High Availability"
 [replicas]: https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#replication-controllers "Documentation - Replication controller"
 [autoscaling]: https://docs.openshift.org/latest/dev_guide/pod_autoscaling.html "Documentation - Autoscale"

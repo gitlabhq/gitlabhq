@@ -950,7 +950,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns 200' do
-        get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+        get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
 
         expect(response.status).to eq(200)
       end
@@ -969,7 +969,7 @@ describe Projects::MergeRequestsController do
               expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
             end
 
-            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
           end
         end
 
@@ -986,7 +986,7 @@ describe Projects::MergeRequestsController do
               expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
             end
 
-            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
           end
 
           it 'does not preload highlights when diff note is resolved' do
@@ -999,7 +999,7 @@ describe Projects::MergeRequestsController do
               expect(collection).to receive(:find_by_id).with(note_diff_file.id).and_call_original
             end
 
-            get :discussions, namespace_id: project.namespace, project_id: project, id: merge_request.iid
+            get :discussions, params: { namespace_id: project.namespace, project_id: project, id: merge_request.iid }
           end
         end
       end

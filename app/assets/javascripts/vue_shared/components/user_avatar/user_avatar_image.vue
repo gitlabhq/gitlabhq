@@ -67,6 +67,7 @@ export default {
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
       let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      // Only adds the width to the URL if its not a base64 data image
       if (!baseSrc.startsWith('data:') && !baseSrc.includes('?')) baseSrc += `?width=${this.size}`;
       return baseSrc;
     },

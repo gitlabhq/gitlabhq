@@ -195,7 +195,7 @@ module Backup
       if connection.service == ::Fog::Storage::Local
         connection.directories.create(key: remote_directory)
       else
-        connection.directories.get(remote_directory)
+        connection.directories.new(key: remote_directory)
       end
     end
 

@@ -1,0 +1,5 @@
+---
+title: Allow changing group CI/CD settings only for owners.
+merge_request:
+author:
+type: security

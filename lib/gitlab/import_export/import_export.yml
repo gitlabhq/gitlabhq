@@ -63,7 +63,6 @@ project_tree:
   - :triggers
   - :pipeline_schedules
   - :services
-  - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
@@ -156,12 +155,6 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
-  hooks:
-    - :token
-    - :encrypted_token
-    - :encrypted_token_iv
-    - :encrypted_url
-    - :encrypted_url_iv
   runners:
     - :token
     - :token_encrypted

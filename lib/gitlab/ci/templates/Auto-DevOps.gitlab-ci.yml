@@ -185,7 +185,8 @@ dependency_scanning:
     - setup_docker
     - dependency_scanning
   artifacts:
-    paths: [gl-dependency-scanning-report.json]
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
   only:
     refs:
       - branches

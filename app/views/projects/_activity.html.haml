@@ -1,8 +1,8 @@
 %div{ class: container_class }
-  .nav-block.activity-filter-block.activities
+  .nav-block.d-none.d-sm-block.activities
     = render 'shared/event_filter'
     .controls
-      = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn rss-btn has-tooltip' do
+      = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn d-none d-sm-inline-block has-tooltip' do
         = icon('rss')
 
   .content_list.project-activity{ :"data-href" => activity_project_path(@project) }

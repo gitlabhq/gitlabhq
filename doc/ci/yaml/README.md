@@ -1678,9 +1678,9 @@ NOTE: **Note:**
 `include` requires the external YAML files to have the extensions `.yml` or `.yaml`.
 The external file will not be included if the extension is missing.
 
-You can define it either as a single string, or, in case you want to include
-more than one files, an array of different values . The following examples
-are both valid cases:
+You can include your extra YAML file either as a single string or
+as an array of multiple values. You can also use full paths or
+relative URLs. The following examples are both valid:
 
 ```yaml
 # Single string
@@ -2200,6 +2200,12 @@ with an API call.
 If your commit message contains `[ci skip]` or `[skip ci]`, using any
 capitalization, the commit will be created but the pipeline will be skipped.
 
+Alternatively, one can pass the `ci.skip` [Git push option][push-option] if
+using Git 2.10 or newer:
+```
+$ git push -o ci.skip
+```
+
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
@@ -2224,3 +2230,4 @@ GitLab CI/CD with various languages.
 [environment]: ../environments.md "CI/CD environments"
 [schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
 [variables]: ../variables/README.md "CI/CD variables"
+[push-option]: https://git-scm.com/docs/git-push#git-push--oltoptiongt

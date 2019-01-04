@@ -30,7 +30,7 @@
   - if @snippet.updated_at != @snippet.created_at
     = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)
 
-  - if public_snippet?
+  - if @snippet.embeddable?
     .embed-snippet
       .input-group
         .input-group-prepend

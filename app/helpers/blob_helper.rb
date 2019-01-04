@@ -177,7 +177,8 @@ module BlobHelper
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-filename' => @blob && @blob.path,
-      'project-id' => project.id
+      'project-id' => project.id,
+      'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path)
     }
   end
 

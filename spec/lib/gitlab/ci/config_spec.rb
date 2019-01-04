@@ -170,7 +170,6 @@ describe Gitlab::Ci::Config do
         before_script_values = [
           "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
           "which ruby",
-          "gem install bundler --no-ri --no-rdoc",
           "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
         ]
         variables = {
