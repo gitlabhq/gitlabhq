@@ -2,6 +2,8 @@
 - page_title    _("Projects")
 - header_title  _("Projects"), dashboard_projects_path
 
+= render_if_exists "shared/gold_trial_callout"
+
 - if current_user
   = render 'dashboard/projects_head'
 - else
