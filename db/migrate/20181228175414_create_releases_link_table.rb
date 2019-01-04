@@ -6,7 +6,7 @@ class CreateReleasesLinkTable < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
-    create_table :release_links do |t|
+    create_table :release_links, id: :bigserial do |t|
       t.references :release, null: false, index: false, foreign_key: { on_delete: :cascade }
       t.string :url, null: false
       t.string :name, null: false

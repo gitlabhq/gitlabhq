@@ -1798,7 +1798,7 @@ ActiveRecord::Schema.define(version: 20190103140724) do
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
-  create_table "release_links", force: :cascade do |t|
+  create_table "release_links", id: :bigserial, force: :cascade do |t|
     t.integer "release_id", null: false
     t.string "url", null: false
     t.string "name", null: false
