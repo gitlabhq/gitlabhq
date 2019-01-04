@@ -610,15 +610,19 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-issue@gl.ab"
 
         expect(project.new_issuable_address(user, 'issue')).to eq(address)
       end
 
       it 'returns the address to create a new merge request' do
-        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-merge-request@gl.ab"
 
         expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
+      end
+
+      it 'returns nil with invalid address type' do
+        expect(project.new_issuable_address(user, 'invalid_param')).to be_nil
       end
     end
 
