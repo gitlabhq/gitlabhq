@@ -330,8 +330,8 @@ class Project < ActiveRecord::Base
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group
-  validate :visibility_level_allowed_as_fork
+  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,

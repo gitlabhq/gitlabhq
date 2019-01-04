@@ -2959,6 +2959,24 @@ describe Project do
     end
   end
 
+  describe '#update' do
+    let(:project) { create(:project) }
+
+    it 'validates the visibility' do
+      expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it 'does not validate the visibility' do
+      expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(updated_at: Time.now)
+    end
+  end
+
   describe '#last_repository_updated_at' do
     it 'sets to created_at upon creation' do
       project = create(:project, created_at: 2.hours.ago)
@@ -3183,6 +3201,13 @@ describe Project do
 
       it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'does not validate project visibility' do
+        expect(project).not_to receive(:visibility_level_allowed_as_fork)
+        expect(project).not_to receive(:visibility_level_allowed_by_group)
+
+        project.migrate_to_hashed_storage!
       end
 
       it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
