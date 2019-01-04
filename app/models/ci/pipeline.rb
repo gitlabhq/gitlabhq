@@ -180,8 +180,9 @@ module Ci
 
     scope :for_merge_request, -> (merge_request, ref, sha) do
       ##
-      # We have to filter out unrelated MR pipelines, in case,
-      # there are two merge requests from the same source branch
+      # We have to filter out unrelated MR pipelines.
+      # When merge request is empty, it selects general pipelines, such as push sourced pipelines.
+      # When merge request is matched, it selects MR pipelines.
       where(merge_request: [nil, merge_request], ref: ref, sha: sha)
         .sort_by_merge_request_pipelines
     end
