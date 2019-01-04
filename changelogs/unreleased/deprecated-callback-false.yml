@@ -1,0 +1,6 @@
+---
+title: 'Fix deprecation: returning false in Active Record and Active Model callbacks
+  will not implicitly halt a callback chain'
+merge_request: 24134
+author: Jasper Maes
+type: other
