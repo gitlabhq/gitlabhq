@@ -3831,6 +3831,16 @@ describe Project do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }
     let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:local_merge_request) do
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_collaboration: true
+      )
+    end
     let!(:merge_request) do
       create(
         :merge_request,
@@ -3875,14 +3885,23 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_collaboration_push?' do
-      it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+    describe '#any_branch_allows_collaboration?' do
+      it 'allows access when there are merge requests open allowing collaboration' do
+        expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
 
-      it 'allows access when there are merge requests open but no branch name is given' do
-        expect(project.branch_allows_collaboration?(user, nil))
+      it 'does not allow access when there are no merge requests open allowing collaboration' do
+        merge_request.close!
+
+        expect(project.any_branch_allows_collaboration?(user))
+          .to be_falsey
+      end
+    end
+
+    describe '#branch_allows_collaboration?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
@@ -3911,13 +3930,6 @@ describe Project do
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
-      end
-
-      it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
-
-        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do

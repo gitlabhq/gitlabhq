@@ -1928,23 +1928,15 @@ class Project < ActiveRecord::Base
                                 .where('project_authorizations.project_id = merge_requests.target_project_id')
                                 .limit(1)
                                 .select(1)
-    source_of_merge_requests.opened
-      .where(allow_collaboration: true)
-      .where('EXISTS (?)', developer_access_exists)
+    merge_requests_allowing_collaboration.where('EXISTS (?)', developer_access_exists)
+  end
+
+  def any_branch_allows_collaboration?(user)
+    fetch_branch_allows_collaboration(user)
   end
 
   def branch_allows_collaboration?(user, branch_name)
-    return false unless user
-
-    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
-
-    memoized_results = strong_memoize(:branch_allows_collaboration) do
-      Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
-      end
-    end
-
-    memoized_results[cache_key]
+    fetch_branch_allows_collaboration(user, branch_name)
   end
 
   def licensed_features
@@ -2017,6 +2009,12 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  def merge_requests_allowing_collaboration(source_branch = nil)
+    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = relation.where(source_branch: source_branch) if source_branch
+    relation
+  end
 
   def create_new_pool_repository
     pool = begin
@@ -2142,25 +2140,18 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_collaboration?(user, branch_name)
-    check_access = -> do
-      next false if empty_repo?
+  def fetch_branch_allows_collaboration(user, branch_name = nil)
+    return false unless user
 
-      merge_requests = source_of_merge_requests.opened
-                         .where(allow_collaboration: true)
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
+      next false if empty_repo?
 
       # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        if branch_name
-          merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
-        else
-          merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+        merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
+          merge_request.can_be_merged_by?(user)
         end
       end
-    end
-
-    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-      check_access.call
     end
   end
 

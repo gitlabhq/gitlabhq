@@ -80,9 +80,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access_check
-    # Use the magic string '_any' to indicate we do not know what the
-    # changes are. This is also what gitlab-shell does.
-    access.check(git_command, '_any')
+    access.check(git_command, Gitlab::GitAccess::ANY)
     @project ||= access.project
   end
 

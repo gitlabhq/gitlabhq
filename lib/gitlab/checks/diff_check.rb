@@ -11,7 +11,7 @@ module Gitlab
       }.freeze
 
       def validate!
-        return if deletion? || newrev.nil?
+        return if deletion?
         return unless should_run_diff_validations?
         return if commits.empty?
 
