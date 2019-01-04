@@ -14,6 +14,9 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
       resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        params do
+          requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
+        end
         resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
           resource :assets do
             desc 'Get a list of links of a release' do
@@ -26,20 +29,7 @@ module API
             get 'links' do
               authorize! :read_release, release
 
-              present paginate(release.links), with: Entities::Releases::Link
-            end
-
-            desc 'Get a link detail of a release' do
-              detail 'This feature was introduced in GitLab 11.7.'
-              success Entities::Releases::Link
-            end
-            params do
-              requires :link_id, type: String, desc: 'The id of the link'
-            end
-            get 'links/:link_id' do
-              authorize! :read_release, release
-
-              present link, with: Entities::Releases::Link
+              present paginate(release.links.sorted), with: Entities::Releases::Link
             end
 
             desc 'Create a link of a release' do
@@ -58,44 +48,55 @@ module API
               if new_link.persisted?
                 present new_link, with: Entities::Releases::Link
               else
-                render_api_error!(result[:message], result[:http_status])
+                render_api_error!(new_link.errors.messages, 400)
               end
             end
 
-            desc 'Update a link of a release' do
-              detail 'This feature was introduced in GitLab 11.7.'
-              success Entities::Releases::Link
-            end
             params do
-              requires :link_id, type: Integer, desc: 'The id of the link'
-              optional :name, type: String, desc: 'The name of the link'
-              optional :url, type: String, desc: 'The URL of the link'
-              at_least_one_of :name, :url
+              requires :link_id, type: String, desc: 'The id of the link'
             end
-            put 'links/:link_id' do
-              authorize! :update_release, release
-
-              if link.update(declared_params(include_missing: false))
-                present link, with: Entities::Releases::Link
-              else
-                render_api_error!(result[:message], result[:http_status])
+            resource 'links/:link_id' do
+              desc 'Get a link detail of a release' do
+                detail 'This feature was introduced in GitLab 11.7.'
+                success Entities::Releases::Link
               end
-            end
+              get do
+                authorize! :read_release, release
 
-            desc 'Delete a link of a release' do
-              detail 'This feature was introduced in GitLab 11.7.'
-              success Entities::Releases::Link
-            end
-            params do
-              requires :link_id, type: Integer, desc: 'The id of the link'
-            end
-            put 'links/:link_id' do
-              authorize! :destroy_release, release
-
-              if link.destroy
                 present link, with: Entities::Releases::Link
-              else
-                render_api_error!(result[:message], result[:http_status])
+              end
+
+              desc 'Update a link of a release' do
+                detail 'This feature was introduced in GitLab 11.7.'
+                success Entities::Releases::Link
+              end
+              params do
+                optional :name, type: String, desc: 'The name of the link'
+                optional :url, type: String, desc: 'The URL of the link'
+                at_least_one_of :name, :url
+              end
+              put do
+                authorize! :update_release, release
+
+                if link.update(declared_params(include_missing: false))
+                  present link, with: Entities::Releases::Link
+                else
+                  render_api_error!(link.errors.messages, 400)
+                end
+              end
+
+              desc 'Delete a link of a release' do
+                detail 'This feature was introduced in GitLab 11.7.'
+                success Entities::Releases::Link
+              end
+              delete do
+                authorize! :destroy_release, release
+
+                if link.destroy
+                  present link, with: Entities::Releases::Link
+                else
+                  render_api_error!(link.errors.messages, 400)
+                end
               end
             end
           end
@@ -104,7 +105,7 @@ module API
 
       helpers do
         def release
-          @release ||= user_project.releases.find_by_tag(params[:tag_name])
+          @release ||= user_project.releases.find_by_tag!(params[:tag])
         end
 
         def link
