@@ -3534,7 +3534,9 @@ describe Project do
     end
 
     it 'contains a URL variable for every supported API version' do
-      supported_versions = API::API.versions.select do |version|
+      # Ensure future API versions have proper variables defined. We're not doing this for v3.
+      supported_versions = API::API.versions - ['v3']
+      supported_versions = supported_versions.select do |version|
         API::API.routes.select { |route| route.version == version }.many?
       end
 
