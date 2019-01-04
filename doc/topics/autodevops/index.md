@@ -609,7 +609,7 @@ repo or by specifying a project variable:
   one](https://gitlab.com/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#variables)
-  `AUTO_DEVOPS_CHART` with the URL of a custom chart to use.
+  `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
 ### Customizing `.gitlab-ci.yml`
 
