@@ -49,6 +49,12 @@ module API
         requires :name,        type: String, desc: 'The name of the release'
         requires :description, type: String, desc: 'The release notes'
         optional :ref,         type: String, desc: 'The commit sha or branch name'
+        optional :assets, type: Hash do
+          optional :links, type: Array do
+            requires :name, type: String
+            requires :url, type: String
+          end
+        end
       end
       post ':id/releases' do
         authorize_create_release!
