@@ -83,7 +83,7 @@ module Gitlab
 
       def process_external_files(config, project, opts)
         sha = opts.fetch(:sha) { project.repository.root_ref_sha }
-        Config::External::Processor.new(config, project, sha).perform
+        Config::External::Processor.new(config, project: project, sha: sha).perform
       end
     end
   end

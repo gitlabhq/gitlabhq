@@ -50,7 +50,8 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          files: files
+          files: files,
+          postinstall: install_knative_metrics
         )
       end
 
@@ -73,6 +74,10 @@ module Clusters
 
       def kube_client
         cluster&.kubeclient&.core_client
+      end
+
+      def install_knative_metrics
+        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"] if cluster.application_knative_available?
       end
     end
   end

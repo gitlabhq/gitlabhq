@@ -29,7 +29,7 @@ module QA
           page.set_api_url(@cluster.api_url)
           page.set_ca_certificate(@cluster.ca_certificate)
           page.set_token(@cluster.token)
-          page.check_rbac! if @cluster.rbac
+          page.uncheck_rbac! unless @cluster.rbac
           page.add_cluster!
         end
 

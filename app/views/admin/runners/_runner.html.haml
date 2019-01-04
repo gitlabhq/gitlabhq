@@ -56,8 +56,9 @@
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Last contact')
     .table-mobile-content
-      - if runner.contacted_at
-        = time_ago_with_tooltip runner.contacted_at
+      - contacted_at = runner_contacted_at(runner)
+      - if contacted_at
+        = time_ago_with_tooltip contacted_at
       - else
         = _('Never')
 

@@ -5,7 +5,7 @@ Received: by mail-ie0-f180.google.com with SMTP id f4so21977375iea.25 for <incom
 Received: by 10.0.0.1 with HTTP; Thu, 13 Jun 2013 14:03:48 -0700
 Date: Thu, 13 Jun 2013 17:03:48 -0400
 From: Jake the Dog <jake@adventuretime.ooo>
-To: incoming+gitlabhq/gitlabhq+bad_token@appmail.adventuretime.ooo
+To: incoming+gitlabhq/gitlabhq+auth_token@appmail.adventuretime.ooo
 Message-ID: <CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com>
 Subject: New Issue by email
 Mime-Version: 1.0
@@ -16,3 +16,8 @@ X-Sieve: CMU Sieve 2.2
 X-Received: by 10.0.0.1 with SMTP id n7mr11234144ipb.85.1371157428600; Thu,
  13 Jun 2013 14:03:48 -0700 (PDT)
 X-Scanned-By: MIMEDefang 2.69 on IPv6:2001:470:1d:165::1
+
+The reply by email functionality should be extended to allow creating a new issue by email.
+
+* Allow an admin to specify which project the issue should be created under by checking the sender domain.
+* Possibly allow the use of regular expression matches within the subject/body to specify which project the issue should be created under.

@@ -205,6 +205,23 @@ describe Gitlab::Ci::Config do
       end
     end
 
+    context "when gitlab_ci.yml has ambigious 'include' defined"  do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+          include:
+            remote: http://url
+            local: /local/file.yml
+        HEREDOC
+      end
+
+      it 'raises error YamlProcessor validationError' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
+        )
+      end
+    end
+
     describe 'external file version' do
       context 'when external local file SHA is defined' do
         it 'is using a defined value' do

@@ -610,15 +610,19 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-issue@gl.ab"
 
         expect(project.new_issuable_address(user, 'issue')).to eq(address)
       end
 
       it 'returns the address to create a new merge request' do
-        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-merge-request@gl.ab"
 
         expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
+      end
+
+      it 'returns nil with invalid address type' do
+        expect(project.new_issuable_address(user, 'invalid_param')).to be_nil
       end
     end
 
@@ -2959,6 +2963,24 @@ describe Project do
     end
   end
 
+  describe '#update' do
+    let(:project) { create(:project) }
+
+    it 'validates the visibility' do
+      expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it 'does not validate the visibility' do
+      expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(updated_at: Time.now)
+    end
+  end
+
   describe '#last_repository_updated_at' do
     it 'sets to created_at upon creation' do
       project = create(:project, created_at: 2.hours.ago)
@@ -3183,6 +3205,13 @@ describe Project do
 
       it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'does not validate project visibility' do
+        expect(project).not_to receive(:visibility_level_allowed_as_fork)
+        expect(project).not_to receive(:visibility_level_allowed_by_group)
+
+        project.migrate_to_hashed_storage!
       end
 
       it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
@@ -3831,6 +3860,16 @@ describe Project do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }
     let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:local_merge_request) do
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_collaboration: true
+      )
+    end
     let!(:merge_request) do
       create(
         :merge_request,
@@ -3875,14 +3914,23 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_collaboration_push?' do
-      it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+    describe '#any_branch_allows_collaboration?' do
+      it 'allows access when there are merge requests open allowing collaboration' do
+        expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
 
-      it 'allows access when there are merge requests open but no branch name is given' do
-        expect(project.branch_allows_collaboration?(user, nil))
+      it 'does not allow access when there are no merge requests open allowing collaboration' do
+        merge_request.close!
+
+        expect(project.any_branch_allows_collaboration?(user))
+          .to be_falsey
+      end
+    end
+
+    describe '#branch_allows_collaboration?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
@@ -3911,13 +3959,6 @@ describe Project do
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
-      end
-
-      it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
-
-        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do

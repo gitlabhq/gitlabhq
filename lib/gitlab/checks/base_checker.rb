@@ -18,12 +18,16 @@ module Gitlab
 
       private
 
+      def creation?
+        Gitlab::Git.blank_ref?(oldrev)
+      end
+
       def deletion?
         Gitlab::Git.blank_ref?(newrev)
       end
 
       def update?
-        !Gitlab::Git.blank_ref?(oldrev) && !deletion?
+        !creation? && !deletion?
       end
 
       def updated_from_web?

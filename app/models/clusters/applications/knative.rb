@@ -5,7 +5,7 @@ module Clusters
     class Knative < ActiveRecord::Base
       VERSION = '0.2.2'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
-
+      METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       self.table_name = 'clusters_applications_knative'
@@ -49,7 +49,8 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: REPOSITORY
+          repository: REPOSITORY,
+          postinstall: install_knative_metrics
         )
       end
 
@@ -93,6 +94,10 @@ module Clusters
         client.get_services.as_json
       rescue Kubeclient::ResourceNotFoundError
         []
+      end
+
+      def install_knative_metrics
+        ["kubectl apply -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
       end
     end
   end

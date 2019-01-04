@@ -6422,6 +6422,9 @@ msgstr ""
 msgid "Submit as spam"
 msgstr ""
 
+msgid "Submit feedback"
+msgstr ""
+
 msgid "Submit search"
 msgstr ""
 
@@ -7717,6 +7720,9 @@ msgid "You have no permissions"
 msgstr ""
 
 msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>."
 msgstr ""
 
 msgid "You must accept our Terms of Service and privacy policy in order to register an account"

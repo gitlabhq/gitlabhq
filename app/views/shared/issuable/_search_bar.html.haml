@@ -11,7 +11,7 @@
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
       - if @can_bulk_update
-        .check-all-holder.hidden
+        .check-all-holder.d-none.d-sm-block.hidden
           = check_box_tag "check-all-issues", nil, false, class: "check-all-issues left"
       .issues-other-filters.filtered-search-wrapper
         .filtered-search-box

@@ -28,7 +28,8 @@ project_tree:
     - notes:
         :author
   - releases:
-      :author
+    - :author
+    - :links
   - project_members:
     - :user
   - merge_requests:
