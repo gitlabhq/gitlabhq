@@ -392,8 +392,8 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
 
-If a job does not have neither `only` nor `except` rule,
-`only: ['branches', 'tags']` is set by default.
+If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
+default. If it doesn't have an `except` rule, it is empty.
 
 For example,
 
@@ -1649,6 +1649,7 @@ test:
 > Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
 to GitLab Core in 11.4
+> In GitLab 11.7, support for including [GitLab-supplied templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates) directly [was added](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445).
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1689,6 +1690,13 @@ include: '/templates/.after-script-template.yml'
 ```
 
 ```yaml
+# Single string
+
+include:
+  file: '/templates/.after-script-template.yml'
+```
+
+```yaml
 # Array
 
 include:
@@ -1696,9 +1704,27 @@ include:
   - '/templates/.after-script-template.yml'
 ```
 
+```yaml
+# Array mixed syntax
+
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+```yaml
+# Array
+
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - local: '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
 ---
 
-`include` supports two types of files:
+`include` supports three types of files:
 
 - **local** to the same repository, referenced by using full paths in the same
   repository, with `/` being the root directory. For example:
@@ -1706,6 +1732,14 @@ include:
     ```yaml
     # Within the repository
     include: '/templates/.gitlab-ci-template.yml'
+    ```
+
+    Or using:
+
+    ```yaml
+    # Within the repository
+    include:
+      local: '/templates/.gitlab-ci-template.yml'
     ```
 
     NOTE: **Note:**
@@ -1720,7 +1754,16 @@ include:
   using the full URL. For example:
 
     ```yaml
+    # File sourced from outside repository
     include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+    ```
+
+    Or using:
+
+    ```yaml
+    # File sourced from outside repository
+    include:
+      remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
     ```
 
     NOTE: **Note:**
@@ -1730,6 +1773,17 @@ include:
     In order to include files from another repository inside your local network,
     you may need to enable the **Allow requests to the local network from hooks and services** checkbox
     located in the **Settings > Network > Outbound requests** section within the **Admin area**.
+
+- **template** included with GitLab. For example:
+
+    ```yaml
+    # File sourced from GitLab's template collection
+    include:
+      template: Auto-DevOps.gitlab-ci.yml
+    ```
+
+    NOTE: **Note:**
+    Templates included this way are sourced from [lib/gitlab/ci/templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates).
 
 ---
 

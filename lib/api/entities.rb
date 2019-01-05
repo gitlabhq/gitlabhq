@@ -1093,12 +1093,34 @@ module API
       expose :description
     end
 
+    module Releases
+      class Link < Grape::Entity
+        expose :id
+        expose :name
+        expose :url
+        expose :external?, as: :external
+      end
+
+      class Source < Grape::Entity
+        expose :format
+        expose :url
+      end
+    end
+
     class Release < TagRelease
       expose :name
       expose :description_html
       expose :created_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit
+
+      expose :assets do
+        expose :assets_count, as: :count
+        expose :sources, using: Entities::Releases::Source
+        expose :links, using: Entities::Releases::Link do |release, options|
+          release.links.sorted
+        end
+      end
     end
 
     class Tag < Grape::Entity

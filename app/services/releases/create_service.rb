@@ -43,11 +43,12 @@ module Releases
         description: description,
         author: current_user,
         tag: tag.name,
-        sha: tag.dereferenced_target.sha
+        sha: tag.dereferenced_target.sha,
+        links_attributes: params.dig(:assets, 'links') || []
       )
 
       success(tag: tag, release: release)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue => e
       error(e.message, 400)
     end
   end

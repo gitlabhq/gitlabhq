@@ -161,20 +161,16 @@ describe Clusters::Applications::Prometheus do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
       expect(subject.version).to eq('6.7.3')
-      expect(subject).not_to be_rbac
+      expect(subject).to be_rbac
       expect(subject.files).to eq(prometheus.files)
     end
 
-    it 'should not install knative metrics' do
-      expect(subject.postinstall).to be_nil
-    end
-
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        prometheus.cluster.platform_kubernetes.rbac!
+        prometheus.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
@@ -185,13 +181,17 @@ describe Clusters::Applications::Prometheus do
       end
     end
 
+    it 'should not install knative metrics' do
+      expect(subject.postinstall).to be_nil
+    end
+
     context 'with knative installed' do
       let(:knative) { create(:clusters_applications_knative, :installed ) }
       let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
 
       subject { prometheus.install_command }
 
-      it 'should install metrics' do
+      it 'should install knative metrics' do
         expect(subject.postinstall).to include("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
       end
     end

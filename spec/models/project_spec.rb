@@ -2963,6 +2963,24 @@ describe Project do
     end
   end
 
+  describe '#update' do
+    let(:project) { create(:project) }
+
+    it 'validates the visibility' do
+      expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it 'does not validate the visibility' do
+      expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(updated_at: Time.now)
+    end
+  end
+
   describe '#last_repository_updated_at' do
     it 'sets to created_at upon creation' do
       project = create(:project, created_at: 2.hours.ago)
@@ -3187,6 +3205,13 @@ describe Project do
 
       it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'does not validate project visibility' do
+        expect(project).not_to receive(:visibility_level_allowed_as_fork)
+        expect(project).not_to receive(:visibility_level_allowed_by_group)
+
+        project.migrate_to_hashed_storage!
       end
 
       it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
@@ -3500,7 +3525,31 @@ describe Project do
     end
   end
 
-  context '#auto_devops_variables' do
+  describe '#api_variables' do
+    set(:project) { create(:project) }
+
+    it 'exposes API v4 URL' do
+      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
+      expect(project.api_variables.first[:value]).to include '/api/v4'
+    end
+
+    it 'contains a URL variable for every supported API version' do
+      # Ensure future API versions have proper variables defined. We're not doing this for v3.
+      supported_versions = API::API.versions - ['v3']
+      supported_versions = supported_versions.select do |version|
+        API::API.routes.select { |route| route.version == version }.many?
+      end
+
+      required_variables = supported_versions.map do |version|
+        "CI_API_#{version.upcase}_URL"
+      end
+
+      expect(project.api_variables.map { |variable| variable[:key] })
+        .to contain_exactly(*required_variables)
+    end
+  end
+
+  describe '#auto_devops_variables' do
     set(:project) { create(:project) }
 
     subject { project.auto_devops_variables }

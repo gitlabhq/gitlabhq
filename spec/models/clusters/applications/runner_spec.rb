@@ -47,17 +47,17 @@ describe Clusters::Applications::Runner do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
       expect(subject.version).to eq('0.1.43')
-      expect(subject).not_to be_rbac
+      expect(subject).to be_rbac
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.files).to eq(gitlab_runner.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        gitlab_runner.cluster.platform_kubernetes.rbac!
+        gitlab_runner.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do

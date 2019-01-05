@@ -92,6 +92,10 @@ module QA
         find_element(name).set(true)
       end
 
+      def uncheck_element(name)
+        find_element(name).set(false)
+      end
+
       def click_element(name)
         find_element(name).click
       end
