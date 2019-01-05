@@ -173,7 +173,7 @@
   svg {
     width: 14px;
     height: 14px;
-    margin-top: 3px;
+    vertical-align: middle;
     fill: $gl-text-color-secondary;
   }
 
@@ -306,5 +306,9 @@
   .atwho-view ul li {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .referenced-users {
+    margin-right: 0;
   }
 }

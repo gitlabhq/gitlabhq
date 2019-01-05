@@ -32,6 +32,15 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
+$black: #000;
+$black-transparent: rgba(0, 0, 0, 0.3);
+$almost-black: #242424;
+
+$t-gray-a-02: rgba($black, 0.02);
+$t-gray-a-04: rgba($black, 0.04);
+$t-gray-a-06: rgba($black, 0.06);
+$t-gray-a-08: rgba($black, 0.08);
+
 $gl-gray-100: #dddddd;
 $gl-gray-200: #cccccc;
 $gl-gray-350: #aaaaaa;
@@ -170,11 +179,6 @@ $theme-light-red-500: #c24b38;
 $theme-light-red-600: #b03927;
 $theme-light-red-700: #a62e21;
 
-$black: #000;
-$black-transparent: rgba(0, 0, 0, 0.3);
-$shadow-color: rgba($black, 0.1);
-$almost-black: #242424;
-
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
 
@@ -187,6 +191,7 @@ $border-gray-dark: darken($white-normal, $darken-border-factor);
  * UI elements
  */
 $border-color: #e5e5e5;
+$shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
 $well-light-border: #f1f1f1;
@@ -198,7 +203,6 @@ $well-light-text-color: #5b6169;
 $gl-font-size: 14px;
 $gl-font-size-xs: 11px;
 $gl-font-size-small: 12px;
-$gl-font-size-medium: 20px;
 $gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;

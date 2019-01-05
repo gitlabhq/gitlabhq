@@ -17,14 +17,13 @@ const DEFAULT_PROPS = {
 const UserPopover = Vue.extend(userPopover);
 
 describe('User Popover Component', () => {
+  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  preloadFixtures(fixtureTemplate);
+
   let vm;
 
   beforeEach(() => {
-    setFixtures(`
-      <a href="/root" data-user-id="1" class="js-user-link" title="testuser">
-        Root
-      </a>
-    `);
+    loadFixtures(fixtureTemplate);
   });
 
   afterEach(() => {

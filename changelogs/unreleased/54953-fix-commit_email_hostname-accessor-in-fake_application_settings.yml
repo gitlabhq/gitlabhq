@@ -1,5 +1,0 @@
----
-title: Fix a 500 error that could occur until all migrations are done
-merge_request: 23939
-author:
-type: fixed

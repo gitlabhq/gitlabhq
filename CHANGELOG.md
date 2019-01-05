@@ -2,6 +2,51 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.3 (2019-01-04)
+
+### Fixed (1 change)
+
+- Fix clone URL not showing if protocol is HTTPS. !24131
+
+
+## 11.6.2 (2019-01-02)
+
+### Fixed (7 changes)
+
+- Hide cluster features that don't work yet with Group Clusters. !23935
+- Fix a 500 error that could occur until all migrations are done. !23939
+- Fix missing Git clone button when protocol restriction setting enabled. !24015
+- Fix clone dropdown parent inheritance issues in HAML. !24029
+- Fix content-disposition in blobs and files API endpoint. !24078
+- Fixed markdown toolbar buttons.
+- Adjust line-height of blame view line numbers.
+
+
+## 11.6.1 (2018-12-28)
+
+### Security (15 changes)
+
+- Escape label and milestone titles to prevent XSS in GFM autocomplete. !2740
+- Prevent private snippets from being embeddable.
+- Add subresources removal to member destroy service.
+- Escape html entities in LabelReferenceFilter when no label found.
+- Allow changing group CI/CD settings only for owners.
+- Authorize before reading job information via API.
+- Prevent leaking protected variables for ambiguous refs.
+- Ensure that build token is only used when running.
+- Issuable no longer is visible to users when project can't be viewed.
+- Don't expose cross project repositories through diffs when creating merge reqeusts.
+- Fix SSRF with import_url and remote mirror url.
+- Fix persistent symlink in project import.
+- Set URL rel attribute for broken URLs.
+- Project guests no longer are able to see refs page.
+- Delete confidential todos for user when downgraded to Guest.
+
+### Other (1 change)
+
+- Fix due date test. !23845
+
+
 ## 11.6.0 (2018-12-22)
 
 ### Security (24 changes, 1 of them is from the community)

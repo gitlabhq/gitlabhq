@@ -1,0 +1,5 @@
+---
+title: Remove top margin in modal header titles
+merge_request: 24108
+author:
+type: fixed

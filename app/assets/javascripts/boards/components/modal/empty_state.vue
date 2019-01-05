@@ -45,7 +45,7 @@ export default {
   <section class="empty-state">
     <div class="row">
       <div class="col-12 col-md-6 order-md-last">
-        <aside class="svg-content"><img :src="emptyStateSvg" /></aside>
+        <aside class="svg-content d-none d-md-block"><img :src="emptyStateSvg" /></aside>
       </div>
       <div class="col-12 col-md-6 order-md-first">
         <div class="text-content">

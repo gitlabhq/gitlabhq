@@ -809,12 +809,18 @@ describe API::Internal do
         gl_repository: gl_repository,
         secret_token: secret_token,
         identifier: identifier,
-        changes: changes
+        changes: changes,
+        push_options: push_options
       }
     end
 
     let(:changes) do
       "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch"
+    end
+
+    let(:push_options) do
+      ['ci.skip',
+       'another push option']
     end
 
     before do
@@ -825,7 +831,7 @@ describe API::Internal do
 
     it 'enqueues a PostReceive worker job' do
       expect(PostReceive).to receive(:perform_async)
-        .with(gl_repository, identifier, changes)
+        .with(gl_repository, identifier, changes, push_options)
 
       post api("/internal/post_receive"), params: valid_params
     end

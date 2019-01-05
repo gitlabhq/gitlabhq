@@ -47,6 +47,15 @@ describe QA::Support::Page::Logging do
 
   it 'logs find_element' do
     expect { subject.find_element(:element) }
+      .to output(/finding :element/).to_stdout_from_any_process
+    expect { subject.find_element(:element) }
+      .to output(/found :element/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with text_filter' do
+    expect { subject.find_element(:element, 'foo') }
+      .to output(/finding :element with text_filter "foo"/).to_stdout_from_any_process
+    expect { subject.find_element(:element, 'foo') }
       .to output(/found :element/).to_stdout_from_any_process
   end
 

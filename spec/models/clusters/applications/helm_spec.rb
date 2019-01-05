@@ -49,16 +49,16 @@ describe Clusters::Applications::Helm do
     end
 
     describe 'rbac' do
-      context 'non rbac cluster' do
-        it { expect(subject).not_to be_rbac }
+      context 'rbac cluster' do
+        it { expect(subject).to be_rbac }
       end
 
-      context 'rbac cluster' do
+      context 'non rbac cluster' do
         before do
-          helm.cluster.platform_kubernetes.rbac!
+          helm.cluster.platform_kubernetes.abac!
         end
 
-        it { expect(subject).to be_rbac }
+        it { expect(subject).not_to be_rbac }
       end
     end
   end

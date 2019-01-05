@@ -5,7 +5,7 @@ module Clusters
     class Knative < ActiveRecord::Base
       VERSION = '0.2.2'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
-
+      METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       self.table_name = 'clusters_applications_knative'
@@ -20,7 +20,7 @@ module Clusters
       self.reactive_cache_key = ->(knative) { [knative.class.model_name.singular, knative.id] }
 
       state_machine :status do
-        before_transition any => [:installed] do |application|
+        after_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)
@@ -49,7 +49,8 @@ module Clusters
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files,
-          repository: REPOSITORY
+          repository: REPOSITORY,
+          postinstall: install_knative_metrics
         )
       end
 
@@ -93,6 +94,10 @@ module Clusters
         client.get_services.as_json
       rescue Kubeclient::ResourceNotFoundError
         []
+      end
+
+      def install_knative_metrics
+        ["kubectl apply -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
       end
     end
   end

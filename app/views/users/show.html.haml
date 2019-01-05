@@ -71,7 +71,7 @@
                 = icon('twitter-square')
           - unless @user.website_url.blank?
             .profile-link-holder.middle-dot-divider
-              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'noopener noreferrer nofollow'
+              = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
               = icon('map-marker')

@@ -105,7 +105,9 @@ class MergeRequest < ActiveRecord::Base
 
     before_transition any => :opened do |merge_request|
       merge_request.merge_jid = nil
+    end
 
+    after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
@@ -406,6 +408,28 @@ class MergeRequest < ActiveRecord::Base
 
   def non_latest_diffs
     merge_request_diffs.where.not(id: merge_request_diff.id)
+  end
+
+  def preloads_discussion_diff_highlighting?
+    true
+  end
+
+  def preload_discussions_diff_highlight
+    preloadable_files = note_diff_files.for_commit_or_unresolved
+
+    discussions_diffs.load_highlight(preloadable_files.pluck(:id))
+  end
+
+  def discussions_diffs
+    strong_memoize(:discussions_diffs) do
+      Gitlab::DiscussionsDiff::FileCollection.new(note_diff_files.to_a)
+    end
+  end
+
+  def note_diff_files
+    NoteDiffFile
+      .where(diff_note: discussion_notes)
+      .includes(diff_note: :project)
   end
 
   def diff_size

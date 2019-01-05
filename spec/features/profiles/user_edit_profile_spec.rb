@@ -147,6 +147,9 @@ describe 'User edit profile' do
     end
 
     context 'user menu' do
+      let(:issue) { create(:issue, project: project)}
+      let(:project) { create(:project) }
+
       def open_user_status_modal
         find('.header-user-dropdown-toggle').click
 
@@ -203,6 +206,17 @@ describe 'User edit profile' do
         within('.cover-status') do
           expect(page).to have_emoji(emoji)
         end
+      end
+
+      it 'does not update the awards panel emoji' do
+        project.add_maintainer(user)
+        visit(project_issue_path(project, issue))
+
+        emoji = 'biohazard'
+        open_user_status_modal
+        select_emoji(emoji, true)
+
+        expect(page.all('.award-control .js-counter')).to all(have_content('0'))
       end
 
       it 'adds message to user status' do

@@ -324,15 +324,14 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
-                                ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
-                                allow_localhost: false,
-                                enforce_user: true }, if: [:external_import?, :import_url_changed?]
+  validates :import_url, public_url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                       ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
+                                       enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group
-  validate :visibility_level_allowed_as_fork
+  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
@@ -913,11 +912,16 @@ class Project < ActiveRecord::Base
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
+    # check since this can come from a request parameter
+    return unless %w(issue merge_request).include?(address_type)
+
     author.ensure_incoming_email_token!
 
-    suffix = address_type == 'merge_request' ? '+merge-request' : ''
-    Gitlab::IncomingEmail.reply_address(
-      "#{full_path}#{suffix}+#{author.incoming_email_token}")
+    suffix = address_type.dasherize
+
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-issue@localhost.com
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-merge-request@localhost.com
+    Gitlab::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
   end
 
   def build_commit_note(commit)
@@ -1701,6 +1705,13 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
+      .concat(api_variables)
+  end
+
+  def api_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+    end
   end
 
   def container_registry_variables
@@ -1734,10 +1745,21 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    if repository.branch_exists?(ref)
-      ProtectedBranch.protected?(self, ref)
-    elsif repository.tag_exists?(ref)
-      ProtectedTag.protected?(self, ref)
+    raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
+
+    resolved_ref = repository.expand_ref(ref) || ref
+    return false unless Gitlab::Git.tag_ref?(resolved_ref) || Gitlab::Git.branch_ref?(resolved_ref)
+
+    ref_name = if resolved_ref == ref
+                 Gitlab::Git.ref_name(resolved_ref)
+               else
+                 ref
+               end
+
+    if Gitlab::Git.branch_ref?(resolved_ref)
+      ProtectedBranch.protected?(self, ref_name)
+    elsif Gitlab::Git.tag_ref?(resolved_ref)
+      ProtectedTag.protected?(self, ref_name)
     end
   end
 
@@ -1918,23 +1940,15 @@ class Project < ActiveRecord::Base
                                 .where('project_authorizations.project_id = merge_requests.target_project_id')
                                 .limit(1)
                                 .select(1)
-    source_of_merge_requests.opened
-      .where(allow_collaboration: true)
-      .where('EXISTS (?)', developer_access_exists)
+    merge_requests_allowing_collaboration.where('EXISTS (?)', developer_access_exists)
+  end
+
+  def any_branch_allows_collaboration?(user)
+    fetch_branch_allows_collaboration(user)
   end
 
   def branch_allows_collaboration?(user, branch_name)
-    return false unless user
-
-    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
-
-    memoized_results = strong_memoize(:branch_allows_collaboration) do
-      Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
-      end
-    end
-
-    memoized_results[cache_key]
+    fetch_branch_allows_collaboration(user, branch_name)
   end
 
   def licensed_features
@@ -2007,6 +2021,12 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  def merge_requests_allowing_collaboration(source_branch = nil)
+    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = relation.where(source_branch: source_branch) if source_branch
+    relation
+  end
 
   def create_new_pool_repository
     pool = begin
@@ -2132,25 +2152,18 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_collaboration?(user, branch_name)
-    check_access = -> do
-      next false if empty_repo?
+  def fetch_branch_allows_collaboration(user, branch_name = nil)
+    return false unless user
 
-      merge_requests = source_of_merge_requests.opened
-                         .where(allow_collaboration: true)
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
+      next false if empty_repo?
 
       # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        if branch_name
-          merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
-        else
-          merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+        merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
+          merge_request.can_be_merged_by?(user)
         end
       end
-    end
-
-    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-      check_access.call
     end
   end
 

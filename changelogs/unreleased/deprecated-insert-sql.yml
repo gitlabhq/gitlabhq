@@ -1,0 +1,5 @@
+---
+title: 'Fix deprecation: insert_sql is deprecated and will be removed'
+merge_request: 23944
+author: Jasper Maes
+type: other

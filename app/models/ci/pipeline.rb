@@ -11,6 +11,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include HasRef
 
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
@@ -380,7 +381,7 @@ module Ci
     end
 
     def branch?
-      !tag? && !merge_request?
+      super && !merge_request?
     end
 
     def stuck?
@@ -580,7 +581,7 @@ module Ci
     end
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
     def legacy_trigger
@@ -634,7 +635,7 @@ module Ci
     def all_merge_requests
       @all_merge_requests ||=
         if merge_request?
-          project.merge_requests.where(id: merge_request.id)
+          project.merge_requests.where(id: merge_request_id)
         else
           project.merge_requests.where(source_branch: ref)
         end
@@ -712,14 +713,16 @@ module Ci
     end
 
     def git_ref
-      if branch?
+      if merge_request?
+        ##
+        # In the future, we're going to change this ref to
+        # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
+        # In order to do that, we have to update GitLab-Runner's source pulling
+        # logic.
+        # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif merge_request?
-        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif tag?
-        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
       else
-        raise ArgumentError, 'Invalid pipeline type!'
+        super
       end
     end
 

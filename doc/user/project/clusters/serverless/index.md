@@ -32,7 +32,7 @@ To run Knative on Gitlab, you will need:
 1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
     to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
     deployment of knative services and functions.
-1. **`serverless.yaml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yaml` file
+1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
     will contain the information for all the functions being hosted in the repository as well as a reference to the
     runtime being used.
 1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
@@ -102,11 +102,8 @@ In order to deploy functions to your Knative instance, the following files must 
 
     The `gitlab-ci.yml` template creates a `Deploy` stage with a `functions` job that invokes the `tm` CLI with the required parameters.
 
-2. `serverless.yaml`: This file contains the metadata for your functions,
+2. `serverless.yml`: This file contains the metadata for your functions,
    such as name, runtime, and environment. It must be included at the root of your repository. The following is a sample `echo` function which shows the required structure for the file.
-
-   NOTE: **Note:**
-   The file extension for the `serverless.yaml` file must be specified as `.yaml` in order to the file to be parsed properly. Specifying the extension as `.yml` will not work.
 
    ```yaml
    service: my-functions
@@ -130,7 +127,7 @@ In order to deploy functions to your Knative instance, the following files must 
    ```
 
 
-The `serverless.yaml` file contains three sections with distinct parameters:
+The `serverless.yml` file contains three sections with distinct parameters:
 
 ### `service`
 
@@ -144,13 +141,13 @@ The `serverless.yaml` file contains three sections with distinct parameters:
 
 | Parameter | Description |
 |-----------|-------------|
-| `name` | Indicates which provider is used to execute the `serverless.yaml` file. In this case, the TriggerMesh `tm` CLI. |
+| `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh `tm` CLI. |
 | `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission and the secret value on the `gitlab-ci.yml` file |
 | `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
 
-In the `serverless.yaml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
+In the `serverless.yml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
 
 
 | Parameter | Description |
@@ -161,7 +158,7 @@ In the `serverless.yaml` example above, the function name is `echo` and the subs
 | `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
 | `environment` | Sets an environment variable for the specific function only. |
 
-After the `gitlab-ci.yml` template has been added and the `serverless.yaml` file has been 
+After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been 
 created, each function must be defined as a single file in your repository. Committing a 
 function to your project will result in a
 CI pipeline being executed which will deploy each function as a Knative service.

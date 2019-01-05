@@ -597,3 +597,11 @@
     @include emoji-menu-toggle-button;
   }
 }
+
+.nav-links > li > a {
+  .badge.badge-pill {
+    @include media-breakpoint-down(xs) { display: none; }
+  }
+
+  @include media-breakpoint-down(xs) { margin-right: 3px; }
+}

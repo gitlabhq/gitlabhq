@@ -469,6 +469,10 @@ class Commit
     !!merged_merge_request(user)
   end
 
+  def cache_key
+    "commit:#{sha}"
+  end
+
   private
 
   def commit_reference(from, referable_commit_id, full: false)

@@ -17,6 +17,7 @@ export const RESOLVE_NOTE_METHOD_NAME = 'post';
 export const DESCRIPTION_TYPE = 'changed the description';
 export const HISTORY_ONLY_FILTER_VALUE = 2;
 export const DISCUSSION_FILTERS_DEFAULT_VALUE = 0;
+export const DISCUSSION_TAB_LABEL = 'show';
 
 export const NOTEABLE_TYPE_MAPPING = {
   Issue: ISSUE_NOTEABLE_TYPE,

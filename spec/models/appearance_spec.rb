@@ -26,4 +26,34 @@ describe Appearance do
       let(:uploader_class) { AttachmentUploader }
     end
   end
+
+  shared_examples 'logo paths' do |logo_type|
+    let(:appearance) { create(:appearance, "with_#{logo_type}".to_sym) }
+    let(:filename) { 'dk.png' }
+    let(:expected_path) { "/uploads/-/system/appearance/#{logo_type}/#{appearance.id}/#{filename}" }
+
+    it 'returns nil when there is no upload' do
+      expect(subject.send("#{logo_type}_path")).to be_nil
+    end
+
+    it 'returns a local path using the system route' do
+      expect(appearance.send("#{logo_type}_path")).to eq(expected_path)
+    end
+
+    describe 'with asset host configured' do
+      let(:asset_host) { 'https://gitlab-assets.example.com' }
+
+      before do
+        allow(ActionController::Base).to receive(:asset_host) { asset_host }
+      end
+
+      it 'returns a full URL with the system path' do
+        expect(appearance.send("#{logo_type}_path")).to eq("#{asset_host}#{expected_path}")
+      end
+    end
+  end
+
+  %i(logo header_logo favicon).each do |logo_type|
+    it_behaves_like 'logo paths', logo_type
+  end
 end

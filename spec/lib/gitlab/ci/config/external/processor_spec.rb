@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Processor do
-  let(:project) { create(:project, :repository) }
-  let(:processor) { described_class.new(values, project, '12345') }
+  set(:project) { create(:project, :repository) }
+
+  let(:processor) { described_class.new(values, project: project, sha: '12345') }
 
   describe "#perform" do
     context 'when no external files defined' do
@@ -51,7 +52,6 @@ describe Gitlab::Ci::Config::External::Processor do
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
           - ruby -v
           - which ruby
-          - gem install bundler --no-ri --no-rdoc
           - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 
         rspec:
@@ -86,7 +86,6 @@ describe Gitlab::Ci::Config::External::Processor do
           - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
           - ruby -v
           - which ruby
-          - gem install bundler --no-ri --no-rdoc
           - bundle install --jobs $(nproc)  "${FLAGS[@]}"
         HEREDOC
       end

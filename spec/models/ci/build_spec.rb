@@ -2132,6 +2132,7 @@ describe Ci::Build do
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
           { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
+          { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
           { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
@@ -2386,6 +2387,8 @@ describe Ci::Build do
     end
 
     context 'when protected variable is defined' do
+      let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
+
       let(:protected_variable) do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
@@ -2398,7 +2401,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2406,7 +2409,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2431,6 +2434,8 @@ describe Ci::Build do
     end
 
     context 'when group protected variable is defined' do
+      let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
+
       let(:protected_variable) do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
@@ -2443,7 +2448,7 @@ describe Ci::Build do
 
       context 'when the branch is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }
@@ -2451,7 +2456,7 @@ describe Ci::Build do
 
       context 'when the tag is protected' do
         before do
-          allow(build.project).to receive(:protected_for?).with(build.ref).and_return(true)
+          allow(build.project).to receive(:protected_for?).with(ref).and_return(true)
         end
 
         it { is_expected.to include(protected_variable) }

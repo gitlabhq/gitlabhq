@@ -316,6 +316,15 @@ describe Milestone do
     end
   end
 
+  describe '#reference_link_text' do
+    let(:project) { build_stubbed(:project, name: 'sample-project') }
+    let(:milestone) { build_stubbed(:milestone, iid: 1, project: project, name: 'milestone') }
+
+    it 'returns the title with the reference prefix' do
+      expect(milestone.reference_link_text).to eq '%milestone'
+    end
+  end
+
   describe '#participants' do
     let(:project) { build(:project, name: 'sample-project') }
     let(:milestone) { build(:milestone, iid: 1, project: project) }

@@ -1,0 +1,5 @@
+---
+title: Expose CI/CD predefined variable `CI_API_V4_URL`
+merge_request: 23936
+author:
+type: added

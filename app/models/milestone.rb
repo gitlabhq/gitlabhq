@@ -94,6 +94,10 @@ class Milestone < ActiveRecord::Base
       end
     end
 
+    def count_by_state
+      reorder(nil).group(:state).count
+    end
+
     def predefined?(milestone)
       milestone == Any ||
         milestone == None ||
@@ -212,10 +216,10 @@ class Milestone < ActiveRecord::Base
   end
 
   def reference_link_text(from = nil)
-    self.title
+    self.class.reference_prefix + self.title
   end
 
-  def milestoneish_ids
+  def milestoneish_id
     id
   end
 

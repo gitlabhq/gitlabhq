@@ -24,6 +24,20 @@ describe RemoteMirror, :mailer do
         expect(remote_mirror).to be_invalid
         expect(remote_mirror.errors[:url].first).to include('Username needs to start with an alphanumeric character')
       end
+
+      it 'does not allow url pointing to localhost' do
+        remote_mirror = build(:remote_mirror, url: 'http://127.0.0.2/t.git')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to loopback addresses are not allowed')
+      end
+
+      it 'does not allow url pointing to the local network' do
+        remote_mirror = build(:remote_mirror, url: 'https://192.168.1.1')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to the local network are not allowed')
+      end
     end
   end
 

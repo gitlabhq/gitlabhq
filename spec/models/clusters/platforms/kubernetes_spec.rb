@@ -154,19 +154,11 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   end
 
   describe '#rbac?' do
-    subject { kubernetes.rbac? }
-
     let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
 
-    context 'when authorization type is rbac' do
-      let(:kubernetes) { build(:cluster_platform_kubernetes, :rbac_enabled, :configured) }
+    subject { kubernetes.rbac? }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when authorization type is nil' do
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to be_truthy }
   end
 
   describe '#actual_namespace' do
@@ -325,12 +317,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'with valid pods' do
       let(:pod) { kube_pod(app: environment.slug) }
+      let(:pod_with_no_terminal) { kube_pod(app: environment.slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(app: "should-be-filtered-out")]
         )
       end
 

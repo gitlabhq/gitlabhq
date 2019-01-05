@@ -299,6 +299,13 @@ describe Project do
         expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
       end
 
+      it 'does not allow import_url pointing to the local network' do
+        project = build(:project, import_url: 'https://192.168.1.1')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
+      end
+
       it "does not allow import_url with invalid ports for new projects" do
         project = build(:project, import_url: 'http://github.com:25/t.git')
 
@@ -603,15 +610,19 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-issue@gl.ab"
 
         expect(project.new_issuable_address(user, 'issue')).to eq(address)
       end
 
       it 'returns the address to create a new merge request' do
-        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-merge-request@gl.ab"
 
         expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
+      end
+
+      it 'returns nil with invalid address type' do
+        expect(project.new_issuable_address(user, 'invalid_param')).to be_nil
       end
     end
 
@@ -2543,6 +2554,10 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(false)
+      end
+
       it 'contains only the CI variables' do
         is_expected.to contain_exactly(ci_variable)
       end
@@ -2582,42 +2597,139 @@ describe Project do
   end
 
   describe '#protected_for?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
-    subject { project.protected_for?('ref') }
+    subject { project.protected_for?(ref) }
 
-    context 'when the ref is not protected' do
+    shared_examples 'ref is not protected' do
       before do
         stub_application_setting(
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
 
       it 'returns false' do
-        is_expected.to be_falsey
+        is_expected.to be false
       end
     end
 
-    context 'when the ref is a protected branch' do
+    shared_examples 'ref is protected branch' do
       before do
-        allow(project).to receive(:repository).and_call_original
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
-        create(:protected_branch, name: 'ref', project: project)
+        create(:protected_branch, name: 'master', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
       end
     end
 
-    context 'when the ref is a protected tag' do
+    shared_examples 'ref is protected tag' do
       before do
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
-        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
-        create(:protected_tag, name: 'ref', project: project)
+        create(:protected_tag, name: 'v1.0.0', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
+      end
+    end
+
+    context 'when ref is nil' do
+      let(:ref) { nil }
+
+      it 'returns false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'when ref is ref name' do
+      context 'when ref is ambiguous' do
+        let(:ref) { 'ref' }
+
+        before do
+          project.repository.add_branch(project.creator, 'ref', 'master')
+          project.repository.add_tag(project.creator, 'ref', 'master')
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Repository::AmbiguousRefError)
+        end
+      end
+
+      context 'when the ref is not protected' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
+      end
+    end
+
+    context 'when ref is full ref' do
+      context 'when the ref is not protected' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'refs/tags/v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when branch ref name is a full tag ref' do
+        let(:ref) { 'refs/tags/something' }
+
+        before do
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
+
+        context 'when ref is not protected' do
+          it 'returns false' do
+            is_expected.to be false
+          end
+        end
+
+        context 'when ref is a protected branch' do
+          before do
+            create(:protected_branch, name: 'refs/tags/something', project: project)
+          end
+
+          it 'returns true' do
+            is_expected.to be true
+          end
+        end
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'refs/heads/something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
       end
     end
   end
@@ -2837,7 +2949,7 @@ describe Project do
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
-                      ' Validate fork Source project is not a fork of the target project'
+        ' Validate fork Source project is not a fork of the target project'
 
       expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
@@ -2848,6 +2960,24 @@ describe Project do
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
         .not_to raise_error
+    end
+  end
+
+  describe '#update' do
+    let(:project) { create(:project) }
+
+    it 'validates the visibility' do
+      expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it 'does not validate the visibility' do
+      expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(updated_at: Time.now)
     end
   end
 
@@ -3075,6 +3205,13 @@ describe Project do
 
       it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'does not validate project visibility' do
+        expect(project).not_to receive(:visibility_level_allowed_as_fork)
+        expect(project).not_to receive(:visibility_level_allowed_by_group)
+
+        project.migrate_to_hashed_storage!
       end
 
       it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
@@ -3388,7 +3525,31 @@ describe Project do
     end
   end
 
-  context '#auto_devops_variables' do
+  describe '#api_variables' do
+    set(:project) { create(:project) }
+
+    it 'exposes API v4 URL' do
+      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
+      expect(project.api_variables.first[:value]).to include '/api/v4'
+    end
+
+    it 'contains a URL variable for every supported API version' do
+      # Ensure future API versions have proper variables defined. We're not doing this for v3.
+      supported_versions = API::API.versions - ['v3']
+      supported_versions = supported_versions.select do |version|
+        API::API.routes.select { |route| route.version == version }.many?
+      end
+
+      required_variables = supported_versions.map do |version|
+        "CI_API_#{version.upcase}_URL"
+      end
+
+      expect(project.api_variables.map { |variable| variable[:key] })
+        .to contain_exactly(*required_variables)
+    end
+  end
+
+  describe '#auto_devops_variables' do
     set(:project) { create(:project) }
 
     subject { project.auto_devops_variables }
@@ -3723,6 +3884,16 @@ describe Project do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }
     let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:local_merge_request) do
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_collaboration: true
+      )
+    end
     let!(:merge_request) do
       create(
         :merge_request,
@@ -3767,14 +3938,23 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_collaboration_push?' do
-      it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+    describe '#any_branch_allows_collaboration?' do
+      it 'allows access when there are merge requests open allowing collaboration' do
+        expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
 
-      it 'allows access when there are merge requests open but no branch name is given' do
-        expect(project.branch_allows_collaboration?(user, nil))
+      it 'does not allow access when there are no merge requests open allowing collaboration' do
+        merge_request.close!
+
+        expect(project.any_branch_allows_collaboration?(user))
+          .to be_falsey
+      end
+    end
+
+    describe '#branch_allows_collaboration?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
@@ -3803,13 +3983,6 @@ describe Project do
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
-      end
-
-      it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
-
-        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do

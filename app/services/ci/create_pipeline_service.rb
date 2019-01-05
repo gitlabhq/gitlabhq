@@ -31,7 +31,8 @@ module Ci
         seeds_block: block,
         variables_attributes: params[:variables_attributes],
         project: project,
-        current_user: current_user)
+        current_user: current_user,
+        push_options: params[:push_options])
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)

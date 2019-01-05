@@ -43,14 +43,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   def update
     # Keep this compatible with legacy group milestones where we have to update
     # all projects milestones states at once.
-    if @milestone.legacy_group_milestone?
-      update_params = milestone_params.select { |key| key == "state_event" }
-      milestones = @milestone.milestones
-    else
-      update_params = milestone_params
-      milestones = [@milestone]
-    end
-
+    milestones, update_params = get_milestones_for_update
     milestones.each do |milestone|
       Milestones::UpdateService.new(milestone.parent, current_user, update_params).execute(milestone)
     end
@@ -71,12 +64,24 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   private
 
+  def get_milestones_for_update
+    if @milestone.legacy_group_milestone?
+      [@milestone.milestones, legacy_milestone_params]
+    else
+      [[@milestone], milestone_params]
+    end
+  end
+
   def authorize_admin_milestones!
     return render_404 unless can?(current_user, :admin_milestone, group)
   end
 
   def milestone_params
     params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
+  end
+
+  def legacy_milestone_params
+    params.require(:milestone).permit(:state_event)
   end
 
   def milestone_path

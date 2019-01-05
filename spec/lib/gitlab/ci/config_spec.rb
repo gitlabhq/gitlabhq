@@ -170,7 +170,6 @@ describe Gitlab::Ci::Config do
         before_script_values = [
           "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
           "which ruby",
-          "gem install bundler --no-ri --no-rdoc",
           "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
         ]
         variables = {
@@ -202,6 +201,23 @@ describe Gitlab::Ci::Config do
         expect { config }.to raise_error(
           described_class::ConfigError,
           "Included file `invalid` does not have YAML extension!"
+        )
+      end
+    end
+
+    context "when gitlab_ci.yml has ambigious 'include' defined"  do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+          include:
+            remote: http://url
+            local: /local/file.yml
+        HEREDOC
+      end
+
+      it 'raises error YamlProcessor validationError' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
         )
       end
     end

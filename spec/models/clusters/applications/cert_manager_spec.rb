@@ -14,7 +14,7 @@ describe Clusters::Applications::CertManager do
       let(:application) { create(:clusters_applications_cert_managers, :scheduled, version: 'v0.4.0') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('v0.5.0')
+        expect(application.reload.version).to eq('v0.5.2')
       end
     end
   end
@@ -28,8 +28,8 @@ describe Clusters::Applications::CertManager do
     it 'should be initialized with cert_manager arguments' do
       expect(subject.name).to eq('certmanager')
       expect(subject.chart).to eq('stable/cert-manager')
-      expect(subject.version).to eq('v0.5.0')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('v0.5.2')
+      expect(subject).to be_rbac
       expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
       expect(subject.postinstall).to eq(['/usr/bin/kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml'])
     end
@@ -45,19 +45,19 @@ describe Clusters::Applications::CertManager do
       end
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        cert_manager.cluster.platform_kubernetes.rbac!
+        cert_manager.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:cert_manager) { create(:clusters_applications_cert_managers, :errored, version: '0.0.1') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('v0.5.0')
+        expect(subject.version).to eq('v0.5.2')
       end
     end
   end

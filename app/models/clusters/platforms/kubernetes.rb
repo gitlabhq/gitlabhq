@@ -65,6 +65,8 @@ module Clusters
         abac: 2
       }
 
+      default_value_for :authorization_type, :rbac
+
       def actual_namespace
         if namespace.present?
           namespace
@@ -106,7 +108,7 @@ module Clusters
       def terminals(environment)
         with_reactive_cache do |data|
           pods = filter_by_label(data[:pods], app: environment.slug)
-          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+          terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
           terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
         end
       end

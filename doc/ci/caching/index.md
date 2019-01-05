@@ -300,7 +300,6 @@ cache:
 
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
-  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
   - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
 
 rspec:

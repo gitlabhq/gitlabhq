@@ -2,6 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   extend ClassMethods
+  include ClusterableActions
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
     issue
@@ -22,6 +23,7 @@ class ProjectPolicy < BasePolicy
     container_image
     pages
     cluster
+    release
   ].freeze
 
   desc "User is a project owner"
@@ -103,6 +105,9 @@ class ProjectPolicy < BasePolicy
     @subject.feature_available?(:merge_requests, @user)
   end
 
+  condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
+  condition(:can_have_multiple_clusters) { multiple_clusters_available? }
+
   features = %w[
     merge_requests
     issues
@@ -169,6 +174,7 @@ class ProjectPolicy < BasePolicy
     enable :read_cycle_analytics
     enable :award_emoji
     enable :read_pages_content
+    enable :read_release
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -235,6 +241,8 @@ class ProjectPolicy < BasePolicy
     enable :update_container_image
     enable :create_environment
     enable :create_deployment
+    enable :create_release
+    enable :update_release
   end
 
   rule { can?(:maintainer_access) }.policy do
@@ -257,10 +265,12 @@ class ProjectPolicy < BasePolicy
     enable :read_pages
     enable :update_pages
     enable :read_cluster
+    enable :add_cluster
     enable :create_cluster
     enable :update_cluster
     enable :admin_cluster
     enable :create_environment_terminal
+    enable :destroy_release
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -320,6 +330,7 @@ class ProjectPolicy < BasePolicy
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
+    prevent(*create_read_update_admin_destroy(:release))
   end
 
   rule { container_registry_disabled }.policy do
@@ -349,6 +360,7 @@ class ProjectPolicy < BasePolicy
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
+    enable :read_release
     enable :download_wiki_code
     enable :read_cycle_analytics
     enable :read_pages_content
@@ -380,6 +392,8 @@ class ProjectPolicy < BasePolicy
   rule do
     (can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
   end.enable :read_merge_request_iid
+
+  rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
   private
 

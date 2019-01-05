@@ -23,7 +23,7 @@ module Clusters
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       state_machine :status do
-        before_transition any => [:installed] do |application|
+        after_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)

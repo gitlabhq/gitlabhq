@@ -19,6 +19,9 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid " or "
+msgstr ""
+
 msgid "%d addition"
 msgid_plural "%d additions"
 msgstr[0] ""
@@ -183,6 +186,9 @@ msgid "+ %{count} more"
 msgstr ""
 
 msgid "+ %{moreCount} more"
+msgstr ""
+
+msgid ", or "
 msgstr ""
 
 msgid "- Runner is active and can process any new jobs"
@@ -4410,6 +4416,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "No activities found"
+msgstr ""
+
 msgid "No assignee"
 msgstr ""
 
@@ -6233,7 +6242,7 @@ msgstr ""
 msgid "SortOptions|Least popular"
 msgstr ""
 
-msgid "SortOptions|Milestone"
+msgid "SortOptions|Milestone due date"
 msgstr ""
 
 msgid "SortOptions|Milestone due later"
@@ -6411,6 +6420,9 @@ msgid "Subgroups and projects"
 msgstr ""
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit feedback"
 msgstr ""
 
 msgid "Submit search"
@@ -6698,7 +6710,7 @@ msgstr ""
 msgid "Third party offers"
 msgstr ""
 
-msgid "This %{viewer} could not be displayed because %{reason}."
+msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
@@ -6819,6 +6831,9 @@ msgid "This page is unavailable because you are not allowed to read information 
 msgstr ""
 
 msgid "This page will be removed in a future release."
+msgstr ""
+
+msgid "This pipeline is run in a merge request context"
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
@@ -7707,6 +7722,9 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
+msgid "You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>."
+msgstr ""
+
 msgid "You must accept our Terms of Service and privacy policy in order to register an account"
 msgstr ""
 
@@ -7888,6 +7906,9 @@ msgstr ""
 msgid "https://your-bitbucket-server"
 msgstr ""
 
+msgid "image diff"
+msgstr ""
+
 msgid "import flow"
 msgstr ""
 
@@ -7898,6 +7919,15 @@ msgid "in"
 msgstr ""
 
 msgid "issue boards"
+msgstr ""
+
+msgid "it is stored externally"
+msgstr ""
+
+msgid "it is stored in LFS"
+msgstr ""
+
+msgid "it is too large"
 msgstr ""
 
 msgid "latest deployment"
@@ -8140,6 +8170,9 @@ msgstr ""
 msgid "remove due date"
 msgstr ""
 
+msgid "rendered diff"
+msgstr ""
+
 msgid "reply"
 msgid_plural "replies"
 msgstr[0] ""
@@ -8149,6 +8182,9 @@ msgid "should be higher than %{access} inherited membership from group %{group_n
 msgstr ""
 
 msgid "source"
+msgstr ""
+
+msgid "source diff"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
@@ -8170,6 +8206,9 @@ msgid "uses Kubernetes clusters to deploy your code!"
 msgstr ""
 
 msgid "view it on GitLab"
+msgstr ""
+
+msgid "view the blob"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."

@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "required": ["name", "tag_name"],
+  "properties": {
+    "name": { "type": "string" },
+    "tag_name": { "type": "string" },
+    "description": { "type": "string" },
+    "description_html": { "type": "string" },
+    "created_at": { "type": "date" },
+    "commit": {
+      "oneOf": [{ "type": "null" }, { "$ref": "public_api/v4/commit/basic.json" }]
+    },
+    "author": {
+      "oneOf": [{ "type": "null" }, { "$ref": "public_api/v4/user/basic.json" }]
+    },
+    "assets": {
+      "count": { "type": "integer" },
+      "links": {
+        "type": "array",
+        "items": {
+          "id": "integer",
+          "name": "string",
+          "url": "string",
+          "external": "boolean"
+        }
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "format": "zip",
+          "url": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

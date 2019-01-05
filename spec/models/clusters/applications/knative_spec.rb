@@ -108,6 +108,23 @@ describe Clusters::Applications::Knative do
       expect(subject.version).to eq('0.2.2')
       expect(subject.files).to eq(knative.files)
     end
+
+    it 'should not install metrics for prometheus' do
+      expect(subject.postinstall).to be_nil
+    end
+
+    context 'with prometheus installed' do
+      let(:prometheus) { create(:clusters_applications_prometheus, :installed) }
+      let(:knative) { create(:clusters_applications_knative, cluster: prometheus.cluster) }
+
+      subject { knative.install_command }
+
+      it 'should install metrics' do
+        expect(subject.postinstall).not_to be_nil
+        expect(subject.postinstall.length).to be(1)
+        expect(subject.postinstall[0]).to eql("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
+      end
+    end
   end
 
   describe '#files' do

@@ -57,7 +57,7 @@ export default {
           tooltip-placement="bottom"
         />
       </div>
-      <button class="btn btn-link js-replies-text" type="button" @click="toggle">
+      <button class="btn btn-link js-replies-text qa-expand-replies" type="button" @click="toggle">
         {{ replies.length }} {{ n__('reply', 'replies', replies.length) }}
       </button>
       {{ __('Last reply by') }}
@@ -66,7 +66,11 @@ export default {
       </a>
       <time-ago-tooltip :time="lastReply.created_at" tooltip-placement="bottom" />
     </template>
-    <span v-else class="collapse-replies-btn js-collapse-replies" @click="toggle">
+    <span
+      v-else
+      class="collapse-replies-btn js-collapse-replies qa-collapse-replies"
+      @click="toggle"
+    >
       <icon name="chevron-down" /> {{ s__('Notes|Collapse replies') }}
     </span>
   </li>
