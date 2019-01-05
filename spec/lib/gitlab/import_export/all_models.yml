@@ -66,6 +66,9 @@ snippets:
 releases:
 - author
 - project
+- links
+links:
+- release
 project_members:
 - created_by
 - user

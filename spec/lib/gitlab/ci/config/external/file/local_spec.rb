@@ -3,8 +3,37 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Local do
-  let(:project) { create(:project, :repository) }
-  let(:local_file) { described_class.new(location, { project: project, sha: '12345' }) }
+  set(:project) { create(:project, :repository) }
+
+  let(:context) { described_class::Context.new(project, '12345') }
+  let(:params) { { local: location } }
+  let(:local_file) { described_class.new(params, context) }
+
+  describe '#matching?' do
+    context 'when a local is specified' do
+      let(:params) { { local: 'file' } }
+
+      it 'should return true' do
+        expect(local_file).to be_matching
+      end
+    end
+
+    context 'with a missing local' do
+      let(:params) { { local: nil } }
+
+      it 'should return false' do
+        expect(local_file).not_to be_matching
+      end
+    end
+
+    context 'with a missing local key' do
+      let(:params) { {} }
+
+      it 'should return false' do
+        expect(local_file).not_to be_matching
+      end
+    end
+  end
 
   describe '#valid?' do
     context 'when is a valid local path' do

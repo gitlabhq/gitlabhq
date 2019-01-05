@@ -256,6 +256,10 @@ module Ci
       end
     end
 
+    def uncached_contacted_at
+      read_attribute(:contacted_at)
+    end
+
     private
 
     def cleanup_runner_queue

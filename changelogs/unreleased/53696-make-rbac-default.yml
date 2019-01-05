@@ -1,0 +1,5 @@
+---
+title: Make RBAC enabled default for new clusters
+merge_request: 24119
+author:
+type: changed

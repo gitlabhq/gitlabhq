@@ -80,7 +80,8 @@ future GitLab releases.**
 | **CI_MERGE_REQUEST_TARGET_BRANCH_NAME**   | 11.6   | all    | The target branch name of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
 | **CI_NODE_INDEX**                         | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
 | **CI_NODE_TOTAL**                         | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
-| **CI_PIPELINE_ID**                        | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
+| **CI_API_V4_URL**                         | 11.7   | all    | The GitLab API v4 root URL |
+| **CI_PIPELINE_ID**                        | 8.10   | all    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_IID**                       | 11.0   | all    | The unique id of the current pipeline scoped to project |
 | **CI_PIPELINE_SOURCE**                    | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PIPELINE_TRIGGERED**                 | all    | all    | The flag to indicate that job was [triggered] |

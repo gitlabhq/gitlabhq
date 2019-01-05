@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219145520) do
+ActiveRecord::Schema.define(version: 20190103140724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -349,6 +349,7 @@ ActiveRecord::Schema.define(version: 20181219145520) do
     t.string "token_encrypted"
     t.index ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
     t.index ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
+    t.index ["commit_id", "artifacts_expire_at", "id"], name: "index_ci_builds_on_commit_id_and_artifacts_expireatandidpartial", where: "(((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('sast:container'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])))", using: :btree
     t.index ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
     t.index ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
     t.index ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
@@ -483,6 +484,7 @@ ActiveRecord::Schema.define(version: 20181219145520) do
     t.index ["merge_request_id"], name: "index_ci_pipelines_on_merge_request_id", where: "(merge_request_id IS NOT NULL)", using: :btree
     t.index ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
     t.index ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
+    t.index ["project_id", "ref", "id"], name: "index_ci_pipelines_on_project_idandrefandiddesc", order: { id: :desc }, using: :btree
     t.index ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
     t.index ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
     t.index ["project_id", "source"], name: "index_ci_pipelines_on_project_id_and_source", using: :btree
@@ -630,7 +632,7 @@ ActiveRecord::Schema.define(version: 20181219145520) do
     t.string "endpoint"
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
-    t.boolean "legacy_abac", default: true, null: false
+    t.boolean "legacy_abac", default: false, null: false
     t.index ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
   end
 
@@ -1796,6 +1798,16 @@ ActiveRecord::Schema.define(version: 20181219145520) do
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
+  create_table "release_links", id: :bigserial, force: :cascade do |t|
+    t.integer "release_id", null: false
+    t.string "url", null: false
+    t.string "name", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["release_id", "name"], name: "index_release_links_on_release_id_and_name", unique: true, using: :btree
+    t.index ["release_id", "url"], name: "index_release_links_on_release_id_and_url", unique: true, using: :btree
+  end
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
@@ -2437,6 +2449,7 @@ ActiveRecord::Schema.define(version: 20181219145520) do
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
+  add_foreign_key "release_links", "releases", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "releases", "users", column: "author_id", name: "fk_8e4456f90f", on_delete: :nullify
   add_foreign_key "remote_mirrors", "projects", on_delete: :cascade

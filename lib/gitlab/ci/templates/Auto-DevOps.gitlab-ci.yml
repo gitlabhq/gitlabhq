@@ -596,10 +596,55 @@ rollout 100%:
     fi
   }
 
+  # Extracts variables prefixed with K8S_SECRET_
+  # and creates a Kubernetes secret.
+  #
+  # e.g. If we have the following environment variables:
+  #   K8S_SECRET_A=value1
+  #   K8S_SECRET_B=multi\ word\ value
+  #
+  # Then we will create a secret with the following key-value pairs:
+  #   data:
+  #     A: dmFsdWUxCg==
+  #     B: bXVsdGkgd29yZCB2YWx1ZQo=
+  function create_application_secret() {
+    track="${1-stable}"
+    export APPLICATION_SECRET_NAME=$(application_secret_name "$track")
+
+    bash -c '
+      function k8s_prefixed_variables() {
+        env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p"
+      }
+
+      kubectl create secret \
+        -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
+        --from-env-file <(k8s_prefixed_variables) -o yaml --dry-run |
+        kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+    '
+  }
+
+  function deploy_name() {
+    name="$CI_ENVIRONMENT_SLUG"
+    track="${1-stable}"
+
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+    fi
+
+    echo $name
+  }
+
+  function application_secret_name() {
+    track="${1-stable}"
+    name=$(deploy_name "$track")
+
+    echo "${name}-secret"
+  }
+
   function deploy() {
     track="${1-stable}"
     percentage="${2:-100}"
-    name="$CI_ENVIRONMENT_SLUG"
+    name=$(deploy_name "$track")
 
     replicas="1"
     service_enabled="true"
@@ -608,7 +653,6 @@ rollout 100%:
     # if track is different than stable,
     # re-use all attached resources
     if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
       service_enabled="false"
       postgres_enabled="false"
     fi
@@ -620,6 +664,8 @@ rollout 100%:
     else
       secret_name=''
     fi
+
+    create_application_secret "$track"
 
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
       echo "Deploying first release with database initialization..."
@@ -633,6 +679,7 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
@@ -665,6 +712,7 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
@@ -684,11 +732,7 @@ rollout 100%:
   function scale() {
     track="${1-stable}"
     percentage="${2-100}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
+    name=$(deploy_name "$track")
 
     replicas=$(get_replicas "$track" "$percentage")
 
@@ -882,15 +926,14 @@ rollout 100%:
 
   function delete() {
     track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
+    name=$(deploy_name "$track")
 
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
       helm delete --purge "$name"
     fi
+
+    secret_name=$(application_secret_name "$track")
+    kubectl delete secret --ignore-not-found -n "$KUBE_NAMESPACE" "$secret_name"
   }
 
 before_script:

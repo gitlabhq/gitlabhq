@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Processor do
-  let(:project) { create(:project, :repository) }
-  let(:processor) { described_class.new(values, project, '12345') }
+  set(:project) { create(:project, :repository) }
+
+  let(:processor) { described_class.new(values, project: project, sha: '12345') }
 
   describe "#perform" do
     context 'when no external files defined' do

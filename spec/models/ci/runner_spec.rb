@@ -817,4 +817,13 @@ describe Ci::Runner do
       expect(runners).to eq([runner2, runner1])
     end
   end
+
+  describe '#uncached_contacted_at' do
+    let(:contacted_at_stored) { 1.hour.ago.change(usec: 0) }
+    let(:runner) { create(:ci_runner, contacted_at: contacted_at_stored) }
+
+    subject { runner.uncached_contacted_at }
+
+    it { is_expected.to eq(contacted_at_stored) }
+  end
 end

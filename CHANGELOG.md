@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.3 (2019-01-04)
+
+### Fixed (1 change)
+
+- Fix clone URL not showing if protocol is HTTPS. !24131
+
+
 ## 11.6.2 (2019-01-02)
 
 ### Fixed (7 changes)
