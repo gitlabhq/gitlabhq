@@ -629,4 +629,103 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe '#show_auto_devops_implicitly_enabled_banner?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+
+    let(:feature_visibilities) do
+      {
+        enabled: ProjectFeature::ENABLED,
+        disabled: ProjectFeature::DISABLED
+      }
+    end
+
+    where(:global_setting, :project_setting, :builds_visibility, :gitlab_ci_yml, :user_access, :result) do
+      # With ADO implicitly enabled scenarios
+      true | nil | :disabled | true  | :developer  | false
+      true | nil | :disabled | true  | :maintainer | false
+      true | nil | :disabled | true  | :owner      | false
+
+      true | nil | :disabled | false | :developer  | false
+      true | nil | :disabled | false | :maintainer | false
+      true | nil | :disabled | false | :owner      | false
+
+      true | nil | :enabled  | true  | :developer  | false
+      true | nil | :enabled  | true  | :maintainer | false
+      true | nil | :enabled  | true  | :owner      | false
+
+      true | nil | :enabled  | false | :developer  | false
+      true | nil | :enabled  | false | :maintainer | true
+      true | nil | :enabled  | false | :owner      | true
+
+      # With ADO enabled scenarios
+      true | true | :disabled | true  | :developer  | false
+      true | true | :disabled | true  | :maintainer | false
+      true | true | :disabled | true  | :owner      | false
+
+      true | true | :disabled | false | :developer  | false
+      true | true | :disabled | false | :maintainer | false
+      true | true | :disabled | false | :owner      | false
+
+      true | true | :enabled  | true  | :developer  | false
+      true | true | :enabled  | true  | :maintainer | false
+      true | true | :enabled  | true  | :owner      | false
+
+      true | true | :enabled  | false | :developer  | false
+      true | true | :enabled  | false | :maintainer | false
+      true | true | :enabled  | false | :owner      | false
+
+      # With ADO disabled scenarios
+      true | false | :disabled | true  | :developer  | false
+      true | false | :disabled | true  | :maintainer | false
+      true | false | :disabled | true  | :owner      | false
+
+      true | false | :disabled | false | :developer  | false
+      true | false | :disabled | false | :maintainer | false
+      true | false | :disabled | false | :owner      | false
+
+      true | false | :enabled  | true  | :developer  | false
+      true | false | :enabled  | true  | :maintainer | false
+      true | false | :enabled  | true  | :owner      | false
+
+      true | false | :enabled  | false | :developer  | false
+      true | false | :enabled  | false | :maintainer | false
+      true | false | :enabled  | false | :owner      | false
+    end
+
+    def grant_user_access(project, user, access)
+      case access
+      when :developer, :maintainer
+        project.add_user(user, access)
+      when :owner
+        project.namespace.update(owner: user)
+      end
+    end
+
+    with_them do
+      let(:project) do
+        if project_setting.nil?
+          create(:project, :repository)
+        else
+          create(:project, :repository, :auto_devops)
+        end
+      end
+
+      before do
+        stub_application_setting(auto_devops_enabled: global_setting)
+
+        allow_any_instance_of(Repository).to receive(:gitlab_ci_yml).and_return(gitlab_ci_yml)
+
+        grant_user_access(project, user, user_access)
+        project.project_feature.update_attribute(:builds_access_level, feature_visibilities[builds_visibility])
+        project.auto_devops.update_attribute(:enabled, project_setting) unless project_setting.nil?
+      end
+
+      subject { helper.show_auto_devops_implicitly_enabled_banner?(project, user) }
+
+      it { is_expected.to eq(result) }
+    end
+  end
 end
