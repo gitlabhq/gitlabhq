@@ -30,6 +30,7 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           Filter::SuggestionFilter,
+          Filter::FootnoteFilter,
 
           *reference_filters,
 
