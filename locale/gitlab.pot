@@ -1842,6 +1842,9 @@ msgstr ""
 msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
 msgstr ""
 
+msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knative."
+msgstr ""
+
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr ""
 
