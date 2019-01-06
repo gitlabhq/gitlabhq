@@ -81,7 +81,7 @@ describe('diffs/components/commit_item', () => {
     expect(nameElement).toHaveAttr('href', commit.author.web_url);
     expect(nameElement).toHaveText(commit.author.name);
     expect(nameElement).toHaveClass('js-user-link');
-    expect(nameElement).toHaveAttr('data-user-id', commit.author.id);
+    expect(nameElement.dataset.userId).toEqual(commit.author.id.toString());
   });
 
   describe('without commit description', () => {
