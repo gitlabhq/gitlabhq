@@ -33,7 +33,6 @@ module Gitlab
 
         { stage_idx: @stages.index(job[:stage]),
           stage: job[:stage],
-          commands: job[:commands],
           tag_list: job[:tags] || [],
           name: job[:name].to_s,
           allow_failure: job[:ignore],

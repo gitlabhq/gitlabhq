@@ -21,7 +21,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -155,7 +154,6 @@ module Gitlab
              builds:
                [{ stage_idx: 1,
                   stage: "test",
-                  commands: "rspec",
                   tag_list: [],
                   name: "rspec",
                   allow_failure: false,
@@ -171,7 +169,6 @@ module Gitlab
              builds:
                [{ stage_idx: 2,
                   stage: "deploy",
-                  commands: "cap prod",
                   tag_list: [],
                   name: "prod",
                   allow_failure: false,
@@ -271,7 +268,7 @@ module Gitlab
             end
 
             it "return commands with scripts concencaced" do
-              expect(subject[:commands]).to eq("global script\nscript")
+              expect(subject[:options][:before_script]).to eq(["global script"])
             end
           end
 
@@ -284,7 +281,7 @@ module Gitlab
             end
 
             it "return commands with scripts concencaced" do
-              expect(subject[:commands]).to eq("local script\nscript")
+              expect(subject[:options][:before_script]).to eq(["local script"])
             end
           end
         end
@@ -297,7 +294,7 @@ module Gitlab
           end
 
           it "return commands with scripts concencaced" do
-            expect(subject[:commands]).to eq("script")
+            expect(subject[:options][:script]).to eq(["script"])
           end
         end
 
@@ -347,7 +344,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -382,7 +378,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -415,7 +410,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -444,7 +438,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -596,7 +589,7 @@ module Gitlab
 
           it 'correctly extends rspec job' do
             expect(config_processor.builds).to be_one
-            expect(subject.dig(:commands)).to eq 'test'
+            expect(subject.dig(:options, :script)).to eq %w(test)
             expect(subject.dig(:options, :image, :name)).to eq 'ruby:alpine'
           end
         end
@@ -622,7 +615,8 @@ module Gitlab
 
           it 'correctly extends rspec job' do
             expect(config_processor.builds).to be_one
-            expect(subject.dig(:commands)).to eq "bundle install\nrspec"
+            expect(subject.dig(:options, :before_script)).to eq ["bundle install"]
+            expect(subject.dig(:options, :script)).to eq %w(rspec)
             expect(subject.dig(:options, :image, :name)).to eq 'image:test'
             expect(subject.dig(:when)).to eq 'always'
           end
@@ -769,7 +763,6 @@ module Gitlab
             stage: "test",
             stage_idx: 1,
             name: "rspec",
-            commands: "pwd\nrspec",
             coverage_regex: nil,
             tag_list: [],
             options: {
@@ -983,7 +976,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "normal_job",
-              commands: "test",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -1031,7 +1023,6 @@ module Gitlab
               stage: "build",
               stage_idx: 0,
               name: "job1",
-              commands: "execute-script-for-job",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -1046,7 +1037,6 @@ module Gitlab
               stage: "build",
               stage_idx: 0,
               name: "job2",
-              commands: "execute-script-for-job",
               coverage_regex: nil,
               tag_list: [],
               options: {

@@ -2,7 +2,7 @@
 
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
+    CLONE_ACCESSORS = %i[pipeline project ref tag options name
                          allow_failure stage stage_id stage_idx trigger_request
                          yaml_variables when environment coverage_regex
                          description tag_list protected].freeze

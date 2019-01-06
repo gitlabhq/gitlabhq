@@ -671,9 +671,9 @@ describe Ci::ProcessPipelineService, '#execute' do
 
   context 'when builds with auto-retries are configured' do
     before do
-      create_build('build:1', stage_idx: 0, user: user, options: { retry: { max: 2 } })
+      create_build('build:1', stage_idx: 0, user: user, options: { script: 'aa', retry: 2 })
       create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
-      create_build('test:2', stage_idx: 1, user: user, options: { retry: { max: 1 } })
+      create_build('test:2', stage_idx: 1, user: user, options: { script: 'aa', retry: 1 })
     end
 
     it 'automatically retries builds in a valid order' do
@@ -770,7 +770,7 @@ describe Ci::ProcessPipelineService, '#execute' do
   end
 
   def delayed_options
-    { when: 'delayed', options: { start_in: '1 minute' } }
+    { when: 'delayed', options: { script: %w(echo), start_in: '1 minute' } }
   end
 
   def unschedule
