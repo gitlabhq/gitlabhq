@@ -596,6 +596,10 @@
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
   }
+
+  .input-group {
+    height: 34px;
+  }
 }
 
 .nav-links > li > a {
