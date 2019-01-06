@@ -283,6 +283,11 @@ module ProjectsHelper
     !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
   end
 
+  # overridden in EE
+  def settings_operations_available?
+    false
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
