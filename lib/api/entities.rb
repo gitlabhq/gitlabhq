@@ -1020,7 +1020,7 @@ module API
       end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user], options[:project])
+        label.subscribed?(options[:current_user], options[:parent])
       end
     end
 
@@ -1029,7 +1029,7 @@ module API
 
     class ProjectLabel < Label
       expose :priority do |label, options|
-        label.priority(options[:project])
+        label.priority(options[:parent])
       end
     end
 

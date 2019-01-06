@@ -170,13 +170,6 @@ module API
       end
     end
 
-    def find_label(parent, id, include_ancestor_groups: true)
-      labels = available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)
-      label = labels.find_by_id(id) || labels.find_by_title(id)
-
-      label || not_found!('Label')
-    end
-
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project_issue(iid)
       IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)

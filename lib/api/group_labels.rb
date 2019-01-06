@@ -2,6 +2,7 @@
 
 module API
   class GroupLabels < Grape::API
+    include ::API::Helpers::LabelHelpers
     include PaginationParams
 
     before { authenticate! }
@@ -18,9 +19,7 @@ module API
         use :pagination
       end
       get ':id/labels' do
-        group_labels = available_labels_for(user_group)
-
-        present paginate(group_labels), with: Entities::GroupLabel, current_user: current_user, parent: user_group
+        get_labels(user_group, Entities::GroupLabel)
       end
 
       desc 'Create a new label' do
@@ -28,38 +27,10 @@ module API
         success Entities::GroupLabel
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be created'
-        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The description of label to be created'
+        use :label_create_params
       end
       post ':id/labels' do
-        authorize! :admin_label, user_group
-
-        label = available_labels_for(user_group).find_by_title(params[:name])
-        conflict!('Label already exists') if label
-
-        label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
-
-        if label.persisted?
-          present label, with: Entities::GroupLabel, current_user: current_user, parent: user_group
-        else
-          render_validation_error!(label)
-        end
-      end
-
-      desc 'Delete an existing label' do
-        detail 'This feature was added in GitLab 11.7'
-        success Entities::GroupLabel
-      end
-      params do
-        requires :name, type: String, desc: 'The name of the label to be deleted'
-      end
-      delete ':id/labels' do
-        authorize! :admin_label, user_group
-
-        label = find_label(user_group, params[:name], include_ancestor_groups: false)
-
-        destroy_conditionally!(label)
+        create_label(user_group, Entities::GroupLabel)
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
@@ -74,14 +45,18 @@ module API
         at_least_one_of :new_name, :color, :description
       end
       put ':id/labels' do
-        authorize! :admin_label, user_group
+        update_label(user_group, Entities::GroupLabel)
+      end
 
-        label = find_label(user_group, params[:name], include_ancestor_groups: false)
-
-        label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
-        render_validation_error!(label) unless label.valid?
-
-        present label, with: Entities::GroupLabel, current_user: current_user, parent: user_group
+      desc 'Delete an existing label' do
+        detail 'This feature was added in GitLab 11.7'
+        success Entities::GroupLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the label to be deleted'
+      end
+      delete ':id/labels' do
+        delete_label(user_group)
       end
     end
   end

@@ -2,6 +2,8 @@
 
 module API
   class Subscriptions < Grape::API
+    include ::API::Helpers::LabelHelpers
+
     before { authenticate! }
 
     subscribables = [
@@ -50,7 +52,7 @@ module API
             not_modified!
           else
             resource.subscribe(current_user, parent)
-            present resource, with: subscribable[:entity], current_user: current_user, project: parent
+            present resource, with: subscribable[:entity], current_user: current_user, project: parent, parent: parent
           end
         end
 
@@ -65,7 +67,7 @@ module API
             not_modified!
           else
             resource.unsubscribe(current_user, parent)
-            present resource, with: subscribable[:entity], current_user: current_user, project: parent
+            present resource, with: subscribable[:entity], current_user: current_user, project: parent, parent: parent
           end
         end
       end
