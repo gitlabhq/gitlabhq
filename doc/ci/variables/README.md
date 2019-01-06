@@ -262,6 +262,10 @@ variables](../../topics/autodevops/index.md#application-secret-variables) will
 then be available as environment variables on the running application
 container.
 
+CAUTION: **Caution:**
+Variables with multiline values are not currently supported, due to
+limitations with the current Auto DevOps scripting environment.
+
 ## Debug tracing
 
 > Introduced in GitLab Runner 1.7.

@@ -730,6 +730,10 @@ metadata:
 type: Opaque
 ```
 
+CAUTION: **Caution:**
+Variables with multiline values are not currently supported, due to
+limitations with the current Auto DevOps scripting environment.
+
 NOTE: **Note:**
 Environment variables are generally considered immutable in a Kubernetes
 pod. Therefore, if you update an application secret without changing any
