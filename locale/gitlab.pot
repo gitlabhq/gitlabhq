@@ -7818,6 +7818,9 @@ msgstr ""
 msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
 
+msgid "Your changes have been saved"
+msgstr ""
+
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
