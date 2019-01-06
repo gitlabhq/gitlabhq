@@ -25,9 +25,11 @@ describe API::GroupLabels do
   describe 'POST /groups/:id/labels' do
     it 'returns created label when all params are given' do
       post api("/groups/#{group.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAABB',
-           description: 'test'
+           params: {
+             name: 'Foo',
+             color: '#FFAABB',
+             description: 'test'
+           }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['name']).to eq('Foo')
@@ -37,8 +39,10 @@ describe API::GroupLabels do
 
     it 'returns created label when only required params are given' do
       post api("/groups/#{group.id}/labels", user),
-           name: 'Foo & Bar',
-           color: '#FFAABB'
+           params: {
+             name: 'Foo & Bar',
+             color: '#FFAABB'
+           }
 
       expect(response.status).to eq(201)
       expect(json_response['name']).to eq('Foo & Bar')
@@ -47,48 +51,23 @@ describe API::GroupLabels do
     end
 
     it 'returns a 400 bad request if name not given' do
-      post api("/groups/#{group.id}/labels", user), color: '#FFAABB'
+      post api("/groups/#{group.id}/labels", user), params: { color: '#FFAABB' }
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns a 400 bad request if color is not given' do
-      post api("/groups/#{group.id}/labels", user), name: 'Foobar'
+      post api("/groups/#{group.id}/labels", user), params: { name: 'Foobar' }
 
       expect(response).to have_gitlab_http_status(400)
-    end
-
-    it 'returns 400 for invalid color' do
-      post api("/groups/#{group.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAA'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['color']).to eq(['must be a valid color code'])
-    end
-
-    it 'returns 400 for too long color code' do
-      post api("/groups/#{group.id}/labels", user),
-           name: 'Foo',
-           color: '#FFAAFFFF'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['color']).to eq(['must be a valid color code'])
-    end
-
-    it 'returns 400 for invalid name' do
-      post api("/groups/#{group.id}/labels", user),
-           name: ',',
-           color: '#FFAABB'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
     it 'returns 409 if label already exists' do
       post api("/groups/#{group.id}/labels", user),
-           name: label1.name,
-           color: '#FFAABB'
+           params: {
+             name: label1.name,
+             color: '#FFAABB'
+           }
 
       expect(response).to have_gitlab_http_status(409)
       expect(json_response['message']).to eq('Label already exists')
@@ -97,13 +76,13 @@ describe API::GroupLabels do
 
   describe 'DELETE /groups/:id/labels' do
     it 'returns 204 for existing label' do
-      delete api("/groups/#{group.id}/labels", user), name: label1.name
+      delete api("/groups/#{group.id}/labels", user), params: { name: label1.name }
 
       expect(response).to have_gitlab_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
-      delete api("/groups/#{group.id}/labels", user), name: 'label2'
+      delete api("/groups/#{group.id}/labels", user), params: { name: 'label2' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Label Not Found')
@@ -119,7 +98,7 @@ describe API::GroupLabels do
       subgroup = create(:group, parent: group)
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
-      delete api("/groups/#{subgroup.id}/labels", user), name: subgroup_label.name
+      delete api("/groups/#{subgroup.id}/labels", user), params: { name: subgroup_label.name }
 
       expect(response).to have_gitlab_http_status(204)
       expect(subgroup.labels.size).to eq(0)
@@ -135,44 +114,16 @@ describe API::GroupLabels do
   describe 'PUT /groups/:id/labels' do
     it 'returns 200 if name and colors and description are changed' do
       put api("/groups/#{group.id}/labels", user),
-          name: label1.name,
-          new_name: 'New Label',
-          color: '#FFFFFF',
-          description: 'test'
+          params: {
+            name: label1.name,
+            new_name: 'New Label',
+            color: '#FFFFFF',
+            description: 'test'
+          }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq('New Label')
       expect(json_response['color']).to eq('#FFFFFF')
-      expect(json_response['description']).to eq('test')
-    end
-
-    it 'returns 200 if name is changed' do
-      put api("/groups/#{group.id}/labels", user),
-          name: label1.name,
-          new_name: 'New Label'
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['name']).to eq('New Label')
-      expect(json_response['color']).to eq(label1.color)
-    end
-
-    it 'returns 200 if colors is changed' do
-      put api("/groups/#{group.id}/labels", user),
-          name: label1.name,
-          color: '#FFFFFF'
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['name']).to eq(label1.name)
-      expect(json_response['color']).to eq('#FFFFFF')
-    end
-
-    it 'returns 200 if description is changed' do
-      put api("/groups/#{group.id}/labels", user),
-          name: label2.name,
-          description: 'test'
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['name']).to eq(label2.name)
       expect(json_response['description']).to eq('test')
     end
 
@@ -181,8 +132,10 @@ describe API::GroupLabels do
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
       put api("/groups/#{subgroup.id}/labels", user),
-          name: subgroup_label.name,
-          new_name: 'New Label'
+          params: {
+            name: subgroup_label.name,
+            new_name: 'New Label'
+          }
 
       expect(response).to have_gitlab_http_status(200)
       expect(subgroup.labels[0].name).to eq('New Label')
@@ -191,53 +144,27 @@ describe API::GroupLabels do
 
     it 'returns 404 if label does not exist' do
       put api("/groups/#{group.id}/labels", user),
-          name: 'label2',
-          new_name: 'label3'
+          params: {
+            name: 'label2',
+            new_name: 'label3'
+          }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 400 if no label name given' do
-      put api("/groups/#{group.id}/labels", user), new_name: label1.name
+      put api("/groups/#{group.id}/labels", user), params: { new_name: label1.name }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns 400 if no new parameters given' do
-      put api("/groups/#{group.id}/labels", user), name: label1.name
+      put api("/groups/#{group.id}/labels", user), params: { name: label1.name }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('new_name, color, description are missing, '\
                                            'at least one parameter must be provided')
-    end
-
-    it 'returns 400 for invalid name' do
-      put api("/groups/#{group.id}/labels", user),
-          name: label1.name,
-          new_name: ',',
-          color: '#FFFFFF'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['title']).to eq(['is invalid'])
-    end
-
-    it 'returns 400 when color code is too short' do
-      put api("/groups/#{group.id}/labels", user),
-          name: label1.name,
-          color: '#FF'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['color']).to eq(['must be a valid color code'])
-    end
-
-    it 'returns 400 for too long color code' do
-      put api("/groups/#{group.id}/labels", user),
-           name: label1.name,
-           color: '#FFAAFFFF'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
   end
 

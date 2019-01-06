@@ -5,10 +5,30 @@ module API
     before { authenticate! }
 
     subscribables = [
-      { type: 'merge_requests', entity: Entities::MergeRequest, source: Project, finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) }, parent_resource: -> { user_project } },
-      { type: 'issues', entity: Entities::Issue, source: Project, finder: ->(id) { find_project_issue(id) }, parent_resource: -> { user_project } },
-      { type: 'labels', entity: Entities::ProjectLabel, source: Project, finder: ->(id) { find_label(user_project, id) }, parent_resource: -> { user_project } },
-      { type: 'labels', entity: Entities::GroupLabel, source: Group, finder: ->(id) { find_label(user_group, id) }, parent_resource: -> { nil } }
+      {
+        type: 'merge_requests',
+        entity: Entities::MergeRequest,
+        source: Project,
+        finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) }
+      },
+      {
+        type: 'issues',
+        entity: Entities::Issue,
+        source: Project,
+        finder: ->(id) { find_project_issue(id) }
+      },
+      {
+        type: 'labels',
+        entity: Entities::ProjectLabel,
+        source: Project,
+        finder: ->(id) { find_label(user_project, id) }
+      },
+      {
+        type: 'labels',
+        entity: Entities::GroupLabel,
+        source: Group,
+        finder: ->(id) { find_label(user_group, id) }
+      }
     ]
 
     subscribables.each do |subscribable|
@@ -23,7 +43,7 @@ module API
           success subscribable[:entity]
         end
         post ":id/#{subscribable[:type]}/:subscribable_id/subscribe" do
-          parent = instance_exec(&subscribable[:parent_resource])
+          parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
           if resource.subscribed?(current_user, parent)
@@ -38,7 +58,7 @@ module API
           success subscribable[:entity]
         end
         post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe" do
-          parent = instance_exec(&subscribable[:parent_resource])
+          parent = parent_resource(source_type)
           resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
           if !resource.subscribed?(current_user, parent)
@@ -47,6 +67,19 @@ module API
             resource.unsubscribe(current_user, parent)
             present resource, with: subscribable[:entity], current_user: current_user, project: parent
           end
+        end
+      end
+    end
+
+    private
+
+    helpers do
+      def parent_resource(source_type)
+        case source_type
+        when 'project'
+          user_project
+        else
+          nil
         end
       end
     end

@@ -1006,7 +1006,7 @@ module API
       expose :id, :name, :color, :description
     end
 
-    class GroupLabel < LabelBasic
+    class Label < LabelBasic
       expose :open_issues_count do |label, options|
         label.open_issues_count(options[:current_user])
       end
@@ -1024,7 +1024,10 @@ module API
       end
     end
 
-    class ProjectLabel < GroupLabel
+    class GroupLabel < Label
+    end
+
+    class ProjectLabel < Label
       expose :priority do |label, options|
         label.priority(options[:project])
       end
