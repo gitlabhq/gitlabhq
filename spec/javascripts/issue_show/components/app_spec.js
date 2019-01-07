@@ -292,8 +292,8 @@ describe('Issuable output', () => {
 
       it('shows error mesage from backend if exists', done => {
         const msg = 'Custom error message from backend';
-        spyOn(vm.service, 'updateIssuable').and.callFake(() =>
-          Promise.reject({ response: { data: { errors: msg } } }), // eslint-disable-line prefer-promise-reject-errors
+        spyOn(vm.service, 'updateIssuable').and.callFake(
+          () => Promise.reject({ response: { data: { errors: msg } } }), // eslint-disable-line prefer-promise-reject-errors
         );
 
         vm.updateIssuable();

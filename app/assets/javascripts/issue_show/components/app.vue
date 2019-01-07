@@ -250,8 +250,14 @@ export default {
           if (error && error.name === 'SpamError') {
             this.openRecaptcha();
           } else {
+            let errMsg = `Error updating ${this.issuableType}`;
+
+            if (error && error.response && error.response.data && error.response.data.errors) {
+              errMsg = error.response.data.errors;
+            }
+
             eventHub.$emit('close.form');
-            window.Flash(`Error updating ${this.issuableType}`);
+            window.Flash(errMsg);
           }
         });
     },
