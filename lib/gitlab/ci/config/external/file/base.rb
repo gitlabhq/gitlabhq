@@ -12,7 +12,7 @@ module Gitlab
 
             YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i.freeze
 
-            Context = Struct.new(:project, :sha)
+            Context = Struct.new(:project, :sha, :user)
 
             def initialize(params, context)
               @params = params
