@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/shared/notes`
+merge_request: 23696
+author: Tao Wang
+type: other
