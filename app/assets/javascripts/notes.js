@@ -982,6 +982,10 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
+    form
+      .find('.js-close-discussion-note-form')
+      .show()
+      .removeClass('hide');
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);
