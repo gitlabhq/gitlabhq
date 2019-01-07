@@ -204,12 +204,10 @@ module ProjectsHelper
       current_user.require_extra_setup_for_git_auth?
   end
 
-  def show_auto_devops_implicitly_enabled_banner?(project)
-    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+  def show_auto_devops_implicitly_enabled_banner?(project, user)
+    return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
-    project.has_auto_devops_implicitly_enabled? &&
-      cookies[cookie_key.to_sym].blank? &&
-      (project.owner == current_user || project.team.maintainer?(current_user))
+    cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
   end
 
   def link_to_set_password
@@ -283,6 +281,11 @@ module ProjectsHelper
 
   def show_issue_count?(disabled: false, compact_mode: false)
     !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
+  end
+
+  # overridden in EE
+  def settings_operations_available?
+    false
   end
 
   private
@@ -578,5 +581,12 @@ module ProjectsHelper
       user
       gcp
     ]
+  end
+
+  def user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
+    Ability.allowed?(user, :admin_project, project) &&
+      project.has_auto_devops_implicitly_enabled? &&
+      project.builds_enabled? &&
+      !project.repository.gitlab_ci_yml
   end
 end

@@ -50,6 +50,14 @@ table {
         border-color: $white-normal;
       }
     }
+
+    .thead-white {
+      th {
+        background-color: $white-light;
+        color: $gl-text-color-secondary;
+        border-top: 0;
+      }
+    }
   }
 
   &.responsive-table {
@@ -153,3 +161,4 @@ table {
     border-top: 0;
   }
 }
+

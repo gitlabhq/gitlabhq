@@ -44,6 +44,10 @@ FactoryBot.define do
       provider_gcp factory: [:cluster_provider_gcp, :creating]
     end
 
+    trait :rbac_disabled do
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured, :rbac_disabled]
+    end
+
     trait :disabled do
       enabled false
     end

@@ -1538,5 +1538,38 @@ module API
       expose :from_content
       expose :to_content
     end
+
+    module Platform
+      class Kubernetes < Grape::Entity
+        expose :api_url
+        expose :namespace
+        expose :authorization_type
+        expose :ca_cert
+      end
+    end
+
+    module Provider
+      class Gcp < Grape::Entity
+        expose :cluster_id
+        expose :status_name
+        expose :gcp_project_id
+        expose :zone
+        expose :machine_type
+        expose :num_nodes
+        expose :endpoint
+      end
+    end
+
+    class Cluster < Grape::Entity
+      expose :id, :name, :created_at
+      expose :provider_type, :platform_type, :environment_scope, :cluster_type
+      expose :user, using: Entities::UserBasic
+      expose :platform_kubernetes, using: Entities::Platform::Kubernetes
+      expose :provider_gcp, using: Entities::Provider::Gcp
+    end
+
+    class ClusterProject < Cluster
+      expose :project, using: Entities::BasicProjectDetails
+    end
   end
 end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Remote do
-  let(:context) { described_class::Context.new(nil, '12345') }
+  let(:context) { described_class::Context.new(nil, '12345', nil) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }

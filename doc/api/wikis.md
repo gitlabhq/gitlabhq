@@ -18,7 +18,7 @@ GET /projects/:id/wikis
 | `with_content`      | boolean    | no      | Include pages' content  |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/wikis?with_content=1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/wikis?with_content=1
 ```
 
 Example response:
@@ -59,7 +59,7 @@ GET /projects/:id/wikis/:slug
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/wikis/home
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/wikis/home
 ```
 
 Example response:
@@ -89,7 +89,7 @@ POST /projects/:id/wikis
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, and `asciidoc` |
 
 ```bash
-curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/wikis"
+curl --data "format=rdoc&title=Hello&content=Hello world" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis"
 ```
 
 Example response:
@@ -121,7 +121,7 @@ PUT /projects/:id/wikis/:slug
 
 
 ```bash
-curl --request PUT --data "format=rdoc&content=documentation&title=Docs" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
+curl --request PUT --data "format=rdoc&content=documentation&title=Docs" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
 Example response:
@@ -149,7 +149,7 @@ DELETE /projects/:id/wikis/:slug
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```
 
 On success the HTTP status code is `204` and no JSON response is expected.
@@ -177,7 +177,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/1/wikis/attachments
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/1/wikis/attachments
 ```
 
 Example response:

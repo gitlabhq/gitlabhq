@@ -197,4 +197,20 @@ describe Gitlab::Utils do
       end
     end
   end
+
+  describe '.deep_indifferent_access' do
+    let(:hash) do
+      { "variables" => [{ "key" => "VAR1", "value" => "VALUE2" }] }
+    end
+
+    subject { described_class.deep_indifferent_access(hash) }
+
+    it 'allows to access hash keys with symbols' do
+      expect(subject[:variables]).to be_a(Array)
+    end
+
+    it 'allows to access array keys with symbols' do
+      expect(subject[:variables].first[:key]).to eq('VAR1')
+    end
+  end
 end

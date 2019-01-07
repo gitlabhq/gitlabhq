@@ -36,6 +36,15 @@ label {
   }
 }
 
+.label-wrapper {
+  display: block;
+  margin: 0;
+}
+
+.form-label {
+  @extend label;
+}
+
 .form-control-label {
   @extend .col-md-2;
 }

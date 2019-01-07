@@ -325,6 +325,31 @@ This ensures all timestamps have a time zone specified. This in turn means exist
 suddenly use a different timezone when the system's timezone changes. It also makes it very clear which
 timezone was used in the first place.
 
+## Storing JSON in database
+
+The Rails 5 natively supports `JSONB` (binary JSON) column type.
+Example migration adding this column:
+
+```ruby
+class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
+  DOWNTIME = false
+
+  def change
+    add_column :ci_builds_metadata, :config_options, :jsonb
+  end
+end
+```
+
+On MySQL the `JSON` and `JSONB` is translated to `TEXT 1MB`, as `JSONB` is PostgreSQL only feature.
+
+For above reason you have to use a serializer to provide a translation layer
+in order to support PostgreSQL and MySQL seamlessly:
+
+```ruby
+class BuildMetadata
+  serialize :config_options, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+end
+```
 
 ## Testing
 

@@ -15,6 +15,13 @@ describe Clusters::Applications::Knative do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe 'when rbac is not enabled' do
+    let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled) }
+    let(:knative_no_rbac) { create(:clusters_applications_knative, cluster: cluster) }
+
+    it { expect(knative_no_rbac).to be_not_installable }
+  end
+
   describe '.installed' do
     subject { described_class.installed }
 

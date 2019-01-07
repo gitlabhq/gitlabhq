@@ -19,6 +19,13 @@ module Clusters
 
       self.reactive_cache_key = ->(knative) { [knative.class.model_name.singular, knative.id] }
 
+      def set_initial_status
+        return unless not_installable?
+        return unless verify_cluster?
+
+        self.status = 'installable'
+      end
+
       state_machine :status do
         after_transition any => [:installed] do |application|
           application.run_after_commit do
@@ -98,6 +105,10 @@ module Clusters
 
       def install_knative_metrics
         ["kubectl apply -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
+      end
+
+      def verify_cluster?
+        cluster&.application_helm_available? && cluster&.platform_kubernetes_rbac?
       end
     end
   end

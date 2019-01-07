@@ -15,15 +15,7 @@
     },
     "assets": {
       "count": { "type": "integer" },
-      "links": {
-        "type": "array",
-        "items": {
-          "id": "integer",
-          "name": "string",
-          "url": "string",
-          "external": "boolean"
-        }
-      },
+      "links": { "$ref": "release/links.json" },
       "sources": {
         "type": "array",
         "items": {
