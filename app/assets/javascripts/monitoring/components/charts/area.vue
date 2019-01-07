@@ -6,6 +6,7 @@ export default {
   components: {
     GlAreaChart,
   },
+  inheritAttrs: false,
   props: {
     graphData: {
       type: Object,
@@ -24,6 +25,11 @@ export default {
           }).length === data.queries.length
         );
       },
+    },
+    alertData: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
   computed: {
@@ -74,9 +80,6 @@ export default {
       const [date, value] = params;
       return [dateFormat(date, 'dd mmm yyyy, h:MMtt'), value.toFixed(3)];
     },
-    onCreated(chart) {
-      this.$emit('created', chart);
-    },
   },
 };
 </script>
@@ -88,10 +91,11 @@ export default {
       <div class="prometheus-graph-widgets"><slot></slot></div>
     </div>
     <gl-area-chart
+      v-bind="$attrs"
       :data="chartData"
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
-      @created="onCreated"
+      :thresholds="alertData"
     />
   </div>
 </template>
