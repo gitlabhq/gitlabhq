@@ -285,7 +285,7 @@ module ProjectsHelper
 
   # overridden in EE
   def settings_operations_available?
-    false
+    Feature.enabled?(:error_tracking, @project) && can?(current_user, :read_environment, @project)
   end
 
   private

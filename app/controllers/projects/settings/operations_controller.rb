@@ -6,6 +6,8 @@ module Projects
       before_action :check_license
       before_action :authorize_update_environment!
 
+      helper_method :error_tracking_setting
+
       def show
       end
 
@@ -22,13 +24,18 @@ module Projects
 
       private
 
+      def error_tracking_setting
+        @error_tracking_setting ||= project.error_tracking_setting ||
+          project.build_error_tracking_setting
+      end
+
       def update_params
         params.require(:project).permit(permitted_project_params)
       end
 
       # overridden in EE
       def permitted_project_params
-        {}
+        { error_tracking_setting_attributes: [:enabled, :api_url, :token] }
       end
 
       def check_license
