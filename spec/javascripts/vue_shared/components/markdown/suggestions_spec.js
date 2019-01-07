@@ -29,7 +29,7 @@ const generateLine = content => {
 const generateMockLines = () => {
   const line1 = generateLine('Line 1');
   const line2 = generateLine('Line 2');
-  const line3 = generateLine('Line 3');
+  const line3 = generateLine('- Line 3');
   const container = document.createElement('div');
 
   container.appendChild(line1);
@@ -80,7 +80,7 @@ describe('Suggestion component', () => {
       const expectedReturn = [
         { content: 'Line 1\n', lineNumber: 1 },
         { content: 'Line 2\n', lineNumber: 2 },
-        { content: 'Line 3\n', lineNumber: 3 },
+        { content: '- Line 3\n', lineNumber: 3 },
       ];
 
       expect(vm.extractNewLines(generateMockLines())).toEqual(expectedReturn);
