@@ -52,10 +52,17 @@ module Gitlab
           klass = stub_class(name)
           addr = stub_address(storage)
           creds = stub_creds(storage)
-          klass.new(addr, creds)
+          klass.new(addr, creds, interceptors: interceptors)
         end
       end
     end
+
+    def self.interceptors
+      return [] unless Gitlab::Tracing.enabled?
+
+      [Gitlab::Tracing::GRPCInterceptor.instance]
+    end
+    private_class_method :interceptors
 
     def self.stub_cert_paths
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
