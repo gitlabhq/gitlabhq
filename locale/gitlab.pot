@@ -768,6 +768,9 @@ msgstr ""
 msgid "August"
 msgstr ""
 
+msgid "Auth Token"
+msgstr ""
+
 msgid "Authentication Log"
 msgstr ""
 
@@ -2761,6 +2764,9 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
+msgid "Enter your Sentry API URL"
+msgstr ""
+
 msgid "Environment variables"
 msgstr ""
 
@@ -2861,6 +2867,9 @@ msgid "Error"
 msgstr ""
 
 msgid "Error Reporting and Logging"
+msgstr ""
+
+msgid "Error Tracking"
 msgstr ""
 
 msgid "Error fetching contributors data."
@@ -3083,6 +3092,9 @@ msgid "Filter by two-factor authentication"
 msgstr ""
 
 msgid "Filter..."
+msgstr ""
+
+msgid "Find and manage Auth Tokens in your Sentry account settings page."
 msgstr ""
 
 msgid "Find by path"
@@ -5973,6 +5985,9 @@ msgstr ""
 msgid "Send usage data"
 msgstr ""
 
+msgid "Sentry API URL"
+msgstr ""
+
 msgid "Sep"
 msgstr ""
 
@@ -7101,6 +7116,9 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
+msgid "To link Sentry to GitLab, enter your Sentry URL and Auth Token."
+msgstr ""
+
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
@@ -7916,6 +7934,9 @@ msgid "group"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/issues/"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
