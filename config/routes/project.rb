@@ -361,6 +361,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
+          post :import_csv
         end
       end
 

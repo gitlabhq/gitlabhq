@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include SpammableActions
 
   def self.issue_except_actions
-    %i[index calendar new create bulk_update]
+    %i[index calendar new create bulk_update import_csv]
   end
 
   def self.set_issuables_index_only_actions
@@ -36,6 +36,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
+
+  before_action :authorize_import_issues!, only: [:import_csv]
 
   before_action :set_suggested_issues_feature_flags, only: [:new]
 
@@ -173,6 +175,20 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       render json: result[:messsage], status: :unprocessable_entity
     end
+  end
+
+  def import_csv
+    return render_404 unless Feature.enabled?(:issues_import_csv)
+
+    if uploader = UploadService.new(project, params[:file]).execute
+      ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id)
+
+      flash[:notice] = _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    else
+      flash[:alert] = _("File upload error.")
+    end
+
+    redirect_to project_issues_path(project)
   end
 
   protected

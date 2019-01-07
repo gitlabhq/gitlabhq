@@ -1,0 +1,18 @@
+- text_style = 'font-size:16px; text-align:center;  line-height:30px;'
+
+%p{ style: text_style }
+  Your CSV import for project
+  %a{ href: project_url(@project), style: "color:#3777b0; text-decoration:none;" }
+    = @project.full_name
+  has been completed.
+
+%p{ style: text_style }
+  #{pluralize(@results[:success], 'issue')} imported.
+
+- if @results[:error_lines].present?
+  %p{ style: text_style }
+    Errors found on line #{'number'.pluralize(@results[:error_lines].size)}: #{@results[:error_lines].join(', ')}. Please check if these lines have an issue title.
+
+- if @results[:parse_error]
+  %p{ style: text_style }
+    Error parsing CSV file. Please make sure it has the correct format: a delimited text file that uses a comma to separate values.

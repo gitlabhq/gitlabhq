@@ -142,6 +142,15 @@ to find out more about this feature.
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
 create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
 
+### Import Issues from CSV
+
+From the project-level issues list, you can find the import button near the "Edit issues" button in the upper-right
+side.
+
+![Import CSV button](img/import_csv_button.png)
+
+Learn more about [importing issues from CSV](csv_import.md)
+
 ### External Issue Tracker
 
 Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
