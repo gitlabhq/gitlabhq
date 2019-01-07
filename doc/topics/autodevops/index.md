@@ -673,7 +673,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
 | `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
 | `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
-| `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with `K8S_SECRET_` will be made available by Auto DevOps as environment variables to the deployed application. |
+| `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -690,8 +690,7 @@ Auto DevOps can undo your changes.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
 
 Some applications need to define secret variables that are
-accessible by the deployed application. Starting in GitLab
-11.7, Auto DevOps will now detect variables where the key starts with
+accessible by the deployed application. Auto DevOps detects variables where the key starts with
 `K8S_SECRET_` and make these prefixed variables available to the
 deployed application, as environment variables.
 
