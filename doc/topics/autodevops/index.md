@@ -685,7 +685,7 @@ You should *not* scale your application using Kubernetes directly. This can
 cause confusion with Helm not detecting the change, and subsequent deploys with
 Auto DevOps can undo your changes.
 
-### Application secret variables
+#### Application secret variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
 
@@ -698,7 +698,7 @@ deployed application, as environment variables.
 To configure your application variables:
 
 1. Go to your project's **Settings > CI/CD**, then expand the section
-   called **Variables**
+   called **Variables**.
 
 2. Create a CI Variable, ensuring the key is prefixed with
    `K8S_SECRET_`. For example, you can create a variable with key
@@ -731,7 +731,7 @@ type: Opaque
 ```
 
 CAUTION: **Caution:**
-Variables with multiline values are not currently supported, due to
+Variables with multiline values are not currently supported due to
 limitations with the current Auto DevOps scripting environment.
 
 NOTE: **Note:**
@@ -739,8 +739,8 @@ Environment variables are generally considered immutable in a Kubernetes
 pod. Therefore, if you update an application secret without changing any
 code then manually create a new pipeline, you will find that any running
 application pods will not have the updated secrets. In this case, you
-can either 1) push a code update to GitLab to force the Kubernetes
-Deployment to recreate pods; or 2) manually delete running pods to
+can either push a code update to GitLab to force the Kubernetes
+Deployment to recreate pods or manually delete running pods to
 cause Kubernetes to create new pods with updated secrets.
 
 #### Advanced replica variables setup
