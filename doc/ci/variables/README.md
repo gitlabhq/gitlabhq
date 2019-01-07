@@ -263,7 +263,7 @@ then be available as environment variables on the running application
 container.
 
 CAUTION: **Caution:**
-Variables with multiline values are not currently supported, due to
+Variables with multiline values are not currently supported due to
 limitations with the current Auto DevOps scripting environment.
 
 ## Debug tracing
