@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::External::File::Local do
   set(:project) { create(:project, :repository) }
 
-  let(:context) { described_class::Context.new(project, '12345') }
+  let(:context) { described_class::Context.new(project, '12345', nil) }
   let(:params) { { local: location } }
   let(:local_file) { described_class.new(params, context) }
 

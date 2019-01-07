@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::Mapper do
   set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
@@ -20,7 +21,7 @@ describe Gitlab::Ci::Config::External::Mapper do
   end
 
   describe '#process' do
-    subject { described_class.new(values, project: project, sha: '123456').process }
+    subject { described_class.new(values, project: project, sha: '123456', user: user).process }
 
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do

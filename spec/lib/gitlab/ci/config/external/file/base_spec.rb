@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Base do
-  let(:context) { described_class::Context.new(nil, 'HEAD') }
+  let(:context) { described_class::Context.new(nil, 'HEAD', nil) }
 
   let(:test_class) do
     Class.new(described_class) do

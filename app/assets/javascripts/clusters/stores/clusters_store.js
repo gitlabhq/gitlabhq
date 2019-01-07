@@ -1,4 +1,5 @@
 import { s__ } from '../../locale';
+import { parseBoolean } from '../../lib/utils/common_utils';
 import { INGRESS, JUPYTER, KNATIVE, CERT_MANAGER } from '../constants';
 
 export default class ClusterStore {
@@ -7,6 +8,7 @@ export default class ClusterStore {
       helpPath: null,
       ingressHelpPath: null,
       status: null,
+      rbac: false,
       statusReason: null,
       applications: {
         helm: {
@@ -79,6 +81,10 @@ export default class ClusterStore {
 
   updateStatus(status) {
     this.state.status = status;
+  }
+
+  updateRbac(rbac) {
+    this.state.rbac = parseBoolean(rbac);
   }
 
   updateStatusReason(reason) {

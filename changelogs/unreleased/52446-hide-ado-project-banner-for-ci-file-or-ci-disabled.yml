@@ -1,0 +1,5 @@
+---
+title: Don't show Auto DevOps enabled banner for projects with CI file or CI disabled
+merge_request: 24067
+author:
+type: other

@@ -8,9 +8,9 @@ module Gitlab
     class Config
       ConfigError = Class.new(StandardError)
 
-      def initialize(config, opts = {})
+      def initialize(config, project: nil, sha: nil, user: nil)
         @config = Config::Extendable
-          .new(build_config(config, opts))
+          .new(build_config(config, project: project, sha: sha, user: user))
           .to_hash
 
         @global = Entry::Global.new(@config)
@@ -70,20 +70,21 @@ module Gitlab
 
       private
 
-      def build_config(config, opts = {})
+      def build_config(config, project:, sha:, user:)
         initial_config = Gitlab::Config::Loader::Yaml.new(config).load!
-        project = opts.fetch(:project, nil)
 
         if project
-          process_external_files(initial_config, project, opts)
+          process_external_files(initial_config, project: project, sha: sha, user: user)
         else
           initial_config
         end
       end
 
-      def process_external_files(config, project, opts)
-        sha = opts.fetch(:sha) { project.repository.root_ref_sha }
-        Config::External::Processor.new(config, project: project, sha: sha).perform
+      def process_external_files(config, project:, sha:, user:)
+        Config::External::Processor.new(config,
+          project: project,
+          sha: sha || project.repository.root_ref_sha,
+          user: user).perform
       end
     end
   end

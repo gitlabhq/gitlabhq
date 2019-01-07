@@ -9,7 +9,7 @@ GET /deploy_keys
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/deploy_keys"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/deploy_keys"
 ```
 
 Example response:
@@ -44,7 +44,7 @@ GET /projects/:id/deploy_keys
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
 ```
 
 Example response:
@@ -84,7 +84,7 @@ Parameters:
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -118,7 +118,7 @@ POST /projects/:id/deploy_keys
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
 ```
 
 Example response:
@@ -148,7 +148,7 @@ PUT /projects/:id/deploy_keys/:key_id
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -177,7 +177,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13"
 ```
 
 ## Enable a deploy key
@@ -185,7 +185,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gi
 Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/deploy_keys/13/enable
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/deploy_keys/13/enable
 ```
 
 | Attribute | Type | Required | Description |

@@ -10,7 +10,7 @@ module Gitlab
       attr_reader :cache, :stages, :jobs
 
       def initialize(config, opts = {})
-        @ci_config = Gitlab::Ci::Config.new(config, opts)
+        @ci_config = Gitlab::Ci::Config.new(config, **opts)
         @config = @ci_config.to_hash
 
         unless @ci_config.valid?
@@ -33,7 +33,6 @@ module Gitlab
 
         { stage_idx: @stages.index(job[:stage]),
           stage: job[:stage],
-          commands: job[:commands],
           tag_list: job[:tags] || [],
           name: job[:name].to_s,
           allow_failure: job[:ignore],

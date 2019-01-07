@@ -7,7 +7,6 @@ FactoryBot.define do
     stage_idx 0
     ref 'master'
     tag false
-    commands 'ls -a'
     protected false
     created_at 'Di 29. Okt 09:50:00 CET 2013'
     pending
@@ -15,7 +14,8 @@ FactoryBot.define do
     options do
       {
         image: 'ruby:2.1',
-        services: ['postgres']
+        services: ['postgres'],
+        script: ['ls -a']
       }
     end
 
@@ -28,7 +28,6 @@ FactoryBot.define do
     pipeline factory: :ci_pipeline
 
     trait :degenerated do
-      commands nil
       options nil
       yaml_variables nil
     end
@@ -95,33 +94,53 @@ FactoryBot.define do
 
     trait :teardown_environment do
       environment 'staging'
-      options environment: { name: 'staging',
-                             action: 'stop',
-                             url: 'http://staging.example.com/$CI_JOB_NAME' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'staging',
+                         action: 'stop',
+                         url: 'http://staging.example.com/$CI_JOB_NAME' }
+        }
+      end
     end
 
     trait :deploy_to_production do
       environment 'production'
 
-      options environment: { name: 'production',
-                             url: 'http://prd.example.com/$CI_JOB_NAME' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'production',
+                         url: 'http://prd.example.com/$CI_JOB_NAME' }
+        }
+      end
     end
 
     trait :start_review_app do
       environment 'review/$CI_COMMIT_REF_NAME'
 
-      options environment: { name: 'review/$CI_COMMIT_REF_NAME',
-                             url: 'http://staging.example.com/$CI_JOB_NAME',
-                             on_stop: 'stop_review_app' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'review/$CI_COMMIT_REF_NAME',
+                         url: 'http://staging.example.com/$CI_JOB_NAME',
+                         on_stop: 'stop_review_app' }
+        }
+      end
     end
 
     trait :stop_review_app do
       name 'stop_review_app'
       environment 'review/$CI_COMMIT_REF_NAME'
 
-      options environment: { name: 'review/$CI_COMMIT_REF_NAME',
-                             url: 'http://staging.example.com/$CI_JOB_NAME',
-                             action: 'stop' }
+      options do
+        {
+          script: %w(ls),
+          environment: { name: 'review/$CI_COMMIT_REF_NAME',
+                         url: 'http://staging.example.com/$CI_JOB_NAME',
+                         action: 'stop' }
+        }
+      end
     end
 
     trait :allowed_to_fail do
@@ -142,7 +161,13 @@ FactoryBot.define do
 
     trait :schedulable do
       self.when 'delayed'
-      options start_in: '1 minute'
+
+      options do
+        {
+          script: ['ls -a'],
+          start_in: '1 minute'
+        }
+      end
     end
 
     trait :actionable do
@@ -265,6 +290,7 @@ FactoryBot.define do
         {
             image: { name: 'ruby:2.1', entrypoint: '/bin/sh' },
             services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
+            script: %w(echo),
             after_script: %w(ls date),
             artifacts: {
                 name: 'artifacts_file',

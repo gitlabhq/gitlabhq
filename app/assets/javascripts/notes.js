@@ -138,8 +138,6 @@ export default class Notes {
     this.$wrapperEl.on('click', '.js-note-delete', this.removeNote);
     // delete note attachment
     this.$wrapperEl.on('click', '.js-note-attachment-delete', this.removeAttachment);
-    // reset main target form when clicking discard
-    this.$wrapperEl.on('click', '.js-note-discard', this.resetMainTargetForm);
     // update the file name when an attachment is selected
     this.$wrapperEl.on('change', '.js-note-attachment-input', this.updateFormAttachment);
     // reply to diff/discussion notes
@@ -191,7 +189,6 @@ export default class Notes {
     this.$wrapperEl.off('keyup input', '.js-note-text');
     this.$wrapperEl.off('click', '.js-note-target-reopen');
     this.$wrapperEl.off('click', '.js-note-target-close');
-    this.$wrapperEl.off('click', '.js-note-discard');
     this.$wrapperEl.off('keydown', '.js-note-text');
     this.$wrapperEl.off('click', '.js-comment-resolve-button');
     this.$wrapperEl.off('click', '.system-note-commit-list-toggler');
@@ -986,11 +983,9 @@ export default class Notes {
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
     form
-      .find('.js-note-discard')
+      .find('.js-close-discussion-note-form')
       .show()
-      .removeClass('js-note-discard')
-      .addClass('js-close-discussion-note-form')
-      .text(form.find('.js-close-discussion-note-form').data('cancelText'));
+      .removeClass('hide');
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
     this.setupNoteForm(form);
@@ -1194,12 +1189,11 @@ export default class Notes {
   }
 
   updateTargetButtons(e) {
-    var closebtn, closetext, discardbtn, form, reopenbtn, reopentext, textarea;
+    var closebtn, closetext, form, reopenbtn, reopentext, textarea;
     textarea = $(e.target);
     form = textarea.parents('form');
     reopenbtn = form.find('.js-note-target-reopen');
     closebtn = form.find('.js-note-target-close');
-    discardbtn = form.find('.js-note-discard');
 
     if (textarea.val().trim().length > 0) {
       reopentext = reopenbtn.attr('data-alternative-text');
@@ -1216,9 +1210,6 @@ export default class Notes {
       if (closebtn.is(':not(.btn-comment-and-close)')) {
         closebtn.addClass('btn-comment-and-close');
       }
-      if (discardbtn.is(':hidden')) {
-        return discardbtn.show();
-      }
     } else {
       reopentext = reopenbtn.data('originalText');
       closetext = closebtn.data('originalText');
@@ -1233,9 +1224,6 @@ export default class Notes {
       }
       if (closebtn.is('.btn-comment-and-close')) {
         closebtn.removeClass('btn-comment-and-close');
-      }
-      if (discardbtn.is(':visible')) {
-        return discardbtn.hide();
       }
     }
   }

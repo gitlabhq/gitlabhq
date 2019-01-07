@@ -6,8 +6,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
   let(:attributes) do
     { name: 'rspec',
-      ref: 'master',
-      commands: 'rspec' }
+      ref: 'master' }
   end
 
   subject do
@@ -18,7 +17,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     it 'returns hash attributes of a build' do
       expect(subject.attributes).to be_a Hash
       expect(subject.attributes)
-        .to include(:name, :project, :ref, :commands)
+        .to include(:name, :project, :ref)
     end
   end
 

@@ -289,10 +289,12 @@ module Gitlab
     #
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
-    rescue GRPC::InvalidArgument
+    rescue GRPC::InvalidArgument => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { old_name: old_name, new_name: new_name, storage: storage })
+
       false
     end
-    alias_method :mv_directory, :mv_namespace
+    alias_method :mv_directory, :mv_namespace # Note: ShellWorker uses this alias
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"

@@ -106,6 +106,9 @@ msgstr ""
 msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
 msgstr ""
 
+msgid "%{count} more"
+msgstr ""
+
 msgid "%{count} more assignees"
 msgstr ""
 
@@ -1840,6 +1843,9 @@ msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, 
 msgstr ""
 
 msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
+msgstr ""
+
+msgid "ClusterIntegration|You must have an RBAC-enabled cluster to install Knative."
 msgstr ""
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
@@ -6836,6 +6842,9 @@ msgstr ""
 msgid "This pipeline is run in a merge request context"
 msgstr ""
 
+msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
+msgstr ""
+
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
 msgstr ""
 
@@ -7815,6 +7824,9 @@ msgstr ""
 msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
 
+msgid "Your changes have been saved"
+msgstr ""
+
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
@@ -7885,6 +7897,9 @@ msgstr ""
 msgid "enabled"
 msgstr ""
 
+msgid "error"
+msgstr ""
+
 msgid "error code:"
 msgstr ""
 
@@ -7928,6 +7943,9 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
+msgstr ""
+
+msgid "latest"
 msgstr ""
 
 msgid "latest deployment"
@@ -8181,6 +8199,9 @@ msgstr[1] ""
 msgid "should be higher than %{access} inherited membership from group %{group_name}"
 msgstr ""
 
+msgid "show less"
+msgstr ""
+
 msgid "source"
 msgstr ""
 
@@ -8191,6 +8212,9 @@ msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "started"
+msgstr ""
+
+msgid "stuck"
 msgstr ""
 
 msgid "this document"
@@ -8218,3 +8242,6 @@ msgid "within %d minute "
 msgid_plural "within %d minutes "
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "yaml invalid"
+msgstr ""

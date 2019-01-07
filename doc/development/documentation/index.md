@@ -14,7 +14,7 @@ In addition to this page, the following resources to help craft and contribute d
   - [Feature-change documentation workflow](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
   - [Documentation improvement worflow](improvement-workflow.md) - New content not associated with a new feature.
 - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
-- [Site architecture](/doc/development/documentation/site_architecture/index.md) - How docs.gitlab.com is built.
+- [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
 
 ## Source and rendered locations
 

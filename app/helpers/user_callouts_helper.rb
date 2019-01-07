@@ -13,6 +13,10 @@ module UserCalloutsHelper
     !user_dismissed?(GCP_SIGNUP_OFFER)
   end
 
+  def render_flash_user_callout(flash_type, message, feature_name)
+    render 'shared/flash_user_callout', flash_type: flash_type, message: message, feature_name: feature_name
+  end
+
   private
 
   def user_dismissed?(feature_name)

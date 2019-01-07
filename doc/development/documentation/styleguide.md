@@ -62,7 +62,7 @@ with files organized in the [correct directory](index.md#documentation-directory
   link out to their external sites, documentation, and resources.
 - Do not duplicate information.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
-a logical reason not to (for example, when mirroring the UI or an ordered sequence). 
+a logical reason not to (for example, when mirroring the UI or an ordered sequence).
 
 ## Language
 
@@ -210,7 +210,7 @@ For other punctuation rules, please refer to the
 - Use inline link markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
 - To link to internal documentation, use relative links, not full URLs. Use `../` to
-  navigate tp high-level directories, and always add the file name `file.md` at the
+  navigate to high-level directories, and always add the file name `file.md` at the
   end of the link with the `.md` extension, not `.html`.
   Example: instead of `[text](../../merge_requests/)`, use
   `[text](../../merge_requests/index.md)` or, `[text](../../ci/README.md)`, or,
@@ -386,8 +386,32 @@ Which renders to:
 
 ## Specific sections and terms
 
-To mention and/or reference specific terms in GitLab, please follow the styles
-below.
+To maintain consistency through GitLab documentation, the following guides documentation authors
+on agreed styles and usage of terms.
+
+### Describing UI elements
+
+The following are styles to follow when describing UI elements on a screen:
+
+- For elements with a visible label, use that label in bold with matching case. For example, `the **Cancel** button`.
+- For elements with a tooltip or hover label, use that label in bold with matching case. For example, `the **Add status emoji** button`.
+
+### Verbs for UI elements
+
+The following are recommended verbs for specific uses.
+
+| Recommended | Used for                   | Alternatives               |
+|:------------|:---------------------------|:---------------------------|
+| "click"     | buttons, links, menu items | "hit", "press", "select"   |
+| "check"     | checkboxes                 | "enable", "click", "press" |
+| "select"    | dropdowns                  | "pick"                     |
+| "expand"    | expandable sections        | "open"                     |
+
+### Other Verbs
+
+| Recommended | Used for                        | Alternatives       |
+|:------------|:--------------------------------|:-------------------|
+| "go"        | making a browser go to location | "navigate", "open" |
 
 ### GitLab versions and tiers
 
@@ -459,6 +483,10 @@ Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/24
 the special markup `**[STARTER]**` will generate a `span` element to trigger the
 badges and tooltips (`<span class="badge-trigger starter">`). When the keyword
 "only" is added, the corresponding GitLab.com badge will not be displayed.
+
+## Specific sections
+
+Certain styles should be applied to specific sections. Styles for specific sections are outlined below.
 
 ### GitLab Restart
 
@@ -536,38 +564,15 @@ the style below as a guide:
 
 In this case:
 
-- Before each step list the installation method is declared in bold
+- Before each step list the installation method is declared in bold.
 - Three dashes (`---`) are used to create a horizontal line and separate the
-  two methods
+  two methods.
 - The code blocks are indented one or more spaces under the list item to render
-  correctly
-- Different highlighting languages are used for each config in the code block
-- The [references](#references) guide is used for reconfigure/restart
+  correctly.
+- Different highlighting languages are used for each config in the code block.
+- The [references](#references) guide is used for reconfigure/restart.
 
-### Fake tokens
-
-There may be times where a token is needed to demonstrate an API call using
-cURL or a variable used in CI. It is strongly advised not to use real
-tokens in documentation even if the probability of a token being exploited is
-low.
-
-You can use the following fake tokens as examples.
-
-| **Token type**        | **Token value**                                                    |
-|:----------------------|:-------------------------------------------------------------------|
-| Private user token    | `9koXpg98eAheJpvBs5tK`                                             |
-| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
-| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
-| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
-| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
-| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
-
-### API
+## API
 
 Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
@@ -583,7 +588,65 @@ on this document. Further explanation is given below.
 - Every method must have a cURL example.
 - Every method must have a response body (in JSON format).
 
-#### Method description
+### API topic template
+
+The following can be used as a template to get started:
+
+```md
+## Descriptive title
+
+One or two sentence description of what endpoint does.
+
+```
+METHOD /endpoint
+```
+
+| Attribute   | Type     | Required | Description           |
+|:------------|:---------|:---------|:----------------------|
+| `attribute` | datatype | yes/no   | Detailed description. |
+| `attribute` | datatype | yes/no   | Detailed description. |
+
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/endpoint?parameters'
+```
+
+Example response:
+
+```json
+[
+  {
+  }
+]
+```
+
+```
+
+### Fake tokens
+
+There may be times where a token is needed to demonstrate an API call using
+cURL or a variable used in CI. It is strongly advised not to use real
+tokens in documentation even if the probability of a token being exploited is
+low.
+
+You can use the following fake tokens as examples.
+
+| Token type            | Token value                                                        |
+|:----------------------|:-------------------------------------------------------------------|
+| Private user token    | `<your_access_token>`                                             |
+| Personal access token | `n671WNGecHugsdEDPsyo`                                             |
+| Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
+| Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
+| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
+| Specific Runner token | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
+| Shared Runner token   | `6Vk7ZsosqQyfreAxXTZr`                                             |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| Request profile token | `7VgpS4Ax5utVD2esNstz`                                             |
+
+### Method description
 
 Use the following table headers to describe the methods. Attributes should
 always be in code blocks using backticks (``` ` ```).
@@ -599,10 +662,10 @@ Rendered example:
 |:----------|:-------|:---------|:--------------------|
 | `user`    | string | yes      | The GitLab username |
 
-#### cURL commands
+### cURL commands
 
 - Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
+- Wherever needed use this personal access token: `<your_access_token>`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
 - Use double quotes to the URL when it includes additional parameters.
@@ -611,63 +674,63 @@ Rendered example:
 
 | Methods                                    | Description                                           |
 |:-------------------------------------------|:------------------------------------------------------|
-| `-H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK"` | Use this method as is, whenever authentication needed |
+| `-H "PRIVATE-TOKEN: <your_access_token>"`  | Use this method as is, whenever authentication needed |
 | `-X POST`                                  | Use this method when creating new objects             |
 | `-X PUT`                                   | Use this method when updating existing objects        |
 | `-X DELETE`                                | Use this method when removing existing objects        |
 
-#### cURL Examples
+### cURL Examples
 
 Below is a set of [cURL][] examples that you can use in the API documentation.
 
-##### Simple cURL command
+#### Simple cURL command
 
 Get the details of a group:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/gitlab-org
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/gitlab-org
 ```
 
-##### cURL example with parameters passed in the URL
+#### cURL example with parameters passed in the URL
 
 Create a new project under the authenticated user's namespace:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects?name=foo"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
-##### Post data using cURL's --data
+#### Post data using cURL's --data
 
 Instead of using `-X POST` and appending the parameters to the URI, you can use
 cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 
 ```bash
-curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
+curl --data "name=foo" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
-##### Post data using JSON content
+#### Post data using JSON content
 
 > **Note:** In this example we create a new group. Watch carefully the single
 and double quotes.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
 ```
 
-##### Post data using form-data
+#### Post data using form-data
 
 Instead of using JSON or urlencode you can use multipart/form-data which
 properly handles data encoding:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
 ```
 
 The above example is run by and administrator and will add an SSH public key
 titled ssh-key to user's account which has an id of 25.
 
-##### Escape special characters
+#### Escape special characters
 
 Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
 to escape them when possible. In the example below we create a new issue which
@@ -675,19 +738,19 @@ contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
 ```
 
 Use `%2F` for slashes (`/`).
 
-##### Pass arrays to API calls
+#### Pass arrays to API calls
 
 The GitLab API sometimes accepts arrays of strings or integers. For example, to
 restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
 [cURL]: http://curl.haxx.se/ "cURL website"

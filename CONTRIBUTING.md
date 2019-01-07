@@ -15,48 +15,6 @@ repository is licensed under Creative Commons:
 
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Contributing Documentation has been moved](#contributing-documentation-has-been-moved)
-- [Contribute to GitLab](#contribute-to-gitlab)
-- [Security vulnerability disclosure](#security-vulnerability-disclosure)
-- [Code of conduct](#code-of-conduct)
-- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-- [Helping others](#helping-others)
-- [I want to contribute!](#i-want-to-contribute)
-- [Contribution Flow](#contribution-flow)
-- [Workflow labels](#workflow-labels)
-  - [Type labels](#type-labels)
-  - [Subject labels](#subject-labels)
-  - [Team labels](#team-labels)
-  - [Release Scoping labels](#release-scoping-labels)
-  - [Priority labels](#priority-labels)
-  - [Severity labels](#severity-labels)
-    - [Severity impact guidance](#severity-impact-guidance)
-  - [Label for community contributors](#label-for-community-contributors)
-- [Implement design & UI elements](#implement-design--ui-elements)
-- [Issue tracker](#issue-tracker)
-  - [Issue triaging](#issue-triaging)
-  - [Feature proposals](#feature-proposals)
-  - [Issue tracker guidelines](#issue-tracker-guidelines)
-  - [Issue weight](#issue-weight)
-  - [Regression issues](#regression-issues)
-  - [Technical and UX debt](#technical-and-ux-debt)
-  - [Stewardship](#stewardship)
-- [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-- [Definition of done](#definition-of-done)
-- [Style guides](#style-guides)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
----
-
 ## Contributing Documentation has been moved
 
 As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
@@ -92,7 +50,7 @@ This [documentation](doc/development/contributing/index.md) has been moved.
 
 ## Workflow labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.  
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 ### Type labels
 
@@ -169,7 +127,6 @@ This [documentation](doc/development/contributing/merge_request_workflow.md) has
 ### Merge request guidelines
 
 This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
-
 
 ### Contribution acceptance criteria
 
