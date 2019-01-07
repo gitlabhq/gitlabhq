@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe "Admin::Users" do
-  include Spec::Support::Helpers::Features::ListRowsHelpers
+  include Spec::Support::Helpers::Features::ResponsiveTableHelpers
 
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
 
-  let!(:current_user) { create(:admin) }
+  let!(:current_user) { create(:admin, last_activity_on: 5.days.ago) }
 
   before do
     sign_in(current_user)
@@ -25,6 +25,8 @@ describe "Admin::Users" do
     it "has users list" do
       expect(page).to have_content(current_user.email)
       expect(page).to have_content(current_user.name)
+      expect(page).to have_content(current_user.created_at.strftime("%e %b, %Y"))
+      expect(page).to have_content(current_user.last_activity_on.strftime("%e %b, %Y"))
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
       expect(page).to have_link('Block', href: block_admin_user_path(user))
@@ -32,10 +34,24 @@ describe "Admin::Users" do
       expect(page).to have_button('Delete user and contributions')
     end
 
+    describe "view extra user information", :js do
+      it 'does not have the user popover open' do
+        expect(page).not_to have_selector('#__BV_popover_1__')
+      end
+
+      it 'shows the user popover on hover' do
+        first_user_link = page.first('.js-user-link')
+
+        first_user_link.hover
+
+        expect(page).to have_selector('#__BV_popover_1__')
+      end
+    end
+
     describe 'search and sort' do
       before do
-        create(:user, name: 'Foo Bar')
-        create(:user, name: 'Foo Baz')
+        create(:user, name: 'Foo Bar', last_activity_on: 3.days.ago)
+        create(:user, name: 'Foo Baz', last_activity_on: 2.days.ago)
         create(:user, name: 'Dmitriy')
       end
 
@@ -71,6 +87,24 @@ describe "Admin::Users" do
 
         fill_in :search_query, with: 'Foo'
         click_button('Search users')
+
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'sorts users by recent last activity' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Recent last activity')
+
+        expect(first_row.text).to include('Foo Baz')
+        expect(second_row.text).to include('Foo Bar')
+      end
+
+      it 'sorts users by oldest last activity' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Oldest last activity')
 
         expect(first_row.text).to include('Foo Bar')
         expect(second_row.text).to include('Foo Baz')
