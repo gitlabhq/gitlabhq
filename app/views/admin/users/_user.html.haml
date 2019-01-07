@@ -3,7 +3,7 @@
     = image_tag avatar_icon_for_user(user), class: "avatar", alt: ''
   .row-main-content
     .user-name.row-title.str-truncated-100
-      = link_to user.name, [:admin, user]
+      = link_to user.name, [:admin, user], class: "js-user-link", data: { user_id: user.id }
     - if user.blocked?
       %span.badge.badge-danger blocked
     - if user.admin?
