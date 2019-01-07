@@ -35,7 +35,7 @@ describe Clusters::Applications::Ingress do
       let(:application) { create(:clusters_applications_ingress, :scheduled, version: '0.22.0') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('0.23.0')
+        expect(application.reload.version).to eq('1.1.2')
       end
     end
   end
@@ -90,7 +90,7 @@ describe Clusters::Applications::Ingress do
     it 'should be initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
-      expect(subject.version).to eq('0.23.0')
+      expect(subject.version).to eq('1.1.2')
       expect(subject).to be_rbac
       expect(subject.files).to eq(ingress.files)
     end
@@ -107,7 +107,7 @@ describe Clusters::Applications::Ingress do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('0.23.0')
+        expect(subject.version).to eq('1.1.2')
       end
     end
   end
