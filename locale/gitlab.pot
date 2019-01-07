@@ -372,6 +372,9 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add a general comment to this %{noteable_name}."
+msgstr ""
+
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
@@ -705,6 +708,9 @@ msgstr ""
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
+msgid "Are you sure you want to remove the attachment?"
+msgstr ""
+
 msgid "Are you sure you want to remove this identity?"
 msgstr ""
 
@@ -757,6 +763,9 @@ msgid "Assignee"
 msgstr ""
 
 msgid "Assignee(s)"
+msgstr ""
+
+msgid "Attach a file"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
@@ -1893,6 +1902,12 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+msgid "Comment & close %{noteable_name}"
+msgstr ""
+
+msgid "Comment & reopen %{noteable_name}"
+msgstr ""
+
 msgid "Comment & resolve discussion"
 msgstr ""
 
@@ -2390,6 +2405,9 @@ msgstr ""
 msgid "Delete list"
 msgstr ""
 
+msgid "Delete this attachment"
+msgstr ""
+
 msgid "Deleted"
 msgstr ""
 
@@ -2600,6 +2618,12 @@ msgid "Discard draft"
 msgstr ""
 
 msgid "Discover projects, groups and snippets. Share your projects with others"
+msgstr ""
+
+msgid "Discuss a specific suggestion or question"
+msgstr ""
+
+msgid "Discuss a specific suggestion or question that needs to be resolved"
 msgstr ""
 
 msgid "Dismiss"
@@ -3110,6 +3134,9 @@ msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/Google
 msgstr ""
 
 msgid "Fingerprints"
+msgstr ""
+
+msgid "Finish editing this message first!"
 msgstr ""
 
 msgid "Finished"
@@ -4078,6 +4105,9 @@ msgstr ""
 msgid "Mark todo as done"
 msgstr ""
 
+msgid "Markdown"
+msgstr ""
+
 msgid "Markdown enabled"
 msgstr ""
 
@@ -4676,6 +4706,9 @@ msgstr ""
 msgid "Open Documentation"
 msgstr ""
 
+msgid "Open comment type dropdown"
+msgstr ""
+
 msgid "Open in Xcode"
 msgstr ""
 
@@ -4968,6 +5001,9 @@ msgid "PlantUML"
 msgstr ""
 
 msgid "Play"
+msgstr ""
+
+msgid "Please %{link_to_register} or %{link_to_sign_in} to comment"
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
@@ -5832,6 +5868,9 @@ msgstr ""
 msgid "Save changes"
 msgstr ""
 
+msgid "Save comment"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr ""
 
@@ -6395,6 +6434,15 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+msgid "Start discussion"
+msgstr ""
+
+msgid "Start discussion & close %{noteable_name}"
+msgstr ""
+
+msgid "Start discussion & reopen %{noteable_name}"
+msgstr ""
+
 msgid "Start the Runner!"
 msgstr ""
 
@@ -6729,6 +6777,9 @@ msgid "They can be managed using the %{link}."
 msgstr ""
 
 msgid "Third party offers"
+msgstr ""
+
+msgid "This %{issuable} is locked. Only <strong>project members</strong> can comment."
 msgstr ""
 
 msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
@@ -7156,6 +7207,9 @@ msgid "Toggle comments for this file"
 msgstr ""
 
 msgid "Toggle commit description"
+msgstr ""
+
+msgid "Toggle commit list"
 msgstr ""
 
 msgid "Toggle discussion"
@@ -7662,6 +7716,9 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
+msgid "Write a comment or drag your files here…"
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -7870,6 +7927,9 @@ msgid "among other things"
 msgstr ""
 
 msgid "assign yourself"
+msgstr ""
+
+msgid "attach a new file"
 msgstr ""
 
 msgid "branch name"
@@ -8203,6 +8263,12 @@ msgstr ""
 msgid "project"
 msgstr ""
 
+msgid "quick actions"
+msgstr ""
+
+msgid "register"
+msgstr ""
+
 msgid "remaining"
 msgstr ""
 
@@ -8221,6 +8287,9 @@ msgid "should be higher than %{access} inherited membership from group %{group_n
 msgstr ""
 
 msgid "show less"
+msgstr ""
+
+msgid "sign in"
 msgstr ""
 
 msgid "source"
