@@ -56,7 +56,6 @@ describe('IDE File finder item spec', () => {
 
     it('renders list of blobs', () => {
       expect(vm.$el.textContent).toContain('index.js');
-      expect(vm.$el.textContent).toContain('component.js');
       expect(vm.$el.textContent).not.toContain('folder');
     });
 
