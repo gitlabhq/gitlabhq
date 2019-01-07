@@ -255,7 +255,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
-
             resources :artifacts, only: [] do
               collection do
                 get :latest_succeeded,
