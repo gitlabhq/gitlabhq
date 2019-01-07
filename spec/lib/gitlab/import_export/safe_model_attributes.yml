@@ -600,3 +600,8 @@ ResourceLabelEvent:
 - label_id
 - user_id
 - created_at
+ErrorTracking::ProjectErrorTrackingSetting:
+- id
+- api_url
+- enabled
+- project_id
