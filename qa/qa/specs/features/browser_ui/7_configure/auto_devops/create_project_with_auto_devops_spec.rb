@@ -17,7 +17,7 @@ module QA
 
             @project = Resource::Project.fabricate! do |p|
               p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
-              p.description = 'Project with Auto Devops'
+              p.description = 'Project with Auto DevOps'
             end
 
             # Disable code_quality check in Auto DevOps pipeline as it takes
@@ -28,7 +28,7 @@ module QA
               resource.value = '1'
             end
 
-            # Create Auto Devops compatible repo
+            # Create Auto DevOps compatible repo
             Resource::Repository::ProjectPush.fabricate! do |push|
               push.project = @project
               push.directory = Pathname
