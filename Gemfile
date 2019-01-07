@@ -304,6 +304,12 @@ group :metrics do
   gem 'raindrops', '~> 0.18'
 end
 
+group :tracing do
+  # OpenTracing
+  gem 'opentracing', '~> 0.4.3'
+  gem 'jaeger-client', '~> 0.10.0'
+end
+
 group :development do
   gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 4.2', require: false
