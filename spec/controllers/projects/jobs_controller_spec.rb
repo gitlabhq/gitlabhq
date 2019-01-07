@@ -770,50 +770,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe 'POST cancel_all' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
-
-    context 'when jobs are cancelable' do
-      before do
-        create_list(:ci_build, 2, :cancelable, pipeline: pipeline)
-
-        post_cancel_all
-      end
-
-      it 'redirects to a index page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_jobs_path)
-      end
-
-      it 'transits to canceled' do
-        expect(Ci::Build.all).to all(be_canceled)
-      end
-    end
-
-    context 'when jobs are not cancelable' do
-      before do
-        create_list(:ci_build, 2, :canceled, pipeline: pipeline)
-
-        post_cancel_all
-      end
-
-      it 'redirects to a index page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_jobs_path)
-      end
-    end
-
-    def post_cancel_all
-      post :cancel_all, params: {
-                          namespace_id: project.namespace,
-                          project_id: project
-                        }
-    end
-  end
-
   describe 'POST erase' do
     let(:role) { :maintainer }
 
