@@ -86,6 +86,27 @@ describe 'Issue Boards new issue', :js do
 
       expect(page).to have_selector('.issue-boards-sidebar')
     end
+
+    it 'successfuly loads labels to be added to newly created issue' do
+      page.within(first('.board')) do
+        find('.issue-count-badge-add-button').click
+      end
+
+      page.within(first('.board-new-issue-form')) do
+        find('.form-control').set('new issue')
+        click_button 'Submit issue'
+      end
+
+      wait_for_requests
+
+      page.within(first('.issue-boards-sidebar')) do
+        find('.labels .edit-link').click
+
+        wait_for_requests
+
+        expect(page).to have_selector('.labels .dropdown-content li a')
+      end
+    end
   end
 
   context 'unauthorized user' do
