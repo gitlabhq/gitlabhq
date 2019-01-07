@@ -42,7 +42,9 @@ describe Projects::IssuesController do
 
       it_behaves_like "issuables list meta-data", :issue
 
-      it_behaves_like 'set sort order from user preference'
+      it_behaves_like 'set sort order from user preference' do
+        let(:sorting_param) { 'updated_asc' }
+      end
 
       it "returns index" do
         get :index, params: { namespace_id: project.namespace, project_id: project }
