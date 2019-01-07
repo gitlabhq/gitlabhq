@@ -10,37 +10,35 @@ module QA
         Page::Main::Login.act { sign_in_using_credentials }
       end
 
-      before(:all) do
-        login
-
-        @project = Resource::Project.fabricate! do |p|
-          p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
-          p.description = 'Project with Auto Devops'
-        end
-
-        # Disable code_quality check in Auto DevOps pipeline as it takes
-        # too long and times out the test
-        Resource::CiVariable.fabricate! do |resource|
-          resource.project = @project
-          resource.key = 'CODE_QUALITY_DISABLED'
-          resource.value = '1'
-        end
-
-        # Create Auto Devops compatible repo
-        Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = @project
-          push.directory = Pathname
-            .new(__dir__)
-            .join('../../../../../fixtures/auto_devops_rack')
-          push.commit_message = 'Create Auto DevOps compatible rack application'
-        end
-
-        Page::Project::Show.act { wait_for_push }
-      end
-
       [true, false].each do |rbac|
         context "when rbac is #{rbac ? 'enabled' : 'disabled'}" do
           before(:all) do
+            login
+
+            @project = Resource::Project.fabricate! do |p|
+              p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
+              p.description = 'Project with Auto DevOps'
+            end
+
+            # Disable code_quality check in Auto DevOps pipeline as it takes
+            # too long and times out the test
+            Resource::CiVariable.fabricate! do |resource|
+              resource.project = @project
+              resource.key = 'CODE_QUALITY_DISABLED'
+              resource.value = '1'
+            end
+
+            # Create Auto DevOps compatible repo
+            Resource::Repository::ProjectPush.fabricate! do |push|
+              push.project = @project
+              push.directory = Pathname
+                .new(__dir__)
+                .join('../../../../../fixtures/auto_devops_rack')
+              push.commit_message = 'Create Auto DevOps compatible rack application'
+            end
+
+            Page::Project::Show.act { wait_for_push }
+
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
             kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
