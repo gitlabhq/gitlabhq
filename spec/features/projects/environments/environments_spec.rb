@@ -272,8 +272,7 @@ describe 'Environments page', :js do
           create(:ci_build, :scheduled,
                  pipeline: pipeline,
                  name: 'delayed job',
-                 stage: 'test',
-                 commands: 'test')
+                 stage: 'test')
         end
 
         let!(:deployment) do
@@ -304,8 +303,7 @@ describe 'Environments page', :js do
             create(:ci_build, :expired_scheduled,
                    pipeline: pipeline,
                    name: 'delayed job',
-                   stage: 'test',
-                   commands: 'test')
+                   stage: 'test')
           end
 
           it "shows 00:00:00 as the remaining time" do

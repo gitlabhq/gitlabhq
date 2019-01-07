@@ -1649,7 +1649,7 @@ test:
 > Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
 to GitLab Core in 11.4
-> In GitLab 11.7, support for including [GitLab-supplied templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates) directly [was added](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445).
+> In GitLab 11.7, support for [including GitLab-supplied templates directly](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445) and support for [including templates from another repository](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) was added.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1724,7 +1724,7 @@ include:
 
 ---
 
-`include` supports three types of files:
+`include` supports four types of files:
 
 - **local** to the same repository, referenced by using full paths in the same
   repository, with `/` being the root directory. For example:
@@ -1749,6 +1749,32 @@ include:
 
     NOTE: **Note:**
     We don't support the inclusion of local files through Git submodules paths.
+
+- **file** from another repository, referenced by using full paths in the same
+  repository, with `/` being the root directory. For example:
+
+    ```yaml
+    include:
+      project: 'my-group/my-project'
+      file: '/templates/.gitlab-ci-template.yml'
+    ```
+
+    You can also specify `ref:`. The default `ref:` is the `HEAD` of the project:
+
+    ```yaml
+    include:
+      - project: 'my-group/my-project'
+        ref: master
+        file: '/templates/.gitlab-ci-template.yml'
+
+      - project: 'my-group/my-project'
+        ref: v1.0.0
+        file: '/templates/.gitlab-ci-template.yml'
+
+      - project: 'my-group/my-project'
+        ref: 787123b47f14b552955ca2786bc9542ae66fee5b # git sha
+        file: '/templates/.gitlab-ci-template.yml'
+    ```
 
 - **remote** in a different location, accessed using HTTP/HTTPS, referenced
   using the full URL. For example:

@@ -57,6 +57,16 @@
       color: $gl-text-color;
     }
   }
+
+  &.is-invalid {
+    ~ .invalid-feedback {
+      display: block;
+    }
+
+    .select2-choices {
+      border-color: $red-500;
+    }
+  }
 }
 
 .select2-drop,
@@ -67,10 +77,18 @@
   min-width: 175px;
   color: $gl-text-color;
   z-index: 999;
+
+  .modal-open & {
+    z-index: $zindex-modal + 200;
+  }
 }
 
 .select2-drop-mask {
   z-index: 998;
+
+  .modal-open & {
+    z-index: $zindex-modal + 100;
+  }
 }
 
 .select2-drop.select2-drop-above.select2-drop-active {

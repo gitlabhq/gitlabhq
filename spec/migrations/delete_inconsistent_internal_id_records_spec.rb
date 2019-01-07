@@ -90,6 +90,13 @@ describe DeleteInconsistentInternalIdRecords, :migration do
 
   context 'for ci_pipelines' do
     let(:scope) { :ci_pipeline }
+
+    let(:create_models) do
+      create_list(:ci_empty_pipeline, 3, project: project1)
+      create_list(:ci_empty_pipeline, 3, project: project2)
+      create_list(:ci_empty_pipeline, 3, project: project3)
+    end
+
     it_behaves_like 'deleting inconsistent internal_id records'
   end
 

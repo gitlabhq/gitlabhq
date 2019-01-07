@@ -25,7 +25,7 @@ GET /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
 Example response:
@@ -60,7 +60,7 @@ HEAD /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --head --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
 Example response:
@@ -87,7 +87,7 @@ GET /projects/:id/repository/files/:file_path/raw
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
 ```
 
 Parameters:
@@ -107,7 +107,7 @@ POST /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "create a new file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
@@ -142,7 +142,7 @@ PUT /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "update file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
@@ -187,7 +187,7 @@ DELETE /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "commit_message": "delete file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'

@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config do
+  set(:user) { create(:user) }
+
   let(:config) do
-    described_class.new(yml)
+    described_class.new(yml, project: nil, sha: nil, user: nil)
   end
 
   context 'when config is valid' do
@@ -154,7 +156,7 @@ describe Gitlab::Ci::Config do
     end
 
     let(:config) do
-      described_class.new(gitlab_ci_yml, project: project, sha: '12345')
+      described_class.new(gitlab_ci_yml, project: project, sha: '12345', user: user)
     end
 
     before do
@@ -228,7 +230,7 @@ describe Gitlab::Ci::Config do
           expect(project.repository).to receive(:blob_data_at)
             .with('eeff1122', local_location)
 
-          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122')
+          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122', user: user)
         end
       end
 
@@ -236,7 +238,7 @@ describe Gitlab::Ci::Config do
         it 'is using latest SHA on the default branch' do
           expect(project.repository).to receive(:root_ref_sha)
 
-          described_class.new(gitlab_ci_yml, project: project)
+          described_class.new(gitlab_ci_yml, project: project, sha: nil, user: user)
         end
       end
     end

@@ -62,6 +62,7 @@ describe('Clusters Store', () => {
         ingressHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
+        rbac: false,
         applications: {
           helm: {
             title: 'Helm Tiller',

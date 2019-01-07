@@ -8,9 +8,14 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
+    include IgnorableColumn
     include Gitlab::Utils::StrongMemoize
     include Deployable
     include HasRef
+
+    BuildArchivedError = Class.new(StandardError)
+
+    ignore_column :commands
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -31,7 +36,7 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
-    has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :metadata, class_name: 'Ci::BuildMetadata', autosave: true
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session
@@ -273,11 +278,14 @@ module Ci
 
     # degenerated build is one that cannot be run by Runner
     def degenerated?
-      self.options.nil?
+      self.options.blank?
     end
 
     def degenerate!
-      self.update!(options: nil, yaml_variables: nil, commands: nil)
+      Build.transaction do
+        self.update!(options: nil, yaml_variables: nil)
+        self.metadata&.destroy
+      end
     end
 
     def archived?
@@ -624,11 +632,23 @@ module Ci
     end
 
     def when
-      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+      read_attribute(:when) || 'on_success'
+    end
+
+    def options
+      read_metadata_attribute(:options, :config_options, {})
     end
 
     def yaml_variables
-      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+      read_metadata_attribute(:yaml_variables, :config_variables, [])
+    end
+
+    def options=(value)
+      write_metadata_attribute(:options, :config_options, value)
+    end
+
+    def yaml_variables=(value)
+      write_metadata_attribute(:yaml_variables, :config_variables, value)
     end
 
     def user_variables
@@ -904,8 +924,11 @@ module Ci
     # have the old integer only format. This method returns the retry option
     # normalized as a hash in 11.5+ format.
     def normalized_retry
-      value = options&.dig(:retry)
-      value.is_a?(Integer) ? { max: value } : value.to_h
+      strong_memoize(:normalized_retry) do
+        value = options&.dig(:retry)
+        value = value.is_a?(Integer) ? { max: value } : value.to_h
+        value.with_indifferent_access
+      end
     end
 
     def build_attributes_from_config
@@ -928,6 +951,21 @@ module Ci
 
     def project_destroyed?
       project.pending_delete?
+    end
+
+    def read_metadata_attribute(legacy_key, metadata_key, default_value = nil)
+      read_attribute(legacy_key) || metadata&.read_attribute(metadata_key) || default_value
+    end
+
+    def write_metadata_attribute(legacy_key, metadata_key, value)
+      # save to metadata or this model depending on the state of feature flag
+      if Feature.enabled?(:ci_build_metadata_config)
+        ensure_metadata.write_attribute(metadata_key, value)
+        write_attribute(legacy_key, nil)
+      else
+        write_attribute(legacy_key, value)
+        metadata&.write_attribute(metadata_key, nil)
+      end
     end
   end
 end

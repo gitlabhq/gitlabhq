@@ -284,20 +284,43 @@ to understand how each one works.
 
 ### Auto Build
 
-Auto Build creates a build of the application in one of two ways:
-
-- If there is a `Dockerfile`, it will use `docker build` to create a Docker image.
-- Otherwise, it will use [Herokuish](https://github.com/gliderlabs/herokuish)
-  and [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks)
-  to automatically detect and build the application into a Docker image.
+Auto Build creates a build of the application using an existing `Dockerfile` or
+Heroku buildpacks.
 
 Either way, the resulting Docker image is automatically pushed to the
 [Container Registry][container-registry] and tagged with the commit SHA.
 
-CAUTION: **Important:**
+#### Auto Build using a Dockerfile
+
+If a project's repository contains a `Dockerfile`, Auto Build will use
+`docker build` to create a Docker image.
+
 If you are also using Auto Review Apps and Auto Deploy and choose to provide
 your own `Dockerfile`, make sure you expose your application to port
 `5000` as this is the port assumed by the default Helm chart.
+
+#### Auto Build using Heroku buildpacks
+
+Auto Build builds an application using a project's `Dockerfile` if present, or
+otherwise it will use [Herokuish](https://github.com/gliderlabs/herokuish)
+and [Heroku buildpacks](https://devcenter.heroku.com/articles/buildpacks)
+to automatically detect and build the application into a Docker image.
+
+Each buildpack requires certain files to be in your project's repository for
+Auto Build to successfully build your application. For example, the following
+files are required at the root of your application's repository, depending on
+the language:
+
+- A `Pipfile` or `requirements.txt` file for Python projects.
+- A `Gemfile` or `Gemfile.lock` file for Ruby projects.
+
+For the requirements of other languages and frameworks, read the
+[buildpacks docs](https://devcenter.heroku.com/articles/buildpacks#officially-supported-buildpacks).
+
+TIP: **Tip:**
+If Auto Build fails despite the project meeting the buildpack requirements, set
+a project variable `TRACE=true` to enable verbose logging, which may help to
+troubleshoot.
 
 ### Auto Test
 

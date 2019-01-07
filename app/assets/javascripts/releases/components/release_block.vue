@@ -45,7 +45,7 @@ export default {
       return this.release.author || {};
     },
     hasAuthor() {
-      return _.isEmpty(this.author);
+      return !_.isEmpty(this.author);
     },
   },
 };

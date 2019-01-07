@@ -95,7 +95,7 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :commands, :environment, :coverage, :retry,
+                  :artifacts, :environment, :coverage, :retry,
                   :parallel
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
@@ -119,10 +119,6 @@ module Gitlab
 
           def value
             @config.merge(to_hash.compact)
-          end
-
-          def commands
-            (before_script_value.to_a + script_value.to_a).join("\n")
           end
 
           def manual_action?
@@ -156,7 +152,6 @@ module Gitlab
             { name: name,
               before_script: before_script_value,
               script: script_value,
-              commands: commands,
               image: image_value,
               services: services_value,
               stage: stage_value,

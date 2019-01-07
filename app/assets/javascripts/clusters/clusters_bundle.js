@@ -32,6 +32,7 @@ export default class Clusters {
       installKnativePath,
       installPrometheusPath,
       managePrometheusPath,
+      hasRbac,
       clusterType,
       clusterStatus,
       clusterStatusReason,
@@ -45,6 +46,7 @@ export default class Clusters {
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
+    this.store.updateRbac(hasRbac);
     this.service = new ClustersService({
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
@@ -102,6 +104,7 @@ export default class Clusters {
             ingressHelpPath: this.state.ingressHelpPath,
             managePrometheusPath: this.state.managePrometheusPath,
             ingressDnsHelpPath: this.state.ingressDnsHelpPath,
+            rbac: this.state.rbac,
           },
         });
       },

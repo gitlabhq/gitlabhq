@@ -36,7 +36,12 @@
         %p
           = render 'by_email_description'
         %p
-          This is a private email address, generated just for you.
+          This is a private email address
+
+          %a{ href: 'https://docs.gitlab.com/ee/development/emails.html#email-namespace', target: "_blank", rel: "noopener" }
+            %i.fa.fa-question-circle{ 'aria-label': "Learn more about incoming email addresses" }
+
+          , generated just for you.
 
           Anyone who gets ahold of it can create issues or merge requests as if they were you.
           You should

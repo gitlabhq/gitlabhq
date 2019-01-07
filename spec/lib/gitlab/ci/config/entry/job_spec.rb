@@ -255,23 +255,12 @@ describe Gitlab::Ci::Config::Entry::Job do
             .to eq(name: :rspec,
                    before_script: %w[ls pwd],
                    script: %w[rspec],
-                   commands: "ls\npwd\nrspec",
                    stage: 'test',
                    ignore: false,
                    after_script: %w[cleanup],
                    only: { refs: %w[branches tags] },
                    except: {})
         end
-      end
-    end
-
-    describe '#commands' do
-      let(:config) do
-        { before_script: %w[ls pwd], script: 'rspec' }
-      end
-
-      it 'returns a string of commands concatenated with new line character' do
-        expect(entry.commands).to eq "ls\npwd\nrspec"
       end
     end
   end

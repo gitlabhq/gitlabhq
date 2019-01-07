@@ -339,7 +339,10 @@
                   = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
                     %span
                       = _('CI / CD')
-              = render_if_exists 'projects/sidebar/settings_operations'
+              - if settings_operations_available?
+                = nav_link(controller: [:operations]) do
+                  = link_to project_settings_operations_path(@project), title: _('Operations') do
+                    = _('Operations')
               - if @project.pages_available?
                 = nav_link(controller: :pages) do
                   = link_to project_pages_path(@project), title: _('Pages') do
