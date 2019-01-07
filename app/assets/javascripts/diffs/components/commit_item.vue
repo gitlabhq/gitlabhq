@@ -36,24 +36,23 @@ export default {
     },
   },
   computed: {
+    author() {
+      return this.commit.author || {};
+    },
     authorName() {
-      return (this.commit.author && this.commit.author.name) || this.commit.author_name;
+      return this.author.name || this.commit.author_name;
     },
     authorClass() {
-      return this.commit.author && this.commit.author.name ? 'js-user-link' : '';
+      return this.author.name ? 'js-user-link' : '';
     },
     authorId() {
-      return this.commit.author && this.commit.author.name ? this.commit.author.id : '';
+      return this.author.id ? this.author.id : '';
     },
     authorUrl() {
-      return (
-        (this.commit.author && this.commit.author.web_url) || `mailto:${this.commit.author_email}`
-      );
+      return this.author.web_url || `mailto:${this.commit.author_email}`;
     },
     authorAvatar() {
-      return (
-        (this.commit.author && this.commit.author.avatar_url) || this.commit.author_gravatar_url
-      );
+      return this.author.avatar_url || this.commit.author_gravatar_url;
     },
   },
   created() {
