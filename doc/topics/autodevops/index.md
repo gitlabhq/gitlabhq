@@ -702,6 +702,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
 | `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
 | `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
+| `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -712,6 +713,63 @@ CAUTION: **Caution:**
 You should *not* scale your application using Kubernetes directly. This can
 cause confusion with Helm not detecting the change, and subsequent deploys with
 Auto DevOps can undo your changes.
+
+#### Application secret variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
+
+Some applications need to define secret variables that are
+accessible by the deployed application. Auto DevOps detects variables where the key starts with
+`K8S_SECRET_` and make these prefixed variables available to the
+deployed application, as environment variables.
+
+To configure your application variables:
+
+1. Go to your project's **Settings > CI/CD**, then expand the section
+   called **Variables**.
+
+2. Create a CI Variable, ensuring the key is prefixed with
+   `K8S_SECRET_`. For example, you can create a variable with key
+`K8S_SECRET_RAILS_MASTER_KEY`.
+
+3. Run an Auto Devops pipeline either by manually creating a new
+   pipeline or by pushing a code change to GitLab.
+
+Auto DevOps pipelines will take your application secret variables to
+populate a Kubernetes secret. This secret is unique per environment.
+When deploying your application, the secret is loaded as environment
+variables in the container running the application. Following the
+example above, you can see the secret below containing the
+`RAILS_MASTER_KEY` variable.
+
+```sh
+$ kubectl get secret production-secret -n minimal-ruby-app-54 -o yaml
+apiVersion: v1
+data:
+  RAILS_MASTER_KEY: MTIzNC10ZXN0
+kind: Secret
+metadata:
+  creationTimestamp: 2018-12-20T01:48:26Z
+  name: production-secret
+  namespace: minimal-ruby-app-54
+  resourceVersion: "429422"
+  selfLink: /api/v1/namespaces/minimal-ruby-app-54/secrets/production-secret
+  uid: 57ac2bfd-03f9-11e9-b812-42010a9400e4
+type: Opaque
+```
+
+CAUTION: **Caution:**
+Variables with multiline values are not currently supported due to
+limitations with the current Auto DevOps scripting environment.
+
+NOTE: **Note:**
+Environment variables are generally considered immutable in a Kubernetes
+pod. Therefore, if you update an application secret without changing any
+code then manually create a new pipeline, you will find that any running
+application pods will not have the updated secrets. In this case, you
+can either push a code update to GitLab to force the Kubernetes
+Deployment to recreate pods or manually delete running pods to
+cause Kubernetes to create new pods with updated secrets.
 
 #### Advanced replica variables setup
 
