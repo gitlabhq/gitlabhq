@@ -57,18 +57,21 @@ module QA
           # QA::Runtime::Env.browser.capitalize will work for every driver type except PhantomJS.
           # We will have no use to use PhantomJS so this shouldn't be a problem.
           options = Selenium::WebDriver.const_get(QA::Runtime::Env.browser.capitalize)::Options.new
-          options.add_argument("window-size=1240,1680")
 
-          # Chrome won't work properly in a Docker container in sandbox mode
-          options.add_argument("no-sandbox")
+          if QA::Runtime::Env.browser == :chrome
+            options.add_argument("window-size=1240,1680")
 
-          # Run headless by default unless CHROME_HEADLESS is false
-          if QA::Runtime::Env.chrome_headless?
-            options.add_argument("headless")
+            # Chrome won't work properly in a Docker container in sandbox mode
+            options.add_argument("no-sandbox")
 
-            # Chrome documentation says this flag is needed for now
-            # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
-            options.add_argument("disable-gpu")
+            # Run headless by default unless CHROME_HEADLESS is false
+            if QA::Runtime::Env.chrome_headless?
+              options.add_argument("headless")
+
+              # Chrome documentation says this flag is needed for now
+              # https://developers.google.com/web/updates/2017/04/headless-chrome#cli
+              options.add_argument("disable-gpu")
+            end
           end
 
           # Use the same profile on QA runs if CHROME_REUSE_PROFILE is true.

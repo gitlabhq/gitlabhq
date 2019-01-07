@@ -62,7 +62,10 @@ module QA
         # - "http://user:pass@somehost.com/wd/hub"
         # - "https://user:pass@somehost.com:443/wd/hub"
         # - "http://localhost:4444/wd/hub"
-        "#{remote_grid_protocol}://#{"#{remote_grid_username}:#{remote_grid_access_key}@" if remote_grid_username}#{ENV['QA_REMOTE_GRID']}/wd/hub" if ENV['QA_REMOTE_GRID']
+
+        return unless ENV['QA_REMOTE_GRID']
+
+        "#{remote_grid_protocol}://#{remote_grid_credentials}#{ENV['QA_REMOTE_GRID']}/wd/hub"
       end
 
       def remote_grid_username
@@ -182,6 +185,10 @@ module QA
       end
 
       private
+
+      def remote_grid_credentials
+        remote_grid_username ? "#{remote_grid_username}:#{remote_grid_access_key}@" : ''
+      end
 
       def enabled?(value, default: true)
         return default if value.nil?
