@@ -32,7 +32,7 @@ The deployment includes:
 ## Limitations
 
 [High Availability](../../administration/high_availability/README.md) and
-[Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) are not supported.
+[Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html) are not supported.
 
 ## Requirements
 
