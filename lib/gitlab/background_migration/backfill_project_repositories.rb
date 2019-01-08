@@ -83,7 +83,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def full_path
-          @full_path ||= build_full_path
+          route&.path || build_full_path
         end
 
         def build_full_path
@@ -99,6 +99,9 @@ module Gitlab
         end
       end
 
+      class Route < ActiveRecord::Base
+      end
+
       # Namespace model.
       class Namespace < ActiveRecord::Base
         self.table_name = 'namespaces'
@@ -110,6 +113,10 @@ module Gitlab
 
         has_many :projects, inverse_of: :parent
         has_many :namespaces, inverse_of: :parent
+
+        def route
+          Route.find_by(source_type: 'Namespace', source_id: self.id)
+        end
       end
 
       # ProjectRegistry model
@@ -163,6 +170,10 @@ module Gitlab
               .on(projects_table[:id].eq(repository_table[:project_id]))
               .join_sources
           end
+        end
+
+        def route
+          Route.find_by(source_type: 'Project', source_id: self.id)
         end
 
         def storage
