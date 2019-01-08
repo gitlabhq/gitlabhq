@@ -2,7 +2,7 @@
 
 module API
   class Subscriptions < Grape::API
-    include ::API::Helpers::LabelHelpers
+    helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }
 

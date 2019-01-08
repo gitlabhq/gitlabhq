@@ -2,8 +2,8 @@
 
 module API
   class GroupLabels < Grape::API
-    include ::API::Helpers::LabelHelpers
     include PaginationParams
+    helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }
 
@@ -12,7 +12,7 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all labels of the group' do
-        detail 'This feature was added in GitLab 11.7'
+        detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
       end
       params do
@@ -23,7 +23,7 @@ module API
       end
 
       desc 'Create a new label' do
-        detail 'This feature was added in GitLab 11.7'
+        detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
       end
       params do
@@ -34,7 +34,7 @@ module API
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
-        detail 'This feature was added in GitLab 11.7'
+        detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
       end
       params do
@@ -49,7 +49,7 @@ module API
       end
 
       desc 'Delete an existing label' do
-        detail 'This feature was added in GitLab 11.7'
+        detail 'This feature was added in GitLab 11.8'
         success Entities::GroupLabel
       end
       params do

@@ -2,8 +2,8 @@
 
 module API
   class Labels < Grape::API
-    include ::API::Helpers::LabelHelpers
     include PaginationParams
+    helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }
 
