@@ -240,14 +240,19 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job prepend-top-default archived-sticky sticky-top"
+          class="js-archived-job prepend-top-default archived-job"
+          :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
 
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
-        <div v-if="hasTrace" class="build-trace-container">
+        <div
+          v-if="hasTrace"
+          class="build-trace-container"
+          :class="{ 'prepend-top-default': !job.archived }"
+        >
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,
