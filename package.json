@@ -89,7 +89,7 @@
     "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
     "sha1": "^1.1.1",
-    "smooshpack": "^0.0.53",
+    "smooshpack": "^0.0.54",
     "sortablejs": "^1.7.0",
     "sql.js": "^0.4.0",
     "stickyfilljs": "^2.0.5",
