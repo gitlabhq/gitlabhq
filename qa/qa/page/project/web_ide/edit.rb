@@ -66,11 +66,29 @@ module QA
 
           def commit_changes
             click_element :begin_commit_button
-            click_element :commit_button
 
+            # After clicking :begin_commit_button there is an animation that
+            # hides :begin_commit_button and shows :commit_button
+            #
+            # Wait for the animation to complete before clicking :commit_button
+            # otherwise the click will quietly do nothing.
             wait(reload: false) do
-              page.has_content?('Your changes have been committed')
+              has_no_element?(:begin_commit_button) &&
+                has_element?(:commit_button)
             end
+
+            # Retry the attempt to click :commit_button just in case part of the
+            # animation is still in process even when the buttons have the
+            # expected visibility.
+            commit_success_msg_shown = with_retry do
+              click_element :commit_button
+
+              wait(reload: false) do
+                has_text?('Your changes have been committed')
+              end
+            end
+
+            raise "The changes do not appear to have been committed successfully." unless commit_success_msg_shown
           end
         end
       end
