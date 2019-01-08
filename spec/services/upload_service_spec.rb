@@ -63,11 +63,11 @@ describe UploadService do
         @link_to_file = upload_file(@project, txt)
       end
 
-      it { expect(@link_to_file).to eq(nil) }
+      it { expect(@link_to_file).to eq({}) }
     end
   end
 
   def upload_file(project, file)
-    described_class.new(project, file, FileUploader).execute
+    described_class.new(project, file, FileUploader).execute.to_h
   end
 end

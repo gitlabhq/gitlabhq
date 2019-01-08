@@ -76,14 +76,32 @@ See the [Rails guides] for more info.
 
 ## Email namespace
 
-If you need to implement a new feature which requires a new email handler, follow these rules:
+As of GitLab 11.7, we support a new format for email handler addresses.  This was done to 
+support catch-all mailboxes.
 
- - You must choose a namespace. The namespace cannot contain `/` or `+`, and cannot match `\h{16}`.
- - If your feature is related to a project, you will append the namespace **after** the project path, separated by a `+`
- - If you have different actions in the namespace, you add the actions **after** the namespace separated by a `+`. The action name cannot contain `/` or `+`, , and cannot match `\h{16}`.
- - You will register your handlers in `lib/gitlab/email/handler.rb`
+If you need to implement a feature which requires a new email handler, follow these rules
+for the format of the email key:
 
-Therefore, these are the only valid formats for an email handler:
+- Actions are always at the end, separated by `-`.  For example `-issue` or `-merge-request`
+- If your feature is related to a project, the key begins with the project identifiers (project path slug
+  and project id), separated by `-`.  For example, `gitlab-org-gitlab-ce-20`
+- Additional information, such as an author's token, can be added between the project identifiers and
+  the action, separated by `-`.  For example, `gitlab-org-gitlab-ce-20-Author_Token12345678-issue`
+- You register your handlers in `lib/gitlab/email/handler.rb`
+
+Examples of valid email keys:
+
+ - `gitlab-org-gitlab-ce-20-Author_Token12345678-issue` (create a new issue)
+ - `gitlab-org-gitlab-ce-20-Author_Token12345678-merge-request` (create a new merge request)
+ - `1234567890abcdef1234567890abcdef-unsubscribe` (unsubscribe from a conversation)
+ - `1234567890abcdef1234567890abcdef` (reply to a conversation)
+
+Please note that the action `-issue-` is used in GitLab Premium as the handler for the Service Desk feature.
+
+### Legacy format
+
+Although we continue to support the older legacy format, no new features should use a legacy format.
+These are the only valid legacy formats for an email handler:
 
  - `path/to/project+namespace`
  - `path/to/project+namespace+action`

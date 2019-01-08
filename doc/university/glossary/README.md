@@ -241,7 +241,7 @@ Our free SaaS for public and private repositories.
 
 ### GitLab Geo
 
-Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/gitlab-geo/README.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
+Allows you to replicate your GitLab instance to other geographical locations as a read-only fully operational version. It [can be used](https://docs.gitlab.com/ee/administration/geo/replication/index.html) for cloning and fetching projects, in addition to reading any data. This will make working with large repositories over large distances much faster.
 
 ### GitLab High Availability
 
@@ -303,7 +303,7 @@ A [tool](https://docs.gitlab.com/ee/integration/external-issue-tracker.html) use
 
 ### Jenkins
 
-An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins.io/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html). 
+An Open Source CI tool written using the Java programming language. [Jenkins](https://jenkins.io/) does the same job as GitLab CI, Bamboo, and Travis CI. It is extremely popular. Related [documentation](https://docs.gitlab.com/ee/integration/jenkins.html).
 
 ### Jira
 
@@ -407,7 +407,7 @@ A free disaster recovery [software](https://help.ubuntu.com/community/MondoMindi
 
 #### Mount
 
-External reference: 
+External reference:
 
 As stated on the [wikipedia page](https://en.wikipedia.org/wiki/Mount_(Unix)), "Mounting makes file systems, files, directories, devices and special files available for use and available to the user."
 
@@ -447,7 +447,7 @@ Software for which the original source code is freely [available](https://openso
 
 #### Open Source Stewardship
 
-[Related blog post](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/). 
+[Related blog post](https://about.gitlab.com/2016/01/11/being-a-good-open-source-steward/).
 
 ### Owner
 
@@ -557,7 +557,7 @@ Software that is hosted centrally and accessed on-demand (i.e. whenever you want
 
 This term is often used by people when they mean "Version Control."
 
-### Scrum 
+### Scrum
 
 An Agile [framework](https://www.scrum.org/Resources/What-is-Scrum) designed to typically help complete complex software projects. It's made up of several parts: product requirements backlog, sprint planning, sprint (development), sprint review, and retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.
 
@@ -697,7 +697,7 @@ A [website/system](http://www.wiki.com/) that allows for collaborative editing o
 
 ### Working area
 
-Files that have been modified but are not committed. Check them by using the command "git status". 
+Files that have been modified but are not committed. Check them by using the command "git status".
 
 ### Working Tree
 

@@ -8,16 +8,18 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false)
+      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false)
         return true if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
 
+        validate_html_tags!(uri) if enforce_sanitization
+
         # Allow imports from the GitLab instance itself but only from the configured ports
         return true if internal?(uri)
 
-        port = uri.port || uri.default_port
+        port = get_port(uri)
         validate_protocol!(uri.scheme, protocols)
         validate_port!(port, ports) if ports.any?
         validate_user!(uri.user) if enforce_user
@@ -49,6 +51,18 @@ module Gitlab
       end
 
       private
+
+      def get_port(uri)
+        uri.port || uri.default_port
+      end
+
+      def validate_html_tags!(uri)
+        uri_str = uri.to_s
+        sanitized_uri = ActionController::Base.helpers.sanitize(uri_str, tags: [])
+        if sanitized_uri != uri_str
+          raise BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
+        end
+      end
 
       def parse_url(url)
         raise Addressable::URI::InvalidURIError if multiline?(url)

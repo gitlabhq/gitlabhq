@@ -62,6 +62,7 @@ describe Project do
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
+    it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -2410,6 +2411,20 @@ describe Project do
     end
   end
 
+  describe '#set_repository_read_only!' do
+    let(:project) { create(:project) }
+
+    it 'returns true when there is no existing git transfer in progress' do
+      expect(project.set_repository_read_only!).to be_truthy
+    end
+
+    it 'returns false when there is an existing git transfer in progress' do
+      allow(project).to receive(:git_transfer_in_progress?) { true }
+
+      expect(project.set_repository_read_only!).to be_falsey
+    end
+  end
+
   describe '#pushes_since_gc' do
     let(:project) { create(:project) }
 
@@ -3143,6 +3158,33 @@ describe Project do
     end
   end
 
+  describe '#git_transfer_in_progress?' do
+    let(:project) { build(:project) }
+
+    subject { project.git_transfer_in_progress? }
+
+    it 'returns false when repo_reference_count and wiki_reference_count are 0' do
+      allow(project).to receive(:repo_reference_count) { 0 }
+      allow(project).to receive(:wiki_reference_count) { 0 }
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true when repo_reference_count is > 0' do
+      allow(project).to receive(:repo_reference_count) { 2 }
+      allow(project).to receive(:wiki_reference_count) { 0 }
+
+      expect(subject).to be_truthy
+    end
+
+    it 'returns true when wiki_reference_count is > 0' do
+      allow(project).to receive(:repo_reference_count) { 0 }
+      allow(project).to receive(:wiki_reference_count) { 2 }
+
+      expect(subject).to be_truthy
+    end
+  end
+
   context 'legacy storage' do
     let(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
@@ -3201,10 +3243,6 @@ describe Project do
     describe '#migrate_to_hashed_storage!' do
       it 'returns true' do
         expect(project.migrate_to_hashed_storage!).to be_truthy
-      end
-
-      it 'flags as read-only' do
-        expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
       end
 
       it 'does not validate project visibility' do

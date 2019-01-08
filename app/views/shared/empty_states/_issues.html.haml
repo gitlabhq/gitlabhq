@@ -1,5 +1,6 @@
 - button_path = local_assigns.fetch(:button_path, false)
 - project_select_button = local_assigns.fetch(:project_select_button, false)
+- show_import_button = local_assigns.fetch(:show_import_button, false) && Feature.enabled?(:issues_import_csv) && can?(current_user, :import_issues, @project)
 - has_button = button_path || project_select_button
 
 .row.empty-state
@@ -21,12 +22,20 @@
         - if has_button
           .text-center
             - if project_select_button
-              = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue', type: :issues, with_feature_enabled: 'issues'
+              = render 'shared/new_project_item_select', path: 'issues/new', label: _('New issue'), type: :issues, with_feature_enabled: 'issues'
             - else
-              = link_to 'New issue', button_path, class: 'btn btn-success', title: 'New issue', id: 'new_issue_link'
+              = link_to _('New issue'), button_path, class: 'btn btn-success', title: _('New issue'), id: 'new_issue_link'
+
+            - if show_import_button
+              = render 'projects/issues/import_csv/button', type: :text
+
       - else
         %h4.text-center= _("There are no issues to show")
         %p
           = _("The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.")
         .text-center
           = link_to _('Register / Sign In'), new_user_session_path, class: 'btn btn-success'
+
+- if show_import_button
+  = render 'projects/issues/import_csv/modal'
+

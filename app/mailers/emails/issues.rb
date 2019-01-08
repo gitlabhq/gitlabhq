@@ -77,6 +77,17 @@ module Emails
       mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id, reason))
     end
 
+    def import_issues_csv_email(user_id, project_id, results)
+      @user = User.find(user_id)
+      @project = Project.find(project_id)
+      @results = results
+
+      mail(to: @user.notification_email, subject: subject('Imported issues')) do |format|
+        format.html { render layout: 'mailer' }
+        format.text { render layout: 'mailer' }
+      end
+    end
+
     private
 
     def setup_issue_mail(issue_id, recipient_id)

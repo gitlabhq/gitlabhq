@@ -475,7 +475,7 @@ module API
         requires :file, type: File, desc: 'The file to be uploaded'
       end
       post ":id/uploads" do
-        UploadService.new(user_project, params[:file]).execute
+        UploadService.new(user_project, params[:file]).execute.to_h
       end
 
       desc 'Get the users list of a project' do
