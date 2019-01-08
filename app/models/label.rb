@@ -214,6 +214,7 @@ class Label < ActiveRecord::Base
     super(options).tap do |json|
       json[:type] = self.try(:type)
       json[:priority] = priority(options[:project]) if options.key?(:project)
+      json[:textColor] = text_color
     end
   end
 
