@@ -1,19 +1,19 @@
 # Overview of Frontend Testing
 
-Tests relevant for frontend development can be found at two places:
+Tests relevant for frontend development can be found at the following places:
 
-- `spec/javascripts/` which are run by Karma and contain
+- `spec/javascripts/` which are run by Karma (command: `yarn karma`) and contain
   - [frontend unit tests](#frontend-unit-tests)
   - [frontend component tests](#frontend-component-tests)
   - [frontend integration tests](#frontend-integration-tests)
-- `spec/frontend/` which are run by Jest and contain
+- `spec/frontend/` which are run by Jest (command: `yarn jest`) and contain
   - [frontend unit tests](#frontend-unit-tests)
   - [frontend component tests](#frontend-component-tests)
   - [frontend integration tests](#frontend-integration-tests)
 - `spec/features/` which are run by RSpec and contain
   - [feature tests](#feature-tests)
 
-All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#53757]).
+All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#52483](https://gitlab.com/gitlab-org/gitlab-ce/issues/52483)).
 
 In addition there were feature tests in `features/` run by Spinach in the past.
 These have been removed from our codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-ce/issues/23036)).
@@ -22,8 +22,6 @@ See also:
 
 - [old testing guide](../../testing_guide/frontend_testing.html)
 - [notes on testing Vue components](../../fe_guide/vue.html#testing-vue-components)
-
-[#53757]: https://gitlab.com/gitlab-org/gitlab-ce/issues/53757
 
 ## Frontend unit tests
 
@@ -245,6 +243,8 @@ Their abstraction level is comparable to how a user would interact with the UI.
 
 In contrast to [frontend integration tests](#frontend-integration-tests), feature tests make requests against the real backend instead of using fixtures.
 This also implies that database queries are executed which makes this category significantly slower.
+
+See also the [RSpec testing guidelines](../../testing_guide/best_practices.md#rspec).
 
 ### When to use feature tests
 
