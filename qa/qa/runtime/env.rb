@@ -187,7 +187,13 @@ module QA
       private
 
       def remote_grid_credentials
-        remote_grid_username ? "#{remote_grid_username}:#{remote_grid_access_key}@" : ''
+        if remote_grid_username
+          raise ArgumentError, %Q(Please provide an access key for user "#{remote_grid_username}") unless remote_grid_access_key
+
+          return "#{remote_grid_username}:#{remote_grid_access_key}@"
+        end
+
+        ''
       end
 
       def enabled?(value, default: true)
