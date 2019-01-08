@@ -8,6 +8,14 @@ import { languageCode, s__ } from '../../locale';
 window.timeago = timeago;
 
 /**
+ * This method allows you to create new Date instance from existing
+ * date instance without keeping the reference.
+ *
+ * @param {Date} date
+ */
+export const newDate = date => (date instanceof Date ? new Date(date.getTime()) : new Date());
+
+/**
  * Returns i18n month names array.
  * If `abbreviated` is provided, returns abbreviated
  * name.
@@ -321,23 +329,35 @@ export const getSundays = date => {
 
 /**
  * Returns list of Dates representing a timeframe of months from startDate and length
+ * This method also supports going back in time when `length` is negative number
  *
- * @param {Date} startDate
+ * @param {Date} initialStartDate
  * @param {Number} length
  */
-export const getTimeframeWindowFrom = (startDate, length) => {
-  if (!(startDate instanceof Date) || !length) {
+export const getTimeframeWindowFrom = (initialStartDate, length) => {
+  if (!(initialStartDate instanceof Date) || !length) {
     return [];
   }
 
+  const startDate = newDate(initialStartDate);
+  const moveMonthBy = length > 0 ? 1 : -1;
+
+  startDate.setDate(1);
+  startDate.setHours(0, 0, 0, 0);
+
   // Iterate and set date for the size of length
   // and push date reference to timeframe list
-  const timeframe = new Array(length)
-    .fill()
-    .map((val, i) => new Date(startDate.getFullYear(), startDate.getMonth() + i, 1));
+  const timeframe = new Array(Math.abs(length)).fill().map(() => {
+    const currentMonth = startDate.getTime();
+    startDate.setMonth(startDate.getMonth() + moveMonthBy);
+    return new Date(currentMonth);
+  });
 
   // Change date of last timeframe item to last date of the month
-  timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
+  // when length is positive
+  if (length > 0) {
+    timeframe[timeframe.length - 1].setDate(totalDaysInMonth(timeframe[timeframe.length - 1]));
+  }
 
   return timeframe;
 };
