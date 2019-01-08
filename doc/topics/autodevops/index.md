@@ -632,7 +632,7 @@ repo or by specifying a project variable:
   one](https://gitlab.com/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#variables)
-  `AUTO_DEVOPS_CHART` with the URL of a custom chart to use.
+  `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
 ### Customizing `.gitlab-ci.yml`
 
@@ -678,6 +678,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | ------------                 | ---------------                                                                                                                                                                                                               |
 | `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
 | `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
+| `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |
 | `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html); defaults to 1                                                                              |
