@@ -129,6 +129,7 @@ module QA
 
         def hover_issues
           within_sidebar do
+            scroll_to_element(:issues_item)
             find_element(:issues_item).hover
 
             yield
@@ -137,6 +138,7 @@ module QA
 
         def hover_operations
           within_sidebar do
+            scroll_to('.shortcuts-operations')
             find('.shortcuts-operations').hover
 
             yield
@@ -145,6 +147,7 @@ module QA
 
         def hover_settings
           within_sidebar do
+            scroll_to('.qa-settings-item')
             find('.qa-settings-item').hover
 
             yield
