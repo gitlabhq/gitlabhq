@@ -34,14 +34,18 @@ export default {
 
       if (search === '') return this.renderTreeList ? this.tree : this.allBlobs;
 
-      return this.allBlobs.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
-    },
-    rowDisplayTextKey() {
-      if (this.renderTreeList && this.search.trim() === '') {
-        return 'name';
-      }
+      return this.allBlobs.reduce((acc, folder) => {
+        const tree = folder.tree.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
 
-      return 'path';
+        if (tree.length) {
+          return acc.concat({
+            ...folder,
+            tree,
+          });
+        }
+
+        return acc;
+      }, []);
     },
   },
   methods: {
@@ -119,7 +123,7 @@ export default {
         </button>
       </div>
     </div>
-    <div class="tree-list-scroll">
+    <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
       <template v-if="filteredTreeList.length">
         <file-row
           v-for="file in filteredTreeList"
@@ -129,8 +133,6 @@ export default {
           :hide-extra-on-tree="true"
           :extra-component="$options.FileRowStats"
           :show-changed-icon="true"
-          :display-text-key="rowDisplayTextKey"
-          :should-truncate-start="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"
         />
@@ -148,3 +150,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+.tree-list-blobs .file-row-name {
+  margin-left: 12px;
+}
+</style>

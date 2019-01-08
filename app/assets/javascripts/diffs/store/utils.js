@@ -318,6 +318,7 @@ export const generateTreeList = files =>
               fileHash: file.file_hash,
               addedLines: file.added_lines,
               removedLines: file.removed_lines,
+              parentPath: parent ? `${parent.path}/` : '/',
             });
           } else {
             Object.assign(entry, {
