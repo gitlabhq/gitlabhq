@@ -28,6 +28,19 @@ In brief:
   user no longer has permission to access the terminal, or if the connection
   details have changed.
 
+## Security
+
+GitLab and [GitLab Runner](https://docs.gitlab.com/runner/) take some
+precautions to keep interactive web terminal data encrypted between them, and
+everything protected with authorization guards. This is described in more
+detail below.
+
+- Interactive web terminals are completely disabled unless [`[session_server]`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section) is configured.
+- Every time the runner starts, it will generate an `x509` certificate that will be used for a `wss` (Web Socket Secure) connection.
+- For every created job, a random URL is generated which is discarded at the end of the job. This URL is used to establish a web socket connection. The URL for the session is in the format `(IP|HOST):PORT/session/$SOME_HASH`, where the `IP/HOST` and `PORT` are the configured [`listen_address`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-session_server-section).
+- Every session URL that is created has an authorization header that needs to be sent, to establish a `wss` connection.
+- The session URL is not exposed to the users in any way. GitLab holds all the state internally and proxies accordingly.
+
 ##  Enabling and disabling terminal support
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
