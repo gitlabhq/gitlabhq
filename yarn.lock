@@ -641,10 +641,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.47.0.tgz#c03dda41aefd3889cbfed95a391836106ae2ac4d"
   integrity sha512-0Bx/HxqR8xpqqaLnZiFAHIh1jTAFQPFToVZ6Wi3QyhsAwmXRAbgw1SlkRMZ7w3e6l+G71Wnw+GnI4rx1gK8JLQ==
 
-"@gitlab/ui@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.18.0.tgz#5cc591b2c7958e59fa7b1b443d4235e0e8f956c9"
-  integrity sha512-JqmiRSGYmK0DbGBQJBpjeRrcgjK25rCqG6QW6/GPTVLtRjbPPZYGvVg5PyA6nJUGAnwFoeApUZVML6X3OpnV1Q==
+"@gitlab/ui@^1.20.0":
+  version "1.20.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.20.0.tgz#50bd4b092646a2c6337f0f462779af8e702dda05"
+  integrity sha512-EJgrqon/tYCUPoOgnNNAXbrDXOEAajJwKHr4aR2R6vkJI3kVZiq66RNIe5ftGIUoNqYCDnRIkpLyo7MqzJPgcw==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -9887,9 +9887,9 @@ vue-style-loader@^4.1.0:
     loader-utils "^1.0.2"
 
 vue-template-compiler@^2.5.0, vue-template-compiler@^2.5.17:
-  version "2.5.17"
-  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.5.17.tgz#52a4a078c327deb937482a509ae85c06f346c3cb"
-  integrity sha512-63uI4syCwtGR5IJvZM0LN5tVsahrelomHtCxvRkZPJ/Tf3ADm1U1wG6KWycK3qCfqR+ygM5vewUvmJ0REAYksg==
+  version "2.5.21"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.5.21.tgz#a57ceb903177e8f643560a8d639a0f8db647054a"
+  integrity sha512-Vmk5Cv7UcmI99B9nXJEkaK262IQNnHp5rJYo+EwYpe2epTAXqcVyExhV6pk8jTkxQK2vRc8v8KmZBAwdmUZvvw==
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
@@ -9904,12 +9904,7 @@ vue-virtual-scroll-list@^1.2.5:
   resolved "https://registry.yarnpkg.com/vue-virtual-scroll-list/-/vue-virtual-scroll-list-1.2.5.tgz#bcbd010f7cdb035eba8958ebf807c6214d9a167a"
   integrity sha1-vL0BD3zbA166iVjr+AfGIU2aFno=
 
-vue@^2.5.17:
-  version "2.5.17"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
-  integrity sha512-mFbcWoDIJi0w0Za4emyLiW72Jae0yjANHbCVquMKijcavBGypqlF7zHRgMa5k4sesdv7hv2rB4JPdZfR+TPfhQ==
-
-vue@^2.5.21:
+vue@^2.5.17, vue@^2.5.21:
   version "2.5.21"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.21.tgz#3d33dcd03bb813912ce894a8303ab553699c4a85"
   integrity sha512-Aejvyyfhn0zjVeLvXd70h4hrE4zZDx1wfZqia6ekkobLmUZ+vNFQer53B4fu0EjWBSiqApxPejzkO1Znt3joxQ==

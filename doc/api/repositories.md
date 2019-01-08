@@ -212,7 +212,7 @@ Response:
 
 ## Merge Base
 
-Get the common ancestor for 2 refs (commit SHAs, branch names or tags).
+Get the common ancestor for 2 or more refs (commit SHAs, branch names or tags).
 
 ```
 GET /projects/:id/repository/merge_base

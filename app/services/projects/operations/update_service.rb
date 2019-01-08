@@ -12,7 +12,7 @@ module Projects
       private
 
       def project_update_params
-        {}
+        params.slice(:error_tracking_setting_attributes)
       end
     end
   end

@@ -11,7 +11,7 @@ class UploadService
     uploader = @uploader_class.new(@model, nil, @uploader_context)
     uploader.store!(@file)
 
-    uploader.to_h
+    uploader
   end
 
   private

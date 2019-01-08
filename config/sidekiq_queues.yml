@@ -85,3 +85,4 @@
   - [repository_cleanup, 1]
   - [delete_stored_files, 1]
   - [remote_mirror_notification, 2]
+  - [import_issues_csv, 2]

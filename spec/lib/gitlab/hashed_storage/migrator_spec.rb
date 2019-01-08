@@ -19,15 +19,6 @@ describe Gitlab::HashedStorage::Migrator do
       end
     end
 
-    it 'sets projects as read only' do
-      allow(ProjectMigrateHashedStorageWorker).to receive(:perform_async).twice
-      subject.bulk_migrate(ids.min, ids.max)
-
-      projects.each do |project|
-        expect(project.reload.repository_read_only?).to be_truthy
-      end
-    end
-
     it 'rescues and log exceptions' do
       allow_any_instance_of(Project).to receive(:migrate_to_hashed_storage!).and_raise(StandardError)
       expect { subject.bulk_migrate(ids.min, ids.max) }.not_to raise_error
@@ -39,6 +30,16 @@ describe Gitlab::HashedStorage::Migrator do
       end
 
       subject.bulk_migrate(ids.min, ids.max)
+    end
+
+    it 'has migrated projects set as writable' do
+      perform_enqueued_jobs do
+        subject.bulk_migrate(ids.min, ids.max)
+      end
+
+      projects.each do |project|
+        expect(project.reload.repository_read_only?).to be_falsey
+      end
     end
   end
 
@@ -57,19 +58,20 @@ describe Gitlab::HashedStorage::Migrator do
       expect { subject.migrate(project) }.not_to raise_error
     end
 
-    it 'sets project as read only' do
-      allow(ProjectMigrateHashedStorageWorker).to receive(:perform_async)
-      subject.migrate(project)
-
-      expect(project.reload.repository_read_only?).to be_truthy
-    end
-
     it 'migrate project' do
       perform_enqueued_jobs do
         subject.migrate(project)
       end
 
       expect(project.reload.hashed_storage?(:attachments)).to be_truthy
+    end
+
+    it 'has migrated project set as writable' do
+      perform_enqueued_jobs do
+        subject.migrate(project)
+      end
+
+      expect(project.reload.repository_read_only?).to be_falsey
     end
   end
 end

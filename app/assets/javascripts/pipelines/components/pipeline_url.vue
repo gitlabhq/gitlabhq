@@ -1,7 +1,19 @@
 <script>
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+import _ from 'underscore';
+import { __, sprintf } from '~/locale';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import popover from '~/vue_shared/directives/popover';
+
+const popoverTitle = sprintf(
+  _.escape(
+    __(
+      `This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}`,
+    ),
+  ),
+  { strongStart: '<b>', strongEnd: '</b>' },
+  false,
+);
 
 export default {
   components: {
@@ -32,14 +44,14 @@ export default {
         trigger: 'focus',
         placement: 'top',
         title: `<div class="autodevops-title">
-            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+            ${popoverTitle}
           </div>`,
         content: `<a
             class="autodevops-link"
             href="${this.autoDevopsHelpPath}"
             target="_blank"
             rel="noopener noreferrer nofollow">
-            Learn more about Auto DevOps
+            ${_.escape(__('Learn more about Auto DevOps'))}
           </a>`,
       };
     },
@@ -54,9 +66,9 @@ export default {
     <span>by</span>
     <user-avatar-link
       v-if="user"
-      :link-href="pipeline.user.path"
-      :img-src="pipeline.user.avatar_url"
-      :tooltip-text="pipeline.user.name"
+      :link-href="user.path"
+      :img-src="user.avatar_url"
+      :tooltip-text="user.name"
       class="js-pipeline-url-user"
     />
     <span v-if="!user" class="js-pipeline-url-api api"> API </span>
@@ -64,10 +76,10 @@ export default {
       <span
         v-if="pipeline.flags.latest"
         v-gl-tooltip
-        class="js-pipeline-url-latest badge badge-success"
         :title="__('Latest pipeline for this branch')"
+        class="js-pipeline-url-latest badge badge-success"
       >
-        latest
+        {{ __('latest') }}
       </span>
       <span
         v-if="pipeline.flags.yaml_errors"
@@ -75,7 +87,7 @@ export default {
         :title="pipeline.yaml_errors"
         class="js-pipeline-url-yaml badge badge-danger"
       >
-        yaml invalid
+        {{ __('yaml invalid') }}
       </span>
       <span
         v-if="pipeline.flags.failure_reason"
@@ -83,7 +95,7 @@ export default {
         :title="pipeline.failure_reason"
         class="js-pipeline-url-failure badge badge-danger"
       >
-        error
+        {{ __('error') }}
       </span>
       <gl-link
         v-if="pipeline.flags.auto_devops"
@@ -95,7 +107,7 @@ export default {
         Auto DevOps
       </gl-link>
       <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
-        stuck
+        {{ __('stuck') }}
       </span>
       <span
         v-if="pipeline.flags.merge_request"
@@ -103,7 +115,7 @@ export default {
         :title="__('This pipeline is run in a merge request context')"
         class="js-pipeline-url-mergerequest badge badge-info"
       >
-        merge request
+        {{ __('merge request') }}
       </span>
     </div>
   </div>

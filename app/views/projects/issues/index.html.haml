@@ -11,8 +11,7 @@
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
-      .nav-controls
-        = render "projects/issues/nav_btns"
+      = render "projects/issues/nav_btns"
     = render 'shared/issuable/search_bar', type: :issues
 
     - if @can_bulk_update
@@ -23,4 +22,4 @@
       - if new_issue_email
         = render 'projects/issuable_by_email', email: new_issue_email, issuable_type: 'issue'
 - else
-  = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project)
+  = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project), show_import_button: true

@@ -285,7 +285,7 @@ module ProjectsHelper
 
   # overridden in EE
   def settings_operations_available?
-    false
+    Feature.enabled?(:error_tracking, @project) && can?(current_user, :read_environment, @project)
   end
 
   private
@@ -488,7 +488,7 @@ module ProjectsHelper
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesHelpPath: help_page_path('user/project/pages/index.md')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core-only')
     }
   end
 
@@ -549,6 +549,7 @@ module ProjectsHelper
       services#edit
       repository#show
       ci_cd#show
+      operations#show
       badges#index
       pages#show
     ]

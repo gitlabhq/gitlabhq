@@ -19,20 +19,14 @@
           = render "shared/notes/form", view: diff_view, supports_autocomplete: autocomplete
 - elsif !current_user
   .disabled-comment.text-center.prepend-top-default
-    Please
-    = link_to "register", new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'), class: 'js-register-link'
-    or
-    = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link'
-    to comment
+    - link_to_register = link_to(_("register"), new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'), class: 'js-register-link')
+    - link_to_sign_in = link_to(_("sign in"), new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link')
+    = _("Please %{link_to_register} or %{link_to_sign_in} to comment").html_safe % { link_to_register: link_to_register, link_to_sign_in: link_to_sign_in }
 - elsif discussion_locked
   .disabled-comment.text-center.prepend-top-default
     %span.issuable-note-warning
       = sprite_icon('lock', size: 16, css_class: 'icon')
       %span
-        This
-        = issuable.class.to_s.titleize.downcase
-        is locked. Only
-        %b project members
-        can comment.
+        = _("This %{issuable} is locked. Only <strong>project members</strong> can comment.").html_safe % { issuable: issuable.class.to_s.titleize.downcase }
 -# haml-lint:disable InlineJavaScript
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe

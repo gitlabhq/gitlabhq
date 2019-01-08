@@ -51,6 +51,19 @@ module Gitlab
       migration_class_for(class_name).new.perform(*arguments)
     end
 
+    def self.exists?(migration_class)
+      enqueued = Sidekiq::Queue.new(self.queue)
+      scheduled = Sidekiq::ScheduledSet.new
+
+      [enqueued, scheduled].each do |queue|
+        queue.each do |job|
+          return true if job.queue == self.queue && job.args.first == migration_class
+        end
+      end
+
+      false
+    end
+
     def self.migration_class_for(class_name)
       const_get(class_name)
     end

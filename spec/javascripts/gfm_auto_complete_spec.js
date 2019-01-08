@@ -205,4 +205,40 @@ describe('GfmAutoComplete', function() {
       expect(GfmAutoComplete.isLoading({ title: 'Foo' })).toBe(false);
     });
   });
+
+  describe('Issues.insertTemplateFunction', function() {
+    it('should return default template', function() {
+      expect(GfmAutoComplete.Issues.insertTemplateFunction({ id: 5, title: 'Some Issue' })).toBe(
+        '${atwho-at}${id}', // eslint-disable-line no-template-curly-in-string
+      );
+    });
+
+    it('should return reference when reference is set', function() {
+      expect(
+        GfmAutoComplete.Issues.insertTemplateFunction({
+          id: 5,
+          title: 'Some Issue',
+          reference: 'grp/proj#5',
+        }),
+      ).toBe('grp/proj#5');
+    });
+  });
+
+  describe('Issues.templateFunction', function() {
+    it('should return html with id and title', function() {
+      expect(GfmAutoComplete.Issues.templateFunction({ id: 5, title: 'Some Issue' })).toBe(
+        '<li><small>5</small> Some Issue</li>',
+      );
+    });
+
+    it('should replace id with reference if reference is set', function() {
+      expect(
+        GfmAutoComplete.Issues.templateFunction({
+          id: 5,
+          title: 'Some Issue',
+          reference: 'grp/proj#5',
+        }),
+      ).toBe('<li><small>grp/proj#5</small> Some Issue</li>');
+    });
+  });
 });

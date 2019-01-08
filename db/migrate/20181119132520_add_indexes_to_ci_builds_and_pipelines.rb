@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddIndexesToCiBuildsAndPipelines < ActiveRecord::Migration
+class AddIndexesToCiBuildsAndPipelines < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

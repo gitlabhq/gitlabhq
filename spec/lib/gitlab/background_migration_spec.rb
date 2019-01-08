@@ -119,4 +119,48 @@ describe Gitlab::BackgroundMigration do
       described_class.perform('Foo', [10, 20])
     end
   end
+
+  describe '.exists?' do
+    context 'when there are enqueued jobs present' do
+      let(:queue) do
+        [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+      end
+
+      before do
+        allow(Sidekiq::Queue).to receive(:new)
+          .with(described_class.queue)
+          .and_return(queue)
+      end
+
+      it 'returns true if specific job exists' do
+        expect(described_class.exists?('Foo')).to eq(true)
+      end
+
+      it 'returns false if specific job does not exist' do
+        expect(described_class.exists?('Bar')).to eq(false)
+      end
+    end
+
+    context 'when there are scheduled jobs present', :sidekiq, :redis do
+      before do
+        Sidekiq::Testing.disable! do
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Foo')
+
+          expect(Sidekiq::ScheduledSet.new).to be_one
+        end
+      end
+
+      after do
+        Sidekiq::ScheduledSet.new.clear
+      end
+
+      it 'returns true if specific job exists' do
+        expect(described_class.exists?('Foo')).to eq(true)
+      end
+
+      it 'returns false if specific job does not exist' do
+        expect(described_class.exists?('Bar')).to eq(false)
+      end
+    end
+  end
 end

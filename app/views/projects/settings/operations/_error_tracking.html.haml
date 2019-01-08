@@ -1,0 +1,30 @@
+- return unless Feature.enabled?(:error_tracking, @project) && can?(current_user, :read_environment, @project)
+
+- setting = error_tracking_setting
+
+%section.settings.expanded.border-0.no-animate
+  .settings-header
+    %h4
+      = _('Error Tracking')
+    %p
+      = _('To link Sentry to GitLab, enter your Sentry URL and Auth Token.')
+  .settings-content
+    = form_for @project, url: project_settings_operations_path(@project), method: :patch do |f|
+      = form_errors(@project)
+      .form-group
+        = f.fields_for :error_tracking_setting_attributes, setting do |form|
+          .form-check.form-group
+            = form.check_box :enabled, class: 'form-check-input'
+            = form.label :enabled, _('Active'), class: 'form-check-label'
+          .form-group
+            = form.label :api_url, _('Sentry API URL'), class: 'label-bold'
+            = form.url_field :api_url, class: 'form-control', placeholder: _('http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/issues/')
+            %p.form-text.text-muted
+              = _('Enter your Sentry API URL')
+          .form-group
+            = form.label :token, _('Auth Token'), class: 'label-bold'
+            = form.text_field :token, class: 'form-control'
+            %p.form-text.text-muted
+              = _('Find and manage Auth Tokens in your Sentry account settings page.')
+
+      = f.submit _('Save changes'), class: 'btn btn-success'

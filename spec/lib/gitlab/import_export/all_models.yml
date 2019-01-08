@@ -314,6 +314,7 @@ project:
 - repository_languages
 - pool_repository
 - kubernetes_namespaces
+- error_tracking_setting
 award_emoji:
 - awardable
 - user
@@ -345,3 +346,5 @@ resource_label_events:
 - merge_request
 - epic
 - label
+error_tracking_setting:
+- project

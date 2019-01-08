@@ -325,8 +325,8 @@ export default {
       <project-setting-row
         v-if="pagesAvailable && pagesAccessControlEnabled"
         :help-path="pagesHelpPath"
-        label="Pages"
-        help-text="Static website for the project."
+        label="Pages access control"
+        help-text="Access control for the project's static website"
       >
         <project-feature-setting
           v-model="pagesAccessLevel"

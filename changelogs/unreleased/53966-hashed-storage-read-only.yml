@@ -1,0 +1,5 @@
+---
+title: 'Hashed Storage: Only set as `read_only` when starting the per-project migration'
+merge_request: 24128
+author:
+type: changed
