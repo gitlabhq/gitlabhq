@@ -15,6 +15,20 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       allow(service).to receive(:gitlab_shell) { gitlab_shell }
     end
 
+    context 'repository lock' do
+      it 'tries to lock the repository' do
+        expect(service).to receive(:try_to_set_repository_read_only!)
+
+        service.execute
+      end
+
+      it 'fails when a git operation is in progress' do
+        allow(project).to receive(:repo_reference_count) { 1 }
+
+        expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryMigrationError)
+      end
+    end
+
     context 'when succeeds' do
       it 'renames project and wiki repositories' do
         service.execute

@@ -991,6 +991,34 @@ describe MergeRequest do
     end
   end
 
+  describe '#committers' do
+    it 'returns all the committers of every commit in the merge request' do
+      users = subject.commits.map(&:committer_email).uniq.map do |email|
+        create(:user, email: email)
+      end
+
+      expect(subject.committers).to match_array(users)
+    end
+
+    it 'returns an empty array if no committer is associated with a user' do
+      expect(subject.committers).to be_empty
+    end
+  end
+
+  describe '#authors' do
+    it 'returns a list with all the committers in the merge request and author' do
+      users = subject.commits.map(&:committer_email).uniq.map do |email|
+        create(:user, email: email)
+      end
+
+      expect(subject.authors).to match_array([subject.author, *users])
+    end
+
+    it 'returns only the author if no committer is associated with a user' do
+      expect(subject.authors).to contain_exactly(subject.author)
+    end
+  end
+
   describe '#hook_attrs' do
     it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
       builder = double
@@ -1368,6 +1396,34 @@ describe MergeRequest do
                     branch_pipeline_2,
                     branch_pipeline])
         end
+      end
+    end
+  end
+
+  describe '#update_head_pipeline' do
+    subject { merge_request.update_head_pipeline }
+
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when there is a pipeline with the diff head sha' do
+      let!(:pipeline) do
+        create(:ci_empty_pipeline,
+               project: merge_request.project,
+               sha: merge_request.diff_head_sha,
+               ref: merge_request.source_branch)
+      end
+
+      it 'updates the head pipeline' do
+        expect { subject }
+          .to change { merge_request.reload.head_pipeline }
+          .from(nil).to(pipeline)
+      end
+    end
+
+    context 'when there are no pipelines with the diff head sha' do
+      it 'does not update the head pipeline' do
+        expect { subject }
+          .not_to change { merge_request.reload.head_pipeline }
       end
     end
   end

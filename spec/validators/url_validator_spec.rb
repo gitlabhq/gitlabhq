@@ -172,4 +172,55 @@ describe UrlValidator do
       end
     end
   end
+
+  context 'when enforce_sanitization is' do
+    let(:validator) { described_class.new(attributes: [:link_url], enforce_sanitization: enforce_sanitization) }
+    let(:unsafe_url) { "https://replaceme.com/'><script>alert(document.cookie)</script>" }
+    let(:safe_url) { 'https://replaceme.com/path/to/somewhere' }
+
+    let(:unsafe_internal_url) do
+      Gitlab.config.gitlab.protocol + '://' + Gitlab.config.gitlab.host +
+        "/'><script>alert(document.cookie)</script>"
+    end
+
+    context 'true' do
+      let(:enforce_sanitization) { true }
+
+      it 'prevents unsafe urls' do
+        badge.link_url = unsafe_url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+
+      it 'prevents unsafe internal urls' do
+        badge.link_url = unsafe_internal_url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+
+      it 'allows safe urls' do
+        badge.link_url = safe_url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+
+    context 'false' do
+      let(:enforce_sanitization) { false }
+
+      it 'allows unsafe urls' do
+        badge.link_url = unsafe_url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+  end
 end

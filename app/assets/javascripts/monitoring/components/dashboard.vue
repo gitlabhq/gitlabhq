@@ -144,6 +144,9 @@ export default {
     }
   },
   methods: {
+    getGraphAlerts(graphId) {
+      return this.alertData ? this.alertData[graphId] || {} : {};
+    },
     getGraphsData() {
       this.state = 'loading';
       Promise.all([
@@ -223,6 +226,8 @@ export default {
         :tags-path="tagsPath"
         :show-legend="showLegend"
         :small-graph="forceSmallGraph"
+        :alert-data="getGraphAlerts(graphData.id)"
+        group-id="monitor-area-chart"
       >
         <!-- EE content -->
         {{ null }}

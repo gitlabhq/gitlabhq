@@ -431,15 +431,6 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 :label="issueActionButtonTitle"
                 @click="handleSave(true);"
               />
-
-              <button
-                v-if="note.length"
-                type="button"
-                class="btn btn-cancel js-note-discard"
-                @click="discard"
-              >
-                Discard draft
-              </button>
             </div>
           </form>
         </div>

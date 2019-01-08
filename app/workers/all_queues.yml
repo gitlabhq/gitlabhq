@@ -140,3 +140,4 @@
 - detect_repository_languages
 - repository_cleanup
 - delete_stored_files
+- import_issues_csv

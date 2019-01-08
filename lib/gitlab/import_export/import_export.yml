@@ -74,6 +74,7 @@ project_tree:
   - :prometheus_metrics
   - :project_badges
   - :ci_cd_settings
+  - :error_tracking_setting
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -162,6 +163,9 @@ excluded_attributes:
     - :token_encrypted
   services:
     - :template
+  error_tracking_setting:
+    - :encrypted_token
+    - :encrypted_token_iv
 
 methods:
   labels:

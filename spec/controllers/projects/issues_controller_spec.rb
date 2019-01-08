@@ -1026,6 +1026,72 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'POST #import_csv' do
+    let(:project) { create(:project, :public) }
+    let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
+
+    context 'feature disabled' do
+      it 'returns 404' do
+        sign_in(user)
+        project.add_maintainer(user)
+
+        stub_feature_flags(issues_import_csv: false)
+
+        import_csv
+
+        expect(response).to have_gitlab_http_status :not_found
+      end
+    end
+
+    context 'unauthorized' do
+      it 'returns 404 for guests' do
+        sign_out(:user)
+
+        import_csv
+
+        expect(response).to have_gitlab_http_status :not_found
+      end
+
+      it 'returns 404 for project members with reporter role' do
+        sign_in(user)
+        project.add_reporter(user)
+
+        import_csv
+
+        expect(response).to have_gitlab_http_status :not_found
+      end
+    end
+
+    context 'authorized' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
+
+      it "returns 302 for project members with developer role" do
+        import_csv
+
+        expect(flash[:notice]).to include('Your issues are being imported')
+        expect(response).to redirect_to(project_issues_path(project))
+      end
+
+      it "shows error when upload fails" do
+        allow_any_instance_of(UploadService).to receive(:execute).and_return(nil)
+
+        import_csv
+
+        expect(flash[:alert]).to include('File upload error.')
+        expect(response).to redirect_to(project_issues_path(project))
+      end
+    end
+
+    def import_csv
+      post :import_csv, namespace_id: project.namespace.to_param,
+                        project_id: project.to_param,
+                        file: file
+    end
+  end
+
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
     context 'when authenticated' do

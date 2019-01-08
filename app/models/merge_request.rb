@@ -284,6 +284,14 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  def committers
+    @committers ||= commits.committers
+  end
+
+  def authors
+    User.from_union([committers, User.where(id: self.author_id)])
+  end
+
   # Verifies if title has changed not taking into account WIP prefix
   # for merge requests.
   def wipless_title_changed(old_title)
@@ -327,13 +335,15 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def commits
-    if persisted?
-      merge_request_diff.commits
-    elsif compare_commits
-      compare_commits.reverse
-    else
-      []
-    end
+    return merge_request_diff.commits if persisted?
+
+    commits_arr = if compare_commits
+                    compare_commits.reverse
+                  else
+                    []
+                  end
+
+    CommitCollection.new(source_project, commits_arr, source_branch)
   end
 
   def commits_count
@@ -1092,10 +1102,15 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines(shas: all_commit_shas)
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.ci_pipelines
-      .where(sha: shas, ref: source_branch)
-      .where(merge_request: [nil, self])
-      .sort_by_merge_request_pipelines
+    @all_pipelines ||=
+      source_project.ci_pipelines
+                    .for_merge_request(self, source_branch, all_commit_shas)
+  end
+
+  def update_head_pipeline
+    self.head_pipeline = find_actual_head_pipeline
+
+    update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
   end
 
   def merge_request_pipeline_exists?
@@ -1337,5 +1352,12 @@ class MergeRequest < ActiveRecord::Base
     return false unless source_project
 
     source_project.repository.squash_in_progress?(id)
+  end
+
+  private
+
+  def find_actual_head_pipeline
+    source_project&.ci_pipelines
+                  &.latest_for_merge_request(self, source_branch, diff_head_sha)
   end
 end

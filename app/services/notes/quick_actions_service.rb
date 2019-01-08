@@ -31,7 +31,7 @@ module Notes
       return if command_params.empty?
       return unless supported?(note)
 
-      self.class.noteable_update_service(note).new(project, current_user, command_params).execute(note.noteable)
+      self.class.noteable_update_service(note).new(note.parent, current_user, command_params).execute(note.noteable)
     end
   end
 end

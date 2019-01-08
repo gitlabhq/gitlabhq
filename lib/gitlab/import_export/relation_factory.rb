@@ -24,6 +24,7 @@ module Gitlab
                     project_badges: 'Badge',
                     metrics: 'MergeRequest::Metrics',
                     ci_cd_settings: 'ProjectCiCdSetting',
+                    error_tracking_setting: 'ErrorTracking::ProjectErrorTrackingSetting',
                     links: 'Releases::Link' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id merged_by_id latest_closed_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze

@@ -161,7 +161,7 @@ private subnets.
 Now press the Launch a Cache Cluster and choose Redis for our
 DB engine. You'll be able to configure details such as replication,
 Multi-AZ and node types. The second section will allow us to choose our
-subnet and security group and     
+subnet and security group and
 
 ![Redis Cluster details](img/redis-cluster-det.png)
 
@@ -206,7 +206,7 @@ http traffic from anywhere and name it something such as
 `gitlab-ec2-security-group`.
 
 While we wait for it to launch we can allocate an Elastic IP and
-associate it with our new EC2 instance.  
+associate it with our new EC2 instance.
 
 ### RDS and Redis Security Group
 
@@ -268,8 +268,8 @@ our current case we'll specify the adapter, encoding, host, db name,
 username, and password.
 
     gitlab_rails['db_adapter'] = "postgresql"
-    gitlab_rails['db_encoding'] = "unicode"    
-    gitlab_rails['db_database'] = "gitlabhq_production"   
+    gitlab_rails['db_encoding'] = "unicode"
+    gitlab_rails['db_database'] = "gitlabhq_production"
     gitlab_rails['db_username'] = "gitlab"
     gitlab_rails['db_password'] = "mypassword"
     gitlab_rails['db_host'] = "<rds-endpoint>"
@@ -288,9 +288,9 @@ to make the EFS integration easier to manage.
 Finally, run reconfigure. You might find it useful to run a check and
 a service status to make sure everything has been set up correctly.
 
-    sudo gitlab-ctl reconfigure  
-    sudo gitlab-rake gitlab:check  
-    sudo gitlab-ctl status  
+    sudo gitlab-ctl reconfigure
+    sudo gitlab-rake gitlab:check
+    sudo gitlab-ctl status
 
 If everything looks good copy the Elastic IP over to your browser and
 test the instance manually.
@@ -396,4 +396,4 @@ There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
 * [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
-* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+* [GitLab Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)

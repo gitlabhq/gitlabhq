@@ -187,6 +187,7 @@ class Project < ActiveRecord::Base
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :project_repository, inverse_of: :project
+  has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
@@ -294,6 +295,8 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :remote_mirrors,
                                 allow_destroy: true,
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
+
+  accepts_nested_attributes_for :error_tracking_setting, update_only: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -1786,6 +1789,24 @@ class Project < ActiveRecord::Base
     handle_update_attribute_error(e, value)
   end
 
+  # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand
+  #
+  # @return [Boolean] true when set to read_only or false when an existing git transfer is in progress
+  def set_repository_read_only!
+    with_lock do
+      break false if git_transfer_in_progress?
+
+      update_column(:repository_read_only, true)
+    end
+  end
+
+  # Set repository as writable again
+  def set_repository_writable!
+    with_lock do
+      update_column(repository_read_only, false)
+    end
+  end
+
   def pushes_since_gc
     Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end
@@ -1900,13 +1921,15 @@ class Project < ActiveRecord::Base
   def migrate_to_hashed_storage!
     return unless storage_upgradable?
 
-    update!(repository_read_only: true)
-
-    if repo_reference_count > 0 || wiki_reference_count > 0
+    if git_transfer_in_progress?
       ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
     else
       ProjectMigrateHashedStorageWorker.perform_async(id)
     end
+  end
+
+  def git_transfer_in_progress?
+    repo_reference_count > 0 || wiki_reference_count > 0
   end
 
   def storage_version=(value)

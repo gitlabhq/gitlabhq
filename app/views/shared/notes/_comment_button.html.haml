@@ -1,30 +1,31 @@
 - noteable_name = @note.noteable.human_class_name
 
 .float-left.btn-group.append-right-10.droplab-dropdown.comment-type-dropdown.js-comment-type-dropdown
-  %input.btn.btn-nr.btn-success.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: 'Comment' }
+  %input.btn.btn-nr.btn-success.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: _('Comment') }
 
   - if @note.can_be_discussion_note?
-    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => 'Open comment type dropdown' do
+    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => _('Open comment type dropdown') do
       = icon('caret-down', class: 'toggle-icon')
 
     %ul#resolvable-comment-menu.dropdown-menu.dropdown-open-top{ data: { dropdown: true } }
-      %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => 'Comment', 'close-text' => "Comment & close #{noteable_name}", 'reopen-text' => "Comment & reopen #{noteable_name}" } }
+      %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => _('Comment'), 'close-text' => _("Comment & close %{noteable_name}") % { noteable_name: noteable_name }, 'reopen-text' => _("Comment & reopen %{noteable_name}") % { noteable_name: noteable_name } } }
         %button.btn.btn-transparent
           = icon('check', class: 'icon')
           .description
-            %strong Comment
+            %strong= _("Comment")
             %p
-              Add a general comment to this #{noteable_name}.
+              = _("Add a general comment to this %{noteable_name}.") % { noteable_name: noteable_name }
 
       %li.divider.droplab-item-ignore
 
-      %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => 'Start discussion', 'close-text' => "Start discussion & close #{noteable_name}", 'reopen-text' => "Start discussion & reopen #{noteable_name}" } }
+      %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => _('Start discussion'), 'close-text' => _("Start discussion & close %{noteable_name}") % { noteable_name: noteable_name }, 'reopen-text' => _("Start discussion & reopen %{noteable_name}") % { noteable_name: noteable_name } } }
         %button.btn.btn-transparent
           = icon('check', class: 'icon')
           .description
-            %strong Start discussion
+            %strong= _("Start discussion")
             %p
               = succeed '.' do
-                Discuss a specific suggestion or question
                 - if @note.noteable.supports_resolvable_notes?
-                  that needs to be resolved
+                  = _('Discuss a specific suggestion or question that needs to be resolved')
+                - else
+                  = _('Discuss a specific suggestion or question')
