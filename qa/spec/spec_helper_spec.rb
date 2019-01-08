@@ -4,9 +4,9 @@ describe 'rspec config tests' do
   let(:group) do
     RSpec.describe do
       shared_examples 'passing tests' do
-        example 'pass: not in quarantine' do
+        example 'not in quarantine' do
         end
-        example 'pass: in quarantine', :quarantine do
+        example 'in quarantine', :quarantine do
         end
       end
 
@@ -28,10 +28,10 @@ describe 'rspec config tests' do
       foo_examples = foo_context.descendant_filtered_examples
       expect(foo_examples.count).to eq(2)
 
-      ex = foo_examples.find { |e| e.description == "pass: not in quarantine" }
+      ex = foo_examples.find { |e| e.description == "not in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
 
-      ex = foo_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = foo_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:pending)
       expect(ex.execution_result.pending_message).to eq('In quarantine')
 
@@ -39,10 +39,10 @@ describe 'rspec config tests' do
       default_examples = default_context.descendant_filtered_examples
       expect(default_examples.count).to eq(2)
 
-      ex = default_examples.find { |e| e.description == "pass: not in quarantine" }
+      ex = default_examples.find { |e| e.description == "not in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
 
-      ex = default_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = default_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:pending)
       expect(ex.execution_result.pending_message).to eq('In quarantine')
     end
@@ -67,14 +67,14 @@ describe 'rspec config tests' do
       foo_examples = foo_context.descendant_filtered_examples
       expect(foo_examples.count).to be(1)
 
-      ex = foo_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = foo_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
 
       default_context = group.children.find { |c| c.description == "default" }
       default_examples = default_context.descendant_filtered_examples
       expect(default_examples.count).to be(1)
 
-      ex = default_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = default_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
     end
   end
@@ -103,10 +103,10 @@ describe 'rspec config tests' do
       foo_examples = foo_context.descendant_filtered_examples
       expect(foo_examples.count).to eq(2)
 
-      ex = foo_examples.find { |e| e.description == "pass: not in quarantine" }
+      ex = foo_examples.find { |e| e.description == "not in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
 
-      ex = foo_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = foo_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:pending)
       expect(ex.execution_result.pending_message).to eq('In quarantine')
     end
@@ -131,11 +131,11 @@ describe 'rspec config tests' do
       foo_examples = foo_context.descendant_filtered_examples
       expect(foo_examples.count).to eq(2)
 
-      ex = foo_examples.find { |e| e.description == "pass: not in quarantine" }
+      ex = foo_examples.find { |e| e.description == "not in quarantine" }
       expect(ex.execution_result.status).to eq(:pending)
-      expect(ex.execution_result.pending_message).to eq('Running only tagged tests in quarantine')
+      expect(ex.execution_result.pending_message).to eq('Running tests tagged with all of [:quarantine, :foo]')
 
-      ex = foo_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = foo_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
     end
 
@@ -145,9 +145,9 @@ describe 'rspec config tests' do
       default_examples = default_context.descendant_filtered_examples
       expect(default_examples.count).to eq(1)
 
-      ex = default_examples.find { |e| e.description == "pass: in quarantine" }
+      ex = default_examples.find { |e| e.description == "in quarantine" }
       expect(ex.execution_result.status).to eq(:pending)
-      expect(ex.execution_result.pending_message).to eq('Running only tagged tests in quarantine')
+      expect(ex.execution_result.pending_message).to eq('Running tests tagged with all of [:quarantine, :foo]')
     end
   end
 
@@ -248,14 +248,14 @@ describe 'rspec config tests' do
 
       ex = group.examples.find { |e| e.description == "foo" }
       expect(ex.execution_result.status).to eq(:pending)
-      expect(ex.execution_result.pending_message).to eq('Running only tagged tests in quarantine')
+      expect(ex.execution_result.pending_message).to eq('Running tests tagged with all of [:bar, :foo, :quarantine]')
 
       ex = group.examples.find { |e| e.description == "bar and quarantine" }
       expect(ex.execution_result.status).to eq(:passed)
 
       ex = group.examples.find { |e| e.description == "foo and bar" }
       expect(ex.execution_result.status).to eq(:pending)
-      expect(ex.execution_result.pending_message).to eq('Running only tagged tests in quarantine')
+      expect(ex.execution_result.pending_message).to eq('Running tests tagged with all of [:bar, :foo, :quarantine]')
 
       ex = group.examples.find { |e| e.description == "foo, bar, and quarantine" }
       expect(ex.execution_result.status).to eq(:passed)

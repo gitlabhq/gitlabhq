@@ -14,7 +14,7 @@ RSpec.configure do |config|
     # using `--tag quarantine --tag smoke`, without this check we'd end up
     # running that ldap test as well.
     if config.inclusion_filter[:quarantine]
-      skip('Running only tagged tests in quarantine') unless quarantine_and_optional_other_tag?(example, config)
+      skip("Running tests tagged with all of #{config.inclusion_filter.rules.keys}") unless quarantine_and_optional_other_tag?(example, config)
     end
   end
 
@@ -50,8 +50,7 @@ end
 def quarantine_and_optional_other_tag?(example, config)
   return false unless example.metadata.keys.include? :quarantine
 
-  filters_other_than_quarantine = config.inclusion_filter.rules.keys.dup
-  filters_other_than_quarantine.delete :quarantine
+  filters_other_than_quarantine = config.inclusion_filter.rules.keys.reject { |key| key == :quarantine }
 
   return true if filters_other_than_quarantine.empty?
 
