@@ -2,6 +2,8 @@
 
 module Projects
   module HashedStorage
+    RepositoryMigrationError = Class.new(StandardError)
+
     class MigrateRepositoryService < BaseService
       include Gitlab::ShellAdapter
 
@@ -16,6 +18,8 @@ module Projects
       end
 
       def execute
+        try_to_set_repository_read_only!
+
         @old_storage_version = project.storage_version
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
         project.ensure_storage_path_exists
@@ -47,6 +51,16 @@ module Projects
       end
 
       private
+
+      def try_to_set_repository_read_only!
+        # Mitigate any push operation to start during migration
+        unless project.set_repository_read_only!
+          migration_error = "Target repository '#{old_disk_path}' cannot be made read-only as there is a git transfer in progress"
+          logger.error migration_error
+
+          raise RepositoryMigrationError, migration_error
+        end
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def has_wiki?
