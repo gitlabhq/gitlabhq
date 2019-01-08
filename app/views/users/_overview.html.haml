@@ -9,24 +9,22 @@
   .col-md-12.col-lg-6
     - if can?(current_user, :read_cross_project)
       .activities-block
-        .append-right-5
-          .prepend-top-16
-            .d-flex.align-items-center.border-bottom
-              %h4.flex-grow
-                = s_('UserProfile|Activity')
-              = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
-            .overview-content-list{ data: { href: user_path } }
-              .center.light.loading
-                = spinner nil, true
-
-  .col-md-12.col-lg-6
-    .projects-block
-      .prepend-left-5
         .prepend-top-16
           .d-flex.align-items-center.border-bottom
             %h4.flex-grow
-              = s_('UserProfile|Personal projects')
-            = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
-          .overview-content-list{ data: { href: user_projects_path } }
+              = s_('UserProfile|Activity')
+            = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
+          .overview-content-list{ data: { href: user_path } }
             .center.light.loading
               = spinner nil, true
+
+  .col-md-12.col-lg-6
+    .projects-block
+      .prepend-top-16
+        .d-flex.align-items-center.border-bottom
+          %h4.flex-grow
+            = s_('UserProfile|Personal projects')
+          = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
+        .overview-content-list{ data: { href: user_projects_path } }
+          .center.light.loading
+            = spinner nil, true
