@@ -26,6 +26,8 @@ describe('Diffs tree list component', () => {
     store.state.diffs.removedLines = 20;
     store.state.diffs.diffFiles.push('test');
 
+    localStorage.removeItem('mr_diff_tree_list');
+
     vm = mountComponentWithStore(Component, { store });
   });
 
@@ -57,6 +59,7 @@ describe('Diffs tree list component', () => {
           removedLines: 0,
           tempFile: true,
           type: 'blob',
+          parentPath: 'app',
         },
         app: {
           key: 'app',
@@ -121,7 +124,7 @@ describe('Diffs tree list component', () => {
       vm.renderTreeList = false;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.file-row').textContent).toContain('app/index.js');
+        expect(vm.$el.querySelector('.file-row').textContent).toContain('index.js');
 
         done();
       });
