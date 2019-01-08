@@ -450,6 +450,9 @@ msgstr ""
 msgid "AdminProjects|Delete project"
 msgstr ""
 
+msgid "AdminSettings|Auto DevOps domain"
+msgstr ""
+
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr ""
 
