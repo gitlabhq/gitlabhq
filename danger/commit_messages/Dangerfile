@@ -178,7 +178,7 @@ def lint_commits(commits)
       failures = true
     end
 
-    if commit.message.match?(%r(([\w\-\/]+)?(#|!|&|%)\d+))
+    if commit.message.match?(%r(([\w\-\/]+)?(#|!|&|%)\d+\b))
       fail_commit(
         commit,
         'Use full URLs instead of short references ' \
