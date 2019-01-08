@@ -71,7 +71,7 @@ describe Projects::MergeRequests::CreationsController do
         expect(response).to be_success
 
         total = assigns(:total_commit_count)
-        expect(assigns(:commits)).to be_an Array
+        expect(assigns(:commits)).to be_an CommitCollection
         expect(total).to be > 0
         expect(assigns(:hidden_commit_count)).to eq(0)
         expect(response).to have_gitlab_http_status(200)

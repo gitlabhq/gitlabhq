@@ -19,6 +19,12 @@ class CommitCollection
     commits.each(&block)
   end
 
+  def committers
+    emails = commits.reject(&:merge_commit?).map(&:committer_email).uniq
+
+    User.by_any_email(emails)
+  end
+
   # Sets the pipeline status for every commit.
   #
   # Setting this status ahead of time removes the need for running a query for
