@@ -21,18 +21,18 @@ Documentation for GitLab instance administrators is under [LFS administration do
 
 ## Requirements
 
-* Git LFS is supported in GitLab starting with version 8.2
-* Git LFS must be enabled under project settings
-* [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
+- Git LFS is supported in GitLab starting with version 8.2
+- Git LFS must be enabled under project settings
+- [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
 
 ## Known limitations
 
-* Git LFS v1 original API is not supported since it was deprecated early in LFS
+- Git LFS v1 original API is not supported since it was deprecated early in LFS
   development
-* When SSH is set as a remote, Git LFS objects still go through HTTPS
-* Any Git LFS request will ask for HTTPS credentials to be provided so a good Git
+- When SSH is set as a remote, Git LFS objects still go through HTTPS
+- Any Git LFS request will ask for HTTPS credentials to be provided so a good Git
   credentials store is recommended
-* Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
+- Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
   to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
 
 >**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
@@ -158,16 +158,16 @@ git lfs unlock --id=123 --force
 
 There are a couple of reasons why this error can occur:
 
-* You don't have permissions to access certain LFS object
+- You don't have permissions to access certain LFS object
 
 Check if you have permissions to push to the project or fetch from the project.
 
-* Project is not allowed to access the LFS object
+- Project is not allowed to access the LFS object
 
 LFS object you are trying to push to the project or fetch from the project is not
 available to the project anymore. Probably the object was removed from the server.
 
-* Local git repository is using deprecated LFS API
+- Local git repository is using deprecated LFS API
 
 ### Invalid status for `<url>` : 501
 
@@ -180,15 +180,15 @@ git lfs logs last
 
 If the status `error 501` is shown, it is because:
 
-* Git LFS is not enabled in project settings. Check your project settings and
+- Git LFS is not enabled in project settings. Check your project settings and
   enable Git LFS.
 
-* Git LFS support is not enabled on the GitLab server. Check with your GitLab
+- Git LFS support is not enabled on the GitLab server. Check with your GitLab
   administrator why Git LFS is not enabled on the server. See
   [LFS administration documentation](lfs_administration.md) for instructions
   on how to enable LFS support.
 
-* Git LFS client version is not supported by GitLab server. Check your Git LFS
+- Git LFS client version is not supported by GitLab server. Check your Git LFS
   version with `git lfs version`. Check the Git config of the project for traces
   of deprecated API with `git lfs -l`. If `batch = false` is set in the config,
   remove the line and try to update your Git LFS client. Only version 1.0.1 and

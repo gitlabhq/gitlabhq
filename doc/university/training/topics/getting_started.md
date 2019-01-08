@@ -8,12 +8,12 @@ comments: false
 
 ## Instantiating Repositories
 
-* Create a new repository by instantiating it through
+- Create a new repository by instantiating it through:
 
     ```bash
     git init
     ```
-* Copy an existing project by cloning the repository through
+- Copy an existing project by cloning the repository through:
 
     ```bash
     git clone <url>
@@ -23,9 +23,9 @@ comments: false
 
 ## Central Repos
 
-* To instantiate a central repository a `--bare` flag is required.
-* Bare repositories don't allow file editing or committing changes.
-* Create a bare repo with
+- To instantiate a central repository a `--bare` flag is required.
+- Bare repositories don't allow file editing or committing changes.
+- Create a bare repo with:
 
     ```bash
     git init --bare project-name.git
@@ -97,5 +97,5 @@ git log
 
 ## Note
 
-* git fetch vs pull
-* Pull is git fetch + git merge
+- git fetch vs pull
+- Pull is git fetch + git merge

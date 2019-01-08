@@ -539,9 +539,9 @@ a helm pre-upgrade hook.
 
 For example, in a Rails application:
 
-* `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
+- `DB_INITIALIZE` can be set to `cd /app && RAILS_ENV=production
   bin/setup`
-* `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
+- `DB_MIGRATE` can be set to `cd /app && RAILS_ENV=production bin/update`
 
 NOTE: **Note:**
 The `/app` path is the directory of your project inside the docker image

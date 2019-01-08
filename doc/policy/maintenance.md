@@ -15,9 +15,9 @@ GitLab follows the [Semantic Versioning](http://semver.org/) for its releases:
 
 For example, for GitLab version 10.5.7:
 
-* `10` represents major version
-* `5` represents minor version
-* `7` represents patch number
+- `10` represents major version
+- `5` represents minor version
+- `7` represents patch number
 
 ## Patch releases
 
@@ -55,13 +55,13 @@ cases you need to consider.
 It is considered safe to jump between patch versions and minor versions within
 one major version. For example, it is safe to:
 
-* Upgrade the patch version:
-  * `8.9.0` -> `8.9.7`
-  * `8.9.0` -> `8.9.1`
-  * `8.9.2` -> `8.9.6`
-* Upgrade the minor version:
-  * `8.9.4` -> `8.12.3`
-  * `9.2.3` -> `9.5.5`
+- Upgrade the patch version:
+  - `8.9.0` -> `8.9.7`
+  - `8.9.0` -> `8.9.1`
+  - `8.9.2` -> `8.9.6`
+- Upgrade the minor version:
+  - `8.9.4` -> `8.12.3`
+  - `9.2.3` -> `9.5.5`
 
 Upgrading the major version requires more attention.
 We cannot guarantee that upgrading between major versions will be seamless. As previously mentioned, major versions are reserved for backwards incompatible changes.

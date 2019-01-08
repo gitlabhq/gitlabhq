@@ -214,10 +214,10 @@ For this example, **Sentinel 1** will be configured in the same machine as the
 
 Here is a list and description of each **machine** and the assigned **IP**:
 
-* `10.0.0.1`: Redis Master + Sentinel 1
-* `10.0.0.2`: Redis Slave 1 + Sentinel 2
-* `10.0.0.3`: Redis Slave 2 + Sentinel 3
-* `10.0.0.4`: GitLab application
+- `10.0.0.1`: Redis Master + Sentinel 1
+- `10.0.0.2`: Redis Slave 1 + Sentinel 2
+- `10.0.0.3`: Redis Slave 2 + Sentinel 3
+- `10.0.0.4`: GitLab application
 
 Please note that after the initial configuration, if a failover is initiated
 by the Sentinel nodes, the Redis nodes will be reconfigured and the **Master**

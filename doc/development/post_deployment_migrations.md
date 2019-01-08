@@ -70,6 +70,6 @@ version (which doesn't depend on the column anymore) has been deployed.
 
 Some other examples where these migrations are useful:
 
-* Cleaning up data generated due to a bug in GitLab
-* Removing tables
-* Migrating jobs from one Sidekiq queue to another
+- Cleaning up data generated due to a bug in GitLab
+- Removing tables
+- Migrating jobs from one Sidekiq queue to another

@@ -177,28 +177,28 @@ droplab.init().addData('trigger', [{
 
 DropLab adds some CSS classes to help lower the barrier to integration.
 
-For example,
+For example:
 
-* The `droplab-item-selected` css class is added to items that have been selected
-either by a mouse click or by enter key selection.
-* The `droplab-item-active` css class is added to items that have been selected
-using arrow key navigation.
-* You can add the `droplab-item-ignore` css class to any item that you do not want to be selectable. For example,
-an `<li class="divider"></li>` list divider element that should not be interactive.
+- The `droplab-item-selected` css class is added to items that have been selected
+  either by a mouse click or by enter key selection.
+- The `droplab-item-active` css class is added to items that have been selected
+  using arrow key navigation.
+- You can add the `droplab-item-ignore` css class to any item that you do not want to be selectable. For example,
+  an `<li class="divider"></li>` list divider element that should not be interactive.
 
 ## Internal events
 
 DropLab uses some custom events to help lower the barrier to integration.
 
-For example,
+For example:
 
-* The `click.dl` event is fired when an `li` list item has been clicked. It is also
-fired when a list item has been selected with the keyboard. It is also fired when a
-`HookButton` button is clicked (a registered `button` tag or `a` tag trigger).
-* The `input.dl` event is fired when a `HookInput` (a registered `input` tag trigger) triggers an `input` event.
-* The `mousedown.dl` event is fired when a `HookInput` triggers a `mousedown` event.
-* The `keyup.dl` event is fired when a `HookInput` triggers a `keyup` event.
-* The `keydown.dl` event is fired when a `HookInput` triggers a `keydown` event.
+- The `click.dl` event is fired when an `li` list item has been clicked. It is also
+  fired when a list item has been selected with the keyboard. It is also fired when a
+  `HookButton` button is clicked (a registered `button` tag or `a` tag trigger).
+- The `input.dl` event is fired when a `HookInput` (a registered `input` tag trigger) triggers an `input` event.
+- The `mousedown.dl` event is fired when a `HookInput` triggers a `mousedown` event.
+- The `keyup.dl` event is fired when a `HookInput` triggers a `keyup` event.
+- The `keydown.dl` event is fired when a `HookInput` triggers a `keydown` event.
 
 These custom events add a `detail` object to the vanilla `Event` object that provides some potentially useful data.
 
@@ -233,9 +233,9 @@ droplab.init(trigger, list, [droplabAjax], {
 
 ### Documentation
 
-* [Ajax plugin](plugins/ajax.md)
-* [Filter plugin](plugins/filter.md)
-* [InputSetter plugin](plugins/input_setter.md)
+- [Ajax plugin](plugins/ajax.md)
+- [Filter plugin](plugins/filter.md)
+- [InputSetter plugin](plugins/input_setter.md)
 
 ### Development
 

@@ -8,19 +8,19 @@ comments: false
 
 Git log lists commit history. It allows searching and filtering.
 
-* Initiate log
+- Initiate log:
 
     ```
     git log
     ```
 
-* Retrieve set number of records:
+- Retrieve set number of records:
 
     ```
     git log -n 2
     ```
 
-* Search commits by author. Allows user name or a regular expression.
+- Search commits by author. Allows user name or a regular expression.
 
     ```
     git log --author="user_name"
@@ -28,13 +28,13 @@ Git log lists commit history. It allows searching and filtering.
 
 ----------
 
-* Search by comment message.
+- Search by comment message:
 
     ```
     git log --grep="<pattern>"
     ```
 
-* Search by date
+- Search by date:
 
     ```
     git log --since=1.month.ago --until=3.weeks.ago

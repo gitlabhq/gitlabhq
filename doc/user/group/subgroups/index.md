@@ -21,8 +21,8 @@ Nested groups are only supported when you use PostgreSQL. Supporting nested
 groups on MySQL in an efficient way is not possible due to MySQL's limitations.
 See the following links for more information:
 
-* <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
-* <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
+- <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
+- <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
 
 ## Overview
 

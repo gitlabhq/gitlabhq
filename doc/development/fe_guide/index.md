@@ -118,7 +118,7 @@ The [externalization part of the guide](../i18n/externalization.md) explains the
 ## [DropLab](droplab/droplab.md)
 Our internal `DropLab` dropdown library.
 
-* [DropLab](droplab/droplab.md)
-* [Ajax plugin](droplab/plugins/ajax.md)
-* [Filter plugin](droplab/plugins/filter.md)
-* [InputSetter plugin](droplab/plugins/input_setter.md)
+- [DropLab](droplab/droplab.md)
+- [Ajax plugin](droplab/plugins/ajax.md)
+- [Filter plugin](droplab/plugins/filter.md)
+- [InputSetter plugin](droplab/plugins/input_setter.md)

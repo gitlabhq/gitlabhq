@@ -66,10 +66,10 @@ RDS instances as well.
 
 The subnets are listed with their name, AZ and CIDR block:
 
-* gitlab-public-10.0.0.0  - us-west-2a - 10.0.0.0
-* gitlab-private-10.0.1.0 - us-west-2a - 10.0.1.0
-* gitlab-public-10.0.2.0  - us-west-2b - 10.0.2.0
-* gitlab-private-10.0.3.0 - us-west-2b - 10.0.3.0
+- gitlab-public-10.0.0.0  - us-west-2a - 10.0.0.0
+- gitlab-private-10.0.1.0 - us-west-2a - 10.0.1.0
+- gitlab-public-10.0.2.0  - us-west-2b - 10.0.2.0
+- gitlab-private-10.0.3.0 - us-west-2b - 10.0.3.0
 
 ### Route Table
 
@@ -395,5 +395,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
-* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
-* [GitLab Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)
+- [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+- [GitLab Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)

@@ -43,8 +43,8 @@ or a U2F device.
 1. Install a compatible application. We recommend [Google Authenticator]
 \(proprietary\) or [FreeOTP] \(open source\).
 1. In the application, add a new entry in one of two ways:
-    * Scan the code with your phone's camera to add the entry automatically.
-    * Enter the details provided to add the entry manually.
+    - Scan the code with your phone's camera to add the entry automatically.
+    - Enter the details provided to add the entry manually.
 
 **In GitLab:**
 
@@ -106,7 +106,7 @@ Enter the pin from your one time password authenticator's application or a recov
 
 ### Log in via U2F device
 
-1. Click **Login via U2F Device**
+1. Click **Login via U2F Device**.
 1. A light will start blinking on your device. Activate it by pressing its button.
 
 You will see a message indicating that your device responded to the authentication request.
@@ -135,9 +135,9 @@ authenticate with Git over HTTPS on the command line or when using
 To disable two-factor authentication on your account (for example, if you
 have lost your code generation device) you can:
 
-* [Use a saved recovery code](#use-a-saved-recovery-code)
-* [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh)
-* [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account)
+- [Use a saved recovery code](#use-a-saved-recovery-code).
+- [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh).
+- [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account).
 
 ### Use a saved recovery code
 
