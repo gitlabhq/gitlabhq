@@ -3,7 +3,7 @@
 > **Notes**:
 > - This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
 > - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
-> - Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
+> - Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
 
 Pipeline schedules can be used to run a pipeline at specific intervals, for example every
 month on the 22nd for a certain branch.
