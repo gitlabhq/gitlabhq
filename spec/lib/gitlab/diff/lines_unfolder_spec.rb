@@ -301,8 +301,7 @@ describe Gitlab::Diff::LinesUnfolder do
         expected_diff_lines.each_with_index do |expected_line, i|
           line = new_diff_lines[i]
 
-          expect([line.old_pos, line.new_pos, line.text])
-            .to eq([expected_line[0], expected_line[1], expected_line[2]])
+          expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
         end
       end
 
@@ -403,8 +402,7 @@ describe Gitlab::Diff::LinesUnfolder do
         expected_diff_lines.each_with_index do |expected_line, i|
           line = new_diff_lines[i]
 
-          expect([line.old_pos, line.new_pos, line.text])
-            .to eq([expected_line[0], expected_line[1], expected_line[2]])
+          expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
         end
       end
 
@@ -505,8 +503,7 @@ describe Gitlab::Diff::LinesUnfolder do
         expected_diff_lines.each_with_index do |expected_line, i|
           line = new_diff_lines[i]
 
-          expect([line.old_pos, line.new_pos, line.text])
-            .to eq([expected_line[0], expected_line[1], expected_line[2]])
+          expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
         end
       end
 
@@ -604,8 +601,7 @@ describe Gitlab::Diff::LinesUnfolder do
         expected_diff_lines.each_with_index do |expected_line, i|
           line = new_diff_lines[i]
 
-          expect([line.old_pos, line.new_pos, line.text])
-            .to eq([expected_line[0], expected_line[1], expected_line[2]])
+          expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
         end
       end
 
@@ -729,8 +725,7 @@ describe Gitlab::Diff::LinesUnfolder do
         expected_diff_lines.each_with_index do |expected_line, i|
           line = new_diff_lines[i]
 
-          expect([line.old_pos, line.new_pos, line.text])
-            .to eq([expected_line[0], expected_line[1], expected_line[2]])
+          expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
         end
       end
 
@@ -742,6 +737,106 @@ describe Gitlab::Diff::LinesUnfolder do
 
           unless line.type == 'match'
             expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
+          end
+        end
+      end
+    end
+
+    context 'position requires bottom expansion and no new match line' do
+      let(:position) do
+        Gitlab::Diff::Position.new(base_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
+                                   start_sha: "1c59dfa64afbea8c721bb09a06a9d326c952ea19",
+                                   head_sha: "1487062132228de836236c522fe52fed4980a46c",
+                                   old_path: "build-aux/flatpak/org.gnome.Nautilus.json",
+                                   new_path: "build-aux/flatpak/org.gnome.Nautilus.json",
+                                   position_type: "text",
+                                   old_line: 95,
+                                   new_line: 87)
+      end
+
+      context 'blob lines' do
+        let(:expected_blob_lines) do
+          [[94, 94, "                     \"url\": \"https://gitlab.gnome.org/GNOME/nautilus.git\""],
+           [95, 95, "                 }"],
+           [96, 96, "             ]"],
+           [97, 97, "         }"],
+           [98, 98, "     ]"]]
+        end
+
+        it 'returns the extracted blob lines correctly' do
+          extracted_lines = subject.blob_lines
+
+          expect(extracted_lines.size).to eq(5)
+
+          extracted_lines.each_with_index do |line, i|
+            expect([line.old_line, line.new_line, line.text]).to eq(expected_blob_lines[i])
+          end
+        end
+      end
+
+      context 'diff lines' do
+        let(:expected_diff_lines) do
+          [[7, 7, "@@ -7,9 +7,6 @@"],
+           [7, 7, "     \"tags\": [\"devel\", \"development\", \"nightly\"],"],
+           [8, 8, "     \"desktop-file-name-prefix\": \"(Development) \","],
+           [9, 9, "     \"finish-args\": ["],
+           [10, 10, "-        \"--share=ipc\", \"--socket=x11\","],
+           [11, 10, "-        \"--socket=wayland\","],
+           [12, 10, "-        \"--talk-name=org.gnome.OnlineAccounts\","],
+           [13, 10, "         \"--talk-name=org.freedesktop.Tracker1\","],
+           [14, 11, "         \"--filesystem=home\","],
+           [15, 12, "         \"--talk-name=org.gtk.vfs\", \"--talk-name=org.gtk.vfs.*\","],
+           [62, 59, "@@ -62,7 +59,7 @@"],
+           [62, 59, "         },"],
+           [63, 60, "         {"],
+           [64, 61, "             \"name\": \"gnome-desktop\","],
+           [65, 62, "-            \"config-opts\": [\"--disable-debug-tools\", \"--disable-udev\"],"],
+           [66, 62, "+            \"config-opts\": [\"--disable-debug-tools\", \"--disable-\"],"],
+           [66, 63, "             \"sources\": ["],
+           [67, 64, "                 {"],
+           [68, 65, "                     \"type\": \"git\","],
+           [83, 80, "@@ -83,11 +80,6 @@"],
+           [83, 80, "             \"buildsystem\": \"meson\","],
+           [84, 81, "             \"builddir\": true,"],
+           [85, 82, "             \"name\": \"nautilus\","],
+           [86, 83, "-            \"config-opts\": ["],
+           [87, 83, "-                \"-Denable-desktop=false\","],
+           [88, 83, "-                \"-Denable-selinux=false\","],
+           [89, 83, "-                \"--libdir=/app/lib\""],
+           [90, 83, "-            ],"],
+           [91, 83, "             \"sources\": ["],
+           [92, 84, "                 {"],
+           [93, 85, "                     \"type\": \"git\","],
+           # No new match line
+
+           # Injected blob lines
+           [94, 86, "                     \"url\": \"https://gitlab.gnome.org/GNOME/nautilus.git\""],
+           [95, 87, "                 }"],
+           [96, 88, "             ]"],
+           [97, 89, "         }"],
+           [98, 90, "     ]"]]
+          # end
+        end
+
+        it 'return merge of blob lines with diff lines correctly' do
+          new_diff_lines = subject.unfolded_diff_lines
+
+          expected_diff_lines.each_with_index do |expected_line, i|
+            line = new_diff_lines[i]
+
+            expect([line.old_pos, line.new_pos, line.text]).to eq(expected_line)
+          end
+        end
+
+        it 'merged lines have correct line codes' do
+          new_diff_lines = subject.unfolded_diff_lines
+
+          new_diff_lines.each_with_index do |line, i|
+            old_pos, new_pos = expected_diff_lines[i][0], expected_diff_lines[i][1]
+
+            unless line.type == 'match'
+              expect(line.line_code).to eq(Gitlab::Git.diff_line_code(diff_file.file_path, new_pos, old_pos))
+            end
           end
         end
       end
