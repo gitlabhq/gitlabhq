@@ -7476,6 +7476,9 @@ msgstr ""
 msgid "UserProfile|Subscribe"
 msgstr ""
 
+msgid "UserProfile|This user doesn't have any personal projects"
+msgstr ""
+
 msgid "UserProfile|This user has a private profile"
 msgstr ""
 

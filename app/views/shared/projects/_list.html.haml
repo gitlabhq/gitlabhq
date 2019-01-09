@@ -33,4 +33,9 @@
           %span &nbsp;you have no access to.
     = paginate_collection(projects, remote: remote) unless skip_pagination
   - else
-    .nothing-here-block No projects found
+    .nothing-here-block
+      .svg-content.svg-130
+        = image_tag 'illustrations/profile-page/personal-project.svg'
+      %div
+        %span
+          = s_('UserProfile|This user doesn\'t have any personal projects')
