@@ -49,7 +49,7 @@ describe 'Dashboard shortcuts', :js do
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content('No projects found')
+      expect(page).to have_content('This user doesn\'t have any personal projects')
     end
   end
 

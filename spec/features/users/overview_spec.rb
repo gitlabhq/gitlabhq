@@ -96,7 +96,7 @@ describe 'Overview tab on a user profile', :js do
       it 'it shows an empty project list with an info message' do
         page.within('.projects-block') do
           expect(page).to have_selector('.loading', visible: false)
-          expect(page).to have_content('No projects found')
+          expect(page).to have_content('This user doesn\'t have any personal projects')
           expect(page).not_to have_selector('.project-row')
         end
       end
