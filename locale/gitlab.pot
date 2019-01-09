@@ -2959,6 +2959,9 @@ msgstr ""
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
+msgid "Errors"
+msgstr ""
+
 msgid "Estimated"
 msgstr ""
 

@@ -200,6 +200,7 @@ class ProjectPolicy < BasePolicy
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
+    enable :read_sentry_issue
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
