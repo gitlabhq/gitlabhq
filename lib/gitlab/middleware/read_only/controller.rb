@@ -60,7 +60,7 @@ module Gitlab
         end
 
         def request
-          @env['rack.request'] ||= Rack::Request.new(@env)
+          @env['actionpack.request'] ||= ActionDispatch::Request.new(@env)
         end
 
         def last_visited_url

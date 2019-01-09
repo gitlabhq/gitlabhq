@@ -24,7 +24,7 @@ module Gitlab
       def call(env)
         return @app.call(env) unless env['PATH_INFO'] == HEALTH_PATH
 
-        request = Rack::Request.new(env)
+        request = ActionDispatch::Request.new(env)
 
         return OK_RESPONSE if client_ip_whitelisted?(request)
 
