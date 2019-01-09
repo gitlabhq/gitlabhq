@@ -153,12 +153,12 @@ $note-form-margin-left: 72px;
     position: relative;
 
     .timeline-discussion-body {
-      margin-top: -8px;
+      margin-top: -$gl-padding-8;
       overflow-x: auto;
       overflow-y: hidden;
 
-      .discussion-resolved-text {
-        margin-bottom: 8px;
+      .note-body {
+        margin-top: $gl-padding-8;
       }
     }
 
