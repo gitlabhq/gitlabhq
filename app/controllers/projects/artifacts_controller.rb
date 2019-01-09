@@ -85,20 +85,15 @@ class Projects::ArtifactsController < Projects::ApplicationController
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def build_from_id
-    project.builds.find_by(id: params[:job_id]) if params[:job_id]
+    project.get_build(params[:job_id]) if params[:job_id]
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def build_from_ref
     return unless @ref_name
 
-    builds = project.latest_successful_builds_for(@ref_name)
-    builds.find_by(name: params[:job])
+    project.latest_successful_build_for(params[:job], @ref_name)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def artifacts_file
     @artifacts_file ||= build&.artifacts_file_for_type(params[:file_type] || :archive)
