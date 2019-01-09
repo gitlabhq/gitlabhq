@@ -99,10 +99,12 @@ module Gitlab
         end
       end
 
+      # Route model
       class Route < ActiveRecord::Base
+        belongs_to :source, inverse_of: :route
       end
 
-      # Namespace model.
+      # Namespace model
       class Namespace < ActiveRecord::Base
         self.table_name = 'namespaces'
         self.inheritance_column = nil
@@ -111,12 +113,10 @@ module Gitlab
 
         belongs_to :parent, class_name: 'Namespace', inverse_of: 'namespaces'
 
+        has_one :route, -> { where(source_type: 'Namespace') }, inverse_of: :source, foreign_key: :source_id
+
         has_many :projects, inverse_of: :parent
         has_many :namespaces, inverse_of: :parent
-
-        def route
-          Route.find_by(source_type: 'Namespace', source_id: self.id)
-        end
       end
 
       # ProjectRegistry model
@@ -141,6 +141,7 @@ module Gitlab
 
         belongs_to :parent, class_name: 'Namespace', foreign_key: :namespace_id, inverse_of: 'projects'
 
+        has_one :route, -> { where(source_type: 'Project') }, inverse_of: :source, foreign_key: :source_id
         has_one :project_repository, inverse_of: :project
 
         delegate :disk_path, to: :storage
@@ -172,10 +173,6 @@ module Gitlab
           end
         end
 
-        def route
-          Route.find_by(source_type: 'Project', source_id: self.id)
-        end
-
         def storage
           @storage ||=
             if hashed_storage?
@@ -192,7 +189,11 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
+        ActiveRecord::Base.logger = Logger.new(STDOUT)
+
         Gitlab::Database.bulk_insert(:project_repositories, project_repositories(start_id, stop_id))
+
+        ActiveRecord::Base.logger = nil
       end
 
       private
@@ -203,11 +204,29 @@ module Gitlab
       end
 
       def project_repositories(start_id, stop_id)
+#          .eager_load(:route, :parent, parent: [:route])
+#          .includes(:parent, :route, parent: [:route]).references(:namespaces)
+#          .includes(:parent).references(:namespaces)
+#          .joins(*routes_joins).references(:routes)
+
+
         projects
           .without_project_repository
+          .includes(:route, parent: [:route]).references(:routes)
+          .includes(:parent).references(:namespaces)
           .where(id: start_id..stop_id)
           .map { |project| build_attributes_for_project(project) }
           .compact
+      end
+
+      def routes_joins
+        routes = Route.arel_table
+        projects = Project.arel_table
+        routes_projects = routes.alias('routes_projects')
+
+        projects.join(routes, Arel::Nodes::OuterJoin).on(projects[:namespace_id].eq(routes[:source_id]).and(routes[:source_type].eq('Namespace')))
+          .join(routes_projects, Arel::Nodes::OuterJoin).on(projects[:id].eq(routes_projects[:source_id]).and(routes_projects[:source_type].eq('Project')))
+          .join_sources
       end
 
       def build_attributes_for_project(project)
