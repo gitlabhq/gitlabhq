@@ -52,6 +52,11 @@ class SshHostKey
     @compare_host_keys = compare_host_keys
   end
 
+  # Needed for reactive caching
+  def self.primary_key
+    'id'
+  end
+
   def id
     [project.id, url].join(':')
   end
