@@ -876,10 +876,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-msgid "Available group Runners : %{runners}"
-msgstr ""
-
-msgid "Available group Runners : %{runners}."
+msgid "Available group Runners: %{runners}"
 msgstr ""
 
 msgid "Available shared Runners:"
