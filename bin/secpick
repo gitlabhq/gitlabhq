@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 # frozen_string_literal: false
 
 require 'active_support/core_ext/object/to_query'
@@ -7,69 +8,132 @@ require 'open3'
 require 'rainbow/refinement'
 using Rainbow
 
-BRANCH_PREFIX = 'security'.freeze
-REMOTE = 'dev'.freeze
-NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
+module Secpick
+  BRANCH_PREFIX = 'security'.freeze
+  DEFAULT_REMOTE = 'dev'.freeze
+  NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
 
-options = { version: nil, branch: nil, sha: nil }
+  class SecurityFix
+    def initialize
+      @options = self.class.options
+    end
 
-parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [options]"
-  opts.on('-v', '--version 10.0', 'Version') do |version|
-    options[:version] = version&.tr('.', '-')
-  end
+    def ee?
+      File.exist?('./CHANGELOG-EE.md')
+    end
 
-  opts.on('-b', '--branch security-fix-branch', 'Original branch name (optional, defaults to current)') do |branch|
-    options[:branch] = branch
-  end
+    def dry_run?
+      @options[:try] == true
+    end
 
-  opts.on('-s', '--sha abcd', 'SHA to cherry pick') do |sha|
-    options[:sha] = sha
-  end
+    def original_branch
+      @options[:branch].strip
+    end
 
-  opts.on('-h', '--help', 'Displays Help') do
-    puts opts
+    def source_branch
+      branch = "#{original_branch}-#{@options[:version]}"
+      branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
+      branch.freeze
+    end
 
-    exit
+    def security_branch
+      "#{BRANCH_PREFIX}-#{@options[:version]}".tap do |name|
+        name << "-ee" if ee?
+      end.freeze
+    end
+
+    def git_commands
+      ["git fetch #{@options[:remote]} #{security_branch}",
+       "git checkout #{security_branch}",
+       "git pull #{@options[:remote]} #{security_branch}",
+       "git checkout -B #{source_branch}",
+       "git cherry-pick #{@options[:sha]}",
+       "git push #{@options[:remote]} #{source_branch}",
+       "git checkout #{original_branch}"]
+    end
+
+    def gitlab_params
+      {
+        merge_request: {
+          source_branch: source_branch,
+          target_branch: security_branch,
+          title: "WIP: [#{@options[:version].tr('-', '.')}] ",
+          description: '/label ~security'
+        }
+      }
+    end
+
+    def new_mr_url
+      if ee?
+        NEW_MR_URL.sub('gitlabhq', 'gitlab-ee')
+      else
+        NEW_MR_URL
+      end
+    end
+
+    def create!
+      if dry_run?
+        puts git_commands.join("\n").green
+        puts "\nMerge request params: ".blue
+        pp gitlab_params
+      else
+        cmd = git_commands.join(' && ')
+        stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
+
+        puts stdout.read&.green
+        puts stderr.read&.red
+
+        if wait_thr.value.success?
+          puts "#{new_mr_url}?#{gitlab_params.to_query}".blue
+        end
+
+        stdin.close
+        stdout.close
+        stderr.close
+      end
+    end
+
+    def self.options
+      { version: nil, branch: nil, sha: nil }.tap do |options|
+        parser = OptionParser.new do |opts|
+          opts.banner = "Usage: #{$0} [options]"
+          opts.on('-v', '--version 10.0', 'Version') do |version|
+            options[:version] = version&.tr('.', '-')
+          end
+
+          opts.on('-b', '--branch security-fix-branch', 'Original branch name (optional, defaults to current)') do |branch|
+            options[:branch] = branch
+          end
+
+          opts.on('-s', '--sha abcd', 'SHA to cherry pick') do |sha|
+            options[:sha] = sha
+          end
+
+          opts.on('-r', '--remote abcd', 'Git remote name of dev.gitlab.org (optional, defaults to `dev`)') do |remote|
+            options[:remote] = remote
+          end
+
+          opts.on('-d', '--dry-run', 'Only show Git commands, without calling them') do |remote|
+            options[:try] = true
+          end
+
+          opts.on('-h', '--help', 'Displays Help') do
+            puts opts
+
+            exit
+          end
+        end
+
+        parser.parse!
+
+        options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
+        options[:remote] ||= DEFAULT_REMOTE
+
+        abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.values.include?(nil)
+        abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
+      end
+    end
   end
 end
 
-parser.parse!
-
-options[:branch] ||= `git rev-parse --abbrev-ref HEAD`
-
-abort("Missing options. Use #{$0} --help to see the list of options available".red) if options.values.include?(nil)
-abort("Wrong version format #{options[:version].bold}".red) unless options[:version] =~ /\A\d*\-\d*\Z/
-
-ee = File.exist?('./CHANGELOG-EE.md')
-original_branch = options[:branch].strip
-branch = "#{original_branch}-#{options[:version]}"
-branch.prepend("#{BRANCH_PREFIX}-") unless branch.start_with?("#{BRANCH_PREFIX}-")
-branch = branch.freeze
-stable_branch = "#{BRANCH_PREFIX}-#{options[:version]}".tap do |name|
-  name << "-ee" if ee
-end.freeze
-
-command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch} && git checkout #{original_branch}"
-
-stdin, stdout, stderr, wait_thr = Open3.popen3(command)
-
-puts stdout.read&.green
-puts stderr.read&.red
-
-if wait_thr.value.success?
-  params = {
-    merge_request: {
-      source_branch: branch,
-      target_branch: stable_branch,
-      title: "WIP: [#{options[:version].tr('-', '.')}] ",
-      description: '/label ~security'
-    }
-  }
-
-  puts "#{NEW_MR_URL}?#{params.to_query}".blue
-end
-
-stdin.close
-stdout.close
-stderr.close
+Secpick::SecurityFix.new.create!

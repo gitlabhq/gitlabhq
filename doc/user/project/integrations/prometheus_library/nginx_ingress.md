@@ -21,18 +21,20 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 If you have deployed NGINX Ingress using GitLab's [Kubernetes cluster integration](../../clusters/index.md#installing-applications), it will [automatically be monitored](#about-managed-nginx-ingress-deployments) by Prometheus.
 
 For other deployments, there is [some configuration](#manually-setting-up-nginx-ingress-for-prometheus-monitoring) required depending on your installation:
-* NGINX Ingress should be version 0.9.0 or above, with metrics enabled
-* NGINX Ingress should be annotated for Prometheus monitoring
-* Prometheus should be configured to monitor annotated pods
+
+- NGINX Ingress should be version 0.9.0 or above, with metrics enabled
+- NGINX Ingress should be annotated for Prometheus monitoring
+- Prometheus should be configured to monitor annotated pods
 
 ### About managed NGINX Ingress deployments
 
 NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's IP](../../clusters/index.md#getting-the-external-ip-address).
 
 NGINX is configured for Prometheus monitoring, by setting:
-* `enable-vts-status: "true"`, to export Prometheus metrics
-* `prometheus.io/scrape: "true"`, to enable automatic discovery
-* `prometheus.io/port: "10254"`, to specify the metrics port
+
+- `enable-vts-status: "true"`, to export Prometheus metrics
+- `prometheus.io/scrape: "true"`, to enable automatic discovery
+- `prometheus.io/port: "10254"`, to specify the metrics port
 
 When used in conjunction with the GitLab deployed Prometheus service, response metrics will be automatically collected.
 
@@ -42,8 +44,8 @@ Version 0.9.0 and above of [NGINX ingress](https://github.com/kubernetes/ingress
 
 Next, the ingress needs to be annotated for Prometheus monitoring. Two new annotations need to be added:
 
-* `prometheus.io/scrape: "true"`
-* `prometheus.io/port: "10254"`
+- `prometheus.io/scrape: "true"`
+- `prometheus.io/port: "10254"`
 
 Managing these settings depends on how NGINX ingress has been deployed. If you have deployed via the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress), metrics can be enabled with `controller.stats.enabled` along with the required annotations. Alternatively it is possible edit the NGINX ingress YML directly in the [Kubernetes dashboard](https://github.com/kubernetes/dashboard).
 

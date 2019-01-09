@@ -189,6 +189,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     merge_request.subscribed?(current_user, merge_request.target_project)
   end
 
+  def conflicts_docs_path
+    help_page_path('user/project/merge_requests/resolve_conflicts.md')
+  end
+
   private
 
   def cached_can_be_reverted?

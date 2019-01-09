@@ -118,12 +118,13 @@ export const handleLocationHash = () => {
 
 // Check if element scrolled into viewport from above or below
 // Courtesy http://stackoverflow.com/a/7557433/414749
-export const isInViewport = el => {
+export const isInViewport = (el, offset = {}) => {
   const rect = el.getBoundingClientRect();
+  const { top, left } = offset;
 
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
+    rect.top >= (top || 0) &&
+    rect.left >= (left || 0) &&
     rect.bottom <= window.innerHeight &&
     rect.right <= window.innerWidth
   );

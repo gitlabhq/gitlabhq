@@ -1189,13 +1189,13 @@ describe API::MergeRequests do
     end
 
     it 'returns 404 if the merge request is not found' do
-      post api("/projects/#{project.id}/merge_requests/123/merge_when_pipeline_succeeds", user)
+      post api("/projects/#{project.id}/merge_requests/123/cancel_merge_when_pipeline_succeeds", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the merge request id is used instead of iid' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge_when_pipeline_succeeds", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/cancel_merge_when_pipeline_succeeds", user)
 
       expect(response).to have_gitlab_http_status(404)
     end

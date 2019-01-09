@@ -230,15 +230,30 @@ describe('Diffs Module Getters', () => {
       localState.treeEntries = {
         file: {
           type: 'blob',
+          path: 'file',
+          parentPath: '/',
+          tree: [],
         },
         tree: {
           type: 'tree',
+          path: 'tree',
+          parentPath: '/',
+          tree: [],
         },
       };
 
       expect(getters.allBlobs(localState)).toEqual([
         {
-          type: 'blob',
+          isHeader: true,
+          path: '/',
+          tree: [
+            {
+              parentPath: '/',
+              path: 'file',
+              tree: [],
+              type: 'blob',
+            },
+          ],
         },
       ]);
     });

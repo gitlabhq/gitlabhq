@@ -249,6 +249,16 @@
     .event-item {
       padding-left: 40px;
     }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: 5px;
+    }
+  }
+
+  .projects-block {
+    @include media-breakpoint-up(lg) {
+      margin-left: 5px;
+    }
   }
 
   @include media-breakpoint-down(xs) {

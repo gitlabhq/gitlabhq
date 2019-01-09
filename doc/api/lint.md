@@ -20,7 +20,7 @@ Be sure to copy paste the exact contents of `.gitlab-ci.yml` as YAML is very pic
 
 Example responses:
 
-* Valid content:
+- Valid content:
 
     ```json
     {
@@ -29,7 +29,7 @@ Example responses:
     }
     ```
 
-* Invalid content:
+- Invalid content:
 
     ```json
     {
@@ -40,7 +40,7 @@ Example responses:
     }
     ```
 
-* Without the content attribute:
+- Without the content attribute:
 
     ```json
     {
@@ -49,4 +49,3 @@ Example responses:
     ```
 
 [ce-5953]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5953
-

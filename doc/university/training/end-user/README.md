@@ -242,10 +242,11 @@ git push origin squash_some_bugs
 ---
 
 ### Merge Conflicts
-* Happen often
-* Learning to fix conflicts is hard
-* Practice makes perfect
-* Force push after fixing conflicts. Be careful!
+
+- Happen often
+- Learning to fix conflicts is hard
+- Practice makes perfect
+- Force push after fixing conflicts. Be careful!
 
 ---
 
@@ -306,10 +307,10 @@ Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
 ### Notes
 
-* When to use `git merge` and when to use `git rebase`
-* Rebase when updating your branch with master
-* Merge when bringing changes from feature to master
-* Reference: https://www.atlassian.com/git/tutorials/merging-vs-rebasing/
+- When to use `git merge` and when to use `git rebase`
+- Rebase when updating your branch with master
+- Merge when bringing changes from feature to master
+- Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing/>
 
 ---
 

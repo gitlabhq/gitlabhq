@@ -137,4 +137,16 @@ describe('Release block', () => {
   it('renders author avatar', () => {
     expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
   });
+
+  describe('external label', () => {
+    it('renders external label when link is external', () => {
+      expect(vm.$el.querySelector('.js-assets-list li a').textContent).toContain('external source');
+    });
+
+    it('does not render external label when link is not external', () => {
+      expect(vm.$el.querySelector('.js-assets-list li:nth-child(2) a').textContent).not.toContain(
+        'external source',
+      );
+    });
+  });
 });

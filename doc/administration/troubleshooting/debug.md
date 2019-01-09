@@ -211,5 +211,5 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 
 # More information
 
-* [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
-* [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)
+- [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
+- [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)

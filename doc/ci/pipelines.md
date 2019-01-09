@@ -241,9 +241,9 @@ So each job would be represented as a `Period`, which consists of
 `Period#first` as when the job started and `Period#last` as when the
 job was finished. A simple example here would be:
 
-* A (1, 3)
-* B (2, 4)
-* C (6, 7)
+- A (1, 3)
+- B (2, 4)
+- C (6, 7)
 
 Here A begins from 1, and ends to 3. B begins from 2, and ends to 4.
 C begins from 6, and ends to 7. Visually it could be viewed as:

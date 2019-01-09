@@ -158,9 +158,14 @@ module Gitlab
 
         from = comment_position - UNFOLD_CONTEXT_SIZE
 
-        # There's no line before the match if it's in the top-most
-        # position.
-        prev_line_number = line_before_unfold_position&.old_pos || 0
+        prev_line_number =
+          if bottom?
+            last_line.old_pos
+          else
+            # There's no line before the match if it's in the top-most
+            # position.
+            line_before_unfold_position&.old_pos || 0
+          end
 
         if from <= prev_line_number + 1
           @generate_top_match_line = false

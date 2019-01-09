@@ -1072,19 +1072,11 @@ class Repository
   end
 
   def cache
-    @cache ||= if is_wiki
-                 Gitlab::RepositoryCache.new(self, extra_namespace: 'wiki')
-               else
-                 Gitlab::RepositoryCache.new(self)
-               end
+    @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
   def request_store_cache
-    @request_store_cache ||= if is_wiki
-                               Gitlab::RepositoryCache.new(self, extra_namespace: 'wiki', backend: Gitlab::SafeRequestStore)
-                             else
-                               Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
-                             end
+    @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end
 
   def tags_sorted_by_committed_date

@@ -96,8 +96,8 @@ end
 
 ### Why
 
-* Because it is not isolated therefore it might be broken at times.
-* Because it doesn't work whenever the method we want to stub was defined
+- Because it is not isolated therefore it might be broken at times.
+- Because it doesn't work whenever the method we want to stub was defined
   in a prepended module, which is very likely the case in EE. We could see
   error like this:
 

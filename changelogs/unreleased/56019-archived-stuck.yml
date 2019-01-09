@@ -1,0 +1,5 @@
+---
+title: Fixes z-index and margins of archived alert in job page
+merge_request:
+author:
+type: fixed

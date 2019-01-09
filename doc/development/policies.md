@@ -13,7 +13,7 @@ Permissions are broken into two parts: `conditions` and `rules`. Conditions are 
 
 Conditions are defined by the `condition` method, and are given a name and a block. The block will be executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. Note that `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.
 
-``` ruby
+```ruby
 class FooPolicy < BasePolicy
   condition(:is_public) do
     # @subject guaranteed to be an instance of Foo
@@ -37,7 +37,7 @@ Conditions are cached according to their scope. Scope and ordering will be cover
 
 A `rule` is a logical combination of conditions and other rules, that are configured to enable or prevent certain abilities. It is important to note that the rule configuration is static - a rule's logic cannot touch the database or know about `@user` or `@subject`. This allows us to cache only at the condition level. Rules are specified through the `rule` method, which takes a block of DSL configuration, and returns an object that responds to `#enable` or `#prevent`:
 
-``` ruby
+```ruby
 class FooPolicy < BasePolicy
   # ...
 
@@ -57,10 +57,10 @@ end
 
 Within the rule DSL, you can use:
 
-* A regular word mentions a condition by name - a rule that is in effect when that condition is truthy.
-* `~` indicates negation
-* `&` and `|` are logical combinations, also available as `all?(...)` and `any?(...)`
-* `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. Note that this is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
+- A regular word mentions a condition by name - a rule that is in effect when that condition is truthy.
+- `~` indicates negation.
+- `&` and `|` are logical combinations, also available as `all?(...)` and `any?(...)`.
+- `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. Note that this is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
 
 ## Scores, Order, Performance
 
@@ -72,7 +72,7 @@ When a policy is asked whether a particular ability is allowed (`policy.allowed?
 
 Sometimes, a condition will only use data from `@user` or only from `@subject`. In this case, we want to change the scope of the caching, so that we don't recalculate conditions unnecessarily. For example, given:
 
-``` ruby
+```ruby
 class FooPolicy < BasePolicy
   condition(:expensive_condition) { @subject.expensive_query? }
 
@@ -82,7 +82,7 @@ end
 
 Naively, if we call `Ability.can?(user1, :some_ability, foo)` and `Ability.can?(user2, :some_ability, foo)`, we would have to calculate the condition twice - since they are for different users. But if we use the `scope: :subject` option:
 
-``` ruby
+```ruby
   condition(:expensive_condition, scope: :subject) { @subject.expensive_query? }
 ```
 
@@ -93,7 +93,7 @@ both user and subject (including a simple anonymous check!) your result will be 
 
 Sometimes we are checking permissions for a lot of users for one subject, or a lot of subjects for one user. In this case, we want to set a *preferred scope* - i.e. tell the system that we prefer rules that can be cached on the repeated parameter. For example, in `Ability.users_that_can_read_project`:
 
-``` ruby
+```ruby
 def users_that_can_read_project(users, project)
   DeclarativePolicy.subject_scope do
     users.select { |u| allowed?(u, :read_project, project) }
@@ -105,9 +105,9 @@ This will, for example, prefer checking `project.public?` to checking `user.admi
 
 ## Delegation
 
-Delegation is the inclusion of rules from another policy, on a different subject. For example,
+Delegation is the inclusion of rules from another policy, on a different subject. For example:
 
-``` ruby
+```ruby
 class FooPolicy < BasePolicy
   delegate { @subject.project }
 end

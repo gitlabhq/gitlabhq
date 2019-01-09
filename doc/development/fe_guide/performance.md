@@ -29,8 +29,8 @@ To improve the time to first render we are using lazy loading for images. This w
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded,
 the value of `data-src` will be moved to `src` automatically if the image is in the current viewport.
 
-*  Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`
-*  If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
+-  Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`.
+-  If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
 
 If you are asynchronously adding content which contains lazy images then you need to call the function
 `gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed.

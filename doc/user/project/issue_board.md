@@ -175,6 +175,7 @@ products.
 Clicking on the current board name in the upper left corner will reveal a
 menu from where you can create another Issue Board and rename or delete the
 existing one.
+Using the search box at the top of the menu, you can filter the listed boards.
 
 When you're revisiting an issue board in a project or group with multiple boards, 
 GitLab will automatically load the last board you visited.
