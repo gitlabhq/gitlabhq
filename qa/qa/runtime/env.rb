@@ -56,6 +56,34 @@ module QA
         @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
       end
 
+      def remote_grid
+        # if username specified, password/auth token is required
+        # can be
+        # - "http://user:pass@somehost.com/wd/hub"
+        # - "https://user:pass@somehost.com:443/wd/hub"
+        # - "http://localhost:4444/wd/hub"
+
+        return unless ENV['QA_REMOTE_GRID']
+
+        "#{remote_grid_protocol}://#{remote_grid_credentials}#{ENV['QA_REMOTE_GRID']}/wd/hub"
+      end
+
+      def remote_grid_username
+        ENV['QA_REMOTE_GRID_USERNAME']
+      end
+
+      def remote_grid_access_key
+        ENV['QA_REMOTE_GRID_ACCESS_KEY']
+      end
+
+      def remote_grid_protocol
+        ENV['QA_REMOTE_GRID_PROTOCOL'] || 'http'
+      end
+
+      def browser
+        ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
+      end
+
       def user_username
         ENV['GITLAB_USERNAME']
       end
@@ -157,6 +185,16 @@ module QA
       end
 
       private
+
+      def remote_grid_credentials
+        if remote_grid_username
+          raise ArgumentError, %Q(Please provide an access key for user "#{remote_grid_username}") unless remote_grid_access_key
+
+          return "#{remote_grid_username}:#{remote_grid_access_key}@"
+        end
+
+        ''
+      end
 
       def enabled?(value, default: true)
         return default if value.nil?
