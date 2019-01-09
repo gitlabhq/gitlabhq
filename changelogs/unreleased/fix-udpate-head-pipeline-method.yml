@@ -1,0 +1,5 @@
+---
+title: Fix unexpected exception by failure of finding an actual head pipeline
+merge_request: 24257
+author:
+type: fixed
