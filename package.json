@@ -104,7 +104,7 @@
     "visibilityjs": "^1.2.4",
     "vue": "^2.5.21",
     "vue-apollo": "^3.0.0-beta.25",
-    "vue-loader": "^15.5.0",
+    "vue-loader": "^15.4.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.5.21",
