@@ -6764,10 +6764,22 @@ msgstr ""
 msgid "There are no archived projects yet"
 msgstr ""
 
+msgid "There are no closed issues"
+msgstr ""
+
+msgid "There are no closed merge requests"
+msgstr ""
+
 msgid "There are no issues to show"
 msgstr ""
 
 msgid "There are no labels yet"
+msgstr ""
+
+msgid "There are no open issues"
+msgstr ""
+
+msgid "There are no open merge requests"
 msgstr ""
 
 msgid "There are no projects shared with this group yet"
@@ -7192,6 +7204,12 @@ msgid "To import GitHub repositories, you first need to authorize GitLab to acce
 msgstr ""
 
 msgid "To import an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To keep this project going, create a new issue"
+msgstr ""
+
+msgid "To keep this project going, create a new merge request"
 msgstr ""
 
 msgid "To link Sentry to GitLab, enter your Sentry URL and Auth Token."
