@@ -2026,29 +2026,6 @@ describe Project do
     end
   end
 
-  describe '#get_build' do
-    let(:project) { create(:project, :repository) }
-    let(:ci_pipeline) { create(:ci_pipeline, project: project) }
-
-    context 'when build exists' do
-      context 'build is associated with project' do
-        let(:build) { create(:ci_build, :success, pipeline: ci_pipeline) }
-
-        it { expect(project.get_build(build.id)).to eq(build) }
-      end
-
-      context 'build is not associated with project' do
-        let(:build) { create(:ci_build, :success) }
-
-        it { expect(project.get_build(build.id)).to be_nil }
-      end
-    end
-
-    context 'build does not exists' do
-      it { expect(project.get_build(rand 100)).to be_nil }
-    end
-  end
-
   describe '#import_status' do
     context 'with import_state' do
       it 'returns the right status' do
