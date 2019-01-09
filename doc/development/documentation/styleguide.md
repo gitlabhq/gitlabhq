@@ -34,7 +34,7 @@ in October, 2018.
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
 gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
 use regular markdown markup, following the rules on this style guide. For a complete
-Kramdown reference, check the [GiLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
+Kramdown reference, check the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
 Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}`) as it will not render properly in
 [`/help`](#gitlab-help).
 
