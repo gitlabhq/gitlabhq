@@ -298,7 +298,6 @@ describe Ability do
 
     context 'wiki named abilities' do
       it 'disables wiki abilities if the project has no wiki' do
-        expect(project).to receive(:has_external_wiki?).and_return(false)
         expect(subject).not_to be_allowed(:read_wiki)
         expect(subject).not_to be_allowed(:create_wiki)
         expect(subject).not_to be_allowed(:update_wiki)

@@ -358,6 +358,26 @@ describe ProjectsHelper do
         is_expected.not_to include(:pipelines)
       end
     end
+
+    context 'when project has external wiki' do
+      before do
+        allow(project).to receive(:has_external_wiki?).and_return(true)
+      end
+
+      it 'includes external wiki tab' do
+        is_expected.to include(:external_wiki)
+      end
+    end
+
+    context 'when project does not have external wiki' do
+      before do
+        allow(project).to receive(:has_external_wiki?).and_return(false)
+      end
+
+      it 'does not include external wiki tab' do
+        is_expected.not_to include(:external_wiki)
+      end
+    end
   end
 
   describe '#show_projects' do
