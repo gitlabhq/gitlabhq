@@ -1,0 +1,5 @@
+---
+title: Fix slow regex in project reference pattern
+merge_request:
+author:
+type: security
