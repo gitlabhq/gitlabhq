@@ -130,9 +130,14 @@ excluded_attributes:
   snippets:
     - :expired_at
   merge_request_diff:
+    - :external_diff
+    - :stored_externally
+    - :external_diff_store
     - :st_diffs
   merge_request_diff_files:
     - :diff
+    - :external_diff_offset
+    - :external_diff_size
   issues:
     - :milestone_id
   merge_requests:
