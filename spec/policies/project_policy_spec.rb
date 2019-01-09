@@ -12,7 +12,7 @@ describe ProjectPolicy do
   let(:base_guest_permissions) do
     %i[
       read_project read_board read_list read_wiki read_issue
-      read_project_for_iids read_issue_iid read_merge_request_iid read_label
+      read_project_for_iids read_issue_iid read_label
       read_milestone read_project_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
       award_emoji read_release
@@ -149,6 +149,16 @@ describe ProjectPolicy do
                         :create_merge_request_in]
 
       expect_disallowed(*mr_permissions)
+    end
+  end
+
+  context 'for a guest in a private project' do
+    let(:project) { create(:project, :private) }
+    subject { described_class.new(guest, project) }
+
+    it 'disallows the guest from reading the merge request and merge request iid' do
+      expect_disallowed(:read_merge_request)
+      expect_disallowed(:read_merge_request_iid)
     end
   end
 
