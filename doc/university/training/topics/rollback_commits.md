@@ -8,13 +8,13 @@ comments: false
 
 ## Undo Commits
 
-* Undo last commit putting everything back into the staging area.
+- Undo last commit putting everything back into the staging area:
 
     ```
     git reset --soft HEAD^
     ```
 
-* Add files and change message with:
+- Add files and change message with:
 
     ```
     git commit --amend -m "New Message"
@@ -22,13 +22,13 @@ comments: false
 
 ----------
 
-* Undo last and remove changes
+- Undo last and remove changes:
 
     ```
     git reset --hard HEAD^
     ```
 
-* Same as last one but for two commits back
+- Same as last one but for two commits back:
 
     ```
     git reset --hard HEAD^^
@@ -73,9 +73,9 @@ git push origin master
 
 ## Note
 
-* git revert vs git reset
-* Reset removes the commit while revert removes the changes but leaves the commit
-* Revert is safer considering we can revert a revert
+- git revert vs git reset
+- Reset removes the commit while revert removes the changes but leaves the commit
+- Revert is safer considering we can revert a revert
 
 ```
 # Changed file

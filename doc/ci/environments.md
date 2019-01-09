@@ -419,7 +419,7 @@ and/or `production`) you can see this information in the merge request itself.
 > Introduced in GitLab 8.17. In GitLab 11.5 the file links
 are surfaced to the merge request widget.
 
-You can specify a Route Map to get GitLab to show "View on <environment URL>"
+You can specify a Route Map to get GitLab to show **View on ...**
 buttons to go directly from a file to that file's representation on the
 [deployed website via Review Apps](review_apps/index.md).
 

@@ -1,0 +1,5 @@
+---
+title: Adjusts duplicated line when commenting on unfolded diff lines (in the bottom)
+merge_request: 24201
+author:
+type: fixed

@@ -11,12 +11,12 @@ Instrumenting methods is done by using the `Gitlab::Metrics::Instrumentation`
 module. This module offers a few different methods that can be used to
 instrument code:
 
-* `instrument_method`: instruments a single class method.
-* `instrument_instance_method`: instruments a single instance method.
-* `instrument_class_hierarchy`: given a Class this method will recursively
+- `instrument_method`: instruments a single class method.
+- `instrument_instance_method`: instruments a single instance method.
+- `instrument_class_hierarchy`: given a Class this method will recursively
   instrument all sub-classes (both class and instance methods).
-* `instrument_methods`: instruments all public and private class methods of a Module.
-* `instrument_instance_methods`: instruments all public and private instance methods of a
+- `instrument_methods`: instruments all public and private class methods of a Module.
+- `instrument_instance_methods`: instruments all public and private instance methods of a
   Module.
 
 To remove the need for typing the full `Gitlab::Metrics::Instrumentation`

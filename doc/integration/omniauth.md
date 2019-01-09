@@ -66,7 +66,7 @@ that are in common for all providers that we need to consider.
 
 To change these settings:
 
-* **For omnibus package**
+- **For omnibus package**
 
     Open the configuration file:
 
@@ -89,7 +89,7 @@ To change these settings:
     gitlab_rails['omniauth_block_auto_created_users'] = true
     ```
 
-* **For installations from source**
+- **For installations from source**
 
     Open the configuration file:
 

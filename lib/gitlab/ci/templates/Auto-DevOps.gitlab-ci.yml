@@ -793,7 +793,7 @@ rollout 100%:
     fi
 
     helm init --client-only
-    helm repo add gitlab https://charts.gitlab.io
+    helm repo add gitlab ${AUTO_DEVOPS_CHART_REPOSITORY:-https://charts.gitlab.io}
     if [[ ! -d "$auto_chart" ]]; then
       helm fetch ${auto_chart} --untar
     fi

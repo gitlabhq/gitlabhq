@@ -5,6 +5,7 @@ module QA
         include Page::Component::Select2
 
         view 'app/views/projects/new.html.haml' do
+          element :project_create_from_template_tab
           element :import_project_tab, "Import project" # rubocop:disable QA/ElementWithPattern
         end
 
@@ -42,6 +43,10 @@ module QA
 
         def create_new_project
           click_on 'Create project'
+        end
+
+        def go_to_create_from_template
+          click_element(:project_create_from_template_tab)
         end
 
         def set_visibility(visibility)

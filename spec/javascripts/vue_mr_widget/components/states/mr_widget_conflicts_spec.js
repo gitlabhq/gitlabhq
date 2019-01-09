@@ -1,89 +1,154 @@
-import Vue from 'vue';
-import conflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import $ from 'jquery';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import ConflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import { removeBreakLine } from 'spec/helpers/vue_component_helper';
 
 describe('MRWidgetConflicts', () => {
-  let Component;
   let vm;
   const path = '/conflicts';
 
+  function createComponent(propsData = {}) {
+    const localVue = createLocalVue();
+
+    vm = shallowMount(localVue.extend(ConflictsComponent), {
+      propsData,
+    });
+  }
+
   beforeEach(() => {
-    Component = Vue.extend(conflictsComponent);
+    spyOn($.fn, 'popover').and.callThrough();
   });
 
   afterEach(() => {
-    vm.$destroy();
+    vm.destroy();
   });
 
   describe('when allowed to merge', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, {
+      createComponent({
         mr: {
           canMerge: true,
           conflictResolutionPath: path,
+          conflictsDocsPath: '',
         },
       });
     });
 
     it('should tell you about conflicts without bothering other people', () => {
-      expect(vm.$el.textContent).toContain('There are merge conflicts');
-      expect(vm.$el.textContent).not.toContain('ask someone with write access');
+      expect(vm.text()).toContain('There are merge conflicts');
+      expect(vm.text()).not.toContain('ask someone with write access');
     });
 
     it('should allow you to resolve the conflicts', () => {
-      const resolveButton = vm.$el.querySelector('.js-resolve-conflicts-button');
+      const resolveButton = vm.find('.js-resolve-conflicts-button');
 
-      expect(resolveButton.textContent).toContain('Resolve conflicts');
-      expect(resolveButton.getAttribute('href')).toEqual(path);
+      expect(resolveButton.text()).toContain('Resolve conflicts');
+      expect(resolveButton.attributes('href')).toEqual(path);
     });
 
     it('should have merge buttons', () => {
-      const mergeButton = vm.$el.querySelector('.js-disabled-merge-button');
-      const mergeLocallyButton = vm.$el.querySelector('.js-merge-locally-button');
+      const mergeLocallyButton = vm.find('.js-merge-locally-button');
 
-      expect(mergeButton.textContent).toContain('Merge');
-      expect(mergeButton.disabled).toBeTruthy();
-      expect(mergeButton.classList.contains('btn-success')).toEqual(true);
-      expect(mergeLocallyButton.textContent).toContain('Merge locally');
+      expect(mergeLocallyButton.text()).toContain('Merge locally');
     });
   });
 
   describe('when user does not have permission to merge', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, {
+    it('should show proper message', () => {
+      createComponent({
         mr: {
           canMerge: false,
+          conflictsDocsPath: '',
         },
       });
-    });
 
-    it('should show proper message', () => {
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain(
-        'ask someone with write access',
-      );
+      expect(
+        vm
+          .text()
+          .trim()
+          .replace(/\s\s+/g, ' '),
+      ).toContain('ask someone with write access');
     });
 
     it('should not have action buttons', () => {
-      expect(vm.$el.querySelector('.js-disabled-merge-button')).toBeDefined();
-      expect(vm.$el.querySelector('.js-resolve-conflicts-button')).toBeNull();
-      expect(vm.$el.querySelector('.js-merge-locally-button')).toBeNull();
+      createComponent({
+        mr: {
+          canMerge: false,
+          conflictsDocsPath: '',
+        },
+      });
+
+      expect(vm.contains('.js-resolve-conflicts-button')).toBe(false);
+      expect(vm.contains('.js-merge-locally-button')).toBe(false);
+    });
+
+    it('should not have resolve button when no conflict resolution path', () => {
+      createComponent({
+        mr: {
+          canMerge: true,
+          conflictResolutionPath: null,
+          conflictsDocsPath: '',
+        },
+      });
+
+      expect(vm.contains('.js-resolve-conflicts-button')).toBe(false);
     });
   });
 
   describe('when fast-forward or semi-linear merge enabled', () => {
-    beforeEach(() => {
-      vm = mountComponent(Component, {
+    it('should tell you to rebase locally', () => {
+      createComponent({
         mr: {
           shouldBeRebased: true,
+          conflictsDocsPath: '',
+        },
+      });
+
+      expect(removeBreakLine(vm.text()).trim()).toContain(
+        'Fast-forward merge is not possible. To merge this request, first rebase locally.',
+      );
+    });
+  });
+
+  describe('when source branch protected', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: {
+          canMerge: true,
+          conflictResolutionPath: gl.TEST_HOST,
+          sourceBranchProtected: true,
+          conflictsDocsPath: '',
         },
       });
     });
 
-    it('should tell you to rebase locally', () => {
-      expect(removeBreakLine(vm.$el.textContent).trim()).toContain(
-        'Fast-forward merge is not possible. To merge this request, first rebase locally.',
-      );
+    it('sets resolve button as disabled', () => {
+      expect(vm.find('.js-resolve-conflicts-button').attributes('disabled')).toBe('disabled');
+    });
+
+    it('renders popover', () => {
+      expect($.fn.popover).toHaveBeenCalled();
+    });
+  });
+
+  describe('when source branch not protected', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: {
+          canMerge: true,
+          conflictResolutionPath: gl.TEST_HOST,
+          sourceBranchProtected: false,
+          conflictsDocsPath: '',
+        },
+      });
+    });
+
+    it('sets resolve button as disabled', () => {
+      expect(vm.find('.js-resolve-conflicts-button').attributes('disabled')).toBe(undefined);
+    });
+
+    it('renders popover', () => {
+      expect($.fn.popover).not.toHaveBeenCalled();
     });
   });
 });

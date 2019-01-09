@@ -66,15 +66,11 @@ gl.lazyLoader = new LazyLoader({
   observerNode: '#content-body',
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+// Put all initialisations here that can also wait after everything is rendered and ready
+function deferredInitialisation() {
   const $body = $('body');
-  const $document = $(document);
-  const $window = $(window);
-  const $sidebarGutterToggle = $('.js-sidebar-toggle');
-  let bootstrapBreakpoint = bp.getBreakpointSize();
 
   initBreadcrumbs();
-  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -83,34 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.querySelector('.search')) initSearchAutocomplete();
   if (document.querySelector('#js-peek')) initPerformanceBar({ container: '#js-peek' });
-
-  // Set the default path for all cookies to GitLab's root directory
-  Cookies.defaults.path = gon.relative_url_root || '/';
-
-  // `hashchange` is not triggered when link target is already in window.location
-  $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
-    const href = this.getAttribute('href');
-    if (href.substr(1) === getLocationHash()) {
-      setTimeout(handleLocationHash, 1);
-    }
-  });
-
-  if (bootstrapBreakpoint === 'xs') {
-    const $rightSidebar = $('aside.right-sidebar, .layout-page');
-
-    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-  }
-
-  // prevent default action for disabled buttons
-  $('.btn').click(function clickDisabledButtonCallback(e) {
-    if ($(this).hasClass('disabled')) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      return false;
-    }
-
-    return true;
-  });
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
@@ -164,14 +132,54 @@ document.addEventListener('DOMContentLoaded', () => {
     viewport: '.layout-page',
   });
 
+  loadAwardsHandler();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const $body = $('body');
+  const $document = $(document);
+  const $window = $(window);
+  const $sidebarGutterToggle = $('.js-sidebar-toggle');
+  let bootstrapBreakpoint = bp.getBreakpointSize();
+
+  initLayoutNav();
+
+  // Set the default path for all cookies to GitLab's root directory
+  Cookies.defaults.path = gon.relative_url_root || '/';
+
+  // `hashchange` is not triggered when link target is already in window.location
+  $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
+    const href = this.getAttribute('href');
+    if (href.substr(1) === getLocationHash()) {
+      setTimeout(handleLocationHash, 1);
+    }
+  });
+
+  if (bootstrapBreakpoint === 'xs') {
+    const $rightSidebar = $('aside.right-sidebar, .layout-page');
+
+    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+  }
+
+  // prevent default action for disabled buttons
+  $('.btn').click(function clickDisabledButtonCallback(e) {
+    if ($(this).hasClass('disabled')) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      return false;
+    }
+
+    return true;
+  });
+
+  localTimeAgo($('abbr.timeago, .js-timeago'), true);
+
   // Form submitter
   $('.trigger-submit').on('change', function triggerSubmitCallback() {
     $(this)
       .parents('form')
       .submit();
   });
-
-  localTimeAgo($('abbr.timeago, .js-timeago'), true);
 
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function ajaxCompleteCallback(e) {
@@ -195,15 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  $('.navbar-toggler').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+  });
+
   // Commit show suppressed diff
   $document.on('click', '.diff-content .js-show-suppressed-diff', function showDiffCallback() {
     const $container = $(this).parent();
     $container.next('table').show();
     $container.remove();
-  });
-
-  $('.navbar-toggler').on('click', () => {
-    $('.header-content').toggleClass('menu-expanded');
   });
 
   // Show/hide comments on diff
@@ -250,8 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $window.on('resize.app', fitSidebarForSize);
 
-  loadAwardsHandler();
-
   $('form.filter-form').on('submit', function filterFormSubmitCallback(event) {
     const link = document.createElement('a');
     link.href = this.action;
@@ -274,4 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // initialize field errors
   $('.gl-show-field-errors').each((i, form) => new GlFieldErrors(form));
+
+  requestIdleCallback(deferredInitialisation);
 });

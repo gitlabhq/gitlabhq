@@ -2400,22 +2400,4 @@ describe Repository do
       repository.merge_base('master', 'fix')
     end
   end
-
-  describe '#cache' do
-    subject(:cache) { repository.send(:cache) }
-
-    it 'returns a RepositoryCache' do
-      expect(subject).to be_kind_of Gitlab::RepositoryCache
-    end
-
-    it 'when is_wiki it includes wiki as part of key' do
-      allow(repository).to receive(:is_wiki) { true }
-
-      expect(subject.namespace).to include('wiki')
-    end
-
-    it 'when is_wiki is false extra_namespace is nil' do
-      expect(subject.namespace).not_to include('wiki')
-    end
-  end
 end

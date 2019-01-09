@@ -716,4 +716,29 @@ describe('common_utils', () => {
       expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
     });
   });
+
+  describe('isInViewport', () => {
+    let el;
+
+    beforeEach(() => {
+      el = document.createElement('div');
+    });
+
+    afterEach(() => {
+      document.body.removeChild(el);
+    });
+
+    it('returns true when provided `el` is in viewport', () => {
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(true);
+    });
+
+    it('returns false when provided `el` is not in viewport', () => {
+      el.setAttribute('style', 'position: absolute; top: -1000px; left: -1000px;');
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(false);
+    });
+  });
 });

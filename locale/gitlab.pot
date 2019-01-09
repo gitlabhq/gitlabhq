@@ -185,6 +185,9 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
+msgid "(external source)"
+msgstr ""
+
 msgid "+ %{count} more"
 msgstr ""
 
@@ -445,6 +448,9 @@ msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
 msgid "AdminProjects|Delete project"
+msgstr ""
+
+msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
 msgid "AdminSettings|Environment variables are protected by default"
@@ -8073,6 +8079,9 @@ msgstr[1] ""
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
 
+msgid "mrWidget|%{link_start}Learn more about resolving conflicts%{link_end}"
+msgstr ""
+
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB"
 msgstr ""
 
@@ -8230,6 +8239,9 @@ msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
 msgid "mrWidget|There are unresolved discussions. Please resolve these discussions"
+msgstr ""
+
+msgid "mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected."
 msgstr ""
 
 msgid "mrWidget|This merge request failed to be merged automatically"

@@ -113,9 +113,9 @@ the meaning of the various columns can be found at
 Because the output of this query relies on the actual usage of your database it
 may be affected by factors such as (but not limited to):
 
-* Certain queries never being executed, thus not being able to use certain
+- Certain queries never being executed, thus not being able to use certain
   indexes.
-* Certain tables having little data, resulting in PostgreSQL using sequence
+- Certain tables having little data, resulting in PostgreSQL using sequence
   scans instead of index scans.
 
 In other words, this data is only reliable for a frequently used database with

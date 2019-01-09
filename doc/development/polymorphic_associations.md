@@ -7,9 +7,9 @@ usually works by adding two columns to a table: a target type column, and a
 target id. For example, at the time of writing we have such a setup for
 `members` with the following columns:
 
-* `source_type`: a string defining the model to use, can be either `Project` or
+- `source_type`: a string defining the model to use, can be either `Project` or
   `Namespace`.
-* `source_id`: the ID of the row to retrieve based on `source_type`. For
+- `source_id`: the ID of the row to retrieve based on `source_type`. For
   example, when `source_type` is `Project` then `source_id` will contain a
   project ID.
 
@@ -92,10 +92,10 @@ AND source_id = 4
 Instead such a table should be broken up into separate tables. For example, you
 may end up with 4 tables in this case:
 
-* project_members
-* group_members
-* pending_project_members
-* pending_group_members
+- project_members
+- group_members
+- pending_project_members
+- pending_group_members
 
 This makes querying data trivial. For example, to get the members of a group
 you'd run:

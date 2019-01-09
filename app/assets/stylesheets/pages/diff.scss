@@ -9,7 +9,7 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       position: -webkit-sticky;
       position: sticky;
-      top: 92px;
+      top: $header-height + 51px;
       margin-left: -1px;
       border-left: 1px solid $border-color;
       z-index: 102;

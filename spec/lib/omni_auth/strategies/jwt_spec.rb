@@ -25,6 +25,8 @@ describe OmniAuth::Strategies::Jwt do
       subject.options[:secret] = secret
       subject.options[:algorithm] = algorithm
 
+      # We use Rack::Request instead of ActionDispatch::Request because
+      # Rack::Test::Methods enables testing of this module.
       expect_next_instance_of(Rack::Request) do |rack_request|
         expect(rack_request).to receive(:params).and_return('jwt' => payload)
       end

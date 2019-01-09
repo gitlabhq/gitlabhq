@@ -207,4 +207,63 @@ describe QA::Runtime::Env do
       expect { described_class.can_test? :foo }.to raise_error(ArgumentError, 'Unknown feature "foo"')
     end
   end
+
+  describe 'remote grid credentials' do
+    it 'is blank if username is empty' do
+      stub_env('QA_REMOTE_GRID_USERNAME', nil)
+
+      expect(described_class.send(:remote_grid_credentials)).to eq('')
+    end
+
+    it 'throws ArgumentError if GRID_ACCESS_KEY is not specified with USERNAME' do
+      stub_env('QA_REMOTE_GRID_USERNAME', 'foo')
+
+      expect { described_class.send(:remote_grid_credentials) }.to raise_error(ArgumentError, 'Please provide an access key for user "foo"')
+    end
+
+    it 'returns a user:key@ combination when all args are satiated' do
+      stub_env('QA_REMOTE_GRID_USERNAME', 'foo')
+      stub_env('QA_REMOTE_GRID_ACCESS_KEY', 'bar')
+
+      expect(described_class.send(:remote_grid_credentials)).to eq('foo:bar@')
+    end
+  end
+
+  describe '.remote_grid_protocol' do
+    it 'defaults protocol to http' do
+      stub_env('QA_REMOTE_GRID_PROTOCOL', nil)
+      expect(described_class.remote_grid_protocol).to eq('http')
+    end
+  end
+
+  describe '.remote_grid' do
+    it 'is falsey if QA_REMOTE_GRID is not set' do
+      expect(described_class.remote_grid).to be_falsey
+    end
+
+    it 'accepts https protocol' do
+      stub_env('QA_REMOTE_GRID', 'localhost:4444')
+      stub_env('QA_REMOTE_GRID_PROTOCOL', 'https')
+
+      expect(described_class.remote_grid).to eq('https://localhost:4444/wd/hub')
+    end
+
+    context 'with credentials' do
+      it 'has a grid of http://user:key@grid/wd/hub' do
+        stub_env('QA_REMOTE_GRID_USERNAME', 'foo')
+        stub_env('QA_REMOTE_GRID_ACCESS_KEY', 'bar')
+        stub_env('QA_REMOTE_GRID', 'localhost:4444')
+
+        expect(described_class.remote_grid).to eq('http://foo:bar@localhost:4444/wd/hub')
+      end
+    end
+
+    context 'without credentials' do
+      it 'has a grid of http://grid/wd/hub' do
+        stub_env('QA_REMOTE_GRID', 'localhost:4444')
+
+        expect(described_class.remote_grid).to eq('http://localhost:4444/wd/hub')
+      end
+    end
+  end
 end

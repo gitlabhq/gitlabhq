@@ -3,7 +3,7 @@ import FileRow from '~/vue_shared/components/file_row.vue';
 import { file } from 'spec/ide/helpers';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('RepoFile', () => {
+describe('File row component', () => {
   let vm;
 
   function createComponent(propsData) {
@@ -72,39 +72,16 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector('.file-row-name').style.marginLeft).toBe('32px');
   });
 
-  describe('outputText', () => {
-    beforeEach(done => {
-      createComponent({
-        file: {
-          ...file(),
-          path: 'app/assets/index.js',
-        },
-        level: 0,
-      });
-
-      vm.displayTextKey = 'path';
-
-      vm.$nextTick(done);
+  it('renders header for file', () => {
+    createComponent({
+      file: {
+        isHeader: true,
+        path: 'app/assets',
+        tree: [],
+      },
+      level: 0,
     });
 
-    it('returns text if truncateStart is 0', done => {
-      vm.truncateStart = 0;
-
-      vm.$nextTick(() => {
-        expect(vm.outputText).toBe('app/assets/index.js');
-
-        done();
-      });
-    });
-
-    it('returns text truncated at start', done => {
-      vm.truncateStart = 5;
-
-      vm.$nextTick(() => {
-        expect(vm.outputText).toBe('...ssets/index.js');
-
-        done();
-      });
-    });
+    expect(vm.$el.querySelector('.js-file-row-header')).not.toBe(null);
   });
 });

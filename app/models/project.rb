@@ -647,19 +647,19 @@ class Project < ActiveRecord::Base
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_successful_builds_for(ref = default_branch)
+  def latest_successful_build_for(job_name, ref = default_branch)
     latest_pipeline = ci_pipelines.latest_successful_for(ref)
+    return unless latest_pipeline
 
-    if latest_pipeline
-      latest_pipeline.builds.latest.with_artifacts_archive
-    else
-      builds.none
-    end
+    latest_pipeline.builds.latest.with_artifacts_archive.find_by(name: job_name)
   end
 
-  def latest_successful_build_for(job_name, ref = default_branch)
-    builds = latest_successful_builds_for(ref)
-    builds.find_by!(name: job_name)
+  def latest_successful_build_for!(job_name, ref = default_branch)
+    latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
+  end
+
+  def get_build(id)
+    builds.find_by(id: id)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

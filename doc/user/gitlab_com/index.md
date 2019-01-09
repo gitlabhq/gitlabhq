@@ -281,12 +281,14 @@ of proposed changes can be found at
 GitLab.com adjusts the memory limits for the [unicorn-worker-killer][unicorn-worker-killer] gem.
 
 Base default:
-* `memory_limit_min` = 750MiB
-* `memory_limit_max` = 1024MiB
+
+- `memory_limit_min` = 750MiB
+- `memory_limit_max` = 1024MiB
 
 Web front-ends:
-* `memory_limit_min` = 1024MiB
-* `memory_limit_max` = 1280MiB
+
+- `memory_limit_min` = 1024MiB
+- `memory_limit_max` = 1280MiB
 
 ## GitLab.com at scale
 

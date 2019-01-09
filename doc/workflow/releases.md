@@ -20,4 +20,3 @@ There are several ways to add release notes:
 ## Tags page with button to add or edit release notes for existing git tag
 
 ![tags](releases/tags.png)
-
