@@ -101,7 +101,7 @@ module Gitlab
 
       # Route model
       class Route < ActiveRecord::Base
-        belongs_to :source, inverse_of: :route
+        belongs_to :source, inverse_of: :route, polymorphic: true
       end
 
       # Namespace model

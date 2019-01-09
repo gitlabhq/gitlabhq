@@ -95,7 +95,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
           project.route.destroy
           subgroup.route.destroy
 
-          expect { project.disk_path }
+          expect { project.reload.disk_path }
             .to raise_error(Gitlab::BackgroundMigration::BackfillProjectRepositories::OrphanedNamespaceError)
         end
       end
