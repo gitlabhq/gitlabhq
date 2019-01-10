@@ -440,7 +440,7 @@ Please check your network connection and try again.`;
                       <button
                         type="button"
                         class="btn btn-default ml-sm-2"
-                        @click="resolveHandler();"
+                        @click="resolveHandler()"
                       >
                         <i v-if="isResolving" aria-hidden="true" class="fa fa-spinner fa-spin"></i>
                         {{ resolveButtonTitle }}

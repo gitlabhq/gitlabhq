@@ -77,7 +77,7 @@ export default {
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
           class="js-pipeline-action-link no-btn btn"
-          @click="onClickAction(action);"
+          @click="onClickAction(action)"
         >
           {{ action.name }}
           <span v-if="action.scheduled_at" class="pull-right">

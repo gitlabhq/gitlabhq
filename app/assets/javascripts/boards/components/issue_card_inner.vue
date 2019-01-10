@@ -184,7 +184,7 @@ export default {
         :title="label.description"
         class="badge color-label append-right-4 prepend-top-4"
         type="button"
-        @click="filterByLabel(label);"
+        @click="filterByLabel(label)"
       >
         {{ label.title }}
       </button>

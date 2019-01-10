@@ -134,7 +134,7 @@ export default {
             <button
               type="button"
               class="btn-blank btn-link btn-secondary-hover-link"
-              @click="newDateSelected(null);"
+              @click="newDateSelected(null)"
             >
               remove
             </button>

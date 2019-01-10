@@ -114,7 +114,7 @@ export default {
             <button
               type="button"
               class="btn btn-missing p-1 pr-2 pl-2"
-              @click="createFromTemplate(template);"
+              @click="createFromTemplate(template)"
             >
               {{ template.name }}
             </button>

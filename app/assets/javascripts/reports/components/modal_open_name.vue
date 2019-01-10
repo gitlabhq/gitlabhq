@@ -26,7 +26,7 @@ export default {
   <button
     type="button"
     class="btn-link btn-blank text-left break-link vulnerability-name-button"
-    @click="handleIssueClick();"
+    @click="handleIssueClick()"
   >
     {{ issue.title }}
   </button>
