@@ -17,8 +17,8 @@ describe ::Ci::DestroyPipelineService do
       expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it 'logs an audit event' do
-      expect { subject }.to change { SecurityEvent.count }.by(1)
+    it 'does not log an audit event' do
+      expect { subject }.not_to change { SecurityEvent.count }
     end
 
     context 'when the pipeline has jobs' do
