@@ -1,10 +1,7 @@
 import _ from 'underscore';
-import { __ } from '~/locale';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
-export const headerActions = state => {
-  return [];
-};
+export const headerActions = () => [];
 
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
 

@@ -10,7 +10,7 @@ describe('Job Store Getters', () => {
 
   describe('headerActions', () => {
     describe('with new issue path', () => {
-      it('returns an empty array', () => {
+      it('returns an empty array with no actions', () => {
         localState.job.new_issue_path = 'issues/new';
 
         expect(getters.headerActions(localState)).toEqual([]);
