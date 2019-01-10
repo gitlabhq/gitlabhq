@@ -8,8 +8,9 @@ export default class TaskList {
     this.selector = options.selector;
     this.dataType = options.dataType;
     this.fieldName = options.fieldName;
+    this.lockVersion = options.lockVersion;
     this.onSuccess = options.onSuccess || (() => {});
-    this.onError = function showFlash(e) {
+    this.onError = options.onError || function showFlash(e) {
       let errorMessages = '';
 
       if (e.response.data && typeof e.response.data === 'object') {
@@ -43,6 +44,7 @@ export default class TaskList {
     const patchData = {};
     patchData[this.dataType] = {
       [this.fieldName]: $target.val(),
+      ['lock_version']: this.lockVersion,
     };
 
     return axios

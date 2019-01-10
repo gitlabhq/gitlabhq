@@ -326,6 +326,7 @@ export default {
         :task-status="state.taskStatus"
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
+        :lock-version="state.lock_version"
       />
       <edited-component
         v-if="hasUpdated"

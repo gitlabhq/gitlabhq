@@ -35,6 +35,10 @@ export default {
       required: false,
       default: null,
     },
+    lockVersion: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -67,8 +71,10 @@ export default {
         new TaskList({
           dataType: this.issuableType,
           fieldName: 'description',
+          lockVersion: this.lockVersion,
           selector: '.detail-page-description',
           onSuccess: this.taskListUpdateSuccess.bind(this),
+          onError: this.taskListUpdateError.bind(this),
         });
       }
     },
@@ -80,6 +86,10 @@ export default {
       } catch (error) {
         if (error && error.name === 'SpamError') this.openRecaptcha();
       }
+    },
+
+    taskListUpdateError(data) {
+      // stub for error handling
     },
 
     updateTaskStatusText() {
