@@ -804,10 +804,6 @@ qa:selectors:
     - yarn run webpack-prod
   <<: *except-docs
 
-qa-frontend-node:6:
-  <<: *qa-frontend-node
-  image: node:6-alpine
-
 qa-frontend-node:8:
   <<: *qa-frontend-node
   image: node:8-alpine
