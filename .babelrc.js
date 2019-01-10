@@ -18,6 +18,7 @@ const plugins = [
   '@babel/plugin-syntax-import-meta',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-json-strings',
+  '@babel/plugin-proposal-private-methods',
 ];
 
 // add code coverage tooling if necessary

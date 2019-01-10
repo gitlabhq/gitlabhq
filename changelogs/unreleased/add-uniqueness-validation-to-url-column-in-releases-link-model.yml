@@ -1,0 +1,5 @@
+---
+title: Add uniqueness validation to url column in Releases::Link model
+merge_request: 24223
+author:
+type: other

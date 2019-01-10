@@ -6,7 +6,7 @@ module Releases
 
     belongs_to :release
 
-    validates :url, presence: true, url: true
+    validates :url, presence: true, url: true, uniqueness: { scope: :release }
     validates :name, presence: true, uniqueness: { scope: :release }
 
     scope :sorted, -> { order(created_at: :desc) }

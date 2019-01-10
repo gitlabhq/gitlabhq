@@ -50,6 +50,7 @@ module Backup
       if directory.files.create(key: remote_target, body: File.open(tar_file), public: false,
                                 multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
                                 encryption: Gitlab.config.backup.upload.encryption,
+                                encryption_key: Gitlab.config.backup.upload.encryption_key,
                                 storage_class: Gitlab.config.backup.upload.storage_class)
         progress.puts "done".color(:green)
       else

@@ -62,5 +62,25 @@ describe Gitlab::Ci::Config::Normalizer do
         expect(subject[:other_job][:dependencies]).not_to include(job_name)
       end
     end
+
+    context 'when there are dependencies which are both parallelized and not' do
+      let(:config) do
+        {
+          job_name => job_config,
+          other_job: { script: 'echo 1' },
+          final_job: { script: 'echo 1', dependencies: [job_name.to_s, "other_job"] }
+        }
+      end
+
+      it 'parallelizes dependencies' do
+        job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
+
+        expect(subject[:final_job][:dependencies]).to include(*job_names)
+      end
+
+      it 'includes the regular job in dependencies' do
+        expect(subject[:final_job][:dependencies]).to include('other_job')
+      end
+    end
   end
 end
