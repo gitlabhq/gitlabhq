@@ -560,15 +560,19 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    if persisted?
-      merge_request_diff.diff_refs
-    else
-      Gitlab::Diff::DiffRefs.new(
-        base_sha:  diff_base_sha,
-        start_sha: diff_start_sha,
-        head_sha:  diff_head_sha
-      )
-    end
+    persisted? ? merge_request_diff.diff_refs : repository_diff_refs
+  end
+
+  # Instead trying to fetch the
+  # persisted diff_refs, this method goes
+  # straight to the repository to get the
+  # most recent data possible.
+  def repository_diff_refs
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  branch_merge_base_sha,
+      start_sha: target_branch_sha,
+      head_sha:  source_branch_sha
+    )
   end
 
   def branch_merge_base_sha
