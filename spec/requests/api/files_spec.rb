@@ -183,14 +183,15 @@ describe API::Files do
         get api(url, current_user), params: params
 
         expect(response).to have_gitlab_http_status(200)
+        expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
-      it 'forces attachment content disposition' do
+      it 'sets inline content disposition by default' do
         url = route(file_path) + "/raw"
 
         get api(url, current_user), params: params
 
-        expect(headers['Content-Disposition']).to eq('attachment; filename="popen.rb"')
+        expect(headers['Content-Disposition']).to eq('inline; filename="popen.rb"')
       end
 
       context 'when mandatory params are not given' do
