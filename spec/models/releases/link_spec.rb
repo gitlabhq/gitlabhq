@@ -31,6 +31,16 @@ describe Releases::Link do
         end.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context 'when duplicate url is added to a release' do
+      let!(:link) { create(:release_link, url: 'http://gitlab.com', release: release) }
+
+      it 'raises an error' do
+        expect do
+          create(:release_link, url: 'http://gitlab.com', release: release)
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe '.sorted' do
