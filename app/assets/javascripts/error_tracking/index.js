@@ -4,10 +4,6 @@ import store from './store';
 import ErrorTrackingList from './components/error_tracking_list.vue';
 
 export default () => {
-  if (!gon.features.errorTracking) {
-    return;
-  }
-
   // eslint-disable-next-line no-new
   new Vue({
     el: '#js-error_tracking',
