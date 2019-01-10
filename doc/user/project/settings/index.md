@@ -122,3 +122,9 @@ GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
 [permissions]: ../../permissions.md##project-members-permissions
+
+## Operations settings
+
+### Error Tracking
+
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).
