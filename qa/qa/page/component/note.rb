@@ -32,9 +32,13 @@ module QA
           click_element :comment_button
         end
 
-        def reply_to_discussion(reply_text)
+        def type_reply_to_discussion(reply_text)
           all_elements(:discussion_reply).last.click
           fill_element :reply_input, reply_text
+        end
+
+        def reply_to_discussion(reply_text)
+          type_reply_to_discussion(reply_text)
           click_element :reply_comment_button
         end
 
