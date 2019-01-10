@@ -164,10 +164,11 @@ page](https://golang.org/dl).
 
 Since GitLab 8.17, GitLab requires the use of Node to compile javascript
 assets, and Yarn to manage javascript dependencies. The current minimum
-requirements for these are node >= v6.0.0 and yarn >= v1.2.0. In many distros
+requirements for these are node >= v8.10.0 and yarn >= v1.10.0. In many distros
 the versions provided by the official package repositories are out of date, so
 we'll need to install through the following commands:
 
+```bash
     # install node v8.x
     curl --location https://deb.nodesource.com/setup_8.x | sudo bash -
     sudo apt-get install -y nodejs
@@ -176,6 +177,7 @@ we'll need to install through the following commands:
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     sudo apt-get update
     sudo apt-get install yarn
+```
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
