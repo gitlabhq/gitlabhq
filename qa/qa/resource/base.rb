@@ -126,10 +126,6 @@ module QA
         mod
       end
 
-      def self.attributes_names
-        dynamic_attributes.instance_methods(false).sort.grep_v(/=$/)
-      end
-
       class DSL
         def initialize(base)
           @base = base
