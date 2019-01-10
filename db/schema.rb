@@ -168,7 +168,7 @@ ActiveRecord::Schema.define(version: 20190131122559) do
     t.string "commit_email_hostname"
     t.boolean "protected_ci_variables", default: false, null: false
     t.string "runners_registration_token_encrypted"
-    t.integer "default_first_day_of_week", default: 0, null: false
+    t.integer "first_day_of_week", default: 0, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 

@@ -51,11 +51,11 @@ module PreferencesHelper
   end
 
   def default_first_day_of_week
-    first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.default_first_day_of_week).first
+    first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
   end
 
   def first_day_of_week_choices_with_default
-    first_day_of_week_choices.unshift([_('System Default (%{default})') % { default: default_first_day_of_week }, nil])
+    first_day_of_week_choices.unshift([_('System default (%{default})') % { default: default_first_day_of_week }, nil])
   end
 
   def user_application_theme

@@ -24,14 +24,13 @@ module Gitlab
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
       gon.test_env               = Rails.env.test?
       gon.suggested_label_colors = LabelsHelper.suggested_colors
-      gon.first_day_of_week      = Gitlab::CurrentSettings.default_first_day_of_week
+      gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
 
       if current_user
         gon.current_user_id = current_user.id
         gon.current_username = current_user.username
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
-        gon.first_day_of_week = current_user.first_day_of_week if current_user.first_day_of_week
       end
     end
 

@@ -1413,9 +1413,6 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
-msgid "Choose on what day the week should start."
-msgstr ""
-
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
@@ -6956,13 +6953,13 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
-msgid "System Default (%{default})"
-msgstr ""
-
 msgid "System Hooks"
 msgstr ""
 
 msgid "System Info"
+msgstr ""
+
+msgid "System default (%{default})"
 msgstr ""
 
 msgid "System metrics (Custom)"
