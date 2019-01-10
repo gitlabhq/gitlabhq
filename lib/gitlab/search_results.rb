@@ -87,6 +87,12 @@ module Gitlab
       1001
     end
 
+    def users
+      return User.none unless Ability.allowed?(current_user, :read_users_list)
+
+      UsersFinder.new(current_user, search: query).execute
+    end
+
     private
 
     def projects
@@ -136,12 +142,6 @@ module Gitlab
       merge_requests.reorder('updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def users
-      return User.none unless Ability.allowed?(current_user, :read_users_list)
-
-      UsersFinder.new(current_user, search: query).execute
-    end
 
     def default_scope
       'projects'
