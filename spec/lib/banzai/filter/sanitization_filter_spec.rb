@@ -335,6 +335,13 @@ describe Banzai::Filter::SanitizationFilter do
           expect(act.to_html).to eq exp
         end
       end
+
+      it 'allows footnotes numbered higher than 9' do
+        exp = %q{<a href="#fn15" id="fnref15">link</a><ol><li id="fn15">footnote</li></ol>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
     end
   end
 end

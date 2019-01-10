@@ -10,8 +10,8 @@ module Banzai
 
       UNSAFE_PROTOCOLS                = %w(data javascript vbscript).freeze
       TABLE_ALIGNMENT_PATTERN         = /text-align: (?<alignment>center|left|right)/.freeze
-      FOOTNOTE_LINK_REFERENCE_PATTERN = /\Afnref\d\z/.freeze
-      FOOTNOTE_LI_REFERENCE_PATTERN   = /\Afn\d\z/.freeze
+      FOOTNOTE_LINK_REFERENCE_PATTERN = /\Afnref\d+\z/.freeze
+      FOOTNOTE_LI_REFERENCE_PATTERN   = /\Afn\d+\z/.freeze
 
       def whitelist
         strong_memoize(:whitelist) do

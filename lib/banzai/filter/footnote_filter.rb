@@ -16,25 +16,25 @@ module Banzai
     # can be used for a single render). So you get `id=fn1-4335` and `id=fn2-4335`.
     #
     class FootnoteFilter < HTML::Pipeline::Filter
-      INTEGER_PATTERN = /\A\d+\Z/.freeze
+      INTEGER_PATTERN = /\A\d+\z/.freeze
 
       def call
         return doc unless first_footnote = doc.at_css('ol > li[id=fn1]')
 
         # Sanitization stripped off the section wrapper - add it back in
         first_footnote.parent.wrap('<section class="footnotes">')
+        rand_suffix = "-#{random_number}"
 
         doc.css('sup > a[id]').each do |link_node|
           ref_num       = link_node[:id].delete_prefix('fnref')
           footnote_node = doc.at_css("li[id=fn#{ref_num}]")
-          backref_node  = doc.at_css("li[id=fn#{ref_num}] a[href=\"#fnref#{ref_num}\"]")
+          backref_node  = footnote_node.at_css("a[href=\"#fnref#{ref_num}\"]")
 
           if ref_num =~ INTEGER_PATTERN && footnote_node && backref_node
-            rand_ref_num        = "#{ref_num}-#{random_number}"
-            link_node[:href]    = "#fn#{rand_ref_num}"
-            link_node[:id]      = "fnref#{rand_ref_num}"
-            footnote_node[:id]  = "fn#{rand_ref_num}"
-            backref_node[:href] = "#fnref#{rand_ref_num}"
+            link_node[:href]    += rand_suffix
+            link_node[:id]      += rand_suffix
+            footnote_node[:id]  += rand_suffix
+            backref_node[:href] += rand_suffix
 
             # Sanitization stripped off class - add it back in
             link_node.parent.append_class('footnote-ref')
