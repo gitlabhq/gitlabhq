@@ -39,9 +39,7 @@ class TeamcityService < CiService
   end
 
   def help
-    'The build configuration in Teamcity must use the build format '\
-    'number %build.vcs.number% '\
-    'you will also want to configure monitoring of all branches so merge '\
+    'You will want to configure monitoring of all branches so merge '\
     'requests build, that setting is in the vsc root advanced settings.'
   end
 
@@ -70,7 +68,7 @@ class TeamcityService < CiService
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,number:#{sha}")
+    response = get_path("httpAuth/app/rest/builds/branch:unspecified:any,revision:#{sha}")
 
     { build_page: read_build_page(response), commit_status: read_commit_status(response) }
   end

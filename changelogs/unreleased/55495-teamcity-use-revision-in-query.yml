@@ -1,0 +1,5 @@
+---
+title: Build number does not need to be tweaked anymore for the TeamCity integration to work properly.
+merge_request: 23898
+author:
+type: changed
