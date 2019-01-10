@@ -1,10 +1,6 @@
 /**
  * Note Form
  */
-.comment-btn {
-  @extend .btn-success;
-}
-
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1;
@@ -386,7 +382,7 @@ table {
 }
 
 .comment-type-dropdown {
-  .comment-btn {
+  .btn-success {
     width: auto;
   }
 
@@ -417,7 +413,7 @@ table {
     width: 100%;
     margin-bottom: 10px;
 
-    .comment-btn {
+    .btn-success {
       flex-grow: 1;
       flex-shrink: 0;
       width: auto;

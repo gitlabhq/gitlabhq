@@ -1,10 +1,10 @@
 - noteable_name = @note.noteable.human_class_name
 
 .float-left.btn-group.append-right-10.droplab-dropdown.comment-type-dropdown.js-comment-type-dropdown
-  %input.btn.btn-nr.btn-success.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: _('Comment') }
+  %input.btn.btn-nr.btn-success.js-comment-button.js-comment-submit-button{ type: 'submit', value: _('Comment') }
 
   - if @note.can_be_discussion_note?
-    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => _('Open comment type dropdown') do
+    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle btn-success js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => _('Open comment type dropdown') do
       = icon('caret-down', class: 'toggle-icon')
 
     %ul#resolvable-comment-menu.dropdown-menu.dropdown-open-top{ data: { dropdown: true } }
