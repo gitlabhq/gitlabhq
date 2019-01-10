@@ -7,7 +7,7 @@ export default {
     tooltip,
   },
   created() {
-    this.removesBranchText = __('<strong>Removes</strong> source branch');
+    this.removesBranchText = __('<strong>Deletes</strong> source branch');
     this.tooltipTitle = __('A user with write access to the source branch selected this option');
   },
 };

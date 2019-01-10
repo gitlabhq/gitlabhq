@@ -128,7 +128,7 @@ describe('MRWidgetMerged', () => {
           new Promise(resolve => {
             resolve({
               data: {
-                message: 'Branch was removed',
+                message: 'Branch was deleted',
               },
             });
           }),
@@ -157,8 +157,8 @@ describe('MRWidgetMerged', () => {
     expect(vm.$el.textContent).toContain(targetBranch);
   });
 
-  it('renders information about branch being removed', () => {
-    expect(vm.$el.textContent).toContain('The source branch has been removed');
+  it('renders information about branch being deleted', () => {
+    expect(vm.$el.textContent).toContain('The source branch has been deleted');
   });
 
   it('shows revert and cherry-pick buttons', () => {
@@ -189,24 +189,24 @@ describe('MRWidgetMerged', () => {
     expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });
 
-  it('should not show source branch removed text', done => {
+  it('should not show source branch deleted text', done => {
     vm.mr.sourceBranchRemoved = false;
 
     Vue.nextTick(() => {
-      expect(vm.$el.innerText).toContain('You can remove source branch now');
-      expect(vm.$el.innerText).not.toContain('The source branch has been removed');
+      expect(vm.$el.innerText).toContain('You can delete the source branch now');
+      expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();
     });
   });
 
-  it('should show source branch removing text', done => {
+  it('should show source branch deleting text', done => {
     vm.mr.isRemovingSourceBranch = true;
     vm.mr.sourceBranchRemoved = false;
 
     Vue.nextTick(() => {
-      expect(vm.$el.innerText).toContain('The source branch is being removed');
-      expect(vm.$el.innerText).not.toContain('You can remove source branch now');
-      expect(vm.$el.innerText).not.toContain('The source branch has been removed');
+      expect(vm.$el.innerText).toContain('The source branch is being deleted');
+      expect(vm.$el.innerText).not.toContain('You can delete the source branch now');
+      expect(vm.$el.innerText).not.toContain('The source branch has been deleted');
       done();
     });
   });

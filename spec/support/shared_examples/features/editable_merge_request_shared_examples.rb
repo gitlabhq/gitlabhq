@@ -129,12 +129,12 @@ RSpec.shared_examples 'an editable merge request' do
       expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
 
       visit edit_project_merge_request_path(target_project, merge_request)
-      uncheck 'Remove source branch when merge request is accepted'
+      uncheck 'Delete source branch when merge request is accepted'
 
       click_button 'Save changes'
 
       expect(page).to have_unchecked_field 'remove-source-branch-input'
-      expect(page).to have_content 'Remove source branch'
+      expect(page).to have_content 'Delete source branch'
     end
   end
 end

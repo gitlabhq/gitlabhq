@@ -10,7 +10,7 @@
         = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
         = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?, class: 'form-check-input'
         = label_tag 'merge_request[force_remove_source_branch]', class: 'form-check-label' do
-          Remove source branch when merge request is accepted.
+          Delete source branch when merge request is accepted.
 
 .form-group.row
   .col-sm-10.offset-sm-2

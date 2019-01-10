@@ -288,7 +288,7 @@ msgstr ""
 msgid "<strong>%{group_name}</strong> group members"
 msgstr ""
 
-msgid "<strong>Removes</strong> source branch"
+msgid "<strong>Deletes</strong> source branch"
 msgstr ""
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
@@ -8118,6 +8118,9 @@ msgstr ""
 msgid "mrWidget|Create an issue to resolve them later"
 msgstr ""
 
+msgid "mrWidget|Delete source branch"
+msgstr ""
+
 msgid "mrWidget|Deployment statistics are not available currently"
 msgstr ""
 
@@ -8178,12 +8181,6 @@ msgstr ""
 msgid "mrWidget|Refreshing now"
 msgstr ""
 
-msgid "mrWidget|Remove Source Branch"
-msgstr ""
-
-msgid "mrWidget|Remove source branch"
-msgstr ""
-
 msgid "mrWidget|Request to merge"
 msgstr ""
 
@@ -8217,19 +8214,19 @@ msgstr ""
 msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"
 msgstr ""
 
-msgid "mrWidget|The source branch has been removed"
+msgid "mrWidget|The source branch has been deleted"
 msgstr ""
 
 msgid "mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch"
 msgstr ""
 
-msgid "mrWidget|The source branch is being removed"
+msgid "mrWidget|The source branch is being deleted"
 msgstr ""
 
-msgid "mrWidget|The source branch will be removed"
+msgid "mrWidget|The source branch will be deleted"
 msgstr ""
 
-msgid "mrWidget|The source branch will not be removed"
+msgid "mrWidget|The source branch will not be deleted"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
@@ -8253,10 +8250,10 @@ msgstr ""
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
 msgstr ""
 
-msgid "mrWidget|You can merge this merge request manually using the"
+msgid "mrWidget|You can delete the source branch now"
 msgstr ""
 
-msgid "mrWidget|You can remove source branch now"
+msgid "mrWidget|You can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|branch does not exist."

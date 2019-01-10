@@ -179,7 +179,7 @@ module API
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
-          optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+          optional :remove_source_branch, type: Boolean, desc: 'Delete source branch when merging'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
           optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'

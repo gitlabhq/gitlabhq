@@ -97,7 +97,7 @@ describe 'Protected Branches', :js do
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content('branch was removed') }
+        within(".protected-branches-list") { expect(page).to have_content('branch was deleted') }
       end
     end
 
