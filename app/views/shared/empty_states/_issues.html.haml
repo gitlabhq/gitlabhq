@@ -2,6 +2,10 @@
 - project_select_button = local_assigns.fetch(:project_select_button, false)
 - show_import_button = local_assigns.fetch(:show_import_button, false) && Feature.enabled?(:issues_import_csv) && can?(current_user, :import_issues, @project)
 - has_button = button_path || project_select_button
+- closed_issues_count = issuables_count_for_state(:issues, :closed)
+- opened_issues_count = issuables_count_for_state(:issues, :opened)
+- is_opened_state = params[:state] == 'opened'
+- is_closed_state = params[:state] == 'closed'
 
 .row.empty-state
   .col-12
@@ -14,6 +18,20 @@
           = _("Sorry, your filter produced no results")
         %p.text-center
           = _("To widen your search, change or remove filters above")
+        - if show_new_issue_link?(@project)
+          .text-center
+            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success", title: _("New issue"), id: "new_issue_body_link"
+      - elsif is_opened_state && opened_issues_count == 0 && closed_issues_count > 0
+        %h4.text-center
+          = _("There are no open issues")
+        %p.text-center
+          = _("To keep this project going, create a new issue")
+        - if show_new_issue_link?(@project)
+          .text-center
+            = link_to _("New issue"), new_project_issue_path(@project), class: "btn btn-success", title: _("New issue"), id: "new_issue_body_link"
+      - elsif is_closed_state && opened_issues_count > 0 && closed_issues_count == 0
+        %h4.text-center
+          = _("There are no closed issues")
       - elsif current_user
         %h4
           = _("The Issue Tracker is the place to add things that need to be improved or solved in a project")
