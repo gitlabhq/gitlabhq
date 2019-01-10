@@ -13,6 +13,8 @@ export default function deviseState(data) {
     return stateKey.conflicts;
   } else if (data.work_in_progress) {
     return stateKey.workInProgress;
+  } else if (this.shouldBeRebased) {
+    return stateKey.rebase;
   } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
     return stateKey.pipelineFailed;
   } else if (this.hasMergeableDiscussionsState) {
@@ -25,8 +27,6 @@ export default function deviseState(data) {
     return this.mergeError ? stateKey.autoMergeFailed : stateKey.mergeWhenPipelineSucceeds;
   } else if (!this.canMerge) {
     return stateKey.notAllowedToMerge;
-  } else if (this.shouldBeRebased) {
-    return stateKey.rebase;
   } else if (this.canBeMerged) {
     return stateKey.readyToMerge;
   }
