@@ -1,19 +1,27 @@
 # Award Emoji API
 
-> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575) in GitLab 8.9. Snippet support added in 8.12.
 
+An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
-An awarded emoji tells a thousand words, and can be awarded on issues, merge
-requests, snippets, and notes/comments. Issues, merge requests, snippets, and notes are further called
-`awardables`.
+Emojis can be awarded on the following (known as "awardables"):
+
+- [Issues](../user/project/issues/index.md)
+- [Merge requests](../user/project/merge_requests/index.md)
+- [Snippets](../user/snippets.md)
+- Notes
+
+Emojis can also [be awarded](../user/award_emojis.html#award-emoji-for-comments) on comments.
 
 ## Issues, merge requests, and snippets
 
+See [Award Emoji on Notes](#award-emoji-on-notes) for information on using these endpoints with notes.
+
 ### List an awardable's award emoji
 
-Gets a list of all award emoji
+Get a list of all award emoji for a specified awardable.
 
-```
+```text
 GET /projects/:id/issues/:issue_iid/award_emoji
 GET /projects/:id/merge_requests/:merge_request_iid/award_emoji
 GET /projects/:id/snippets/:snippet_id/award_emoji
@@ -21,16 +29,18 @@ GET /projects/:id/snippets/:snippet_id/award_emoji
 
 Parameters:
 
-| Attribute      | Type    | Required | Description                                                                 |
-| ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                         |
-| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
+| Attribute      | Type           | Required | Description                                                                                                  |
+|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
 
-```bash
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji
 ```
 
-Example Response:
+Example response:
 
 ```json
 [
@@ -71,9 +81,9 @@ Example Response:
 
 ### Get single award emoji
 
-Gets a single award emoji from an issue, snippet, or merge request.
+Get a single award emoji from an issue, snippet, or merge request.
 
-```
+```text
 GET /projects/:id/issues/:issue_iid/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
 GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
@@ -81,17 +91,19 @@ GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute      | Type    | Required | Description                                                                 |
-| ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
-| `award_id`     | integer | yes      | The ID of the award emoji                                                   |
+| Attribute      | Type           | Required | Description                                                                                                  |
+|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
+| `award_id`     | integer        | yes      | ID of the award emoji.                                                                                       |
 
-```bash
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1
 ```
 
-Example Response:
+Example response:
 
 ```json
 {
@@ -114,9 +126,9 @@ Example Response:
 
 ### Award a new emoji
 
-This end point creates an award emoji on the specified resource
+Create an award emoji on the specified awardable.
 
-```
+```text
 POST /projects/:id/issues/:issue_iid/award_emoji
 POST /projects/:id/merge_requests/:merge_request_iid/award_emoji
 POST /projects/:id/snippets/:snippet_id/award_emoji
@@ -124,13 +136,13 @@ POST /projects/:id/snippets/:snippet_id/award_emoji
 
 Parameters:
 
-| Attribute      | Type    | Required | Description                                                                 |
-| ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
-| `name`         | string  | yes      | The name of the emoji, without colons                                       |
+| Attribute      | Type           | Required | Description                                                                                                  |
+|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
+| `name`         | string         | yes      | Name of the emoji without colons.                                                                            |
 
-```bash
+```sh
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
@@ -157,10 +169,12 @@ Example Response:
 
 ### Delete an award emoji
 
-Sometimes its just not meant to be, and you'll have to remove your award. Only available to
-admins or the author of the award.
+Sometimes it's just not meant to be and you'll have to remove the award.
 
-```
+NOTE: **Note:**
+Only available to administrators or the author of the award.
+
+```text
 DELETE /projects/:id/issues/:issue_iid/award_emoji/:award_id
 DELETE /projects/:id/merge_requests/:merge_request_iid/award_emoji/:award_id
 DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
@@ -168,43 +182,48 @@ DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute   | Type    | Required | Description                 |
-| ---------   | ----    | -------- | -----------                 |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `issue_iid` | integer | yes      | The internal ID of an issue |
-| `award_id`  | integer | yes      | The ID of an award_emoji    |
+| Attribute      | Type           | Required | Description                                                                                                  |
+|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
+| `award_id`     | integer        | yes      | ID of an award emoji.                                                                                        |
 
-```bash
+```sh
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
 ```
 
 ## Award Emoji on Notes
 
-The endpoints documented above are available for Notes as well. Notes
-are a sub-resource of Issues, Merge Requests, or Snippets. The examples below
-describe working with Award Emoji on notes for an Issue, but can be
-easily adapted for notes on a Merge Request.
+Notes are a sub-resource of issues, merge requests, and snippets. The endpoints documented above
+are available for notes as well.
 
-### List a note's award emoji
+NOTE: **Note:**
+The examples below describe working with award emoji on notes for an issue, but can be
+easily adapted for notes on a merge request.
 
-```
+### List a note's award emojis
+
+Get all award emojis for a note.
+
+```text
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute   | Type    | Required | Description                 |
-| ---------   | ----    | -------- | -----------                 |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `issue_iid` | integer | yes      | The internal ID of an issue |
-| `note_id`   | integer | yes      | The ID of a note            |
+| Attribute   | Type           | Required | Description                                                                                                  |
+|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
+| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
 
+Example request:
 
-```bash
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji
 ```
 
-Example Response:
+Example response:
 
 ```json
 [
@@ -227,26 +246,30 @@ Example Response:
 ]
 ```
 
-### Get single note's award emoji
+### Get an award emoji for a note
 
-```
+Get a single award emoji for a note.
+
+```text
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 
 Parameters:
 
-| Attribute   | Type    | Required | Description                 |
-| ---------   | ----    | -------- | -----------                 |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `issue_iid` | integer | yes      | The internal ID of an issue |
-| `note_id`   | integer | yes      | The ID of a note            |
-| `award_id`  | integer | yes      | The ID of the award emoji   |
+| Attribute   | Type           | Required | Description                                                                                                  |
+|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
+| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `award_id`  | integer        | yes      | ID of the award emoji.                                                                                       |
 
-```bash
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
-Example Response:
+Example response:
 
 ```json
 {
@@ -269,24 +292,28 @@ Example Response:
 
 ### Award a new emoji on a note
 
-```
+Create an award emoji on the specified note.
+
+```text
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 ```
 
 Parameters:
 
-| Attribute   | Type    | Required | Description                           |
-| ---------   | ----    | -------- | -----------                           |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `issue_iid` | integer | yes      | The internal ID of an issue           |
-| `note_id`   | integer | yes      | The ID of a note                      |
-| `name`      | string  | yes      | The name of the emoji, without colons |
+| Attribute   | Type           | Required | Description                                                                                                  |
+|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
+| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `name`      | string         | yes      | Name of the emoji without colons.                                                                            |
 
-```bash
+Example request:
+
+```sh
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
-Example Response:
+Example response:
 
 ```json
 {
@@ -307,26 +334,28 @@ Example Response:
 }
 ```
 
-### Delete an award emoji
+### Delete an award emoji from a note
 
-Sometimes its just not meant to be, and you'll have to remove your award. Only available to
-admins or the author of the award.
+Sometimes it's just not meant to be and you'll have to remove the award.
 
-```
+NOTE: **Note:**
+Only available to administrators or the author of the award.
+
+```text
 DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 ```
 
 Parameters:
 
-| Attribute   | Type    | Required | Description                 |
-| ---------   | ----    | -------- | -----------                 |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
-| `issue_iid` | integer | yes      | The internal ID of an issue |
-| `note_id`   | integer | yes      | The ID of a note            |
-| `award_id`  | integer | yes      | The ID of an award_emoji    |
+| Attribute   | Type           | Required | Description                                                                                                  |
+|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
+| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `award_id`  | integer        | yes      | ID of an award_emoji.                                                                                        |
 
-```bash
+Example request:
+
+```sh
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345
 ```
-
-[ce-4575]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575
