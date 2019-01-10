@@ -1,12 +1,12 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlSkeletonLoading, GlEmptyState } from '@gitlab/ui';
 import ReleaseBlock from './release_block.vue';
 
 export default {
   name: 'ReleasesApp',
   components: {
-    GlLoadingIcon,
+    GlSkeletonLoading,
     GlEmptyState,
     ReleaseBlock,
   },
@@ -43,7 +43,7 @@ export default {
 </script>
 <template>
   <div class="prepend-top-default">
-    <gl-loading-icon v-if="isLoading" :size="2" class="js-loading prepend-top-20" />
+    <gl-skeleton-loading v-if="isLoading" class="js-loading" />
 
     <gl-empty-state
       v-else-if="shouldRenderEmptyState"

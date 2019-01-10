@@ -876,10 +876,7 @@ msgstr ""
 msgid "Available"
 msgstr ""
 
-msgid "Available group Runners : %{runners}"
-msgstr ""
-
-msgid "Available group Runners : %{runners}."
+msgid "Available group Runners: %{runners}"
 msgstr ""
 
 msgid "Available shared Runners:"
@@ -2957,6 +2954,9 @@ msgid "Error updating todo status."
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
+msgid "Errors"
 msgstr ""
 
 msgid "Estimated"
@@ -7200,7 +7200,7 @@ msgstr ""
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
-msgid "To preserve performance only <strong>%{display_size} of ${real_size}</strong> files are displayed."
+msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
 msgid "To start serving your jobs you can add Runners to your group"
@@ -7474,6 +7474,9 @@ msgid "UserProfile|Snippets"
 msgstr ""
 
 msgid "UserProfile|Subscribe"
+msgstr ""
+
+msgid "UserProfile|This user doesn't have any personal projects"
 msgstr ""
 
 msgid "UserProfile|This user has a private profile"
@@ -8045,9 +8048,6 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
-msgstr ""
-
-msgid "in"
 msgstr ""
 
 msgid "issue boards"

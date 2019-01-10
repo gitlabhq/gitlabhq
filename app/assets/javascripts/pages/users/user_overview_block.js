@@ -15,7 +15,8 @@ export default class UserOverviewBlock {
   }
 
   loadData() {
-    const loadingEl = document.querySelector(`${this.container} .loading`);
+    const containerEl = document.querySelector(this.container);
+    const loadingEl = containerEl.querySelector(`.loading`);
 
     loadingEl.classList.remove('hide');
 
@@ -42,7 +43,7 @@ export default class UserOverviewBlock {
       const nothingHereBlock = containerEl.querySelector('.nothing-here-block');
 
       if (nothingHereBlock) {
-        nothingHereBlock.classList.add('text-left', 'p-0');
+        nothingHereBlock.classList.add('p-5');
       }
     }
 

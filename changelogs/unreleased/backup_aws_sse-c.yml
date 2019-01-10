@@ -1,0 +1,5 @@
+title: Add support for customer provided encryption keys for Amazon S3 remote backups
+merge_request: 23797
+author: Pepijn Van Eeckhoudt
+type: added
+
