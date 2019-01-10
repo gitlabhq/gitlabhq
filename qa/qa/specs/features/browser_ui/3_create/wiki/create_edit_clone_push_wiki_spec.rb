@@ -17,7 +17,8 @@ module QA
         login
       end
 
-      it 'user creates, edits, clones, and pushes to the wiki' do
+      # Failure reported: https://gitlab.com/gitlab-org/quality/nightly/issues/24
+      it 'user creates, edits, clones, and pushes to the wiki', :quarantine do
         wiki = Resource::Wiki.fabricate! do |resource|
           resource.title = 'Home'
           resource.content = '# My First Wiki Content'
