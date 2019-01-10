@@ -117,6 +117,16 @@ describe Ci::Build do
       it 'returns the job' do
         is_expected.to include(job)
       end
+
+      context 'when ci_enable_legacy_artifacts feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_enable_legacy_artifacts: false)
+        end
+
+        it 'does not return the job' do
+          is_expected.not_to include(job)
+        end
+      end
     end
 
     context 'when job has a job artifact archive' do
@@ -471,6 +481,14 @@ describe Ci::Build do
         let(:build) { create(:ci_build, :legacy_artifacts) }
 
         it { is_expected.to be_truthy }
+
+        context 'when ci_enable_legacy_artifacts feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_enable_legacy_artifacts: false)
+          end
+
+          it { is_expected.to be_falsy }
+        end
       end
     end
   end

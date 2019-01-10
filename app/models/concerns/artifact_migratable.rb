@@ -13,7 +13,7 @@ module ArtifactMigratable
   end
 
   def artifacts?
-    !artifacts_expired? && artifacts_file.exists?
+    !artifacts_expired? && artifacts_file&.exists?
   end
 
   def artifacts_metadata?
@@ -42,5 +42,17 @@ module ArtifactMigratable
 
   def artifacts_size
     read_attribute(:artifacts_size).to_i + job_artifacts.sum(:size).to_i
+  end
+
+  def legacy_artifacts_file
+    return unless Feature.enabled?(:ci_enable_legacy_artifacts)
+
+    super
+  end
+
+  def legacy_artifacts_metadata
+    return unless Feature.enabled?(:ci_enable_legacy_artifacts)
+
+    super
   end
 end
