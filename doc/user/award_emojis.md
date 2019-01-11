@@ -1,7 +1,7 @@
 # Award emoji
 
 > - First [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1825) in GitLab 8.2.
-> - GitLab 9.0 [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9570) the usage of native emojis if the platform
+> - GitLab 9.0 [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9570) the usage of native emoji if the platform
 >  supports them and falls back to images or CSS sprites. This change greatly
 >  improved award emoji performance overall.
 
