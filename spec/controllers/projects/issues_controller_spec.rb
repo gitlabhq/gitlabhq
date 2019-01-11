@@ -1086,9 +1086,9 @@ describe Projects::IssuesController do
     end
 
     def import_csv
-      post :import_csv, namespace_id: project.namespace.to_param,
-                        project_id: project.to_param,
-                        file: file
+      post :import_csv, params: { namespace_id: project.namespace.to_param,
+                                  project_id: project.to_param,
+                                  file: file }
     end
   end
 
