@@ -1,0 +1,7 @@
+
+- if merge_request.merged?
+  = sprite_icon('merge', size: 16, css_class: "merge-request-status merged #{css_class}")
+- elsif merge_request.closed?
+  = sprite_icon('issue-close', size: 16, css_class: "merge-request-status closed #{css_class}")
+- else
+  = sprite_icon('issue-open-m', size: 16, css_class: "merge-request-status open #{css_class}")
