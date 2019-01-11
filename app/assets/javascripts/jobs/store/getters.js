@@ -1,8 +1,6 @@
 import _ from 'underscore';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
-export const headerActions = () => [];
-
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
 
 export const shouldRenderCalloutMessage = state =>

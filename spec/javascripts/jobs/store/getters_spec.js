@@ -8,22 +8,6 @@ describe('Job Store Getters', () => {
     localState = state();
   });
 
-  describe('headerActions', () => {
-    describe('with new issue path', () => {
-      it('returns an empty array with no actions', () => {
-        localState.job.new_issue_path = 'issues/new';
-
-        expect(getters.headerActions(localState)).toEqual([]);
-      });
-    });
-
-    describe('without new issue path', () => {
-      it('returns an empty array', () => {
-        expect(getters.headerActions(localState)).toEqual([]);
-      });
-    });
-  });
-
   describe('headerTime', () => {
     describe('when the job has started key', () => {
       it('returns started key', () => {
