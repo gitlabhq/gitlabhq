@@ -4,18 +4,17 @@
 
 An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
-Emojis can be awarded on the following (known as "awardables"):
+Emoji can be awarded on the following (known as "awardables"):
 
 - [Issues](../user/project/issues/index.md)
 - [Merge requests](../user/project/merge_requests/index.md)
 - [Snippets](../user/snippets.md)
-- Notes
 
-Emojis can also [be awarded](../user/award_emojis.html#award-emoji-for-comments) on comments.
+Emoji can also [be awarded](../user/award_emojis.html#award-emoji-for-comments) on comments (also known as notes).
 
 ## Issues, merge requests, and snippets
 
-See [Award Emoji on Notes](#award-emoji-on-notes) for information on using these endpoints with notes.
+See [Award Emoji on Comments](#award-emoji-on-comments) for information on using these endpoints with comments.
 
 ### List an awardable's award emoji
 
@@ -192,18 +191,17 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
 ```
 
-## Award Emoji on Notes
+## Award Emoji on Comments
 
-Notes are a sub-resource of issues, merge requests, and snippets. The endpoints documented above
-are available for notes as well.
+Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
 NOTE: **Note:**
-The examples below describe working with award emoji on notes for an issue, but can be
-easily adapted for notes on a merge request.
+The examples below describe working with award emoji on comments for an issue, but can be
+easily adapted for comments on a merge request.
 
-### List a note's award emojis
+### List a comment's award emoji
 
-Get all award emojis for a note.
+Get all award emoji for a comment (note).
 
 ```text
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -215,7 +213,7 @@ Parameters:
 |:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
 
 Example request:
 
@@ -246,9 +244,9 @@ Example response:
 ]
 ```
 
-### Get an award emoji for a note
+### Get an award emoji for a comment
 
-Get a single award emoji for a note.
+Get a single award emoji for a comment (note).
 
 ```text
 GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
@@ -260,7 +258,7 @@ Parameters:
 |:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
 | `award_id`  | integer        | yes      | ID of the award emoji.                                                                                       |
 
 Example request:
@@ -290,9 +288,9 @@ Example response:
 }
 ```
 
-### Award a new emoji on a note
+### Award a new emoji on a comment
 
-Create an award emoji on the specified note.
+Create an award emoji on the specified comment (note).
 
 ```text
 POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
@@ -304,7 +302,7 @@ Parameters:
 |:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
 | `name`      | string         | yes      | Name of the emoji without colons.                                                                            |
 
 Example request:
@@ -334,7 +332,7 @@ Example response:
 }
 ```
 
-### Delete an award emoji from a note
+### Delete an award emoji from a comment
 
 Sometimes it's just not meant to be and you'll have to remove the award.
 
@@ -351,7 +349,7 @@ Parameters:
 |:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
 | `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a note.                                                                                                |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
 | `award_id`  | integer        | yes      | ID of an award_emoji.                                                                                        |
 
 Example request:
