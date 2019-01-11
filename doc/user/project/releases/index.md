@@ -12,7 +12,7 @@ GitLab's **Releases** are a way to track deliverables in your project. Consider 
 a snapshot in time of the source, build output, and other metadata or artifacts
 associated with a released version of your code.
 
-At the moment, you can create Release entries via the [Releases API](../../../api/releases.md);
+At the moment, you can create Release entries via the [Releases API](../../../api/releases/index.md);
 we recommend doing this as one of the last steps in your CI/CD release pipeline.
 
 ## Getting started with Releases
@@ -50,6 +50,9 @@ archived source code from the given Git tag. These are read-only assets.
 A link is any URL which can point to whatever you like; documentation, built
 binaries, or other related materials. These can be both internal or external
 links from your GitLab instance.
+
+NOTE: **NOTE**
+You can manipulate links of each release entry with [Release Links API](../../../api/releases/links.md)
 
 ## Releases list
 
