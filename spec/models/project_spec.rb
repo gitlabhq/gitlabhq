@@ -1413,6 +1413,24 @@ describe Project do
     end
   end
 
+  describe '#visibility_level' do
+    let(:project) { build(:project) }
+
+    subject { project.visibility_level }
+
+    context 'by default' do
+      it { is_expected.to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+
+    context 'when set to INTERNAL in application settings' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it { is_expected.to eq(Gitlab::VisibilityLevel::INTERNAL) }
+    end
+  end
+
   describe '#visibility_level_allowed?' do
     let(:project) { create(:project, :internal) }
 
