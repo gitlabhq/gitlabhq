@@ -149,6 +149,18 @@ class IssuableFinder
       end
   end
 
+  def related_groups
+    if project? && project && project.group && Ability.allowed?(current_user, :read_group, project.group)
+      project.group.self_and_ancestors
+    elsif group
+      [group]
+    elsif current_user
+      Gitlab::ObjectHierarchy.new(current_user.authorized_groups, current_user.groups).all_objects
+    else
+      []
+    end
+  end
+
   def project?
     params[:project_id].present?
   end
@@ -163,8 +175,10 @@ class IssuableFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def projects(items = nil)
-    return @projects = project if project?
+  def projects
+    return @projects if defined?(@projects)
+
+    return @projects = [project] if project?
 
     projects =
       if current_user && params[:authorized_only].presence && !current_user_related?
@@ -459,7 +473,7 @@ class IssuableFinder
       elsif filter_by_any_milestone?
         items = items.any_milestone
       elsif filter_by_upcoming_milestone?
-        upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
+        upcoming_ids = Milestone.upcoming_ids(projects, related_groups)
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
       elsif filter_by_started_milestone?
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
