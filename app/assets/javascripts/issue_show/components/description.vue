@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import createFlash from '~/flash';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -89,7 +90,7 @@ export default {
     },
 
     taskListUpdateError(data) {
-      // stub for error handling
+      createFlash(data.errors[0]);
     },
 
     updateTaskStatusText() {
