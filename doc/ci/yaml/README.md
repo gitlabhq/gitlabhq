@@ -57,6 +57,7 @@ A job is defined by a list of parameters that define the job behavior.
 |---------------|----------|-------------|
 | [script](#script)                                | yes      | Defines a shell script which is executed by Runner |
 | [extends](#extends)                              | no       | Defines a configuration entry that this job is going to inherit from |
+| [include](#include)                              | no       | Defines a configuration entry that allows this job to include external YAML files |
 | [image](#image-and-services)                     | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | [services](#image-and-services)                  | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | [stage](#stage)                                  | no       | Defines a job stage (default: `test`) |

@@ -14,6 +14,9 @@ class EmojiChecker
   DIGESTS = File.expand_path('../../fixtures/emojis/digests.json', __dir__)
   ALIASES = File.expand_path('../../fixtures/emojis/aliases.json', __dir__)
 
+  URL_LIMIT_SUBJECT = "https://chris.beams.io/posts/git-commit/#limit-50"
+  URL_GIT_COMMIT = "https://chris.beams.io/posts/git-commit/"
+
   # A regex that indicates a piece of text _might_ include an Emoji. The regex
   # alone is not enough, as we'd match `:foo:bar:baz`. Instead, we use this
   # regex to save us from having to check for all possible emoji names when we
@@ -101,10 +104,7 @@ def lint_commits(commits)
     elsif subject.length > 50
       warn_commit(
         commit,
-        "This commit's subject line could be improved. " \
-          'Commit subjects are ideally no longer than roughly 50 characters, ' \
-          'though we allow up to 72 characters in the subject. ' \
-          'If possible, try to reduce the length of the subject to roughly 50 characters.'
+        "This commit's subject line is acceptable, but please try to [reduce it to 50 characters](#{URL_LIMIT_SUBJECT})."
       )
     end
 
@@ -196,7 +196,7 @@ def lint_commits(commits)
 
       One or more commit messages do not meet our Git commit message standards.
       For more information on how to write a good commit message, take a look at
-      [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/).
+      [How to Write a Git Commit Message](#{URL_GIT_COMMIT}).
 
       Here is an example of a good commit message:
 

@@ -20,6 +20,10 @@ describe('OAuthRememberMe', () => {
     expect($('#oauth-container .oauth-login.github').attr('href')).toBe(
       'http://example.com/?remember_me=1',
     );
+
+    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
+      'http://example.com/?redirect_fragment=L1&remember_me=1',
+    );
   });
 
   it('removes the "remember_me" query parameter from all OAuth login buttons', () => {
@@ -28,5 +32,8 @@ describe('OAuthRememberMe', () => {
 
     expect($('#oauth-container .oauth-login.twitter').attr('href')).toBe('http://example.com/');
     expect($('#oauth-container .oauth-login.github').attr('href')).toBe('http://example.com/');
+    expect($('#oauth-container .oauth-login.facebook').attr('href')).toBe(
+      'http://example.com/?redirect_fragment=L1',
+    );
   });
 });

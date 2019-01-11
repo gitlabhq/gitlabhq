@@ -50,8 +50,11 @@ export default {
             <div class="table-section section-20" role="rowheader">
               {{ s__('Serverless|Function') }}
             </div>
-            <div class="table-section section-50" role="rowheader">
-              {{ s__('Serverless|Domain') }}
+            <div class="table-section section-10" role="rowheader">
+              {{ s__('Serverless|Cluster Env') }}
+            </div>
+            <div class="table-section section-40" role="rowheader">
+              {{ s__('Serverless|Description') }}
             </div>
             <div class="table-section section-20" role="rowheader">
               {{ s__('Serverless|Runtime') }}

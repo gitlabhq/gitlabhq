@@ -219,7 +219,7 @@
       color: $gl-text-color-secondary;
     }
 
-    .project-tag-list {
+    .project-topic-list {
       font-size: $gl-font-size;
       font-weight: $gl-font-weight-normal;
 
@@ -251,7 +251,7 @@
         line-height: $gl-font-size-large;
       }
 
-      .project-tag-list,
+      .project-topic-list,
       .project-metadata {
         font-size: $gl-font-size-small;
       }
@@ -273,7 +273,7 @@
     }
 
     .access-request-link,
-    .project-tag-list {
+    .project-topic-list {
       padding-left: $gl-padding-8;
       border-left: 1px solid $gl-text-color-secondary;
     }

@@ -3,8 +3,8 @@ import { MarkdownCell, CodeCell } from './cells';
 
 export default {
   components: {
-    'code-cell': CodeCell,
-    'markdown-cell': MarkdownCell,
+    CodeCell,
+    MarkdownCell,
   },
   props: {
     notebook: {

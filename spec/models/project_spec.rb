@@ -1413,6 +1413,24 @@ describe Project do
     end
   end
 
+  describe '#visibility_level' do
+    let(:project) { build(:project) }
+
+    subject { project.visibility_level }
+
+    context 'by default' do
+      it { is_expected.to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+
+    context 'when set to INTERNAL in application settings' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it { is_expected.to eq(Gitlab::VisibilityLevel::INTERNAL) }
+    end
+  end
+
   describe '#visibility_level_allowed?' do
     let(:project) { create(:project, :internal) }
 
@@ -2023,29 +2041,6 @@ describe Project do
         expect { project.latest_successful_build_for!(pending_build.name) }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
-    end
-  end
-
-  describe '#get_build' do
-    let(:project) { create(:project, :repository) }
-    let(:ci_pipeline) { create(:ci_pipeline, project: project) }
-
-    context 'when build exists' do
-      context 'build is associated with project' do
-        let(:build) { create(:ci_build, :success, pipeline: ci_pipeline) }
-
-        it { expect(project.get_build(build.id)).to eq(build) }
-      end
-
-      context 'build is not associated with project' do
-        let(:build) { create(:ci_build, :success) }
-
-        it { expect(project.get_build(build.id)).to be_nil }
-      end
-    end
-
-    context 'build does not exists' do
-      it { expect(project.get_build(rand 100)).to be_nil }
     end
   end
 
@@ -4422,6 +4417,17 @@ describe Project do
 
         it { is_expected.to be_git_objects_poolable }
       end
+    end
+  end
+
+  describe '#leave_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { create(:project, :repository, pool_repository: pool) }
+
+    it 'removes the membership' do
+      project.leave_pool_repository
+
+      expect(pool.member_projects.reload).not_to include(project)
     end
   end
 

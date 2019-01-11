@@ -6,8 +6,11 @@ module QA
   module Resource
     class User < Base
       attr_reader :unique_id
-      attr_writer :username, :password, :name, :email
+      attr_writer :username, :password
       attr_accessor :provider, :extern_uid
+
+      attribute :name
+      attribute :email
 
       def initialize
         @unique_id = SecureRandom.hex(8)
@@ -22,11 +25,11 @@ module QA
       end
 
       def name
-        @name ||= username
+        @name ||= api_resource&.dig(:name) || username
       end
 
       def email
-        @email ||= "#{username}@example.com"
+        @email ||= api_resource&.dig(:email) || "#{username}@example.com"
       end
 
       def credentials_given?

@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
   delegate :no_import?, to: :import_state, allow_nil: true
 
   default_value_for :archived, false
-  default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_project_visibility }
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { Gitlab::CurrentSettings.pick_repository_storage }
@@ -656,10 +656,6 @@ class Project < ActiveRecord::Base
 
   def latest_successful_build_for!(job_name, ref = default_branch)
     latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
-  end
-
-  def get_build(id)
-    builds.find_by(id: id)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -2040,7 +2036,7 @@ class Project < ActiveRecord::Base
   end
 
   def leave_pool_repository
-    pool_repository&.unlink_repository(repository)
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
   end
 
   private

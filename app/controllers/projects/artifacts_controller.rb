@@ -86,7 +86,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build_from_id
-    project.get_build(params[:job_id]) if params[:job_id]
+    project.builds.find_by_id(params[:job_id]) if params[:job_id]
   end
 
   def build_from_ref

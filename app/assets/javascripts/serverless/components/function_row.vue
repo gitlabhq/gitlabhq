@@ -15,8 +15,14 @@ export default {
     name() {
       return this.func.name;
     },
-    url() {
-      return this.func.url;
+    description() {
+      return this.func.description;
+    },
+    detailUrl() {
+      return this.func.detail_url;
+    },
+    environment() {
+      return this.func.environment_scope;
     },
     image() {
       return this.func.image;
@@ -30,11 +36,20 @@ export default {
 
 <template>
   <div class="gl-responsive-table-row">
-    <div class="table-section section-20">{{ name }}</div>
-    <div class="table-section section-50">
-      <a :href="url">{{ url }}</a>
+    <div class="table-section section-20 section-wrap">
+      <a :href="detailUrl">{{ name }}</a>
+    </div>
+    <div class="table-section section-10">{{ environment }}</div>
+    <div class="table-section section-40 section-wrap">
+      <span class="line-break">{{ description }}</span>
     </div>
     <div class="table-section section-20">{{ image }}</div>
     <div class="table-section section-10"><timeago :time="timestamp" /></div>
   </div>
 </template>
+
+<style>
+.line-break {
+  white-space: pre;
+}
+</style>
