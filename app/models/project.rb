@@ -1602,24 +1602,7 @@ class Project < ActiveRecord::Base
 
   # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
-    return unless default_branch
-
-    # Ensure HEAD points to the default branch in case it is not master
-    change_head(default_branch)
-
-    if Gitlab::CurrentSettings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
-      params = {
-        name: default_branch,
-        push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }],
-        merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }]
-      }
-
-      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
-    end
+    Projects::ProtectDefaultBranchService.new(self).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 
