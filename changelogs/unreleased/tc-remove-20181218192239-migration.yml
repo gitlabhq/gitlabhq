@@ -1,0 +1,5 @@
+---
+title: Remove migration to backfill project_repositories for legacy storage projects
+merge_request: 24299
+author:
+type: removed

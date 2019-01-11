@@ -166,12 +166,13 @@ describe API::Repositories do
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
+        expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
 
-      it 'forces attachment content disposition' do
+      it 'sets inline content disposition by default' do
         get api(route, current_user)
 
-        expect(headers['Content-Disposition']).to eq 'attachment'
+        expect(headers['Content-Disposition']).to eq 'inline'
       end
 
       context 'when sha does not exist' do

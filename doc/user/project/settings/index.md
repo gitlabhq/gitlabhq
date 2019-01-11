@@ -14,7 +14,7 @@ functionality of a project.
 
 ### General project settings
 
-Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
+Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and topics:
 
 ![general project settings](img/general_settings.png)
 
@@ -122,3 +122,9 @@ GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
 [permissions]: ../../permissions.md##project-members-permissions
+
+## Operations settings
+
+### Error Tracking
+
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).

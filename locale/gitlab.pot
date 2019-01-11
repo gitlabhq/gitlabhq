@@ -6060,13 +6060,31 @@ msgstr ""
 msgid "Serverless"
 msgstr ""
 
+msgid "ServerlessDetails|Copy URL to clipboard"
+msgstr ""
+
+msgid "ServerlessDetails|Kubernetes Pods"
+msgstr ""
+
+msgid "ServerlessDetails|Number of Kubernetes pods in use over time based on necessity."
+msgstr ""
+
+msgid "ServerlessDetails|pod in use"
+msgstr ""
+
+msgid "ServerlessDetails|pods in use"
+msgstr ""
+
 msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
 msgstr ""
 
 msgid "Serverless|An error occurred while retrieving serverless components"
 msgstr ""
 
-msgid "Serverless|Domain"
+msgid "Serverless|Cluster Env"
+msgstr ""
+
+msgid "Serverless|Description"
 msgstr ""
 
 msgid "Serverless|Function"
@@ -6764,10 +6782,22 @@ msgstr ""
 msgid "There are no archived projects yet"
 msgstr ""
 
+msgid "There are no closed issues"
+msgstr ""
+
+msgid "There are no closed merge requests"
+msgstr ""
+
 msgid "There are no issues to show"
 msgstr ""
 
 msgid "There are no labels yet"
+msgstr ""
+
+msgid "There are no open issues"
+msgstr ""
+
+msgid "There are no open merge requests"
 msgstr ""
 
 msgid "There are no projects shared with this group yet"
@@ -7192,6 +7222,12 @@ msgid "To import GitHub repositories, you first need to authorize GitLab to acce
 msgstr ""
 
 msgid "To import an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To keep this project going, create a new issue"
+msgstr ""
+
+msgid "To keep this project going, create a new merge request"
 msgstr ""
 
 msgid "To link Sentry to GitLab, enter your Sentry URL and Auth Token."

@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
+import { getLocationHash } from '../../lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
@@ -44,28 +45,46 @@ export default {
       eventHub.$on('MergeRequestTabChange', this.toggleFilters);
       this.toggleFilters(currentTab);
     }
+
+    window.addEventListener('hashchange', this.handleLocationHash);
+    this.handleLocationHash();
   },
   mounted() {
     this.toggleCommentsForm();
   },
+  destroyed() {
+    window.removeEventListener('hashchange', this.handleLocationHash);
+  },
   methods: {
-    ...mapActions(['filterDiscussion', 'setCommentsDisabled']),
+    ...mapActions(['filterDiscussion', 'setCommentsDisabled', 'setTargetNoteHash']),
     selectFilter(value) {
       const filter = parseInt(value, 10);
 
       // close dropdown
-      $(this.$refs.dropdownToggle).dropdown('toggle');
+      this.toggleDropdown();
 
       if (filter === this.currentValue) return;
       this.currentValue = filter;
       this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter });
       this.toggleCommentsForm();
     },
+    toggleDropdown() {
+      $(this.$refs.dropdownToggle).dropdown('toggle');
+    },
     toggleCommentsForm() {
       this.setCommentsDisabled(this.currentValue === HISTORY_ONLY_FILTER_VALUE);
     },
     toggleFilters(tab) {
       this.displayFilters = tab === DISCUSSION_TAB_LABEL;
+    },
+    handleLocationHash() {
+      const hash = getLocationHash();
+
+      if (/^note_/.test(hash) && this.currentValue !== DISCUSSION_FILTERS_DEFAULT_VALUE) {
+        this.selectFilter(this.defaultValue);
+        this.toggleDropdown(); // close dropdown
+        this.setTargetNoteHash(hash);
+      }
     },
   },
 };

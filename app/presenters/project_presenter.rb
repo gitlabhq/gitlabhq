@@ -13,7 +13,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   presents :project
 
   AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon)
-  MAX_TAGS_TO_SHOW = 3
+  MAX_TOPICS_TO_SHOW = 3
 
   def statistic_icon(icon_name = 'plus-square-o')
     sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
@@ -310,20 +310,20 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def tags_to_show
-    project.tag_list.take(MAX_TAGS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+  def topics_to_show
+    project.tag_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
 
-  def count_of_extra_tags_not_shown
-    if project.tag_list.count > MAX_TAGS_TO_SHOW
-      project.tag_list.count - MAX_TAGS_TO_SHOW
+  def count_of_extra_topics_not_shown
+    if project.tag_list.count > MAX_TOPICS_TO_SHOW
+      project.tag_list.count - MAX_TOPICS_TO_SHOW
     else
       0
     end
   end
 
-  def has_extra_tags?
-    count_of_extra_tags_not_shown > 0
+  def has_extra_topics?
+    count_of_extra_topics_not_shown > 0
   end
 
   private
