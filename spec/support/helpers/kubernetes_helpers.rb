@@ -20,6 +20,13 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1').to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
   end
 
+  def stub_kubeclient_service_pods(response = nil)
+    stub_kubeclient_discover(service.api_url)
+    pods_url = service.api_url + "/api/v1/pods"
+
+    WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
+  end
+
   def stub_kubeclient_pods(response = nil)
     stub_kubeclient_discover(service.api_url)
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
@@ -212,6 +219,13 @@ module KubernetesHelpers
     }
   end
 
+  def kube_knative_pods_body(name, namespace)
+    {
+      "kind" => "PodList",
+      "items" => [kube_knative_pod(name: name, namespace: namespace)]
+    }
+  end
+
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
@@ -230,6 +244,28 @@ module KubernetesHelpers
         "labels" => {
           "app" => app,
           "track" => track
+        }
+      },
+      "spec" => {
+        "containers" => [
+          { "name" => "container-0" },
+          { "name" => "container-1" }
+        ]
+      },
+      "status" => { "phase" => status }
+    }
+  end
+
+  # Similar to a kube_pod, but should contain a running service
+  def kube_knative_pod(name: "kube-pod", namespace: "default", status: "Running")
+    {
+      "metadata" => {
+        "name" => name,
+        "namespace" => namespace,
+        "generate_name" => "generated-name-with-suffix",
+        "creationTimestamp" => "2016-11-25T19:55:19Z",
+        "labels" => {
+          "serving.knative.dev/service" => name
         }
       },
       "spec" => {
@@ -265,10 +301,10 @@ module KubernetesHelpers
   def kube_service(name: "kubetest", namespace: "default", domain: "example.com")
     {
       "metadata" => {
-          "creationTimestamp" => "2018-11-21T06:16:33Z",
-          "name" => name,
-          "namespace" => namespace,
-          "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
+        "creationTimestamp" => "2018-11-21T06:16:33Z",
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
       },
       "spec" => {
         "generation" => 2
