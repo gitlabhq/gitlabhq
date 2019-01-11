@@ -50,7 +50,7 @@ export default {
       :help-page-path="helpPagePath"
       @apply="applySuggestion"
     />
-    <table class="mb-3 md-suggestion-diff">
+    <table class="mb-3 md-suggestion-diff js-syntax-highlight code">
       <tbody>
         <!-- Old Line -->
         <tr class="line_holder old">

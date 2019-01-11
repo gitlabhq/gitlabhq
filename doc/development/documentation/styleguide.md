@@ -15,7 +15,7 @@ For programmatic help adhering to the guidelines, see [linting](index.md#linting
 ## Files
 
 - [Directory structure](index.md#location-and-naming-documents): place the docs
-in the correct location.
+  in the correct location.
 - [Documentation files](index.md#documentation-files): name the files accordingly.
 
 DANGER: **Attention:**
@@ -29,7 +29,7 @@ a test that will fail if it spots a new `README.md` file.
 ### Markdown
 
 The [documentation website](https://docs.gitlab.com) had its markdown engine migrated from [Redcarpet to GitLab Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
-in October, 2018.
+in October 2018.
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
 gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
@@ -45,38 +45,38 @@ yield a useful result, and ensuring content is helpful and easy to consume.
 
 - What to include:
   - Any and all helpful information, processes, and tips for implementing,
-using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
-for this information.
+  using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
+  for this information.
   - 'Risky' or niche problem-solving steps. There is no reason to withhold these or
-store them elsewhere; simply include them along with the rest of the docs including all necessary
-detail, such as specific warnings and caveats about potential ramifications.
+  store them elsewhere; simply include them along with the rest of the docs including all necessary
+  detail, such as specific warnings and caveats about potential ramifications.
   - Any content types/sources, if relevant to users or admins. You can freely
-include presentations, videos, etc.; no matter who it was originally written for,
-if it is helpful to any of our audiences, we can include it. If an outside source
-that's under copyright, rephrase, or summarize and link out; do not copy and paste.
+  include presentations, videos, etc.; no matter who it was originally written for,
+  if it is helpful to any of our audiences, we can include it. If an outside source
+  that's under copyright, rephrase, or summarize and link out; do not copy and paste.
   - All applicable subsections as described on the [structure and template](structure.md) page,
-with files organized in the [correct directory](index.md#documentation-directory-structure).
+  with files organized in the [correct directory](index.md#documentation-directory-structure).
 - To ensure discoverability, link to each doc from its higher-level index page and other related pages.
 - When referencing other GitLab products and features, link to their
   respective docs; when referencing third-party products or technologies,
   link out to their external sites, documentation, and resources.
 - Do not duplicate information.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
-a logical reason not to (for example, when mirroring the UI or an ordered sequence).
+  a logical reason not to (for example, when mirroring the UI or an ordered sequence).
 
 ## Language
 
 - Use inclusive language and avoid jargon, as well as uncommon
-words. The docs should be clear and easy to understand.
+  words. The docs should be clear and easy to understand.
 - Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
 - Be clear, concise, and stick to the goal of the doc.
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
-[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
-Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
-(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-some features are also objects (e.g. "GitLab's Merge Requests support X." and "Create a new merge request for Z.").
+  [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+  Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+  (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+  some features are also objects (e.g. "GitLab's Merge Requests support X." and "Create a new merge request for Z.").
 
 ## Text
 
@@ -127,9 +127,9 @@ Check specific punctuation rules for [list items](#list-items) below.
 
 **Markup:**
 
-- Use dashes (`- `) for unordered lists instead of asterisks (`* `).
+- Use dashes (`-`) for unordered lists instead of asterisks (`*`).
 - Use the number one (`1`) for each item in an ordered list.
-When rendered, the list items will appear with sequential numbering.
+  When rendered, the list items will appear with sequential numbering.
 
 **Punctuation:**
 
@@ -226,12 +226,11 @@ For other punctuation rules, please refer to the
 
 To indicate the steps of navigation through the UI:
 
-
 - Use the exact word as shown in the UI, including any capital letters as-is.
 - Use bold text for navigation items and the char "greater than" (`>`) as separator
-(e.g., `Navigate to your project's **Settings > CI/CD**` ).
+  (e.g., `Navigate to your project's **Settings > CI/CD**` ).
 - If there are any expandable menus, make sure to mention that the user
-needs to expand the tab to find the settings you're referring to (e.g., `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
+  needs to expand the tab to find the settings you're referring to (e.g., `Navigate to your project's **Settings > CI/CD** and expand **General pipelines**`).
 
 ## Images
 
@@ -246,7 +245,7 @@ needs to expand the tab to find the settings you're referring to (e.g., `Navigat
 - Compress all images with <https://tinypng.com/> or similar tool.
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
-of a process, not to _replace_ it.
+  of a process, not to _replace_ it.
 - Max image size: 100KB (gifs included).
 - The GitLab docs do not support videos yet.
 
@@ -266,12 +265,12 @@ Inside the document:
 ## Code blocks
 
 - Always wrap code added to a sentence in inline code blocks (``` ` ```).
-E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: master`.
-File names, commands, entries, and anything that refers to code should be added to code blocks.
-To make things easier for the user, always add a full code block for things that can be
-useful to copy and paste, as they can easily do it with the button on code blocks.
+  E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: master`.
+  File names, commands, entries, and anything that refers to code should be added to code blocks.
+  To make things easier for the user, always add a full code block for things that can be
+  useful to copy and paste, as they can easily do it with the button on code blocks.
 - For regular code blocks, always use a highlighting class corresponding to the
-language for better readability. Examples:
+  language for better readability. Examples:
 
       ```md
        ```ruby
@@ -592,12 +591,12 @@ on this document. Further explanation is given below.
 
 The following can be used as a template to get started:
 
-```md
+````md
 ## Descriptive title
 
 One or two sentence description of what endpoint does.
 
-```
+```text
 METHOD /endpoint
 ```
 
@@ -609,7 +608,7 @@ METHOD /endpoint
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/endpoint?parameters'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/endpoint?parameters'
 ```
 
 Example response:
@@ -620,8 +619,7 @@ Example response:
   }
 ]
 ```
-
-```
+````
 
 ### Fake tokens
 

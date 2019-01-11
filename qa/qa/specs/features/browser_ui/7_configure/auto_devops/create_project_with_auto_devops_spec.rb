@@ -98,6 +98,17 @@ module QA
               resource.value = 'You can see this application secret'
             end
 
+            # Our current Auto DevOps implementation won't update the production
+            # app if we only update a CI variable with no code change.
+            #
+            # Workaround: push new code and use the resultant pipeline.
+            Resource::Repository::ProjectPush.fabricate! do |push|
+              push.project = @project
+              push.commit_message = 'Force a Deployment change by pushing new code'
+              push.file_name = 'new_file.txt'
+              push.file_content = 'new file contents'
+            end
+
             @project.visit!
             Page::Project::Menu.act { click_ci_cd_pipelines }
             Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
