@@ -2,6 +2,9 @@
 
 require 'json'
 
+URL_LIMIT_SUBJECT = "https://chris.beams.io/posts/git-commit/#limit-50"
+URL_GIT_COMMIT = "https://chris.beams.io/posts/git-commit/"
+
 # rubocop: disable Style/SignalException
 # rubocop: disable Metrics/CyclomaticComplexity
 # rubocop: disable Metrics/PerceivedComplexity
@@ -13,9 +16,6 @@ require 'json'
 class EmojiChecker
   DIGESTS = File.expand_path('../../fixtures/emojis/digests.json', __dir__)
   ALIASES = File.expand_path('../../fixtures/emojis/aliases.json', __dir__)
-
-  URL_LIMIT_SUBJECT = "https://chris.beams.io/posts/git-commit/#limit-50"
-  URL_GIT_COMMIT = "https://chris.beams.io/posts/git-commit/"
 
   # A regex that indicates a piece of text _might_ include an Emoji. The regex
   # alone is not enough, as we'd match `:foo:bar:baz`. Instead, we use this
