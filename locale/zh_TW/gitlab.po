@@ -9201,10 +9201,10 @@ msgstr "您需要 git-lfs 版本 %{min_git_lfs_version} (或更高版本) 才能
 msgid "You need permission."
 msgstr "需要權限才能這麼做。"
 
-msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgid "You will lose all changes you've made to this file. This action cannot be undone."
 msgstr ""
 
-msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
+msgid "You will lose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will not get any notifications via email"

@@ -9345,10 +9345,10 @@ msgstr "Вам потрібна версія git-lfs версії %{min_git_lfs_
 msgid "You need permission."
 msgstr "Вам потрібен дозвіл"
 
-msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgid "You will lose all changes you've made to this file. This action cannot be undone."
 msgstr "Ви втратите всі зміни, внесені вами в цей файл. Цю дію не можна скасувати."
 
-msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
+msgid "You will lose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr "Ви втратите всі неіндексовані зміни, внесені вами в цей проект. Цю дію не можна скасувати."
 
 msgid "You will not get any notifications via email"
