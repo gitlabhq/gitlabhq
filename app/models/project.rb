@@ -658,10 +658,6 @@ class Project < ActiveRecord::Base
     latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
   end
 
-  def get_build(id)
-    builds.find_by(id: id)
-  end
-
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     commit_by(oid: sha) if sha
