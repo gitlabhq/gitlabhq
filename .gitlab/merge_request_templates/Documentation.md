@@ -1,33 +1,34 @@
-<!--See the general documentation guidelines https://docs.gitlab.com/ee/development/documentation -->
+<!-- Follow the documentation workflow https://docs.gitlab.com/ee/development/documentation/workflow.html -->
+<!-- Additional information is located at https://docs.gitlab.com/ee/development/documentation/ --> 
 
 <!-- Mention "documentation" or "docs" in the MR title -->
-
-<!-- Use this description template for new docs or updates to existing docs. For changing documentation location use the "Change documentation location" template -->
+<!-- For changing documentation location use the "Change documentation location" template -->
 
 ## What does this MR do?
 
-<!-- Briefly describe what this MR is about -->
+<!-- Briefly describe what this MR is about. -->
 
 ## Related issues
 
-<!-- Mention the issue(s) this MR closes or is related to -->
+<!-- Link related issues below. Insert the issue link or reference after "Closes" if merging this should automatically close it. -->
 
 Closes 
 
 ## Author's checklist
 
-- [ ] [Apply the correct labels and milestone](https://docs.gitlab.com/ee/development/documentation/workflow.html#2-developer-s-role-in-the-documentation-process)
-- [ ] Crosslink the document from the higher-level index
-- [ ] Crosslink the document from other subject-related docs
-- [ ] Feature moving tiers? Make sure the change is also reflected in [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
-- [ ] Correctly apply the product [badges](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) and [tiers](https://docs.gitlab.com/ee/development/documentation/styleguide.html#gitlab-versions-and-tiers)
-- [ ] [Port the MR to EE (or backport from CE)](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee): _always recommended, required when the `ee-compat-check` job fails_
+- [ ] Use the Style Guide, as needed. https://docs.gitlab.com/ee/development/documentation/styleguide.html
+- [ ] Link the document to and from the higher-level index page.
+- [ ] Link the document to and from other subject-related docs, as appropriate.
+- [ ] Apply the Documentation label and intended milestone, if known.
+- [ ] [Port the MR to EE (or backport from CE)](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee): _always recommended, required when the `ee-compat-check` job fails_.
 
 ## Review checklist
 
-- [ ] Your team's review (required)
-- [ ] PM's review (recommended, but not a blocker)
-- [ ] Technical writer's review (required)
-- [ ] Merge the EE-MR first, CE-MR afterwards
+- [ ] Optional review by a subject-matter expert, if the author has one in mind.
+- [ ] Review by MR assignee for clarity and GitLab style (required).
+- [ ] Technical writer review (optional). You can mention the writer listed for the applicable DevOps stage https://about.gitlab.com/handbook/product/categories/#devops-stages
+- [ ] If EE and CE MRs exist, merge the EE MR first, then the CE MR.
+- [ ] Merge.
+- [ ] Mention the the technical writer listed for the applicable DevOps stage if they have not already reviewed.
 
 /label ~Documentation
