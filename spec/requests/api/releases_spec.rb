@@ -83,18 +83,6 @@ describe API::Releases do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'cannot find the API' do
-        get api("/projects/#{project.id}/releases", maintainer)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'GET /projects/:id/releases/:tag_name' do
@@ -203,18 +191,6 @@ describe API::Releases do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'cannot find the API' do
-        get api("/projects/#{project.id}/releases/v0.1", maintainer)
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -458,18 +434,6 @@ describe API::Releases do
         expect(response).to have_gitlab_http_status(:conflict)
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'cannot find the API' do
-        post api("/projects/#{project.id}/releases", maintainer), params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'PUT /projects/:id/releases/:tag_name' do
@@ -565,19 +529,6 @@ describe API::Releases do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'cannot find the API' do
-        put api("/projects/#{project.id}/releases/v0.1", non_project_member),
-          params: params
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'DELETE /projects/:id/releases/:tag_name' do
@@ -646,18 +597,6 @@ describe API::Releases do
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'cannot find the API' do
-        delete api("/projects/#{project.id}/releases/v0.1", non_project_member)
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
