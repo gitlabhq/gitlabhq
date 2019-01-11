@@ -2040,7 +2040,7 @@ class Project < ActiveRecord::Base
   end
 
   def leave_pool_repository
-    pool_repository&.unlink_repository(repository)
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
   end
 
   private

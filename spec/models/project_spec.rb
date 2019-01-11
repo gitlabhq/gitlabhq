@@ -4443,6 +4443,17 @@ describe Project do
     end
   end
 
+  describe '#leave_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { create(:project, :repository, pool_repository: pool) }
+
+    it 'removes the membership' do
+      project.leave_pool_repository
+
+      expect(pool.member_projects.reload).not_to include(project)
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end
