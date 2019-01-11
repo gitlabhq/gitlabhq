@@ -32,10 +32,10 @@ describe ManualInverseAssociation do
           .not_to exceed_query_limit(0)
       end
 
-      it 'passes arguments to the default association method, to allow reloading' do
+      it 'allows reloading the relation' do
         query_count = ActiveRecord::QueryRecorder.new do
           instance.manual_association
-          instance.manual_association(true)
+          instance.reload_manual_association
         end.count
 
         expect(query_count).to eq(2)

@@ -199,7 +199,7 @@ describe GpgKey do
 
       gpg_key.revoke
 
-      expect(gpg_key.subkeys(true)).to be_blank
+      expect(gpg_key.subkeys.reload).to be_blank
     end
 
     it 'invalidates all signatures associated to the subkeys' do
