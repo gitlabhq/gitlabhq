@@ -138,10 +138,6 @@ describe QA::Resource::Base do
   describe '.attribute' do
     include_context 'simple resource'
 
-    it 'appends new attribute' do
-      expect(subject.attributes_names).to eq([:no_block, :test, :web_url])
-    end
-
     context 'when the attribute is populated via a block' do
       it 'returns value from the block' do
         result = subject.fabricate!(resource: resource)

@@ -39,11 +39,15 @@ module QA
       end
 
       it 'user views raw email patch' do
+        user = Resource::User.fabricate_via_api! do |user|
+          user.username = Runtime::User.username
+        end
+
         view_commit
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content('From: Administrator <admin@example.com>')
+        expect(page).to have_content("From: #{user.name} <#{user.email}>")
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end

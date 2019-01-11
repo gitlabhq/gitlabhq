@@ -76,4 +76,28 @@ describe('getStateKey', () => {
 
     expect(bound()).toEqual('archived');
   });
+
+  it('returns rebased state key', () => {
+    const context = {
+      mergeStatus: 'checked',
+      mergeWhenPipelineSucceeds: false,
+      canMerge: true,
+      onlyAllowMergeIfPipelineSucceeds: true,
+      isPipelineFailed: true,
+      hasMergeableDiscussionsState: false,
+      isPipelineBlocked: false,
+      canBeMerged: false,
+      shouldBeRebased: true,
+    };
+    const data = {
+      project_archived: false,
+      branch_missing: false,
+      commits_count: 2,
+      has_conflicts: false,
+      work_in_progress: false,
+    };
+    const bound = getStateKey.bind(context, data);
+
+    expect(bound()).toEqual('rebase');
+  });
 });

@@ -29,15 +29,34 @@ describe Projects::Serverless::FunctionsFinder do
 
     context 'has knative installed' do
       let!(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
+      let(:finder) { described_class.new(project.clusters) }
 
       it 'there are no functions' do
-        expect(described_class.new(project.clusters).execute).to be_empty
+        expect(finder.execute).to be_empty
       end
 
       it 'there are functions', :use_clean_rails_memory_store_caching do
-        stub_reactive_cache(knative, services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"])
+        stub_kubeclient_service_pods
+        stub_reactive_cache(knative,
+          {
+            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+          })
 
-        expect(described_class.new(project.clusters).execute).not_to be_empty
+        expect(finder.execute).not_to be_empty
+      end
+
+      it 'has a function', :use_clean_rails_memory_store_caching do
+        stub_kubeclient_service_pods
+        stub_reactive_cache(knative,
+          {
+            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+          })
+
+        result = finder.service(cluster.environment_scope, cluster.project.name)
+        expect(result).not_to be_empty
+        expect(result["metadata"]["name"]).to be_eql(cluster.project.name)
       end
     end
   end

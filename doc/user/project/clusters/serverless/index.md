@@ -167,8 +167,8 @@ appear under **Operations > Serverless**.
 
 ![serverless page](img/serverless-page.png)
 
-This page contains all functions available for the project, the URL for
-accessing the function, and if available, the function's runtime information.
+This page contains all functions available for the project, the description for
+accessing the function, and, if available, the function's runtime information.
 The details are derived from the Knative installation inside each of the project's
 Kubernetes cluster.
 
@@ -183,6 +183,12 @@ The sample function can now be triggered from any HTTP client using a simple `PO
 ![function exection](img/function-execution.png)
 
 Currently, the Serverless page presents all functions available in all clusters registered for the project with Knative installed.
+
+Clicking on the function name will provide additional details such as the
+function's URL as well as runtime statistics such as the number of active pods
+available to service the request based on load.
+
+![serverless function details](img/serverless-details.png)
 
 ## Deploying Serverless applications
 

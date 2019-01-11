@@ -370,7 +370,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               >
                 <button
                   :disabled="isSubmitButtonDisabled"
-                  class="btn btn-create comment-btn js-comment-button js-comment-submit-button
+                  class="btn btn-success js-comment-button js-comment-submit-button
                     qa-comment-button"
                   type="submit"
                   @click.prevent="handleSave();"
@@ -381,7 +381,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   :disabled="isSubmitButtonDisabled"
                   name="button"
                   type="button"
-                  class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
+                  class="btn btn-success note-type-toggle js-note-new-discussion dropdown-toggle qa-note-dropdown"
                   data-display="static"
                   data-toggle="dropdown"
                   aria-label="Open comment type dropdown"

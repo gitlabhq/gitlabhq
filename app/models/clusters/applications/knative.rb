@@ -41,6 +41,8 @@ module Clusters
 
       scope :for_cluster, -> (cluster) { where(cluster: cluster) }
 
+      after_save :clear_reactive_cache!
+
       def chart
         'knative/knative'
       end
@@ -79,7 +81,7 @@ module Clusters
       end
 
       def calculate_reactive_cache
-        { services: read_services }
+        { services: read_services, pods: read_pods }
       end
 
       def ingress_service
@@ -87,7 +89,7 @@ module Clusters
       end
 
       def services_for(ns: namespace)
-        return unless services
+        return [] unless services
         return [] unless ns
 
         services.select do |service|
@@ -95,7 +97,21 @@ module Clusters
         end
       end
 
+      def service_pod_details(ns, service)
+        with_reactive_cache do |data|
+          data[:pods].select { |pod| filter_pods(pod, ns, service) }
+        end
+      end
+
       private
+
+      def read_pods
+        cluster.kubeclient.core_client.get_pods.as_json
+      end
+
+      def filter_pods(pod, namespace, service)
+        pod["metadata"]["namespace"] == namespace && pod["metadata"]["labels"]["serving.knative.dev/service"] == service
+      end
 
       def read_services
         client.get_services.as_json
