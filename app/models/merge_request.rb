@@ -1102,9 +1102,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def update_head_pipeline
-    self.head_pipeline = find_actual_head_pipeline
-
-    update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
+    find_actual_head_pipeline.try do |pipeline|
+      self.head_pipeline = pipeline
+      update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
+    end
   end
 
   def merge_request_pipeline_exists?
