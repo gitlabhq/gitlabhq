@@ -4,7 +4,8 @@
 
 ### Target audience
 
-<!--- For whom are we doing this? Include either a persona from https://design.gitlab.com/getting-started/personas or define a specific company role. e.a. "Release Manager" or "Security Analyst" -->
+<!--- For whom are we doing this? Include either a persona from https://design.gitlab.com/getting-started/personas
+or define a specific company role. e.a. "Release Manager" or "Security Analyst" -->
 
 ### Further details
 
@@ -13,6 +14,12 @@
 ### Proposal
 
 <!--- How are we going to solve the problem? -->
+
+### Documentation
+
+<!--- What doc pages need to be created or updated across user, admin, and API docs?
+What concepts, procedures, or info is needed on each?
+PMs: Specify feature name, description, benefits, and use cases, if applicable. -->
 
 ### What does success look like, and how can we measure that?
 
