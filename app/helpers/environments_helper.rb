@@ -7,6 +7,15 @@ module EnvironmentsHelper
     }
   end
 
+  def environments_folder_list_view_data
+    {
+      "endpoint" => folder_project_environments_path(@project, @folder, format: :json),
+      "folder-name" => @folder,
+      "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
+      "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
+    }
+  end
+
   def metrics_data(project, environment)
     {
       "settings-path" => edit_project_service_path(project, 'prometheus'),
