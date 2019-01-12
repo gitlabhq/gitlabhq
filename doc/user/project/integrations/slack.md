@@ -24,3 +24,44 @@ The Slack Notifications Service allows your GitLab project to send events (e.g. 
 Your Slack team will now start receiving GitLab event notifications as configured.
 
 ![Slack configuration](img/slack_configuration.png)
+
+## Troubleshooting
+
+If you're having trouble with the Slack integration not working, then start by
+searching through the sidekiq logs for errors relating to your Slack service.
+
+### Something went wrong on our end
+
+This is a generic error shown in the GitLab UI and doesn't mean much by itself.
+You'll need to look in the logs to find an error message and keep troubleshooting
+from there.
+
+### certificate verify failed
+
+This is probably a problem either with GitLab communicating with Slack, or GitLab
+communicating with itself. The former is less likely since Slack's security certificates
+should _hopefully_ always be trusted. We can establish which we're dealing with by using
+the below test script.
+
+```ruby
+#!/opt/gitlab/embedded/bin/ruby
+# the shebang should be changed if you're not using Omnibus GitLab
+require 'openssl'
+require 'net/http'
+
+puts "testing Slack"
+# replace <SLACK URL> with your actual Slack URL
+Net::HTTP.get(URI('https://<SLACK URL>'))
+
+puts "testing GitLab"
+# replace <GITLAB URL> with your actual GitLab URL
+Net::HTTP.get(URI('https://<GITLAB URL>'))
+```
+
+If it's an issue with GitLab not trusting connections to Slack, then the GitLab
+OpenSSL trust store probably got messed up somehow. Typically this is from overriding
+the trust store with `gitlab_rails['env'] = {"SSL_CERT_FILE" => "/path/to/file.pem"}`
+or by accidentally modifying the default CA bundle `/opt/gitlab/embedded/ssl/certs/cacertpem`.
+
+If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
+need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
