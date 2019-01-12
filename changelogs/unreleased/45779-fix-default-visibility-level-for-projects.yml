@@ -1,0 +1,5 @@
+---
+title: Fix default visibility_level for new projects
+merge_request: 24120
+author: Fabian Schneider @fabsrc
+type: fixed

@@ -1418,6 +1418,23 @@ describe MergeRequest do
           .to change { merge_request.reload.head_pipeline }
           .from(nil).to(pipeline)
       end
+
+      context 'when merge request has already had head pipeline' do
+        before do
+          merge_request.update!(head_pipeline: pipeline)
+        end
+
+        context 'when failed to find an actual head pipeline' do
+          before do
+            allow(merge_request).to receive(:find_actual_head_pipeline) { }
+          end
+
+          it 'does not update the current head pipeline' do
+            expect { subject }
+              .not_to change { merge_request.reload.head_pipeline }
+          end
+        end
+      end
     end
 
     context 'when there are no pipelines with the diff head sha' do
