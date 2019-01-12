@@ -266,6 +266,23 @@ describe API::ProjectClusters do
         end
       end
     end
+
+    context 'when user tries to add multiple clusters' do
+      before do
+        create(:cluster, :provided_by_gcp, :project,
+               projects: [project])
+
+        post api("/projects/#{project.id}/clusters/user", current_user), params: cluster_params
+      end
+
+      it 'should respond with 403' do
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'should return an appropriate message' do
+        expect(json_response['message']).to include('Instance does not support multiple Kubernetes clusters')
+      end
+    end
   end
 
   describe 'PUT /projects/:id/clusters/:cluster_id' do

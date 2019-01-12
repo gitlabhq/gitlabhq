@@ -20,7 +20,7 @@ Set the title to: `[Security] Description of the original issue`
 
 #### Backports
 
-- [ ] Once the MR is ready to be merged, create MRs targetting the last 3 releases
+- [ ] Once the MR is ready to be merged, create MRs targetting the last 3 releases, plus the current RC if between the 7th and 22nd of the month.
     - [ ] At this point, it might be easy to squash the commits from the MR into one
     - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
     - [ ] Create the branch `security-X-Y` from `X-Y-stable` if it doesn't exist (and make sure it's up to date with stable)

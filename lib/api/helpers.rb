@@ -235,8 +235,8 @@ module API
       forbidden! unless current_user.admin?
     end
 
-    def authorize!(action, subject = :global)
-      forbidden! unless can?(current_user, action, subject)
+    def authorize!(action, subject = :global, reason = nil)
+      forbidden!(reason) unless can?(current_user, action, subject)
     end
 
     def authorize_push_project

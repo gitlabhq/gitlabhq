@@ -32,6 +32,10 @@
     max-height: $dropdown-max-height;
     overflow-y: auto;
 
+    &.dropdown-extended-height {
+      max-height: 400px;
+    }
+
     @include media-breakpoint-down(xs) {
       width: 100%;
     }
