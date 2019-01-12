@@ -18,7 +18,7 @@
             = form.label :enabled, _('Active'), class: 'form-check-label'
           .form-group
             = form.label :api_url, _('Sentry API URL'), class: 'label-bold'
-            = form.url_field :api_url, class: 'form-control', placeholder: _('http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/issues/')
+            = form.url_field :api_url, class: 'form-control', placeholder: _('http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/')
             %p.form-text.text-muted
               = _('Enter your Sentry API URL')
           .form-group
