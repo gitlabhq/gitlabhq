@@ -30,21 +30,21 @@ describe Banzai::Filter::MarkdownFilter do
       end
 
       it 'adds language to lang attribute when specified' do
-        result = filter("```html\nsome code\n```")
+        result = filter("```html\nsome code\n```", no_sourcepos: true)
 
-        expect(result).to start_with('<pre data-sourcepos="1:1-3:3"><code lang="html">')
+        expect(result).to start_with('<pre><code lang="html">')
       end
 
       it 'does not add language to lang attribute when not specified' do
-        result = filter("```\nsome code\n```")
+        result = filter("```\nsome code\n```", no_sourcepos: true)
 
-        expect(result).to start_with('<pre data-sourcepos="1:1-3:3"><code>')
+        expect(result).to start_with('<pre><code>')
       end
 
       it 'works with utf8 chars in language' do
-        result = filter("```日\nsome code\n```")
+        result = filter("```日\nsome code\n```", no_sourcepos: true)
 
-        expect(result).to start_with('<pre data-sourcepos="1:1-3:3"><code lang="日">')
+        expect(result).to start_with('<pre><code lang="日">')
       end
     end
 
@@ -80,7 +80,7 @@ describe Banzai::Filter::MarkdownFilter do
       end
 
       it 'disables data-sourcepos' do
-        result = filter('test', { no_sourcepos: true })
+        result = filter('test', no_sourcepos: true)
 
         expect(result).to eq '<p>test</p>'
       end
@@ -109,9 +109,9 @@ describe Banzai::Filter::MarkdownFilter do
       [^1]: a footnote
       MD
 
-      result = filter(text)
+      result = filter(text, no_sourcepos: true)
 
-      expect(result).to include('<td data-sourcepos="3:2-3:12">foot <sup')
+      expect(result).to include('<td>foot <sup')
       expect(result).to include('<section class="footnotes">')
     end
   end

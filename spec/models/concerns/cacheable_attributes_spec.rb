@@ -159,6 +159,10 @@ describe CacheableAttributes do
 
     describe 'edge cases' do
       describe 'caching behavior', :use_clean_rails_memory_store_caching do
+        before do
+          stub_commonmark_sourcepos_disabled
+        end
+
         it 'retrieves upload fields properly' do
           ar_record = create(:appearance, :with_logo)
           ar_record.cache!
@@ -177,7 +181,7 @@ describe CacheableAttributes do
           cache_record = Appearance.current
 
           expect(cache_record.description).to eq('**Hello**')
-          expect(cache_record.description_html).to eq('<p data-sourcepos="1:1-1:9" dir="auto"><strong>Hello</strong></p>')
+          expect(cache_record.description_html).to eq('<p dir="auto"><strong>Hello</strong></p>')
         end
       end
     end

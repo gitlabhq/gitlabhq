@@ -7,6 +7,8 @@ describe API::Markdown do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
 
     before do
+      stub_commonmark_sourcepos_disabled
+
       post api("/markdown", user), params: params
     end
 
@@ -15,7 +17,7 @@ describe API::Markdown do
         expect(response).to have_http_status(201)
         expect(response.headers["Content-Type"]).to eq("application/json")
         expect(json_response).to be_a(Hash)
-        expect(json_response["html"]).to eq("<p data-sourcepos=\"1:1-1:28\">#{text}</p>")
+        expect(json_response["html"]).to eq("<p>#{text}</p>")
       end
     end
 

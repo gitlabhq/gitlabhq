@@ -50,7 +50,7 @@ module Banzai
         private
 
         def render_options
-          @context&.dig(:no_sourcepos) ? RENDER_OPTIONS : RENDER_OPTIONS_SOURCEPOS
+          @context[:no_sourcepos] ? RENDER_OPTIONS : RENDER_OPTIONS_SOURCEPOS
         end
       end
     end

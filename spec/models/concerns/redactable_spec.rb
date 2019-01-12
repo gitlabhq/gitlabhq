@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Redactable do
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
+
   shared_examples 'model with redactable field' do
     it 'redacts unsubscribe token' do
       model[field] = 'some text /sent_notifications/00000000000000000000000000000000/unsubscribe more text'
@@ -35,7 +39,7 @@ describe Redactable do
 
       expected = 'some text /sent_notifications/REDACTED/unsubscribe more text'
       expect(model[field]).to eq expected
-      expect(model["#{field}_html"]).to eq "<p data-sourcepos=\"1:1-1:60\" dir=\"auto\">#{expected}</p>"
+      expect(model["#{field}_html"]).to eq "<p dir=\"auto\">#{expected}</p>"
     end
   end
 

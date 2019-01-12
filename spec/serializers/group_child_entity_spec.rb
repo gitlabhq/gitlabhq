@@ -10,6 +10,7 @@ describe GroupChildEntity do
 
   before do
     allow(request).to receive(:current_user).and_return(user)
+    stub_commonmark_sourcepos_disabled
   end
 
   shared_examples 'group child json' do
@@ -102,7 +103,7 @@ describe GroupChildEntity do
       let(:description) { ':smile:' }
 
       it 'has the correct markdown_description' do
-        expect(json[:markdown_description]).to eq('<p data-sourcepos="1:1-1:7" dir="auto"><gl-emoji title="smiling face with open mouth and smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji></p>')
+        expect(json[:markdown_description]).to eq('<p dir="auto"><gl-emoji title="smiling face with open mouth and smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji></p>')
       end
     end
 

@@ -67,13 +67,16 @@ describe CacheMarkdownField do
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html)     { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Foo</code></p>' }
+  let(:html)     { '<p dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html)     { '<p data-sourcepos="1:1-1:5" dir="auto"><code>Bar</code></p>' }
-  let(:updated_redcarpet_html) { '<p dir="auto"><code>Bar</code></p>' }
+  let(:updated_html)     { '<p dir="auto"><code>Bar</code></p>' }
 
   let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
 
   describe '.attributes' do
     it 'excludes cache attributes' do
@@ -96,16 +99,13 @@ describe CacheMarkdownField do
   context 'a changed markdown field' do
     shared_examples 'with cache version' do |cache_version|
       let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
-      let(:updated_version_html) do
-        cache_version == CacheMarkdownField::CACHE_REDCARPET_VERSION ? updated_redcarpet_html : updated_html
-      end
 
       before do
         thing.foo = updated_markdown
         thing.save
       end
 
-      it { expect(thing.foo_html).to eq(updated_version_html) }
+      it { expect(thing.foo_html).to eq(updated_html) }
       it { expect(thing.cached_markdown_version).to eq(cache_version) }
     end
 
@@ -272,9 +272,6 @@ describe CacheMarkdownField do
   describe '#refresh_markdown_cache!' do
     shared_examples 'with cache version' do |cache_version|
       let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
-      let(:updated_version_html) do
-        cache_version == CacheMarkdownField::CACHE_REDCARPET_VERSION ? updated_redcarpet_html : updated_html
-      end
 
       before do
         thing.foo = updated_markdown
@@ -283,7 +280,7 @@ describe CacheMarkdownField do
       it 'fills all html fields' do
         thing.refresh_markdown_cache!
 
-        expect(thing.foo_html).to eq(updated_version_html)
+        expect(thing.foo_html).to eq(updated_html)
         expect(thing.foo_html_changed?).to be_truthy
         expect(thing.baz_html_changed?).to be_truthy
       end
@@ -298,7 +295,7 @@ describe CacheMarkdownField do
       it 'saves the changes using #update_columns' do
         expect(thing).to receive(:persisted?).and_return(true)
         expect(thing).to receive(:update_columns)
-          .with("foo_html" => updated_version_html, "baz_html" => "", "cached_markdown_version" => cache_version)
+          .with("foo_html" => updated_html, "baz_html" => "", "cached_markdown_version" => cache_version)
 
         thing.refresh_markdown_cache!
       end

@@ -8,9 +8,13 @@ describe Banzai::Pipeline::DescriptionPipeline do
 
     output = described_class.to_html(html, project: spy)
 
-    output.gsub!(%r{\A<p #{MarkdownFeature::SOURCEPOS_REGEX} dir="auto">(.*)</p>(.*)\z}, '\1\2') if unwrap
+    output.gsub!(%r{\A<p dir="auto">(.*)</p>(.*)\z}, '\1\2') if unwrap
 
     output
+  end
+
+  before do
+    stub_commonmark_sourcepos_disabled
   end
 
   it 'uses a limited whitelist' do
