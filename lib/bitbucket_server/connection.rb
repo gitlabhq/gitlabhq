@@ -7,6 +7,17 @@ module BitbucketServer
     DEFAULT_API_VERSION = '1.0'
     SEPARATOR = '/'
 
+    NETWORK_ERRORS = [
+      SocketError,
+      OpenSSL::SSL::SSLError,
+      Errno::ECONNRESET,
+      Errno::ECONNREFUSED,
+      Errno::EHOSTUNREACH,
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+      Gitlab::HTTP::BlockedUrlError
+    ].freeze
+
     attr_reader :api_version, :base_uri, :username, :token
 
     ConnectionError = Class.new(StandardError)
@@ -27,6 +38,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     def post(path, body)
@@ -38,6 +51,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     # We need to support two different APIs for deletion:
@@ -55,6 +70,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     private
