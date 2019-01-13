@@ -260,6 +260,18 @@ describe API::MergeRequests do
           expect_response_ordered_exactly(merge_request)
         end
 
+        it 'returns merge requests matching given search string for title and scoped in title' do
+          get api("/merge_requests", user), params: { search: merge_request.title, in: 'title' }
+
+          expect_response_ordered_exactly(merge_request)
+        end
+
+        it 'returns an empty array if no merge reques matches given search string for description and scoped in title' do
+          get api("/merge_requests", user), params: { search: merge_request.description, in: 'title' }
+
+          expect_response_contain_exactly
+        end
+
         it 'returns merge requests for project matching given search string for description' do
           get api("/merge_requests", user), params: { project_id: project.id, search: merge_request.description }
 

@@ -208,6 +208,18 @@ describe API::Issues do
         expect_paginated_array_response(issue.id)
       end
 
+      it 'returns issues matching given search string for title and scoped in title' do
+        get api("/issues", user), params: { search: issue.title, in: 'title' }
+
+        expect_paginated_array_response(issue.id)
+      end
+
+      it 'returns an empty array if no issue matches given search string for title and scoped in description' do
+        get api("/issues", user), params: { search: issue.title, in: 'description' }
+
+        expect_paginated_array_response([])
+      end
+
       it 'returns issues matching given search string for description' do
         get api("/issues", user), params: { search: issue.description }
 
