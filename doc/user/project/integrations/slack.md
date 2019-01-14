@@ -28,7 +28,8 @@ Your Slack team will now start receiving GitLab event notifications as configure
 ## Troubleshooting
 
 If you're having trouble with the Slack integration not working, then start by
-searching through the sidekiq logs for errors relating to your Slack service.
+searching through the [Sidekiq logs](https://docs.gitlab.com/ee/administration/logs.html#sidekiqlog)
+for errors relating to your Slack service.
 
 ### Something went wrong on our end
 
@@ -36,7 +37,13 @@ This is a generic error shown in the GitLab UI and doesn't mean much by itself.
 You'll need to look in the logs to find an error message and keep troubleshooting
 from there.
 
-### certificate verify failed
+### `certificate verify failed`
+
+You may see an entry similar to the following in your Sidekiq log:
+
+```text
+2019-01-10_13:22:08.42572 2019-01-10T13:22:08.425Z 6877 TID-abcdefg ProjectServiceWorker JID-3bade5fb3dd47a85db6d78c5 ERROR: {:class=>"ProjectServiceWorker", :service_class=>"SlackService", :message=>"SSL_connect returned=1 errno=0 state=error: certificate verify failed"}
+```
 
 This is probably a problem either with GitLab communicating with Slack, or GitLab
 communicating with itself. The former is less likely since Slack's security certificates
@@ -58,10 +65,10 @@ puts "testing GitLab"
 Net::HTTP.get(URI('https://<GITLAB URL>'))
 ```
 
+If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
+need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+
 If it's an issue with GitLab not trusting connections to Slack, then the GitLab
 OpenSSL trust store probably got messed up somehow. Typically this is from overriding
 the trust store with `gitlab_rails['env'] = {"SSL_CERT_FILE" => "/path/to/file.pem"}`
-or by accidentally modifying the default CA bundle `/opt/gitlab/embedded/ssl/certs/cacertpem`.
-
-If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
-need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+or by accidentally modifying the default CA bundle `/opt/gitlab/embedded/ssl/certs/cacert.pem`.
