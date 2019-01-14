@@ -80,3 +80,4 @@ eslint-report.html
 package-lock.json
 /junit_*.xml
 /coverage-frontend/
+jsdoc/
