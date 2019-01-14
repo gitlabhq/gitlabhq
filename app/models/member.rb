@@ -84,6 +84,8 @@ class Member < ActiveRecord::Base
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
 
+  scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
+
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
   after_create :send_invite, if: :invite?, unless: :importing?
