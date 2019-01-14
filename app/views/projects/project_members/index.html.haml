@@ -1,39 +1,34 @@
-- page_title "Members"
+- page_title _("Members")
 
 .row.prepend-top-default
   .col-lg-12
     %h4
-      Project members
+      = _("Project members")
     - if can?(current_user, :admin_project_member, @project)
       %p
-        You can invite a new member to
-        %strong= @project.name
-        or invite another group.
+        = _("You can invite a new member to <strong>%{project_name}</strong> or invite another group.").html_safe % { project_name: sanitize_project_name(@project.name) }
     - else
       %p
-        Members can be added by project
-        %i Maintainers
-        or
-        %i Owners
+        = _("Members can be added by project <i>Maintainers</i> or <i>Owners</i>").html_safe
     .light
       - if can?(current_user, :admin_project_member, @project)
         %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
           %li.nav-tab{ role: 'presentation' }
-            %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' } Invite member
+            %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
           - if @project.allowed_to_share_with_group?
             %li.nav-tab{ role: 'presentation' }
-              %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab' }, role: 'tab' } Invite group
+              %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite group")
 
         .tab-content.gitlab-tab-content
           .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }
-            = render 'projects/project_members/new_project_member', tab_title: 'Invite member'
+            = render 'projects/project_members/new_project_member', tab_title: _('Invite member')
           .tab-pane{ id: 'invite-group-pane', role: 'tabpanel' }
-            = render 'projects/project_members/new_project_group', tab_title: 'Invite group'
+            = render 'projects/project_members/new_project_group', tab_title: _('Invite group')
 
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
         .clearfix
           %h5.member.existing-title
-            Existing members and groups
+            = _("Existing members and groups")
         - if @group_links.any?
           = render 'projects/project_members/groups', group_links: @group_links
 
