@@ -10,8 +10,9 @@
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
           = icon('chevron-down')
         .form-text.text-muted.append-bottom-10
-          = link_to _("Read more"), help_page_path("user/permissions")
-          about role permissions
+          - permissions_docs_path = help_page_path('user/permissions')
+          - link_start = %q{<a href="%{url}">}.html_safe % { url: permissions_docs_path }
+          = _("%{link_start}Read more%{link_end} about role permissions").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
       .form-group
         = label_tag :expires_at, _('Access expiration date'), class: 'label-bold'
         .clearable-input
