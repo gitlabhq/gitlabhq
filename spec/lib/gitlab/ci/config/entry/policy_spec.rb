@@ -168,9 +168,57 @@ describe Gitlab::Ci::Config::Entry::Policy do
     end
   end
 
+  describe '#value' do
+    context 'when it is `only` policy' do
+      before do
+        entry.key = :only
+      end
+
+      context 'when user overrides default values' do
+        let(:config) { { refs: %w[feature], variables: %w[$VARIABLE] } }
+
+        it 'does not include default values' do
+          expect(entry.value).to eq config
+        end
+      end
+
+      context 'when user does not override default values' do
+        let(:config) { { variables: %w[$VARIABLE] } }
+
+        it 'includes default values' do
+          expect(entry.value).to eq(refs: %w[branches tags],
+                                    variables: %w[$VARIABLE])
+        end
+      end
+    end
+
+    context 'when it is `except` policy' do
+      before do
+        entry.key = :except
+      end
+
+      context 'when user does not override default values' do
+        let(:config) { { variables: %w[$VARIABLE] } }
+
+        it 'does not include default values' do
+          expect(entry.value).to eq config
+        end
+      end
+    end
+  end
+
   describe '.default' do
-    it 'does not have a default value' do
-      expect(described_class.default).to be_nil
+    context 'when `only` policy is about to be fabricated' do
+      it 'has a default value' do
+        expect(described_class.default(key: :only))
+          .to eq(refs: %w[branches tags])
+      end
+    end
+
+    context 'when `except` policy is about to be fabricated' do
+      it 'does not have a default value' do
+        expect(described_class.default(key: :except)).to be_nil
+      end
     end
   end
 end

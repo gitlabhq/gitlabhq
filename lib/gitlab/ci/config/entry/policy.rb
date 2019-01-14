@@ -65,7 +65,7 @@ module Gitlab
           end
 
           def value
-            self.class.default(key: @key).yield_self do |default|
+            self.class.default(key: @subject.key).yield_self do |default|
               default.to_h.deep_merge(@subject.value.to_h)
             end
           end
