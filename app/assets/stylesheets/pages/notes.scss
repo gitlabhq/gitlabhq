@@ -5,7 +5,7 @@ $note-form-margin-left: 72px;
 @mixin vertical-line($left) {
   &::before {
     content: '';
-    border-left: 2px solid $theme-gray-100;
+    border-left: 2px solid $gray-100;
     position: absolute;
     top: 0;
     bottom: 0;

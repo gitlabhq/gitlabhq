@@ -1,0 +1,5 @@
+---
+title: Remove all `$theme-gray-{weight}` variables in favor of `$gray-{weight}`
+merge_request: 24333
+author: George Tsiolis
+type: other
