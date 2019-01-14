@@ -55,7 +55,7 @@ module Gitlab
             instance: job[:instance],
             start_in: job[:start_in],
             trigger: job[:trigger]
-          }.compact }
+          }.compact }.compact
       end
 
       def stage_builds_attributes(stage)

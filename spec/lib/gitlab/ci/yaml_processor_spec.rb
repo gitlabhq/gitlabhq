@@ -21,15 +21,12 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"]
               },
               allow_failure: false,
               when: "on_success",
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -154,12 +151,9 @@ module Gitlab
              builds:
                [{ stage_idx: 1,
                   stage: "test",
-                  tag_list: [],
                   name: "rspec",
                   allow_failure: false,
                   when: "on_success",
-                  environment: nil,
-                  coverage_regex: nil,
                   yaml_variables: [],
                   options: { script: ["rspec"] },
                   only: { refs: ["branches"] },
@@ -169,12 +163,9 @@ module Gitlab
              builds:
                [{ stage_idx: 2,
                   stage: "deploy",
-                  tag_list: [],
                   name: "prod",
                   allow_failure: false,
                   when: "on_success",
-                  environment: nil,
-                  coverage_regex: nil,
                   yaml_variables: [],
                   options: { script: ["cap prod"] },
                   only: { refs: ["tags"] },
@@ -344,8 +335,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
@@ -356,7 +345,6 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -378,8 +366,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
@@ -390,7 +376,6 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -410,8 +395,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
@@ -420,7 +403,6 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -438,8 +420,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 before_script: ["pwd"],
                 script: ["rspec"],
@@ -448,7 +428,6 @@ module Gitlab
               },
               allow_failure: false,
               when: "on_success",
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -763,8 +742,6 @@ module Gitlab
             stage: "test",
             stage_idx: 1,
             name: "rspec",
-            coverage_regex: nil,
-            tag_list: [],
             options: {
               before_script: ["pwd"],
               script: ["rspec"],
@@ -779,7 +756,6 @@ module Gitlab
             },
             when: "on_success",
             allow_failure: false,
-            environment: nil,
             yaml_variables: []
           })
         end
@@ -976,14 +952,11 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "normal_job",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 script: ["test"]
               },
               when: "on_success",
               allow_failure: false,
-              environment: nil,
               yaml_variables: []
             })
           end
@@ -1023,28 +996,22 @@ module Gitlab
               stage: "build",
               stage_idx: 0,
               name: "job1",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 script: ["execute-script-for-job"]
               },
               when: "on_success",
               allow_failure: false,
-              environment: nil,
               yaml_variables: []
             })
             expect(subject.second).to eq({
               stage: "build",
               stage_idx: 0,
               name: "job2",
-              coverage_regex: nil,
-              tag_list: [],
               options: {
                 script: ["execute-script-for-job"]
               },
               when: "on_success",
               allow_failure: false,
-              environment: nil,
               yaml_variables: []
             })
           end
