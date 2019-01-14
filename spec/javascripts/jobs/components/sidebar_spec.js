@@ -28,7 +28,7 @@ describe('Sidebar details block', () => {
         store,
       });
 
-      expect(vm.$el.querySelector('.js-retry-job')).toBeNull();
+      expect(vm.$el.querySelector('.js-retry-button')).toBeNull();
     });
   });
 
@@ -70,7 +70,7 @@ describe('Sidebar details block', () => {
     });
 
     it('should render link to retry job', () => {
-      expect(vm.$el.querySelector('.js-retry-job').getAttribute('href')).toEqual(job.retry_path);
+      expect(vm.$el.querySelector('.js-retry-button').getAttribute('href')).toEqual(job.retry_path);
     });
 
     it('should render link to cancel job', () => {
