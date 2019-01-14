@@ -59,5 +59,9 @@ FactoryBot.define do
     trait :with_installed_helm do
       application_helm factory: %i(clusters_applications_helm installed)
     end
+
+    trait :with_domain do
+      domain 'example.com'
+    end
   end
 end
