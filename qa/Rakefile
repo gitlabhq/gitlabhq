@@ -1,0 +1,6 @@
+require_relative 'qa/tools/revoke_all_personal_access_tokens'
+
+desc "Revokes all personal access tokens"
+task :revoke_personal_access_tokens do
+  QA::Tools::RevokeAllPersonalAccessTokens.new.run
+end

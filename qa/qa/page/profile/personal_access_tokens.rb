@@ -12,6 +12,10 @@ module QA
           element :create_token_field, "text_field_tag 'created-personal-access-token'" # rubocop:disable QA/ElementWithPattern
         end
 
+        view 'app/views/shared/_personal_access_tokens_table.html.haml' do
+          element :revoke_button
+        end
+
         def fill_token_name(name)
           fill_in 'personal_access_token_name', with: name
         end
@@ -26,6 +30,22 @@ module QA
 
         def created_access_token
           page.find('#created-personal-access-token').value
+        end
+
+        def has_token_row_for_name?(token_name)
+          page.has_css?('tr', text: token_name, wait: 1.0)
+        end
+
+        def first_token_row_for_name(token_name)
+          page.find('tr', text: token_name, match: :first, wait: 1.0)
+        end
+
+        def revoke_first_token_with_name(token_name)
+          within first_token_row_for_name(token_name) do
+            accept_confirm do
+              click_element(:revoke_button)
+            end
+          end
         end
       end
     end
