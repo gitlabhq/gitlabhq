@@ -1473,6 +1473,9 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
+msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
+msgstr ""
+
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
