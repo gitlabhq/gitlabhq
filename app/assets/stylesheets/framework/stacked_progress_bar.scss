@@ -3,7 +3,7 @@
   height: 16px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: $theme-gray-100;
+  background-color: $gray-100;
 
   .status-unavailable,
   .status-green,
@@ -24,7 +24,7 @@
 
   .status-unavailable {
     padding: 0 10px;
-    color: $theme-gray-700;
+    color: $gray-700;
   }
 
   .status-green {
@@ -36,11 +36,11 @@
   }
 
   .status-neutral {
-    background-color: $theme-gray-200;
+    background-color: $gray-200;
     color: $gl-gray-dark;
 
     &:hover {
-      background-color: $theme-gray-300;
+      background-color: $gray-300;
     }
   }
 

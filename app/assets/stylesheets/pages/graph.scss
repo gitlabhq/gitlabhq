@@ -44,7 +44,7 @@
   }
 
   .x-axis-text {
-    fill: $theme-gray-900;
+    fill: $gray-900;
   }
 
   .bar-rect {
@@ -64,7 +64,7 @@
     text {
       font-weight: bold;
       font-size: 12px;
-      fill: $theme-gray-800;
+      fill: $gray-800;
     }
   }
 }
@@ -87,5 +87,5 @@
 
 .animate-flicker {
   animation: flickerAnimation 1.5s infinite;
-  fill: $theme-gray-500;
+  fill: $gray-500;
 }
