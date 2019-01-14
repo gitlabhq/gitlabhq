@@ -64,7 +64,14 @@ module Gitlab
             end
           end
 
-          def self.default
+          def value
+            self.class.default(key: @key).yield_self do |default|
+              default.to_h.deep_merge(@subject.value.to_h)
+            end
+          end
+
+          def self.default(**attributes)
+            { refs: %w(branches tags) } if attributes[:key] == :only
           end
         end
       end

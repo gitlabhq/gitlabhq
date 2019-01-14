@@ -14,7 +14,7 @@ module Gitlab
             validates :config, type: String
           end
 
-          def self.default
+          def self.default(**)
             'test'
           end
         end

@@ -14,7 +14,7 @@ module Gitlab
             validates :config, array_of_strings: true
           end
 
-          def self.default
+          def self.default(**)
             %w[build test deploy]
           end
         end

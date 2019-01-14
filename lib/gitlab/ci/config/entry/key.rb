@@ -14,7 +14,7 @@ module Gitlab
             validates :config, key: true
           end
 
-          def self.default
+          def self.default(**)
             'default'
           end
         end

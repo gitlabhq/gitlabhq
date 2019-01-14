@@ -16,13 +16,6 @@ module Gitlab
                             dependencies before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
-          DEFAULT_ONLY_POLICY = {
-            refs: %w(branches tags)
-          }.freeze
-
-          DEFAULT_EXCEPT_POLICY = {
-          }.freeze
-
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
@@ -156,8 +149,8 @@ module Gitlab
               services: services_value,
               stage: stage_value,
               cache: cache_value,
-              only: DEFAULT_ONLY_POLICY.deep_merge(only_value.to_h),
-              except: DEFAULT_EXCEPT_POLICY.deep_merge(except_value.to_h),
+              only: only_value,
+              except: except_value.to_h,
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,

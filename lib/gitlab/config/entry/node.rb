@@ -85,7 +85,7 @@ module Gitlab
           "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
         end
 
-        def self.default
+        def self.default(**)
         end
 
         def self.aspects

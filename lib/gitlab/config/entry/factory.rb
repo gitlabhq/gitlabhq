@@ -53,10 +53,10 @@ module Gitlab
           # If entry has a default value we fabricate concrete node
           # with default value.
           #
-          if @entry.default.nil?
+          if @entry.default(@attributes).nil?
             fabricate(Entry::Undefined)
           else
-            fabricate(@entry, @entry.default)
+            fabricate(@entry, @entry.default(@attributes))
           end
         end
 
