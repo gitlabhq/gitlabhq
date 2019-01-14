@@ -2,11 +2,13 @@ import _ from 'underscore';
 import $ from 'jquery';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
+import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
 import { canScrollUp, canScrollDown } from '~/lib/utils/dom_utils';
 
 const SCROLL_MARGIN = 5;
 
 Terminal.applyAddon(fit);
+Terminal.applyAddon(webLinks);
 
 export default class GLTerminal {
   constructor(element, options = {}) {
@@ -48,6 +50,7 @@ export default class GLTerminal {
 
     this.terminal.open(this.container);
     this.terminal.fit();
+    this.terminal.webLinksInit();
     this.terminal.focus();
 
     this.socket.onopen = () => {
