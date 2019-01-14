@@ -7,6 +7,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
 
     belongs_to :project
+    belongs_to :trigger_request
     validates :ref, presence: true
 
     def self.retry(bridge, current_user)
