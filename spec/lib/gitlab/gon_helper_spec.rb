@@ -29,4 +29,13 @@ describe Gitlab::GonHelper do
       helper.push_frontend_feature_flag(:my_feature_flag, 10)
     end
   end
+
+  describe '#default_avatar_url' do
+    it 'returns an absolute URL' do
+      url = helper.default_avatar_url
+
+      expect(url).to match(/^http/)
+      expect(url).to match(/no_avatar.*png$/)
+    end
+  end
 end
