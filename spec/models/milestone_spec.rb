@@ -182,7 +182,7 @@ describe Milestone do
   describe '#total_items_count' do
     before do
       create :closed_issue, milestone: milestone, project: project
-      create :merge_request, milestone: milestone
+      create :merge_request, milestone: milestone, source_project: project
     end
 
     it 'returns total count of issues and merge requests assigned to milestone' do
@@ -192,10 +192,10 @@ describe Milestone do
 
   describe '#can_be_closed?' do
     before do
-      milestone = create :milestone
-      create :closed_issue, milestone: milestone
+      milestone = create :milestone, project: project
+      create :closed_issue, milestone: milestone, project: project
 
-      create :issue
+      create :issue, project: project
     end
 
     it 'returns true if milestone active and all nested issues closed' do

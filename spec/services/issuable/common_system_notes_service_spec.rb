@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Issuable::CommonSystemNotesService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:issuable) { create(:issue) }
+  let(:issuable) { create(:issue, project: project) }
 
   describe '#execute' do
     it_behaves_like 'system note creation', { title: 'New title' }, 'changed title'
