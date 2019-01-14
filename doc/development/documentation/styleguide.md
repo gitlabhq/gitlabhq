@@ -609,31 +609,23 @@ Tagged and released versions of GitLab documentation are available:
 - In the [documentation archives](https://docs.gitlab.com/archives/).
 - At the `/help` URL for any GitLab installation.
 
-Because documentation is intended to describe the current state of the project at a particular point in time,
-it is unnecessary to add specific text to the documentation describing what version a particular feature was introduced.
-The version relevant to a feature can be assumed by the feature's presence in that version of the documentation.
+The version introducing a new feature is added to the top of the topic in the documentation to provide
+a helpful link back to how the feature was developed.
 
-Discussing specific versions in GitLab documentation should be reserved **only** for the following cases:
-
-- A feature was introduced before online versions were available. Currently, that means before 11.2.
-- A specific topic requires information that might be relevant to bridge the gap between specific versions.
-  For example, `If upgrading from a version of GitLab before x.y, follow the additional instructions below.`
-- A feature was introduced in a patch release, so it's important to call out which patch the feature became available in.
-
-#### Text for documentation requiring version text
+### Text for documentation requiring version text
 
 - For features that need to declare the GitLab version that the feature was introduced. Text similar
   to the following should be added immediately below the heading as a blockquote:
 
     ```md
-    > Introduced in GitLab 8.3.
+    > Introduced in GitLab 11.3.
     ```
 
 - Whenever possible, version text should have a link to the issue, merge request, or epic
   (in order or preference) that introduced the feature. For example:
 
     ```md
-    > [Introduced](<link-to-issue>) in GitLab 8.3.
+    > [Introduced](<link-to-issue>) in GitLab 11.3.
     ```
 
 - If the feature is only available in GitLab Enterprise Edition, mention
@@ -641,21 +633,19 @@ Discussing specific versions in GitLab documentation should be reserved **only**
   the feature is available in:
 
     ```md
-    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+    > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
     ```
 
-### Early versions of EE
+### Removing version text
 
-If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
+Over time, version text will reference a progressively older version of GitLab. In cases where version text
+refers to versions of GitLab more than two major versions back, consider removing the text.
 
-- Declare it as "Introduced in GitLab Enterprise Edition X.Y".
-- Note which tier the feature is available in.
+For example, if the current major version is 11.x, version text referencing versions of GitLab 9.x
+and older are candidates for removal.
 
-For example:
-
-```md
-> [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-```
+NOTE: **Note:**
+This guidance applies to any text that mentions a GitLab version, not just "Introduced in... " text.
 
 ## Product badges
 
