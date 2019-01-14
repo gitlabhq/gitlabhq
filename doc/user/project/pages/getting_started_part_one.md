@@ -103,8 +103,7 @@ will be published under `https://john.gitlab.io`.
 Once you enable GitLab Pages for your project,
 your website will be published under `https://websites.gitlab.io`.
 
->**Note:**
-Support for subgroup project's websites was introduced in GitLab 11.8.
+> Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 **General example:**
 
