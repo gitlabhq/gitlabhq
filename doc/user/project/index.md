@@ -66,7 +66,7 @@ common actions on issues or merge requests
      - [Pipeline settings](pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
   - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
-    with Google Kubernetes Engine
+    with a Kubernetes cluster
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
