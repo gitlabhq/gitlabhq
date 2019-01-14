@@ -7,6 +7,10 @@ describe Gitlab::Config::Entry::Configurable do
     end
   end
 
+  before do
+    allow(entry).to receive(:default)
+  end
+
   describe 'validations' do
     context 'when entry is a hash' do
       let(:instance) { entry.new(key: 'value') }
@@ -26,9 +30,11 @@ describe Gitlab::Config::Entry::Configurable do
   end
 
   describe 'configured entries' do
+    let(:another) { double('another', default: nil) }
+
     before do
-      entry.class_eval do
-        entry :object, Object, description: 'test object'
+      entry.class_exec(another) do |another|
+        entry :object, another, description: 'test object'
       end
     end
 

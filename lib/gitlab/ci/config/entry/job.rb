@@ -66,7 +66,8 @@ module Gitlab
             description: 'Services that will be used to execute this job.'
 
           entry :only, Entry::Policy,
-            description: 'Refs policy this job will be executed for.'
+            description: 'Refs policy this job will be executed for.',
+            default: { refs: %w[branches tags] }
 
           entry :except, Entry::Policy,
             description: 'Refs policy this job will be executed for.'

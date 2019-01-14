@@ -38,7 +38,7 @@ module Gitlab
           end
         end
 
-        def self.default(**)
+        def self.default
         end
       end
     end

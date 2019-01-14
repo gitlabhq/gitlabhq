@@ -10,7 +10,7 @@ module Gitlab
         InvalidError = Class.new(StandardError)
 
         attr_reader :config, :metadata
-        attr_accessor :key, :parent, :description
+        attr_accessor :key, :parent, :default, :description
 
         def initialize(config, **metadata)
           @config = config
