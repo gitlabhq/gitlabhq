@@ -80,7 +80,6 @@ export default {
       'hasError',
     ]),
     ...mapGetters([
-      'headerActions',
       'headerTime',
       'shouldRenderCalloutMessage',
       'shouldRenderTriggeredLabel',
@@ -202,7 +201,6 @@ export default {
               :item-id="job.id"
               :time="headerTime"
               :user="job.user"
-              :actions="headerActions"
               :has-sidebar-button="true"
               :should-render-triggered-label="shouldRenderTriggeredLabel"
               :item-name="__('Job')"

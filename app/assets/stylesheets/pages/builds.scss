@@ -272,23 +272,19 @@
   }
 
   .retry-link {
-    display: none;
+    display: block;
+
+    .btn {
+      i {
+        margin-left: 5px;
+      }
+    }
 
     .btn-inverted-secondary {
       color: $blue-500;
 
       &:hover {
         color: $white-light;
-      }
-    }
-
-    @include media-breakpoint-down(sm) {
-      display: block;
-
-      .btn {
-        i {
-          margin-left: 5px;
-        }
       }
     }
   }
