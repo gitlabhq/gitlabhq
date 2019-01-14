@@ -20,4 +20,4 @@
 
 ### Links / references
 
-/label ~"feature proposal"
+/label ~feature
