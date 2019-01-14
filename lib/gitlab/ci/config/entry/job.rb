@@ -150,7 +150,7 @@ module Gitlab
               stage: stage_value,
               cache: cache_value,
               only: only_value,
-              except: except_value.to_h,
+              except: except_value,
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
