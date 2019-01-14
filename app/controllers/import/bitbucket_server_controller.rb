@@ -40,7 +40,7 @@ class Import::BitbucketServerController < Import::BaseController
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
-  rescue BitbucketServer::Client::ServerError => e
+  rescue BitbucketServer::Connection::ConnectionError => e
     render json: { errors: "Unable to connect to server: #{e}" }, status: :unprocessable_entity
   end
 
@@ -62,7 +62,7 @@ class Import::BitbucketServerController < Import::BaseController
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
-  rescue BitbucketServer::Connection::ConnectionError, BitbucketServer::Client::ServerError => e
+  rescue BitbucketServer::Connection::ConnectionError => e
     flash[:alert] = "Unable to connect to server: #{e}"
     clear_session_data
     redirect_to new_import_bitbucket_server_path
