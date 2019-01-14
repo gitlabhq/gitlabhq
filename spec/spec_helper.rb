@@ -132,6 +132,11 @@ RSpec.configure do |config|
     Gitlab::ReleaseBlogPost.instance.instance_variable_set(:@url, 'https://about.gitlab.com')
   end
 
+  config.before(:example, :quarantine) do
+    # Skip tests in quarantine unless we explicitly focus on them.
+    skip('In quarantine') unless config.inclusion_filter[:quarantine]
+  end
+
   config.before(:example, :request_store) do
     RequestStore.begin!
   end
