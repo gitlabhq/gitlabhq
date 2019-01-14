@@ -71,9 +71,13 @@ module Gitlab
           @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
         end
 
+        def relative_url
+          File.join('', Gitlab.config.gitlab.relative_url_root).chomp('/')
+        end
+
         # Overridden in EE module
         def whitelisted_routes
-          grack_route || ReadOnly.internal_routes.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
+          grack_route || ReadOnly.internal_routes.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route?
         end
 
         def grack_route
@@ -95,8 +99,8 @@ module Gitlab
           WHITELISTED_GIT_LFS_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
-        def sidekiq_route
-          request.path.start_with?('/admin/sidekiq')
+        def sidekiq_route?
+          request.path.start_with?("#{relative_url}/admin/sidekiq")
         end
       end
     end
