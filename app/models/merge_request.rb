@@ -189,6 +189,9 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
+  alias_attribute :project, :target_project
+  alias_attribute :project_id, :target_project_id
+
   def self.reference_prefix
     '!'
   end
@@ -835,10 +838,6 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
-  end
-
-  def project
-    target_project
   end
 
   # If the merge request closes any issues, save this information in the
