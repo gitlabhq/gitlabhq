@@ -1,0 +1,5 @@
+---
+title: Make potentially malicious links more visible in the UI and scrub RTLO chars from links
+merge_request: 2770
+author:
+type: security
