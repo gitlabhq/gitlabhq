@@ -272,19 +272,19 @@ Inside the document:
 - For regular code blocks, always use a highlighting class corresponding to the
   language for better readability. Examples:
 
-      ```md
-       ```ruby
-       Ruby code
-       ```
+  ````md
+  ```ruby
+  Ruby code
+  ```
 
-       ```js
-       JavaScript code
-       ```
+  ```js
+  JavaScript code
+  ```
 
-       ```md
-       Markdown code
-       ```
-      ```
+  ```md
+  Markdown code
+  ```
+  ````
 
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
