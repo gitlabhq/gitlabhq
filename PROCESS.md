@@ -56,7 +56,7 @@ Below we describe the contributing process to GitLab for two reasons:
 Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
-What you can expect from them is described at https://about.gitlab.com/roles/merge-request-coach/.
+What you can expect from them is described at https://about.gitlab.com/job-families/expert/merge-request-coach/.
 
 ### Milestones on community contribution issues
 
