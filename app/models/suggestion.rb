@@ -5,8 +5,7 @@ class Suggestion < ApplicationRecord
   validates :note, presence: true
   validates :commit_id, presence: true, if: :applied?
 
-  delegate :original_position, :position, :diff_file,
-    :noteable, to: :note
+  delegate :original_position, :position, :noteable, to: :note
 
   def project
     noteable.source_project
@@ -14,6 +13,15 @@ class Suggestion < ApplicationRecord
 
   def branch
     noteable.source_branch
+  end
+
+  def file_path
+    position.file_path
+  end
+
+  def diff_file
+    repository = project.repository
+    position.diff_file(repository)
   end
 
   # For now, suggestions only serve as a way to send patches that
