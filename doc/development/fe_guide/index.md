@@ -21,8 +21,8 @@ We also use [Axios][axios] to handle all of our network requests.
 We also utilize [webpack][webpack] to handle the bundling, minification, and
 compression of our assets.
 
-Working with our frontend assets requires Node (v6.0 or greater) and Yarn
-(v1.2 or greater).  You can find information on how to install these on our
+Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
+(v1.10.0 or greater). You can find information on how to install these on our
 [installation guide][install].
 
 ### Browser Support

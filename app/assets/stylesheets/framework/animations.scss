@@ -204,7 +204,7 @@ a {
 
   [class^="skeleton-line-"] {
     position: relative;
-    background-color: $theme-gray-100;
+    background-color: $gray-100;
     height: 10px;
     overflow: hidden;
 
@@ -220,10 +220,10 @@ a {
       background-size: cover;
       background-image: linear-gradient(
         to right,
-        $theme-gray-100 0%,
-        $theme-gray-50 20%,
-        $theme-gray-100 40%,
-        $theme-gray-100 100%
+        $gray-100 0%,
+        $gray-50 20%,
+        $gray-100 40%,
+        $gray-100 100%
       );
       height: 10px;
     }

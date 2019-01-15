@@ -332,7 +332,7 @@ describe 'Dashboard Todos' do
     it 'links to the pipelines for the merge request' do
       href = pipelines_project_merge_request_path(project, todo.target)
 
-      expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href
+      expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href: href
     end
   end
 end

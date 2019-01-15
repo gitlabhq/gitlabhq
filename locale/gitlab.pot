@@ -129,6 +129,9 @@ msgstr ""
 msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
+msgid "%{link_start}Read more%{link_end} about role permissions"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -397,6 +400,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "Add reaction"
+msgstr ""
+
+msgid "Add to project"
 msgstr ""
 
 msgid "Add todo"
@@ -1303,6 +1309,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr ""
 
 msgid "Choose a file"
+msgstr ""
+
+msgid "Choose a role permission"
 msgstr ""
 
 msgid "Choose a template..."
@@ -3010,6 +3019,9 @@ msgstr ""
 msgid "Existing folder"
 msgstr ""
 
+msgid "Existing members and groups"
+msgstr ""
+
 msgid "Expand"
 msgstr ""
 
@@ -3143,6 +3155,9 @@ msgid "Find and manage Auth Tokens in your Sentry account settings page."
 msgstr ""
 
 msgid "Find by path"
+msgstr ""
+
+msgid "Find existing members by name"
 msgstr ""
 
 msgid "Find file"
@@ -3436,6 +3451,9 @@ msgstr ""
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
 
+msgid "Groups with access to <strong>%{project_name}</strong>"
+msgstr ""
+
 msgid "GroupsDropdown|Frequently visited"
 msgstr ""
 
@@ -3663,10 +3681,19 @@ msgstr ""
 msgid "Import issues"
 msgstr ""
 
+msgid "Import members"
+msgstr ""
+
+msgid "Import members from another project"
+msgstr ""
+
 msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import project"
+msgstr ""
+
+msgid "Import project members"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
@@ -3772,6 +3799,12 @@ msgid "Invitation"
 msgstr ""
 
 msgid "Invite"
+msgstr ""
+
+msgid "Invite group"
+msgstr ""
+
+msgid "Invite member"
 msgstr ""
 
 msgid "Invoke Count"
@@ -4193,6 +4226,12 @@ msgid "Member since %{date}"
 msgstr ""
 
 msgid "Members"
+msgstr ""
+
+msgid "Members can be added by project <i>Maintainers</i> or <i>Owners</i>"
+msgstr ""
+
+msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
 msgid "Merge Request"
@@ -4740,6 +4779,9 @@ msgid "Only mirror protected branches"
 msgstr ""
 
 msgid "Only project members can comment."
+msgstr ""
+
+msgid "Only project members will be imported. Group members will be skipped."
 msgstr ""
 
 msgid "Oops, are you sure?"
@@ -5396,6 +5438,9 @@ msgstr ""
 msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
+msgid "Project members"
+msgstr ""
+
 msgid "Project name"
 msgstr ""
 
@@ -6037,6 +6082,9 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select members to invite"
 msgstr ""
 
 msgid "Select project"
@@ -7659,6 +7707,9 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
+msgid "What's new?"
+msgstr ""
+
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
@@ -7861,6 +7912,9 @@ msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
+msgstr ""
+
+msgid "You can invite a new member to <strong>%{project_name}</strong> or invite another group."
 msgstr ""
 
 msgid "You can move around the graph by using the arrow keys."

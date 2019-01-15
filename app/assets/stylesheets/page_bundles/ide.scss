@@ -130,7 +130,7 @@ $ide-commit-header-height: 48px;
   background: none;
   border: 0;
   border-radius: $border-radius-default;
-  color: $theme-gray-900;
+  color: $gray-900;
 
   svg {
     position: relative;
@@ -145,7 +145,7 @@ $ide-commit-header-height: 48px;
   }
 
   &:not([disabled]):hover {
-    background-color: $theme-gray-200;
+    background-color: $gray-200;
   }
 
   &:not([disabled]):focus {
@@ -265,7 +265,7 @@ $ide-commit-header-height: 48px;
 
     .margin {
       background-color: $white-light;
-      border-right: 1px solid $theme-gray-100;
+      border-right: 1px solid $gray-100;
 
       .line-insert {
         border-right: 1px solid $line-added-dark;
@@ -292,7 +292,7 @@ $ide-commit-header-height: 48px;
     .monaco-editor,
     .monaco-editor-background,
     .monaco-editor .inputarea.ime-input {
-      background-color: $theme-gray-50;
+      background-color: $gray-50;
     }
   }
 }
@@ -527,7 +527,7 @@ $ide-commit-header-height: 48px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    color: $theme-gray-700;
+    color: $gray-700;
   }
 
   .file-status-icon {
@@ -551,7 +551,7 @@ $ide-commit-header-height: 48px;
 
   &:hover,
   &:focus {
-    background: $theme-gray-100;
+    background: $gray-100;
 
     outline: 0;
 
@@ -563,7 +563,7 @@ $ide-commit-header-height: 48px;
   }
 
   &:active {
-    background: $theme-gray-200;
+    background: $gray-200;
   }
 
   &.is-active {
@@ -767,12 +767,12 @@ $ide-commit-header-height: 48px;
 
   &:hover {
     color: $gl-text-color;
-    background-color: $theme-gray-100;
+    background-color: $gray-100;
   }
 
   &:focus {
     color: $gl-text-color;
-    background-color: $theme-gray-200;
+    background-color: $gray-200;
   }
 
   &.active {
@@ -1273,10 +1273,10 @@ $ide-commit-header-height: 48px;
 .ide-entry-dropdown-toggle {
   padding: $gl-padding-4;
   color: $gl-text-color;
-  background-color: $theme-gray-100;
+  background-color: $gray-100;
 
   &:hover {
-    background-color: $theme-gray-200;
+    background-color: $gray-200;
   }
 
   &:active,
@@ -1331,7 +1331,7 @@ $ide-commit-header-height: 48px;
   &:focus {
     outline: 0;
     box-shadow: none;
-    border-color: $theme-gray-200;
+    border-color: $gray-200;
   }
 }
 
@@ -1358,7 +1358,7 @@ $ide-commit-header-height: 48px;
 .ide-commit-editor-header {
   height: 65px;
   padding: 8px 16px;
-  background-color: $theme-gray-50;
+  background-color: $gray-50;
   box-shadow: inset 0 -1px $white-dark;
 }
 
@@ -1370,7 +1370,7 @@ $ide-commit-header-height: 48px;
 .ide-file-icon-holder {
   display: flex;
   align-items: center;
-  color: $theme-gray-700;
+  color: $gray-700;
 }
 
 .file-row:hover,

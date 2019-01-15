@@ -23,7 +23,7 @@
               = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
               = @project.topics_to_show
               - if @project.has_extra_topics?
-                = _("+ %{count} more") % { count: @project.count_of_extra_tags_not_shown  }
+                = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown  }
 
 
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end

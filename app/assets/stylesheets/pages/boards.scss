@@ -277,7 +277,7 @@
   padding: $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
-  border: 1px solid $theme-gray-200;
+  border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
   line-height: $gl-padding;
@@ -669,7 +669,7 @@
   }
 
   .board-card-info-icon {
-    color: $theme-gray-600;
+    color: $gray-600;
     margin-right: $gl-padding-4;
   }
 
