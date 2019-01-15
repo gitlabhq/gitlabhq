@@ -12,7 +12,7 @@ module Gitlab
         def initialize(entry)
           @entry = entry
           @metadata = {}
-          @attributes = {}
+          @attributes = { default: entry.default }
         end
 
         def value(value)
@@ -21,12 +21,12 @@ module Gitlab
         end
 
         def metadata(metadata)
-          @metadata.merge!(metadata)
+          @metadata.merge!(metadata.compact)
           self
         end
 
         def with(attributes)
-          @attributes.merge!(attributes)
+          @attributes.merge!(attributes.compact)
           self
         end
 
@@ -38,9 +38,7 @@ module Gitlab
           # See issue #18775.
           #
           if @value.nil?
-            Entry::Unspecified.new(
-              fabricate_unspecified
-            )
+            Entry::Unspecified.new(fabricate_unspecified)
           else
             fabricate(@entry, @value)
           end
@@ -53,10 +51,12 @@ module Gitlab
           # If entry has a default value we fabricate concrete node
           # with default value.
           #
-          if @entry.default.nil?
+          default = @attributes.fetch(:default)
+
+          if default.nil?
             fabricate(Entry::Undefined)
           else
-            fabricate(@entry, @entry.default)
+            fabricate(@entry, default)
           end
         end
 
@@ -64,6 +64,7 @@ module Gitlab
           entry.new(value, @metadata).tap do |node|
             node.key = @attributes[:key]
             node.parent = @attributes[:parent]
+            node.default = @attributes[:default]
             node.description = @attributes[:description]
           end
         end
