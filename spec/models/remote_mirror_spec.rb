@@ -303,6 +303,25 @@ describe RemoteMirror, :mailer do
     end
   end
 
+  context '#url=' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'resets all the columns when URL changes' do
+      remote_mirror.update(last_error: Time.now,
+                           last_update_at: Time.now,
+                           last_successful_update_at: Time.now,
+                           update_status: 'started',
+                           error_notification_sent: true)
+
+      expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
+        .to change { remote_mirror.last_error }.to(nil)
+        .and change { remote_mirror.last_update_at }.to(nil)
+        .and change { remote_mirror.last_successful_update_at }.to(nil)
+        .and change { remote_mirror.update_status }.to('finished')
+        .and change { remote_mirror.error_notification_sent }.to(false)
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
