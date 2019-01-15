@@ -36,6 +36,14 @@ module EmailsHelper
     nil
   end
 
+  def sanitize_name(name)
+    if name =~ URI::DEFAULT_PARSER.regexp[:URI_REF]
+      name.tr('.', '_')
+    else
+      name
+    end
+  end
+
   def password_reset_token_valid_time
     valid_hours = Devise.reset_password_within / 60 / 60
     if valid_hours >= 24
