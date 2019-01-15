@@ -162,6 +162,9 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
+    # Can be removed once upgraded to Rails 5.1 or higher
+    config.action_controller.raise_on_unfiltered_parameters = true
+
     # Nokogiri is significantly faster and uses less memory than REXML
     ActiveSupport::XmlMini.backend = 'Nokogiri'
 
