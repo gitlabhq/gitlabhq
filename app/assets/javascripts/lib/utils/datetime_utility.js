@@ -125,6 +125,7 @@ export const getTimeago = () => {
 
     timeago.register(timeagoLanguageCode, locale);
     timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
+
     timeagoInstance = timeago();
   }
 
@@ -143,24 +144,33 @@ export const renderTimeago = $els => {
 };
 
 /**
+ * For the given elements, will add timeago tooltips
+ */
+export const addTimeAgoTooltip = () => {
+  const timeagoEls = document.querySelectorAll('.js-timeago-render');
+  timeagoEls.forEach(element => {
+    $(element).tooltip({
+      template:
+        '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
+    });
+  });
+};
+
+/**
  * For the given elements, sets a tooltip with a formatted date.
  * @param {jQuery}
  * @param {Boolean} setTimeago
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
   $timeagoEls.each((i, el) => {
-    if (setTimeago) {
-      // Recreate with custom template
-      $(el).tooltip({
-        template:
-          '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
-      });
-    }
-
     el.classList.add('js-timeago-render');
   });
 
   renderTimeago($timeagoEls);
+
+  if (setTimeago) {
+    requestIdleCallback(addTimeAgoTooltip);
+  }
 };
 
 /**
