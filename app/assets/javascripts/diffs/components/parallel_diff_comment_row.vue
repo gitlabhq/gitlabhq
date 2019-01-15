@@ -101,6 +101,7 @@ export default {
         :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="line.left"
+        :help-page-path="helpPagePath"
         line-position="left"
       />
     </td>

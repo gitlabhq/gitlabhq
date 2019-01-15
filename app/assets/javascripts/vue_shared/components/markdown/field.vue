@@ -182,9 +182,9 @@ export default {
         this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
       }
 
-      this.$nextTick(() => {
-        $(this.$refs['markdown-preview']).renderGFM();
-      });
+      this.$nextTick()
+        .then(() => $(this.$refs['markdown-preview']).renderGFM())
+        .catch(() => new Flash(__('Error rendering markdown preview')));
     },
 
     versionedPreviewPath() {

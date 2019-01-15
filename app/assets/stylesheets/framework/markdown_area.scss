@@ -158,7 +158,7 @@
     max-height: calc(100vh - 100px);
   }
 
-  table {
+  table:not(.js-syntax-highlight) {
     @include markdown-table;
   }
 }
