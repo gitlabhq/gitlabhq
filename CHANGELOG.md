@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.4.14 (2019-01-15)
+
+### Security (1 change)
+
+- Validate bundle files before unpacking them.
+
+
 ## 11.4.13 (2018-12-28)
 
 ### Security (19 changes)
