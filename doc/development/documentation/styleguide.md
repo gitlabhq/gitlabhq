@@ -284,8 +284,14 @@ Inside the document:
   ```md
   Markdown code
   ```
+
+  ```text
+  Code for which no specific highlighting class is available.
+  ```
   ````
 
+- To display raw markdown instead of rendered markdown, use four backticks on their own lines around the
+  markdown to display. See [example](https://gitlab.com/gitlab-org/gitlab-ce/blob/8c1991b9bb7e3b8d606481fdea316d633cfa5eb7/doc/development/documentation/styleguide.md#L275-287).
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
 ## Alert boxes
