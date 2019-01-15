@@ -32,7 +32,6 @@ import MRWidgetStore from './stores/ee_switch_mr_widget_store';
 import MRWidgetService from './services/ee_switch_mr_widget_service';
 import eventHub from './event_hub';
 import stateMaps from './stores/ee_switch_state_maps';
-import SquashBeforeMerge from './components/states/squash_before_merge.vue';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
@@ -59,7 +58,6 @@ export default {
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
     'sha-mismatch': ShaMismatchState,
-    'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
