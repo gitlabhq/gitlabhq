@@ -61,7 +61,10 @@ class RemoteMirror < ActiveRecord::Base
 
       timestamp = Time.now
       remote_mirror.update!(
-        last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
+        last_update_at: timestamp,
+        last_successful_update_at: timestamp,
+        last_error: nil,
+        error_notification_sent: false
       )
     end
 
@@ -179,6 +182,10 @@ class RemoteMirror < ActiveRecord::Base
     project.repository.add_remote(remote_name, remote_url)
   end
 
+  def after_sent_notification
+    update_column(:error_notification_sent, true)
+  end
+
   private
 
   def store_credentials
@@ -221,7 +228,8 @@ class RemoteMirror < ActiveRecord::Base
       last_error: nil,
       last_update_at: nil,
       last_successful_update_at: nil,
-      update_status: 'finished'
+      update_status: 'finished',
+      error_notification_sent: false
     )
   end
 
