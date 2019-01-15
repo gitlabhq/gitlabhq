@@ -7,7 +7,7 @@
 
 - if @merge_request.assignee_id.present?
   %p
-    Assignee: #{@merge_request.assignee_name}
+    Assignee: #{sanitize_name(@merge_request.assignee_name)}
 
 = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 
