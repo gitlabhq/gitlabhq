@@ -1,7 +1,21 @@
 
 - if merge_request.merged?
-  = sprite_icon('merge', size: 16, css_class: "merge-request-status merged #{css_class}")
+  - mr_status_date = merge_request.merged_at
+  - mr_status_title = 'Merged'
+  - mr_status_icon = 'merge'
+  - mr_status_class = 'merged'
 - elsif merge_request.closed?
-  = sprite_icon('issue-close', size: 16, css_class: "merge-request-status closed #{css_class}")
+  - mr_status_date = merge_request.closed_event&.created_at
+  - mr_status_title = 'Closed'
+  - mr_status_icon = 'issue-close'
+  - mr_status_class = 'closed'
 - else
-  = sprite_icon('issue-open-m', size: 16, css_class: "merge-request-status open #{css_class}")
+  - mr_status_date = merge_request.created_at
+  - mr_status_title = 'Opened'
+  - mr_status_icon = 'issue-open-m'
+  - mr_status_class = 'open'
+
+- mr_status_tooltip = "<div class=\"bold mb-1\">#{mr_status_title}</div><span class=\"text-tertiary\">#{l(mr_status_date.to_time, format: :timeago_tooltip)}</span>"
+
+%span.suggestion-help-hover{ class: css_class, data: { toggle: 'tooltip', placement: 'bottom', html: 'true', title:  mr_status_tooltip } }
+  = sprite_icon(mr_status_icon, size: 16, css_class: "merge-request-status #{mr_status_class}")
