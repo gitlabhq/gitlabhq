@@ -64,7 +64,7 @@
 
   &::before {
     content: '';
-    border-left: 1px solid $theme-gray-200;
+    border-left: 1px solid $gray-200;
     position: absolute;
     left: 32px;
     top: -17px;
@@ -907,7 +907,7 @@
   }
 
   .btn svg {
-    fill: $theme-gray-700;
+    fill: $gray-700;
   }
 
   .dropdown-menu {
@@ -951,7 +951,7 @@
 
   .coverage {
     font-size: 12px;
-    color: $theme-gray-700;
+    color: $gray-700;
     line-height: initial;
   }
 

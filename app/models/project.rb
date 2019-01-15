@@ -2039,6 +2039,10 @@ class Project < ActiveRecord::Base
     pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
   end
 
+  def link_pool_repository
+    pool_repository&.link_repository(repository)
+  end
+
   private
 
   def merge_requests_allowing_collaboration(source_branch = nil)

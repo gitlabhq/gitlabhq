@@ -127,6 +127,11 @@ RSpec.configure do |config|
       .and_return(false)
   end
 
+  config.before(:suite) do
+    # Set latest release blog post URL for "What's new?" link
+    Gitlab::ReleaseBlogPost.instance.instance_variable_set(:@url, 'https://about.gitlab.com')
+  end
+
   config.before(:example, :request_store) do
     RequestStore.begin!
   end

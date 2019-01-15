@@ -5,14 +5,13 @@ module ObjectPool
     include ApplicationWorker
     include ObjectPoolQueue
 
-    def perform(pool_id, project_id)
-      pool = PoolRepository.find_by_id(pool_id)
-      return unless pool&.joinable?
-
+    # The use of pool id is deprecated. Keeping the argument allows old jobs to
+    # still be performed.
+    def perform(_pool_id, project_id)
       project = Project.find_by_id(project_id)
-      return unless project
+      return unless project&.pool_repository&.joinable?
 
-      pool.link_repository(project.repository)
+      project.link_pool_repository
 
       Projects::HousekeepingService.new(project).execute
     end

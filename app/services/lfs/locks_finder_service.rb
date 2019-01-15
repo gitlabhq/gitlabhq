@@ -12,7 +12,7 @@ module Lfs
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_locks
-      options = params.slice(:id, :path).compact.symbolize_keys
+      options = params.slice(:id, :path).to_h.compact.symbolize_keys
 
       project.lfs_file_locks.where(options)
     end

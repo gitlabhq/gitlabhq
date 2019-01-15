@@ -17,12 +17,6 @@ describe BitbucketServer::Client do
 
       subject.pull_requests(project, repo_slug)
     end
-
-    it 'throws an exception when connection fails' do
-      allow(BitbucketServer::Collection).to receive(:new).and_raise(OpenSSL::SSL::SSLError)
-
-      expect { subject.pull_requests(project, repo_slug) }.to raise_error(described_class::ServerError)
-    end
   end
 
   describe '#activities' do

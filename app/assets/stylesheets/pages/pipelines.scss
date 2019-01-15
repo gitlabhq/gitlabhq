@@ -433,6 +433,7 @@
 }
 
 .pipeline-tab-content {
+  display: flex;
   width: 100%;
   background-color: $gray-light;
   padding: $gl-padding;

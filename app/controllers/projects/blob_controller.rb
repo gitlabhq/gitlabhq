@@ -93,7 +93,7 @@ class Projects::BlobController < Projects::ApplicationController
     @blob.load_all_data!
     @lines = @blob.present.highlight.lines
 
-    @form = UnfoldForm.new(params)
+    @form = UnfoldForm.new(params.to_unsafe_h)
 
     @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 

@@ -217,6 +217,8 @@ repository from your GitLab server over HTTP.
 
 ## TLS support
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22602) in GitLab 11.7.
+
 Gitaly supports TLS credentials for GRPC authentication. To be able to communicate
 with a gitaly instance that listens for secure connections you will need to use `tls://` url
 scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.

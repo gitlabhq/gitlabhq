@@ -1,0 +1,5 @@
+---
+title: Fix several ActionController::Parameters deprecations
+merge_request: 24332
+author: Jasper Maes
+type: other

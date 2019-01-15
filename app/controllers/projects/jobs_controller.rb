@@ -4,10 +4,10 @@ class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
   include ContinueParams
 
-  before_action :build, except: [:index, :cancel_all]
+  before_action :build, except: [:index]
   before_action :authorize_read_build!
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
+    except: [:index, :show, :status, :raw, :trace, :erase]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
@@ -38,16 +38,6 @@ class Projects::JobsController < Projects::ApplicationController
     @builds = @builds.page(params[:page]).per(30).without_count
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def cancel_all
-    return access_denied! unless can?(current_user, :update_build, project)
-
-    @project.builds.running_or_pending.each do |build|
-      build.cancel if can?(current_user, :update_build, build)
-    end
-
-    redirect_to project_jobs_path(project)
-  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show

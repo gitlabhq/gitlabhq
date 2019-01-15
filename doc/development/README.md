@@ -47,6 +47,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
+- [Import/Export development documentation](import_export.md)
 - [Working with Merge Request diffs](diffs.md)
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)

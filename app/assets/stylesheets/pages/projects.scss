@@ -459,7 +459,7 @@
     margin-right: $gl-padding-4;
     margin-bottom: $gl-padding-4;
     color: $gl-text-color-secondary;
-    background-color: $theme-gray-100;
+    background-color: $gray-100;
     line-height: $gl-btn-line-height;
 
     &:hover {
@@ -914,7 +914,7 @@
 }
 
 .repository-language-bar-tooltip-share {
-  color: $theme-gray-400;
+  color: $gray-400;
 }
 
 pre.light-well {

@@ -55,7 +55,7 @@ describe OmniauthCallbacksController, type: :controller do
 
       context 'when a redirect url is stored' do
         it 'redirects with fragment' do
-          post provider, nil, { user_return_to: '/fake/url' }
+          post provider, session: { user_return_to: '/fake/url' }
 
           expect(response).to redirect_to('/fake/url#L101')
         end
@@ -63,7 +63,7 @@ describe OmniauthCallbacksController, type: :controller do
 
       context 'when a redirect url with a fragment is stored' do
         it 'redirects with the new fragment' do
-          post provider, nil, { user_return_to: '/fake/url#replaceme' }
+          post provider, session: { user_return_to: '/fake/url#replaceme' }
 
           expect(response).to redirect_to('/fake/url#L101')
         end
