@@ -74,16 +74,6 @@ describe API::Release::Links do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:request) { get api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer) }
-      end
-    end
   end
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links/:link_id' do
@@ -127,16 +117,6 @@ describe API::Release::Links do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:request) { get api("/projects/#{project.id}/releases/non_existing_tag/assets/links/#{release_link.id}", maintainer) }
       end
     end
   end
@@ -231,19 +211,6 @@ describe API::Release::Links do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:request) do
-          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer),
-               params: params
-        end
-      end
-    end
   end
 
   describe 'PUT /projects/:id/releases/:tag_name/assets/links/:link_id' do
@@ -328,19 +295,6 @@ describe API::Release::Links do
         end
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:request) do
-          put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-              params: params
-        end
-      end
-    end
   end
 
   describe 'DELETE /projects/:id/releases/:tag_name/assets/links/:link_id' do
@@ -398,18 +352,6 @@ describe API::Release::Links do
           let(:request) do
             delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", non_project_member)
           end
-        end
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it_behaves_like '404 response' do
-        let(:request) do
-          delete api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer)
         end
       end
     end

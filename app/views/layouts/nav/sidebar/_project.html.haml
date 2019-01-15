@@ -29,7 +29,7 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
-          - if project_nav_tab?(:releases) && Feature.enabled?(:releases_page, @project)
+          - if project_nav_tab?(:releases)
             = nav_link(controller: :releases) do
               = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
                 %span= _('Releases')

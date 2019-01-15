@@ -69,6 +69,9 @@ The following API resources are available:
 - [Sidekiq metrics](sidekiq_metrics.md)
 - [System hooks](system_hooks.md)
 - [Tags](tags.md)
+- [Releases](releases/index.md)
+- Release Assets
+  - [Links](releases/links.md)
 - [Todos](todos.md)
 - [Users](users.md)
 - [Validate CI configuration](lint.md) (linting)
