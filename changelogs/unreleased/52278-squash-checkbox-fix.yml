@@ -1,0 +1,5 @@
+---
+title: Resolve When merging an MR, the squash checkbox isnt always supported
+merge_request: 24296
+author:
+type: fixed

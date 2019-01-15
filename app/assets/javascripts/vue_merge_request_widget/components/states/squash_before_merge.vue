@@ -1,6 +1,5 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import eventHub from '~/vue_merge_request_widget/event_hub';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -11,23 +10,19 @@ export default {
     tooltip,
   },
   props: {
-    mr: {
-      type: Object,
-      required: true,
-    },
-    isMergeButtonDisabled: {
+    value: {
       type: Boolean,
       required: true,
     },
-  },
-  data() {
-    return {
-      squashBeforeMerge: this.mr.squash,
-    };
-  },
-  methods: {
-    updateSquashModel() {
-      eventHub.$emit('MRWidgetUpdateSquash', this.squashBeforeMerge);
+    helpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 };
@@ -37,18 +32,19 @@ export default {
   <div class="accept-control inline">
     <label class="merge-param-checkbox">
       <input
-        v-model="squashBeforeMerge"
-        :disabled="isMergeButtonDisabled"
+        :checked="value"
+        :disabled="isDisabled"
         type="checkbox"
         name="squash"
         class="qa-squash-checkbox"
-        @change="updateSquashModel"
+        @change="$emit('input', $event.target.checked);"
       />
       {{ __('Squash commits') }}
     </label>
     <a
+      v-if="helpPath"
       v-tooltip
-      :href="mr.squashBeforeMergeHelpPath"
+      :href="helpPath"
       data-title="About this feature"
       data-placement="bottom"
       target="_blank"
