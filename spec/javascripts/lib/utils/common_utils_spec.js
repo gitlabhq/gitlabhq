@@ -347,20 +347,31 @@ describe('common_utils', () => {
   });
 
   describe('parseBoolean', () => {
+    const { parseBoolean } = commonUtils;
+
     it('returns true for "true"', () => {
-      expect(commonUtils.parseBoolean('true')).toEqual(true);
+      expect(parseBoolean('true')).toEqual(true);
     });
 
     it('returns false for "false"', () => {
-      expect(commonUtils.parseBoolean('false')).toEqual(false);
+      expect(parseBoolean('false')).toEqual(false);
     });
 
     it('returns false for "something"', () => {
-      expect(commonUtils.parseBoolean('something')).toEqual(false);
+      expect(parseBoolean('something')).toEqual(false);
     });
 
     it('returns false for null', () => {
-      expect(commonUtils.parseBoolean(null)).toEqual(false);
+      expect(parseBoolean(null)).toEqual(false);
+    });
+
+    it('is idempotent', () => {
+      const input = ['true', 'false', 'something', null];
+      input.forEach(value => {
+        const result = parseBoolean(value);
+
+        expect(parseBoolean(result)).toBe(result);
+      });
     });
   });
 
