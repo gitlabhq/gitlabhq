@@ -1,0 +1,5 @@
+---
+title: Prevent awarding emojis to notes whose parent is not visible to user
+merge_request:
+author:
+type: security
