@@ -12,9 +12,9 @@ Set the title to: `Security Release: 11.4.X, 11.3.X, and 11.2.X`
 
 ## Version issues:
 
-* 11.5.X: {release task link}
 * 11.4.X: {release task link}
 * 11.3.X: {release task link}
+* 11.2.X: {release task link}
 
 ## Security Issues:
 
