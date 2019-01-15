@@ -127,7 +127,7 @@ export default {
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handleFormUpdate="handleSaveNote"
-            @cancelForm="closeDiffFileCommentForm(diffFile.file_hash);"
+            @cancelForm="closeDiffFileCommentForm(diffFile.file_hash)"
           />
         </div>
       </diff-viewer>

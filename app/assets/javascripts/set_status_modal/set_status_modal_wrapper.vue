@@ -219,7 +219,7 @@ export default {
               name="button"
               type="button"
               class="js-clear-user-status-button clear-user-status btn"
-              @click="clearStatusInputs();"
+              @click="clearStatusInputs()"
             >
               <icon name="close" />
             </button>

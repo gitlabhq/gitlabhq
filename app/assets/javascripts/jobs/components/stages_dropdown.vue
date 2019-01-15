@@ -55,7 +55,7 @@ export default {
 
     <ul class="dropdown-menu">
       <li v-for="stage in stages" :key="stage.name">
-        <button type="button" class="js-stage-item stage-item" @click="onStageClick(stage);">
+        <button type="button" class="js-stage-item stage-item" @click="onStageClick(stage)">
           {{ stage.name }}
         </button>
       </li>

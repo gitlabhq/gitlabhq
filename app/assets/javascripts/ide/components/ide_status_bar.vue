@@ -84,7 +84,7 @@ export default {
         <button
           type="button"
           class="p-0 border-0 h-50"
-          @click="openRightPane($options.rightSidebarViews.pipelines);"
+          @click="openRightPane($options.rightSidebarViews.pipelines)"
         >
           <ci-icon
             v-tooltip

@@ -48,7 +48,7 @@ export default {
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click.stop.prevent="stageChange(path);"
+      @click.stop.prevent="stageChange(path)"
     >
       <icon :size="16" name="mobile-issue-close" class="ml-auto mr-auto" />
     </button>
@@ -70,7 +70,7 @@ export default {
       :header-title-text="modalTitle"
       :footer-primary-button-text="__('Discard changes')"
       footer-primary-button-variant="danger"
-      @submit="discardFileChanges(path);"
+      @submit="discardFileChanges(path)"
     >
       {{ __("You will loose all changes you've made to this file. This action cannot be undone.") }}
     </gl-modal>

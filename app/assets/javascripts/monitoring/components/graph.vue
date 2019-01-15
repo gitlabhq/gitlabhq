@@ -257,8 +257,8 @@ export default {
 <template>
   <div
     class="prometheus-graph"
-    @mouseover="showFlagContent = true;"
-    @mouseleave="showFlagContent = false;"
+    @mouseover="showFlagContent = true"
+    @mouseleave="showFlagContent = false"
   >
     <div class="prometheus-graph-header">
       <h5 class="prometheus-graph-title">{{ graphData.title }}</h5>
@@ -300,7 +300,7 @@ export default {
             :height="graphHeight - 100"
             class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            @mousemove="handleMouseOverGraph($event);"
+            @mousemove="handleMouseOverGraph($event)"
           />
         </svg>
         <svg v-else :viewBox="innerViewBox" class="js-no-data-to-display">

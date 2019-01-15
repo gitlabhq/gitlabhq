@@ -219,7 +219,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'editor' });"
+            @click.prevent="setFileViewMode({ file, viewMode: 'editor' })"
           >
             <template v-if="viewer === $options.viewerTypes.edit">
               {{ __('Edit') }}
@@ -233,7 +233,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'preview' });"
+            @click.prevent="setFileViewMode({ file, viewMode: 'preview' })"
           >
             {{ file.previewMode.previewTitle }}
           </a>

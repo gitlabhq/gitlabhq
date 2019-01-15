@@ -97,7 +97,7 @@ export default {
       v-if="canComment"
       type="button"
       class="btn-transparent position-absolute image-diff-overlay-add-comment w-100 h-100 js-add-image-diff-note-button"
-      @click="clickedImage($event.offsetX, $event.offsetY);"
+      @click="clickedImage($event.offsetX, $event.offsetY)"
     >
       <span class="sr-only"> {{ __('Add image comment') }} </span>
     </button>
@@ -109,7 +109,7 @@ export default {
       :disabled="!shouldToggleDiscussion"
       class="js-image-badge"
       type="button"
-      @click="toggleDiscussion({ discussionId: discussion.id });"
+      @click="toggleDiscussion({ discussionId: discussion.id })"
     >
       <icon v-if="showCommentIcon" name="image-comment-dark" />
       <template v-else>
