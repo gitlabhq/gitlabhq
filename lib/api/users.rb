@@ -135,7 +135,7 @@ module API
       params do
         requires :id_or_username, type: String, desc: 'The ID or username of the user'
       end
-      get ":id_or_username/status" do
+      get ":id_or_username/status", requirements: { id_or_username: API::NO_SLASH_URL_PART_REGEX } do
         user = find_user(params[:id_or_username])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 

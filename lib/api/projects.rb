@@ -128,7 +128,7 @@ module API
       end
     end
 
-    resource :users, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :users, requirements: { user_id: API::NO_SLASH_URL_PART_REGEX } do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end

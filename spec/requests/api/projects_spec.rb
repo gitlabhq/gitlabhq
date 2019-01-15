@@ -21,7 +21,7 @@ describe API::Projects do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:project2) { create(:project, namespace: user.namespace) }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
-  let(:user4) { create(:user) }
+  let(:user4) { create(:user, username: 'user.with.dot') }
   let(:project3) do
     create(:project,
     :private,
@@ -724,8 +724,17 @@ describe API::Projects do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it 'returns projects filtered by user' do
+    it 'returns projects filtered by user id' do
       get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+
+    it 'returns projects filtered by username' do
+      get api("/users/#{user4.username}/projects/", user)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
