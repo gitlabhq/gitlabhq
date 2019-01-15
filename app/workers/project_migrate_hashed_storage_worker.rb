@@ -12,7 +12,7 @@ class ProjectMigrateHashedStorageWorker
 
     uuid = lease_for(project_id).try_obtain
     if uuid
-      ::Projects::HashedStorageMigrationService.new(project, old_disk_path || project.full_path, logger: logger).execute
+      ::Projects::HashedStorage::MigrationService.new(project, old_disk_path || project.full_path, logger: logger).execute
     else
       false
     end

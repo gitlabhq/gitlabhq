@@ -9,7 +9,7 @@ describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
     let(:lease_timeout) { ProjectMigrateHashedStorageWorker::LEASE_TIMEOUT }
 
     it 'skips when project no longer exists' do
-      expect(::Projects::HashedStorageMigrationService).not_to receive(:new)
+      expect(::Projects::HashedStorage::MigrationService).not_to receive(:new)
 
       subject.perform(-1)
     end
@@ -17,7 +17,7 @@ describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
     it 'skips when project is pending delete' do
       pending_delete_project = create(:project, :empty_repo, pending_delete: true)
 
-      expect(::Projects::HashedStorageMigrationService).not_to receive(:new)
+      expect(::Projects::HashedStorage::MigrationService).not_to receive(:new)
 
       subject.perform(pending_delete_project.id)
     end
@@ -27,7 +27,7 @@ describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
 
       migration_service = spy
 
-      allow(::Projects::HashedStorageMigrationService)
+      allow(::Projects::HashedStorage::MigrationService)
         .to receive(:new).with(project, project.full_path, logger: subject.logger)
         .and_return(migration_service)
 
@@ -39,7 +39,7 @@ describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
     it 'skips when dont have lease when dont have exclusive lease' do
       stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
-      expect(::Projects::HashedStorageMigrationService).not_to receive(:new)
+      expect(::Projects::HashedStorage::MigrationService).not_to receive(:new)
 
       subject.perform(project.id)
     end
