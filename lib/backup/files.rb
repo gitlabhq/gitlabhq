@@ -75,12 +75,10 @@ module Backup
       options[:err] = err_w
       status = Open3.pieline(*cmd_list, options)
       err_w.close
-      unless status.compact.all?(&:success?)
-        error = err_r.read
-        unless error =~ /^g?tar: \.: Cannot mkdir: No such file or directory$/
-          raise Backup::Error, 'Backup failed'
-        end
-      end
+      return if status.compact.all?(&:success?)
+
+      regex = /^g?tar: \.: Cannot mkdir: No such file or directory$/
+      raise Backup::Error, 'Backup failed' unless err_r.read =~ regex
     end
   end
 end
