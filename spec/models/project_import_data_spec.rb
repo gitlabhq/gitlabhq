@@ -39,4 +39,15 @@ describe ProjectImportData do
       expect(row.credentials).to eq({ 'number' => 10, 'foo' => 'bar' })
     end
   end
+
+  describe '#clear_credentials' do
+    it 'clears out the Hash' do
+      row = described_class.new
+
+      row.merge_credentials('number' => 10)
+      row.clear_credentials
+
+      expect(row.credentials).to eq({})
+    end
+  end
 end
