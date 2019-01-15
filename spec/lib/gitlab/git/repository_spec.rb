@@ -1753,22 +1753,23 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#create_from_bundle' do
-    let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:valid_bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:malicious_bundle_path) { Rails.root.join('spec/fixtures/malicious.bundle') }
     let(:project) { create(:project) }
     let(:imported_repo) { project.repository.raw }
 
     before do
-      expect(repository.bundle_to_disk(bundle_path)).to be_truthy
+      expect(repository.bundle_to_disk(valid_bundle_path)).to be_truthy
     end
 
     after do
-      FileUtils.rm_rf(bundle_path)
+      FileUtils.rm_rf(valid_bundle_path)
     end
 
     it 'creates a repo from a bundle file' do
       expect(imported_repo).not_to exist
 
-      result = imported_repo.create_from_bundle(bundle_path)
+      result = imported_repo.create_from_bundle(valid_bundle_path)
 
       expect(result).to be_truthy
       expect(imported_repo).to exist
@@ -1776,10 +1777,16 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     it 'creates a symlink to the global hooks dir' do
-      imported_repo.create_from_bundle(bundle_path)
+      imported_repo.create_from_bundle(valid_bundle_path)
       hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
 
       expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+    end
+
+    it 'raises an error if the bundle is an attempted malicious payload' do
+      expect do
+        imported_repo.create_from_bundle(malicious_bundle_path)
+      end.to raise_error(::Gitlab::Git::BundleFile::InvalidBundleError)
     end
   end
 
