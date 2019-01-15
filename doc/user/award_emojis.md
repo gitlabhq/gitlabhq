@@ -7,13 +7,12 @@
 
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
-[snippets](snippets.md), and virtually everywhere where you can have a discussion.
+[snippets](snippets.md), and anywhere you can have a discussion.
 
 ![Award emoji](img/award_emoji_select.png)
 
 Award emoji make it much easier to give and receive feedback without a long
-comment thread. Comments that are only emoji will automatically become
-award emoji.
+comment thread.
 
 For information on the relevant API, see [Award Emoji API](../api/award_emoji.md).
 

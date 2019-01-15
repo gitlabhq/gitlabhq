@@ -28,10 +28,10 @@ GET /projects/:id/snippets/:snippet_id/award_emoji
 
 Parameters:
 
-| Attribute      | Type           | Required | Description                                                                                                  |
-|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
+| Attribute      | Type           | Required | Description                                                                  |
+|:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
 
 Example request:
 
@@ -90,11 +90,11 @@ GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute      | Type           | Required | Description                                                                                                  |
-|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
-| `award_id`     | integer        | yes      | ID of the award emoji.                                                                                       |
+| Attribute      | Type           | Required | Description                                                                  |
+|:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `award_id`     | integer        | yes      | ID of the award emoji.                                                       |
 
 Example request:
 
@@ -135,11 +135,11 @@ POST /projects/:id/snippets/:snippet_id/award_emoji
 
 Parameters:
 
-| Attribute      | Type           | Required | Description                                                                                                  |
-|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
-| `name`         | string         | yes      | Name of the emoji without colons.                                                                            |
+| Attribute      | Type           | Required | Description                                                                  |
+|:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `name`         | string         | yes      | Name of the emoji without colons.                                            |
 
 ```sh
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish
@@ -181,11 +181,11 @@ DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute      | Type           | Required | Description                                                                                                  |
-|:---------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.                                     |
-| `award_id`     | integer        | yes      | ID of an award emoji.                                                                                        |
+| Attribute      | Type           | Required | Description                                                                  |
+|:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `award_id`     | integer        | yes      | ID of an award emoji.                                                        |
 
 ```sh
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
@@ -209,11 +209,11 @@ GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 
 Parameters:
 
-| Attribute   | Type           | Required | Description                                                                                                  |
-|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
+| Attribute   | Type           | Required | Description                                                                  |
+|:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
 
 Example request:
 
@@ -254,12 +254,12 @@ GET /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute   | Type           | Required | Description                                                                                                  |
-|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
-| `award_id`  | integer        | yes      | ID of the award emoji.                                                                                       |
+| Attribute   | Type           | Required | Description                                                                  |
+|:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
+| `award_id`  | integer        | yes      | ID of the award emoji.                                                       |
 
 Example request:
 
@@ -298,12 +298,12 @@ POST /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji
 
 Parameters:
 
-| Attribute   | Type           | Required | Description                                                                                                  |
-|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
-| `name`      | string         | yes      | Name of the emoji without colons.                                                                            |
+| Attribute   | Type           | Required | Description                                                                  |
+|:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
+| `name`      | string         | yes      | Name of the emoji without colons.                                            |
 
 Example request:
 
@@ -345,12 +345,12 @@ DELETE /projects/:id/issues/:issue_iid/notes/:note_id/award_emoji/:award_id
 
 Parameters:
 
-| Attribute   | Type           | Required | Description                                                                                                  |
-|:------------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                                                     |
-| `note_id`   | integer        | yes      | ID of a comment (note).                                                                                      |
-| `award_id`  | integer        | yes      | ID of an award_emoji.                                                                                        |
+| Attribute   | Type           | Required | Description                                                                  |
+|:------------|:---------------|:---------|:-----------------------------------------------------------------------------|
+| `id`        | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `issue_iid` | integer        | yes      | Internal ID of an issue.                                                     |
+| `note_id`   | integer        | yes      | ID of a comment (note).                                                      |
+| `award_id`  | integer        | yes      | ID of an award_emoji.                                                        |
 
 Example request:
 
