@@ -722,6 +722,42 @@ describe Group do
     end
   end
 
+  describe '#highest_group_member', :nested_groups do
+    let(:nested_group) { create(:group, parent: group) }
+    let(:nested_group_2) { create(:group, parent: nested_group) }
+    let(:user) { create(:user) }
+
+    subject(:highest_group_member) { nested_group_2.highest_group_member(user) }
+
+    context 'when the user is not a member of any group in the hierarchy' do
+      it 'returns nil' do
+        expect(highest_group_member).to be_nil
+      end
+    end
+
+    context 'when the user is only a member of one group in the hierarchy' do
+      before do
+        nested_group.add_developer(user)
+      end
+
+      it 'returns that group member' do
+        expect(highest_group_member.access_level).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    context 'when the user is a member of several groups in the hierarchy' do
+      before do
+        group.add_owner(user)
+        nested_group.add_developer(user)
+        nested_group_2.add_maintainer(user)
+      end
+
+      it 'returns the group member with the highest access level' do
+        expect(highest_group_member.access_level).to eq(Gitlab::Access::OWNER)
+      end
+    end
+  end
+
   describe '#has_parent?' do
     context 'when the group has a parent' do
       it 'should be truthy' do
