@@ -430,13 +430,14 @@ export const historyPushState = newUrl => {
 };
 
 /**
- * Returns true for a String "true" and false otherwise.
- * This is the opposite of Boolean(...).toString()
+ * Returns true for a String value of "true" and false otherwise.
+ * This is the opposite of Boolean(...).toString().
+ * `parseBoolean` is idempotent.
  *
  * @param  {String} value
  * @returns {Boolean}
  */
-export const parseBoolean = value => value === 'true';
+export const parseBoolean = value => (value && value.toString()) === 'true';
 
 /**
  * Converts permission provided as strings to booleans.
