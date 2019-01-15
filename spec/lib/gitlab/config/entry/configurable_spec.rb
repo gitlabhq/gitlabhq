@@ -30,11 +30,11 @@ describe Gitlab::Config::Entry::Configurable do
   end
 
   describe 'configured entries' do
-    let(:another) { double('another', default: nil) }
+    let(:entry_class) { double('entry_class', default: nil) }
 
     before do
-      entry.class_exec(another) do |another|
-        entry :object, another, description: 'test object'
+      entry.class_exec(entry_class) do |entry_class|
+        entry :object, entry_class, description: 'test object'
       end
     end
 

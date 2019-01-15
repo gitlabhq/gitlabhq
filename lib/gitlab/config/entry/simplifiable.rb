@@ -6,6 +6,8 @@ module Gitlab
       class Simplifiable < SimpleDelegator
         EntryStrategy = Struct.new(:name, :condition)
 
+        attr_reader :subject
+
         def initialize(config, **metadata)
           unless self.class.const_defined?(:UnknownStrategy)
             raise ArgumentError, 'UndefinedStrategy not available!'

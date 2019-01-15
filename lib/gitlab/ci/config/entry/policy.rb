@@ -65,7 +65,7 @@ module Gitlab
           end
 
           def value
-            default.to_h.deep_merge(@subject.value.to_h)
+            default.to_h.deep_merge(subject.value.to_h)
           end
         end
       end
