@@ -58,7 +58,7 @@ describe('MergeRequest', function() {
             {
               merge_request: {
                 description: '- [ ] Task List Item',
-                lock_version: undefined,
+                lock_version: 0,
                 update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
               },
             },

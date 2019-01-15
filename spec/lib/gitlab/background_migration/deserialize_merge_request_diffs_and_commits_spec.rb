@@ -177,7 +177,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
         end
 
         before do
-          allow_any_instance_of(described_class::MergeRequestDiff::ActiveRecord_Relation)
+          allow_any_instance_of(ActiveRecord::Relation)
             .to receive(:update_all).and_raise(exception)
         end
 

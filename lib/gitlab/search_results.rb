@@ -113,7 +113,7 @@ module Gitlab
           issues.full_search(query)
         end
 
-      issues.reorder('updated_at DESC')
+      issues.reorder('issues.updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -121,7 +121,7 @@ module Gitlab
     def milestones
       milestones = Milestone.where(project_id: project_ids_relation)
       milestones = milestones.search(query)
-      milestones.reorder('updated_at DESC')
+      milestones.reorder('milestones.updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -139,7 +139,7 @@ module Gitlab
           merge_requests.full_search(query)
         end
 
-      merge_requests.reorder('updated_at DESC')
+      merge_requests.reorder('merge_requests.updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

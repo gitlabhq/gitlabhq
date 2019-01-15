@@ -13,8 +13,8 @@ module Storage
         raise Gitlab::UpdatePathError.new("Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry")
       end
 
-      parent_was = if parent_changed? && parent_id_was.present?
-                     Namespace.find(parent_id_was) # raise NotFound early if needed
+      parent_was = if parent_changed? && parent_id_before_last_save.present?
+                     Namespace.find(parent_id_before_last_save) # raise NotFound early if needed
                    end
 
       move_repositories

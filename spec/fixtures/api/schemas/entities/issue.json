@@ -5,7 +5,7 @@
     "iid": { "type": "integer" },
     "author_id": { "type": "integer" },
     "description": { "type": ["string", "null"] },
-    "lock_version": { "type": ["string", "null"] },
+    "lock_version": { "type": ["integer", "null"] },
     "milestone_id": { "type": ["string", "null"] },
     "title": { "type": "string" },
     "moved_to_id": { "type": ["integer", "null"] },

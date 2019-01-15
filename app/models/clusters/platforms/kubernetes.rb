@@ -230,7 +230,7 @@ module Clusters
       end
 
       def update_kubernetes_namespace
-        return unless namespace_changed?
+        return unless saved_change_to_namespace?
 
         run_after_commit do
           ClusterConfigureWorker.perform_async(cluster_id)

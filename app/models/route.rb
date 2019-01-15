@@ -14,26 +14,26 @@ class Route < ApplicationRecord
 
   before_validation :delete_conflicting_orphaned_routes
   after_create :delete_conflicting_redirects
-  after_update :delete_conflicting_redirects, if: :path_changed?
+  after_update :delete_conflicting_redirects, if: :saved_change_to_path?
   after_update :create_redirect_for_old_path
   after_update :rename_descendants
 
   scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
 
   def rename_descendants
-    return unless path_changed? || name_changed?
+    return unless saved_change_to_path? || saved_change_to_name?
 
-    descendant_routes = self.class.inside_path(path_was)
+    descendant_routes = self.class.inside_path(path_before_last_save)
 
     descendant_routes.each do |route|
       attributes = {}
 
-      if path_changed? && route.path.present?
-        attributes[:path] = route.path.sub(path_was, path)
+      if saved_change_to_path? && route.path.present?
+        attributes[:path] = route.path.sub(path_before_last_save, path)
       end
 
-      if name_changed? && name_was.present? && route.name.present?
-        attributes[:name] = route.name.sub(name_was, name)
+      if saved_change_to_name? && name_before_last_save.present? && route.name.present?
+        attributes[:name] = route.name.sub(name_before_last_save, name)
       end
 
       if attributes.present?
@@ -65,7 +65,7 @@ class Route < ApplicationRecord
   private
 
   def create_redirect_for_old_path
-    create_redirect(path_was) if path_changed?
+    create_redirect(path_before_last_save) if saved_change_to_path?
   end
 
   def delete_conflicting_orphaned_routes

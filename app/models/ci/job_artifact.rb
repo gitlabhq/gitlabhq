@@ -56,7 +56,7 @@ module Ci
 
     update_project_statistics stat: :build_artifacts_size
 
-    after_save :update_file_store, if: :file_changed?
+    after_save :update_file_store, if: :saved_change_to_file?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
