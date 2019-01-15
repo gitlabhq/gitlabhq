@@ -117,6 +117,13 @@ sudo make prefix=/usr/local install
 # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 ```
 
+For the [Custom Favicon](../customization/favicon.md) to work, graphicsmagick
+needs to be installed.
+
+```sh
+sudo apt-get install -y graphicsmagick
+```
+
 **Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-ce/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
 ```sh
