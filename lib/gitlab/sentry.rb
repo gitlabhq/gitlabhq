@@ -52,14 +52,6 @@ module Gitlab
       end
     end
 
-    def self.program_context
-      if Sidekiq.server?
-        'sidekiq'
-      else
-        'rails'
-      end
-    end
-
     def self.should_raise_for_dev?
       Rails.env.development? || Rails.env.test?
     end
