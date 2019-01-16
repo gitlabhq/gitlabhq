@@ -1,0 +1,6 @@
+---
+title: Update sidekiq-cron to 1.0.4 and use fugit to replace rufus-scheduler to parse
+  cron syntax
+merge_request: 24235
+author:
+type: other
