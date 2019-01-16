@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
   let(:group) { create(:group, name: 'foo', path: 'foo') }
 
@@ -102,3 +103,4 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

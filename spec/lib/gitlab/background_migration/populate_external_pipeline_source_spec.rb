@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration, schema: 20180916011959 do
   let(:migration) { described_class.new }
 
@@ -65,3 +66,4 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
     it_behaves_like 'no changes'
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs
