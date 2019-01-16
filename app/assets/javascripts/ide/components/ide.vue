@@ -1,19 +1,16 @@
 <script>
 import Vue from 'vue';
-import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
+import FindFile from '~/vue_shared/components/file_finder/index.vue';
 import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
 import RepoEditor from './repo_editor.vue';
-import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
 import ErrorMessage from './error_message.vue';
 import CommitEditorHeader from './commit_sidebar/editor_header.vue';
-
-const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
@@ -42,21 +39,18 @@ export default {
       'emptyStateSvgPath',
       'currentProjectId',
       'errorMessage',
+      'loading',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges', 'someUncommittedChanges', 'isCommitModeActive']),
+    ...mapGetters([
+      'activeFile',
+      'hasChanges',
+      'someUncommittedChanges',
+      'isCommitModeActive',
+      'allBlobs',
+    ]),
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
-
-    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
-      if (e.preventDefault) {
-        e.preventDefault();
-      }
-
-      this.toggleFileFinder(!this.fileFindVisible);
-    });
-
-    Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
   },
   methods: {
     ...mapActions(['toggleFileFinder']),
@@ -70,17 +64,8 @@ export default {
       });
       return returnValue;
     },
-    mousetrapStopCallback(e, el, combo) {
-      if (
-        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
-        el.classList.contains('inputarea')
-      ) {
-        return true;
-      } else if (combo === 'command+p' || combo === 'ctrl+p') {
-        return false;
-      }
-
-      return originalStopCallback(e, el, combo);
+    openFile(file) {
+      this.$router.push(`/project${file.url}`);
     },
   },
 };
@@ -90,7 +75,14 @@ export default {
   <article class="ide position-relative d-flex flex-column align-items-stretch">
     <error-message v-if="errorMessage" :message="errorMessage" />
     <div class="ide-view flex-grow d-flex">
-      <find-file v-show="fileFindVisible" />
+      <find-file
+        v-show="fileFindVisible"
+        :files="allBlobs"
+        :visible="fileFindVisible"
+        :loading="loading"
+        @toggle="toggleFileFinder"
+        @click="openFile"
+      />
       <ide-sidebar />
       <div class="multi-file-edit-pane">
         <template v-if="activeFile">

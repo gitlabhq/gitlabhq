@@ -29,4 +29,5 @@ export default () => ({
   highlightedRow: null,
   renderTreeList: true,
   showWhitespace: true,
+  fileFinderVisible: false,
 });

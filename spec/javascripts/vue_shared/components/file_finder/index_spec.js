@@ -1,54 +1,51 @@
 import Vue from 'vue';
-import store from '~/ide/stores';
-import FindFileComponent from '~/ide/components/file_finder/index.vue';
+import Mousetrap from 'mousetrap';
+import FindFileComponent from '~/vue_shared/components/file_finder/index.vue';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
-import router from '~/ide/ide_router';
-import { file, resetStore } from '../../helpers';
-import { mountComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { file } from 'spec/ide/helpers';
+import timeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
-describe('IDE File finder item spec', () => {
+describe('File finder item spec', () => {
   const Component = Vue.extend(FindFileComponent);
   let vm;
 
-  beforeEach(done => {
-    setFixtures('<div id="app"></div>');
-
-    vm = mountComponentWithStore(Component, {
-      store,
-      el: '#app',
-      props: {
-        index: 0,
+  function createComponent(props) {
+    vm = new Component({
+      propsData: {
+        files: [],
+        visible: true,
+        loading: false,
+        ...props,
       },
     });
 
-    setTimeout(done);
+    vm.$mount('#app');
+  }
+
+  beforeEach(() => {
+    setFixtures('<div id="app"></div>');
   });
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('with entries', () => {
     beforeEach(done => {
-      Vue.set(vm.$store.state.entries, 'folder', {
-        ...file('folder'),
-        path: 'folder',
-        type: 'folder',
-      });
-
-      Vue.set(vm.$store.state.entries, 'index.js', {
-        ...file('index.js'),
-        path: 'index.js',
-        type: 'blob',
-        url: '/index.jsurl',
-      });
-
-      Vue.set(vm.$store.state.entries, 'component.js', {
-        ...file('component.js'),
-        path: 'component.js',
-        type: 'blob',
+      createComponent({
+        files: [
+          {
+            ...file('index.js'),
+            path: 'index.js',
+            type: 'blob',
+            url: '/index.jsurl',
+          },
+          {
+            ...file('component.js'),
+            path: 'component.js',
+            type: 'blob',
+          },
+        ],
       });
 
       setTimeout(done);
@@ -56,13 +53,14 @@ describe('IDE File finder item spec', () => {
 
     it('renders list of blobs', () => {
       expect(vm.$el.textContent).toContain('index.js');
+      expect(vm.$el.textContent).toContain('component.js');
       expect(vm.$el.textContent).not.toContain('folder');
     });
 
     it('filters entries', done => {
       vm.searchText = 'index';
 
-      vm.$nextTick(() => {
+      setTimeout(() => {
         expect(vm.$el.textContent).toContain('index.js');
         expect(vm.$el.textContent).not.toContain('component.js');
 
@@ -73,8 +71,8 @@ describe('IDE File finder item spec', () => {
     it('shows clear button when searchText is not empty', done => {
       vm.searchText = 'index';
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.dropdown-input-clear').classList).toContain('show');
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.dropdown-input').classList).toContain('has-value');
         expect(vm.$el.querySelector('.dropdown-input-search').classList).toContain('hidden');
 
         done();
@@ -84,11 +82,11 @@ describe('IDE File finder item spec', () => {
     it('clear button resets searchText', done => {
       vm.searchText = 'index';
 
-      vm.$nextTick()
+      timeoutPromise()
         .then(() => {
           vm.$el.querySelector('.dropdown-input-clear').click();
         })
-        .then(vm.$nextTick)
+        .then(timeoutPromise)
         .then(() => {
           expect(vm.searchText).toBe('');
         })
@@ -100,11 +98,11 @@ describe('IDE File finder item spec', () => {
       spyOn(vm.$refs.searchInput, 'focus');
       vm.searchText = 'index';
 
-      vm.$nextTick()
+      timeoutPromise()
         .then(() => {
           vm.$el.querySelector('.dropdown-input-clear').click();
         })
-        .then(vm.$nextTick)
+        .then(timeoutPromise)
         .then(() => {
           expect(vm.$refs.searchInput.focus).toHaveBeenCalled();
         })
@@ -116,7 +114,7 @@ describe('IDE File finder item spec', () => {
       it('returns 1 when no filtered entries exist', done => {
         vm.searchText = 'testing 123';
 
-        vm.$nextTick(() => {
+        setTimeout(() => {
           expect(vm.listShowCount).toBe(1);
 
           done();
@@ -136,7 +134,7 @@ describe('IDE File finder item spec', () => {
       it('returns 33 when entries dont exist', done => {
         vm.searchText = 'testing 123';
 
-        vm.$nextTick(() => {
+        setTimeout(() => {
           expect(vm.listHeight).toBe(33);
 
           done();
@@ -148,7 +146,7 @@ describe('IDE File finder item spec', () => {
       it('returns length of filtered blobs', done => {
         vm.searchText = 'index';
 
-        vm.$nextTick(() => {
+        setTimeout(() => {
           expect(vm.filteredBlobsLength).toBe(1);
 
           done();
@@ -162,7 +160,7 @@ describe('IDE File finder item spec', () => {
           vm.focusedIndex = 1;
           vm.searchText = 'test';
 
-          vm.$nextTick(() => {
+          setTimeout(() => {
             expect(vm.focusedIndex).toBe(0);
 
             done();
@@ -170,16 +168,16 @@ describe('IDE File finder item spec', () => {
         });
       });
 
-      describe('fileFindVisible', () => {
+      describe('visible', () => {
         it('returns searchText when false', done => {
           vm.searchText = 'test';
-          vm.$store.state.fileFindVisible = true;
+          vm.visible = true;
 
-          vm.$nextTick()
+          timeoutPromise()
             .then(() => {
-              vm.$store.state.fileFindVisible = false;
+              vm.visible = false;
             })
-            .then(vm.$nextTick)
+            .then(timeoutPromise)
             .then(() => {
               expect(vm.searchText).toBe('');
             })
@@ -191,20 +189,19 @@ describe('IDE File finder item spec', () => {
 
     describe('openFile', () => {
       beforeEach(() => {
-        spyOn(router, 'push');
-        spyOn(vm, 'toggleFileFinder');
+        spyOn(vm, '$emit');
       });
 
       it('closes file finder', () => {
-        vm.openFile(vm.$store.state.entries['index.js']);
+        vm.openFile(vm.files[0]);
 
-        expect(vm.toggleFileFinder).toHaveBeenCalled();
+        expect(vm.$emit).toHaveBeenCalledWith('toggle', false);
       });
 
       it('pushes to router', () => {
-        vm.openFile(vm.$store.state.entries['index.js']);
+        vm.openFile(vm.files[0]);
 
-        expect(router.push).toHaveBeenCalledWith('/project/index.jsurl');
+        expect(vm.$emit).toHaveBeenCalledWith('click', vm.files[0]);
       });
     });
 
@@ -217,8 +214,8 @@ describe('IDE File finder item spec', () => {
 
         vm.$refs.searchInput.dispatchEvent(event);
 
-        vm.$nextTick(() => {
-          expect(vm.openFile).toHaveBeenCalledWith(vm.$store.state.entries['index.js']);
+        setTimeout(() => {
+          expect(vm.openFile).toHaveBeenCalledWith(vm.files[0]);
 
           done();
         });
@@ -228,12 +225,12 @@ describe('IDE File finder item spec', () => {
         const event = new CustomEvent('keyup');
         event.keyCode = ESC_KEY_CODE;
 
-        spyOn(vm, 'toggleFileFinder');
+        spyOn(vm, '$emit');
 
         vm.$refs.searchInput.dispatchEvent(event);
 
-        vm.$nextTick(() => {
-          expect(vm.toggleFileFinder).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(vm.$emit).toHaveBeenCalledWith('toggle', false);
 
           done();
         });
@@ -287,18 +284,85 @@ describe('IDE File finder item spec', () => {
   });
 
   describe('without entries', () => {
-    it('renders loading text when loading', done => {
-      store.state.loading = true;
-
-      vm.$nextTick(() => {
-        expect(vm.$el.textContent).toContain('Loading...');
-
-        done();
+    it('renders loading text when loading', () => {
+      createComponent({
+        loading: true,
       });
+
+      expect(vm.$el.textContent).toContain('Loading...');
     });
 
     it('renders no files text', () => {
+      createComponent();
+
       expect(vm.$el.textContent).toContain('No files found.');
+    });
+  });
+
+  describe('keyboard shortcuts', () => {
+    beforeEach(done => {
+      createComponent();
+
+      spyOn(vm, 'toggle');
+
+      vm.$nextTick(done);
+    });
+
+    it('calls toggle on `t` key press', done => {
+      Mousetrap.trigger('t');
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.toggle).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('calls toggle on `command+p` key press', done => {
+      Mousetrap.trigger('command+p');
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.toggle).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('calls toggle on `ctrl+p` key press', done => {
+      Mousetrap.trigger('ctrl+p');
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.toggle).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('always allows `command+p` to trigger toggle', () => {
+      expect(
+        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'command+p'),
+      ).toBe(false);
+    });
+
+    it('always allows `ctrl+p` to trigger toggle', () => {
+      expect(
+        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'ctrl+p'),
+      ).toBe(false);
+    });
+
+    it('onlys handles `t` when focused in input-field', () => {
+      expect(
+        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
+      ).toBe(true);
+    });
+
+    it('stops callback in monaco editor', () => {
+      setFixtures('<div class="inputarea"></div>');
+
+      expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
     });
   });
 });

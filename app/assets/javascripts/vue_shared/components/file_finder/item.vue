@@ -1,5 +1,6 @@
 <script>
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '../../../vue_shared/components/file_icon.vue';
 import ChangedFileIcon from '../../../vue_shared/components/changed_file_icon.vue';
 
@@ -7,6 +8,7 @@ const MAX_PATH_LENGTH = 60;
 
 export default {
   components: {
+    Icon,
     ChangedFileIcon,
     FileIcon,
   },
@@ -26,6 +28,11 @@ export default {
     index: {
       type: Number,
       required: true,
+    },
+    showDiffStats: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -97,8 +104,23 @@ export default {
         </span>
       </span>
     </span>
-    <span v-if="file.changed || file.tempFile" class="diff-changed-stats">
-      <changed-file-icon :file="file" />
+    <span v-if="file.changed || file.tempFile" v-once class="diff-changed-stats">
+      <span v-if="showDiffStats">
+        <span class="cgreen bold">
+          <icon name="file-addition" class="align-text-top" /> {{ file.addedLines }}
+        </span>
+        <span class="cred bold ml-1">
+          <icon name="file-deletion" class="align-text-top" /> {{ file.removedLines }}
+        </span>
+      </span>
+      <changed-file-icon v-else :file="file" />
     </span>
   </button>
 </template>
+
+<style scoped>
+.highlighted {
+  color: #1f78d1;
+  font-weight: 600;
+}
+</style>

@@ -13,39 +13,17 @@ export default {
     Icon,
     FileRow,
   },
-  data() {
-    return {
-      search: '',
-    };
-  },
   computed: {
     ...mapState('diffs', ['tree', 'addedLines', 'removedLines', 'renderTreeList']),
     ...mapGetters('diffs', ['allBlobs', 'diffFilesLength']),
     filteredTreeList() {
-      const search = this.search.toLowerCase().trim();
-
-      if (search === '') return this.renderTreeList ? this.tree : this.allBlobs;
-
-      return this.allBlobs.reduce((acc, folder) => {
-        const tree = folder.tree.filter(f => f.path.toLowerCase().indexOf(search) >= 0);
-
-        if (tree.length) {
-          return acc.concat({
-            ...folder,
-            tree,
-          });
-        }
-
-        return acc;
-      }, []);
+      return this.renderTreeList ? this.tree : this.allBlobs;
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
-    clearSearch() {
-      this.search = '';
-    },
+    ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile', 'toggleFileFinder']),
   },
+  shortcutKeyCharacter: `${/Mac/i.test(navigator.userAgent) ? '&#8984;' : 'Ctrl'}+P`,
   FileRowStats,
 };
 </script>
@@ -55,21 +33,17 @@ export default {
     <div class="append-bottom-8 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <icon name="search" class="position-absolute tree-list-icon" />
-        <input
-          v-model="search"
-          :placeholder="s__('MergeRequest|Filter files')"
-          type="search"
-          class="form-control"
-        />
         <button
-          v-show="search"
-          :aria-label="__('Clear search')"
           type="button"
-          class="position-absolute bg-transparent tree-list-icon tree-list-clear-icon border-0 p-0"
-          @click="clearSearch"
+          class="form-control text-left text-secondary"
+          @click="toggleFileFinder(true)"
         >
-          <icon name="close" />
+          {{ s__('MergeRequest|Search files') }}
         </button>
+        <span
+          class="position-absolute text-secondary diff-tree-search-shortcut"
+          v-html="$options.shortcutKeyCharacter"
+        ></span>
       </div>
     </div>
     <div :class="{ 'pt-0 tree-list-blobs': !renderTreeList }" class="tree-list-scroll">
@@ -103,5 +77,16 @@ export default {
 <style>
 .tree-list-blobs .file-row-name {
   margin-left: 12px;
+}
+
+.diff-tree-search-shortcut {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.tree-list-icon {
+  pointer-events: none;
 }
 </style>

@@ -1,8 +1,3 @@
-// Fuzzy file finder
-export const MAX_FILE_FINDER_RESULTS = 40;
-export const FILE_FINDER_ROW_HEIGHT = 55;
-export const FILE_FINDER_EMPTY_ROW_HEIGHT = 33;
-
 export const MAX_WINDOW_HEIGHT_COMPACT = 750;
 
 // Commit message textarea

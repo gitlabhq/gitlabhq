@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import ItemComponent from '~/ide/components/file_finder/item.vue';
-import { file } from '../../helpers';
+import ItemComponent from '~/vue_shared/components/file_finder/item.vue';
+import { file } from 'spec/ide/helpers';
 import createComponent from '../../../helpers/vue_mount_component_helper';
 
-describe('IDE File finder item spec', () => {
+describe('File finder item spec', () => {
   const Component = Vue.extend(ItemComponent);
   let vm;
   let localFile;

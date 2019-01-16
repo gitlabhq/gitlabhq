@@ -74,24 +74,25 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
 export const getDiffFileByHash = state => fileHash =>
   state.diffFiles.find(file => file.file_hash === fileHash);
 
-export const allBlobs = state =>
-  Object.values(state.treeEntries)
-    .filter(f => f.type === 'blob')
-    .reduce((acc, file) => {
-      const { parentPath } = file;
+export const flatBlobsList = state =>
+  Object.values(state.treeEntries).filter(f => f.type === 'blob');
 
-      if (parentPath && !acc.some(f => f.path === parentPath)) {
-        acc.push({
-          path: parentPath,
-          isHeader: true,
-          tree: [],
-        });
-      }
+export const allBlobs = (state, getters) =>
+  getters.flatBlobsList.reduce((acc, file) => {
+    const { parentPath } = file;
 
-      acc.find(f => f.path === parentPath).tree.push(file);
+    if (parentPath && !acc.some(f => f.path === parentPath)) {
+      acc.push({
+        path: parentPath,
+        isHeader: true,
+        tree: [],
+      });
+    }
 
-      return acc;
-    }, []);
+    acc.find(f => f.path === parentPath).tree.push(file);
+
+    return acc;
+  }, []);
 
 export const diffFilesLength = state => state.diffFiles.length;
 

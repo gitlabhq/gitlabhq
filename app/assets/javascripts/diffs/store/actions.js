@@ -296,5 +296,9 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
   }
 };
 
+export const toggleFileFinder = ({ commit }, visible) => {
+  commit(types.TOGGLE_FILE_FINDER_VISIBLE, visible);
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
