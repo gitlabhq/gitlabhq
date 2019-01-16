@@ -49,7 +49,10 @@ export default class TaskList {
 
     return axios
       .patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
-      .then(({ data }) => this.onSuccess(data))
       .catch(({ response }) => this.onError(response.data));
+      .then(({ data }) => {
+        this.lockVersion = data.lock_version;
+        return this.onSuccess(data);
+      })
   }
 }
