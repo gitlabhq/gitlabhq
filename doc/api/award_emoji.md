@@ -6,9 +6,9 @@ An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 
 Emoji can be awarded on the following (known as "awardables"):
 
-- [Issues](../user/project/issues/index.md)
-- [Merge requests](../user/project/merge_requests/index.md)
-- [Snippets](../user/snippets.md)
+- [Issues](../user/project/issues/index.md) ([API](issues.md)).
+- [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
+- [Snippets](../user/snippets.md) ([API](snippets.md)).
 
 Emoji can also [be awarded](../user/award_emojis.html#award-emoji-for-comments) on comments (also known as notes).
 
