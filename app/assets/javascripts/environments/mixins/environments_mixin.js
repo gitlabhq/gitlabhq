@@ -143,7 +143,7 @@ export default {
    */
   created() {
     this.service = new EnvironmentsService(this.endpoint);
-    this.requestData = { page: this.page, scope: this.scope };
+    this.requestData = { page: this.page, scope: this.scope, nested: true };
 
     this.poll = new Poll({
       resource: this.service,
