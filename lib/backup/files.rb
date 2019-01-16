@@ -73,7 +73,7 @@ module Backup
     def run_pipeline!(cmd_list, options = {})
       err_r, err_w = IO.pipe
       options[:err] = err_w
-      status = Open3.pieline(*cmd_list, options)
+      status = Open3.pipeline(*cmd_list, options)
       err_w.close
       return if status.compact.all?(&:success?)
 
