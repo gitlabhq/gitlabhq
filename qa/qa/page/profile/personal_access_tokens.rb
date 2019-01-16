@@ -9,9 +9,8 @@ module QA
         end
 
         view 'app/views/shared/_personal_access_tokens_created_container.html.haml' do
-          element :create_token_field, "text_field_tag 'created-personal-access-token'" # rubocop:disable QA/ElementWithPattern
+          element :created_personal_access_token
         end
-
         view 'app/views/shared/_personal_access_tokens_table.html.haml' do
           element :revoke_button
         end
@@ -29,7 +28,7 @@ module QA
         end
 
         def created_access_token
-          page.find('#created-personal-access-token').value
+          find_element(:created_personal_access_token, wait: 30).value
         end
 
         def has_token_row_for_name?(token_name)
