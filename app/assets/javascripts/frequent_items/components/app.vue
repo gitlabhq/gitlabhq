@@ -47,6 +47,11 @@ export default {
     }
 
     eventHub.$on(`${this.namespace}-dropdownOpen`, this.dropdownOpenHandler);
+
+    // As we init it through requestIdleCallback it could be that the dropdown is already open
+    if (document.getElementById(`nav-${this.namespace}-dropdown`).classList.contains('show')) {
+      this.dropdownOpenHandler();
+    }
   },
   beforeDestroy() {
     eventHub.$off(`${this.namespace}-dropdownOpen`, this.dropdownOpenHandler);
