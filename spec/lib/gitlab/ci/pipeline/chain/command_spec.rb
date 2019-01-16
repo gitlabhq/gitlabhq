@@ -181,6 +181,17 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
 
       it { is_expected.to eq(false) }
     end
+
+    context 'when ref is ambiguous' do
+      before do
+        project.repository.add_tag(project.creator, 'ref', 'master')
+        project.repository.add_branch(project.creator, 'ref', 'master')
+      end
+
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 
   describe '#ambiguous_ref' do
