@@ -82,13 +82,12 @@ export default {
       // extracts the suggested lines from the markdown
       // calculates a line number for each line
 
-      const FIRST_CHAR_REGEX = /^(\+|-)/;
       const newLines = suggestionEl.querySelectorAll('.line');
       const fromLine = this.suggestions.length ? this.suggestions[0].from_line : this.fromLine;
       const lines = [];
 
       newLines.forEach((line, i) => {
-        const content = `${line.innerText.replace(FIRST_CHAR_REGEX, '')}\n`;
+        const content = `${line.innerText}\n`;
         const lineNumber = fromLine + i;
         lines.push({ content, lineNumber });
       });

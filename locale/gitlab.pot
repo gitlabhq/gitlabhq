@@ -7002,7 +7002,7 @@ msgstr ""
 msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
 msgstr ""
 
-msgid "To preserve performance only <strong>%{display_size} of ${real_size}</strong> files are displayed."
+msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr ""
 
 msgid "To start serving your jobs you can add Runners to your group"

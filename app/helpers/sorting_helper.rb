@@ -159,6 +159,15 @@ module SortingHelper
     sort_options_hash[sort_value]
   end
 
+  def issuable_sort_icon_suffix(sort_value)
+    case sort_value
+    when sort_value_milestone, sort_value_due_date, /_asc\z/
+      'lowest'
+    else
+      'highest'
+    end
+  end
+
   def issuable_sort_direction_button(sort_value)
     link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
@@ -171,15 +180,7 @@ module SortingHelper
     end
 
     link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
-      icon_suffix =
-        case sort_value
-        when sort_value_milestone, sort_value_due_date, /_asc\z/
-          'lowest'
-        else
-          'highest'
-        end
-
-      sprite_icon("sort-#{icon_suffix}", size: 16)
+      sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
     end
   end
 
