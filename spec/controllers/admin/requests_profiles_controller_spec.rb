@@ -38,7 +38,7 @@ describe Admin::RequestsProfilesController do
     end
 
     it 'loads an HTML profile' do
-      get :show, params: { name: basename }
+      get :show, name: basename
 
       expect(response).to have_gitlab_http_status(200)
       expect(response.body).to eq(sample_data)
