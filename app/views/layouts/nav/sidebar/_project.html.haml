@@ -43,7 +43,7 @@
 
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths) do
-          = link_to project_tree_path(@project), class: 'shortcuts-tree' do
+          = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
             .nav-icon-container
               = sprite_icon('doc-text')
             %span.nav-item-name
@@ -64,7 +64,7 @@
                 = _('Commits')
 
             = nav_link(html_options: {class: branches_tab_class}) do
-              = link_to project_branches_path(@project) do
+              = link_to project_branches_path(@project), class: 'qa-branches-link' do
                 = _('Branches')
 
             = nav_link(controller: [:tags]) do

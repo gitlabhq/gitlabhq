@@ -158,6 +158,10 @@ module QA
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
 
+      module Branches
+        autoload :Show, 'qa/page/project/branches/show'
+      end
+
       module Commit
         autoload :Show, 'qa/page/project/commit/show'
       end
@@ -189,6 +193,11 @@ module QA
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
+      end
+
+      module SubMenus
+        autoload :Common, 'qa/page/project/sub_menus/common'
+        autoload :Repository, 'qa/page/project/sub_menus/repository'
       end
 
       module Issue
