@@ -1,0 +1,5 @@
+---
+title: 'i18n: externalize strings from ''app/views/search'''
+merge_request: 24297
+author: Tao Wang
+type: other

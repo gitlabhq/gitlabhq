@@ -81,7 +81,7 @@ export default {
           :placeholder="s__('MergeRequest|Filter files')"
           type="search"
           class="form-control"
-          @focus="toggleFocusSearch(true);"
+          @focus="toggleFocusSearch(true)"
           @blur="blurSearch"
         />
         <button
@@ -104,7 +104,7 @@ export default {
           }"
           class="btn btn-default pt-0 pb-0 d-flex align-items-center"
           type="button"
-          @click="toggleRenderTreeList(false);"
+          @click="toggleRenderTreeList(false)"
         >
           <icon name="hamburger" />
         </button>
@@ -117,7 +117,7 @@ export default {
           }"
           class="btn btn-default pt-0 pb-0 d-flex align-items-center"
           type="button"
-          @click="toggleRenderTreeList(true);"
+          @click="toggleRenderTreeList(true)"
         >
           <icon name="file-tree" />
         </button>

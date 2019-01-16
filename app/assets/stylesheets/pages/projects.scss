@@ -1025,8 +1025,10 @@ pre.light-well {
       margin: 0;
     }
 
-    @include media-breakpoint-up(md) {
-      .description {
+    .description {
+      line-height: 1.5;
+
+      @include media-breakpoint-up(md) {
         color: $gl-text-color;
       }
     }

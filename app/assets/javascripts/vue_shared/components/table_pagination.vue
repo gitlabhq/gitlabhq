@@ -149,7 +149,7 @@ export default {
         }"
         class="page-item"
       >
-        <a class="page-link" @click.prevent="changePage(item.title, item.disabled);">
+        <a class="page-link" @click.prevent="changePage(item.title, item.disabled)">
           {{ item.title }}
         </a>
       </li>

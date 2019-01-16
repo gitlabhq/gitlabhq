@@ -22,7 +22,7 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-if ENV['CI'] && !ENV['NO_KNAPSACK']
+if ENV['CI'] && ENV['KNAPSACK_GENERATE_REPORT'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
@@ -130,6 +130,11 @@ RSpec.configure do |config|
   config.before(:suite) do
     # Set latest release blog post URL for "What's new?" link
     Gitlab::ReleaseBlogPost.instance.instance_variable_set(:@url, 'https://about.gitlab.com')
+  end
+
+  config.before(:example, :quarantine) do
+    # Skip tests in quarantine unless we explicitly focus on them.
+    skip('In quarantine') unless config.inclusion_filter[:quarantine]
   end
 
   config.before(:example, :request_store) do

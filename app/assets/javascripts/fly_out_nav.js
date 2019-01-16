@@ -24,6 +24,9 @@ export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
+const setHeaderHeight = () => {
+  headerHeight = sidebar.offsetTop;
+};
 
 export const isSidebarCollapsed = () =>
   sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
@@ -186,7 +189,7 @@ export default () => {
     });
   }
 
-  headerHeight = document.querySelector('.nav-sidebar').offsetTop;
+  requestIdleCallback(setHeaderHeight);
 
   items.forEach(el => {
     const subItems = el.querySelector('.sidebar-sub-level-items');

@@ -111,8 +111,8 @@ export default {
           name="commit-message"
           @scroll="handleScroll"
           @input="onInput"
-          @focus="updateIsFocused(true);"
-          @blur="updateIsFocused(false);"
+          @focus="updateIsFocused(true)"
+          @blur="updateIsFocused(false)"
           @keydown.ctrl.enter="onCtrlEnter"
           @keydown.meta.enter="onCtrlEnter"
         >

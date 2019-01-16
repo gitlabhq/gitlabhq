@@ -477,10 +477,11 @@ describe 'Pipeline', :js do
       end
 
       context 'when accessing failed jobs page' do
-        it 'fails to access the page' do
-          subject
+        it 'renders a 404 page' do
+          requests = inspect_requests { subject }
 
-          expect(page).to have_title('Access Denied')
+          expect(page).to have_title('Not Found')
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end

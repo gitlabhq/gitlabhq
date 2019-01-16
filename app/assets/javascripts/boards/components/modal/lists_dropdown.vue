@@ -38,7 +38,7 @@ export default {
             :class="{ 'is-active': list.id == selected.id }"
             href="#"
             role="button"
-            @click.prevent="modal.selectedList = list;"
+            @click.prevent="modal.selectedList = list"
           >
             <span :style="{ backgroundColor: list.label.color }" class="dropdown-label-box"> </span>
             {{ list.title }}

@@ -5,6 +5,18 @@
 It's a test that sometimes fails, but if you retry it enough times, it passes,
 eventually.
 
+## Quarantined tests
+
+Tests can be put in quarantine by assigning `:quarantine` metadata. This means
+they will be skipped unless run with `--tag quarantine`. This can be used for
+tests that are expected to fail while a fix is in progress (similar to how
+[`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples)
+ can be used).
+
+```
+bin/rspec --tag quarantine
+```
+
 ## Automatic retries and flaky tests detection
 
 On our CI, we use [rspec-retry] to automatically retry a failing example a few

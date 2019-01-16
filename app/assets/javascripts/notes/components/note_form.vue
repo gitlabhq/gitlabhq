@@ -219,10 +219,10 @@ export default {
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
-          @keydown.meta.enter="handleKeySubmit();"
-          @keydown.ctrl.enter="handleKeySubmit();"
-          @keydown.up="editMyLastNote();"
-          @keydown.esc="cancelHandler(true);"
+          @keydown.meta.enter="handleKeySubmit()"
+          @keydown.ctrl.enter="handleKeySubmit()"
+          @keydown.up="editMyLastNote()"
+          @keydown.esc="cancelHandler(true)"
         ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
@@ -230,21 +230,21 @@ export default {
           :disabled="isDisabled"
           type="button"
           class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
-          @click="handleUpdate();"
+          @click="handleUpdate()"
         >
           {{ saveButtonTitle }}
         </button>
         <button
           v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true);"
+          @click.prevent="handleUpdate(true)"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
-          @click="cancelHandler();"
+          @click="cancelHandler()"
         >
           Cancel
         </button>

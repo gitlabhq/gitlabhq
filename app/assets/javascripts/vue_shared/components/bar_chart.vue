@@ -293,8 +293,8 @@ export default {
             :title="setTooltipTitle(data)"
             class="bar-rect"
             data-placement="top"
-            @mouseover="barHoveredIn(index);"
-            @mouseout="barHoveredOut(index);"
+            @mouseover="barHoveredIn(index)"
+            @mouseout="barHoveredOut(index)"
           />
         </template>
       </g>

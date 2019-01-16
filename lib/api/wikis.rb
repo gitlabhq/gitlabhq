@@ -22,7 +22,9 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
+
+    resource :projects, requirements: WIKI_ENDPOINT_REQUIREMENTS do
       desc 'Get a list of wiki pages' do
         success Entities::WikiPageBasic
       end
@@ -103,7 +105,7 @@ module API
         requires :file, type: ::API::Validations::Types::SafeFile, desc: 'The attachment file to be uploaded'
         optional :branch, type: String, desc: 'The name of the branch'
       end
-      post ":id/wikis/attachments", requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      post ":id/wikis/attachments" do
         authorize! :create_wiki, user_project
 
         result = ::Wikis::CreateAttachmentService.new(user_project,

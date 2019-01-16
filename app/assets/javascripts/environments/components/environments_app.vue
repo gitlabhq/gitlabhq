@@ -96,9 +96,9 @@ export default {
       <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
 
       <div v-if="canCreateEnvironment && !isLoading" class="nav-controls">
-        <a :href="newEnvironmentPath" class="btn btn-success">
-          {{ s__('Environments|New environment') }}
-        </a>
+        <a :href="newEnvironmentPath" class="btn btn-success">{{
+          s__('Environments|New environment')
+        }}</a>
       </div>
     </div>
 
