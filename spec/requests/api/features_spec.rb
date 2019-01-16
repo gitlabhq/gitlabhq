@@ -129,6 +129,40 @@ describe API::Features do
         end
       end
 
+      context 'when enabling for a project by path' do
+        context 'when the project exists' do
+          let!(:project) { create(:project) }
+
+          it 'sets the feature gate' do
+            post api("/features/#{feature_name}", admin), params: { value: 'true', project: project.full_path }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to eq(
+              'name' => 'my_feature',
+              'state' => 'conditional',
+              'gates' => [
+                { 'key' => 'boolean', 'value' => false },
+                { 'key' => 'actors', 'value' => ["Project:#{project.id}"] }
+              ])
+          end
+        end
+
+        context 'when the project does not exist' do
+          it 'sets no new values' do
+            post api("/features/#{feature_name}", admin), params: { value: 'true', project: 'mep/to/the/mep/mep' }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to eq(
+              "name" => "my_feature",
+              "state" => "off",
+              "gates" => [
+                { "key" => "boolean", "value" => false }
+              ]
+            )
+          end
+        end
+      end
+
       it 'creates a feature with the given percentage if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50' }
 
