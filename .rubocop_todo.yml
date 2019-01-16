@@ -686,17 +686,6 @@ Style/TrailingUnderscoreVariable:
     - 'spec/lib/gitlab/etag_caching/middleware_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, Whitelist.
-# Whitelist: to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
-Style/TrivialAccessors:
-  Exclude:
-    - 'app/models/external_issue.rb'
-    - 'app/serializers/base_serializer.rb'
-    - 'lib/gitlab/auth/ldap/person.rb'
-    - 'lib/system_check/base_check.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/UnlessElse:

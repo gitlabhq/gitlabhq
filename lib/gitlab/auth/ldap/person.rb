@@ -98,9 +98,7 @@ module Gitlab
 
         private
 
-        def entry
-          @entry
-        end
+        attr_reader :entry
 
         def config
           @config ||= Gitlab::Auth::LDAP::Config.new(provider)
