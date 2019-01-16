@@ -37,7 +37,7 @@ export default {
         type="checkbox"
         name="squash"
         class="qa-squash-checkbox"
-        @change="$emit('input', $event.target.checked);"
+        @change="$emit('input', $event.target.checked)"
       />
       {{ __('Squash commits') }}
     </label>
