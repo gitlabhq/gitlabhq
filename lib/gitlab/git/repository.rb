@@ -789,6 +789,11 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
+        # It's important to check that the linked-to file is actually a valid
+        # .bundle file as it is passed to `git clone`, which may otherwise
+        # interpret it as a pointer to another repository
+        ::Gitlab::Git::BundleFile.check!(bundle_path)
+
         gitaly_repository_client.create_from_bundle(bundle_path)
       end
 
