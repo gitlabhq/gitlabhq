@@ -77,10 +77,10 @@ module Gitlab
 
         # Overridden in EE module
         def whitelisted_routes
-          grack_route || ReadOnly.internal_routes.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route?
+          grack_route? || internal_route? || lfs_route? || sidekiq_route?
         end
 
-        def grack_route
+        def grack_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return false unless
             request.path.end_with?('.git/git-upload-pack', '.git/git-receive-pack')
@@ -88,7 +88,11 @@ module Gitlab
           WHITELISTED_GIT_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
-        def lfs_route
+        def internal_route?
+          ReadOnly.internal_routes.any? { |path| request.path.include?(path) }
+        end
+
+        def lfs_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           unless request.path.end_with?('/info/lfs/objects/batch',
             '/info/lfs/locks', '/info/lfs/locks/verify') ||
