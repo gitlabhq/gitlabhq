@@ -2,6 +2,8 @@
 
 module Projects
   class UpdatePagesConfigurationService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :project
 
     def initialize(project)
@@ -9,16 +11,24 @@ module Projects
     end
 
     def execute
-      if update_file(pages_config_file, pages_config.to_json)
-        reload_daemon
+      if file_equals?(pages_config_file, pages_config_json)
+        return success(reload: false)
       end
 
-      success
+      update_file(pages_config_file, pages_config_json)
+      reload_daemon
+      success(reload: true)
     rescue => e
       error(e.message)
     end
 
     private
+
+    def pages_config_json
+      strong_memoize(:pages_config_json) do
+        pages_config.to_json
+      end
+    end
 
     def pages_config
       {
@@ -69,26 +79,19 @@ module Projects
     end
 
     def update_file(file, data)
-      unless data
-        FileUtils.remove(file, force: true)
-        return true
-      end
-
-      existing_data = read_file(file)
-      if data == existing_data
-        return false
-      end
-
       temp_file = "#{file}.#{SecureRandom.hex(16)}"
       File.open(temp_file, 'w') do |f|
         f.write(data)
       end
       FileUtils.move(temp_file, file, force: true)
-
-      true
     ensure
       # In case if the updating fails
       FileUtils.remove(temp_file, force: true)
+    end
+
+    def file_equals?(file, data)
+      existing_data = read_file(file)
+      data == existing_data.to_s
     end
 
     def read_file(file)
