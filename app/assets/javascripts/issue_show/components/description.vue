@@ -89,8 +89,10 @@ export default {
       }
     },
 
-    taskListUpdateError(data) {
-      createFlash(data.errors[0]);
+    taskListUpdateError({ errors, data }) {
+      createFlash('Someone edited this issue at the same time you did and we updated the issue description.');
+
+      this.$emit('taskListUpdateFailed');
     },
 
     updateTaskStatusText() {

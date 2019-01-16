@@ -213,6 +213,14 @@ export default {
       return undefined;
     },
 
+    updateStoreState() {
+      this.service.getData()
+        .then(res => res.data)
+        .then(data => {
+          this.store.updateState(data);
+        });
+    },
+
     openForm() {
       if (!this.showForm) {
         this.showForm = true;
@@ -327,6 +335,7 @@ export default {
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
+        @taskListUpdateFailed="updateStoreState"
       />
       <edited-component
         v-if="hasUpdated"
