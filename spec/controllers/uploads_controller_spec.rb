@@ -327,7 +327,7 @@ describe UploadsController do
     end
 
     context "when viewing a group avatar" do
-      let!(:group)   { create(:group, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+      let!(:group) { create(:group, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
       context "when the group is public" do
         context "when not signed in" do

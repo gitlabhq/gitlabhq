@@ -1032,7 +1032,7 @@ describe MergeRequest do
   end
 
   describe '#diverged_commits_count' do
-    let(:project)      { create(:project, :repository) }
+    let(:project) { create(:project, :repository) }
     let(:forked_project) { fork_project(project, nil, repository: true) }
 
     context 'when the target branch does not exist anymore' do
@@ -2298,9 +2298,9 @@ describe MergeRequest do
   end
 
   describe "#source_project_missing?" do
-    let(:project)      { create(:project) }
+    let(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
-    let(:user)         { create(:user) }
+    let(:user) { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the fork exists" do
@@ -2370,9 +2370,9 @@ describe MergeRequest do
   end
 
   describe "#closed_without_fork?" do
-    let(:project)      { create(:project) }
+    let(:project) { create(:project) }
     let(:forked_project) { fork_project(project) }
-    let(:user)         { create(:user) }
+    let(:user) { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the merge request is closed" do
@@ -2494,7 +2494,7 @@ describe MergeRequest do
         expect(merge_request.mergeable_with_quick_action?(user, last_diff_sha: mr_sha)).to be_falsey
       end
 
-      context 'closed MR'  do
+      context 'closed MR' do
         before do
           merge_request.update_attribute(:state, :closed)
         end
@@ -2504,7 +2504,7 @@ describe MergeRequest do
         end
       end
 
-      context 'MR with WIP'  do
+      context 'MR with WIP' do
         before do
           merge_request.update_attribute(:title, 'WIP: some MR')
         end
@@ -2514,19 +2514,19 @@ describe MergeRequest do
         end
       end
 
-      context 'sha differs from the MR diff_head_sha'  do
+      context 'sha differs from the MR diff_head_sha' do
         it 'is not mergeable' do
           expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: 'some other sha')).to be_falsey
         end
       end
 
-      context 'sha is not provided'  do
+      context 'sha is not provided' do
         it 'is not mergeable' do
           expect(merge_request.mergeable_with_quick_action?(developer)).to be_falsey
         end
       end
 
-      context 'with pipeline ok'  do
+      context 'with pipeline ok' do
         before do
           create_pipeline(:success)
         end
@@ -2536,7 +2536,7 @@ describe MergeRequest do
         end
       end
 
-      context 'with failing pipeline'  do
+      context 'with failing pipeline' do
         before do
           create_pipeline(:failed)
         end
@@ -2546,7 +2546,7 @@ describe MergeRequest do
         end
       end
 
-      context 'with running pipeline'  do
+      context 'with running pipeline' do
         before do
           create_pipeline(:running)
         end

@@ -566,7 +566,7 @@ describe Issuable do
     end
 
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do

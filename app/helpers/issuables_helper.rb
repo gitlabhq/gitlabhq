@@ -209,7 +209,7 @@ module IssuablesHelper
   end
 
   def issuable_labels_tooltip(labels, limit: 5)
-    first, last = labels.partition.with_index { |_, i| i < limit  }
+    first, last = labels.partition.with_index { |_, i| i < limit }
 
     if labels && labels.any?
       label_names = first.collect { |label| label.fetch(:title) }

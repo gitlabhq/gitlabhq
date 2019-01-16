@@ -10,7 +10,7 @@ describe API::ProjectMilestones do
     project.add_developer(user)
   end
 
-  it_behaves_like 'group and project milestones', "/projects/:id/milestones"  do
+  it_behaves_like 'group and project milestones', "/projects/:id/milestones" do
     let(:route) { "/projects/#{project.id}/milestones" }
   end
 

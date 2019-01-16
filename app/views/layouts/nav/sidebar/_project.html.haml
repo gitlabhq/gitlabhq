@@ -170,7 +170,7 @@
               = _('CI / CD')
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], html_options: { class: "fly-out-top-item" }  ) do
+            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts], html_options: { class: "fly-out-top-item" }) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
                   =  _('CI / CD')

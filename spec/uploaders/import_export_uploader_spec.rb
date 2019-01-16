@@ -4,7 +4,7 @@ describe ImportExportUploader do
   let(:model) { build_stubbed(:import_export_upload) }
   let(:upload) { create(:upload, model: model) }
 
-  subject { described_class.new(model, :import_file)  }
+  subject { described_class.new(model, :import_file) }
 
   context "object_store is REMOTE" do
     before do

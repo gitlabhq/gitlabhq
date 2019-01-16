@@ -42,7 +42,7 @@ module API
         success Entities::Pipeline
       end
       params do
-        requires :ref, type: String,  desc: 'Reference'
+        requires :ref, type: String, desc: 'Reference'
         optional :variables, Array, desc: 'Array of variables available in the pipeline'
       end
       # rubocop: disable CodeReuse/ActiveRecord
@@ -101,7 +101,7 @@ module API
         success Entities::Pipeline
       end
       params do
-        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
       end
       post ':id/pipelines/:pipeline_id/retry' do
         authorize! :update_pipeline, user_project
@@ -116,7 +116,7 @@ module API
         success Entities::Pipeline
       end
       params do
-        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
       end
       post ':id/pipelines/:pipeline_id/cancel' do
         authorize! :update_pipeline, user_project

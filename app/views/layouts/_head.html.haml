@@ -11,20 +11,20 @@
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
 
   -# Open Graph - http://ogp.me/
-  %meta{ property: 'og:type',        content: "object" }
-  %meta{ property: 'og:site_name',   content: site_name }
-  %meta{ property: 'og:title',       content: page_title }
+  %meta{ property: 'og:type', content: "object" }
+  %meta{ property: 'og:site_name', content: site_name }
+  %meta{ property: 'og:title', content: page_title }
   %meta{ property: 'og:description', content: page_description }
-  %meta{ property: 'og:image',       content: page_image }
+  %meta{ property: 'og:image', content: page_image }
   %meta{ property: 'og:image:width', content: '64' }
   %meta{ property: 'og:image:height', content: '64' }
-  %meta{ property: 'og:url',         content: request.base_url + request.fullpath }
+  %meta{ property: 'og:url', content: request.base_url + request.fullpath }
 
   -# Twitter Card - https://dev.twitter.com/cards/types/summary
-  %meta{ property: 'twitter:card',         content: "summary" }
-  %meta{ property: 'twitter:title',        content: page_title }
-  %meta{ property: 'twitter:description',  content: page_description }
-  %meta{ property: 'twitter:image',        content: page_image }
+  %meta{ property: 'twitter:card', content: "summary" }
+  %meta{ property: 'twitter:title', content: page_title }
+  %meta{ property: 'twitter:description', content: page_description }
+  %meta{ property: 'twitter:image', content: page_image }
   = page_card_meta_tags
 
   %title= page_title(site_name)
@@ -33,8 +33,8 @@
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   = stylesheet_link_tag "application", media: "all"
-  = stylesheet_link_tag "print",       media: "print"
-  = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
+  = stylesheet_link_tag "print", media: "print"
+  = stylesheet_link_tag "test", media: "all" if Rails.env.test?
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
   = stylesheet_link_tag 'csslab' if Feature.enabled?(:csslab)
 
@@ -61,10 +61,10 @@
   %meta{ name: 'theme-color', content: '#474D57' }
 
   -# Apple Safari/iOS home screen icons
-  = favicon_link_tag 'touch-icon-iphone.png',        rel: 'apple-touch-icon'
-  = favicon_link_tag 'touch-icon-ipad.png',          rel: 'apple-touch-icon', sizes: '76x76'
+  = favicon_link_tag 'touch-icon-iphone.png', rel: 'apple-touch-icon'
+  = favicon_link_tag 'touch-icon-ipad.png', rel: 'apple-touch-icon', sizes: '76x76'
   = favicon_link_tag 'touch-icon-iphone-retina.png', rel: 'apple-touch-icon', sizes: '120x120'
-  = favicon_link_tag 'touch-icon-ipad-retina.png',   rel: 'apple-touch-icon', sizes: '152x152'
+  = favicon_link_tag 'touch-icon-ipad-retina.png', rel: 'apple-touch-icon', sizes: '152x152'
   %link{ rel: 'mask-icon', href: image_path('logo.svg'), color: 'rgb(226, 67, 41)' }
 
   -# Windows 8 pinned site tile

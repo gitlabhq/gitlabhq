@@ -819,7 +819,7 @@ describe SystemNoteService do
       end
 
       context 'for issues' do
-        let(:issue)           { create(:issue, project: project) }
+        let(:issue) { create(:issue, project: project) }
 
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, issue, author)
@@ -1131,7 +1131,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:canonical_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1156,7 +1156,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:duplicate_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1168,7 +1168,7 @@ describe SystemNoteService do
   end
 
   describe '.discussion_lock' do
-    subject { described_class.discussion_lock(noteable, author)  }
+    subject { described_class.discussion_lock(noteable, author) }
 
     context 'discussion unlocked' do
       it_behaves_like 'a system note' do

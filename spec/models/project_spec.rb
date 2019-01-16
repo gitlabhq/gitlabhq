@@ -3926,7 +3926,7 @@ describe Project do
 
   describe '#badges' do
     let(:project_group) { create(:group) }
-    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+    let(:project) { create(:project, path: 'avatar', namespace: project_group) }
 
     before do
       create_list(:project_badge, 2, project: project)

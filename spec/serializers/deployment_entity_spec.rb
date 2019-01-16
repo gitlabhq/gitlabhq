@@ -11,7 +11,7 @@ describe DeploymentEntity do
     allow(request).to receive(:current_user).and_return(user)
   end
 
-  it 'exposes internal deployment id'  do
+  it 'exposes internal deployment id' do
     expect(subject).to include(:iid)
   end
 

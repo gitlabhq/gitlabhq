@@ -28,7 +28,7 @@ class Milestone < ActiveRecord::Base
   has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
   has_many :issues
-  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
+  has_many :labels, -> { distinct.reorder('labels.title') }, through: :issues
   has_many :merge_requests
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 

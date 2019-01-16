@@ -87,7 +87,7 @@ describe Projects::Serverless::FunctionsController do
     end
 
     it 'has data' do
-      get :index, params: params({ format:  :json })
+      get :index, params: params({ format: :json })
 
       expect(response).to have_gitlab_http_status(200)
 

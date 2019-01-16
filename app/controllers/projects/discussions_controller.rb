@@ -40,7 +40,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_json_with_discussions_serializer
     render json:
-      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity:  ProjectNoteEntity)
+      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity: ProjectNoteEntity)
       .represent(discussion, context: self, render_truncated_diff_lines: true)
   end
 

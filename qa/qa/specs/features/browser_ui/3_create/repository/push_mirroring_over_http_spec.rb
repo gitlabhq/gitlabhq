@@ -3,7 +3,7 @@
 module QA
   context 'Create' do
     describe 'Push mirror a repository over HTTP' do
-      it 'configures and syncs a (push) mirrored repository'  do
+      it 'configures and syncs a (push) mirrored repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 

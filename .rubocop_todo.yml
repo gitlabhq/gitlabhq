@@ -15,12 +15,6 @@ Capybara/CurrentPathExpectation:
 Layout/EmptyLinesAroundArguments:
   Enabled: false
 
-# Offense count: 253
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Enabled: false
-
 # Offense count: 83
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.

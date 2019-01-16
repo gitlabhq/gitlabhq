@@ -301,7 +301,7 @@ describe MergeRequests::CreateService do
         end
 
         it 'removes assignee_id when user id is 0' do
-          opts = { title: 'Title', description: 'Description',  assignee_id: 0 }
+          opts = { title: 'Title', description: 'Description', assignee_id: 0 }
 
           merge_request = described_class.new(project, user, opts).execute
 

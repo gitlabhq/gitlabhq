@@ -28,7 +28,7 @@ class AddCiBuildsIndexForJobscontroller < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_builds, [:project_id, :id]  unless index_exists? :ci_builds, [:project_id, :id]
+    add_concurrent_index :ci_builds, [:project_id, :id] unless index_exists? :ci_builds, [:project_id, :id]
     remove_concurrent_index :ci_builds, :project_id if index_exists? :ci_builds, :project_id
   end
 

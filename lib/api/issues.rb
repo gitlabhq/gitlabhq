@@ -294,7 +294,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'List merge requests that are related to the issue'  do
+      desc 'List merge requests that are related to the issue' do
         success Entities::MergeRequestBasic
       end
       params do
@@ -318,7 +318,7 @@ module API
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
-      desc 'List merge requests closing issue'  do
+      desc 'List merge requests closing issue' do
         success Entities::MergeRequestBasic
       end
       params do
@@ -335,7 +335,7 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'List participants for an issue'  do
+      desc 'List participants for an issue' do
         success Entities::UserBasic
       end
       params do
