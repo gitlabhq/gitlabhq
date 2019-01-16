@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
+import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
-const createComponent = (customConfig = {}) => {
-  const Component = Vue.extend(ReadyToMerge);
+const createTestMr = customConfig => {
   const mr = {
     isPipelineActive: false,
     pipeline: null,
@@ -16,6 +17,7 @@ const createComponent = (customConfig = {}) => {
     hasCI: false,
     ciStatus: null,
     sha: '12345678',
+    squash: false,
     commitMessage,
     commitMessageWithDescription,
     shouldRemoveSourceBranch: true,
@@ -24,14 +26,23 @@ const createComponent = (customConfig = {}) => {
 
   Object.assign(mr, customConfig.mr);
 
-  const service = {
-    merge() {},
-    poll() {},
-  };
+  return mr;
+};
+
+const createTestService = () => ({
+  merge() {},
+  poll() {},
+});
+
+const createComponent = (customConfig = {}) => {
+  const Component = Vue.extend(ReadyToMerge);
 
   return new Component({
     el: document.createElement('div'),
-    propsData: { mr, service },
+    propsData: {
+      mr: createTestMr(customConfig),
+      service: createTestService(),
+    },
   });
 };
 
@@ -609,6 +620,47 @@ describe('ReadyToMerge', () => {
 
         expect(checkboxElement).not.toBeNull();
       });
+    });
+  });
+
+  describe('Squash checkbox component', () => {
+    let wrapper;
+    const localVue = createLocalVue();
+
+    const createLocalComponent = (customConfig = {}) => {
+      wrapper = shallowMount(localVue.extend(ReadyToMerge), {
+        localVue,
+        propsData: {
+          mr: createTestMr(customConfig),
+          service: createTestService(),
+        },
+      });
+    };
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+
+    it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
+      createLocalComponent({
+        mr: { commitsCount: 2, enableSquashBeforeMerge: true },
+      });
+
+      expect(findCheckboxElement().exists()).toBeTruthy();
+    });
+
+    it('should not be rendered when squash before merge is disabled', () => {
+      createLocalComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: false } });
+
+      expect(findCheckboxElement().exists()).toBeFalsy();
+    });
+
+    it('should not be rendered when there is only 1 commit', () => {
+      createLocalComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
+
+      expect(findCheckboxElement().exists()).toBeFalsy();
     });
   });
 

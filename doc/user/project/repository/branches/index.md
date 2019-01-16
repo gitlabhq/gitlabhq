@@ -2,16 +2,17 @@
 
 Read through GiLab's branching documentation:
 
-- [Create a branch](../web_editor.md#create-a-new-branch)
-- [Default branch](#default-branch)
-- [Protected branches](../../protected_branches.md#protected-branches)
-- [Delete merged branches](#delete-merged-branches)
-- [Branch filter search box](#branch-filter-search-box)
+- [Create a branch](../web_editor.md#create-a-new-branch).
+- [Default branch](#default-branch).
+- [Protected branches](../../protected_branches.md#protected-branches).
+- [Delete merged branches](#delete-merged-branches).
+- [Branch filter search box](#branch-filter-search-box).
 
 See also:
 
-- [GitLab Flow](../../../../university/training/gitlab_flow.md#gitlab-flow): use the best of GitLab for your branching strategies
-- [Getting started with Git](../../../../topics/git/index.md) and GitLab
+- [Branches API](../../../../api/branches.md), for information on operating on repository branches using the GitLab API.
+- [GitLab Flow](../../../../university/training/gitlab_flow.md#gitlab-flow). Use the best of GitLab for your branching strategies.
+- [Getting started with Git](../../../../topics/git/index.md) and GitLab.
 
 ## Default branch
 
@@ -40,7 +41,6 @@ this operation.
 
 It's particularly useful to clean up old branches that were not deleted
 automatically when a merge request was merged.
-
 
 ## Branch filter search box
 

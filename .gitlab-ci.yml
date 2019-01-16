@@ -499,6 +499,22 @@ rspec-mysql:
   <<: *rspec-metadata-mysql
   parallel: 50
 
+.rspec-quarantine: &rspec-quarantine
+  script:
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine spec/
+
+rspec-pg-quarantine:
+  <<: *rspec-metadata-pg
+  <<: *rspec-quarantine
+  allow_failure: true
+
+rspec-mysql-quarantine:
+  <<: *rspec-metadata-mysql
+  <<: *rspec-quarantine
+  allow_failure: true
+
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies:

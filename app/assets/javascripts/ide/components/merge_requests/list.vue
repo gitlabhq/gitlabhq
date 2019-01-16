@@ -84,7 +84,7 @@ export default {
           :placeholder="__('Search merge requests')"
           @focus="onSearchFocus"
           @input="searchMergeRequests"
-          @removeToken="setSearchType(null);"
+          @removeToken="setSearchType(null)"
         />
         <icon :size="18" name="search" class="input-icon" />
       </div>
@@ -102,7 +102,7 @@ export default {
               <button
                 type="button"
                 class="btn-link d-flex align-items-center"
-                @click.stop="setSearchType(searchType);"
+                @click.stop="setSearchType(searchType)"
               >
                 <span class="d-flex append-right-default ide-search-list-current-icon">
                   <icon :size="18" name="search" />

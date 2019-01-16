@@ -148,7 +148,7 @@ export default {
           :class="action.cssClass"
           container-class="d-inline"
           :label="action.label"
-          @click="onClickAction(action);"
+          @click="onClickAction(action)"
         />
       </template>
     </section>

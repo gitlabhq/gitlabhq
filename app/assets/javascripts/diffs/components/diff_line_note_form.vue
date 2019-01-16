@@ -28,6 +28,11 @@ export default {
       type: Object,
       required: true,
     },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState({
@@ -95,6 +100,7 @@ export default {
       :is-editing="true"
       :line-code="line.line_code"
       :line="line"
+      :help-page-path="helpPagePath"
       save-button-title="Comment"
       class="diff-comment-form"
       @cancelForm="handleCancelCommentForm"

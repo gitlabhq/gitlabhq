@@ -56,6 +56,7 @@ module Gitlab
           def entry(key, entry, metadata)
             factory = ::Gitlab::Config::Entry::Factory.new(entry)
               .with(description: metadata[:description])
+              .with(default: metadata[:default])
 
             (@nodes ||= {}).merge!(key.to_sym => factory)
           end

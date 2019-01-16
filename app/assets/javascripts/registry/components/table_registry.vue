@@ -106,7 +106,7 @@ export default {
               :aria-label="s__('ContainerRegistry|Remove tag')"
               variant="danger"
               class="js-delete-registry d-none d-sm-block float-right"
-              @click="handleDeleteRegistry(item);"
+              @click="handleDeleteRegistry(item)"
             >
               <icon name="remove" />
             </gl-button>

@@ -34,6 +34,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
     let!(:project_hashed_storage_2) { create(:project, name: 'bar', path: 'bar', namespace: group, storage_version: 2) }
     let!(:project_legacy_storage_3) { create(:project, name: 'baz', path: 'baz', namespace: group, storage_version: 0) }
     let!(:project_legacy_storage_4) { create(:project, name: 'zoo', path: 'zoo', namespace: group, storage_version: nil) }
+    let!(:project_legacy_storage_5) { create(:project, name: 'test', path: 'test', namespace: group, storage_version: nil) }
 
     describe '.on_hashed_storage' do
       it 'finds projects with repository on hashed storage' do
@@ -47,7 +48,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
       it 'finds projects with repository on legacy storage' do
         projects = described_class.on_legacy_storage.pluck(:id)
 
-        expect(projects).to match_array([project_legacy_storage_3.id, project_legacy_storage_4.id])
+        expect(projects).to match_array([project_legacy_storage_3.id, project_legacy_storage_4.id, project_legacy_storage_5.id])
       end
     end
 
@@ -58,7 +59,7 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
 
         projects = described_class.without_project_repository.pluck(:id)
 
-        expect(projects).to contain_exactly(project_hashed_storage_2.id, project_legacy_storage_4.id)
+        expect(projects).to contain_exactly(project_hashed_storage_2.id, project_legacy_storage_4.id, project_legacy_storage_5.id)
       end
     end
 
@@ -78,14 +79,23 @@ describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
           expect(project.disk_path).to eq(project_legacy_storage_3.disk_path)
         end
 
+        it 'returns the correct disk_path using the route entry' do
+          project_legacy_storage_5.route.update(path: 'zoo/new-test')
+          project = described_class.find(project_legacy_storage_5.id)
+
+          expect(project.disk_path).to eq('zoo/new-test')
+        end
+
         it 'raises OrphanedNamespaceError when any parent namespace does not exist' do
           subgroup = create(:group, parent: group)
           project_orphaned_namespace = create(:project, name: 'baz', path: 'baz', namespace: subgroup, storage_version: nil)
           subgroup.update_column(:parent_id, Namespace.maximum(:id).succ)
 
           project = described_class.find(project_orphaned_namespace.id)
+          project.route.destroy
+          subgroup.route.destroy
 
-          expect { project.disk_path }
+          expect { project.reload.disk_path }
             .to raise_error(Gitlab::BackgroundMigration::BackfillProjectRepositories::OrphanedNamespaceError)
         end
       end

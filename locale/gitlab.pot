@@ -1899,6 +1899,9 @@ msgstr ""
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
+msgid "Code"
+msgstr ""
+
 msgid "Cohorts"
 msgstr ""
 
@@ -1937,7 +1940,13 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Commit %{commit_id}"
+msgstr ""
+
 msgid "Commit Message"
+msgstr ""
+
+msgid "Commit deleted"
 msgstr ""
 
 msgid "Commit duration in minutes for last 30 commits"
@@ -2779,6 +2788,9 @@ msgstr ""
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
+msgid "Enable two-factor authentication"
+msgstr ""
+
 msgid "Enable usage ping"
 msgstr ""
 
@@ -2954,6 +2966,9 @@ msgid "Error loading template."
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "Error rendering markdown preview"
 msgstr ""
 
 msgid "Error saving label update."
@@ -3146,6 +3161,12 @@ msgid "Filter by commit message"
 msgstr ""
 
 msgid "Filter by two-factor authentication"
+msgstr ""
+
+msgid "Filter results by group"
+msgstr ""
+
+msgid "Filter results by project"
 msgstr ""
 
 msgid "Filter..."
@@ -3410,6 +3431,9 @@ msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
 msgid "Group name"
+msgstr ""
+
+msgid "Group:"
 msgstr ""
 
 msgid "Group: %{group_name}"
@@ -4145,6 +4169,9 @@ msgid "Manage labels"
 msgstr ""
 
 msgid "Manage project labels"
+msgstr ""
+
+msgid "Manage two-factor authentication"
 msgstr ""
 
 msgid "Manifest"
@@ -5186,6 +5213,12 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
+msgid "Profiles|Activate signin with one of the following services"
+msgstr ""
+
+msgid "Profiles|Active"
+msgstr ""
+
 msgid "Profiles|Add key"
 msgstr ""
 
@@ -5201,6 +5234,9 @@ msgstr ""
 msgid "Profiles|Change username"
 msgstr ""
 
+msgid "Profiles|Changing your username can have unintended side effects."
+msgstr ""
+
 msgid "Profiles|Choose file..."
 msgstr ""
 
@@ -5211,6 +5247,15 @@ msgid "Profiles|City, country"
 msgstr ""
 
 msgid "Profiles|Clear status"
+msgstr ""
+
+msgid "Profiles|Click on icon to activate signin with one of the following services"
+msgstr ""
+
+msgid "Profiles|Connect"
+msgstr ""
+
+msgid "Profiles|Connected Accounts"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
@@ -5231,6 +5276,9 @@ msgstr ""
 msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
 
+msgid "Profiles|Disconnect"
+msgstr ""
+
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
@@ -5241,6 +5289,9 @@ msgid "Profiles|Edit Profile"
 msgstr ""
 
 msgid "Profiles|Enter your name, so people you know can recognize you"
+msgstr ""
+
+msgid "Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)"
 msgstr ""
 
 msgid "Profiles|Invalid password"
@@ -5279,6 +5330,9 @@ msgstr ""
 msgid "Profiles|Set new profile picture"
 msgstr ""
 
+msgid "Profiles|Social sign-in"
+msgstr ""
+
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
@@ -5304,6 +5358,9 @@ msgid "Profiles|This feature is experimental and translations are not complete y
 msgstr ""
 
 msgid "Profiles|This information will appear on your profile"
+msgstr ""
+
+msgid "Profiles|Two-Factor Authentication"
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -5445,6 +5502,9 @@ msgid "Project name"
 msgstr ""
 
 msgid "Project slug"
+msgstr ""
+
+msgid "Project:"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
@@ -6009,6 +6069,9 @@ msgstr ""
 msgid "Search for projects, issues, etc."
 msgstr ""
 
+msgid "Search groups"
+msgstr ""
+
 msgid "Search merge requests"
 msgstr ""
 
@@ -6022,6 +6085,9 @@ msgid "Search or jump to…"
 msgstr ""
 
 msgid "Search project"
+msgstr ""
+
+msgid "Search projects"
 msgstr ""
 
 msgid "Search users"
@@ -6318,6 +6384,9 @@ msgid "Size and domain settings for static websites"
 msgstr ""
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
+msgstr ""
+
+msgid "Snippet Contents"
 msgstr ""
 
 msgid "Snippets"
@@ -7266,6 +7335,9 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
+msgid "Titles and Filenames"
+msgstr ""
+
 msgid "To GitLab"
 msgstr ""
 
@@ -7689,6 +7761,9 @@ msgstr ""
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
+msgid "We couldn't find any results matching"
+msgstr ""
+
 msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
 msgstr ""
 
@@ -8094,6 +8169,9 @@ msgstr ""
 msgid "command line instructions"
 msgstr ""
 
+msgid "commented on %{link_to_project}"
+msgstr ""
+
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
 msgstr ""
 
@@ -8165,6 +8243,12 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "in group %{link_to_group}"
+msgstr ""
+
+msgid "in project %{link_to_project}"
 msgstr ""
 
 msgid "issue boards"
@@ -8417,6 +8501,9 @@ msgid "password"
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "private"
 msgstr ""
 
 msgid "project"

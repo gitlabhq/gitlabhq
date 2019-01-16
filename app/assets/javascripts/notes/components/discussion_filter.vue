@@ -112,7 +112,7 @@ export default {
               :class="{ 'is-active': filter.value === currentValue }"
               class="qa-filter-options"
               type="button"
-              @click="selectFilter(filter.value);"
+              @click="selectFilter(filter.value)"
             >
               {{ filter.title }}
             </button>

@@ -164,7 +164,7 @@ export default {
 </script>
 
 <template>
-  <div class="ide-file-finder-overlay" @mousedown.self="toggleFileFinder(false);">
+  <div class="ide-file-finder-overlay" @mousedown.self="toggleFileFinder(false)">
     <div class="dropdown-menu diff-file-changes ide-file-finder show">
       <div class="dropdown-input">
         <input
@@ -174,8 +174,8 @@ export default {
           type="search"
           class="dropdown-input-field"
           autocomplete="off"
-          @keydown="onKeydown($event);"
-          @keyup="onKeyup($event);"
+          @keydown="onKeydown($event)"
+          @keyup="onKeyup($event)"
         />
         <i
           :class="{

@@ -85,9 +85,9 @@ export default {
 
           <div :key="`sub-div-${i}`">
             <div class="text-center prepend-top-10">
-              <a :href="folderUrl(model)" class="btn btn-default">
-                {{ s__('Environments|Show all') }}
-              </a>
+              <a :href="folderUrl(model)" class="btn btn-default">{{
+                s__('Environments|Show all')
+              }}</a>
             </div>
           </div>
         </template>
