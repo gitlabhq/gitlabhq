@@ -9,8 +9,10 @@ module Projects
     end
 
     def execute
-      update_file(pages_config_file, pages_config.to_json)
-      reload_daemon
+      if update_file(pages_config_file, pages_config.to_json)
+        reload_daemon
+      end
+
       success
     rescue => e
       error(e.message)
@@ -69,7 +71,12 @@ module Projects
     def update_file(file, data)
       unless data
         FileUtils.remove(file, force: true)
-        return
+        return true
+      end
+
+      existing_data = read_file(file)
+      if data == existing_data
+        return false
       end
 
       temp_file = "#{file}.#{SecureRandom.hex(16)}"
@@ -77,9 +84,19 @@ module Projects
         f.write(data)
       end
       FileUtils.move(temp_file, file, force: true)
+
+      true
     ensure
       # In case if the updating fails
       FileUtils.remove(temp_file, force: true)
+    end
+
+    def read_file(file)
+      File.open(file, 'r') do |f|
+        f.read
+      end
+    rescue
+      nil
     end
   end
 end
