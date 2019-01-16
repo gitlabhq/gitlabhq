@@ -4,10 +4,12 @@ module QA
   module Page
     module Project
       class Menu < Page::Base
+        include SubMenus::Common
+        include SubMenus::Repository
+
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
           element :settings_link, 'link_to edit_project_path' # rubocop:disable QA/ElementWithPattern
-          element :repository_link, "title: _('Repository')" # rubocop:disable QA/ElementWithPattern
           element :link_pipelines
           element :link_members_settings
           element :pipelines_settings_link, "title: _('CI / CD')" # rubocop:disable QA/ElementWithPattern
@@ -85,12 +87,6 @@ module QA
           end
         end
 
-        def click_repository
-          within_sidebar do
-            click_link('Repository')
-          end
-        end
-
         def click_repository_settings
           hover_settings do
             within_submenu do
@@ -147,18 +143,6 @@ module QA
           within_sidebar do
             find('.qa-settings-item').hover
 
-            yield
-          end
-        end
-
-        def within_sidebar
-          page.within('.sidebar-top-level-items') do
-            yield
-          end
-        end
-
-        def within_submenu
-          page.within('.fly-out-list') do
             yield
           end
         end

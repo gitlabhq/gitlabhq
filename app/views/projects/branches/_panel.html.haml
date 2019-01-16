@@ -10,7 +10,7 @@
 .card.prepend-top-10
   .card-header
     = panel_title
-  %ul.content-list.all-branches
+  %ul.content-list.all-branches.qa-all-branches
     - branches.first(overview_max_branches).each do |branch|
       = render "projects/branches/branch", branch: branch, merged: project.repository.merged_to_root_ref?(branch)
   - if branches.size > overview_max_branches
