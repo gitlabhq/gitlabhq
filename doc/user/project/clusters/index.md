@@ -178,8 +178,11 @@ When creating a cluster in GitLab, you will be asked if you would like to create
 [Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster, or
 a [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) one.
 
-Whether ABAC or RBAC is enabled, GitLab will create the necessary
-service accounts and privileges in order to install and run
+NOTE: **Note:**
+[RBAC](#role-based-access-control-rbac) is recommended and the GitLab default.
+
+Whether [ABAC](#attribute-based-access-control-abac) or [RBAC](#role-based-access-control-rbac) is enabled,
+GitLab will create the necessary service accounts and privileges in order to install and run
 [GitLab managed applications](#installing-applications):
 
 - If GitLab is creating the cluster, a `gitlab` service account with
