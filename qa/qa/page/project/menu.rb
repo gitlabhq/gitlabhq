@@ -11,6 +11,7 @@ module QA
           element :settings_item
           element :settings_link, 'link_to edit_project_path' # rubocop:disable QA/ElementWithPattern
           element :link_pipelines
+          element :link_operations
           element :link_members_settings
           element :pipelines_settings_link, "title: _('CI / CD')" # rubocop:disable QA/ElementWithPattern
           element :operations_kubernetes_link, "title: _('Kubernetes')" # rubocop:disable QA/ElementWithPattern
@@ -20,7 +21,6 @@ module QA
           element :merge_requests_link, /link_to.*shortcuts-merge_requests/ # rubocop:disable QA/ElementWithPattern
           element :merge_requests_link_text, "Merge Requests" # rubocop:disable QA/ElementWithPattern
           element :top_level_items, '.sidebar-top-level-items' # rubocop:disable QA/ElementWithPattern
-          element :operations_section, "class: 'shortcuts-operations'" # rubocop:disable QA/ElementWithPattern
           element :activity_link, "title: _('Activity')" # rubocop:disable QA/ElementWithPattern
           element :wiki_link_text, "Wiki" # rubocop:disable QA/ElementWithPattern
           element :milestones_link
@@ -125,6 +125,7 @@ module QA
 
         def hover_issues
           within_sidebar do
+            scroll_to_element(:issues_item)
             find_element(:issues_item).hover
 
             yield
@@ -133,7 +134,8 @@ module QA
 
         def hover_operations
           within_sidebar do
-            find('.shortcuts-operations').hover
+            scroll_to_element(:link_operations)
+            find_element(:link_operations).hover
 
             yield
           end
@@ -141,7 +143,8 @@ module QA
 
         def hover_settings
           within_sidebar do
-            find('.qa-settings-item').hover
+            scroll_to_element(:settings_item)
+            find_element(:settings_item).hover
 
             yield
           end

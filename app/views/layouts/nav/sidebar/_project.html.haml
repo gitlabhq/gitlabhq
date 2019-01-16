@@ -201,7 +201,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
-          = link_to sidebar_operations_link_path, class: 'shortcuts-operations' do
+          = link_to sidebar_operations_link_path, class: 'shortcuts-operations qa-link-operations' do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
