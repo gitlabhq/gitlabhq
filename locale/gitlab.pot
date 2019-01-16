@@ -4934,6 +4934,9 @@ msgstr ""
 msgid "Personal Access Token"
 msgstr ""
 
+msgid "Personal project creation is not allowed. Please contact your administrator with questions"
+msgstr ""
+
 msgid "Pick a name"
 msgstr ""
 
@@ -8143,6 +8146,9 @@ msgid "Your issues will be imported in the background. Once finished, you'll get
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"
 msgstr ""
 
 msgid "Your projects"
