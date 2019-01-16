@@ -1531,7 +1531,7 @@ class Project < ActiveRecord::Base
   end
 
   def pages_available?
-    Gitlab.config.pages.enabled && !namespace.subgroup?
+    Gitlab.config.pages.enabled
   end
 
   def remove_private_deploy_keys

@@ -3087,7 +3087,7 @@ describe Project do
     context 'when the project is in a subgroup' do
       let(:group) { create(:group, :nested) }
 
-      it { is_expected.to be(false) }
+      it { is_expected.to be(true) }
     end
   end
 
