@@ -34,8 +34,16 @@ export default class TaskList {
     );
   }
 
-  disable() {
+  disableTaskListItems() {
     $(`${this.selector} .js-task-list-container`).taskList('disable');
+  }
+
+  enableTaskListItems() {
+    $(`${this.selector} .js-task-list-container`).taskList('enable');
+  }
+
+  disable() {
+    this.disableTaskListItems();
     $(document).off('tasklist:changed', `${this.selector} .js-task-list-container`);
   }
 
@@ -47,12 +55,20 @@ export default class TaskList {
       lock_version: this.lockVersion,
     };
 
+    this.disableTaskListItems();
+
     return axios
       .patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
-      .catch(({ response }) => this.onError(response.data));
       .then(({ data }) => {
         this.lockVersion = data.lock_version;
+        this.enableTaskListItems();
+
         return this.onSuccess(data);
       })
+      .catch(({ response }) => {
+        this.enableTaskListItems();
+
+        return this.onError(response.data);
+      });
   }
 }
