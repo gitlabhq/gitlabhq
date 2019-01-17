@@ -1,0 +1,5 @@
+---
+title: Improve milestone queries using subqueries instead of separate queries for ids
+merge_request: 24325
+author:
+type: performance

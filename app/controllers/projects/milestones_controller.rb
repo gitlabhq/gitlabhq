@@ -144,7 +144,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def search_params
     if request.format.json? && project_group && can?(current_user, :read_group, project_group)
-      groups = project_group.self_and_ancestors_ids
+      groups = project_group.self_and_ancestors.select(:id)
     end
 
     params.permit(:state).merge(project_ids: @project.id, group_ids: groups)
