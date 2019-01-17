@@ -64,6 +64,14 @@ module Gitlab
       end
     end
 
+    def create_project_repository(project)
+      create_repository(project.repository_storage, project.disk_path, project.full_path)
+    end
+
+    def create_wiki_repository(project)
+      create_repository(project.repository_storage, project.wiki.disk_path, project.wiki.full_path)
+    end
+
     # Init new repository
     #
     # storage - the shard key
