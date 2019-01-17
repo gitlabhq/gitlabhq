@@ -11,7 +11,7 @@ When a test frequently fails in `master`,
 [a ~"broken master" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
 should be created.
 If the test cannot be fixed in a timely fashion, there is an impact on the
-productivity of all the developers, so you can decide to put it in quarantine by
+productivity of all the developers, so it should be placed in quarantine by
 assigning the `:quarantine` metadata.
 
 This means it will be skipped unless run with `--tag quarantine`:
