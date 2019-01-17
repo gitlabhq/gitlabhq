@@ -53,15 +53,14 @@ module API
         # EE, without having to modify this file directly.
       end
 
-      params :scope do |options|
-        scope_entities =
-          if Feature.enabled?(:users_search, default_enabled: true)
-            SCOPE_ENTITY
-          else
-            SCOPE_ENTITY.reject { |key, value| key == :users }
-          end
+      def check_users_search_allowed!
+        if Feature.disabled?(:users_search, default_enabled: true) && params[:scope].to_sym == :users
+          render_api_error!({ error: _("Scope not supported with disabled 'users_search' feature!") }, 400)
+        end
+      end
 
-        values = scope_entities.stringify_keys.slice(*options[:values]).keys
+      params :scope do |options|
+        values = SCOPE_ENTITY.stringify_keys.slice(*options[:values]).keys
 
         requires :scope,
           type: String,
@@ -81,6 +80,7 @@ module API
       end
       get do
         verify_search_scope!
+        check_users_search_allowed!
 
         present search, with: entity
       end
@@ -98,6 +98,7 @@ module API
       end
       get ':id/(-/)search' do
         verify_search_scope!
+        check_users_search_allowed!
 
         present search(group_id: user_group.id), with: entity
       end
@@ -114,6 +115,8 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
+        check_users_search_allowed!
+
         present search(project_id: user_project.id), with: entity
       end
     end

@@ -6632,6 +6632,9 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
+msgid "Scope not supported with disabled 'users_search' feature!"
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
 msgstr ""
 

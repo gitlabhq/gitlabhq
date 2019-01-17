@@ -81,10 +81,22 @@ describe API::Search do
         before do
           create(:user, name: 'billy')
 
-          get api('/search', user), scope: 'users', search: 'billy'
+          get api('/search', user), params: { scope: 'users', search: 'billy' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api('/search', user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
       end
 
       context 'for snippet_titles scope' do
@@ -203,15 +215,27 @@ describe API::Search do
         it_behaves_like 'response is correct', schema: 'public_api/v4/milestones'
       end
 
-      context 'for user scope' do
+      context 'for users scope' do
         before do
           user = create(:user, name: 'billy')
           create(:group_member, :developer, user: user, group: group)
 
-          get api("/groups/#{group.id}/search", user), scope: 'users', search: 'billy'
+          get api("/groups/#{group.id}/search", user), params: { scope: 'users', search: 'billy' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api("/groups/#{group.id}/search", user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
       end
 
       context 'for users scope with group path as id' do
@@ -219,7 +243,7 @@ describe API::Search do
           user1 = create(:user, name: 'billy')
           create(:group_member, :developer, user: user1, group: group)
 
-          get api("/groups/#{CGI.escape(group.full_path)}/search", user), scope: 'users', search: 'billy'
+          get api("/groups/#{CGI.escape(group.full_path)}/search", user), params: { scope: 'users', search: 'billy' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
@@ -306,10 +330,22 @@ describe API::Search do
           user1 = create(:user, name: 'billy')
           create(:project_member, :developer, user: user1, project: project)
 
-          get api("/projects/#{project.id}/search", user), scope: 'users', search: 'billy'
+          get api("/projects/#{project.id}/search", user), params: { scope: 'users', search: 'billy' }
         end
 
         it_behaves_like 'response is correct', schema: 'public_api/v4/user/basics'
+
+        context 'when users search feature is disabled' do
+          before do
+            allow(Feature).to receive(:disabled?).with(:users_search, default_enabled: true).and_return(true)
+
+            get api("/projects/#{project.id}/search", user), params: { scope: 'users', search: 'billy' }
+          end
+
+          it 'returns 400 error' do
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
       end
 
       context 'for notes scope' do
