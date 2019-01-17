@@ -78,118 +78,6 @@ A job is defined by a list of parameters that define the job behavior.
 | [retry](#retry)                                  | no       | Define when and how many times a job can be auto-retried in case of a failure |
 | [parallel](#parallel)                            | no       | Defines how many instances of a job should be run in parallel |
 
-### `extends`
-
-> Introduced in GitLab 11.3.
-
-`extends` defines an entry name that a job that uses `extends` is going to
-inherit from.
-
-It is an alternative to using [YAML anchors](#anchors) and is a little
-more flexible and readable:
-
-```yaml
-.tests:
-  script: rake test
-  stage: test
-  only:
-    refs:
-      - branches
-
-rspec:
-  extends: .tests
-  script: rake rspec
-  only:
-    variables:
-      - $RSPEC
-```
-
-In the example above, the `rspec` job inherits from the `.tests` template job.
-GitLab will perform a reverse deep merge based on the keys. GitLab will:
-
-- Merge the `rspec` contents into `.tests` recursively.
-- Not merge the values of the keys.
-
-This results in the following `rspec` job:
-
-```yaml
-rspec:
-  script: rake rspec
-  stage: test
-  only:
-    refs:
-      - branches
-    variables:
-      - $RSPEC
-```
-
-NOTE: **Note:**
-Note that `script: rake test` has been overwritten by `script: rake rspec`.
-
-If you do want to include the `rake test`, have a look at [before_script-and-after_script](#before_script-and-after_script).
-
-`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
-possible to inherit from regular jobs as well.
-
-`extends` supports multi-level inheritance, however it is not recommended to
-use more than three levels. The maximum nesting level that is supported is 10.
-The following example has two levels of inheritance:
-
-```yaml
-.tests:
-  only:
-    - pushes
-
-.rspec:
-  extends: .tests
-  script: rake rspec
-
-rspec 1:
-  variables:
-    RSPEC_SUITE: '1'
-  extends: .rspec
-
-rspec 2:
-  variables:
-    RSPEC_SUITE: '2'
-  extends: .rspec
-
-spinach:
-  extends: .tests
-  script: rake spinach
-```
-
-`extends` works across configuration files combined with [`include`](#include).
-
-### `pages`
-
-`pages` is a special job that is used to upload static content to GitLab that
-can be used to serve your website. It has a special syntax, so the two
-requirements below must be met:
-
-1. Any static content must be placed under a `public/` directory
-1. `artifacts` with a path to the `public/` directory must be defined
-
-The example below simply moves all files from the root of the project to the
-`public/` directory. The `.public` workaround is so `cp` doesn't also copy
-`public/` to itself in an infinite loop:
-
-```yaml
-pages:
-  stage: deploy
-  script:
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
-  artifacts:
-    paths:
-      - public
-  only:
-    - master
-```
-
-Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
-
 ## `image` and `services`
 
 This allows to specify a custom Docker image and a list of services that can be
@@ -1645,30 +1533,199 @@ test:
 
 ## `include`
 
-> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
-> Available for Starter, Premium and Ultimate since 10.6.
-> Behaviour expanded in GitLab 10.8 to allow more flexible overriding.
-> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
-to GitLab Core in 11.4
-> In GitLab 11.7, support for [including GitLab-supplied templates directly](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445) and support for [including templates from another repository](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) was added.
+> - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
+> - Available for Starter, Premium and Ultimate since 10.6.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
+    to GitLab Core in 11.4.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
+`include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
+otherwise the external file will not be included.
 
-In the following example, the content of `.before-script-template.yml` will be
-automatically fetched and evaluated along with the content of `.gitlab-ci.yml`:
+The files defined in `include` are:
+
+- Deep merged with those in `.gitlab-ci.yml`.
+- Always evaluated first and merged with the content of `.gitlab-ci.yml`,
+  regardless of the position of the `include` keyword.
+
+TIP: **Tip:**
+Use merging to customize and override included CI/CD configurations with local
+definitions.
+
+Recursive includes are not supported. Your external files should not use the
+`include` keyword as it will be ignored.
+
+NOTE: **Note:**
+Using YAML aliases across different YAML files sourced by `include` is not
+supported. You must only refer to aliases in the same file. Instead
+of using YAML anchors, you can use the [`extends` keyword](#extends).
+
+`include` supports four include methods:
+
+- [`local`](#includelocal)
+- [`file`](#includefile)
+- [`template`](#includetemplate)
+- [`remote`](#includeremote)
+
+See [usage examples](#include-examples).
+
+### `include:local`
+
+`include:local` includes a file from the same repository as `.gitlab-ci.yml`.
+It's referenced using full paths relative to the root directory (`/`).
+
+You can only use files that are currently tracked by Git on the same branch
+your configuration file is on. In other words, when using a `include:local`, make
+sure that both `.gitlab-ci.yml` and the local file are on the same branch.
+
+NOTE: **Note:**
+Including local files through Git submodules paths is not supported.
+
+Example:
 
 ```yaml
-# Content of https://gitlab.com/awesome-project/raw/master/.before-script-template.yml
+include:
+  - local: '/templates/.gitlab-ci-template.yml'
+```
 
+### `include:file`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+
+To include files from another private project under the same GitLab instance,
+use `include:file`. This file is referenced using full  paths relative to the
+root directory (`/`). For example:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+You can also specify `ref`, with the default being the `HEAD` of the project:
+
+```yaml
+include:
+  - project: 'my-group/my-project'
+    ref: master
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'my-group/my-project'
+    ref: v1.0.0
+    file: '/templates/.gitlab-ci-template.yml'
+
+  - project: 'my-group/my-project'
+    ref: 787123b47f14b552955ca2786bc9542ae66fee5b # Git SHA
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+### `include:template`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445) in GitLab 11.7.
+
+`include:template` can be used to include `.gitlab-ci.yml` templates that are
+[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates).
+
+For example:
+
+```yaml
+# File sourced from GitLab's template collection
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+### `include:remote`
+
+`include:remote` can be used to include a file from a different location,
+using HTTP/HTTPS, referenced by using the full URL. The remote file must be
+publicly accessible through a simple GET request as authentication schemas
+in the remote URL is not supported. For example:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
+```
+
+NOTE: **Note for GitLab admins:**
+In order to include files from another repository inside your local network,
+you may need to enable the **Allow requests to the local network from hooks and services** checkbox
+located in the **Admin area > Settings > Network > Outbound requests** section.
+
+### `include` examples
+
+Here are a few more `include` examples.
+
+#### Single string or array of multiple values
+
+You can include your extra YAML file(s) either as a single string or
+an array of multiple values. The following examples are all valid.
+
+Single string with the `include:local` method implied:
+
+```yaml
+include: '/templates/.after-script-template.yml'
+```
+
+Array with `include` method implied:
+
+```yaml
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+```
+
+Single string with `include` method specified explicitly:
+
+```yaml
+include:
+  remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+```
+
+Array with `include:remote` being the single item:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+```
+
+Array with multiple `include` methods specified explicitly:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - local: '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
+Array mixed syntax:
+
+```yaml
+include:
+  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
+  - '/templates/.after-script-template.yml'
+  - template: Auto-DevOps.gitlab-ci.yml
+  - project: 'my-group/my-project'
+    ref: master
+    file: '/templates/.gitlab-ci-template.yml'
+```
+
+#### Re-using a `before_script` template
+
+In the following example, the content of `.before-script-template.yml` will be
+automatically fetched and evaluated along with the content of `.gitlab-ci.yml`.
+
+Content of `https://gitlab.com/awesome-project/raw/master/.before-script-template.yml`:
+
+```yaml
 before_script:
   - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
   - gem install bundler --no-document
   - bundle install --jobs $(nproc)  "${FLAGS[@]}"
 ```
 
-```yaml
-# Content of .gitlab-ci.yml
+Content of `.gitlab-ci.yml`:
 
+```yaml
 include: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
 
 rspec:
@@ -1676,162 +1733,14 @@ rspec:
     - bundle exec rspec
 ```
 
-NOTE: **Note:**
-`include` requires the external YAML files to have the extensions `.yml` or `.yaml`.
-The external file will not be included if the extension is missing.
-
-You can include your extra YAML file either as a single string or
-as an array of multiple values. You can also use full paths or
-relative URLs. The following examples are both valid:
-
-```yaml
-# Single string
-
-include: '/templates/.after-script-template.yml'
-```
-
-```yaml
-# Single string
-
-include:
-  file: '/templates/.after-script-template.yml'
-```
-
-```yaml
-# Array
-
-include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-```
-
-```yaml
-# Array mixed syntax
-
-include:
-  - 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-```
-
-```yaml
-# Array
-
-include:
-  - remote: 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml'
-  - local: '/templates/.after-script-template.yml'
-  - template: Auto-DevOps.gitlab-ci.yml
-```
-
----
-
-`include` supports four types of files:
-
-- **local** to the same repository, referenced by using full paths in the same
-  repository, with `/` being the root directory. For example:
-
-    ```yaml
-    # Within the repository
-    include: '/templates/.gitlab-ci-template.yml'
-    ```
-
-    Or using:
-
-    ```yaml
-    # Within the repository
-    include:
-      local: '/templates/.gitlab-ci-template.yml'
-    ```
-
-    NOTE: **Note:**
-    You can only use files that are currently tracked by Git on the same branch
-    your configuration file is. In other words, when using a **local file**, make
-    sure that both `.gitlab-ci.yml` and the local file are on the same branch.
-
-    NOTE: **Note:**
-    We don't support the inclusion of local files through Git submodules paths.
-
-- **file** from another repository, referenced by using full paths in the same
-  repository, with `/` being the root directory. For example:
-
-    ```yaml
-    include:
-      project: 'my-group/my-project'
-      file: '/templates/.gitlab-ci-template.yml'
-    ```
-
-    You can also specify `ref:`. The default `ref:` is the `HEAD` of the project:
-
-    ```yaml
-    include:
-      - project: 'my-group/my-project'
-        ref: master
-        file: '/templates/.gitlab-ci-template.yml'
-
-      - project: 'my-group/my-project'
-        ref: v1.0.0
-        file: '/templates/.gitlab-ci-template.yml'
-
-      - project: 'my-group/my-project'
-        ref: 787123b47f14b552955ca2786bc9542ae66fee5b # git sha
-        file: '/templates/.gitlab-ci-template.yml'
-    ```
-
-- **remote** in a different location, accessed using HTTP/HTTPS, referenced
-  using the full URL. For example:
-
-    ```yaml
-    # File sourced from outside repository
-    include: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-    ```
-
-    Or using:
-
-    ```yaml
-    # File sourced from outside repository
-    include:
-      remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
-    ```
-
-    NOTE: **Note:**
-    The remote file must be publicly accessible through a simple GET request, as we don't support authentication schemas in the remote URL.
-
-    NOTE: **Note:**
-    In order to include files from another repository inside your local network,
-    you may need to enable the **Allow requests to the local network from hooks and services** checkbox
-    located in the **Settings > Network > Outbound requests** section within the **Admin area**.
-
-- **template** included with GitLab. For example:
-
-    ```yaml
-    # File sourced from GitLab's template collection
-    include:
-      template: Auto-DevOps.gitlab-ci.yml
-    ```
-
-    NOTE: **Note:**
-    Templates included this way are sourced from [lib/gitlab/ci/templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates).
-
----
-
-
-Since GitLab 10.8 we are now deep merging the files defined in `include`
-with those in `.gitlab-ci.yml`. Files defined by `include` are always
-evaluated first and merged with the content of `.gitlab-ci.yml`, no
-matter the position of the `include` keyword. You can take advantage of
-merging to customize and override details in included CI
-configurations with local definitions.
-
-NOTE: **Note:**
-The recursive includes are not supported, meaning your external files
-should not use the `include` keyword, as it will be ignored.
+#### Overriding external template values
 
 The following example shows specific YAML-defined variables and details of the
 `production` job from an include file being customized in `.gitlab-ci.yml`.
 
-```yaml
-# Content of https://company.com/autodevops-template.yml
+Content of `https://company.com/autodevops-template.yml`:
 
+```yaml
 variables:
   POSTGRES_USER: user
   POSTGRES_PASSWORD: testing_password
@@ -1849,9 +1758,9 @@ production:
     - master
 ```
 
-```yaml
-# Content of .gitlab-ci.yml
+Content of `.gitlab-ci.yml`:
 
+```yaml
 include: 'https://company.com/autodevops-template.yml'
 
 image: alpine:latest
@@ -1878,11 +1787,11 @@ with the environment url of the `production` job defined in
 The merging lets you extend and override dictionary mappings, but
 you cannot add or modify items to an included array. For example, to add
 an additional item to the production job script, you must repeat the
-existing script items.
+existing script items:
+
+Content of `https://company.com/autodevops-template.yml`:
 
 ```yaml
-# Content of https://company.com/autodevops-template.yml
-
 production:
   stage: production
   script:
@@ -1890,9 +1799,9 @@ production:
     - deploy
 ```
 
-```yaml
-# Content of .gitlab-ci.yml
+Content of `.gitlab-ci.yml`:
 
+```yaml
 include: 'https://company.com/autodevops-template.yml'
 
 stages:
@@ -1909,10 +1818,140 @@ In this case, if `install_dependencies` and `deploy` were not repeated in
 `.gitlab-ci.yml`, they would not be part of the script for the `production`
 job in the combined CI configuration.
 
+## `extends`
+
+> Introduced in GitLab 11.3.
+
+`extends` defines an entry name that a job that uses `extends` is going to
+inherit from.
+
+It is an alternative to using [YAML anchors](#anchors) and is a little
+more flexible and readable:
+
+```yaml
+.tests:
+  script: rake test
+  stage: test
+  only:
+    refs:
+      - branches
+
+rspec:
+  extends: .tests
+  script: rake rspec
+  only:
+    variables:
+      - $RSPEC
+```
+
+In the example above, the `rspec` job inherits from the `.tests` template job.
+GitLab will perform a reverse deep merge based on the keys. GitLab will:
+
+- Merge the `rspec` contents into `.tests` recursively.
+- Not merge the values of the keys.
+
+This results in the following `rspec` job:
+
+```yaml
+rspec:
+  script: rake rspec
+  stage: test
+  only:
+    refs:
+      - branches
+    variables:
+      - $RSPEC
+```
+
 NOTE: **Note:**
-We currently do not support using YAML aliases across different YAML files
-sourced by `include`. You must only refer to aliases in the same file. Instead
-of using YAML anchors you can use [`extends` keyword](#extends).
+Note that `script: rake test` has been overwritten by `script: rake rspec`.
+
+If you do want to include the `rake test`, see [before_script-and-after_script](#before_script-and-after_script).
+
+`.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
+possible to inherit from regular jobs as well.
+
+`extends` supports multi-level inheritance, however it is not recommended to
+use more than three levels. The maximum nesting level that is supported is 10.
+The following example has two levels of inheritance:
+
+```yaml
+.tests:
+  only:
+    - pushes
+
+.rspec:
+  extends: .tests
+  script: rake rspec
+
+rspec 1:
+  variables:
+    RSPEC_SUITE: '1'
+  extends: .rspec
+
+rspec 2:
+  variables:
+    RSPEC_SUITE: '2'
+  extends: .rspec
+
+spinach:
+  extends: .tests
+  script: rake spinach
+```
+
+## Using `extends` and `include` together
+
+`extends` works across configuration files combined with `include`.
+
+For example, if you have a local `included.yml` file:
+
+```yaml
+.template:
+  script:
+    - echo Hello!
+```
+
+Then, in `.gitlab-ci.yml` you can use it like this:
+
+```yaml
+include: included.yml
+
+useTemplate:
+  image: alpine
+  extends: .template
+```
+
+This will run a job called `useTemplate` that runs `echo Hello!` as defined in
+the `.template` job, and uses the `alpine` Docker image as defined in the local job.
+
+## `pages`
+
+`pages` is a special job that is used to upload static content to GitLab that
+can be used to serve your website. It has a special syntax, so the two
+requirements below must be met:
+
+- Any static content must be placed under a `public/` directory.
+- `artifacts` with a path to the `public/` directory must be defined.
+
+The example below simply moves all files from the root of the project to the
+`public/` directory. The `.public` workaround is so `cp` doesn't also copy
+`public/` to itself in an infinite loop:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+```
+
+Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
 
 ## `variables`
 
