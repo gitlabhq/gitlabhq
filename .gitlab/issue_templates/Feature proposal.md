@@ -17,7 +17,7 @@ or define a specific company role. e.a. "Release Manager" or "Security Analyst" 
 
 ### Documentation
 
-<!--- What doc pages need to be created or updated across user, admin, and API docs?
+<!-- What doc pages need to be created or updated across user, admin, and API docs?
 What concepts, procedures, or info is needed on each?
 PMs: Specify feature name, description, benefits, and use cases, if applicable. -->
 
