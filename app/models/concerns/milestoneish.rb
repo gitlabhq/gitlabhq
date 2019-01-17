@@ -46,6 +46,18 @@ module Milestoneish
     end
   end
 
+  def issue_participants_visible_by_user(user)
+    User.joins(:issue_assignees)
+      .where('issue_assignees.issue_id' => issues_visible_to_user(user).select(:id))
+      .distinct
+  end
+
+  def issue_labels_visible_by_user(user)
+    Label.joins(:label_links)
+      .where('label_links.target_id' => issues_visible_to_user(user).select(:id), 'label_links.target_type' => 'Issue')
+      .distinct
+  end
+
   def sorted_issues(user)
     issues_visible_to_user(user).preload_associations.sort_by_attribute('label_priority')
   end
