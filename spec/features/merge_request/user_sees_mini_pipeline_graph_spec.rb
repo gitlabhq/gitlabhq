@@ -51,22 +51,52 @@ describe 'Merge request < User sees mini pipeline graph', :js do
       first('.mini-pipeline-graph-dropdown-toggle')
     end
 
-    it 'expands when hovered' do
+    # Status icon button styles should update as described in
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/42769
+    it 'has unique styles for default, :hover, :active, and :focus states' do
       find('.mini-pipeline-graph-dropdown-toggle')
-      before_width = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').outerWidth();")
+      default_background_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('background-color');")
+      default_foreground_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible svg').css('fill');")
+      default_box_shadow = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('box-shadow');")
 
       toggle.hover
 
       find('.mini-pipeline-graph-dropdown-toggle')
-      after_width = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').outerWidth();")
+      hover_background_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('background-color');")
+      hover_foreground_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible svg').css('fill');")
+      hover_box_shadow = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('box-shadow');")
 
-      expect(before_width).to be < after_width
-    end
+      page.driver.browser.action.click_and_hold(toggle.native).perform
 
-    it 'shows dropdown caret when hovered' do
-      toggle.hover
+      find('.mini-pipeline-graph-dropdown-toggle')
+      active_background_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('background-color');")
+      active_foreground_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible svg').css('fill');")
+      active_box_shadow = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('box-shadow');")
 
-      expect(toggle).to have_selector('.fa-caret-down')
+      page.driver.browser.action.release(toggle.native)
+                                .move_by(100, 100)
+                                .perform
+
+      find('.mini-pipeline-graph-dropdown-toggle')
+      focus_background_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('background-color');")
+      focus_foreground_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible svg').css('fill');")
+      focus_box_shadow = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('box-shadow');")
+
+      expect(default_background_color).not_to eq(hover_background_color)
+      expect(hover_background_color).not_to eq(active_background_color)
+      expect(default_background_color).not_to eq(active_background_color)
+
+      expect(default_foreground_color).not_to eq(hover_foreground_color)
+      expect(hover_foreground_color).not_to eq(active_foreground_color)
+      expect(default_foreground_color).not_to eq(active_foreground_color)
+
+      expect(focus_background_color).to eq(hover_background_color)
+      expect(focus_foreground_color).to eq(hover_foreground_color)
+
+      expect(default_box_shadow).to eq('none')
+      expect(hover_box_shadow).to eq('none')
+      expect(active_box_shadow).not_to eq('none')
+      expect(focus_box_shadow).not_to eq('none')
     end
 
     it 'shows tooltip when hovered' do
