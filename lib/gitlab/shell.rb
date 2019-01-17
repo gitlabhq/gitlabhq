@@ -77,6 +77,9 @@ module Gitlab
       relative_path = disk_path.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
+      # During creation of a repository, gl_repository may not be known
+      # because that depends on a yet-to-be assigned project ID in the
+      # database (e.g. project-1234), so for now it is blank.
       repository = Gitlab::Git::Repository.new(storage, relative_path, '', gl_project_name)
       wrapped_gitaly_errors { repository.gitaly_repository_client.create_repository }
 
