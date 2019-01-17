@@ -88,4 +88,50 @@ describe Gitlab::HashedStorage::Migrator do
       end
     end
   end
+
+  describe '#rollback' do
+    let(:project) { create(:project, :empty_repo) }
+
+    it 'enqueues project rollback job' do
+      Sidekiq::Testing.fake! do
+        expect { subject.rollback(project) }.to change(ProjectRollbackHashedStorageWorker.jobs, :size).by(1)
+      end
+    end
+
+    it 'rescues and log exceptions' do
+      allow(project).to receive(:rollback_to_hashed_storage!).and_raise(StandardError)
+
+      expect { subject.rollback(project) }.not_to raise_error
+    end
+
+    it 'rolls-back project storage' do
+      perform_enqueued_jobs do
+        subject.rollback(project)
+      end
+
+      expect(project.reload.legacy_storage?).to be_truthy
+    end
+
+    it 'has rolled-back project set as writable' do
+      perform_enqueued_jobs do
+        subject.rollback(project)
+      end
+
+      expect(project.reload.repository_read_only?).to be_falsey
+    end
+
+    context 'when project is already on legacy storage' do
+      let(:project) { create(:project, :legacy_storage, :empty_repo) }
+
+      it 'doesnt enqueue any rollback job' do
+        Sidekiq::Testing.fake! do
+          expect { subject.rollback(project) }.not_to change(ProjectRollbackHashedStorageWorker.jobs, :size)
+        end
+      end
+
+      it 'returns false' do
+        expect(subject.rollback(project)).to be_falsey
+      end
+    end
+  end
 end

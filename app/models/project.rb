@@ -1976,6 +1976,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def rollback_to_legacy_storage!
+    return if legacy_storage?
+
+    if git_transfer_in_progress?
+      ProjectRollbackHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      ProjectRollbackHashedStorageWorker.perform_async(id)
+    end
+  end
+
   def git_transfer_in_progress?
     repo_reference_count > 0 || wiki_reference_count > 0
   end

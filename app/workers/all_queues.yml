@@ -127,6 +127,7 @@
 - project_destroy
 - project_export
 - project_migrate_hashed_storage
+- project_rollback_hashed_storage
 - project_service
 - propagate_service_template
 - reactive_caching

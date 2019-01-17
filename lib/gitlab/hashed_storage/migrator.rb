@@ -45,8 +45,15 @@ module Gitlab
         Rails.logger.error("#{err.message} migrating storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 
+      # Flag a project to be rolled-back to Legacy Storage
+      #
+      # @param [Project] project that will be rolled-back
       def rollback(project)
-        # TODO: implement rollback strategy
+        Rails.logger.info "Starting storage rollback of #{project.full_path} (ID=#{project.id})..."
+
+        project.rollback_to_legacy_storage!
+      rescue => err
+        Rails.logger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 
       private

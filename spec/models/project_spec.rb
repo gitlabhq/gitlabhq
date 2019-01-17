@@ -3452,6 +3452,20 @@ describe Project do
         project.migrate_to_hashed_storage!
       end
     end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :empty_repo, :legacy_storage) }
+
+      it 'returns nil' do
+        expect(project.rollback_to_legacy_storage!).to be_nil
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
+      end
+    end
   end
 
   context 'hashed storage' do
@@ -3529,6 +3543,30 @@ describe Project do
           Sidekiq::Testing.fake! do
             expect { project.migrate_to_hashed_storage! }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
           end
+        end
+      end
+    end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
+      it 'returns true' do
+        expect(project.rollback_to_legacy_storage!).to be_truthy
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
+      end
+
+      it 'does not flag as read-only' do
+        expect { project.rollback_to_legacy_storage! }.not_to change { project.repository_read_only }
+      end
+
+      it 'enqueues a job' do
+        Sidekiq::Testing.fake! do
+          expect { project.rollback_to_legacy_storage! }.to change(ProjectRollbackHashedStorageWorker.jobs, :size).by(1)
         end
       end
     end
