@@ -21,22 +21,24 @@ Add the relevant label:
    
 ### Problem to solve
 
-<!-- What product or feature(s) affected? What docs or doc section affected? Include links or paths.
-Is there a problem with a specific document, or a feature/process that's not addressed sufficiently in docs?
-Any concepts, procedures, reference info we could add to make it easier to successfully use GitLab?
-Any other ideas or requests? -->
-
-### Target audience
-
-<!-- Who would benefit from this information? -->
+<!-- 
+* What product or feature(s) affected?
+* What docs or doc section affected? Include links or paths.
+* Is there a problem with a specific document, or a feature/process that's not addressed sufficiently in docs?
+* Any other ideas or requests?
+-->
 
 ### Further details
 
-<!-- Include use cases, benefits, and/or goals for this work. -->
+<!--
+* Any concepts, procedures, reference info we could add to make it easier to successfully use GitLab?
+* Include use cases, benefits, and/or goals for this work.
+* If adding content: What audience is it intended for? (What roles and scenarios?)
+-->
 
 ### Proposal
 
-<!-- How can we solve the problem? -->
+<!-- Further specifics for how can we solve the problem. -->
 
 ### Who can address the issue
 
