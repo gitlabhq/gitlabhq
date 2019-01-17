@@ -67,14 +67,14 @@ module Gitlab
     # Init new repository
     #
     # storage - the shard key
-    # name - project disk path
+    # disk_path - project disk path
     # gl_project_name - project name
     #
     # Ex.
     #   create_repository("default", "path/to/gitlab-ci", "gitlab/gitlab-ci")
     #
-    def create_repository(storage, name, gl_project_name)
-      relative_path = name.dup
+    def create_repository(storage, disk_path, gl_project_name)
+      relative_path = disk_path.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
       repository = Gitlab::Git::Repository.new(storage, relative_path, '', gl_project_name)
@@ -82,7 +82,7 @@ module Gitlab
 
       true
     rescue => err # Once the Rugged codes gets removes this can be improved
-      Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
+      Rails.logger.error("Failed to add repository #{storage}/#{disk_path}: #{err}")
       false
     end
 
