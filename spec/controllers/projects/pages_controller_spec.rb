@@ -28,10 +28,10 @@ describe Projects::PagesController do
       let(:group) { create(:group, :nested) }
       let(:project) { create(:project, namespace: group) }
 
-      it 'returns a 404 status code' do
+      it 'returns a 200 status code' do
         get :show, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

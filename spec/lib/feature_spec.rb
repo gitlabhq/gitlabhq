@@ -182,4 +182,18 @@ describe Feature do
       expect(described_class.disabled?(:enabled_feature_flag)).to be_falsey
     end
   end
+
+  describe Feature::Target do
+    describe '#targets' do
+      let(:project) { create(:project) }
+      let(:user_name) { project.owner.username }
+
+      subject { described_class.new(user: user_name, project: project.full_path) }
+
+      it 'returns all found targets' do
+        expect(subject.targets).to be_an(Array)
+        expect(subject.targets).to eq([project.owner, project])
+      end
+    end
+  end
 end
