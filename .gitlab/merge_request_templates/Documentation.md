@@ -16,19 +16,28 @@ Closes
 
 ## Author's checklist
 
-- [ ] Use the Style Guide, as needed. https://docs.gitlab.com/ee/development/documentation/styleguide.html
-- [ ] Link the document to and from the higher-level index page.
-- [ ] Link the document to and from other subject-related docs, as appropriate.
-- [ ] Apply the Documentation label and intended milestone, if known.
+- [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
+- [ ] Link docs to and from the higher-level index page, plus other related docs, as appropriate.
+- [ ] Apply the ~Documentation label and intended milestone.
 - [ ] [Port the MR to EE (or backport from CE)](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee): _always recommended, required when the `ee-compat-check` job fails_.
 
 ## Review checklist
 
-- [ ] Optional review by a subject-matter expert, if the author has one in mind.
-- [ ] Review by MR assignee for clarity and GitLab style (required).
-- [ ] Technical writer review (optional). You can mention the writer listed for the applicable DevOps stage https://about.gitlab.com/handbook/product/categories/#devops-stages
-- [ ] If EE and CE MRs exist, merge the EE MR first, then the CE MR.
-- [ ] Merge.
-- [ ] Mention the the technical writer listed for the applicable DevOps stage if they have not already reviewed.
+All reviewers can help ensure accuracy, clarity, completeness, and adherence to the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
+
+**1. Primary Reviewer**
+
+* [ ] Review by a code reviewer or other selected expert to confirm accuracy, clarity, and completeness. This can be skipped for minor fixes without substantive content changes.
+ 
+**2. Technical Writer**
+
+* [ ] Optional: Technical writer review. If not requested for this MR, must be scheduled post-merge. To request for this MR, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+
+**3. Maintainer**
+
+1. [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
+2. [ ] Ensure a release milestone of the format XX.Y is set. If the freeze for that release has begun, add the label `pick into <XX.Y>` unless this change is not required for the release. In that case, simply change the milestone.
+3. [ ] If EE and CE MRs exist, merge the EE MR first, then the CE MR.
+4. [ ] After merging, if there has not been a technical writer review, create an issue for one with labels ~docs-review and ~Documentation, a link to this MR, and assign it to the technical writer for the [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
 /label ~Documentation
