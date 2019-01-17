@@ -212,6 +212,16 @@ export default {
 
       return this.line;
     },
+    commit() {
+      if (!this.discussion.for_commit) {
+        return null;
+      }
+
+      return {
+        id: this.discussion.commit_id,
+        url: this.discussion.discussion_path,
+      };
+    },
   },
   watch: {
     isReplying() {
@@ -376,6 +386,7 @@ Please check your network connection and try again.`;
                     :is="componentName(initialDiscussion)"
                     :note="componentData(initialDiscussion)"
                     :line="line"
+                    :commit="commit"
                     :help-page-path="helpPagePath"
                     @handleDeleteNote="deleteNoteHandler"
                   >
