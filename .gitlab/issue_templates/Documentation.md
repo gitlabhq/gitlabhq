@@ -1,7 +1,5 @@
 <!--
 
-* Mention "documentation" or "docs" as part of the issue title
-
 * Use this description template for suggesting new docs or updates to existing docs.
   Note: Doc work as part of feature development is covered in the Feature Request template.
   
@@ -13,12 +11,14 @@
 
 ### Type of issue
 
-- [ ] Correction or clarification needed
-- [ ] New doc or section needed
-- [ ] Rewrite of doc or section needed
-- [ ] Restructure or other broader improvements
-- [ ] Other
-     
+Add the relevant label:
+
+- `docs:fix` - Correction or clarification needed.
+- `docs:new` - New doc needed to cover a new topic or use case.
+- `docs:improvement` - Improving an existing doc; e.g. adding a diagram, adding or rewording text, resolving redundancies, cross-linking, etc.
+- `docs:revamp` - Review a page or group of pages in order to plan and implement major improvements/rewrites.
+- `docs:other` - Anything else.
+   
 ### Problem to solve
 
 <!-- What product or feature(s) affected? What docs or doc section affected? Include links or paths.
