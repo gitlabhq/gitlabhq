@@ -86,6 +86,14 @@ module Gitlab
       false
     end
 
+    def import_wiki_repository(project, wiki_formatter)
+      import_repository(project.repository_storage, wiki_formatter.disk_path, wiki_formatter.import_url, project.wiki.full_path)
+    end
+
+    def import_project_repository(project)
+      import_repository(project.repository_storage, project.disk_path, project.import_url, project.full_path)
+    end
+
     # Import repository
     #
     # storage - project's storage name

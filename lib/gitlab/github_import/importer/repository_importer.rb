@@ -6,11 +6,12 @@ module Gitlab
       class RepositoryImporter
         include Gitlab::ShellAdapter
 
-        attr_reader :project, :client
+        attr_reader :project, :client, :wiki_formatter
 
         def initialize(project, client)
           @project = project
           @client = client
+          @wiki_formatter = ::Gitlab::LegacyGithubImport::WikiFormatter.new(project)
         end
 
         # Returns true if we should import the wiki for the project.
@@ -57,9 +58,7 @@ module Gitlab
         end
 
         def import_wiki_repository
-          wiki_path = "#{project.disk_path}.wiki"
-
-          gitlab_shell.import_repository(project.repository_storage, wiki_path, wiki_url, project.full_path)
+          gitlab_shell.import_wiki_repository(project, wiki_formatter)
 
           true
         rescue Gitlab::Shell::Error => e
@@ -72,7 +71,7 @@ module Gitlab
         end
 
         def wiki_url
-          project.import_url.sub(/\.git\z/, '.wiki.git')
+          wiki_formatter.import_url
         end
 
         def update_clone_time
