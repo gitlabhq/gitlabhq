@@ -51,7 +51,11 @@ class Import::GithubController < Import::BaseController
   private
 
   def import_params
-    params.permit(:repo_id, :new_name, :target_namespace)
+    params.permit(permitted_import_params)
+  end
+
+  def permitted_import_params
+    [:repo_id, :new_name, :target_namespace]
   end
 
   def client
