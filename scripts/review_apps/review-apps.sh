@@ -346,7 +346,6 @@ function wait_for_job_to_be_done() {
 
   if [[ "${job_status}" == "failed" ]]; then
     echo "The '${job_name}' failed."
-    exit 1
   elif [[ "${job_status}" == "manual" ]]; then
     echo "The '${job_name}' is manual."
   else
