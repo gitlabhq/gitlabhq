@@ -148,7 +148,7 @@ class ChangelogEntry
 
   def execute
     assert_feature_branch!
-    assert_title!
+    assert_title! unless editor
     assert_new_file!
 
     # Read type from $stdin unless is already set
@@ -161,6 +161,10 @@ class ChangelogEntry
     unless options.dry_run
       write
       amend_commit if options.amend
+    end
+
+    if editor
+      system("#{editor} '#{file_path}'")
     end
   end
 
@@ -178,6 +182,10 @@ class ChangelogEntry
 
   def write
     File.write(file_path, contents)
+  end
+
+  def editor
+    ENV['EDITOR']
   end
 
   def amend_commit

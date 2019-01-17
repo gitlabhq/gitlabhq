@@ -46,12 +46,9 @@ module QA
         run("git clone #{opts} #{uri} ./")
       end
 
-      def checkout(branch_name)
-        run(%Q{git checkout "#{branch_name}"})
-      end
-
-      def checkout_new_branch(branch_name)
-        run(%Q{git checkout -b "#{branch_name}"})
+      def checkout(branch_name, new_branch: false)
+        opts = new_branch ? '-b' : ''
+        run(%Q{git checkout #{opts} "#{branch_name}"}).to_s
       end
 
       def shallow_clone
@@ -82,6 +79,10 @@ module QA
 
       def push_changes(branch = 'master')
         run("git push #{uri} #{branch}")
+      end
+
+      def merge(branch)
+        run("git merge #{branch}")
       end
 
       def commits

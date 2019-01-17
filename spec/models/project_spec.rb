@@ -209,9 +209,14 @@ describe Project do
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
-      allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
+
+      allow(project2)
+        .to receive(:creator)
+        .and_return(
+          double(can_create_project?: false, projects_limit: 0).as_null_object
+        )
+
       expect(project2).not_to be_valid
-      expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
 
     describe 'wiki path conflict' do
@@ -3087,7 +3092,7 @@ describe Project do
     context 'when the project is in a subgroup' do
       let(:group) { create(:group, :nested) }
 
-      it { is_expected.to be(false) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -4428,6 +4433,75 @@ describe Project do
       project.leave_pool_repository
 
       expect(pool.member_projects.reload).not_to include(project)
+    end
+  end
+
+  describe '#check_personal_projects_limit' do
+    context 'when creating a project for a group' do
+      it 'does nothing' do
+        creator = build(:user)
+        project = build(:project, namespace: build(:group), creator: creator)
+
+        allow(creator)
+          .to receive(:can_create_project?)
+          .and_return(false)
+
+        project.check_personal_projects_limit
+
+        expect(project.errors).to be_empty
+      end
+    end
+
+    context 'when the user is not allowed to create a personal project' do
+      let(:user) { build(:user) }
+      let(:project) { build(:project, creator: user) }
+
+      before do
+        allow(user)
+          .to receive(:can_create_project?)
+          .and_return(false)
+      end
+
+      context 'when the project limit is zero' do
+        it 'adds a validation error' do
+          allow(user)
+            .to receive(:projects_limit)
+            .and_return(0)
+
+          project.check_personal_projects_limit
+
+          expect(project.errors[:limit_reached].first)
+            .to match(/Personal project creation is not allowed/)
+        end
+      end
+
+      context 'when the project limit is greater than zero' do
+        it 'adds a validation error' do
+          allow(user)
+            .to receive(:projects_limit)
+            .and_return(5)
+
+          project.check_personal_projects_limit
+
+          expect(project.errors[:limit_reached].first)
+            .to match(/Your project limit is 5 projects/)
+        end
+      end
+    end
+
+    context 'when the user is allowed to create personal projects' do
+      it 'does nothing' do
+        user = build(:user)
+        project = build(:project, creator: user)
+
+        allow(user)
+          .to receive(:can_create_project?)
+          .and_return(true)
+
+        project.check_personal_projects_limit
+
+        expect(project.errors).to be_empty
+      end
     end
   end
 

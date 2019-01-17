@@ -12,7 +12,7 @@
   .row
     .form-group.col-md-6
       = f.label :name, class: 'label-bold'
-      = f.text_field :name, class: "form-control", required: true
+      = f.text_field :name, class: "form-control qa-personal-access-token-name-field", required: true
 
   .row
     .form-group.col-md-6
@@ -26,4 +26,4 @@
     = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: token, scopes: scopes
 
   .prepend-top-default
-    = f.submit "Create #{type} token", class: "btn btn-success"
+    = f.submit "Create #{type} token", class: "btn btn-success qa-create-token-button"

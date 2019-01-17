@@ -6,7 +6,7 @@
     = container_title
   .form-group
     .input-group
-      = text_field_tag 'created-personal-access-token', new_token_value, readonly: true, class: "form-control js-select-on-focus", 'aria-describedby' => "created-token-help-block"
+      = text_field_tag 'created-personal-access-token', new_token_value, readonly: true, class: "qa-created-personal-access-token form-control js-select-on-focus", 'aria-describedby' => "created-token-help-block"
       %span.input-group-append
         = clipboard_button(text: new_token_value, title: clipboard_button_title, placement: "left", class: "input-group-text btn-default btn-clipboard")
     %span#created-token-help-block.form-text.text-muted.text-danger Make sure you save it - you won't be able to access it again.

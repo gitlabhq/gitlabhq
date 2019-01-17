@@ -64,7 +64,7 @@ module QA
             repository.configure_identity(username, email)
 
             if new_branch
-              repository.checkout_new_branch(branch_name)
+              repository.checkout(branch_name, new_branch: true)
             else
               repository.checkout(branch_name)
             end

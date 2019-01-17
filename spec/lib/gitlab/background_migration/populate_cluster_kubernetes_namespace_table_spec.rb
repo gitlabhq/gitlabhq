@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :migration, schema: 20181022173835 do
   let(:migration) { described_class.new }
   let(:clusters) { create_list(:cluster, 10, :project, :provided_by_gcp) }
@@ -95,3 +96,4 @@ describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs
