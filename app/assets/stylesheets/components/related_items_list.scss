@@ -194,10 +194,18 @@ $item-weight-max-width: 48px;
   }
 }
 
+.mr-status-wrapper {
+  line-height: 0;
+}
+
 @include media-breakpoint-up(sm) {
   .item-body {
-    .item-contents .item-title .sortable-link {
-      max-width: 90%;
+    .item-contents .item-title
+    .item-contents .item-title {
+      .mr-title-link,
+      .sortable-link {
+        max-width: 90%;
+      }
     }
   }
 }
@@ -216,6 +224,7 @@ $item-weight-max-width: 48px;
         width: 95%;
         margin-bottom: $gl-padding-4;
 
+        .mr-title-link,
         .sortable-link {
           text-overflow: ellipsis;
           overflow: hidden;
@@ -292,6 +301,7 @@ $item-weight-max-width: 48px;
         flex-basis: unset;
         font-weight: $gl-font-weight-normal;
 
+        .mr-title-link,
         .sortable-link {
           display: block;
           text-overflow: ellipsis;

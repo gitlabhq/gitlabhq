@@ -17,14 +17,14 @@
             .item-contents
               .item-title.d-flex.align-items-center.mr-title
                 = render partial: 'projects/issues/merge_requests_status', locals: { merge_request: merge_request, css_class: 'd-none d-lg-block append-right-8' }
-                = link_to merge_request.title, merge_request_path(merge_request)
+                = link_to merge_request.title, merge_request_path(merge_request), { class: 'mr-title-link'}
               .item-meta
                 = render partial: 'projects/issues/merge_requests_status', locals: { merge_request: merge_request,  css_class: 'd-lg-none d-md-block append-right-5' }
                 %span.d-flex.align-items-center.append-right-8.mr-item-path.item-path-id.mt-0
                   %span.path-id-text.bold.text-truncate{ data: { toggle: 'tooltip'}, title: merge_request.target_project.full_name }
                     = merge_request.target_project.full_name
                   = merge_request.to_reference
-                %span.merge-request-ci-status.flex-md-grow-1.justify-content-end.d-flex
+                %span.merge-request-ci-status.flex-md-grow-1.justify-content-end.d-flex.ml-md-2
                   - if merge_request.head_pipeline
                     = render_pipeline_status(merge_request.head_pipeline, tooltip_placement: 'bottom')
                   - elsif has_any_head_pipeline
