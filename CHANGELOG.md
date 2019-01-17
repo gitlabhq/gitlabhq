@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.5 (2019-01-17)
+
+### Fixed (5 changes)
+
+- Add syntax highlighting to suggestion diff. !24156
+- Fix broken templated "Too many changes to show" text. !24282
+- Fix requests profiler in admin page not rendering HTML properly. !24291
+- Fix no avatar not showing in user selection box. !24346
+- Fixed diff suggestions removing dashes.
+
+
 ## 11.6.4 (2019-01-15)
 
 ### Security (1 change)
