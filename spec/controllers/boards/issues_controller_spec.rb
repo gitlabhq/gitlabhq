@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Boards::IssuesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :private) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let(:guest)   { create(:user) }
@@ -127,14 +127,10 @@ describe Boards::IssuesController do
     end
 
     context 'with unauthorized user' do
-      before do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
-      end
+      let(:unauth_user) { create(:user) }
 
       it 'returns a forbidden 403 response' do
-        list_issues user: user, board: board, list: list2
+        list_issues user: unauth_user, board: board, list: list2
 
         expect(response).to have_gitlab_http_status(403)
       end

@@ -31,13 +31,10 @@ describe Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_list, project).and_return(false)
-      end
+      let(:unauth_user) { create(:user) }
 
       it 'returns a forbidden 403 response' do
-        read_board_list user: user, board: board
+        read_board_list user: unauth_user, board: board
 
         expect(response).to have_gitlab_http_status(403)
       end
