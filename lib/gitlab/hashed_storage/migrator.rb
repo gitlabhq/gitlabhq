@@ -13,35 +13,28 @@ module Gitlab
       #
       # @param [Integer] start first project id for the range
       # @param [Integer] finish last project id for the range
-      # @param [Symbol] operation [:migrate, :rollback]
-      def bulk_schedule(start:, finish:, operation: :migrate)
-        StorageMigratorWorker.perform_async(start, finish, operation)
+      def bulk_schedule(start:, finish:)
+        ::HashedStorage::MigratorWorker.perform_async(start, finish)
       end
 
       # Start migration of projects from specified range
       #
-      # Flagging a project to be migrated is a synchronous action,
+      # Flagging a project to be migrated is a synchronous action
       # but the migration runs through async jobs
       #
       # @param [Integer] start first project id for the range
       # @param [Integer] finish last project id for the range
-      # @param [Symbol] operation [:migrate, :rollback]
       # rubocop: disable CodeReuse/ActiveRecord
-      def bulk_migrate(start:, finish:, operation: :migrate)
+      def bulk_migrate(start:, finish:)
         projects = build_relation(start, finish)
 
         projects.with_route.find_each(batch_size: BATCH_SIZE) do |project|
-          case operation
-          when :migrate
-            migrate(project)
-          when :rollback
-            rollback(project)
-          end
+          migrate(project)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # Flag a project to be migrated
+      # Flag a project to be migrated to Hashed Storage
       #
       # @param [Project] project that will be migrated
       def migrate(project)

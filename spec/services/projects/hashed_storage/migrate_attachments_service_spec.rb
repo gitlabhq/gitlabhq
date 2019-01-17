@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::HashedStorage::MigrateAttachmentsService do
   subject(:service) { described_class.new(project, project.full_path, logger: nil) }
 
-  let(:project) { create(:project, :legacy_storage) }
+  let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 
@@ -28,6 +28,10 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
         expect(File.file?(old_disk_path)).to be_falsey
         expect(File.file?(new_disk_path)).to be_truthy
       end
+
+      it 'returns true' do
+        expect(service.execute).to be_truthy
+      end
     end
 
     context 'when original folder does not exist anymore' do
@@ -43,6 +47,12 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
         expect(File.exist?(base_path(hashed_storage))).to be_falsey
         expect(File.file?(new_disk_path)).to be_falsey
       end
+
+      it 'returns true' do
+        expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
+
+        expect(service.execute).to be_truthy
+      end
     end
 
     context 'when target folder already exists' do
@@ -55,6 +65,18 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
         expect { service.execute }.to raise_error(Projects::HashedStorage::AttachmentMigrationError)
       end
+    end
+  end
+
+  context '#old_disk_path' do
+    it 'returns old disk_path for project' do
+      expect(service.old_disk_path).to eq(project.full_path)
+    end
+  end
+
+  context '#new_disk_path' do
+    it 'returns new disk_path for project' do
+      expect(service.new_disk_path).to eq(project.disk_path)
     end
   end
 

@@ -14,15 +14,25 @@ module Projects
       def execute
         # Migrate repository from Legacy to Hashed Storage
         unless project.hashed_storage?(:repository)
-          return unless HashedStorage::MigrateRepositoryService.new(project, old_disk_path, logger: logger).execute
+          return false unless migrate_repository
         end
 
         # Migrate attachments from Legacy to Hashed Storage
         unless project.hashed_storage?(:attachments)
-          HashedStorage::MigrateAttachmentsService.new(project, old_disk_path, logger: logger).execute
+          return false unless migrate_attachments
         end
 
         true
+      end
+
+      private
+
+      def migrate_repository
+        HashedStorage::MigrateRepositoryService.new(project, old_disk_path, logger: logger).execute
+      end
+
+      def migrate_attachments
+        HashedStorage::MigrateAttachmentsService.new(project, old_disk_path, logger: logger).execute
       end
     end
   end

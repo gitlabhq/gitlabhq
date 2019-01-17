@@ -4,7 +4,7 @@ describe Gitlab::HashedStorage::Migrator do
   describe '#bulk_schedule' do
     it 'schedules job to StorageMigratorWorker' do
       Sidekiq::Testing.fake! do
-        expect { subject.bulk_schedule(start: 1, finish: 5) }.to change(StorageMigratorWorker.jobs, :size).by(1)
+        expect { subject.bulk_schedule(start: 1, finish: 5) }.to change(HashedStorage::MigratorWorker.jobs, :size).by(1)
       end
     end
   end
@@ -46,7 +46,7 @@ describe Gitlab::HashedStorage::Migrator do
   describe '#migrate' do
     let(:project) { create(:project, :legacy_storage, :empty_repo) }
 
-    it 'enqueues job to ProjectMigrateHashedStorageWorker' do
+    it 'enqueues project migration job' do
       Sidekiq::Testing.fake! do
         expect { subject.migrate(project) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
       end
@@ -58,7 +58,7 @@ describe Gitlab::HashedStorage::Migrator do
       expect { subject.migrate(project) }.not_to raise_error
     end
 
-    it 'migrate project' do
+    it 'migrates project storage' do
       perform_enqueued_jobs do
         subject.migrate(project)
       end
@@ -72,6 +72,20 @@ describe Gitlab::HashedStorage::Migrator do
       end
 
       expect(project.reload.repository_read_only?).to be_falsey
+    end
+
+    context 'when project is already on hashed storage' do
+      let(:project) { create(:project, :empty_repo) }
+
+      it 'doesnt enqueue any migration job' do
+        Sidekiq::Testing.fake! do
+          expect { subject.migrate(project) }.not_to change(ProjectMigrateHashedStorageWorker.jobs, :size)
+        end
+      end
+
+      it 'returns false' do
+        expect(subject.migrate(project)).to be_falsey
+      end
     end
   end
 end

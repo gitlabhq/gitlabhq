@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe StorageMigratorWorker do
+describe HashedStorage::MigratorWorker do
   subject(:worker) { described_class.new }
   let(:projects) { create_list(:project, 2, :legacy_storage, :empty_repo) }
   let(:ids) { projects.map(&:id) }
 
   describe '#perform' do
     it 'delegates to MigratorService' do
-      expect_any_instance_of(Gitlab::HashedStorage::Migrator).to receive(:bulk_migrate).with(start: 5, finish: 10, operation: :migrate)
+      expect_any_instance_of(Gitlab::HashedStorage::Migrator).to receive(:bulk_migrate).with(start: 5, finish: 10)
 
       worker.perform(5, 10)
     end

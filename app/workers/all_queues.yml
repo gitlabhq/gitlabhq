@@ -45,6 +45,8 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- hashed_storage:hashed_storage_migrator
+
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
@@ -131,7 +133,6 @@
 - repository_fork
 - repository_import
 - repository_remove_remote
-- storage_migrator
 - system_hook_push
 - update_merge_requests
 - upload_checksum

@@ -58,7 +58,7 @@ describe 'rake gitlab:storage:*' do
 
     context '0 legacy projects' do
       it 'does nothing' do
-        expect(StorageMigratorWorker).not_to receive(:perform_async)
+        expect(::HashedStorage::MigratorWorker).not_to receive(:perform_async)
 
         run_rake_task(task)
       end
@@ -72,9 +72,9 @@ describe 'rake gitlab:storage:*' do
           stub_env('BATCH' => 1)
         end
 
-        it 'enqueues one StorageMigratorWorker per project' do
+        it 'enqueues one HashedStorage::MigratorWorker per project' do
           projects.each do |project|
-            expect(StorageMigratorWorker).to receive(:perform_async).with(project.id, project.id, :migrate)
+            expect(::HashedStorage::MigratorWorker).to receive(:perform_async).with(project.id, project.id)
           end
 
           run_rake_task(task)
@@ -86,10 +86,10 @@ describe 'rake gitlab:storage:*' do
           stub_env('BATCH' => 2)
         end
 
-        it 'enqueues one StorageMigratorWorker per 2 projects' do
+        it 'enqueues one HashedStorage::MigratorWorker per 2 projects' do
           projects.map(&:id).sort.each_slice(2) do |first, last|
             last ||= first
-            expect(StorageMigratorWorker).to receive(:perform_async).with(first, last, :migrate)
+            expect(::HashedStorage::MigratorWorker).to receive(:perform_async).with(first, last)
           end
 
           run_rake_task(task)

@@ -37,7 +37,7 @@ namespace :gitlab do
       print "Enqueuing migration of #{legacy_projects_count} projects in batches of #{helper.batch_size}"
 
       helper.project_id_batches do |start, finish|
-        storage_migrator.bulk_schedule(start: start, finish: finish, operation: :migrate)
+        storage_migrator.bulk_schedule(start: start, finish: finish)
 
         print '.'
       end
