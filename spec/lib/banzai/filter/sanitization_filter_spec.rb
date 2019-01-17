@@ -302,21 +302,21 @@ describe Banzai::Filter::SanitizationFilter do
     end
 
     describe 'footnotes' do
-      it 'allows id property on links' do
+      it 'allows correct footnote id property on links' do
         exp = %q{<a href="#fn1" id="fnref1">foo/bar.md</a>}
         act = filter(exp)
 
         expect(act.to_html).to eq exp
       end
 
-      it 'allows id property on li element' do
+      it 'allows correct footnote id property on li element' do
         exp = %q{<ol><li id="fn1">footnote</li></ol>}
         act = filter(exp)
 
         expect(act.to_html).to eq exp
       end
 
-      it 'only allows valid footnote formats for links' do
+      it 'removes invalid id for footnote links' do
         exp = %q{<a href="#fn1">link</a>}
 
         %w[fnrefx test xfnref1].each do |id|
@@ -326,7 +326,7 @@ describe Banzai::Filter::SanitizationFilter do
         end
       end
 
-      it 'only allows valid footnote formats for li' do
+      it 'removes invalid id for footnote li' do
         exp = %q{<ol><li>footnote</li></ol>}
 
         %w[fnx test xfn1].each do |id|

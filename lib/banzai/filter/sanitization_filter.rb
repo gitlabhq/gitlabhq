@@ -8,10 +8,8 @@ module Banzai
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
       include Gitlab::Utils::StrongMemoize
 
-      UNSAFE_PROTOCOLS                = %w(data javascript vbscript).freeze
-      TABLE_ALIGNMENT_PATTERN         = /text-align: (?<alignment>center|left|right)/.freeze
-      FOOTNOTE_LINK_REFERENCE_PATTERN = /\Afnref\d+\z/.freeze
-      FOOTNOTE_LI_REFERENCE_PATTERN   = /\Afn\d+\z/.freeze
+      UNSAFE_PROTOCOLS        = %w(data javascript vbscript).freeze
+      TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/.freeze
 
       def whitelist
         strong_memoize(:whitelist) do
@@ -47,10 +45,9 @@ module Banzai
         whitelist[:attributes][:all].delete('name')
         whitelist[:attributes]['a'].push('name')
 
-        # Allow any protocol in `a` elements...
+        # Allow any protocol in `a` elements
+        # and then remove links with unsafe protocols
         whitelist[:protocols].delete('a')
-
-        # ...but then remove links with unsafe protocols
         whitelist[:transformers].push(self.class.remove_unsafe_links)
 
         # Remove `rel` attribute from `a` elements
@@ -60,10 +57,9 @@ module Banzai
         whitelist[:transformers].push(self.class.remove_unsafe_table_style)
 
         # Allow `id` in a and li elements for footnotes
+        # and remove any `id` properties not matching for footnotes
         whitelist[:attributes]['a'].push('id')
         whitelist[:attributes]['li'] = %w(id)
-
-        # ...but remove any `id` properties not matching for footnotes
         whitelist[:transformers].push(self.class.remove_non_footnote_ids)
 
         whitelist
@@ -129,8 +125,8 @@ module Banzai
             return unless node.name == 'a' || node.name == 'li'
             return unless node.has_attribute?('id')
 
-            return if node.name == 'a' && node['id'] =~ FOOTNOTE_LINK_REFERENCE_PATTERN
-            return if node.name == 'li' && node['id'] =~ FOOTNOTE_LI_REFERENCE_PATTERN
+            return if node.name == 'a' && node['id'] =~ Banzai::Filter::FootnoteFilter::FOOTNOTE_LINK_REFERENCE_PATTERN
+            return if node.name == 'li' && node['id'] =~ Banzai::Filter::FootnoteFilter::FOOTNOTE_LI_REFERENCE_PATTERN
 
             node.remove_attribute('id')
           end

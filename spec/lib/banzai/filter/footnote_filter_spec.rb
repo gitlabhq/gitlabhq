@@ -9,16 +9,30 @@ describe Banzai::Filter::FootnoteFilter do
   # [^1]: one
   # [^second]: two
   let(:footnote) do
-    <<-EOF.strip_heredoc
-    <p>first<sup><a href="#fn1" id="fnref1">1</a></sup> and second<sup><a href="#fn2" id="fnref2">2</a></sup></p>
-    <ol>
-    <li id="fn1">
-    <p>one <a href="#fnref1">↩</a></p>
-    </li>
-    <li id="fn2">
-    <p>two <a href="#fnref2">↩</a></p>
-    </li>
-    </ol>
+    <<~EOF
+      <p>first<sup><a href="#fn1" id="fnref1">1</a></sup> and second<sup><a href="#fn2" id="fnref2">2</a></sup></p>
+      <ol>
+      <li id="fn1">
+      <p>one <a href="#fnref1">↩</a></p>
+      </li>
+      <li id="fn2">
+      <p>two <a href="#fnref2">↩</a></p>
+      </li>
+      </ol>
+    EOF
+  end
+
+  let(:filtered_footnote) do
+    <<~EOF
+      <p>first<sup class="footnote-ref"><a href="#fn1-#{identifier}" id="fnref1-#{identifier}">1</a></sup> and second<sup class="footnote-ref"><a href="#fn2-#{identifier}" id="fnref2-#{identifier}">2</a></sup></p>
+      <section class="footnotes"><ol>
+      <li id="fn1-#{identifier}">
+      <p>one <a href="#fnref1-#{identifier}" class="footnote-backref">↩</a></p>
+      </li>
+      <li id="fn2-#{identifier}">
+      <p>two <a href="#fnref2-#{identifier}" class="footnote-backref">↩</a></p>
+      </li>
+      </ol></section>
     EOF
   end
 
@@ -27,22 +41,8 @@ describe Banzai::Filter::FootnoteFilter do
     let(:link_node)  { doc.css('sup > a').first }
     let(:identifier) { link_node[:id].delete_prefix('fnref1-') }
 
-    it 'adds identifier to footnotes' do
-      expect(link_node[:id]).to eq "fnref1-#{identifier}"
-      expect(link_node[:href]).to eq "#fn1-#{identifier}"
-      expect(doc.css("li[id=fn1-#{identifier}]")).not_to be_empty
-      expect(doc.css("li[id=fn1-#{identifier}] a[href=\"#fnref1-#{identifier}\"]")).not_to be_empty
-    end
-
-    it 'uses the same identifier for all footnotes' do
-      expect(doc.css("li[id=fn2-#{identifier}]")).not_to be_empty
-      expect(doc.css("li[id=fn2-#{identifier}] a[href=\"#fnref2-#{identifier}\"]")).not_to be_empty
-    end
-
-    it 'adds section and classes' do
-      expect(doc.css("section[class=footnotes]")).not_to be_empty
-      expect(doc.css("sup[class=footnote-ref]").count).to eq 2
-      expect(doc.css("a[class=footnote-backref]").count).to eq 2
+    it 'properly adds the necessary ids and classes' do
+      expect(doc.to_html).to eq filtered_footnote
     end
   end
 end
