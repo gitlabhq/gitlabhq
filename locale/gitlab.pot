@@ -3163,6 +3163,9 @@ msgstr ""
 msgid "Filter by commit message"
 msgstr ""
 
+msgid "Filter by milestone name"
+msgstr ""
+
 msgid "Filter by two-factor authentication"
 msgstr ""
 

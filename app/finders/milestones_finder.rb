@@ -22,6 +22,7 @@ class MilestonesFinder
     items = Milestone.all
     items = by_groups_and_projects(items)
     items = by_title(items)
+    items = by_search_title(items)
     items = by_state(items)
 
     order(items)
@@ -42,6 +43,14 @@ class MilestonesFinder
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_search_title(items)
+    if params[:search_title].present?
+      items.search_title(params[:search_title])
+    else
+      items
+    end
+  end
 
   def by_state(items)
     Milestone.filter_by_state(items, params[:state])
