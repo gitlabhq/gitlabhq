@@ -19,7 +19,7 @@ or define a specific company role. e.a. "Release Manager" or "Security Analyst" 
 
 <!--
 * What doc pages need to be created or updated across user, admin, and API docs?
-* What concepts, procedures, or information is needed in each area? Is there an 'old way' or workaround to deprecate?
+* What concepts, procedures, or information is needed in each area? Is there an 'old way' to deprecate in docs?
 
 Product managers:
 * By the kickoff, finalize the answers to the bullets above, and:
