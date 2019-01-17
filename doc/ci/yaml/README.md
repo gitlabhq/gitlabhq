@@ -148,7 +148,7 @@ There are also two edge cases worth mentioning:
 
 1. If no `stages` are defined in `.gitlab-ci.yml`, then the `build`,
    `test` and `deploy` are allowed to be used as job's stage by default.
-2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
+1. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
 ## `stage`
 
@@ -216,7 +216,7 @@ a "key: value" pair. Be careful when using special characters:
 jobs are created:
 
 1. `only` defines the names of branches and tags for which the job will run.
-2. `except` defines the names of branches and tags for which the job will
+1. `except` defines the names of branches and tags for which the job will
     **not** run.
 
 There are a few rules that apply to the usage of job policy:
@@ -565,9 +565,9 @@ cleanup_job:
 The above script will:
 
 1. Execute `cleanup_build_job` only when `build_job` fails.
-2. Always execute `cleanup_job` as the last step in pipeline regardless of
+1. Always execute `cleanup_job` as the last step in pipeline regardless of
    success or failure.
-3. Allow you to manually execute `deploy_job` from GitLab's UI.
+1. Allow you to manually execute `deploy_job` from GitLab's UI.
 
 ### `when:manual`
 
@@ -1510,7 +1510,6 @@ Possible values for `when` are:
 - `missing_dependency_failure`: Retry if a dependency was missing.
 - `runner_unsupported`: Retry if the runner was unsupported.
 
-
 ## `parallel`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22631) in GitLab 11.5.
@@ -1535,8 +1534,7 @@ test:
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - Available for Starter, Premium and Ultimate since 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603)
-    to GitLab Core in 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603) to GitLab Core in 11.4.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
@@ -1866,7 +1864,7 @@ rspec:
 NOTE: **Note:**
 Note that `script: rake test` has been overwritten by `script: rake rspec`.
 
-If you do want to include the `rake test`, see [before_script-and-after_script](#before_script-and-after_script).
+If you do want to include the `rake test`, see [`before_script` and `after_script`](#before_script-and-after_script).
 
 `.tests` in this example is a [hidden key](#hidden-keys-jobs), but it's
 possible to inherit from regular jobs as well.
@@ -1990,9 +1988,9 @@ which can be set in GitLab's UI.
 
 ### Git strategy
 
-> Introduced in GitLab 8.9 as an experimental feature.  May change or be removed
-  completely in future releases. `GIT_STRATEGY=none` requires GitLab Runner
-  v1.7+.
+> Introduced in GitLab 8.9 as an experimental feature. May change or be removed
+> completely in future releases. `GIT_STRATEGY=none` requires GitLab Runner
+> v1.7+.
 
 You can set the `GIT_STRATEGY` used for getting recent application code, either
 globally or per-job in the [`variables`](#variables) section. If left
@@ -2322,8 +2320,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 Alternatively, one can pass the `ci.skip` [Git push option][push-option] if
 using Git 2.10 or newer:
-```
-$ git push -o ci.skip
+
+```sh
+git push -o ci.skip
 ```
 
 ## Validate the .gitlab-ci.yml
