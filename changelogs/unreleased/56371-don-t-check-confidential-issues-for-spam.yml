@@ -1,0 +1,5 @@
+---
+title: Do not run spam checks on confidential issues
+merge_request: 24453
+author:
+type: fixed
