@@ -200,7 +200,6 @@ $item-weight-max-width: 48px;
 
 @include media-breakpoint-up(sm) {
   .item-body {
-    .item-contents .item-title
     .item-contents .item-title {
       .mr-title-link,
       .sortable-link {
@@ -218,7 +217,7 @@ $item-weight-max-width: 48px;
 
       .item-title {
         flex-basis: unset;
-        // 98% because we compensate
+        // 95% because we compensate
         // for remove button which is
         // positioned absolutely
         width: 95%;

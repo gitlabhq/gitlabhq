@@ -2,17 +2,17 @@
 
 - if merge_request.merged?
   - mr_status_date = merge_request.merged_at
-  - mr_status_title = 'Merged'
+  - mr_status_title = _('Merged')
   - mr_status_icon = 'merge'
   - mr_status_class = 'merged'
 - elsif merge_request.closed?
   - mr_status_date = merge_request.closed_event&.created_at
-  - mr_status_title = 'Closed'
+  - mr_status_title = _('Closed')
   - mr_status_icon = 'issue-close'
   - mr_status_class = 'closed'
 - else
   - mr_status_date = merge_request.created_at
-  - mr_status_title = 'Opened'
+  - mr_status_title = _('Opened')
   - mr_status_icon = 'issue-open-m'
   - mr_status_class = 'open'
 
