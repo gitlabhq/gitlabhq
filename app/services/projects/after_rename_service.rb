@@ -27,7 +27,7 @@ module Projects
       @full_path_after = project.build_full_path
 
       # The path of just the project, before the rename took place.
-      @path_before = project.path_was
+      @path_before = project.previous_changes['path'].first
     end
 
     def execute

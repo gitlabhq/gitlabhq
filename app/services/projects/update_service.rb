@@ -67,12 +67,16 @@ module Projects
       end
 
       if project.previous_changes.include?('path')
-        AfterRenameService.new(project).execute
+        after_rename_service(project).execute
       else
         system_hook_service.execute_hooks_for(project, :update)
       end
 
       update_pages_config if changing_pages_related_config?
+    end
+
+    def after_rename_service(project)
+      AfterRenameService.new(project)
     end
 
     def changing_pages_related_config?

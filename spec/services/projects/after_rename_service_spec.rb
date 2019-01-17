@@ -4,25 +4,29 @@ require 'spec_helper'
 
 describe Projects::AfterRenameService do
   let(:rugged_config) { rugged_repo(project.repository).config }
+  let(:legacy_storage) { Storage::LegacyProject.new(project) }
+  let(:hashed_storage) { Storage::HashedProject.new(project) }
+  let!(:path_before_rename) { project.path }
+  let!(:path_after_rename) { "#{project.path}-renamed" }
+
+  subject(:service_execute) do
+    # AfterRenameService is called by UpdateService after a successful model.update
+    # We need to simulate that here in order to populate the correct Dirty attributes to
+    # actually test the behavior of this class
+    project.update(path: path_after_rename)
+    described_class.new(project).execute
+  end
 
   describe '#execute' do
     context 'using legacy storage' do
-      let(:project) { create(:project, :repository, :legacy_storage) }
-      let(:gitlab_shell) { Gitlab::Shell.new }
+      let(:project) { create(:project, :repository, :with_avatar, :legacy_storage) }
       let(:project_storage) { project.send(:storage) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
 
       before do
         # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-
-        allow(project)
-          .to receive(:previous_changes)
-          .and_return('path' => ['foo'])
-
-        allow(project)
-          .to receive(:path_was)
-          .and_return('foo')
 
         stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
@@ -32,12 +36,12 @@ describe Projects::AfterRenameService do
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .with(project.repository_storage, "#{project.namespace.full_path}/#{path_before_rename}", "#{project.namespace.full_path}/#{path_after_rename}")
           .and_return(true)
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .with(project.repository_storage, "#{project.namespace.full_path}/#{path_before_rename}.wiki", "#{project.namespace.full_path}/#{path_after_rename}.wiki")
           .and_return(true)
 
         expect_any_instance_of(SystemHooksService)
@@ -46,11 +50,11 @@ describe Projects::AfterRenameService do
 
         expect_any_instance_of(Gitlab::UploadsTransfer)
           .to receive(:rename_project)
-          .with('foo', project.path, project.namespace.full_path)
+          .with(path_before_rename, path_after_rename, project.namespace.full_path)
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        described_class.new(project).execute
+        service_execute
       end
 
       context 'container registry with images' do
@@ -63,8 +67,7 @@ describe Projects::AfterRenameService do
         end
 
         it 'raises a RenameFailedError' do
-          expect { described_class.new(project).execute }
-            .to raise_error(described_class::RenameFailedError)
+          expect { service_execute }.to raise_error(described_class::RenameFailedError)
         end
       end
 
@@ -76,7 +79,7 @@ describe Projects::AfterRenameService do
         it 'moves pages folder to new location' do
           expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
 
-          described_class.new(project).execute
+          service_execute
         end
       end
 
@@ -88,14 +91,12 @@ describe Projects::AfterRenameService do
         it 'moves uploads folder to new location' do
           expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
 
-          described_class.new(project).execute
+          service_execute
         end
       end
 
       it 'updates project full path in .git/config' do
-        allow(project_storage).to receive(:rename_repo).and_return(true)
-
-        described_class.new(project).execute
+        service_execute
 
         expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
@@ -103,17 +104,29 @@ describe Projects::AfterRenameService do
       it 'updates storage location' do
         allow(project_storage).to receive(:rename_repo).and_return(true)
 
-        described_class.new(project).execute
+        service_execute
 
         expect(project.project_repository).to have_attributes(
           disk_path: project.disk_path,
           shard_name: project.repository_storage
         )
       end
+
+      context 'with hashed storage upgrade when renaming enabled' do
+        it 'calls HashedStorageMigrationService with correct options' do
+          stub_application_setting(hashed_storage_enabled: true)
+
+          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          service_execute
+        end
+      end
     end
 
     context 'using hashed storage' do
-      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+      let(:project) { create(:project, :repository, :with_avatar,  skip_disk_validation: true) }
       let(:gitlab_shell) { Gitlab::Shell.new }
       let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
       let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -123,23 +136,9 @@ describe Projects::AfterRenameService do
         # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
 
         stub_feature_flags(skip_hashed_storage_upgrade: false)
         stub_application_setting(hashed_storage_enabled: true)
-      end
-
-      context 'migration to hashed storage' do
-        it 'calls HashedStorageMigrationService with correct options' do
-          project = create(:project, :repository, :legacy_storage)
-          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-
-          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
-            expect(service).to receive(:execute).and_return(true)
-          end
-
-          described_class.new(project).execute
-        end
       end
 
       it 'renames a repository' do
@@ -153,7 +152,7 @@ describe Projects::AfterRenameService do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        described_class.new(project).execute
+        service_execute
       end
 
       context 'container registry with images' do
@@ -166,7 +165,7 @@ describe Projects::AfterRenameService do
         end
 
         it 'raises a RenameFailedError' do
-          expect { described_class.new(project).execute }
+          expect { service_execute }
             .to raise_error(described_class::RenameFailedError)
         end
       end
@@ -175,38 +174,46 @@ describe Projects::AfterRenameService do
         it 'moves pages folder to new location' do
           expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
 
-          described_class.new(project).execute
+          service_execute
         end
       end
 
       context 'attachments' do
+        let(:uploader) { create(:upload, :issuable_upload, :with_file, model: project) }
+        let(:file_uploader) { build(:file_uploader, project: project) }
+        let(:legacy_storage_path) { File.join(file_uploader.root, legacy_storage.disk_path) }
+        let(:hashed_storage_path) { File.join(file_uploader.root, hashed_storage.disk_path) }
+
         it 'keeps uploads folder location unchanged' do
           expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
 
-          described_class.new(project).execute
+          service_execute
         end
 
         context 'when not rolled out' do
           let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
-          it 'moves pages folder to hashed storage' do
-            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
-              expect(service).to receive(:execute)
-            end
+          it 'moves attachments folder to hashed storage' do
+            expect(File.directory?(legacy_storage_path)).to be_truthy
+            expect(File.directory?(hashed_storage_path)).to be_falsey
 
-            described_class.new(project).execute
+            service_execute
+            expect(project.reload.hashed_storage?(:attachments)).to be_truthy
+
+            expect(File.directory?(legacy_storage_path)).to be_falsey
+            expect(File.directory?(hashed_storage_path)).to be_truthy
           end
         end
       end
 
       it 'updates project full path in .git/config' do
-        described_class.new(project).execute
+        service_execute
 
         expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
 
       it 'updates storage location' do
-        described_class.new(project).execute
+        service_execute
 
         expect(project.project_repository).to have_attributes(
           disk_path: project.disk_path,
