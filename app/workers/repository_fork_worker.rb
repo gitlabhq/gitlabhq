@@ -25,9 +25,7 @@ class RepositoryForkWorker
 
     Gitlab::Metrics.add_event(:fork_repository)
 
-    result = gitlab_shell.fork_repository(
-      source_project.repository_storage, source_project.disk_path, source_project.full_path,
-      target_project.repository_storage, target_project.disk_path, target_project.full_path)
+    result = gitlab_shell.fork_repository(source_project, target_project)
 
     raise "Unable to fork project #{target_project.id} for repository #{source_project.disk_path} -> #{target_project.disk_path}" unless result
 

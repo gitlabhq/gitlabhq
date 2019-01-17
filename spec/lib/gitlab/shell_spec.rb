@@ -474,15 +474,10 @@ describe Gitlab::Shell do
     end
 
     describe '#fork_repository' do
+      let(:target_project) { create(:project) }
+
       subject do
-        gitlab_shell.fork_repository(
-          project.repository_storage,
-          project.disk_path,
-          project.full_path,
-          'nfs-file05',
-          'fork/path',
-          'fork/path'
-        )
+        gitlab_shell.fork_repository(project, target_project)
       end
 
       it 'returns true when the command succeeds' do

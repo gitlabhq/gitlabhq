@@ -126,20 +126,13 @@ module Gitlab
     end
 
     # Fork repository to new path
-    # forked_from_storage - forked-from project's storage name
-    # forked_from_disk_path - project disk relative path
-    # forked_to_storage - forked-to project's storage name
-    # forked_to_disk_path - forked project disk relative path
-    #
-    # Ex.
-    #  fork_repository("nfs-file06", "gitlab/gitlab-ci", "nfs-file07", "new-namespace/gitlab-ci")
-    def fork_repository(
-          forked_from_storage, forked_from_disk_path, forked_from_project_name,
-          forked_to_storage, forked_to_disk_path, forked_to_project_name)
-      forked_from_relative_path = "#{forked_from_disk_path}.git"
-      fork_args = [forked_to_storage, "#{forked_to_disk_path}.git", forked_to_project_name]
+    # source_project - forked-from Project
+    # target_project - forked-to Project
+    def fork_repository(source_project, target_project)
+      forked_from_relative_path = "#{source_project.disk_path}.git"
+      fork_args = [target_project.repository_storage, "#{target_project.disk_path}.git", target_project.full_path]
 
-      GitalyGitlabProjects.new(forked_from_storage, forked_from_relative_path, forked_from_project_name).fork_repository(*fork_args)
+      GitalyGitlabProjects.new(source_project.repository_storage, forked_from_relative_path, source_project.full_path).fork_repository(*fork_args)
     end
 
     # Removes a repository from file system, using rm_diretory which is an alias
