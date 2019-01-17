@@ -68,6 +68,20 @@ git config --global --list
 
 ## Basic Git commands
 
+### Clone down a repository
+
+This is for you to get a copy of the repository from a ongoing project, where REPOSITORY-URL is the url to your git repository. It will be placed in a folder that has the same name as your repository by default.
+```bash
+git clone REPOSITORY-URL
+```
+
+Once your repository is cloned, you can change your working directory to the new folder and use the other commands below.
+
+```
+cd REPOSITORY
+```
+
+
 ### Go to the master branch to pull the latest changes from there
 
 ```bash
