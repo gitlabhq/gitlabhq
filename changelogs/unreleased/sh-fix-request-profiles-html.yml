@@ -1,5 +1,0 @@
----
-title: Fix requests profiler in admin page not rendering HTML properly
-merge_request: 24291
-author:
-type: fixed

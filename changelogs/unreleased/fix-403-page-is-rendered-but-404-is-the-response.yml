@@ -1,0 +1,5 @@
+---
+title: Show the correct error page when access is denied
+merge_request: 23932
+author:
+type: fixed

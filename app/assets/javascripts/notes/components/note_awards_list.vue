@@ -174,7 +174,7 @@ export default {
         data-placement="bottom"
         class="btn award-control"
         type="button"
-        @click="handleAward(awardName);"
+        @click="handleAward(awardName)"
       >
         <span v-html="getAwardHTML(awardName)"></span>
         <span class="award-control-text js-counter">{{ awardList.length }}</span>

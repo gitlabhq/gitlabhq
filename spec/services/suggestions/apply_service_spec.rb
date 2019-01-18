@@ -117,13 +117,184 @@ describe Suggestions::ApplyService do
         expect(commit.committer_email).to eq(user.commit_email)
         expect(commit.author_name).to eq(user.name)
       end
+
+      context 'when it fails to apply because the file was changed' do
+        it 'returns error message' do
+          service = instance_double(Files::UpdateService)
+
+          expect(Files::UpdateService).to receive(:new)
+            .and_return(service)
+
+          allow(service).to receive(:execute)
+            .and_raise(Files::UpdateService::FileChangedError)
+
+          result = subject.execute(suggestion)
+
+          expect(result).to eq(message: 'The file has been changed', status: :error)
+        end
+      end
+
+      context 'when diff ref from position is different from repo diff refs' do
+        it 'returns error message' do
+          outdated_refs = Gitlab::Diff::DiffRefs.new(base_sha: 'foo', start_sha: 'bar', head_sha: 'outdated')
+
+          allow(suggestion).to receive(:appliable?) { true }
+          allow(suggestion.position).to receive(:diff_refs) { outdated_refs }
+
+          result = subject.execute(suggestion)
+
+          expect(result).to eq(message: 'The file has been changed', status: :error)
+        end
+      end
+
+      context 'multiple suggestions applied' do
+        let(:expected_content) do
+          <<-CONTENT.strip_heredoc
+              require 'fileutils'
+              require 'open3'
+
+              module Popen
+                extend self
+
+
+                def popen(cmd, path=nil)
+                  unless cmd.is_a?(Array)
+                    # v1 change
+                  end
+
+                  path ||= Dir.pwd
+                  # v1 change
+                  vars = {
+                    "PWD" => path
+                  }
+
+                  options = {
+                    chdir: path
+                  }
+                  # v2 change
+                  unless File.directory?(path)
+                    FileUtils.mkdir_p(path)
+                  end
+
+                  @cmd_output = ""
+                  # v2 change
+
+                  Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                    @cmd_output << stdout.read
+                    @cmd_output << stderr.read
+                    @cmd_status = wait_thr.value.exitstatus
+                  end
+
+                  return @cmd_output, @cmd_status
+                end
+              end
+          CONTENT
+        end
+
+        let(:merge_request) do
+          create(:merge_request, source_project: project,
+                                 target_project: project)
+        end
+
+        def create_suggestion(diff, old_line: nil, new_line: nil, from_content:, to_content:, path:)
+          position = Gitlab::Diff::Position.new(old_path: path,
+                                                new_path: path,
+                                                old_line: old_line,
+                                                new_line: new_line,
+                                                diff_refs: diff.diff_refs)
+
+          suggestion_note = create(:diff_note_on_merge_request, noteable: merge_request,
+                                                                original_position: position,
+                                                                position: position,
+                                                                project: project)
+          create(:suggestion, note: suggestion_note,
+                              from_content: from_content,
+                              to_content: to_content)
+        end
+
+        def apply_suggestion(suggestion)
+          suggestion.note.reload
+          merge_request.reload
+          merge_request.clear_memoized_shas
+
+          result = subject.execute(suggestion)
+          refresh = MergeRequests::RefreshService.new(project, user)
+          refresh.execute(merge_request.diff_head_sha,
+                          suggestion.commit_id,
+                          merge_request.source_branch_ref)
+
+          result
+        end
+
+        def fetch_raw_diff(suggestion)
+          project.reload.commit(suggestion.commit_id).diffs.diff_files.first.diff.diff
+        end
+
+        it 'applies multiple suggestions in subsequent versions correctly' do
+          diff = merge_request.merge_request_diff
+          path = 'files/ruby/popen.rb'
+
+          suggestion_1_changes = { old_line: nil,
+                                   new_line: 13,
+                                   from_content: "\n",
+                                   to_content: "# v1 change\n",
+                                   path: path }
+
+          suggestion_2_changes = { old_line: 24,
+                                   new_line: 31,
+                                   from_content: "       @cmd_output << stderr.read\n",
+                                   to_content: "# v2 change\n",
+                                   path: path }
+
+          suggestion_1 = create_suggestion(diff, suggestion_1_changes)
+          suggestion_2 = create_suggestion(diff, suggestion_2_changes)
+
+          apply_suggestion(suggestion_1)
+
+          suggestion_1_diff = fetch_raw_diff(suggestion_1)
+
+          # rubocop: disable Layout/TrailingWhitespace
+          expected_suggestion_1_diff = <<-CONTENT.strip_heredoc
+            @@ -10,7 +10,7 @@ module Popen
+                 end
+             
+                 path ||= Dir.pwd
+            -
+            +# v1 change
+                 vars = {
+                   "PWD" => path
+                 }
+          CONTENT
+          # rubocop: enable Layout/TrailingWhitespace
+
+          apply_suggestion(suggestion_2)
+
+          suggestion_2_diff = fetch_raw_diff(suggestion_2)
+
+          # rubocop: disable Layout/TrailingWhitespace
+          expected_suggestion_2_diff = <<-CONTENT.strip_heredoc
+            @@ -28,7 +28,7 @@ module Popen
+             
+                 Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                   @cmd_output << stdout.read
+            -      @cmd_output << stderr.read
+            +# v2 change
+                   @cmd_status = wait_thr.value.exitstatus
+                 end
+          CONTENT
+          # rubocop: enable Layout/TrailingWhitespace
+
+          expect(suggestion_1_diff.strip).to eq(expected_suggestion_1_diff.strip)
+          expect(suggestion_2_diff.strip).to eq(expected_suggestion_2_diff.strip)
+        end
+      end
     end
 
     context 'fork-project' do
       let(:project) { create(:project, :public, :repository) }
 
       let(:forked_project) do
-        fork_project_with_submodules(project, user)
+        fork_project_with_submodules(project, user, repository: project.repository)
       end
 
       let(:merge_request) do

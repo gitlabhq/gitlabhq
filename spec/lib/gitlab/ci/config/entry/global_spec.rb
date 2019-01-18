@@ -160,8 +160,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                        variables: { 'VAR' => 'value' },
                        ignore: false,
                        after_script: ['make clean'],
-                       only: { refs: %w[branches tags] },
-                       except: {} },
+                       only: { refs: %w[branches tags] } },
               spinach: { name: :spinach,
                          before_script: [],
                          script: %w[spinach],
@@ -172,8 +171,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          variables: {},
                          ignore: false,
                          after_script: ['make clean'],
-                         only: { refs: %w[branches tags] },
-                         except: {} }
+                         only: { refs: %w[branches tags] } }
             )
           end
         end

@@ -267,7 +267,7 @@
 
 .prometheus-graph-cursor {
   position: absolute;
-  background: $theme-gray-600;
+  background: $gray-600;
   width: 1px;
 }
 
@@ -309,7 +309,7 @@
       > .arrow::after {
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
-        border-left: 4px solid $theme-gray-50;
+        border-left: 4px solid $gray-50;
       }
 
       .arrow-shadow {
@@ -331,7 +331,7 @@
       > .arrow::after {
         border-top: 6px solid transparent;
         border-bottom: 6px solid transparent;
-        border-right: 4px solid $theme-gray-50;
+        border-right: 4px solid $gray-50;
       }
 
       .arrow-shadow {
@@ -364,7 +364,7 @@
     }
 
     > .popover-title {
-      background-color: $theme-gray-50;
+      background-color: $gray-50;
       border-radius: $border-radius-default $border-radius-default 0 0;
     }
   }
@@ -439,7 +439,7 @@
       }
 
       > text {
-        fill: $theme-gray-600;
+        fill: $gray-600;
         font-size: 10px;
       }
     }
@@ -482,5 +482,5 @@
 }
 
 .prometheus-table-row-highlight {
-  background-color: $theme-gray-100;
+  background-color: $gray-100;
 }

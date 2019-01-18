@@ -29,7 +29,7 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
-          - if project_nav_tab?(:releases) && Feature.enabled?(:releases_page, @project)
+          - if project_nav_tab?(:releases)
             = nav_link(controller: :releases) do
               = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
                 %span= _('Releases')
@@ -43,7 +43,7 @@
 
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths) do
-          = link_to project_tree_path(@project), class: 'shortcuts-tree' do
+          = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
             .nav-icon-container
               = sprite_icon('doc-text')
             %span.nav-item-name
@@ -64,7 +64,7 @@
                 = _('Commits')
 
             = nav_link(html_options: {class: branches_tab_class}) do
-              = link_to project_branches_path(@project) do
+              = link_to project_branches_path(@project), class: 'qa-branches-link' do
                 = _('Branches')
 
             = nav_link(controller: [:tags]) do
@@ -201,7 +201,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
-          = link_to sidebar_operations_link_path, class: 'shortcuts-operations' do
+          = link_to sidebar_operations_link_path, class: 'shortcuts-operations qa-link-operations' do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
@@ -226,6 +226,12 @@
                 = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments qa-operations-environments-link' do
                   %span
                     = _('Environments')
+
+            - if project_nav_tab?(:error_tracking) && Feature.enabled?(:error_tracking, @project)
+              = nav_link(controller: :error_tracking) do
+                = link_to project_error_tracking_index_path(@project), title: _('Error Tracking'), class: 'shortcuts-tracking qa-operations-tracking-link' do
+                  %span
+                    = _('Error Tracking')
 
             - if project_nav_tab? :serverless
               = nav_link(controller: :functions) do

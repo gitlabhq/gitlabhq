@@ -1,0 +1,5 @@
+---
+title: Fix ambiguous brackets in task lists
+merge_request: 18514
+author: Jared Deckard <jared.deckard@gmail.com>
+type: fixed

@@ -13,19 +13,19 @@
           = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
       .form-text.text-muted= s_('ClusterIntegration|Enable or disable GitLab\'s connection to your Kubernetes cluster.')
 
-  - if has_multiple_clusters?
-    .form-group
-      %h5= s_('ClusterIntegration|Environment scope')
+  .form-group
+    %h5= s_('ClusterIntegration|Environment scope')
+    - if has_multiple_clusters?
       = field.text_field :environment_scope, class: 'col-md-6 form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
       .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
+    - else
+      = text_field_tag :environment_scope, '*', class: 'col-md-6 form-control disabled', placeholder: s_('ClusterIntegration|Environment scope'), disabled: true
+      - environment_scope_url = 'https://docs.gitlab.com/ee/user/project/clusters/#setting-the-environment-scope-premium'
+      - environment_scope_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: environment_scope_url }
+      .form-text.text-muted
+        %code *
+        = s_("ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}").html_safe % { environment_scope_start: environment_scope_start, environment_scope_end: '</a>'.html_safe }
 
   - if can?(current_user, :update_cluster, @cluster)
     .form-group
       = field.submit _('Save changes'), class: 'btn btn-success'
-
-  - unless has_multiple_clusters?
-    %h5= s_('ClusterIntegration|Environment scope')
-    %p
-      %code *
-      is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster.
-      = link_to 'More information', ('https://docs.gitlab.com/ee/user/project/clusters/#setting-the-environment-scope')

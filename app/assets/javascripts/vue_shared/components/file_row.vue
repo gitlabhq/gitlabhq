@@ -139,8 +139,8 @@ export default {
       class="file-row"
       role="button"
       @click="clickFile"
-      @mouseover="toggleHover(true);"
-      @mouseout="toggleHover(false);"
+      @mouseover="toggleHover(true)"
+      @mouseout="toggleHover(false)"
     >
       <div class="file-row-name-container">
         <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">

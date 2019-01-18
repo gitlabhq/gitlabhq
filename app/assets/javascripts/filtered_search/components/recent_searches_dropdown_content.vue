@@ -66,7 +66,7 @@ export default {
         <button
           type="button"
           class="filtered-search-history-dropdown-item"
-          @click="onItemActivated(item.text);"
+          @click="onItemActivated(item.text)"
         >
           <span>
             <span
@@ -88,7 +88,7 @@ export default {
         <button
           type="button"
           class="filtered-search-history-clear-button"
-          @click="onRequestClearRecentSearches($event);"
+          @click="onRequestClearRecentSearches($event)"
         >
           Clear recent searches
         </button>

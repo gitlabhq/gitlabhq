@@ -26,12 +26,14 @@
   opacity: 0.3;
 }
 
+.dropdown-projects {
+  .dropdown-content {
+    max-height: 200px;
+  }
+}
+
 .dropdown-menu-issues-board-new {
   width: 320px;
-
-  .open & {
-    max-height: 400px;
-  }
 
   .dropdown-content {
     max-height: 162px;
@@ -171,6 +173,7 @@
   background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  flex: 1;
 }
 
 .board-header {
@@ -232,9 +235,11 @@
 }
 
 .board-blank-state {
-  height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: $white-light;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .board-blank-state-list {
@@ -256,9 +261,9 @@
 }
 
 .board-list-component {
-  height: calc(100% - 49px);
-  overflow: hidden;
   position: relative;
+  flex: 1;
+  min-height: 0; // firefox fix
 }
 
 .board-list {
@@ -281,7 +286,7 @@
   padding: $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
-  border: 1px solid $theme-gray-200;
+  border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
   line-height: $gl-padding;
@@ -673,7 +678,7 @@
   }
 
   .board-card-info-icon {
-    color: $theme-gray-600;
+    color: $gray-600;
     margin-right: $gl-padding-4;
   }
 

@@ -1,0 +1,5 @@
+---
+title: Extract process_name from GitLab::Sentry
+merge_request: 24422
+author:
+type: other

@@ -10,13 +10,20 @@ import { parseBoolean } from '../lib/utils/common_utils';
 Vue.use(Translate);
 
 /**
+ * Function that receives the default store and returns an extended one.
+ * @callback extendStoreCallback
+ * @param {Vuex.Store} store
+ * @param {Element} el
+ */
+
+/**
  * Initialize the IDE on the given element.
  *
  * @param {Element} el - The element that will contain the IDE.
  * @param {Object} options - Extra options for the IDE (Used by EE).
  * @param {Component} options.rootComponent -
  *   Component that overrides the root component.
- * @param {(store:Vuex.Store, el:Element) => Vuex.Store} options.extendStore -
+ * @param {extendStoreCallback} options.extendStore -
  *   Function that receives the default store and returns an extended one.
  */
 export function initIde(el, options = {}) {

@@ -122,7 +122,7 @@ export default {
             data-placement="left"
             class="ide-sidebar-link is-right"
             type="button"
-            @click="clickTab($event, tab);"
+            @click="clickTab($event, tab)"
           >
             <icon :size="16" :name="tab.icon" />
           </button>

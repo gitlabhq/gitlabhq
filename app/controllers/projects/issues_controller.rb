@@ -178,8 +178,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def import_csv
-    return render_404 unless Feature.enabled?(:issues_import_csv)
-
     if uploader = UploadService.new(project, params[:file]).execute
       ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id)
 

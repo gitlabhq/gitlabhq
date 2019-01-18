@@ -99,6 +99,30 @@ describe 'Project' do
     end
   end
 
+  describe 'project topics' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    it 'shows project topics' do
+      project.update_attribute(:tag_list, 'topic1')
+      visit path
+      expect(page).to have_css('.project-topic-list')
+      expect(page).to have_content('topic1')
+    end
+
+    it 'shows up to 3 project tags' do
+      project.update_attribute(:tag_list, 'topic1, topic2, topic3, topic4')
+      visit path
+      expect(page).to have_css('.project-topic-list')
+      expect(page).to have_content('topic1, topic2, topic3 + 1 more')
+    end
+  end
+
   describe 'copy clone URL to clipboard', :js do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }

@@ -300,7 +300,7 @@ You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-ce/
 
 If you are new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/fearful.png" width="20px" height="20px">. You can easily join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/family.png" width="20px" height="20px">. All you need to do is to look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px">
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/thumbsup.png" width="20px" height="20px">
 
 Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support.
 

@@ -145,7 +145,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggleFile($event, true);"
+    @click="handleToggleFile($event, true)"
   >
     <div class="file-header-content">
       <icon

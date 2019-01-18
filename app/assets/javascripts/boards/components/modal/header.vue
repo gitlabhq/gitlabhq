@@ -58,7 +58,7 @@ export default {
           class="close"
           data-dismiss="modal"
           aria-label="Close"
-          @click="toggleModal(false);"
+          @click="toggleModal(false)"
         >
           <span aria-hidden="true">×</span>
         </button>

@@ -28,7 +28,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "shows Pending tab jobs" do
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
@@ -44,7 +43,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it "shows Running tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
@@ -60,7 +58,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it "shows Finished tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Finished')
         expect(page).to have_content 'No jobs to show'
-        expect(page).to have_link 'Cancel running'
       end
     end
 
@@ -75,7 +72,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
-        expect(page).not_to have_link 'Cancel running'
       end
     end
 
@@ -91,23 +87,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it "redirects to new URL" do
         expect(page.current_path).to eq(jobs_url)
       end
-    end
-  end
-
-  describe "POST /:project/jobs/:id/cancel_all" do
-    before do
-      job.run!
-      visit project_jobs_path(project)
-      click_link "Cancel running"
-    end
-
-    it 'shows all necessary content' do
-      expect(page).to have_selector('.nav-links li.active', text: 'All')
-      expect(page).to have_content 'canceled'
-      expect(page).to have_content job.short_sha
-      expect(page).to have_content job.ref
-      expect(page).to have_content job.name
-      expect(page).not_to have_link 'Cancel running'
     end
   end
 
@@ -191,7 +170,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
           href = new_project_issue_path(project, options)
 
-          page.within('.header-action-buttons') do
+          page.within('.build-sidebar') do
             expect(find('.js-new-issue')['href']).to include(href)
           end
         end

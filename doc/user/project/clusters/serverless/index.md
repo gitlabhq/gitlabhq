@@ -103,7 +103,7 @@ In order to deploy functions to your Knative instance, the following files must 
     The `gitlab-ci.yml` template creates a `Deploy` stage with a `functions` job that invokes the `tm` CLI with the required parameters.
 
 2. `serverless.yml`: This file contains the metadata for your functions,
-   such as name, runtime, and environment. It must be included at the root of your repository. The following is a sample `echo` function which shows the required structure for the file.
+   such as name, runtime, and environment. It must be included at the root of your repository. The following is a sample `echo` function which shows the required structure for the file. You can find the relevant files for this project in the [functions example project](https://gitlab.com/knative-examples/functions).
 
    ```yaml
    service: my-functions
@@ -127,7 +127,7 @@ In order to deploy functions to your Knative instance, the following files must 
    ```
 
 
-The `serverless.yml` file contains three sections with distinct parameters:
+The `serverless.yml` file is referencing both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`) which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it contains three sections with distinct parameters:
 
 ### `service`
 

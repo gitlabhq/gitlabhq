@@ -55,7 +55,7 @@ module Users
         params.reject! { |key, _| read_only.include?(key.to_sym) }
       end
 
-      @user.assign_attributes(params) if params.any?
+      @user.assign_attributes(params) unless params.empty?
     end
   end
 end

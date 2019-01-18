@@ -24,7 +24,7 @@
             = markup(snippet.file_name, chunk[:data], legacy_render_context(params))
           - else
             .file-content.code
-              .nothing-here-block Empty file
+              .nothing-here-block= _("Empty file")
     - else
       .file-content.code.js-syntax-highlight
         .line-numbers
@@ -42,4 +42,4 @@
               = highlight(snippet.file_name, chunk[:data])
             - else
               .file-content.code
-                .nothing-here-block Empty file
+                .nothing-here-block= _("Empty file")

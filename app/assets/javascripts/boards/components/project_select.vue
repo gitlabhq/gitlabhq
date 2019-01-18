@@ -82,7 +82,7 @@ export default {
 <template>
   <div>
     <label class="label-bold prepend-top-10"> Project </label>
-    <div ref="projectsDropdown" class="dropdown">
+    <div ref="projectsDropdown" class="dropdown dropdown-projects">
       <button
         class="dropdown-menu-toggle wide"
         type="button"

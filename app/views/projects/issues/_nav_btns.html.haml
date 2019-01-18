@@ -1,5 +1,5 @@
 - show_feed_buttons = local_assigns.fetch(:show_feed_buttons, true)
-- show_import_button = local_assigns.fetch(:show_import_button, true) && Feature.enabled?(:issues_import_csv) && can?(current_user, :import_issues, @project)
+- show_import_button = local_assigns.fetch(:show_import_button, true) && can?(current_user, :import_issues, @project)
 - show_export_button = local_assigns.fetch(:show_export_button, true)
 
 .nav-controls.issues-nav-controls

@@ -54,6 +54,9 @@ export default {
     showDropdowns() {
       return !this.commit && this.mergeRequestDiffs.length;
     },
+    baseVersionPath() {
+      return this.mergeRequestDiff.base_version_path;
+    },
   },
   methods: {
     ...mapActions('diffs', [
@@ -95,6 +98,7 @@ export default {
         and
         <compare-versions-dropdown
           :other-versions="comparableDiffs"
+          :base-version-path="baseVersionPath"
           :start-version="startVersion"
           :target-branch="targetBranch"
           class="mr-version-compare-dropdown"

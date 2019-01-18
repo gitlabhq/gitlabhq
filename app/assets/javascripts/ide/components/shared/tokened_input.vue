@@ -76,8 +76,8 @@ export default {
           <button
             class="selectable btn-blank"
             type="button"
-            @click.stop="removeToken(token);"
-            @keyup.delete="removeToken(token);"
+            @click.stop="removeToken(token)"
+            @keyup.delete="removeToken(token)"
           >
             <div class="value-container rounded">
               <div class="value">{{ token.label }}</div>

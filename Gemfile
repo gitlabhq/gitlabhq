@@ -112,7 +112,7 @@ gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.8'
-gem 'deckar01-task_list', '2.0.0'
+gem 'deckar01-task_list', '2.0.1'
 gem 'gitlab-markup', '~> 1.6.5'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
 gem 'redcarpet', '~> 3.4'
@@ -125,9 +125,9 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
-gem 'truncato', '~> 0.7.9'
+gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.5'
+gem 'nokogiri', '~> 1.10.1'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -160,12 +160,12 @@ gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.2.1'
-gem 'sidekiq-cron', '~> 0.6.0'
+gem 'sidekiq-cron', '~> 1.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.4'
+gem 'fugit', '~> 1.1'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -302,6 +302,12 @@ group :metrics do
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
+end
+
+group :tracing do
+  # OpenTracing
+  gem 'opentracing', '~> 0.4.3'
+  gem 'jaeger-client', '~> 0.10.0'
 end
 
 group :development do

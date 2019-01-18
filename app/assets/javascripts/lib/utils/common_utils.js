@@ -1,3 +1,7 @@
+/**
+ * @module common-utils
+ */
+
 import $ from 'jquery';
 import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
@@ -426,13 +430,14 @@ export const historyPushState = newUrl => {
 };
 
 /**
- * Returns true for a String "true" and false otherwise.
- * This is the opposite of Boolean(...).toString()
+ * Returns true for a String value of "true" and false otherwise.
+ * This is the opposite of Boolean(...).toString().
+ * `parseBoolean` is idempotent.
  *
  * @param  {String} value
  * @returns {Boolean}
  */
-export const parseBoolean = value => value === 'true';
+export const parseBoolean = value => (value && value.toString()) === 'true';
 
 /**
  * Converts permission provided as strings to booleans.
@@ -450,10 +455,16 @@ export const convertPermissionToBoolean = permission => {
 };
 
 /**
+ * @callback backOffCallback
+ * @param {Function} next
+ * @param {Function} stop
+ */
+
+/**
  * Back Off exponential algorithm
  * backOff :: (Function<next, stop>, Number) -> Promise<Any, Error>
  *
- * @param {Function<next, stop>} fn function to be called
+ * @param {backOffCallback} fn function to be called
  * @param {Number} timeout
  * @return {Promise<Any, Error>}
  * @example

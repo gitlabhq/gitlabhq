@@ -86,7 +86,7 @@ export default {
     class="board-card"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
-    @mouseup="showIssue($event);"
+    @mouseup="showIssue($event)"
   >
     <issue-card-inner
       :list="list"

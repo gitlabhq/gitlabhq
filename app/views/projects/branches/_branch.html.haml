@@ -76,7 +76,7 @@
             = icon("trash-o")
       - else
         = link_to project_branch_path(@project, branch.name),
-          class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip",
+          class: "btn btn-remove remove-row qa-remove-btn js-ajax-loading-spinner has-tooltip",
           title: s_('Branches|Delete branch'),
           method: :delete,
           data: { confirm: s_("Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?") % { branch_name: branch.name } },

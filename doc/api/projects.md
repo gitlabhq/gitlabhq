@@ -525,11 +525,13 @@ GET /projects/:id
     {
       "group_id": 4,
       "group_name": "Twitter",
+      "group_full_path": "twitter",
       "group_access_level": 30
     },
     {
       "group_id": 3,
       "group_name": "Gitlab Org",
+      "group_full_path": "gitlab-org",
       "group_access_level": 10
     }
   ],

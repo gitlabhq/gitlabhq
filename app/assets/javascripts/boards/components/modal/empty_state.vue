@@ -58,7 +58,7 @@ export default {
             v-if="activeTab === 'selected'"
             class="btn btn-default"
             type="button"
-            @click="changeTab('all');"
+            @click="changeTab('all')"
           >
             Open issues
           </button>

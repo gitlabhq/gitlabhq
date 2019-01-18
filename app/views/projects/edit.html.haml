@@ -39,9 +39,9 @@
         = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
-          = f.label :tag_list, "Tags", class: 'label-bold'
+          = f.label :tag_list, "Topics", class: 'label-bold'
           = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
-          %p.form-text.text-muted Separate tags with commas.
+          %p.form-text.text-muted Separate topics with commas.
         %fieldset.features
           %h5.prepend-top-0= _("Project avatar")
           .form-group

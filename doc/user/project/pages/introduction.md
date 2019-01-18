@@ -38,6 +38,7 @@ be served on.
 | Group pages | `groupname.example.io` | `http(s)://groupname.example.io` |
 | Project pages owned by a user  | `projectname` | `http(s)://username.example.io/projectname` |
 | Project pages owned by a group | `projectname` | `http(s)://groupname.example.io/projectname`|
+| Project pages owned by a subgroup | `subgroup/projectname` | `http(s)://groupname.example.io/subgroup/projectname`|
 
 > **Warning:**
 > There are some known [limitations](#limitations) regarding namespaces served
@@ -494,8 +495,8 @@ don't redirect HTTP to HTTPS.
 
 [rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
 
-GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
-You can only create the highest level group website.
+GitLab Pages [does **not** support group websites for subgroups](../../group/subgroups/index.md#limitations).
+You can only create the highest-level group website.
 
 ## Redirects in GitLab Pages
 

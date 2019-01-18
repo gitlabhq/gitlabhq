@@ -5,8 +5,8 @@ module ManualInverseAssociation
 
   class_methods do
     def manual_inverse_association(association, inverse)
-      define_method(association) do |*args|
-        super(*args).tap do |value|
+      define_method(association) do
+        super().tap do |value|
           next unless value
 
           child_association = value.association(inverse)

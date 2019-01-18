@@ -1,0 +1,5 @@
+---
+title: Fix syntax highlighting for suggested changes preview
+merge_request: 24358
+author:
+type: fixed

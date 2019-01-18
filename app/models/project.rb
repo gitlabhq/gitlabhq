@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
   delegate :no_import?, to: :import_state, allow_nil: true
 
   default_value_for :archived, false
-  default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_project_visibility }
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { Gitlab::CurrentSettings.pick_repository_storage }
@@ -331,7 +331,7 @@ class Project < ActiveRecord::Base
                                        ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
                                        enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
-  validate :check_limit, on: :create
+  validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
   validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
   validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
@@ -658,10 +658,6 @@ class Project < ActiveRecord::Base
     latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
   end
 
-  def get_build(id)
-    builds.find_by(id: id)
-  end
-
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     commit_by(oid: sha) if sha
@@ -813,18 +809,22 @@ class Project < ActiveRecord::Base
       ::Gitlab::CurrentSettings.mirror_available
   end
 
-  def check_limit
-    unless creator.can_create_project? || namespace.kind == 'group'
-      projects_limit = creator.projects_limit
+  def check_personal_projects_limit
+    # Since this method is called as validation hook, `creator` might not be
+    # present. Since the validation for that will fail, we can just return
+    # early.
+    return if !creator || creator.can_create_project? ||
+        namespace.kind == 'group'
 
-      if projects_limit == 0
-        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
+    limit = creator.projects_limit
+    error =
+      if limit.zero?
+        _('Personal project creation is not allowed. Please contact your administrator with questions')
       else
-        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+        _('Your project limit is %{limit} projects! Please contact your administrator to increase it')
       end
-    end
-  rescue
-    self.errors.add(:base, "Can't check your ability to create project")
+
+    self.errors.add(:limit_reached, error % { limit: limit })
   end
 
   def visibility_level_allowed_by_group
@@ -1535,7 +1535,7 @@ class Project < ActiveRecord::Base
   end
 
   def pages_available?
-    Gitlab.config.pages.enabled && !namespace.subgroup?
+    Gitlab.config.pages.enabled
   end
 
   def remove_private_deploy_keys
@@ -1606,24 +1606,7 @@ class Project < ActiveRecord::Base
 
   # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
-    return unless default_branch
-
-    # Ensure HEAD points to the default branch in case it is not master
-    change_head(default_branch)
-
-    if Gitlab::CurrentSettings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
-      params = {
-        name: default_branch,
-        push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }],
-        merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }]
-      }
-
-      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
-    end
+    Projects::ProtectDefaultBranchService.new(self).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -2040,7 +2023,11 @@ class Project < ActiveRecord::Base
   end
 
   def leave_pool_repository
-    pool_repository&.unlink_repository(repository)
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
+  end
+
+  def link_pool_repository
+    pool_repository&.link_repository(repository)
   end
 
   private

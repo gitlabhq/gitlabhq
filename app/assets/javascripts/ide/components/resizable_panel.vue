@@ -78,8 +78,8 @@ export default {
       :min-size="minSize"
       :max-size="$options.maxSize"
       :side="side === 'right' ? 'left' : 'right'"
-      @resize-start="setResizingStatus(true);"
-      @resize-end="setResizingStatus(false);"
+      @resize-start="setResizingStatus(true)"
+      @resize-end="setResizingStatus(false)"
     />
   </div>
 </template>

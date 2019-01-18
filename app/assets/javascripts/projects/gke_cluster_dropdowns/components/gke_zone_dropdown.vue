@@ -82,9 +82,7 @@ export default {
               </span>
             </li>
             <li v-for="result in results" :key="result.id">
-              <button type="button" @click.prevent="setItem(result.name);">
-                {{ result.name }}
-              </button>
+              <button type="button" @click.prevent="setItem(result.name)">{{ result.name }}</button>
             </li>
           </ul>
         </div>

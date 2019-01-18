@@ -53,6 +53,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def load_projects(finder_params)
+    @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
+    @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
+
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
                 .execute

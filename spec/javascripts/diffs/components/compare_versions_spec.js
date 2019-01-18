@@ -100,6 +100,12 @@ describe('CompareVersions', () => {
     });
   });
 
+  describe('baseVersionPath', () => {
+    it('should be set correctly from mergeRequestDiff', () => {
+      expect(vm.baseVersionPath).toEqual(vm.mergeRequestDiff.base_version_path);
+    });
+  });
+
   describe('isWhitespaceVisible', () => {
     const originalHref = window.location.href;
 
