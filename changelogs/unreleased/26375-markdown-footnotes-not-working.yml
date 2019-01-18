@@ -1,0 +1,5 @@
+---
+title: Footnotes now render properly in markdown
+merge_request: 24168
+author:
+type: fixed

@@ -125,9 +125,9 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
-gem 'truncato', '~> 0.7.9'
+gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.5'
+gem 'nokogiri', '~> 1.10.1'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -302,6 +302,12 @@ group :metrics do
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
+end
+
+group :tracing do
+  # OpenTracing
+  gem 'opentracing', '~> 0.4.3'
+  gem 'jaeger-client', '~> 0.10.0'
 end
 
 group :development do

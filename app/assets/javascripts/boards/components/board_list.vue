@@ -221,7 +221,7 @@ export default {
 </script>
 
 <template>
-  <div class="board-list-component">
+  <div class="board-list-component d-flex flex-column">
     <div v-if="loading" class="board-list-loading text-center" aria-label="Loading issues">
       <gl-loading-icon />
     </div>

@@ -63,7 +63,7 @@ module QA
         # - "https://user:pass@somehost.com:443/wd/hub"
         # - "http://localhost:4444/wd/hub"
 
-        return unless ENV['QA_REMOTE_GRID']
+        return if (ENV['QA_REMOTE_GRID'] || '').empty?
 
         "#{remote_grid_protocol}://#{remote_grid_credentials}#{ENV['QA_REMOTE_GRID']}/wd/hub"
       end

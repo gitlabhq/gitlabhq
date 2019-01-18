@@ -1,0 +1,5 @@
+---
+title: Conditionally initialize the global opentracing tracer
+merge_request: 24186
+author:
+type: other

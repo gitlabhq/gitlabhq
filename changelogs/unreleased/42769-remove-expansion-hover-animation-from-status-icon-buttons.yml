@@ -1,0 +1,5 @@
+---
+title: Remove expansion hover animation from pipeline status icon buttons
+merge_request: 24268
+author: Nathan Friend
+type: changed
