@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { s__, sprintf } from '~/locale';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -80,23 +79,12 @@ export default {
     isTarget() {
       return this.targetNoteHash === this.noteAnchorId;
     },
-    actionText() {
-      if (this.commit) {
-        const { id, url } = this.commit;
-        const linkStart = `<a class="commit-sha monospace" href="${escape(url)}">`;
-        const linkEnd = '</a>';
-        return sprintf(
-          s__('MergeRequests|commented on commit %{linkStart}%{commitId}%{linkEnd}'),
-          {
-            commitId: truncateSha(id),
-            linkStart,
-            linkEnd,
-          },
-          false,
-        );
+    truncatedHash() {
+      if (!this.commit) {
+        return null;
       }
 
-      return '<span class="d-none d-sm-inline">&middot;</span>';
+      return truncateSha(this.commit.id);
     },
   },
 
@@ -225,13 +213,12 @@ export default {
     </div>
     <div class="timeline-content">
       <div class="note-header">
-        <note-header
-          v-once
-          :author="author"
-          :created-at="note.created_at"
-          :note-id="note.id"
-        >
-          <span v-html="actionText"></span>
+        <note-header v-once :author="author" :created-at="note.created_at" :note-id="note.id">
+          <span v-if="commit">
+            {{ s__('MergeRequests|commented on commit ')
+            }}<a class="commit-sha monospace" :href="commit.url">{{ truncatedHash }}</a>
+          </span>
+          <span v-else class="d-none d-sm-inline">&middot;</span>
         </note-header>
         <note-actions
           :author-id="author.id"
