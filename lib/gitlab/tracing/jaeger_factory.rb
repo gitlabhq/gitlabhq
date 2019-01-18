@@ -22,7 +22,7 @@ module Gitlab
           service_name: service_name,
           sampler: get_sampler(options[:sampler], options[:sampler_param]),
           reporter: get_reporter(service_name, options[:http_endpoint], options[:udp_endpoint])
-        }
+        }.compact
 
         extra_params = options.except(:sampler, :sampler_param, :http_endpoint, :udp_endpoint, :strict_parsing, :debug) # rubocop: disable CodeReuse/ActiveRecord
         if extra_params.present?
