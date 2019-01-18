@@ -17,7 +17,7 @@ const frequentItemDropdowns = [
   },
 ];
 
-function initFrequentItemDropdowns() {
+const initFrequentItemDropdowns = () => {
   frequentItemDropdowns.forEach(dropdown => {
     const { namespace, key } = dropdown;
     const el = document.getElementById(`js-${namespace}-dropdown`);
@@ -66,7 +66,7 @@ function initFrequentItemDropdowns() {
       },
     });
   });
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   requestIdleCallback(initFrequentItemDropdowns);
