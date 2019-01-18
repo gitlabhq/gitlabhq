@@ -45,20 +45,21 @@ so that we can ensure the more time-sensitive doc updates are merged with code b
 
 To follow a consistent workflow every month, documentation changes
 involve the Product Managers, the developer who shipped the feature,
-and the Technical Writing team. Each role is described below.
+and the technical writer for the DevOps stage. Each role is described below.
 
 The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/template-improvements-for-documentation/.gitlab/issue_templates/Feature%20proposal.md)
-and default merge request template assist with following this process.
+and default merge request template will assist you with following this process.
 
 ### 1. Product Manager's role
 
 The Product Manager (PM) should confirm or add the following items in the issue:
 
-- New or updated feature name, overview/description, and use cases, all required per the [Documentation structure and template](structure.md).
+- New or updated feature name, overview/description, and use cases, all required per the [Documentation structure and template](structure.md) (if applicable).
 - The documentation requirements for the developer working on the docs.
-  - What new page, new subsection of an existing page, or other update to an existing page/subsection is needed.
-  - Just one page/section/update or multiple (perhaps there's an end user and admin change needing docs, or we need to update a previously recommended workflow, or we want to link the new feature from various places; consider and mention all ways documentation should be affected.
-  - Suggested title of any page or subsection, if applicable.
+  - What should the docs guide and enable the user to understand and accomplish?
+  - To this end, what new page(s) are needed, if any? What pages/subsections need updates? For any guide or instruction set, should it help address one or more use cases?
+  - Consider user, admin, and API doc changes and additions. Consider whether we need to update a previously recommended workflow, or if we should link the new feature from various relevant places. Consider all ways documentation should be affected.
+  - Include suggested titles of any pages or subsections, if applicable.
 - Add the `Documentation` label to the issue.
 
 Anyone is welcome to draft the items above in the issue, but a product manager must review and update any such content whenever the issue is assigned a specific milestone, and finalize this content by the kickoff. 
@@ -69,13 +70,15 @@ Anyone is welcome to draft the items above in the issue, but a product manager m
 
 As a developer, you must ship the documentation with the code of the feature that
 you are creating or updating. The documentation is an essential part of the product.
-Technical writers are happy to help, as requested and planned on a feature by feature basis.
+Technical writers are happy to help, as requested and planned on an issue-by-issue basis.
 
 - New and edited docs should be included in the MR introducing the code, and planned
 in the issue that proposed the feature. However, if the new or changed doc requires
 extensive collaboration or conversation, a separate, linked issue can be used for the planning process.
+We are trying to avoid using a separate MR, so the docs stay with the code, but the
+Technical Writing team is interested in discussing any potential exceptions that may be suggested.
 - Use the [Documentation guidelines](index.md), as well as other resources linked from there,
-including the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
+including the Documentation [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
 - If you need any help to choose the correct place for a doc, discuss a documentation
 idea or outline, or request any other help, ping the Technical Writer for the relevant
 [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
@@ -104,27 +107,23 @@ Any party can raise the item to the PM for review at any point: the dev, the tec
 ### 3. Technical Writer's role
 
 **Planning**
-- Once an issue contains a Documentation label and an upcoming milestone, a
-technical writer reviews the listed documentation requirements, which should have
-already been reviewed by the PM. (These are non-blocking reviews; developers should
-not wait to work on docs.)
-- Monitors the documentation needs of issues assigned to the current and next milestone
-for their DevOps stage(s), and participate in any needed discussion on docs planning
+- The technical writer monitors the documentation needs of issues assigned to the current and next milestone
+for their DevOps stage(s), and participates in any needed discussion on docs planning
 with the dev, PM, and others.
+- The technical writer will review these again upon the kickoff and provide feedback, as needed.
+This is not a blocking review and developers should not wait to work on docs.
 
 **Review**
 - Techncial writers provide non-blocking reviews of all documentation changes,
 typically after the change is merged. However, if the docs are ready in the MR while
-there's time before the freeze or other dev work required in order to merge,
-the technical writer's review can commence early, on request.
+there's time before the freeze, the technical writer's review can commence early, on request.
 - The technical writer will confirm that the doc is clear, grammatically correct,
 and discoverable, while avoiding redundancy, bad file locations, typos, broken links,
 etc. The technical writer will review the documentation for the following, which
 the developer and code reviewer should have already made a good-faith effort to ensure:
   - Clarity.
-  - Relevance (make sure the content is appropriate given the impact of the feature).
-  - Location (make sure the doc is in the correct dir and has the correct name).
+  - Adherence to the plans and goals in the issue.
+  - Location (make sure the docs are in the correct directorkes and has the correct name).
   - Syntax, typos, and broken links.
   - Improvements to the content.
-  - Adherence to the plans in the issue.
-  - Accordance to the [Documentation Style Guide](styleguide.md) and [structure/template](structure.md).
+  - Accordance with the [Documentation Style Guide](styleguide.md), and [Structure and Template](structure.md) doc.
