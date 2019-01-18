@@ -122,6 +122,10 @@ describe 'project routing' do
         route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
       )
     end
+
+    it 'to #resolve' do
+      expect(get('/projects/1')).to route_to('projects#resolve', id: '1')
+    end
   end
 
   # members_namespace_project_autocomplete_sources_path        GET /:project_id/autocomplete_sources/members(.:format)        projects/autocomplete_sources#members

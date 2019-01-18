@@ -163,3 +163,10 @@ machine example.gitlab.com
 login <gitlab_user_name>
 password <personal_access_token>
 ```
+
+## Access project page with project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53671) in GitLab 11.8.
+
+To quickly access a project from the GitLab UI using the project ID,
+visit the `/projects/:id` URL in your browser or other tool accessing the project.
