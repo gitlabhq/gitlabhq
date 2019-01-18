@@ -64,6 +64,7 @@ module Gitlab
       end
     end
 
+    # Convenience methods for initializing a new repository with a Project model.
     def create_project_repository(project)
       create_repository(project.repository_storage, project.disk_path, project.full_path)
     end
