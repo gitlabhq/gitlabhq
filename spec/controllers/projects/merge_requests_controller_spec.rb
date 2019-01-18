@@ -78,6 +78,7 @@ describe Projects::MergeRequestsController do
 
     context 'when user is setting notes filters' do
       let(:issuable) { merge_request }
+      let(:issuable_parent) { project }
       let!(:discussion_note) { create(:discussion_note_on_merge_request, :system, noteable: issuable, project: project) }
       let!(:discussion_comment) { create(:discussion_note_on_merge_request, noteable: issuable, project: project) }
 
