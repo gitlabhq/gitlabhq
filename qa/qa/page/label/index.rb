@@ -11,10 +11,11 @@ module QA
         end
 
         def go_to_new_label
-          wait(reload: false) do
-            within_element(:label_svg) do
-              has_css?('.js-lazy-loaded')
-            end
+          # The 'labels.svg' takes a fraction of a second to load after which the "New label" button shifts up a bit
+          # This can cause webdriver to miss the hit so we wait for the svg to load (implicitly with has_css?)
+          # before clicking the button.
+          within_element(:label_svg) do
+            has_css?('.js-lazy-loaded')
           end
 
           click_element :label_create_new
