@@ -224,8 +224,15 @@ module Ci
 
       before_transition any => [:failed] do |build|
         next unless build.project
+        next unless build.deployment
 
-        build.deployment&.drop
+        begin
+          build.deployment.drop!
+        rescue => e
+          Gitlab::Sentry.track_exception(e, extra: { build_id: build.id })
+        end
+
+        true
       end
 
       after_transition any => [:failed] do |build|
