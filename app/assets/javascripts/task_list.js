@@ -49,7 +49,7 @@ export default class TaskList {
 
   update(e) {
     const $target = $(e.target);
-    const { lineNumber, lineSource } = e.detail;
+    const { lineNumber, lineSource, checked } = e.detail;
     const patchData = {};
 
     patchData[this.dataType] = {
@@ -58,6 +58,7 @@ export default class TaskList {
       update_task: {
         line_number: lineNumber,
         line_source: lineSource,
+        checked: checked,
       },
     };
 
