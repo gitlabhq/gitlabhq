@@ -16,7 +16,7 @@ describe 'Math rendering', :js do
 
     visit project_issue_path(project, issue)
 
-    expect(page).to have_selector('.katex .mord.mathit', text: 'b')
-    expect(page).to have_selector('.katex-display .mord.mathit', text: 'b')
+    expect(page).to have_selector('.katex .mord.mathdefault', text: 'b')
+    expect(page).to have_selector('.katex-display .mord.mathdefault', text: 'b')
   end
 end
