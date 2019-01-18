@@ -5,7 +5,8 @@ module Clusters
     class Prometheus < ActiveRecord::Base
       include PrometheusAdapter
 
-      VERSION = '6.7.3'.freeze
+      VERSION = '6.7.3'
+      READY_STATUS = [:installed, :updating, :updated, :update_errored].freeze
 
       self.table_name = 'clusters_applications_prometheus'
 
@@ -24,20 +25,8 @@ module Clusters
         end
       end
 
-      def ready_status
-        [:installed, :updating, :updated, :update_errored]
-      end
-
       def ready?
-        ready_status.include?(status_name)
-      end
-
-      def update_in_progress?
-        status_name == :updating
-      end
-
-      def update_errored?
-        status_name == :update_errored
+        READY_STATUS.include?(status_name)
       end
 
       def chart
