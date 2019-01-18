@@ -1,6 +1,6 @@
 - button_path = local_assigns.fetch(:button_path, false)
 - project_select_button = local_assigns.fetch(:project_select_button, false)
-- show_import_button = local_assigns.fetch(:show_import_button, false) && Feature.enabled?(:issues_import_csv) && can?(current_user, :import_issues, @project)
+- show_import_button = local_assigns.fetch(:show_import_button, false) && can?(current_user, :import_issues, @project)
 - has_button = button_path || project_select_button
 
 .row.empty-state
