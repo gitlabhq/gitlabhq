@@ -3,21 +3,21 @@
 ## Versioning
 
 GitLab follows the [Semantic Versioning](http://semver.org/) for its releases:
-`(Major).(Minor).(Patch)` in a [pragmatic way].
-
-- **Major version**: Whenever there is something significant or any backwards
-  incompatible changes are introduced to the public API.
-- **Minor version**: When new, backwards compatible functionality is introduced
-  to the public API or a minor feature is introduced, or when a set of smaller
-  features is rolled out.
-- **Patch number**: When backwards compatible bug fixes are introduced that fix
-  incorrect behavior.
+`(Major).(Minor).(Patch)` in a [pragmatic way](https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e).
 
 For example, for GitLab version 10.5.7:
 
-- `10` represents major version
-- `5` represents minor version
-- `7` represents patch number
+- `10` represents major version.
+- `5` represents minor version.
+- `7` represents patch number.
+
+The following table describes the versions and their release cadence:
+
+| Version type | Cadence   | Description                                                                                                                                                      |
+|:-------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Major        | Yearly    | For significant changes, or when any backwards incompatible changes are introduced to the public API.                                                            |
+| Minor        | Monthly   | For when new backwards compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. |
+| Patch        | As needed | For backwards compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases).                                                           |
 
 ## Patch releases
 
@@ -68,7 +68,7 @@ We cannot guarantee that upgrading between major versions will be seamless. As p
 
 We recommend that you first upgrade to the latest available minor version within
 your major version. By doing this, you can address any deprecation messages
-that could possibly change behaviour in the next major release.
+that could change behavior in the next major release.
 
 Please see the table below for some examples:
 
@@ -79,9 +79,5 @@ Please see the table below for some examples:
 | 11.3.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.10` -> `10.8.7` -> `11.3.4` | `8.17.7` is the last version in version `8`, `9.5.10` is the last version in version `9`, `10.8.7` is the last version in version `10` |
 
 More information about the release procedures can be found in our
-[release-tools documentation][rel]. You may also want to read our
-[Responsible Disclosure Policy][disclosure].
-
-[rel]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/
-[disclosure]: https://about.gitlab.com/disclosure/
-[pragmatic way]: https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e
+[release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
+[Responsible Disclosure Policy](https://about.gitlab.com/disclosure/).
