@@ -11,13 +11,13 @@ For example, for GitLab version 10.5.7:
 - `5` represents minor version.
 - `7` represents patch number.
 
-The following table describes the versions and their release cadence:
+The following table describes the version types and their release cadence:
 
-| Version type | Cadence   | Description                                                                                                                                                      |
+| Version type | Description | Cadence                                                                                                                                                      |
 |:-------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Major        | Yearly    | For significant changes, or when any backward-incompatible changes are introduced to the public API.                                                            |
-| Minor        | Monthly   | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. |
-| Patch        | As needed | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases).                                                           |
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 12.0 on May 22, 2019. As of June 2020, major releases will occur each year on June 22. |                                                           |
+| Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly on the 22nd. |
+| Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | As needed. |
 
 ## Patch releases
 
