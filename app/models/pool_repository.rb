@@ -97,7 +97,8 @@ class PoolRepository < ActiveRecord::Base
       shard.name,
       disk_path + '.git',
       source_project.repository.raw,
-      source_project.path_with_namespace)
+      source_project.full_path
+    )
   end
 
   def inspect
