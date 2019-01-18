@@ -23,6 +23,11 @@ export default {
       required: false,
       default: 20,
     },
+    emptyText: {
+      type: String,
+      required: false,
+      default: __('None'),
+    },
   },
   data() {
     return {
@@ -65,7 +70,8 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="!items.length">{{ emptyText }}</div>
+  <div v-else>
     <user-avatar-link
       v-for="item in visibleItems"
       :key="item.id"
