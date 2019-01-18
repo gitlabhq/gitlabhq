@@ -94,6 +94,8 @@ describe 'Merge request > User sees discussions', :js do
       
       it 'displays correct header' do
         page.within(find("#note_#{note.id}", match: :first)) do
+          refresh # Trigger a refresh of notes.
+          wait_for_requests
           expect(page).to have_content "commented on commit #{note.commit_id[0...7]}"
         end
       end
