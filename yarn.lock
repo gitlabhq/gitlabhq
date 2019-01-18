@@ -3032,7 +3032,7 @@ decamelize@^2.0.0:
   dependencies:
     xregexp "4.0.0"
 
-deckar01-task_list@fatihacet/task_list#844da3f:
+deckar01-task_list@fatihacet/task_list:
   version "2.0.1"
   resolved "https://codeload.github.com/fatihacet/task_list/tar.gz/844da3fa2830bcb159a70bf195d4693f9f22e04a"
 

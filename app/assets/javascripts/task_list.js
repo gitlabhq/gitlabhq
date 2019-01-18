@@ -49,10 +49,16 @@ export default class TaskList {
 
   update(e) {
     const $target = $(e.target);
+    const { lineNumber, lineSource } = e.detail;
     const patchData = {};
+
     patchData[this.dataType] = {
       [this.fieldName]: $target.val(),
       lock_version: this.lockVersion,
+      update_task: {
+        line_number: lineNumber,
+        line_source: lineSource,
+      },
     };
 
     this.disableTaskListItems();
