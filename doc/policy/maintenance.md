@@ -15,9 +15,9 @@ The following table describes the versions and their release cadence:
 
 | Version type | Cadence   | Description                                                                                                                                                      |
 |:-------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Major        | Yearly    | For significant changes, or when any backwards incompatible changes are introduced to the public API.                                                            |
-| Minor        | Monthly   | For when new backwards compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. |
-| Patch        | As needed | For backwards compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases).                                                           |
+| Major        | Yearly    | For significant changes, or when any backward-incompatible changes are introduced to the public API.                                                            |
+| Minor        | Monthly   | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. |
+| Patch        | As needed | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases).                                                           |
 
 ## Patch releases
 
@@ -80,4 +80,4 @@ Please see the table below for some examples:
 
 More information about the release procedures can be found in our
 [release documentation](https://gitlab.com/gitlab-org/release/docs). You may also want to read our
-[Responsible Disclosure Policy](https://about.gitlab.com/disclosure/).
+[Responsible Disclosure Policy](https://about.gitlab.com/security/disclosure/).
