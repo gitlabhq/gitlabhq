@@ -667,6 +667,14 @@ rollout 100%:
 
     create_application_secret "$track"
 
+    env_slug=$(echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s '[:lower:]' '[:upper:]')
+    eval env_ADDITIONAL_HOSTS=\$${env_slug}_ADDITIONAL_HOSTS
+    if [ -n "$env_ADDITIONAL_HOSTS" ]; then
+      additional_hosts="{$env_ADDITIONAL_HOSTS}"
+    elif [ -n "$ADDITIONAL_HOSTS" ]; then
+      additional_hosts="{$ADDITIONAL_HOSTS}"
+    fi
+
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
       echo "Deploying first release with database initialization..."
       helm upgrade --install \
@@ -681,6 +689,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set service.url="$CI_ENVIRONMENT_URL" \
+        --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
         --set postgresql.nameOverride="postgres" \
@@ -714,6 +723,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set service.url="$CI_ENVIRONMENT_URL" \
+        --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
         --set postgresql.nameOverride="postgres" \

@@ -389,7 +389,7 @@ Which renders to:
 > ### This is an `h3`
 >{:.no_toc}
 
-## Specific sections and terms
+## Terms
 
 To maintain consistency through GitLab documentation, the following guides documentation authors
 on agreed styles and usage of terms.
@@ -418,7 +418,7 @@ The following are recommended verbs for specific uses.
 |:------------|:--------------------------------|:-------------------|
 | "go"        | making a browser go to location | "navigate", "open" |
 
-### GitLab versions and tiers
+## GitLab versions and tiers
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
@@ -443,7 +443,7 @@ The following are recommended verbs for specific uses.
     > [Introduced](<link-to-issue>) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
     ```
 
-#### Early versions of EE
+### Early versions of EE
 
 If the feature was created before GitLab 9.2 (before [different EE tiers were introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1851)):
 
@@ -456,7 +456,7 @@ For example:
 > [Introduced](<link-to-issue>) in GitLab Enterprise Edition 9.0. Available in [GitLab Premium](https://about.gitlab.com/pricing/).
 ```
 
-### Product badges
+## Product badges
 
 When a feature is available in EE-only tiers, add the corresponding tier according to the
 feature availability:
@@ -477,12 +477,16 @@ keyword "only":
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark that will show the tiers on hover.
-E.g., `**[STARTER]**` renders **[STARTER]**, `**[STARTER ONLY]**` renders **[STARTER ONLY]**.
+
+For example:
+
+- `**[STARTER]**` renders as **[STARTER]**
+- `**[STARTER ONLY]**` renders as **[STARTER ONLY]**
 
 The absence of tiers' mentions mean that the feature is available in GitLab Core,
 GitLab.com Free, and all higher tiers.
 
-#### How it works
+### How it works
 
 Introduced by [!244](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/244),
 the special markup `**[STARTER]**` will generate a `span` element to trigger the

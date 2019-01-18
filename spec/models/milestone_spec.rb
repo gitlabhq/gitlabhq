@@ -286,8 +286,8 @@ describe Milestone do
     end
 
     context 'relations as params' do
-      let(:projects) { Project.where(id: project.id) }
-      let(:groups) { Group.where(id: group.id) }
+      let(:projects) { Project.where(id: project.id).select(:id) }
+      let(:groups) { Group.where(id: group.id).select(:id) }
 
       it_behaves_like 'filters by projects and groups'
     end

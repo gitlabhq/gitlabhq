@@ -804,6 +804,7 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 .qa-frontend-node: &qa-frontend-node
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: test
   variables:
     NODE_OPTIONS: --max_old_space_size=3584
@@ -818,7 +819,6 @@ qa:selectors:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
     - yarn run webpack-prod
-  <<: *except-docs
 
 qa-frontend-node:8:
   <<: *qa-frontend-node

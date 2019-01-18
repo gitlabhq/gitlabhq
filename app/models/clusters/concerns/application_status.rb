@@ -77,6 +77,10 @@ module Clusters
       def available?
         installed? || updated?
       end
+
+      def update_in_progress?
+        updating?
+      end
     end
   end
 end

@@ -39,27 +39,24 @@ class Import::GithubController < Import::BaseController
   end
 
   def create
-    repo = client.repo(params[:repo_id].to_i)
-    project_name = params[:new_name].presence || repo.name
-    namespace_path = params[:target_namespace].presence || current_user.namespace_path
-    target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
+    result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider)
 
-    if can?(current_user, :create_projects, target_namespace)
-      project = Gitlab::LegacyGithubImport::ProjectCreator
-                  .new(repo, project_name, target_namespace, current_user, access_params, type: provider)
-                  .execute(extra_project_attrs)
-
-      if project.persisted?
-        render json: ProjectSerializer.new.represent(project)
-      else
-        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
-      end
+    if result[:status] == :success
+      render json: ProjectSerializer.new.represent(result[:project])
     else
-      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
+      render json: { errors: result[:message] }, status: result[:http_status]
     end
   end
 
   private
+
+  def import_params
+    params.permit(permitted_import_params)
+  end
+
+  def permitted_import_params
+    [:repo_id, :new_name, :target_namespace]
+  end
 
   def client
     @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
@@ -121,10 +118,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_options
-    {}
-  end
-
-  def extra_project_attrs
     {}
   end
 

@@ -1,6 +1,6 @@
 .board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
   ":data-id" => "list.id" }
-  .board-inner
+  .board-inner.d-flex.flex-column
     %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
       %h3.board-title.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset) }' }
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
