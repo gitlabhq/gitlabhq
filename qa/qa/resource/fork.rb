@@ -3,6 +3,13 @@
 module QA
   module Resource
     class Fork < Base
+      attribute :project do
+        Resource::Project.fabricate! do |resource|
+          resource.name = push.project.name
+          resource.path_with_namespace = "#{user.name}/#{push.project.name}"
+        end
+      end
+
       attribute :push do
         Repository::ProjectPush.fabricate!
       end
@@ -37,6 +44,8 @@ module QA
         Page::Layout::Banner.perform do |page|
           page.has_notice?('The project was successfully forked.')
         end
+
+        populate(:project)
       end
     end
   end
