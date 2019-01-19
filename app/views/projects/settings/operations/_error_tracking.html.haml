@@ -1,4 +1,4 @@
-- return unless Feature.enabled?(:error_tracking, @project) && can?(current_user, :read_environment, @project)
+- return unless can?(current_user, :read_environment, @project)
 
 - setting = error_tracking_setting
 
