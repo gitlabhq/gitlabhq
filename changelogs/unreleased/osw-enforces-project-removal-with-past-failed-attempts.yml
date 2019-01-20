@@ -1,0 +1,5 @@
+---
+title: Cleanup stale +deleted repo paths on project removal (adjusts project removal bug)
+merge_request: 24269
+author:
+type: fixed

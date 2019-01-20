@@ -964,7 +964,7 @@ module API
             if options[:group_members]
               options[:group_members].find { |member| member.source_id == project.namespace_id }
             else
-              project.group.group_member(options[:current_user])
+              project.group.highest_group_member(options[:current_user])
             end
           end
         end

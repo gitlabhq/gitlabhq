@@ -41,18 +41,6 @@ describe Projects::Settings::OperationsController do
         end
       end
 
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(error_tracking: false)
-        end
-
-        it 'renders 404' do
-          get :show, params: project_params(project)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'with insufficient permissions' do
         before do
           project.add_reporter(user)
@@ -118,18 +106,6 @@ describe Projects::Settings::OperationsController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:show)
-        end
-      end
-
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(error_tracking: false)
-        end
-
-        it 'renders 404' do
-          patch :update, params: project_params(project)
-
-          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 

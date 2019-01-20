@@ -628,4 +628,26 @@ describe('DiffsStoreMutations', () => {
       expect(file.parallel_diff_lines[1].right.hasForm).toBe(false);
     });
   });
+
+  describe('SET_TREE_DATA', () => {
+    it('sets treeEntries and tree in state', () => {
+      const state = {
+        treeEntries: {},
+        tree: [],
+      };
+
+      mutations[types.SET_TREE_DATA](state, {
+        treeEntries: { file: { name: 'index.js' } },
+        tree: ['tree'],
+      });
+
+      expect(state.treeEntries).toEqual({
+        file: {
+          name: 'index.js',
+        },
+      });
+
+      expect(state.tree).toEqual(['tree']);
+    });
+  });
 });

@@ -1,0 +1,5 @@
+---
+title: Fix runner eternal loop when update job result
+merge_request: 24481
+author:
+type: fixed

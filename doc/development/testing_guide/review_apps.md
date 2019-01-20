@@ -74,27 +74,27 @@ Note that both jobs first wait for the `review-deploy` job to be finished.
 ### Run a Rails console?
 
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps)
-  , e.g. `review-29951-issu-id2qax`.
-1. Find and open the `task-runner` Deployment, e.g. `review-29951-issu-id2qax-task-runner`.
-1. Click on the Pod in the "Managed pods" section, e.g. `review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz`.
+  , e.g. `review-mr-24388-314997`.
+1. Find and open the `task-runner` Deployment, e.g. `review-mr-24388-314997-task-runner`.
+1. Click on the Pod in the "Managed pods" section, e.g. `review-mr-24388-314997-task-runner-d5455cc8-2lsvz`.
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
 1. Replace `-c task-runner -- ls` with `-- /srv/gitlab/bin/rails c` from the
   default command or
-  - Run `kubectl exec --namespace review-apps-ce -it review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz -- /srv/gitlab/bin/rails c`
+  - Run `kubectl exec --namespace review-apps-ce -it review-mr-24388-314997-task-runner-d5455cc8-2lsvz -- /srv/gitlab/bin/rails c`
     and
   - Replace `review-apps-ce` with `review-apps-ee` if the Review App
     is running EE, and
-  - Replace `review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz`
+  - Replace `review-mr-24388-314997-task-runner-d5455cc8-2lsvz`
     with your Pod's name.
 
 ### Dig into a Pod's logs?
 
 1. [Filter Workloads by your Review App slug](https://console.cloud.google.com/kubernetes/workload?project=gitlab-review-apps)
-  , e.g. `review-1979-1-mul-dnvlhv`.
+  , e.g. `review-mr-24388-314997`.
 1. Find and open the `migrations` Deployment, e.g.
-  `review-1979-1-mul-dnvlhv-migrations.1`.
+  `review-mr-24388-314997-migrations.1`.
 1. Click on the Pod in the "Managed pods" section, e.g.
-  `review-1979-1-mul-dnvlhv-migrations.1-nqwtx`.
+  `review-mr-24388-314997-migrations.1-nqwtx`.
 1. Click on the `Container logs` link.
 
 ## Frequently Asked Questions

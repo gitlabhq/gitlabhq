@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import TreeWorker from '../workers/tree_worker';
 import eventHub from '../../notes/event_hub';
 import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
@@ -21,7 +22,15 @@ export const setBaseConfig = ({ commit }, options) => {
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
+  const worker = new TreeWorker();
+
   commit(types.SET_LOADING, true);
+
+  worker.addEventListener('message', ({ data }) => {
+    commit(types.SET_TREE_DATA, data);
+
+    worker.terminate();
+  });
 
   return axios
     .get(state.endpoint)
@@ -29,9 +38,13 @@ export const fetchDiffFiles = ({ state, commit }) => {
       commit(types.SET_LOADING, false);
       commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
       commit(types.SET_DIFF_DATA, res.data);
+
+      worker.postMessage(state.diffFiles);
+
       return Vue.nextTick();
     })
-    .then(handleLocationHash);
+    .then(handleLocationHash)
+    .catch(() => worker.terminate());
 };
 
 export const setHighlightedRow = ({ commit }, lineCode) => {
