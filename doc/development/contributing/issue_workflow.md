@@ -67,7 +67,7 @@ The current team labels are:
 - ~Geo
 - ~Gitaly
 - ~Manage
-- ~Monitoring
+- ~Monitor
 - ~Plan
 - ~Quality
 - ~Release

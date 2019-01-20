@@ -61,7 +61,7 @@ describe('Suggestion component', () => {
 
   describe('mounted', () => {
     it('renders a flash container', () => {
-      expect(vm.$el.querySelector('.flash-container')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-suggestions-flash')).not.toBeNull();
     });
 
     it('renders a container for suggestions', () => {

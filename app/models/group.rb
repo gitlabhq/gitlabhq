@@ -382,6 +382,10 @@ class Group < Namespace
     end
   end
 
+  def highest_group_member(user)
+    GroupMember.where(source_id: self_and_ancestors_ids, user_id: user.id).order(:access_level).last
+  end
+
   def hashed_storage?(_feature)
     false
   end

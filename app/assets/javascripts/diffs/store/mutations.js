@@ -1,5 +1,4 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { sortTree } from '~/ide/stores/utils';
 import {
   findDiffFile,
   addLineReferences,
@@ -7,7 +6,6 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
-  generateTreeList,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -23,12 +21,9 @@ export default {
 
   [types.SET_DIFF_DATA](state, data) {
     prepareDiffData(data);
-    const { tree, treeEntries } = generateTreeList(data.diff_files);
 
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),
-      tree: sortTree(tree),
-      treeEntries,
     });
   },
 
@@ -238,5 +233,9 @@ export default {
   },
   [types.SET_HIGHLIGHTED_ROW](state, lineCode) {
     state.highlightedRow = lineCode;
+  },
+  [types.SET_TREE_DATA](state, { treeEntries, tree }) {
+    state.treeEntries = treeEntries;
+    state.tree = tree;
   },
 };

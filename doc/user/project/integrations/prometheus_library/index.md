@@ -10,7 +10,8 @@ Currently supported exporters are:
 
 - [Kubernetes](kubernetes.md)
 - [NGINX](nginx.md)
-- [NGINX Ingress Controller](nginx_ingress.md)
+- [NGINX Ingress Controller 0.9.0-0.15.x](nginx_ingress_vts.md)
+- [NGINX Ingress Controller 0.16.0+](nginx_ingress.md)
 - [HAProxy](haproxy.md)
 - [Amazon Cloud Watch](cloudwatch.md)
 

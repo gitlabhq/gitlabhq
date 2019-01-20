@@ -20,18 +20,6 @@ describe Projects::ErrorTrackingController do
         expect(response).to render_template(:index)
       end
 
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(error_tracking: false)
-        end
-
-        it 'returns 404' do
-          get :index, params: project_params
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'with insufficient permissions' do
         before do
           project.add_guest(user)

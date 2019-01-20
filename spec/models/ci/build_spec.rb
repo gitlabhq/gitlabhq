@@ -3028,6 +3028,24 @@ describe Ci::Build do
         subject.drop!
       end
     end
+
+    context 'when associated deployment failed to update its status' do
+      let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, deployable: build) }
+
+      before do
+        allow_any_instance_of(Deployment)
+          .to receive(:drop!).and_raise('Unexpected error')
+      end
+
+      it 'can drop the build' do
+        expect(Gitlab::Sentry).to receive(:track_exception)
+
+        expect { build.drop! }.not_to raise_error
+
+        expect(build).to be_failed
+      end
+    end
   end
 
   describe '.matches_tag_ids' do

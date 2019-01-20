@@ -1118,6 +1118,7 @@ describe Projects::IssuesController do
 
       context 'when user is setting notes filters' do
         let(:issuable) { issue }
+        let(:issuable_parent) { project }
         let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
         it_behaves_like 'issuable notes filter'
