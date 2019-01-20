@@ -54,6 +54,7 @@ module Ci
     validates :ref, presence: { unless: :importing? }
     validates :merge_request, presence: { if: :merge_request? }
     validates :merge_request, absence: { unless: :merge_request? }
+    validate :presence_of_commits_in_merge_request, if: :merge_request?
     validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
@@ -342,6 +343,12 @@ module Ci
     def valid_commit_sha
       if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
+      end
+    end
+
+    def presence_of_commits_in_merge_request
+      if merge_request&.has_no_commits?
+        errors.add(:merge_request, "must have commits")
       end
     end
 

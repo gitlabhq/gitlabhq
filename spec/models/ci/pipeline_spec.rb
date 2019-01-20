@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  set(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -131,10 +131,16 @@ describe Ci::Pipeline, :mailer do
     context 'when source is merge request' do
       let(:source) { :merge_request }
 
-      context 'when merge request is specified' do
+      context 'when merge request with commits is specified' do
         let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master') }
 
         it { expect(pipeline).to be_valid }
+      end
+
+      context 'when merge request without commits is specified' do
+        let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'not-merged-branch', target_project: project, target_branch: 'master') }
+
+        it { expect(pipeline).not_to be_valid }
       end
 
       context 'when merge request is empty' do
@@ -1036,6 +1042,8 @@ describe Ci::Pipeline, :mailer do
     end
 
     context 'when repository does not exist' do
+      let(:project) { create(:project) }
+
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project, ref: 'master')
       end
@@ -2071,7 +2079,6 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe "#all_merge_requests" do
-    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
     it "returns all merge requests having the same source branch" do

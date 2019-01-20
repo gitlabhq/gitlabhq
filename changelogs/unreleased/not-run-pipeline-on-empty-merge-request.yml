@@ -1,0 +1,5 @@
+---
+title: Don't create new merge request pipeline without commits
+merge_request: 24503
+author: Hiroyuki Sato
+type: added
