@@ -639,13 +639,14 @@ a helpful link back to how the feature was developed.
 ### Removing version text
 
 Over time, version text will reference a progressively older version of GitLab. In cases where version text
-refers to versions of GitLab more than two major versions back, consider removing the text.
+refers to versions of GitLab more than four major versions back, consider removing the text.
 
-For example, if the current major version is 11.x, version text referencing versions of GitLab 9.x
+For example, if the current major version is 11.x, version text referencing versions of GitLab 7.x
 and older are candidates for removal.
 
 NOTE: **Note:**
 This guidance applies to any text that mentions a GitLab version, not just "Introduced in... " text.
+Other text includes deprecation notices and version-specific how-to information.
 
 ## Product badges
 
