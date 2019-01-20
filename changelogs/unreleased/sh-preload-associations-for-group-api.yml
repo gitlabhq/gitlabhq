@@ -1,0 +1,5 @@
+---
+title: Eliminate N+1 queries in /api/groups/:id
+merge_request: 24513
+author:
+type: performance
