@@ -2026,6 +2026,11 @@ variables:
   GIT_STRATEGY: none
 ```
 
+NOTE: **Note:** `GIT_STRATEGY` is not supported for
+[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html), 
+but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/issues/3847) 
+for updates.
+
 ### Git submodule strategy
 
 > Requires GitLab Runner v1.10+.
