@@ -1,6 +1,0 @@
----
-title: Allow 'rake gitlab:cleanup:remote_upload_files' to read bucket files without
-  having permissions to see all buckets.
-merge_request: 23981
-author:
-type: fixed

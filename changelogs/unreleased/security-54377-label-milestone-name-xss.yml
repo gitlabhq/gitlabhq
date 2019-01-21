@@ -1,5 +1,0 @@
----
-title: Escape label and milestone titles to prevent XSS in GFM autocomplete
-merge_request: 2693
-author:
-type: security

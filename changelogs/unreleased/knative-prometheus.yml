@@ -1,5 +1,0 @@
----
-title: Add Knative metrics to Prometheus
-merge_request: 23972
-author: Chris Baumbauer
-type: added

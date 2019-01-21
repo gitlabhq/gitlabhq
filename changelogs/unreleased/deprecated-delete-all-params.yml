@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: Passing conditions to delete_all is deprecated'
-merge_request: 23817
-author: Jasper Maes
-type: other

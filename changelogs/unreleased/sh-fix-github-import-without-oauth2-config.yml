@@ -1,5 +1,0 @@
----
-title: Allow GitHub imports via token even if OAuth2 provider not configured
-merge_request: 23703
-author:
-type: fixed

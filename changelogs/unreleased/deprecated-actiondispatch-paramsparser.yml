@@ -1,5 +1,0 @@
----
-title: Remove deprecated ActionDispatch::ParamsParser
-merge_request: 23848
-author: Jasper Maes
-type: other
