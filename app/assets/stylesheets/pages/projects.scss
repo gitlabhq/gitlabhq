@@ -140,73 +140,19 @@
   }
 }
 
-.project-home-panel,
-.group-home-panel {
-  padding-top: 24px;
-  padding-bottom: 24px;
-
-  .group-avatar {
-    float: none;
-    margin: 0 auto;
-
-    &.identicon {
-      border-radius: 50%;
-    }
-  }
-
-  .group-title {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 24px;
-    font-weight: $gl-font-weight-normal;
-    line-height: 1;
-    word-wrap: break-word;
-
-    .fa {
-      margin-left: 2px;
-      font-size: 12px;
-      vertical-align: middle;
-    }
-  }
-
-  .group-home-desc {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0;
-    max-width: 700px;
-
-    > p {
-      margin-bottom: 0;
-    }
-  }
-
-  .notifications-btn {
-    .fa-bell,
-    .fa-spinner {
-      margin-right: 6px;
-    }
-
-    .fa-angle-down {
-      margin-left: 6px;
-    }
-  }
-}
-
+.group-home-panel,
 .project-home-panel {
   padding-top: $gl-padding;
   padding-bottom: $gl-padding;
 
-  .project-avatar {
-    width: $project-title-row-height;
-    height: $project-title-row-height;
+  .home-panel-avatar {
+    width: $home-panel-title-row-height;
+    height: $home-panel-title-row-height;
     flex-shrink: 0;
-    flex-basis: $project-title-row-height;
-    margin: 0 $gl-padding 0 0;
+    flex-basis: $home-panel-title-row-height;
   }
 
-  .project-title {
-    margin-top: 8px;
-    margin-bottom: 5px;
+  .home-panel-title {
     font-size: 20px;
     line-height: $gl-line-height-24;
     font-weight: bold;
@@ -215,11 +161,7 @@
       font-size: $gl-font-size-large;
     }
 
-    .project-visibility {
-      color: $gl-text-color-secondary;
-    }
-
-    .project-topic-list {
+    .home-panel-topic-list {
       font-size: $gl-font-size;
       font-weight: $gl-font-weight-normal;
 
@@ -231,12 +173,12 @@
     }
   }
 
-  .project-title-row {
+  .home-panel-title-row {
     @include media-breakpoint-down(sm) {
-      .project-avatar {
-        width: $project-avatar-mobile-size;
-        height: $project-avatar-mobile-size;
-        flex-basis: $project-avatar-mobile-size;
+      .home-panel-avatar {
+        width: $home-panel-avatar-mobile-size;
+        height: $home-panel-avatar-mobile-size;
+        flex-basis: $home-panel-avatar-mobile-size;
 
         .avatar {
           font-size: 20px;
@@ -244,28 +186,26 @@
         }
       }
 
-      .project-title {
+      .home-panel-title {
         margin-top: 4px;
         margin-bottom: 2px;
         font-size: $gl-font-size;
         line-height: $gl-font-size-large;
       }
 
-      .project-topic-list,
-      .project-metadata {
+      .home-panel-topic-list,
+      .home-panel-metadata {
         font-size: $gl-font-size-small;
       }
     }
   }
 
-  .project-metadata {
+  .home-panel-metadata {
     font-weight: normal;
     font-size: 14px;
     line-height: $gl-btn-line-height;
-    color: $gl-text-color-secondary;
 
-
-    .project-license {
+    .home-panel-license {
       .btn {
         line-height: 0;
         border-width: 0;
@@ -273,13 +213,13 @@
     }
 
     .access-request-link,
-    .project-topic-list {
+    .home-panel-topic-list {
       padding-left: $gl-padding-8;
       border-left: 1px solid $gl-text-color-secondary;
     }
   }
 
-  .project-description {
+  .home-panel-description {
     @include media-breakpoint-up(md) {
       font-size: $gl-font-size-large;
     }
@@ -292,12 +232,11 @@
   }
 }
 
-.nav > .project-repo-buttons {
+.nav > .project-buttons {
   margin-top: 0;
 }
 
-.project-repo-buttons,
-.group-buttons {
+.project-repo-buttons {
   .btn {
     &:last-child {
       margin-left: 0;
@@ -318,8 +257,30 @@
         margin-left: 0;
       }
     }
+
+    .notifications-icon {
+      top: 1px;
+      margin-right: 0;
+    }
   }
 
+  .icon {
+    top: 0;
+  }
+
+  .count-badge,
+  .btn-xs {
+    height: 24px;
+  }
+
+  .dropdown-toggle,
+  .clone-dropdown-btn {
+    .fa {
+      color: unset;
+    }
+  }
+
+  .home-panel-action-button,
   .project-action-button {
     margin: $gl-padding $gl-padding-8 0 0;
     vertical-align: top;
@@ -382,31 +343,6 @@
 
   .mobile-git-clone {
     margin-top: $gl-padding-8;
-  }
-}
-
-.project-repo-buttons {
-  .icon {
-    top: 0;
-  }
-
-  .count-badge,
-  .btn-xs {
-    height: 24px;
-  }
-
-  .dropdown-toggle,
-  .clone-dropdown-btn {
-    .fa {
-      color: unset;
-    }
-  }
-
-  .btn {
-    .notifications-icon {
-      top: 1px;
-      margin-right: 0;
-    }
   }
 }
 
@@ -772,9 +708,6 @@
 
 .project-stats,
 .project-buttons {
-  font-size: 0;
-  text-align: center;
-
   .scrolling-tabs-container {
     .scrolling-tabs {
       margin-top: $gl-padding-8;
