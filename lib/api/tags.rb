@@ -20,12 +20,15 @@ module API
                         desc: 'Return tags sorted in updated by `asc` or `desc` order.'
         optional :order_by, type: String, values: %w[name updated], default: 'updated',
                             desc: 'Return tags ordered by `name` or `updated` fields.'
+        optional :search, type: String, desc: 'Return list of tags matching the search criteria'
         use :pagination
       end
       get ':id/repository/tags' do
-        tags = ::Kaminari.paginate_array(::TagsFinder.new(user_project.repository, sort: "#{params[:order_by]}_#{params[:sort]}").execute)
+        tags = ::TagsFinder.new(user_project.repository,
+                                sort: "#{params[:order_by]}_#{params[:sort]}",
+                                search: params[:search]).execute
 
-        present paginate(tags), with: Entities::Tag, project: user_project
+        present paginate(::Kaminari.paginate_array(tags)), with: Entities::Tag, project: user_project
       end
 
       desc 'Get a single repository tag' do

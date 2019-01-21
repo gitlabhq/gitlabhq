@@ -54,6 +54,18 @@ describe API::Tags do
       end
     end
 
+    context 'searching' do
+      it 'only returns searched tags' do
+        get api("#{route}", user), params: { search: 'v1.1.0' }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['name']).to eq('v1.1.0')
+      end
+    end
+
     shared_examples_for 'repository tags' do
       it 'returns the repository tags' do
         get api(route, current_user)
