@@ -4,7 +4,23 @@
 
 ### Target audience
 
-<!--- For whom are we doing this? Include either a persona from https://design.gitlab.com/getting-started/personas or define a specific company role. e.a. "Release Manager" or "Security Analyst". Use the persona labels as well https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A -->
+<!---
+
+For whom are we doing this?
+Include either a persona from https://design.gitlab.com/research/personas or define a specific company role, e.g. "Release Manager" or "Security Analyst".
+Use the persona labels as well, see https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A
+
+Existing personas are:
+
+- Parker, Product Manager, https://design.gitlab.com/research/personas#persona-parker
+- Delaney, Development Team Lead, https://design.gitlab.com/research/personas#persona-delaney
+- Sasha, Software Developer, https://design.gitlab.com/research/personas#persona-sasha
+
+- Devon, DevOps Engineer, https://design.gitlab.com/research/personas#persona-devon
+- Sidney, Systems Administrator, https://design.gitlab.com/research/personas#persona-sidney
+- Sam, Security Analyst, https://design.gitlab.com/research/personas#persona-sam
+
+-->
 
 ### Further details
 
