@@ -91,7 +91,7 @@ describe 'Merge request > User sees discussions', :js do
 
     context 'a commit non-diff discussion' do
       let(:note) { create(:discussion_note_on_commit, project: project) }
-      
+
       it 'displays correct header' do
         page.within(find("#note_#{note.id}", match: :first)) do
           refresh # Trigger a refresh of notes.
