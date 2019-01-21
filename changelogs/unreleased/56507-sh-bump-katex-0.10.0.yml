@@ -1,0 +1,5 @@
+---
+title: Upgrade KaTeX to version 0.10.0
+merge_request: 24478
+author: Andrew Harmon
+type: fixed
