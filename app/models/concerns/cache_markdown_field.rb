@@ -178,7 +178,9 @@ module CacheMarkdownField
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
         changed_fields = changed_attributes.keys
-        invalidations = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
+
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end
