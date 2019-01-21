@@ -15,7 +15,7 @@ module CacheMarkdownField
   # Increment this number every time the renderer changes its output
   CACHE_REDCARPET_VERSION         = 3
   CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 13
+  CACHE_COMMONMARK_VERSION        = 14
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
