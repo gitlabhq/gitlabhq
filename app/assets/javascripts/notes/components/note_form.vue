@@ -6,6 +6,7 @@ import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
+import { __ } from '~/locale';
 
 export default {
   name: 'NoteForm',
@@ -33,7 +34,7 @@ export default {
     saveButtonTitle: {
       type: String,
       required: false,
-      default: 'Save comment',
+      default: __('Save comment'),
     },
     discussion: {
       type: Object,
