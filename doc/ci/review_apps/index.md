@@ -102,3 +102,88 @@ The following are example projects that use Review Apps with:
 - [OpenShift](https://gitlab.com/gitlab-examples/review-apps-openshift).
 
 See also the video [Demo: Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw), which includes a Review Apps example.
+
+## Route Maps
+
+> Introduced in GitLab 8.17. In GitLab 11.5 the file links
+are surfaced to the merge request widget.
+
+Route Maps allows you to go directly from source files
+to public pages on the [environment](../environments.md) defined for
+Review Apps. Once set up, the review app link in the merge request
+widget can take you directly to the pages changed, making it easier
+and faster to preview proposed modifications.
+
+All you need to do is to tell GitLab how the paths of files
+in your repository map to paths of pages on your website using a Route Map.
+Once set, GitLab will display **View on ...** buttons, which will take you
+to the pages changed directly from merge requests.
+
+To set up a route map, add a a file inside the repository at `.gitlab/route-map.yml`,
+which contains a YAML array that maps `source` paths (in the repository) to `public`
+paths (on the website).
+
+### Route Maps example
+
+Below there's an example of a route map for [Middleman](https://middlemanapp.com),
+a static site generator (SSG) used to build [GitLab's website](https://about.gitlab.com),
+deployed from its [project on GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
+
+```yaml
+# Team data
+- source: 'data/team.yml' # data/team.yml
+  public: 'team/' # team/
+
+# Blogposts
+- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
+  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
+
+# HTML files
+- source: /source\/(.+?\.html).*/ # source/index.html.haml
+  public: '\1' # index.html
+
+# Other files
+- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
+  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
+```
+
+Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, we have a hash map with two keys:
+
+- `source`
+    - a string, starting and ending with `'`, for an exact match
+    - a regular expression, starting and ending with `/`, for a pattern match
+      - The regular expression needs to match the entire source path - `^` and `$` anchors are implied.
+      - Can include capture groups denoted by `()` that can be referred to in the `public` path.
+      - Slashes (`/`) can, but don't have to, be escaped as `\/`.
+      - Literal periods (`.`) should be escaped as `\.`.
+- `public`
+    - a string, starting and ending with `'`.
+      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurrence, starting with `\1`.
+
+The public path for a source path is determined by finding the first
+`source` expression that matches it, and returning the corresponding
+`public` path, replacing the `\N` expressions with the values of the
+`()` capture groups if appropriate.
+
+In the example above, the fact that mappings are evaluated in order
+of their definition is used to ensure that `source/index.html.haml`
+will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`,
+and will result in a public path of `index.html`, instead of
+`index.html.haml`.
+
+Once you have the route mapping set up, it will be exposed in a few places:
+
+- In the merge request widget. The **View app** button will take you to the
+  environment URL you have set up in `.gitlab-ci.yml`. The dropdown will render
+  the first 5 matched items from the route map, but you can filter them if more
+  than 5 are available.
+
+    ![View app file list in merge request widget](img/view_on_mr_widget.png)
+
+- In the diff for a merge request, comparison, or commit.
+
+    !["View on env" button in merge request diff](img/view_on_env_mr.png)
+
+- In the blob file view.
+
+    !["View on env" button in file view](img/view_on_env_blob.png)
