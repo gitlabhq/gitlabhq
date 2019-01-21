@@ -8,6 +8,7 @@ module Issues
       handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
+      handle_update_task(issue)
       move_issue_to_new_project(issue) || update(issue)
     end
 
@@ -115,6 +116,67 @@ module Issues
         notification_service.async.removed_milestone_issue(issue, current_user)
       else
         notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
+      end
+    end
+
+    def handle_update_task(issue)
+      update_task_params = params.delete(:update_task)
+      return unless update_task_params
+
+      checkbox_index      = update_task_params[:index]
+      currently_checked   = !update_task_params[:checked]
+      changed_line_number = update_task_params[:line_number]
+      changed_line_source = update_task_params[:line_source] + "\n"
+
+      source_lines  = issue.description.lines
+      markdown_task = source_lines[changed_line_number - 1]
+
+      # binding.pry
+
+      if markdown_task == changed_line_source
+        source_checkbox = /(\[[\sxX]\])/.match(markdown_task)
+
+        if source_checkbox
+          if currently_checked
+            if source_checkbox[1] == '[x]'
+              changed_line_source.sub!(/(\[[xX]\])/, '[ ]')
+            else
+              # it's already checked by someone else, nothing to do
+              ignore = true
+            end
+          else
+            if source_checkbox[1] == '[ ]'
+              changed_line_source.sub!(/(\[[\s]\])/, '[x]')
+            else
+              # it's already unchecked by someone else, nothing to do
+              ignore = true
+            end
+          end
+        end
+
+        unless ignore
+          # replace line with proper checkbox
+          source_lines[changed_line_number - 1] = changed_line_source
+
+          params[:description] = source_lines.join
+
+          # if we update the description_html field at the same time,
+          # the cache won't be considered invalid (unless something else
+          # changed)
+          html = Nokogiri::HTML.fragment(issue.description_html)
+          html_checkbox = html.css('.task-list-item-checkbox')[checkbox_index - 1]
+          # html_checkbox = html.css(".task-list-item[data-sourcepos^='#{changed_line_number}:'] > input.task-list-item-checkbox").first
+
+          if currently_checked
+            # checkboxes[checkbox_index - 1].remove_attribute('checked')
+            html_checkbox.remove_attribute('checked')
+          else
+            # checkboxes[checkbox_index - 1][:checked] = 'checked'
+            html_checkbox[:checked] = 'checked'
+          end
+
+          params[:description_html] = html.to_html
+        end
       end
     end
 
