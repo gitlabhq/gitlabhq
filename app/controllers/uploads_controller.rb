@@ -71,7 +71,7 @@ class UploadsController < ApplicationController
   end
 
   def cache_privately?
-    true unless (User === model || Appearance === model)
+    true unless User === model || Appearance === model
   end
 
   def upload_model_class
