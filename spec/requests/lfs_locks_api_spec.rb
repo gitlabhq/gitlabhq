@@ -132,6 +132,17 @@ describe 'Git LFS File Locking API' do
 
         expect(json_response['lock'].keys).to match_array(%w(id path locked_at owner))
       end
+
+      context 'when a maintainer uses force' do
+        let(:authorization) { authorize_user(maintainer) }
+
+        it 'deletes the lock' do
+          project.add_maintainer(maintainer)
+          post_lfs_json url, { force: true }, headers
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
     end
   end
 
