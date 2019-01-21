@@ -133,44 +133,28 @@ export const getTimeago = () => {
 };
 
 /**
- * For the given element, renders a timeago instance.
- * @param {jQuery} $els
- */
-export const renderTimeago = $els => {
-  const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
-
-  // timeago.js sets timeouts internally for each timeago value to be updated in real time
-  getTimeago().render(timeagoEls, timeagoLanguageCode);
-};
-
-/**
- * For the given elements, will add timeago tooltips
- */
-export const addTimeAgoTooltip = () => {
-  const timeagoEls = document.querySelectorAll('.js-timeago-render');
-  timeagoEls.forEach(element => {
-    $(element).tooltip({
-      template:
-        '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
-    });
-  });
-};
-
-/**
  * For the given elements, sets a tooltip with a formatted date.
- * @param {jQuery}
+ * @param {JQuery} $timeagoEls
  * @param {Boolean} setTimeago
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
-  $timeagoEls.each((i, el) => {
-    el.classList.add('js-timeago-render');
-  });
+  getTimeago().render($timeagoEls, timeagoLanguageCode);
 
-  renderTimeago($timeagoEls);
-
-  if (setTimeago) {
-    requestIdleCallback(addTimeAgoTooltip);
+  if (!setTimeago) {
+    return;
   }
+
+  function addTimeAgoTooltip() {
+    $timeagoEls.each((i, el) => {
+      // Recreate with custom template
+      $(el).tooltip({
+        template:
+          '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
+      });
+    });
+  }
+
+  requestIdleCallback(addTimeAgoTooltip);
 };
 
 /**
