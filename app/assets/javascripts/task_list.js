@@ -49,16 +49,17 @@ export default class TaskList {
 
   update(e) {
     const $target = $(e.target);
-    const { lineNumber, lineSource, checked } = e.detail;
+    const { index, checked, lineNumber, lineSource } = e.detail;
     const patchData = {};
 
     patchData[this.dataType] = {
       [this.fieldName]: $target.val(),
       lock_version: this.lockVersion,
       update_task: {
+        index: index,
+        checked: checked,
         line_number: lineNumber,
         line_source: lineSource,
-        checked: checked,
       },
     };
 
