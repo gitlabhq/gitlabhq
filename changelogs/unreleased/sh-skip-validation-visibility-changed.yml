@@ -1,5 +1,0 @@
----
-title: Only validate project visibility when it has changed
-merge_request: 24142
-author:
-type: fixed

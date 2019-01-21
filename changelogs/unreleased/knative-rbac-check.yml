@@ -1,5 +1,0 @@
----
-title: Require Knative to be installed only on an RBAC kubernetes cluster
-merge_request: 23807
-author: Chris Baumbauer
-type: changed
