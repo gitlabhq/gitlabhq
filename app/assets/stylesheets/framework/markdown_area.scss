@@ -280,6 +280,8 @@
 .md-suggestion-diff {
   display: table !important;
   border: 1px solid $border-color !important;
+  width: 100% !important;
+  font-family: $monospace-font !important;
 }
 
 .md-suggestion-header {
