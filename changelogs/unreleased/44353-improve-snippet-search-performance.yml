@@ -1,5 +1,0 @@
----
-title: Improve snippet search performance by removing duplicate counts
-merge_request: 23952
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix commit SHA not showing in merge request compare dropdown
-merge_request: 24084
-author:
-type: fixed

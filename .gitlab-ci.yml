@@ -434,12 +434,12 @@ setup-test-env:
   cache: {}
   dependencies: []
   environment: &review-environment
-    name: review/mr-${CI_MERGE_REQUEST_IID}
-    url: https://gitlab-mr-${CI_MERGE_REQUEST_IID}.${REVIEW_APPS_DOMAIN}
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
   only:
     refs:
-      - merge_requests@gitlab-org/gitlab-ce
-      - merge_requests@gitlab-org/gitlab-ee
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
     kubernetes: active
   except:
     refs:
@@ -953,8 +953,8 @@ review-deploy:
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
-    HOST_SUFFIX: "mr-${CI_MERGE_REQUEST_IID}"
-    DOMAIN: "-mr-${CI_MERGE_REQUEST_IID}.${REVIEW_APPS_DOMAIN}"
+    HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
+    DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "master"
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
   environment:

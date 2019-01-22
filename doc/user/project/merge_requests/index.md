@@ -284,7 +284,11 @@ you can preview the changes submitted to a feature-branch through a merge reques
 in a per-branch basis. No need to checkout the branch, install and preview locally;
 all your changes will be available to preview by anyone with the Review Apps link.
 
-[Read more about Review Apps.](../../../ci/review_apps/index.md)
+With GitLab's [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
+merge request widget takes you directly to the pages changed, making it easier and
+faster to preview proposed modifications.
+
+[Read more about Review Apps](../../../ci/review_apps/index.md).
 
 ## Pipelines for merge requests
 

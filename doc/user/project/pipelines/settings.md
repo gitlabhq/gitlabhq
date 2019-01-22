@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ CI/CD**.
+**Settings > CI/CD**.
 
 The following settings can be configured per project.
 
@@ -10,14 +10,14 @@ The following settings can be configured per project.
 With Git strategy, you can choose the default way your repository is fetched
 from GitLab in a job.
 
-There are two options:
+There are two options. Using:
 
-- Using `git clone` which is slower since it clones the repository from scratch
+- `git clone`, which is slower since it clones the repository from scratch
   for every job, ensuring that the project workspace is always pristine.
-- Using `git fetch` which is faster as it re-uses the project workspace (falling
+- `git fetch`, which is faster as it re-uses the project workspace (falling
   back to clone if it doesn't exist).
 
-The default Git strategy can be overridden by the [GIT_STRATEGY variable][var]
+The default Git strategy can be overridden by the [GIT_STRATEGY variable](../../../ci/yaml/README.md#git-strategy)
 in `.gitlab-ci.yml`.
 
 ## Timeout
@@ -29,14 +29,14 @@ if the job surpasses the threshold, it is marked as failed.
 
 ### Timeout overriding on Runner level
 
-> - [Introduced][ce-17221] in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
-60 minutes timeout) may be [overridden on Runner level][timeout overriding].
+60 minutes timeout) may be [overridden on Runner level](../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner).
 
 ## Custom CI config path
 
->  - [Introduced][ce-12509] in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509) in GitLab 9.4.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If you require a different location **within** the repository,
@@ -59,7 +59,7 @@ job log using a regular expression. In the pipelines settings, search for the
 ![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
 
 Leave blank if you want to disable it or enter a ruby regular expression. You
-can use http://rubular.com to test your regex.
+can use <http://rubular.com> to test your regex.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table.
@@ -79,28 +79,28 @@ project setting under your project's **Settings > CI/CD > General pipelines sett
 
 If **Public pipelines** is enabled (default):
 
-- for **public** projects, anyone can view the pipelines and access the job details
-  (output logs and artifacts)
-- for **internal** projects, any logged in user can view the pipelines
+- For **public** projects, anyone can view the pipelines and access the job details
+  (output logs and artifacts).
+- For **internal** projects, any logged in user can view the pipelines
   and access the job details
-  (output logs and artifacts)
-- for **private** projects, any member (guest or higher) can view the pipelines
+  (output logs and artifacts).
+- For **private** projects, any member (guest or higher) can view the pipelines
   and access the job details
-  (output logs and artifacts)
+  (output logs and artifacts).
 
 If **Public pipelines** is disabled:
 
-- for **public** projects, anyone can view the pipelines, but only members
-  (reporter or higher) can access the job details (output logs and artifacts)
-- for **internal** projects, any logged in user can view the pipelines,
-  but only members (reporter or higher) can access the job details (output logs
-  and artifacts)
-- for **private** projects, only members (reporter or higher)
-  can view the pipelines and access the job details (output logs and artifacts)
+- For **public** projects, anyone can view the pipelines, but only members
+  (reporter or higher) can access the job details (output logs and artifacts).
+- For **internal** projects, any logged in user can view the pipelines.
+  However, only members (reporter or higher) can access the job details (output logs
+  and artifacts).
+- For **private** projects, only members (reporter or higher)
+  can view the pipelines and access the job details (output logs and artifacts).
 
 ## Auto-cancel pending pipelines
 
-> [Introduced][ce-9362] in GitLab 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362) in GitLab 9.1.
 
 If you want to auto-cancel all pending non-HEAD pipelines on branch, when
 new pipeline will be created (after your git push or manually from UI),
@@ -132,19 +132,19 @@ Depending on the status of your job, a badge can have the following values:
 
 You can access a pipeline status badge image using the following link:
 
-```
+```text
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg
 ```
 
 ### Test coverage report badge
 
-GitLab makes it possible to define the regular expression for [coverage report],
+GitLab makes it possible to define the regular expression for [coverage report](#test-coverage-parsing),
 that each job log will be matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 
 The test coverage badge can be accessed using following link:
 
-```
+```text
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
@@ -163,7 +163,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
 #### Flat (default)
 
-```
+```text
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
@@ -171,7 +171,9 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 
 #### Flat square
 
-```
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30120) in GitLab 11.8.
+
+```text
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 
@@ -180,10 +182,3 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?st
 ## Environment Variables
 
 [Environment variables](../../../ci/variables/README.html#variables) can be set in an environment to be available to a runner.
-
-[var]: ../../../ci/yaml/README.md#git-strategy
-[coverage report]: #test-coverage-parsing
-[timeout overriding]: ../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner
-[ce-9362]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362
-[ce-12509]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509
-[ce-17221]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17221

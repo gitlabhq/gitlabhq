@@ -1,5 +1,0 @@
----
-title: Upgrade Omniauth and JWT gems to switch away from Google+ API
-merge_request: 24068
-author:
-type: changed

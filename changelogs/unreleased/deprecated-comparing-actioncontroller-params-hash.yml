@@ -1,6 +1,0 @@
----
-title: 'Fix deprecation: Comparing equality between ActionController::Parameters and
-  a Hash is deprecated'
-merge_request: 23855
-author: Jasper Maes
-type: other

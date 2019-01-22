@@ -1,5 +1,0 @@
----
-title: Add name, author_id, and sha to releases table
-merge_request: 23763
-author:
-type: added

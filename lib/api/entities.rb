@@ -344,19 +344,23 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_owned: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
 
       expose :shared_projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_shared: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
     end
 

@@ -1,5 +1,0 @@
----
-title: Enable caching for records which primary key is not `id`
-merge_request: 24245
-author:
-type: fixed

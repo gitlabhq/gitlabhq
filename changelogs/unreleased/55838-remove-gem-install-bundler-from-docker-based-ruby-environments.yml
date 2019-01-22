@@ -1,5 +1,0 @@
----
-title: Remove gem install bundler from Docker-based Ruby environments
-merge_request: 24093
-author: Takuya Noguchi
-type: other
