@@ -708,6 +708,7 @@
 
 .mr-version-controls {
   position: relative;
+  z-index: 103;
   background: $gray-light;
   color: $gl-text-color;
 
@@ -755,13 +756,37 @@
     color: $orange-500;
     padding-right: 5px;
   }
+
+  @include media-breakpoint-up(md) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: $header-height + $mr-tabs-height;
+    width: 100%;
+    border-top: 1px solid $border-color;
+
+    &.is-fileTreeOpen {
+      margin-left: -16px;
+      width: calc(100% + 32px);
+    }
+
+    .mr-version-menus-container {
+      flex-wrap: nowrap;
+    }
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height + $mr-tabs-height;
+    }
+  }
 }
 
 .merge-request-tabs-holder {
   top: $header-height;
   z-index: 200;
   background-color: $white-light;
-  border-bottom: 1px solid $border-color;
+
+  @include media-breakpoint-down(md) {
+    border-bottom: 1px solid $border-color;
+  }
 
   @include media-breakpoint-up(sm) {
     position: sticky;
@@ -816,7 +841,7 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     flex-direction: column-reverse;
   }
 

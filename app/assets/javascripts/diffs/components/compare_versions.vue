@@ -3,6 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
+import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 
@@ -54,9 +55,18 @@ export default {
     showDropdowns() {
       return !this.commit && this.mergeRequestDiffs.length;
     },
+    fileTreeIcon() {
+      return this.showTreeList ? 'collapse-left' : 'expand-left';
+    },
+    toggleFileBrowserTitle() {
+      return this.showTreeList ? __('Hide file browser') : __('Show file browser');
+    },
     baseVersionPath() {
       return this.mergeRequestDiff.base_version_path;
     },
+  },
+  mounted() {
+    polyfillSticky(this.$el);
   },
   methods: {
     ...mapActions('diffs', [
@@ -73,7 +83,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-version-controls">
+  <div class="mr-version-controls" :class="{ 'is-fileTreeOpen': showTreeList }">
     <div class="mr-version-menus-container content-block">
       <button
         v-gl-tooltip.hover
@@ -82,10 +92,10 @@ export default {
         :class="{
           active: showTreeList,
         }"
-        :title="__('Toggle file browser')"
+        :title="toggleFileBrowserTitle"
         @click="toggleShowTreeList"
       >
-        <icon name="hamburger" />
+        <icon :name="fileTreeIcon" />
       </button>
       <div v-if="showDropdowns" class="d-flex align-items-center compare-versions-container">
         Changes between
@@ -108,7 +118,7 @@ export default {
         {{ __('Viewing commit') }}
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>
       </div>
-      <div class="inline-parallel-buttons d-none d-md-flex ml-auto">
+      <div class="inline-parallel-buttons d-none d-lg-flex ml-auto">
         <gl-button
           v-if="commit || startVersion"
           :href="latestVersionPath"
