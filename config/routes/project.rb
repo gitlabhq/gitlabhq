@@ -2,6 +2,8 @@ resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
+get '/projects/:id' => 'projects#resolve'
+
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
