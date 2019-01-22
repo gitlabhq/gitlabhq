@@ -48,29 +48,24 @@ You may see an entry similar to the following in your Sidekiq log:
 This is probably a problem either with GitLab communicating with Slack, or GitLab
 communicating with itself. The former is less likely since Slack's security certificates
 should _hopefully_ always be trusted. We can establish which we're dealing with by using
-the below test script.
+the below rails console script.
 
-```ruby
-#!/opt/gitlab/embedded/bin/ruby
-# the shebang should be changed if you're not using Omnibus GitLab
-require 'openssl'
-require 'net/http'
+```sh
+# start a rails console:
+sudo gitlab-rails console production
 
-puts "testing Slack"
-# replace <SLACK URL> with your actual Slack URL
-Net::HTTP.get(URI('https://<SLACK URL>'))
-
-puts "testing GitLab"
-# replace <GITLAB URL> with your actual GitLab URL
-Net::HTTP.get(URI('https://<GITLAB URL>'))
+# or for source installs:
+bundle exec rails console production
 ```
 
-The important thing with this script is that it should use the same Ruby as GitLab.
-There are many ways to run this script, and it will change depending on your install type.
-On Omnibus GitLab installs, you can run save this script to `/root/ssl-test.rb`,
-make the file exectuable with `chmod u+x /root/ssl-test.rb`, then run `/root/ssl-test.rb`
-to execute the script. It should return only the "testing X" lines if it succeeds.
-In the event of a failure, the exception should be displayed as well.
+```ruby
+# run this in the Rails console
+# replace <SLACK URL> with your actual Slack URL
+result = Net::HTTP.get(URI('https://<SLACK URL>'));0
+
+# replace <GITLAB URL> with your actual GitLab URL
+result = Net::HTTP.get(URI('https://<GITLAB URL>'));0
+```
 
 If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
 need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
