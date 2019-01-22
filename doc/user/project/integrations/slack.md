@@ -65,6 +65,13 @@ puts "testing GitLab"
 Net::HTTP.get(URI('https://<GITLAB URL>'))
 ```
 
+The important thing with this script is that it should use the same Ruby as GitLab.
+There are many ways to run this script, and it will change depending on your install type.
+On Omnibus GitLab installs, you can run save this script to `/root/ssl-test.rb`,
+make the file exectuable with `chmod u+x /root/ssl-test.rb`, then run `/root/ssl-test.rb`
+to execute the script. It should return only the "testing X" lines if it succeeds.
+In the event of a failure, the exception should be displayed as well.
+
 If it's an issue with GitLab not trusting HTTPS connections to itself, then you may simply
 need to [add your certificate to GitLab's trusted certificates](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
 
