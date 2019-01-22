@@ -11,14 +11,15 @@ module QA
     class Repository
       include Scenario::Actable
 
-      attr_writer :password
+      attr_writer :password, :use_lfs
       attr_accessor :env_vars
 
       def initialize
         # We set HOME to the current working directory (which is a
         # temporary directory created in .perform()) so the temporarily dropped
         # .netrc can be utilised
-        self.env_vars = [%Q{HOME="#{File.dirname(netrc_file_path)}"}]
+        self.env_vars = [%Q{HOME="#{tmp_home_dir}"}]
+        @use_lfs = false
       end
 
       def self.perform(*args)
@@ -33,17 +34,22 @@ module QA
 
       def username=(username)
         @username = username
-        @uri.user = username
+        # Only include the user in the URI if we're using HTTP as this breaks
+        # SSH authentication.
+        @uri.user = username unless ssh_key_set?
       end
 
       def use_default_credentials
         self.username, self.password = default_credentials
-
-        add_credentials_to_netrc unless ssh_key_set?
       end
 
       def clone(opts = '')
-        run("git clone #{opts} #{uri} ./")
+        clone_result = run("git clone #{opts} #{uri} ./")
+        return clone_result.response unless clone_result.success
+
+        enable_lfs_result = enable_lfs if use_lfs?
+
+        clone_result.to_s + enable_lfs_result.to_s
       end
 
       def checkout(branch_name, new_branch: false)
@@ -58,8 +64,6 @@ module QA
       def configure_identity(name, email)
         run(%Q{git config user.name #{name}})
         run(%Q{git config user.email #{email}})
-
-        add_credentials_to_netrc
       end
 
       def commit_file(name, contents, message)
@@ -70,15 +74,22 @@ module QA
       def add_file(name, contents)
         ::File.write(name, contents)
 
-        run(%Q{git add #{name}})
+        if use_lfs?
+          git_lfs_track_result = run(%Q{git lfs track #{name} --lockable})
+          return git_lfs_track_result.response unless git_lfs_track_result.success
+        end
+
+        git_add_result = run(%Q{git add #{name}})
+
+        git_lfs_track_result.to_s + git_add_result.to_s
       end
 
       def commit(message)
-        run(%Q{git commit -m "#{message}"})
+        run(%Q{git commit -m "#{message}"}).to_s
       end
 
       def push_changes(branch = 'master')
-        run("git push #{uri} #{branch}")
+        run("git push #{uri} #{branch}").to_s
       end
 
       def merge(branch)
@@ -86,7 +97,7 @@ module QA
       end
 
       def commits
-        run('git log --oneline').split("\n")
+        run('git log --oneline').to_s.split("\n")
       end
 
       def use_ssh_key(key)
@@ -98,7 +109,8 @@ module QA
         keyscan_params = ['-H']
         keyscan_params << "-p #{uri.port}" if uri.port
         keyscan_params << uri.host
-        run("ssh-keyscan #{keyscan_params.join(' ')} >> #{known_hosts_file.path}")
+        res = run("ssh-keyscan #{keyscan_params.join(' ')} >> #{known_hosts_file.path}")
+        return res.response unless res.success?
 
         self.env_vars << %Q{GIT_SSH_COMMAND="ssh -i #{private_key_file.path} -o UserKnownHostsFile=#{known_hosts_file.path}"}
       end
@@ -132,23 +144,66 @@ module QA
         output[/git< version (\d+)/, 1] || 'unknown'
       end
 
+      def try_add_credentials_to_netrc
+        return unless add_credentials?
+        return if netrc_already_contains_content?
+
+        # Despite libcurl supporting a custom .netrc location through the
+        # CURLOPT_NETRC_FILE environment variable, git does not support it :(
+        # Info: https://curl.haxx.se/libcurl/c/CURLOPT_NETRC_FILE.html
+        #
+        # This will create a .netrc in the correct working directory, which is
+        # a temporary directory created in .perform()
+        #
+        FileUtils.mkdir_p(tmp_home_dir)
+        File.open(netrc_file_path, 'a') { |file| file.puts(netrc_content) }
+        File.chmod(0600, netrc_file_path)
+      end
+
       private
 
-      attr_reader :uri, :username, :password, :known_hosts_file, :private_key_file
+      attr_reader :uri, :username, :password, :known_hosts_file,
+        :private_key_file, :use_lfs
+
+      alias_method :use_lfs?, :use_lfs
+
+      Result = Struct.new(:success, :response) do
+        alias_method :success?, :success
+        alias_method :to_s, :response
+      end
+
+      def add_credentials?
+        return false if !username || !password
+        return true unless ssh_key_set?
+        return true if ssh_key_set? && use_lfs?
+
+        false
+      end
 
       def ssh_key_set?
         !private_key_file.nil?
       end
 
+      def enable_lfs
+        # git lfs install *needs* a .gitconfig defined at ${HOME}/.gitconfig
+        FileUtils.mkdir_p(tmp_home_dir)
+        touch_gitconfig_result = run("touch #{tmp_home_dir}/.gitconfig")
+        return touch_gitconfig_result.response unless touch_gitconfig_result.success?
+
+        git_lfs_install_result = run('git lfs install')
+
+        touch_gitconfig_result.to_s + git_lfs_install_result.to_s
+      end
+
       def run(command_str, *extra_env)
         command = [env_vars, *extra_env, command_str, '2>&1'].compact.join(' ')
-        Runtime::Logger.debug "Git: command=[#{command}]"
+        Runtime::Logger.debug "Git: pwd=[#{Dir.pwd}], command=[#{command}]"
 
-        output, _ = Open3.capture2(command)
-        output = output.chomp.gsub(/\s+$/, '')
-        Runtime::Logger.debug "Git: output=[#{output}]"
+        output, status = Open3.capture2e(command)
+        output.chomp!
+        Runtime::Logger.debug "Git: output=[#{output}], exitstatus=[#{status.exitstatus}]"
 
-        output
+        Result.new(status.exitstatus == 0, output)
       end
 
       def default_credentials
@@ -159,12 +214,12 @@ module QA
         end
       end
 
-      def tmp_netrc_directory
-        @tmp_netrc_directory ||= File.join(Dir.tmpdir, "qa-netrc-credentials", $$.to_s)
+      def tmp_home_dir
+        @tmp_home_dir ||= File.join(Dir.tmpdir, "qa-netrc-credentials", $$.to_s)
       end
 
       def netrc_file_path
-        @netrc_file_path ||= File.join(tmp_netrc_directory, '.netrc')
+        @netrc_file_path ||= File.join(tmp_home_dir, '.netrc')
       end
 
       def netrc_content
@@ -174,21 +229,6 @@ module QA
       def netrc_already_contains_content?
         File.exist?(netrc_file_path) &&
           File.readlines(netrc_file_path).grep(/^#{netrc_content}$/).any?
-      end
-
-      def add_credentials_to_netrc
-        # Despite libcurl supporting a custom .netrc location through the
-        # CURLOPT_NETRC_FILE environment variable, git does not support it :(
-        # Info: https://curl.haxx.se/libcurl/c/CURLOPT_NETRC_FILE.html
-        #
-        # This will create a .netrc in the correct working directory, which is
-        # a temporary directory created in .perform()
-        #
-        return if netrc_already_contains_content?
-
-        FileUtils.mkdir_p(tmp_netrc_directory)
-        File.open(netrc_file_path, 'a') { |file| file.puts(netrc_content) }
-        File.chmod(0600, netrc_file_path)
       end
     end
   end
