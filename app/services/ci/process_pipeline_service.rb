@@ -55,7 +55,7 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def created_builds
-      pipeline.builds.created
+      pipeline.processables.created
     end
 
     # This method is for compatibility and data consistency and should be removed with 9.3 version of GitLab

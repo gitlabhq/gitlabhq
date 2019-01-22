@@ -3,6 +3,7 @@
 module Ci
   class Build < CommitStatus
     prepend ArtifactMigratable
+    include Ci::Processable
     include TokenAuthenticatable
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
