@@ -9,7 +9,7 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       position: -webkit-sticky;
       position: sticky;
-      top: $header-height + 51px;
+      top: $mr-version-controls-height + $header-height + $mr-tabs-height;
       margin-left: -1px;
       border-left: 1px solid $border-color;
       z-index: 102;
@@ -19,6 +19,7 @@
 
         .with-performance-bar & {
           top: $header-height + 36px + $performance-bar-height;
+
         }
       }
 
@@ -34,7 +35,7 @@
       }
 
       .with-performance-bar & {
-        top: 127px;
+        top: $header-height + $performance-bar-height + $mr-version-controls-height + $mr-tabs-height;
       }
     }
 
@@ -1026,8 +1027,9 @@
 .tree-list-holder {
   position: -webkit-sticky;
   position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 100px);
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  max-height: calc(100vh - $top-pos);
   padding-right: $gl-padding;
 
   .file-row {
@@ -1036,8 +1038,9 @@
   }
 
   .with-performance-bar & {
-    top: 135px;
-    max-height: calc(100vh - 135px);
+    $performance-bar-top-pos: $performance-bar-height + $top-pos;
+    top: $performance-bar-top-pos;
+    max-height: calc(100vh - $performance-bar-top-pos);
   }
 }
 

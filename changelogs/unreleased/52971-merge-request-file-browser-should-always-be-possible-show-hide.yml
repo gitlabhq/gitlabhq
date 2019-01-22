@@ -1,0 +1,5 @@
+---
+title: Make possible to toggle file tree while scrolling through diffs
+merge_request: !24103
+author:
+type: changed
