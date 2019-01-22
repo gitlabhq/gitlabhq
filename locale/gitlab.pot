@@ -735,6 +735,9 @@ msgstr ""
 msgid "Are you sure you want to stop this environment?"
 msgstr ""
 
+msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr ""
 
@@ -7555,6 +7558,9 @@ msgid "Unsubscribe at group level"
 msgstr ""
 
 msgid "Unsubscribe at project level"
+msgstr ""
+
+msgid "Unsubscribe from %{type}"
 msgstr ""
 
 msgid "Unverified"
