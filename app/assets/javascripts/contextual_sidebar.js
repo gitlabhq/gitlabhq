@@ -29,7 +29,7 @@ export default class ContextualSidebar {
     document.addEventListener('click', e => {
       if (
         !e.target.closest('.nav-sidebar') &&
-        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
+        !ContextualSidebar.isDesktopBreakpoint(bp.getBreakpointSize())
       ) {
         this.toggleCollapsedSidebar(true, true);
       }
@@ -38,13 +38,23 @@ export default class ContextualSidebar {
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
     this.$sidebarToggle.on('click', () => {
-      const value = !this.$sidebar.hasClass('sidebar-collapsed-desktop');
-      this.toggleCollapsedSidebar(value, true);
+      const breakpoint = bp.getBreakpointSize();
+
+      if (!ContextualSidebar.isDesktopBreakpoint(breakpoint)) {
+        const collapsed = !this.$sidebar.hasClass('sidebar-collapsed-mobile');
+        this.toggleMobileCollapsedSidebar(collapsed);
+      } else if (breakpoint === 'lg') {
+        const value = !this.$sidebar.hasClass('sidebar-collapsed-desktop');
+        this.toggleCollapsedSidebar(value, true);
+      }
     });
 
     $(window).on('resize', () => _.debounce(this.render(), 100));
   }
 
+  // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
+  // See related issue and discussion: https://gitlab.com/gitlab-org/gitlab-ce/issues/56745
+  static isDesktopBreakpoint = (_bp = '') => ['xl', 'lg'].indexOf(_bp) > -1;
   static setCollapsedCookie(value) {
     if (bp.getBreakpointSize() !== 'lg') {
       return;
@@ -58,12 +68,21 @@ export default class ContextualSidebar {
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
   }
 
+  toggleMobileCollapsedSidebar(collapsed) {
+    this.$sidebar.toggleClass('sidebar-collapsed-mobile', collapsed);
+    this.$sidebar.removeClass('sidebar-collapsed-desktop');
+    this.$page.toggleClass('page-with-icon-sidebar', true);
+    this.$page.toggleClass('page-with-contextual-sidebar', false);
+    requestIdleCallback(() => this.toggleSidebarOverflow());
+  }
+
   toggleCollapsedSidebar(collapsed, saveCookie) {
     const breakpoint = bp.getBreakpointSize();
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
+      this.$page.toggleClass('page-with-contextual-sidebar', true);
     }
 
     if (saveCookie) {
@@ -86,8 +105,8 @@ export default class ContextualSidebar {
 
     const breakpoint = bp.getBreakpointSize();
 
-    if (breakpoint === 'sm' || breakpoint === 'md') {
-      this.toggleCollapsedSidebar(true, false);
+    if (!ContextualSidebar.isDesktopBreakpoint(breakpoint)) {
+      this.toggleMobileCollapsedSidebar(true);
     } else if (breakpoint === 'lg') {
       const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
       this.toggleCollapsedSidebar(collapse, false);

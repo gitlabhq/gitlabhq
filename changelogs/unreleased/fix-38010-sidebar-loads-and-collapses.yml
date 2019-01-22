@@ -1,0 +1,5 @@
+---
+title: Fixed navigation sidebar flashing open on page load 
+merge_request: 24555
+author:
+type: fixed

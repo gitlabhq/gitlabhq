@@ -1,11 +1,11 @@
 .page-with-contextual-sidebar {
   transition: padding-left $sidebar-transition-duration;
 
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(sm) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  @include media-breakpoint-up(lg) {
+  @include media-breakpoint-up(xl) {
     padding-left: $contextual-sidebar-width;
   }
 
@@ -89,7 +89,7 @@
     }
   }
 
-  &.sidebar-collapsed-desktop {
+  @mixin collapse-contextual-sidebar {
     width: $contextual-sidebar-collapsed-width;
 
     .nav-sidebar-inner-scroll {
@@ -112,6 +112,17 @@
 
     .avatar-container {
       margin: 0 auto;
+    }
+  }
+
+  &.sidebar-collapsed-desktop {
+    @include collapse-contextual-sidebar;
+  }
+
+  &.sidebar-collapsed-mobile {
+    // md = 768, xl = 1200px
+    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+      @include collapse-contextual-sidebar;
     }
   }
 
@@ -357,7 +368,7 @@
   overflow: hidden;
 }
 
-.sidebar-collapsed-desktop {
+@mixin collapse-contextual-sidebar-content {
   .context-header {
     height: 60px;
     width: $contextual-sidebar-collapsed-width;
@@ -392,6 +403,16 @@
       display: block;
       margin: 0;
     }
+  }
+}
+
+.sidebar-collapsed-desktop {
+  @include collapse-contextual-sidebar-content;
+}
+
+.sidebar-collapsed-mobile {
+  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+    @include collapse-contextual-sidebar-content;
   }
 }
 
