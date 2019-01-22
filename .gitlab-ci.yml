@@ -427,15 +427,7 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 # GitLab Review apps
-.review-base: &review-base
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
-  cache: {}
-  dependencies: []
-  environment: &review-environment
-    name: review/${CI_COMMIT_REF_NAME}
-    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+.review-only: &review-only
   only:
     refs:
       - branches@gitlab-org/gitlab-ce
@@ -445,6 +437,17 @@ setup-test-env:
     refs:
       - master
       - /(^docs[\/-].*|.*-docs$)/
+
+.review-base: &review-base
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *review-only
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  cache: {}
+  dependencies: []
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
   before_script: []
 
 .review-docker: &review-docker
@@ -949,6 +952,7 @@ no_ee_check:
 # GitLab Review apps
 review-build-cng:
   <<: *single-script-job
+  <<: *review-only
   variables:
     <<: *single-script-job-variables
     SCRIPT_NAME: trigger-build
