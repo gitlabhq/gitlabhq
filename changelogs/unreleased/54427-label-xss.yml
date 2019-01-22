@@ -1,5 +1,0 @@
----
-title: Escape html entities in LabelReferenceFilter when no label found
-merge_request:
-author:
-type: security

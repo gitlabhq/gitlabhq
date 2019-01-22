@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: Directly inheriting from ActiveRecord::Migration is deprecated.'
-merge_request: 23884
-author: Jasper Maes
-type: other

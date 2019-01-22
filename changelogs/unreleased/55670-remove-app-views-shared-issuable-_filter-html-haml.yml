@@ -1,5 +1,0 @@
----
-title: Remove app/views/shared/issuable/_filter.html.haml
-merge_request: 24008
-author: Takuya Noguchi
-type: other

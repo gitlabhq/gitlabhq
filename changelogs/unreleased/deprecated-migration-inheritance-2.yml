@@ -1,5 +1,0 @@
----
-title: ActiveRecord::Migration -> ActiveRecord::Migration[5.0] for AddIndexesToCiBuildsAndPipelines
-merge_request: 24167
-author: Jasper Maes
-type: other
