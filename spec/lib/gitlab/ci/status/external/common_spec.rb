@@ -21,8 +21,16 @@ describe Gitlab::Ci::Status::External::Common do
       expect(subject.label).to eq external_description
     end
 
-    context 'when description is not set' do
+    context 'when description is nil' do
       let(:external_description) { nil }
+
+      it 'uses core status label' do
+        expect(subject.label).to eq('passed')
+      end
+    end
+
+    context 'when description is empty string' do
+      let(:external_description) { '' }
 
       it 'uses core status label' do
         expect(subject.label).to eq('passed')

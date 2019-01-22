@@ -6,7 +6,7 @@ module Gitlab
       module External
         module Common
           def label
-            subject.description || super
+            subject.description.presence || super
           end
 
           def has_details?
