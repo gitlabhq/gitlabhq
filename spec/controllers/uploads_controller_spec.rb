@@ -14,7 +14,6 @@ end
 
 shared_examples 'content publicly cached' do
   it 'ensures content is publicly cached' do
-    # Fixed in newer versions of ActivePack, it will only output a single `private`.
     expect(subject['Cache-Control']).to eq('max-age=300, public')
   end
 end

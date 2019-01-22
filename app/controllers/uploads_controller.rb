@@ -70,8 +70,8 @@ class UploadsController < ApplicationController
     end
   end
 
-  def cache_privately?
-    true unless User === model || Appearance === model
+  def cache_publicly?
+    User === model || Appearance === model
   end
 
   def upload_model_class

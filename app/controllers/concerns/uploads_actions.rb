@@ -29,12 +29,12 @@ module UploadsActions
   def show
     return render_404 unless uploader&.exists?
 
-    if cache_privately?
-      expires_in 0.seconds, must_revalidate: true, private: true
-    else
+    if cache_publicly?
       # We need to reset caching from the applications controller to get rid of the no-store value
       headers['Cache-Control'] = ''
       expires_in 5.minutes, public: true, must_revalidate: false
+    else
+      expires_in 0.seconds, must_revalidate: true, private: true
     end
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
@@ -120,8 +120,8 @@ module UploadsActions
     nil
   end
 
-  def cache_privately?
-    true
+  def cache_publicly?
+    false
   end
 
   def model
