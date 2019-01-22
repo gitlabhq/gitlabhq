@@ -1,5 +1,5 @@
 import DirtySubmitCollection from '~/dirty_submit/dirty_submit_collection';
-import { setInput, createForm } from './helper';
+import { setInputValue, createForm } from './helper';
 
 describe('DirtySubmitCollection', () => {
   it('disables submits until there are changes', done => {
@@ -14,11 +14,11 @@ describe('DirtySubmitCollection', () => {
 
       expect(submit.disabled).toBe(true);
 
-      return setInput(input, `${originalValue} changes`)
+      return setInputValue(input, `${originalValue} changes`)
         .then(() => {
           expect(submit.disabled).toBe(false);
         })
-        .then(() => setInput(input, originalValue))
+        .then(() => setInputValue(input, originalValue))
         .then(() => {
           expect(submit.disabled).toBe(true);
         })
