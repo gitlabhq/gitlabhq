@@ -17,7 +17,6 @@ module Gitlab
               user: @command.current_user,
               pipeline_schedule: @command.schedule,
               merge_request: @command.merge_request,
-              protected: @command.protected_ref?,
               variables_attributes: Array(@command.variables_attributes)
             )
 
