@@ -49,7 +49,7 @@ module Ci
     end
 
     def to_partial_path
-      'projects/ci/builds/build'
+      'projects/generic_commit_statuses/generic_commit_status'
     end
   end
 end
