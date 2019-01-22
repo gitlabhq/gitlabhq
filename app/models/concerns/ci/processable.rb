@@ -20,6 +20,10 @@ module Ci
       raise NotImplementedError
     end
 
+    def when
+      raise NotImplementedError
+    end
+
     def expanded_environment_name
       raise NotImplementedError
     end
