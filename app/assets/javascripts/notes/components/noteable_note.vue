@@ -4,6 +4,7 @@ import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { s__, sprintf } from '../../locale';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
@@ -81,10 +82,10 @@ export default {
     },
     truncatedHash() {
       if (!this.commit) {
-        return null;
+        return '';
       }
 
-      return truncateSha(this.commit.id);
+      return sprintf(s__('MergeRequests|%{commitSha}'), { commitSha: truncateSha(this.commit.id) });
     },
   },
 
