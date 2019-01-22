@@ -1,19 +1,21 @@
 <script>
 import { GlSkeletonLoading } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
+import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
 
 export default {
   components: {
+    EnvironmentRow,
     FunctionRow,
     EmptyState,
     GlSkeletonLoading,
   },
   props: {
     functions: {
-      type: Array,
+      type: Object,
       required: true,
-      default: () => [],
+      default: () => ({}),
     },
     installed: {
       type: Boolean,
@@ -45,33 +47,21 @@ export default {
   <section id="serverless-functions">
     <div v-if="installed">
       <div v-if="hasFunctionData">
-        <div class="ci-table js-services-list function-element">
-          <div class="gl-responsive-table-row table-row-header" role="row">
-            <div class="table-section section-20" role="rowheader">
-              {{ s__('Serverless|Function') }}
-            </div>
-            <div class="table-section section-10" role="rowheader">
-              {{ s__('Serverless|Cluster Env') }}
-            </div>
-            <div class="table-section section-40" role="rowheader">
-              {{ s__('Serverless|Description') }}
-            </div>
-            <div class="table-section section-20" role="rowheader">
-              {{ s__('Serverless|Runtime') }}
-            </div>
-            <div class="table-section section-10" role="rowheader">
-              {{ s__('Serverless|Last Update') }}
-            </div>
+        <template v-if="loadingData">
+          <div v-for="j in 3" :key="j" class="gl-responsive-table-row"><gl-skeleton-loading /></div>
+        </template>
+        <template v-else>
+          <div class="groups-list-tree-container">
+            <ul class="content-list group-list-tree">
+              <environment-row
+                v-for="(env, index) in functions"
+                :key="index"
+                :env="env"
+                :env-name="index"
+              />
+            </ul>
           </div>
-          <template v-if="loadingData">
-            <div v-for="j in 3" :key="j" class="gl-responsive-table-row">
-              <gl-skeleton-loading />
-            </div>
-          </template>
-          <template v-else>
-            <function-row v-for="f in functions" :key="f.name" :func="f" />
-          </template>
-        </div>
+        </template>
       </div>
       <div v-else class="empty-state js-empty-state">
         <div class="text-content">
@@ -111,16 +101,3 @@ export default {
     <empty-state v-else :clusters-path="clustersPath" :help-path="helpPath" />
   </section>
 </template>
-
-<style>
-.top-area {
-  border-bottom: 0;
-}
-
-.function-element {
-  border-bottom: 1px solid #e5e5e5;
-  border-bottom-color: rgb(229, 229, 229);
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-</style>

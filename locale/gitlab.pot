@@ -6360,9 +6360,6 @@ msgstr ""
 msgid "Serverless"
 msgstr ""
 
-msgid "ServerlessDetails|Copy URL to clipboard"
-msgstr ""
-
 msgid "ServerlessDetails|Kubernetes Pods"
 msgstr ""
 
@@ -6375,19 +6372,13 @@ msgstr ""
 msgid "ServerlessDetails|pods in use"
 msgstr ""
 
+msgid "ServerlessURL|Copy URL to clipboard"
+msgstr ""
+
 msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
 msgstr ""
 
 msgid "Serverless|An error occurred while retrieving serverless components"
-msgstr ""
-
-msgid "Serverless|Cluster Env"
-msgstr ""
-
-msgid "Serverless|Description"
-msgstr ""
-
-msgid "Serverless|Function"
 msgstr ""
 
 msgid "Serverless|Getting started with serverless"
@@ -6399,16 +6390,10 @@ msgstr ""
 msgid "Serverless|Install Knative"
 msgstr ""
 
-msgid "Serverless|Last Update"
-msgstr ""
-
 msgid "Serverless|Learn more about Serverless"
 msgstr ""
 
 msgid "Serverless|No functions available"
-msgstr ""
-
-msgid "Serverless|Runtime"
 msgstr ""
 
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
