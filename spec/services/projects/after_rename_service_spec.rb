@@ -7,19 +7,13 @@ describe Projects::AfterRenameService do
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
   let!(:path_before_rename) { project.path }
+  let!(:full_path_before_rename) { project.full_path }
   let!(:path_after_rename) { "#{project.path}-renamed" }
-
-  subject(:service_execute) do
-    # AfterRenameService is called by UpdateService after a successful model.update
-    # We need to simulate that here in order to populate the correct Dirty attributes to
-    # actually test the behavior of this class
-    project.update(path: path_after_rename)
-    described_class.new(project).execute
-  end
+  let!(:full_path_after_rename) { "#{project.full_path}-renamed" }
 
   describe '#execute' do
     context 'using legacy storage' do
-      let(:project) { create(:project, :repository, :with_avatar, :legacy_storage) }
+      let(:project) { create(:project, :repository, :wiki_repo, :legacy_storage) }
       let(:project_storage) { project.send(:storage) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 
@@ -34,16 +28,6 @@ describe Projects::AfterRenameService do
       it 'renames a repository' do
         stub_container_registry_config(enabled: false)
 
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/#{path_before_rename}", "#{project.namespace.full_path}/#{path_after_rename}")
-          .and_return(true)
-
-        expect(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage, "#{project.namespace.full_path}/#{path_before_rename}.wiki", "#{project.namespace.full_path}/#{path_after_rename}.wiki")
-          .and_return(true)
-
         expect_any_instance_of(SystemHooksService)
           .to receive(:execute_hooks_for)
           .with(project, :rename)
@@ -52,9 +36,13 @@ describe Projects::AfterRenameService do
           .to receive(:rename_project)
           .with(path_before_rename, path_after_rename, project.namespace.full_path)
 
-        expect(project).to receive(:expire_caches_before_rename)
+        expect_repository_exist("#{full_path_before_rename}.git")
+        expect_repository_exist("#{full_path_before_rename}.wiki.git")
 
         service_execute
+
+        expect_repository_exist("#{full_path_after_rename}.git")
+        expect_repository_exist("#{full_path_after_rename}.wiki.git")
       end
 
       context 'container registry with images' do
@@ -126,7 +114,7 @@ describe Projects::AfterRenameService do
     end
 
     context 'using hashed storage' do
-      let(:project) { create(:project, :repository, :with_avatar,  skip_disk_validation: true) }
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
       let(:gitlab_shell) { Gitlab::Shell.new }
       let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
       let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -221,5 +209,22 @@ describe Projects::AfterRenameService do
         )
       end
     end
+  end
+
+  def service_execute
+    # AfterRenameService is called by UpdateService after a successful model.update
+    # the initialization will include before and after paths values
+    project.update(path: path_after_rename)
+
+    described_class.new(project, path_before: path_before_rename, full_path_before: full_path_before_rename).execute
+  end
+
+  def expect_repository_exist(full_path_with_extension)
+    expect(
+      gitlab_shell.exists?(
+        project.repository_storage,
+        full_path_with_extension
+      )
+    ).to be_truthy
   end
 end

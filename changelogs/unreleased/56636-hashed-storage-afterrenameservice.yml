@@ -1,0 +1,5 @@
+---
+title: 'Hashed Storage: `AfterRenameService` was receiving the wrong `old_path` under some circunstances'
+merge_request: 24526
+author:
+type: fixed
