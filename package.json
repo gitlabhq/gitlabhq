@@ -162,7 +162,7 @@
     "karma-webpack": "^4.0.0-beta.0",
     "nodemon": "^1.18.4",
     "pixelmatch": "^4.0.2",
-    "prettier": "1.15.3",
+    "prettier": "1.16.1",
     "vue-jest": "^3.0.2",
     "webpack-dev-server": "^3.1.14",
     "yarn-deduplicate": "^1.0.5"
