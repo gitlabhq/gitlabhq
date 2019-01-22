@@ -154,7 +154,7 @@ When [renaming a user](../profile/index.md#changing-your-username),
 
 Any project can be used as a Go package including private projects in subgroups. To use packages
 hosted in private projects with the `go get` command, use a [`.netrc` file](https://ec.haxx.se/usingcurl-netrc.html)
-and a personal access token in the password field.
+and a [personal access token](../profile/personal_access_tokens.md) in the password field.
 
 For example:
 
