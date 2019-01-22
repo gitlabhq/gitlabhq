@@ -37,6 +37,13 @@ module Ci
       false
     end
 
+    ##
+    # TODO we probably want to add support for `when` configuration.
+    #
+    def when
+      'on_success'
+    end
+
     def expanded_environment_name
     end
 
