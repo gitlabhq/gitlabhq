@@ -34,8 +34,8 @@ for errors relating to your Slack service.
 ### Something went wrong on our end
 
 This is a generic error shown in the GitLab UI and doesn't mean much by itself.
-You'll need to look in the logs to find an error message and keep troubleshooting
-from there.
+You'll need to look in [the logs](/doc/administration/logs.md#productionlog) to find
+an error message and keep troubleshooting from there.
 
 ### `certificate verify failed`
 
