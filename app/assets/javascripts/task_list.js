@@ -10,15 +10,17 @@ export default class TaskList {
     this.fieldName = options.fieldName;
     this.lockVersion = options.lockVersion;
     this.onSuccess = options.onSuccess || (() => {});
-    this.onError = options.onError || function showFlash(e) {
-      let errorMessages = '';
+    this.onError =
+      options.onError ||
+      function showFlash(e) {
+        let errorMessages = '';
 
-      if (e.response.data && typeof e.response.data === 'object') {
-        errorMessages = e.response.data.errors.join(' ');
-      }
+        if (e.response.data && typeof e.response.data === 'object') {
+          errorMessages = e.response.data.errors.join(' ');
+        }
 
-      return new Flash(errorMessages || 'Update failed', 'alert');
-    };
+        return new Flash(errorMessages || 'Update failed', 'alert');
+      };
 
     this.init();
   }
@@ -56,8 +58,8 @@ export default class TaskList {
       [this.fieldName]: $target.val(),
       lock_version: this.lockVersion,
       update_task: {
-        index: index,
-        checked: checked,
+        index,
+        checked,
         line_number: lineNumber,
         line_source: lineSource,
       },

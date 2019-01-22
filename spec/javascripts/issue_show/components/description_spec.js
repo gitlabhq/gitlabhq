@@ -123,7 +123,10 @@ describe('Description component', () => {
           fieldName: 'description',
           selector: '.detail-page-description',
           onSuccess: jasmine.any(Function),
+          onError: jasmine.any(Function),
+          lockVersion: 0,
         });
+
         done();
       });
     });

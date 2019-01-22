@@ -214,10 +214,16 @@ export default {
     },
 
     updateStoreState() {
-      this.service.getData()
+      this.service
+        .getData()
         .then(res => res.data)
         .then(data => {
           this.store.updateState(data);
+        })
+        .catch(() => {
+          const errMsg = `Error updating ${this.issuableType}`;
+
+          window.Flash(errMsg);
         });
     },
 

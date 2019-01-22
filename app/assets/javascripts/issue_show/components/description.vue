@@ -39,6 +39,7 @@ export default {
     lockVersion: {
       type: Number,
       required: false,
+      default: 0,
     },
   },
   data() {
@@ -89,8 +90,10 @@ export default {
       }
     },
 
-    taskListUpdateError({ errors, data }) {
-      createFlash('Someone edited this issue at the same time you did and we updated the issue description.');
+    taskListUpdateError() {
+      createFlash(
+        'Someone edited this issue at the same time you did and we updated the issue description.',
+      );
 
       this.$emit('taskListUpdateFailed');
     },
