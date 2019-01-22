@@ -90,84 +90,58 @@ export const getTimeago = () => {
     const memoizedLocaleRemaining = () => {
       const cache = [];
 
+      const timeAgoLocaleRemaining = [
+        () => [s__('Timeago|just now'), s__('Timeago|right now')],
+        () => [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
+        () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
+        () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+        () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
+        () => [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
+        () => [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
+        () => [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+        () => [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
+        () => [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+        () => [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
+        () => [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+        () => [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
+        () => [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+      ];
+
       return (number, index) => {
         if (cache[index]) {
           return cache[index];
         }
-        let result = [];
-        if (index === 0) {
-          result = [s__('Timeago|just now'), s__('Timeago|right now')];
-        } else if (index === 1) {
-          result = [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')];
-        } else if (index === 2) {
-          result = [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')];
-        } else if (index === 3) {
-          result = [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')];
-        } else if (index === 4) {
-          result = [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')];
-        } else if (index === 5) {
-          result = [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')];
-        } else if (index === 6) {
-          result = [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')];
-        } else if (index === 7) {
-          result = [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')];
-        } else if (index === 8) {
-          result = [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')];
-        } else if (index === 9) {
-          result = [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')];
-        } else if (index === 10) {
-          result = [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')];
-        } else if (index === 11) {
-          result = [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')];
-        } else if (index === 12) {
-          result = [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')];
-        } else if (index === 13) {
-          result = [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')];
-        }
-        cache[index] = result;
-        return result;
+        cache[index] = timeAgoLocaleRemaining[index] && timeAgoLocaleRemaining[index]();
+        return cache[index];
       };
     };
 
     const memoizedLocale = () => {
       const cache = [];
 
+      const timeAgoLocale = [
+        () => [s__('Timeago|just now'), s__('Timeago|right now')],
+        () => [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
+        () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
+        () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+        () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
+        () => [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
+        () => [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
+        () => [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+        () => [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
+        () => [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+        () => [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
+        () => [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+        () => [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
+        () => [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+      ];
+
       return (number, index) => {
         if (cache[index]) {
           return cache[index];
         }
-        let result = [];
-        if (index === 0) {
-          result = [s__('Timeago|just now'), s__('Timeago|right now')];
-        } else if (index === 1) {
-          result = [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')];
-        } else if (index === 2) {
-          result = [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')];
-        } else if (index === 3) {
-          result = [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')];
-        } else if (index === 4) {
-          result = [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')];
-        } else if (index === 5) {
-          result = [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')];
-        } else if (index === 6) {
-          result = [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')];
-        } else if (index === 7) {
-          result = [s__('Timeago|%s days ago'), s__('Timeago|in %s days')];
-        } else if (index === 8) {
-          result = [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')];
-        } else if (index === 9) {
-          result = [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')];
-        } else if (index === 10) {
-          result = [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')];
-        } else if (index === 11) {
-          result = [s__('Timeago|%s months ago'), s__('Timeago|in %s months')];
-        } else if (index === 12) {
-          result = [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')];
-        } else if (index === 13) {
-          result = [s__('Timeago|%s years ago'), s__('Timeago|in %s years')];
-        }
-        cache[index] = result;
-        return result;
+        cache[index] = timeAgoLocale[index] && timeAgoLocale[index]();
+        return cache[index];
       };
     };
 
