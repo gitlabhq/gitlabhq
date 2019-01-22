@@ -611,16 +611,16 @@ rollout 100%:
     track="${1-stable}"
     export APPLICATION_SECRET_NAME=$(application_secret_name "$track")
 
-    bash -c '
-      function k8s_prefixed_variables() {
-        env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p"
-      }
+    env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p" > k8s_prefixed_variables
+    
+    kubectl create secret \
+      -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
+      --from-env-file k8s_prefixed_variables -o yaml --dry-run |
+      kubectl replace -n "$KUBE_NAMESPACE" --force -f -
 
-      kubectl create secret \
-        -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
-        --from-env-file <(k8s_prefixed_variables) -o yaml --dry-run |
-        kubectl replace -n "$KUBE_NAMESPACE" --force -f -
-    '
+    export APPLICATION_SECRET_CHECKSUM=$(cat k8s_prefixed_variables | sha256sum | cut -d ' ' -f 1)
+
+    rm k8s_prefixed_variables
   }
 
   function deploy_name() {
@@ -688,6 +688,7 @@ rollout 100%:
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -722,6 +723,7 @@ rollout 100%:
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
