@@ -8,8 +8,7 @@ module Issues
       handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
-      handle_update_task(issue)
-      move_issue_to_new_project(issue) || update(issue)
+      move_issue_to_new_project(issue) || task_change_event(issue) || update(issue)
     end
 
     def update(issue)
@@ -64,6 +63,11 @@ module Issues
       end
     end
 
+    def handle_task_changes(issuable)
+      todo_service.mark_pending_todos_as_done(issuable, current_user)
+      todo_service.update_issue(issuable, current_user)
+    end
+
     def handle_move_between_ids(issue)
       return unless params[:move_between_ids]
 
@@ -79,6 +83,8 @@ module Issues
     # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
+      return unless canonical_issue_id
+
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
 
       if canonical_issue
@@ -119,64 +125,23 @@ module Issues
       end
     end
 
-    def handle_update_task(issue)
+    def task_change_event(issue)
       update_task_params = params.delete(:update_task)
       return unless update_task_params
 
-      checkbox_index      = update_task_params[:index]
-      currently_checked   = !update_task_params[:checked]
-      changed_line_number = update_task_params[:line_number]
-      changed_line_source = update_task_params[:line_source] + "\n"
+      updated_content = Taskable.toggle_task(issue.description, issue.description_html,
+                                             index: update_task_params[:index],
+                                             currently_checked: !update_task_params[:checked],
+                                             line_source: update_task_params[:line_source],
+                                             line_number: update_task_params[:line_number])
 
-      source_lines  = issue.description.lines
-      markdown_task = source_lines[changed_line_number - 1]
+      unless updated_content.empty?
+        # by updating the description_html field at the same time,
+        # the markdown cache won't be considered invalid
+        params[:description]      = updated_content[:content]
+        params[:description_html] = updated_content[:content_html]
 
-      # binding.pry
-
-      if markdown_task == changed_line_source
-        source_checkbox = /(\[[\sxX]\])/.match(markdown_task)
-
-        if source_checkbox
-          if currently_checked
-            if source_checkbox[1] == '[x]'
-              changed_line_source.sub!(/(\[[xX]\])/, '[ ]')
-            else
-              # it's already checked by someone else, nothing to do
-              ignore = true
-            end
-          else
-            if source_checkbox[1] == '[ ]'
-              changed_line_source.sub!(/(\[[\s]\])/, '[x]')
-            else
-              # it's already unchecked by someone else, nothing to do
-              ignore = true
-            end
-          end
-        end
-
-        unless ignore
-          # replace line with proper checkbox
-          source_lines[changed_line_number - 1] = changed_line_source
-
-          params[:description] = source_lines.join
-
-          # if we update the description_html field at the same time,
-          # the cache won't be considered invalid (unless something else
-          # changed)
-          html = Nokogiri::HTML.fragment(issue.description_html)
-          html_checkbox = html.css('.task-list-item-checkbox')[checkbox_index - 1]
-          # html_checkbox = html.css(".task-list-item[data-sourcepos^='#{changed_line_number}:'] > input.task-list-item-checkbox").first
-
-          if currently_checked
-            # checkboxes[checkbox_index - 1].remove_attribute('checked')
-            html_checkbox.remove_attribute('checked')
-          else
-            # checkboxes[checkbox_index - 1][:checked] = 'checked'
-            html_checkbox[:checked] = 'checked'
-          end
-
-          params[:description_html] = html.to_html
-        end
+        update_task(issue)
       end
     end
 

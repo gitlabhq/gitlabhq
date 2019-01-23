@@ -20,7 +20,7 @@ module Issuable
 
       create_due_date_note if issuable.previous_changes.include?('due_date')
       create_milestone_note if issuable.previous_changes.include?('milestone_id')
-      create_labels_note(old_labels) if issuable.labels != old_labels
+      create_labels_note(old_labels) if old_labels && issuable.labels != old_labels
     end
 
     private

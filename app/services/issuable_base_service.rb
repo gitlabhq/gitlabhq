@@ -235,6 +235,34 @@ class IssuableBaseService < BaseService
     issuable
   end
 
+  def update_task(issuable)
+    filter_params(issuable)
+    # old_associations = associations_before_update(issuable)
+    if issuable.changed? || params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user))
+      issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
+
+      before_update(issuable)
+
+      if issuable.with_transaction_returning_status { issuable.save }
+        # We do not touch as it will affect a update on updated_at field
+        ActiveRecord::Base.no_touching do
+          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
+        end
+
+        handle_task_changes(issuable)
+
+        invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
+
+        after_update(issuable)
+
+        # execute_hooks(issuable, 'update', old_associations: old_associations)
+      end
+    end
+
+    issuable
+  end
+
   def labels_changing?(old_label_ids, new_label_ids)
     old_label_ids.sort != new_label_ids.sort
   end
@@ -315,6 +343,10 @@ class IssuableBaseService < BaseService
 
   # override if needed
   def handle_changes(issuable, options)
+  end
+
+  # override if needed
+  def handle_task_changes(issuable)
   end
 
   # override if needed
