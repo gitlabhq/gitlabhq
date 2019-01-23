@@ -9,7 +9,7 @@ module Ci
         elsif build.action?
           build.actionize
         else
-          build.enqueue
+          enqueue(build)
         end
 
         true
@@ -20,6 +20,10 @@ module Ci
     end
 
     private
+
+    def enqueue(build)
+      build.enqueue
+    end
 
     def valid_statuses_for_when(value)
       case value
