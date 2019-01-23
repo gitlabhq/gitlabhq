@@ -1,15 +1,21 @@
 <script>
 import $ from 'jquery';
+import { GlButton } from '@gitlab/ui';
+import { __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 /**
  * Renders a split dropdown with
  * an input that allows to search through the given
  * array of options.
+ *
+ * When there are no results and `showCreateMode` is true
+ * it renders a create button with the value typed.
  */
 export default {
   name: 'FilteredSearchDropdown',
   components: {
     Icon,
+    GlButton,
   },
   props: {
     title: {
@@ -43,6 +49,16 @@ export default {
       type: String,
       required: true,
     },
+    showCreateMode: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    createButtonText: {
+      type: String,
+      required: false,
+      default: __('Create'),
+    },
   },
   data() {
     return {
@@ -63,6 +79,12 @@ export default {
       }
 
       return this.items.slice(0, this.visibleItems);
+    },
+    computedCreateButtonText() {
+      return `${this.createButtonText} ${this.filter}`;
+    },
+    shouldRenderCreateButton() {
+      return this.showCreateMode && this.filteredResults.length === 0 && this.filter !== '';
     },
   },
   mounted() {
@@ -112,9 +134,19 @@ export default {
         <div class="dropdown-content">
           <ul>
             <li v-for="(result, i) in filteredResults" :key="i" class="js-filtered-dropdown-result">
-              <slot name="result" :result="result"> {{ result[filterKey] }} </slot>
+              <slot name="result" :result="result">{{ result[filterKey] }}</slot>
             </li>
           </ul>
+        </div>
+
+        <div v-if="shouldRenderCreateButton" class="dropdown-footer">
+          <slot name="footer" :filter="filter">
+            <gl-button
+              class="js-dropdown-create-button btn-transparent"
+              @click="$emit('createItem', filter)"
+              >{{ computedCreateButtonText }}</gl-button
+            >
+          </slot>
         </div>
       </div>
     </div>
