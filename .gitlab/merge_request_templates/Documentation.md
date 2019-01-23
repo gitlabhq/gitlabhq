@@ -36,8 +36,8 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
 **3. Maintainer**
 
 1. [ ] Review by assigned maintainer, who can always request/require the above reviews. Maintainer's review can occur before or after a technical writer review.
-2. [ ] Ensure a release milestone of the format XX.Y is set. If the freeze for that release has begun, add the label `pick into <XX.Y>` unless this change is not required for the release. In that case, simply change the milestone.
-3. [ ] If EE and CE MRs exist, merge the EE MR first, then the CE MR.
-4. [ ] After merging, if there has not been a technical writer review, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review).
+1. [ ] Ensure a release milestone of the format XX.Y is set. If the freeze for that release has begun, add the label `pick into <XX.Y>` unless this change is not required for the release. In that case, simply change the milestone.
+1. [ ] If EE and CE MRs exist, merge the EE MR first, then the CE MR.
+1. [ ] After merging, if there has not been a technical writer review, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review).
 
 /label ~Documentation
