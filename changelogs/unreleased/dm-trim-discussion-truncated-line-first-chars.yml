@@ -1,0 +1,5 @@
+---
+title: Fix bug that caused Suggestion Markdown toolbar button to insert snippet with leading +/-/<space>
+merge_request:
+author:
+type: fixed
