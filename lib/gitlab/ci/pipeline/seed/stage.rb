@@ -41,7 +41,7 @@ module Gitlab
               ::Ci::Stage.new(attributes).tap do |stage|
                 seeds.each do |seed|
                   if seed.bridge?
-                    stage.statuses << seed.to_resource
+                    stage.bridges << seed.to_resource
                   else
                     stage.builds << seed.to_resource
                   end

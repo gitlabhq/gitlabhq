@@ -138,6 +138,7 @@ stages:
 - pipeline
 - statuses
 - builds
+- bridges
 statuses:
 - project
 - pipeline
