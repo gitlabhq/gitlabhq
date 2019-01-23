@@ -49,6 +49,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
 - [Working with Merge Request diffs](diffs.md)
+- [Kubernetes integration guidelines](kubernetes.md)
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
