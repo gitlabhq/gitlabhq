@@ -58,6 +58,8 @@ module Banzai
           path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
         elsif project
           path_parts.unshift(relative_url_root, project.full_path)
+        else
+          path_parts.unshift(relative_url_root)
         end
 
         begin
