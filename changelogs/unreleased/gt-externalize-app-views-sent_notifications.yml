@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/sent_notifications`
+merge_request: 24576
+author: George Tsiolis
+type: other
