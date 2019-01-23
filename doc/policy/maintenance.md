@@ -7,9 +7,11 @@ GitLab follows the [Semantic Versioning](http://semver.org/) for its releases:
 
 For example, for GitLab version 10.5.7:
 
-- `10` represents major version.
-- `5` represents minor version.
-- `7` represents patch number.
+- `10` represents the major version. The major release was 10.0.0, but often referred to as 10.0.
+- `5` represents the minor version. The minor release was 10.5.0, but often referred to as 10.5.
+- `7` represents the patch number.
+
+Any part of the version number can increment into multiple digits, for example, 13.10.11.
 
 The following table describes the version types and their release cadence:
 
