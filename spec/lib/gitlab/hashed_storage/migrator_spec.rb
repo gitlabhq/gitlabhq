@@ -13,9 +13,9 @@ describe Gitlab::HashedStorage::Migrator do
     let(:projects) { create_list(:project, 2, :legacy_storage) }
     let(:ids) { projects.map(&:id) }
 
-    it 'enqueue jobs to ProjectMigrateHashedStorageWorker' do
+    it 'enqueue jobs to HashedStorage::ProjectMigrateWorker' do
       Sidekiq::Testing.fake! do
-        expect { subject.bulk_migrate(start: ids.min, finish: ids.max) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(2)
+        expect { subject.bulk_migrate(start: ids.min, finish: ids.max) }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(2)
       end
     end
 
@@ -48,7 +48,7 @@ describe Gitlab::HashedStorage::Migrator do
 
     it 'enqueues project migration job' do
       Sidekiq::Testing.fake! do
-        expect { subject.migrate(project) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
+        expect { subject.migrate(project) }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(1)
       end
     end
 
@@ -79,7 +79,7 @@ describe Gitlab::HashedStorage::Migrator do
 
       it 'doesnt enqueue any migration job' do
         Sidekiq::Testing.fake! do
-          expect { subject.migrate(project) }.not_to change(ProjectMigrateHashedStorageWorker.jobs, :size)
+          expect { subject.migrate(project) }.not_to change(HashedStorage::ProjectMigrateWorker.jobs, :size)
         end
       end
 
@@ -94,7 +94,7 @@ describe Gitlab::HashedStorage::Migrator do
 
     it 'enqueues project rollback job' do
       Sidekiq::Testing.fake! do
-        expect { subject.rollback(project) }.to change(ProjectRollbackHashedStorageWorker.jobs, :size).by(1)
+        expect { subject.rollback(project) }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
       end
     end
 
@@ -125,7 +125,7 @@ describe Gitlab::HashedStorage::Migrator do
 
       it 'doesnt enqueue any rollback job' do
         Sidekiq::Testing.fake! do
-          expect { subject.rollback(project) }.not_to change(ProjectRollbackHashedStorageWorker.jobs, :size)
+          expect { subject.rollback(project) }.not_to change(HashedStorage::ProjectRollbackWorker.jobs, :size)
         end
       end
 

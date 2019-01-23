@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe ProjectRollbackHashedStorageWorker, :clean_gitlab_redis_shared_state do
+describe HashedStorage::ProjectRollbackWorker, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   describe '#perform' do

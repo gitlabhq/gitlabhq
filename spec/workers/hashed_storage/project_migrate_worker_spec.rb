@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectMigrateHashedStorageWorker, :clean_gitlab_redis_shared_state do
+describe HashedStorage::ProjectMigrateWorker, :clean_gitlab_redis_shared_state do
   include ExclusiveLeaseHelpers
 
   describe '#perform' do

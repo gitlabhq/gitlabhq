@@ -3430,24 +3430,24 @@ describe Project do
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the wiki repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker' do
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).with(project.id)
+      it 'schedules HashedStorage::ProjectMigrateWorker' do
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_async).with(project.id)
 
         project.migrate_to_hashed_storage!
       end
@@ -3541,7 +3541,7 @@ describe Project do
           project = create(:project, storage_version: 1, skip_disk_validation: true)
 
           Sidekiq::Testing.fake! do
-            expect { project.migrate_to_hashed_storage! }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
+            expect { project.migrate_to_hashed_storage! }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(1)
           end
         end
       end
@@ -3566,7 +3566,7 @@ describe Project do
 
       it 'enqueues a job' do
         Sidekiq::Testing.fake! do
-          expect { project.rollback_to_legacy_storage! }.to change(ProjectRollbackHashedStorageWorker.jobs, :size).by(1)
+          expect { project.rollback_to_legacy_storage! }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
         end
       end
     end
