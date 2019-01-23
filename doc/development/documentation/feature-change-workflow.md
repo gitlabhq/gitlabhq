@@ -2,7 +2,7 @@
 description: How to add docs for new or enhanced GitLab features.
 ---
 
-# Documentation Process for Feature Changes
+# Documentation process for feature changes
 
 At GitLab, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
 
@@ -90,16 +90,16 @@ the feature cannot be included with the release.<!-- TODO: Policy for feature-fl
 
 All reviewers can help ensure accuracy, clarity, completeness, and adherence to the plans in the issue, as well as the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
 
-* Prior to merge, documentation changes committed by the developer must be reviewed by:
+- Prior to merge, documentation changes committed by the developer must be reviewed by:
   1. **The code reviewer** for the MR, to confirm accuracy, clarity, and completeness.
   2. Optionally: Others involved in the work, such as other devs or the PM.
   3. Optionally: The technical writer for the DevOps stage. If not prior to merging, the technical writer will review after the merge.
 This helps us ensure that the developer has time to merge good content by the freeze, and that it can be further refined by the release.
   4. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
-* Upon merging, if a technical writer review has not been performed, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review).
+- Upon merging, if a technical writer review has not been performed, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review).
 
-* After merging, documentation changes are reviewed by:
+- After merging, documentation changes are reviewed by:
   1. The technical writer--**if** their review was not performed prior to the merge.
   2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
 Any party can raise the item to the PM for review at any point: the dev, the technical writer, or the PM, who can request/plan a review at the outset.
