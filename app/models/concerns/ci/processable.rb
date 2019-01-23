@@ -17,7 +17,7 @@ module Ci
     end
 
     def when
-      raise NotImplementedError
+      read_attribute(:when) || 'on_success'
     end
 
     def expanded_environment_name

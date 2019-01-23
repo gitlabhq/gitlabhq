@@ -639,10 +639,6 @@ module Ci
       super || project.try(:build_coverage_regex)
     end
 
-    def when
-      read_attribute(:when) || 'on_success'
-    end
-
     def options
       read_metadata_attribute(:options, :config_options, {})
     end
