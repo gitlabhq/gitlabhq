@@ -80,14 +80,13 @@ mirror.
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
 1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the `public_repo` box checked.
-1. Fill in the **Git repository URL** field using this format: `https://<GitHubUsername>@github.com/group/project.git`.
-1. Fill in **Password** field with the personal access token.
+1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
+1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
-   
 
-The resulting repository address will look like: `https://*****:*****@github.com/group/project.git`. 
+The mirrored repository will be listed. For example, `https://*****:*****@github.com/<your_github_group>/<your_github_project>.git`. 
 
-It should automatically push (refresh page to update status). To force a push, click the `Update Now` button :arrows_clockwise:.
+The repository will push soon. To force a push, click the appropriate button.
 
 ## Pulling from a remote repository **[STARTER]**
 
