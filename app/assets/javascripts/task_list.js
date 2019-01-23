@@ -10,6 +10,7 @@ export default class TaskList {
     this.fieldName = options.fieldName;
     this.lockVersion = options.lockVersion;
     this.onSuccess = options.onSuccess || (() => {});
+    this.taskListContainerSelector = `${this.selector} .js-task-list-container`;
     this.onError =
       options.onError ||
       function showFlash(e) {
@@ -28,25 +29,31 @@ export default class TaskList {
   init() {
     // Prevent duplicate event bindings
     this.disable();
-    $(`${this.selector} .js-task-list-container`).taskList('enable');
+    $(this.taskListContainerSelector).taskList('enable');
     $(document).on(
       'tasklist:changed',
-      `${this.selector} .js-task-list-container`,
+      this.taskListContainerSelector,
       this.update.bind(this),
     );
   }
 
-  disableTaskListItems() {
-    $(`${this.selector} .js-task-list-container`).taskList('disable');
+  getTaskListTarget(e = {}) {
+    const $currentTarget = $(e.currentTarget);
+
+    return $currentTarget.taskList ? $currentTarget : $(this.taskListContainerSelector);
   }
 
-  enableTaskListItems() {
-    $(`${this.selector} .js-task-list-container`).taskList('enable');
+  disableTaskListItems(e) {
+    this.getTaskListTarget(e).taskList('disable');
+  }
+
+  enableTaskListItems(e) {
+    this.getTaskListTarget(e).taskList('enable');
   }
 
   disable() {
     this.disableTaskListItems();
-    $(document).off('tasklist:changed', `${this.selector} .js-task-list-container`);
+    $(document).off('tasklist:changed', this.taskListContainerSelector);
   }
 
   update(e) {
@@ -65,18 +72,18 @@ export default class TaskList {
       },
     };
 
-    this.disableTaskListItems();
+    this.disableTaskListItems(e);
 
     return axios
       .patch($target.data('updateUrl') || $('form.js-issuable-update').attr('action'), patchData)
       .then(({ data }) => {
         this.lockVersion = data.lock_version;
-        this.enableTaskListItems();
+        this.enableTaskListItems(e);
 
         return this.onSuccess(data);
       })
       .catch(({ response }) => {
-        this.enableTaskListItems();
+        this.enableTaskListItems(e);
 
         return this.onError(response.data);
       });
