@@ -1,6 +1,6 @@
 <!--
 
-* Use this description template for suggesting new docs or updates to existing docs.
+* Use this issue template for suggesting new docs or updates to existing docs.
   Note: Doc work as part of feature development is covered in the Feature Request template.
   
 * For issues related to features of the docs.gitlab.com site, see
@@ -21,7 +21,7 @@ Add the relevant label:
    
 ### Problem to solve
 
-<!-- 
+<!-- Include the following detail as necessary:
 * What product or feature(s) affected?
 * What docs or doc section affected? Include links or paths.
 * Is there a problem with a specific document, or a feature/process that's not addressed sufficiently in docs?
@@ -34,6 +34,8 @@ Add the relevant label:
 * Any concepts, procedures, reference info we could add to make it easier to successfully use GitLab?
 * Include use cases, benefits, and/or goals for this work.
 * If adding content: What audience is it intended for? (What roles and scenarios?)
+  For ideas, see personas at https://design.gitlab.com/research/personas or the persona labels at
+  https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A
 -->
 
 ### Proposal
