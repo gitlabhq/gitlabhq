@@ -1,0 +1,6 @@
+---
+title: Fix suboptimal handling of checkbox and radio input events causing
+  group general settings submit button to stay disabled after changing its visibility
+merge_request: 23022
+author:
+type: fixed

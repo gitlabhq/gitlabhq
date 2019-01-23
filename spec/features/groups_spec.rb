@@ -154,7 +154,7 @@ describe 'Group' do
   end
 
   describe 'group edit', :js do
-    let(:group) { create(:group) }
+    let(:group) { create(:group, :public) }
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
@@ -163,6 +163,8 @@ describe 'Group' do
     end
 
     it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="group[name]"]' },
+                                          { form: '.js-general-settings-form', input: '#group_visibility_level_0' },
+                                          { form: '.js-general-permissions-form', input: '#group_request_access_enabled' },
                                           { form: '.js-general-permissions-form', input: 'input[name="group[two_factor_grace_period]"]' }]
 
     it 'saves new settings' do

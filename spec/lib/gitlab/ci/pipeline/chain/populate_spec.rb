@@ -79,6 +79,31 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
   end
 
+  describe 'pipeline protect' do
+    subject { step.perform! }
+
+    context 'when ref is protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('master').and_return(true)
+        allow(project).to receive(:protected_for?).with('refs/heads/master').and_return(true)
+      end
+
+      it 'does not protect the pipeline' do
+        subject
+
+        expect(pipeline.protected).to eq(true)
+      end
+    end
+
+    context 'when ref is not protected' do
+      it 'does not protect the pipeline' do
+        subject
+
+        expect(pipeline.protected).to eq(false)
+      end
+    end
+  end
+
   context 'when pipeline has validation errors' do
     let(:pipeline) do
       build(:ci_pipeline, project: project, ref: nil)

@@ -647,6 +647,7 @@ ActiveRecord::Schema.define(version: 20190115054216) do
     t.string "name", null: false
     t.string "environment_scope", default: "*", null: false
     t.integer "cluster_type", limit: 2, default: 3, null: false
+    t.string "domain"
     t.index ["enabled"], name: "index_clusters_on_enabled", using: :btree
     t.index ["user_id"], name: "index_clusters_on_user_id", using: :btree
   end

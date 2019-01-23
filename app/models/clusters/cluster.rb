@@ -49,8 +49,9 @@ module Clusters
 
     validates :name, cluster_name: true
     validates :cluster_type, presence: true
-    validate :restrict_modification, on: :update
+    validates :domain, allow_nil: true, hostname: { allow_numeric_hostname: true, require_valid_tld: true }
 
+    validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
 

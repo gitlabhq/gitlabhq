@@ -7,15 +7,36 @@ eventually.
 
 ## Quarantined tests
 
-Tests can be put in quarantine by assigning `:quarantine` metadata. This means
-they will be skipped unless run with `--tag quarantine`. This can be used for
-tests that are expected to fail while a fix is in progress (similar to how
-[`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples)
- can be used).
+When a test frequently fails in `master`,
+[a ~"broken master" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
+should be created.
+If the test cannot be fixed in a timely fashion, there is an impact on the
+productivity of all the developers, so it should be placed in quarantine by
+assigning the `:quarantine` metadata.
 
-```
+This means it will be skipped unless run with `--tag quarantine`:
+
+```shell
 bin/rspec --tag quarantine
 ```
+
+**Before putting a test in quarantine, you should make sure that a
+~"broken master" issue exists for it so it won't stay in quarantine forever.**
+
+Once a test is in quarantine, there are 3 choices:
+
+- Should the test be fixed (i.e. get rid of its flakiness)?
+- Should the test be moved to a lower level of testing?
+- Should the test be removed entirely (e.g. because there's already a
+  lower-level test, or it's duplicating another same-level test, or it's testing
+  too much etc.)?
+
+### Quarantine tests on the CI
+
+Quarantined tests are run on the CI in dedicated jobs that are allowed to fail:
+
+- `rspec-pg-quarantine` and `rspec-mysql-quarantine` (CE & EE)
+- `rspec-pg-quarantine-ee` and `rspec-mysql-quarantine-ee` (EE only)
 
 ## Automatic retries and flaky tests detection
 

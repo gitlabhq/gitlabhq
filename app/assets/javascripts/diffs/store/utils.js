@@ -181,8 +181,6 @@ export function addContextLines(options) {
 export function trimFirstCharOfLineContent(line = {}) {
   // eslint-disable-next-line no-param-reassign
   delete line.text;
-  // eslint-disable-next-line no-param-reassign
-  line.discussions = [];
 
   const parsedLine = Object.assign({}, line);
 
@@ -222,10 +220,12 @@ export function prepareDiffData(diffData) {
         line.line_code = getLineCode(line, u);
         if (line.left) {
           line.left = trimFirstCharOfLineContent(line.left);
+          line.left.discussions = [];
           line.left.hasForm = false;
         }
         if (line.right) {
           line.right = trimFirstCharOfLineContent(line.right);
+          line.right.discussions = [];
           line.right.hasForm = false;
         }
       }
@@ -235,7 +235,11 @@ export function prepareDiffData(diffData) {
       const linesLength = file.highlighted_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.highlighted_diff_lines[u];
-        Object.assign(line, { ...trimFirstCharOfLineContent(line), hasForm: false });
+        Object.assign(line, {
+          ...trimFirstCharOfLineContent(line),
+          discussions: [],
+          hasForm: false,
+        });
       }
       showingLines += file.parallel_diff_lines.length;
     }

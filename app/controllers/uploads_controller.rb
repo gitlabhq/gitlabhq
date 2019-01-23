@@ -70,6 +70,10 @@ class UploadsController < ApplicationController
     end
   end
 
+  def cache_publicly?
+    User === model || Appearance === model
+  end
+
   def upload_model_class
     MODEL_CLASSES[params[:model]] || raise(UnknownUploadModelError)
   end

@@ -10,10 +10,10 @@ class ProjectsController < Projects::ApplicationController
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
   before_action :whitelist_query_limiting, only: [:create]
-  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve]
   before_action :redirect_git_extension, only: [:show]
-  before_action :project, except: [:index, :new, :create]
-  before_action :repository, except: [:index, :new, :create]
+  before_action :project, except: [:index, :new, :create, :resolve]
+  before_action :repository, except: [:index, :new, :create, :resolve]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
@@ -441,5 +441,15 @@ class ProjectsController < Projects::ApplicationController
 
   def present_project
     @project = @project.present(current_user: current_user)
+  end
+
+  def resolve
+    @project = Project.find(params[:id])
+
+    if can?(current_user, :read_project, @project)
+      redirect_to @project
+    else
+      render_404
+    end
   end
 end

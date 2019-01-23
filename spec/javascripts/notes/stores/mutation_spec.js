@@ -179,11 +179,11 @@ describe('Notes Store mutations', () => {
           diff_file: {
             file_hash: 'a',
           },
-          truncated_diff_lines: ['a'],
+          truncated_diff_lines: [{ text: '+a', rich_text: '+<span>a</span>' }],
         },
       ]);
 
-      expect(state.discussions[0].truncated_diff_lines).toEqual(['a']);
+      expect(state.discussions[0].truncated_diff_lines).toEqual([{ rich_text: '<span>a</span>' }]);
     });
 
     it('adds empty truncated_diff_lines when not in discussion', () => {
@@ -420,9 +420,12 @@ describe('Notes Store mutations', () => {
         ],
       };
 
-      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+      mutations.SET_DISCUSSION_DIFF_LINES(state, {
+        discussionId: 1,
+        diffLines: [{ text: '+a', rich_text: '+<span>a</span>' }],
+      });
 
-      expect(state.discussions[0].truncated_diff_lines).toEqual(['test']);
+      expect(state.discussions[0].truncated_diff_lines).toEqual([{ rich_text: '<span>a</span>' }]);
     });
 
     it('keeps reactivity of discussion', () => {
@@ -435,7 +438,10 @@ describe('Notes Store mutations', () => {
       ]);
       const discussion = state.discussions[0];
 
-      mutations.SET_DISCUSSION_DIFF_LINES(state, { discussionId: 1, diffLines: ['test'] });
+      mutations.SET_DISCUSSION_DIFF_LINES(state, {
+        discussionId: 1,
+        diffLines: [{ rich_text: '<span>a</span>' }],
+      });
 
       discussion.expanded = true;
 
