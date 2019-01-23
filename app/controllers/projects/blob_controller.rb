@@ -90,20 +90,9 @@ class Projects::BlobController < Projects::ApplicationController
   def diff
     apply_diff_view_cookie!
 
-    @blob.load_all_data!
-    @lines = @blob.present.highlight.lines
-
-    @form = UnfoldForm.new(params.to_unsafe_h)
-
-    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
-
-    if @form.bottom?
-      @match_line = ''
-    else
-      lines_length = @lines.length - 1
-      line = [@form.since, lines_length].join(',')
-      @match_line = "@@ -#{line}+#{line} @@"
-    end
+    @form = Blobs::UnfoldPresenter.new(blob, params.to_unsafe_h)
+    @lines = @form.lines
+    @match_line = @form.match_line_text
 
     # We can keep only 'render_diff_lines' from this conditional when
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/44988 is done
@@ -231,6 +220,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def validate_diff_params
+    return if params[:full]
+
     if [:since, :to, :offset].any? { |key| params[key].blank? }
       head :ok
     end

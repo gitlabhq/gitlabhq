@@ -192,6 +192,18 @@ describe Projects::BlobController do
 
             expect(match_line['type']).to be_nil
           end
+
+          it 'returns all lines if "full" is true' do
+            commit_id = project.repository.commit('master').id
+            blob = project.repository.blob_at(commit_id, 'CHANGELOG')
+            do_get(full: true, from_merge_request: true, bottom: true)
+
+            match_lines = JSON.parse(response.body)
+
+            expect(match_lines.size).to eq(blob.lines.count - 1)
+            expect(match_lines.last['type']).to be_nil
+            expect(match_lines.last['text']).to include(blob.lines.last)
+          end
         end
       end
     end
