@@ -141,6 +141,11 @@ module Issues
         params[:description]      = updated_content[:content]
         params[:description_html] = updated_content[:content_html]
 
+        # since we're updating a very specific line, we don't care whether
+        # the `lock_version` sent from the FE is the same or not.  Just
+        # make sure the data hasn't changed since we queried it
+        params[:lock_version]     = issue.lock_version
+
         update_task(issue)
       end
     end
