@@ -1,0 +1,5 @@
+---
+title: Prevent Sidekiq arguments over 10 KB in size from being logged to JSON
+merge_request: 24493
+author:
+type: changed

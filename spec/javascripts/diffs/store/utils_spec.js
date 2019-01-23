@@ -251,45 +251,40 @@ describe('DiffsStoreUtils', () => {
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: ' diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a +', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '+diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a -', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '-diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not trims the line when it starts with a letter', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: 'diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not modify the provided object', () => {
       const lineObj = {
-        discussions: [],
         rich_text: ' diff',
       };
 
       utils.trimFirstCharOfLineContent(lineObj);
 
-      expect(lineObj).toEqual({ discussions: [], rich_text: ' diff' });
+      expect(lineObj).toEqual({ rich_text: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
-      expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
+      expect(utils.trimFirstCharOfLineContent()).toEqual({});
     });
   });
 

@@ -206,11 +206,15 @@ export default {
       return sprintf(text, { commitId, linkStart, linkEnd }, false);
     },
     diffLine() {
+      if (this.line) {
+        return this.line;
+      }
+
       if (this.discussion.diff_discussion && this.discussion.truncated_diff_lines) {
         return this.discussion.truncated_diff_lines.slice(-1)[0];
       }
 
-      return this.line;
+      return null;
     },
   },
   watch: {

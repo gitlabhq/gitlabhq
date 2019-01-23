@@ -2,7 +2,7 @@ module QA
   module Page
     module Label
       class Index < Page::Base
-        view 'app/views/projects/labels/index.html.haml' do
+        view 'app/views/shared/labels/_nav.html.haml' do
           element :label_create_new
         end
 

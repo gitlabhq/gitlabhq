@@ -1,0 +1,5 @@
+---
+title: Fix cluster page non-interactive on form validation error
+merge_request: 24583
+author:
+type: fixed

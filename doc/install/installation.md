@@ -170,7 +170,7 @@ sudo make install
 Then install the Bundler Gem:
 
 ```sh
-sudo gem install bundler --no-document
+sudo gem install bundler --no-document --version '< 2'
 ```
 
 ## 3. Go

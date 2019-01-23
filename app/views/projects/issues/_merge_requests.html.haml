@@ -1,35 +1,35 @@
 - if @merge_requests.any?
-  %h2.merge-requests-title
-    = pluralize(@merge_requests.count, 'Related Merge Request')
-  %ul.unstyled-list.related-merge-requests
-    - has_any_head_pipeline = @merge_requests.any?(&:head_pipeline_id)
-    - @merge_requests.each do |merge_request|
-      %li
-        %span.merge-request-ci-status
-          - if merge_request.head_pipeline
-            = render_pipeline_status(merge_request.head_pipeline)
-          - elsif has_any_head_pipeline
-            = icon('blank fw')
-        %span.merge-request-id
-          = merge_request.to_reference
-        %span.merge-request-info
-          %strong
-            = link_to merge_request.title, merge_request_path(merge_request), class: "row_title"
-          - unless @issue.project.id == merge_request.target_project.id
-            in
-            - project = merge_request.target_project
-            = link_to project.full_name, project_path(project)
+  .card-slim.mt-3
+    .card-header
+      %h2.card-title.mt-0.mb-0.h5.merge-requests-title
+        %span.mr-1.bold
+          = _('Related merge requests')
+        .d-inline-flex.lh-100.align-middle
+          .mr-count-badge
+            .mr-count-badge-count
+              = sprite_icon('merge-request', size: 16, css_class: 'mr-1 text-secondary')
+              = @merge_requests.count
+    %ul.content-list.related-items-list
+      - has_any_head_pipeline = @merge_requests.any?(&:head_pipeline_id)
+      - @merge_requests.each do |merge_request|
+        %li.list-item.py-0.px-0
+          .item-body.issuable-info-container.py-lg-3.px-lg-3.pl-md-3
+            .item-contents
+              .item-title.d-flex.align-items-center.mr-title
+                = render partial: 'projects/issues/merge_requests_status', locals: { merge_request: merge_request, css_class: 'd-none d-xl-block append-right-8' }
+                = link_to merge_request.title, merge_request_path(merge_request), { class: 'mr-title-link'}
+              .item-meta
+                = render partial: 'projects/issues/merge_requests_status', locals: { merge_request: merge_request,  css_class: 'd-xl-none d-lg-block append-right-5' }
+                %span.d-flex.align-items-center.append-right-8.mr-item-path.item-path-id.mt-0
+                  %span.path-id-text.bold.text-truncate{ data: { toggle: 'tooltip'}, title: merge_request.target_project.full_path }
+                    = merge_request.target_project.full_path
+                  = merge_request.to_reference
+                %span.mr-ci-status.flex-md-grow-1.justify-content-end.d-flex.ml-md-2
+                  - if merge_request.head_pipeline
+                    = render_pipeline_status(merge_request.head_pipeline, tooltip_placement: 'bottom')
+                  - elsif has_any_head_pipeline
+                    = icon('blank fw')
 
-        - if merge_request.merged?
-          %span.merge-request-status.prepend-left-10.merged
-            Merged
-        - elsif merge_request.closed?
-          %span.merge-request-status.prepend-left-10.closed
-            Closed
-        - else
-          %span.merge-request-status.prepend-left-10.open
-            Open
-
-    - if @closed_by_merge_requests.present?
-      %li
-        = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}
+  - if @closed_by_merge_requests.present?
+    %p
+      = render partial: 'projects/issues/closed_by_box', locals: {merge_request_count: @merge_requests.count}

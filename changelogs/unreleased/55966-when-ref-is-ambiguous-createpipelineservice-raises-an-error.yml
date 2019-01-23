@@ -1,0 +1,5 @@
+---
+title: Prevent checking protected_ref? for ambiguous refs.
+merge_request: 24437
+author:
+type: fixed

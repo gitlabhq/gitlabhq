@@ -121,9 +121,9 @@ In order to deploy functions to your Knative instance, the following files must 
        runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
        description: "echo function using node.js runtime"
        buildargs:
-         - DIRECTORY=echo
-     environment:
-       FUNCTION: echo
+        - DIRECTORY=echo
+       environment:
+        FUNCTION: echo
    ```
 
 

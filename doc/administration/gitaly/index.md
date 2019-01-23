@@ -49,6 +49,25 @@ Starting with GitLab 11.4, Gitaly is a replacement for NFS except
 when the [Elastic Search indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
 is used.
 
+### Network architecture
+
+-   gitlab-rails shards repositories into "repository storages"
+-   gitlab-rails/config/gitlab.yml contains a map from storage names to
+    (Gitaly address, Gitaly token) pairs
+-   the `storage name` -\> `(Gitaly address, Gitaly token)` map in
+    gitlab.yml is the single source of truth for the Gitaly network
+    topology
+-   a (Gitaly address, Gitaly token) corresponds to a Gitaly server
+-   a Gitaly server hosts one or more storages
+-   Gitaly addresses must be specified in such a way that they resolve
+    correctly for ALL Gitaly clients
+-   Gitaly clients are: unicorn, sidekiq, gitlab-workhorse,
+    gitlab-shell, and Gitaly itself
+-   special case: a Gitaly server must be able to make RPC calls **to
+    itself** via its own (Gitaly address, Gitaly token) pair as
+    specified in gitlab-rails/config/gitlab.yml
+-   Gitaly servers must not be exposed to the public internet
+
 Gitaly network traffic is unencrypted so you should use a firewall to
 restrict access to your Gitaly server.
 

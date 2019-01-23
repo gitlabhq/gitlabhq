@@ -141,7 +141,7 @@ export default {
                   <time-ago
                     v-if="version.created_at"
                     :time="version.created_at"
-                    class="js-timeago js-timeago-render"
+                    class="js-timeago"
                   />
                 </small>
               </div>

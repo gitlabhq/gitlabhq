@@ -154,7 +154,7 @@ When [renaming a user](../profile/index.md#changing-your-username),
 
 Any project can be used as a Go package including private projects in subgroups. To use packages
 hosted in private projects with the `go get` command, use a [`.netrc` file](https://ec.haxx.se/usingcurl-netrc.html)
-and a personal access token in the password field.
+and a [personal access token](../profile/personal_access_tokens.md) in the password field.
 
 For example:
 
@@ -163,3 +163,10 @@ machine example.gitlab.com
 login <gitlab_user_name>
 password <personal_access_token>
 ```
+
+## Access project page with project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53671) in GitLab 11.8.
+
+To quickly access a project from the GitLab UI using the project ID,
+visit the `/projects/:id` URL in your browser or other tool accessing the project.

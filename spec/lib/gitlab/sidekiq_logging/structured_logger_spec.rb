@@ -82,15 +82,36 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
           end.to raise_error(ArgumentError)
         end
       end
+
+      context 'when the job args are bigger than the maximum allowed' do
+        it 'keeps args from the front until they exceed the limit' do
+          Timecop.freeze(timestamp) do
+            job['args'] = [
+              1,
+              2,
+              'a' * (described_class::MAXIMUM_JOB_ARGUMENTS_LENGTH / 2),
+              'b' * (described_class::MAXIMUM_JOB_ARGUMENTS_LENGTH / 2),
+              3
+            ]
+
+            expected_args = job['args'].take(3) + ['...']
+
+            expect(logger).to receive(:info).with(start_payload.merge('args' => expected_args)).ordered
+            expect(logger).to receive(:info).with(end_payload.merge('args' => expected_args)).ordered
+            expect(subject).to receive(:log_job_start).and_call_original
+            expect(subject).to receive(:log_job_done).and_call_original
+
+            subject.call(job, 'test_queue') { }
+          end
+        end
+      end
     end
 
     context 'with SIDEKIQ_LOG_ARGUMENTS disabled' do
-      it 'logs start and end of job' do
+      it 'logs start and end of job without args' do
         Timecop.freeze(timestamp) do
-          start_payload.delete('args')
-
-          expect(logger).to receive(:info).with(start_payload).ordered
-          expect(logger).to receive(:info).with(end_payload).ordered
+          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
+          expect(logger).to receive(:info).with(end_payload.except('args')).ordered
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original
 
