@@ -68,18 +68,21 @@ git config --global --list
 
 ## Basic Git commands
 
+Start using Git via the command line with the most basic
+commands as described below.
+
 ### Clone a repository
 
 To start working locally on an existing remote repository,
-clone it with `git clone <repository path>`. By cloning a
-repository, you'll download a copy of its files in your
-local computer, preserving the Git connection with the
-remote repository.
+clone it with the command `git clone <repository path>`.
+By cloning a repository, you'll download a copy of its
+files into your local computer, preserving the Git
+connection with the remote repository.
 
 You can either clone it via HTTPS or [SSH](../ssh/README.md).
 If you chose to clone it via HTTPS, you'll have to enter your
 credentials every time you pull and push. With SSH, you enter
-your credentials once and can pull and push straight away.
+your credentials once and can pull and push straightaway.
 
 You can find both paths (HTTPS and SSH) by navigating to
 your project's landing page and clicking **Clone**. GitLab
@@ -88,8 +91,8 @@ and paste in your command line.
 
 As an example, consider a repository path:
 
-* `https://gitlab.com/gitlab-org/gitlab-ce.git`
-* `git@gitlab.com:gitlab-org/gitlab-ce.git`
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab-ce.git`
+- SSH: `` git@gitlab.com:gitlab-org/gitlab-ce.git ``
 
 To get started, open a terminal window in the directory
 you wish to clone the repository files into, and run one
@@ -112,7 +115,6 @@ folder named after the project's name.
 
 You can then navigate to the directory and start working
 on it locally.
-
 
 ### Go to the master branch to pull the latest changes from there
 
