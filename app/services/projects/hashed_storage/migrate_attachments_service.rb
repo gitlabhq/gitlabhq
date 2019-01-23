@@ -5,13 +5,21 @@ module Projects
     AttachmentMigrationError = Class.new(StandardError)
 
     class MigrateAttachmentsService < BaseService
-      attr_reader :logger, :old_disk_path, :new_disk_path
+      # Returns the disk_path value before the execution
+      # This is used in EE for Geo
+      attr_reader :old_disk_path
+
+      # Returns the diks_path value after the execution
+      # This is used in EE for Geo
+      attr_reader :new_disk_path
+
+      # Returns the logger currently in use
+      attr_reader :logger
 
       def initialize(project, old_disk_path, logger: nil)
         @project = project
         @logger = logger || Rails.logger
         @old_disk_path = old_disk_path
-        @new_disk_path = project.disk_path
         @skipped = false
       end
 
@@ -23,6 +31,8 @@ module Projects
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
         target = FileUploader.absolute_base_dir(project)
 
+        @new_disk_path = project.disk_path
+
         result = move_folder!(origin, target)
         project.save!
 
@@ -33,6 +43,10 @@ module Projects
         result
       end
 
+      # Return whether this operation was skipped or not
+      # This is used in EE for Geo to decide if an event will be triggered or not
+      #
+      # @return [Boolean] true if skipped of false otherwise
       def skipped?
         @skipped
       end
@@ -43,12 +57,13 @@ module Projects
         unless File.directory?(old_path)
           logger.info("Skipped attachments migration from '#{old_path}' to '#{new_path}', source path doesn't exist or is not a directory (PROJECT_ID=#{project.id})")
           @skipped = true
+
           return true
         end
 
         if File.exist?(new_path)
           logger.error("Cannot migrate attachments from '#{old_path}' to '#{new_path}', target path already exist (PROJECT_ID=#{project.id})")
-          raise AttachmentMigrationError, "Target path '#{new_path}' already exist"
+          raise AttachmentMigrationError, "Target path '#{new_path}' already exists"
         end
 
         # Create hashed storage base path folder

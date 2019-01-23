@@ -47,6 +47,7 @@
 - github_importer:github_import_stage_import_repository
 
 - hashed_storage:hashed_storage_migrator
+- hashed_storage:hashed_storage_rollbacker
 - hashed_storage:hashed_storage_project_migrate
 - hashed_storage:hashed_storage_project_rollback
 

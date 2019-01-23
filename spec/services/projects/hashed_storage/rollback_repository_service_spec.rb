@@ -66,7 +66,7 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
     end
 
     context 'when one move fails' do
-      it 'rollsback repositories to original name' do
+      it 'rolls repositories back to original name' do
         allow(service).to receive(:move_repository).and_call_original
         allow(service).to receive(:move_repository).with(old_disk_path, new_disk_path).once { false } # will disable first move only
 

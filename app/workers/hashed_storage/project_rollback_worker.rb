@@ -13,8 +13,8 @@ module HashedStorage
       uuid = lease_for(project_id).try_obtain
 
       if uuid
-        project = Project.find_by(id: project_id)
-        return if project.nil? || project.pending_delete?
+        project = Project.without_deleted.find_by(id: project_id)
+        return unless project
 
         old_disk_path ||= project.disk_path
 

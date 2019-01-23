@@ -15,7 +15,7 @@ module Projects
         result = move_repository(old_disk_path, new_disk_path)
 
         if move_wiki
-          result &&= move_repository("#{old_wiki_disk_path}", "#{new_disk_path}.wiki")
+          result &&= move_repository(old_wiki_disk_path, "#{new_disk_path}.wiki")
         end
 
         if result
