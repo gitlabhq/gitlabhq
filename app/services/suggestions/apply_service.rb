@@ -11,7 +11,7 @@ module Suggestions
         return error('Suggestion is not appliable')
       end
 
-      unless latest_diff_refs?(suggestion)
+      unless latest_source_head?(suggestion)
         return error('The file has been changed')
       end
 
@@ -29,12 +29,13 @@ module Suggestions
 
     private
 
-    # Checks whether the latest diff refs for the branch matches with
-    # the position refs we're using to update the file content. Since
-    # the persisted refs are updated async (for MergeRequest),
-    # it's more consistent to fetch this data directly from the repository.
-    def latest_diff_refs?(suggestion)
-      suggestion.position.diff_refs == suggestion.noteable.repository_diff_refs
+    # Checks whether the latest source branch HEAD matches with
+    # the position HEAD we're using to update the file content. Since
+    # the persisted HEAD is updated async (for MergeRequest),
+    # it's more consistent to fetch this data directly from the
+    # repository.
+    def latest_source_head?(suggestion)
+      suggestion.position.head_sha == suggestion.noteable.source_branch_sha
     end
 
     def file_update_params(suggestion)
