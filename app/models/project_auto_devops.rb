@@ -24,6 +24,9 @@ class ProjectAutoDevops < ActiveRecord::Base
     domain.present? || instance_domain.present?
   end
 
+  # From 11.8, AUTO_DEVOPS_DOMAIN has been replaced by KUBE_INGRESS_BASE_DOMAIN.
+  # See Clusters::Cluster#predefined_variables and https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580
+  # for more info. Support for AUTO_DEVOPS_DOMAIN support will be dropped on 12.0.
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       if has_domain?

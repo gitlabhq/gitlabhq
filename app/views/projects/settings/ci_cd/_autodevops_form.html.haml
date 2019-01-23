@@ -21,15 +21,10 @@
                     = s_('CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
                     = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
               .card-footer.js-extra-settings{ class: @project.auto_devops_enabled? || 'hidden' }
-                = form.label :domain do
-                  %strong= _('Domain')
-                = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
-                .form-text.text-muted
-                  = s_('CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.')
-                  - if cluster_ingress_ip = cluster_ingress_ip(@project)
-                    = s_('%{nip_domain} can be used as an alternative to a custom domain.').html_safe % { nip_domain: "<code>#{cluster_ingress_ip}.nip.io</code>".html_safe }
-                  = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
-
+                %p.settings-message.text-center
+                  - kubernetes_cluster_link = 'https://docs.gitlab.com/ee/user/project/clusters/'
+                  - kubernetes_cluster_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: kubernetes_cluster_link }
+                  = s_('CICD|You must add a %{kubernetes_cluster_start}Kubernetes cluster integration%{kubernetes_cluster_end} to this project with a domain in order for your deployment strategy to work correctly.').html_safe % { kubernetes_cluster_start: kubernetes_cluster_start, kubernetes_cluster_end: '</a>'.html_safe }
                 %label.prepend-top-10
                   %strong= s_('CICD|Deployment strategy')
                 %p.settings-message.text-center

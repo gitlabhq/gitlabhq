@@ -30,6 +30,7 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
+  it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
 
@@ -512,6 +513,64 @@ describe Clusters::Cluster do
       let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#has_domain?' do
+    subject { cluster.has_domain? }
+
+    context 'with domain set at instance level' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      before do
+        stub_application_setting(auto_devops_domain: 'global_domain.com')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with domain set in cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :with_domain) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when domain is not set at instance level nor in cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { cluster.predefined_variables }
+
+    context 'with an instance domain' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      before do
+        stub_application_setting(auto_devops_domain: 'global_domain.com')
+      end
+
+      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'global_domain.com')
+      end
+    end
+
+    context 'with a cluster domain' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, domain: 'example.com') }
+
+      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'example.com')
+      end
+    end
+
+    context 'with no domain' do
+      let(:cluster) { create(:cluster) }
+
+      it 'should return an empty array' do
+        expect(subject.to_hash).to be_empty
+      end
     end
   end
 end

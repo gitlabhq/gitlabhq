@@ -26,17 +26,6 @@ module AutoDevopsHelper
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def cluster_ingress_ip(project)
-    project
-      .cluster_ingresses
-      .where("external_ip is not null")
-      .limit(1)
-      .pluck(:external_ip)
-      .first
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   private
 
   def missing_auto_devops_domain?(project)

@@ -98,6 +98,8 @@ module Clusters
               .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
               .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
           end
+
+          variables.concat(cluster.predefined_variables)
         end
       end
 

@@ -52,13 +52,13 @@ module QA
             end
 
             kubernetes_cluster.populate(:ingress_ip)
-
             @project.visit!
             Page::Project::Menu.act { click_ci_cd_settings }
             Page::Project::Settings::CICD.perform do |p|
-              p.enable_auto_devops_with_domain(
-                "#{kubernetes_cluster.ingress_ip}.nip.io")
+              p.enable_auto_devops
             end
+
+            kubernetes_cluster.populate(:domain)
           end
 
           after(:all) do

@@ -297,6 +297,19 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         end
       end
     end
+
+    context 'with a domain' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp, :with_domain,
+               platform_kubernetes: kubernetes)
+      end
+
+      it 'sets KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject).to include(
+          { key: 'KUBE_INGRESS_BASE_DOMAIN', value: cluster.domain, public: true }
+        )
+      end
+    end
   end
 
   describe '#terminals' do
