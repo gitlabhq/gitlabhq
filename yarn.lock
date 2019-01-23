@@ -3032,9 +3032,10 @@ decamelize@^2.0.0:
   dependencies:
     xregexp "4.0.0"
 
-deckar01-task_list@fatihacet/task_list:
-  version "2.0.1"
-  resolved "https://codeload.github.com/fatihacet/task_list/tar.gz/844da3fa2830bcb159a70bf195d4693f9f22e04a"
+deckar01-task_list@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.1.0.tgz#42198981614d3d2fd73e8f990b3389e00a4db1c0"
+  integrity sha512-aSwZunalq4ZnisaoW+T2CRsU9a8/UMyMLEWlmfMSK233c2HYSRc7iMF7ZgIacGw+ZbvVI38EhcAo22Fk0Tr7Pw==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
