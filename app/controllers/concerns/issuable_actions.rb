@@ -162,12 +162,10 @@ module IssuableActions
       end
 
       format.json do
-        # We want to pass back the latest valid data, so reload the model
         render json: {
           errors: [
             "Someone edited this #{issuable.human_class_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."
-          ],
-          data: serializer.represent(@issuable.reload) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          ]
         }, status: :conflict
       end
     end

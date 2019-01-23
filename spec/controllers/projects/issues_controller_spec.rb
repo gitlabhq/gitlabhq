@@ -379,6 +379,23 @@ describe Projects::IssuesController do
         expect(response).to have_gitlab_http_status(200)
       end
     end
+
+    context 'when getting the changes' do
+      before do
+        project.add_developer(user)
+
+        sign_in(user)
+      end
+
+      it 'returns the necessary data' do
+        go(id: issue.iid)
+
+        data = JSON.parse(response.body)
+
+        expect(data).to include('title_text', 'description', 'description_text')
+        expect(data).to include('task_status', 'lock_version')
+      end
+    end
   end
 
   describe 'Confidential Issues' do

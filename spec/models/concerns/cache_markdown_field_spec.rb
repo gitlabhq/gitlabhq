@@ -133,6 +133,15 @@ describe CacheMarkdownField do
     end
   end
 
+  context 'when a markdown field and html field are both set' do
+    it do
+      expect(thing).not_to receive(:refresh_markdown_cache)
+      thing.foo = '_look over there!_'
+      thing.foo_html = '<em>look over there!</em>'
+      thing.save
+    end
+  end
+
   context 'a non-markdown field changed' do
     shared_examples 'with cache version' do |cache_version|
       let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
