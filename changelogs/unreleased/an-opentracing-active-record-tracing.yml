@@ -1,0 +1,5 @@
+---
+title: Adds tracing support for ActiveRecord notifications
+merge_request: 24604
+author:
+type: other
