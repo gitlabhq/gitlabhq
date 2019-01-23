@@ -4,7 +4,7 @@
 
 ### Target audience
 
-<!-- For whom are we doing this? Include either a persona from https://design.gitlab.com/getting-started/personas or define a specific company role. e.a. "Release Manager" or "Security Analyst".
+<!-- For whom are we doing this? Include either a persona from https://design.gitlab.com/research/personas or define a specific company role, e.g. "Release Manager" or "Security Analyst".
 Use the persona labels as well https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A -->
 
 ### Further details
@@ -18,7 +18,7 @@ Use the persona labels as well https://gitlab.com/groups/gitlab-org/-/labels?utf
 ### Documentation
 
 <!-- What doc pages need to be created or updated across user, admin, and API docs?
-What concepts, procedures, or information is needed in each area? Is there an 'old way' to deprecate in docs?
+What concepts, procedures, or information is needed in each area? Is there an 'old way' that should be deprecated in the docs?
 
 Product managers:
 * By the kickoff, finalize the answers to the bullets above, and also:
