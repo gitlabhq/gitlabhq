@@ -16,10 +16,6 @@ module Ci
       raise NotImplementedError
     end
 
-    def artifacts?
-      raise NotImplementedError
-    end
-
     def when
       raise NotImplementedError
     end
