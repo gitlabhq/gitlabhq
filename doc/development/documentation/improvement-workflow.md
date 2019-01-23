@@ -44,13 +44,9 @@ before merging, mention the writer who is assigned to the relevant [DevOps stage
 
 The process can involve the following parties/phases, and is replicated in the `Documentation` MR template for GitLab CE and EE, to help with following the process.
 
-**1. Primary Reviewer**
-
-* Review by a [code reviewer](https://about.gitlab.com/handbook/engineering/projects/) or other appropriate colleague to confirm accuracy, clarity, and completeness. This can be skipped for minor fixes without substantive content changes.
+**1. Primary Reviewer** - Review by a [code reviewer](https://about.gitlab.com/handbook/engineering/projects/) or other appropriate colleague to confirm accuracy, clarity, and completeness. This can be skipped for minor fixes without substantive content changes.
  
-**2. Technical Writer**
-
-* Optional: Technical writer review. If not requested for this MR, must be scheduled post-merge. To request a pre-merge review, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+**2. Technical Writer** - Optional - If not requested for this MR, must be scheduled post-merge. To request a pre-merge review, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
 **3. Maintainer**
 
