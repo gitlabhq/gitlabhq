@@ -240,18 +240,7 @@
 }
 
 .prometheus-graph {
-  flex: 1 0 auto;
-  min-width: 450px;
-  max-width: 100%;
   padding: $gl-padding / 2;
-
-  h5 {
-    font-size: 16px;
-  }
-
-  @include media-breakpoint-down(sm) {
-    min-width: 100%;
-  }
 }
 
 .prometheus-graph-header {
@@ -261,6 +250,7 @@
   margin-bottom: $gl-padding-8;
 
   h5 {
+    font-size: $gl-font-size-large;
     margin: 0;
   }
 }
