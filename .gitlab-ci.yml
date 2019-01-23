@@ -956,6 +956,7 @@ review-build-cng:
   variables:
     <<: *single-script-job-variables
     SCRIPT_NAME: trigger-build
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
   script:
     - gem install gitlab --no-document
     - apk add --update openssl curl jq
