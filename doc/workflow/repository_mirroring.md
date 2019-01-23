@@ -137,8 +137,8 @@ increased each time it fails, up to a maximum amount of time.
 
 ### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Push mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Pull mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 
