@@ -51,6 +51,9 @@
       = f.label :dashboard, class: 'label-bold' do
         Default dashboard
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+
+    = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
+
     .form-group
       = f.label :project_view, class: 'label-bold' do
         Project overview content

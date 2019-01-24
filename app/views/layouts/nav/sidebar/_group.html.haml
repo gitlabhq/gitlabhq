@@ -36,7 +36,7 @@
                   %span
                     = _('Activity')
 
-            = render_if_exists 'groups/sidebar/security_dashboard'
+            = render_if_exists 'groups/sidebar/security_dashboard' # EE-specific
 
             - if group_sidebar_link?(:contribution_analytics)
               = nav_link(path: 'analytics#show') do
