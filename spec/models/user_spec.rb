@@ -1996,6 +1996,33 @@ describe User do
       expect(subject).to include(accessible)
       expect(subject).not_to include(other)
     end
+
+    context 'with min_access_level' do
+      let!(:user) { create(:user) }
+      let!(:project) { create(:project, :private, namespace: user.namespace) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      subject { Project.where("EXISTS (?)", user.authorizations_for_projects(min_access_level: min_access_level)) }
+
+      context 'when developer access' do
+        let(:min_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'includes projects a user has access to' do
+          expect(subject).to include(project)
+        end
+      end
+
+      context 'when owner access' do
+        let(:min_access_level) { Gitlab::Access::OWNER }
+
+        it 'does not include projects with higher access level' do
+          expect(subject).not_to include(project)
+        end
+      end
+    end
   end
 
   describe '#authorized_projects', :delete do
