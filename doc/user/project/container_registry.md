@@ -15,7 +15,7 @@
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
 
-You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
+You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry for your project
 

@@ -14,7 +14,7 @@ Always use an [Entity] to present the endpoint's payload.
 ## Methods and parameters description
 
 Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)
-(see https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb
+(see <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb>
 for a good example):
 
 - `desc` for the method summary. You should pass it a block for additional
@@ -49,14 +49,14 @@ end
 `params` block. It filters out the params that have been passed, but are not
 allowed.
 
-– https://github.com/ruby-grape/grape#declared
+– <https://github.com/ruby-grape/grape#declared>
 
 ### Exclude params from parent namespaces!
 
 > By default `declared(params) `includes parameters that were defined in all
 parent namespaces.
 
-– https://github.com/ruby-grape/grape#include-parent-namespaces
+– <https://github.com/ruby-grape/grape#include-parent-namespaces>
 
 In most cases you will want to exclude params from the parent namespaces:
 

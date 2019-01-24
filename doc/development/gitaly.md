@@ -128,7 +128,26 @@ to manually run `make` again.
 Note that CI tests will not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
 GITALY_SERVER_VERSION. You can use the format `=revision` to use a
-non-tagged commit from https://gitlab.com/gitlab-org/gitaly in CI.
+non-tagged commit from <https://gitlab.com/gitlab-org/gitaly> in CI.
+
+To use a different Gitaly repository, e.g., if your changes are present
+on a fork, you can specify a `GITALY_REPO_URL` environment variable when
+running tests:
+
+```shell
+GITALY_REPO_URL=https://gitlab.com/nick.thomas/gitaly bundle exec rspec spec/lib/gitlab/git/repository_spec.rb
+```
+
+If your fork of Gitaly is private, you can generate a [Deploy Token](../user/project/deploy_tokens/index.md)
+and specify it in the URL:
+
+```shell
+GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thomas/gitaly bundle exec rspec spec/lib/gitlab/git/repository_spec.rb
+```
+
+To use a custom Gitaly repository in CI, for instance if you want your
+GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
+as a [CI environment variable](../ci/variables/README.md#variables).
 
 ---
 

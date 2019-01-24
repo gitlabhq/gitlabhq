@@ -36,6 +36,13 @@ describe Appearance do
       expect(subject.send("#{logo_type}_path")).to be_nil
     end
 
+    it 'returns the path when the upload has been orphaned' do
+      appearance.send(logo_type).upload.destroy
+      appearance.reload
+
+      expect(appearance.send("#{logo_type}_path")).to eq(expected_path)
+    end
+
     it 'returns a local path using the system route' do
       expect(appearance.send("#{logo_type}_path")).to eq(expected_path)
     end

@@ -237,26 +237,89 @@ describe API::Helpers::Pagination do
             .and_return({ page: 1, per_page: 2 })
         end
 
-        it 'returns appropriate amount of resources' do
-          expect(subject.paginate(resource).count).to eq 2
+        shared_examples 'response with pagination headers' do
+          it 'adds appropriate headers' do
+            expect_header('X-Total', '3')
+            expect_header('X-Total-Pages', '2')
+            expect_header('X-Per-Page', '2')
+            expect_header('X-Page', '1')
+            expect_header('X-Next-Page', '2')
+            expect_header('X-Prev-Page', '')
+
+            expect_header('Link', anything) do |_key, val|
+              expect(val).to include('rel="first"')
+              expect(val).to include('rel="last"')
+              expect(val).to include('rel="next"')
+              expect(val).not_to include('rel="prev"')
+            end
+
+            subject.paginate(resource)
+          end
         end
 
-        it 'adds appropriate headers' do
-          expect_header('X-Total', '3')
-          expect_header('X-Total-Pages', '2')
-          expect_header('X-Per-Page', '2')
-          expect_header('X-Page', '1')
-          expect_header('X-Next-Page', '2')
-          expect_header('X-Prev-Page', '')
-
-          expect_header('Link', anything) do |_key, val|
-            expect(val).to include('rel="first"')
-            expect(val).to include('rel="last"')
-            expect(val).to include('rel="next"')
-            expect(val).not_to include('rel="prev"')
+        shared_examples 'paginated response' do
+          it 'returns appropriate amount of resources' do
+            expect(subject.paginate(resource).count).to eq 2
           end
 
-          subject.paginate(resource)
+          it 'executes only one SELECT COUNT query' do
+            expect { subject.paginate(resource) }.to make_queries_matching(/SELECT COUNT/, 1)
+          end
+        end
+
+        context 'when the api_kaminari_count_with_limit feature flag is unset' do
+          it_behaves_like 'paginated response'
+          it_behaves_like 'response with pagination headers'
+        end
+
+        context 'when the api_kaminari_count_with_limit feature flag is disabled' do
+          before do
+            stub_feature_flags(api_kaminari_count_with_limit: false)
+          end
+
+          it_behaves_like 'paginated response'
+          it_behaves_like 'response with pagination headers'
+        end
+
+        context 'when the api_kaminari_count_with_limit feature flag is enabled' do
+          before do
+            stub_feature_flags(api_kaminari_count_with_limit: true)
+          end
+
+          context 'when resources count is less than MAX_COUNT_LIMIT' do
+            before do
+              stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 4)
+            end
+
+            it_behaves_like 'paginated response'
+            it_behaves_like 'response with pagination headers'
+          end
+
+          context 'when resources count is more than MAX_COUNT_LIMIT' do
+            before do
+              stub_const("::Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT", 2)
+            end
+
+            it_behaves_like 'paginated response'
+
+            it 'does not return the X-Total and X-Total-Pages headers' do
+              expect_no_header('X-Total')
+              expect_no_header('X-Total-Pages')
+              expect_header('X-Per-Page', '2')
+              expect_header('X-Page', '1')
+              expect_header('X-Next-Page', '2')
+              expect_header('X-Prev-Page', '')
+
+              expect_header('Link', anything) do |_key, val|
+                expect(val).to include('rel="first"')
+                expect(val).not_to include('rel="last"')
+                expect(val).to include('rel="next"')
+                expect(val).not_to include('rel="prev"')
+              end
+
+              subject.paginate(resource)
+            end
+          end
         end
       end
 
@@ -346,6 +409,10 @@ describe API::Helpers::Pagination do
 
   def expect_header(*args, &block)
     expect(subject).to receive(:header).with(*args, &block)
+  end
+
+  def expect_no_header(*args, &block)
+    expect(subject).not_to receive(:header).with(*args)
   end
 
   def expect_message(method)

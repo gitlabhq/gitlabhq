@@ -8,7 +8,7 @@ comments: false
 ## Install
 
 - **Windows**
-  - Install 'Git for Windows' from https://git-for-windows.github.io
+  - Install 'Git for Windows' from <https://git-for-windows.github.io>
 
 - **Mac**
   - Type '`git`' in the Terminal application.

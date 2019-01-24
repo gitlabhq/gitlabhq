@@ -25,7 +25,7 @@ describe 'User accepts a merge request', :js do
     end
 
     it 'accepts a merge request' do
-      check('Remove source branch')
+      check('Delete source branch')
       click_button('Merge')
 
       expect(page).to have_content('The changes were merged into')
@@ -60,7 +60,7 @@ describe 'User accepts a merge request', :js do
     end
 
     it 'accepts a merge request' do
-      check('Remove source branch')
+      check('Delete source branch')
       click_button('Merge')
 
       expect(page).to have_content('The changes were merged into')
