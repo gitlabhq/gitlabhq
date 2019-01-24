@@ -440,7 +440,7 @@ Additional pagination headers are also sent back.
 
 CAUTION: **Caution:**
 For performance reasons since
-[GitLab 11.8][https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23931]
+[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23931)
 and **behind the `api_kaminari_count_with_limit`
 [feature flag](../development/feature_flags.md)**, if the number of resources is
 more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
@@ -604,7 +604,7 @@ Content-Type: application/json
 ## Encoding `+` in ISO 8601 dates
 
 If you need to include a `+` in a query parameter, you may need to use `%2B` instead due
-a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
+to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 
