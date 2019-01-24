@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { diffModes } from '~/ide/constants';
+import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -306,7 +307,7 @@ export const getLowestSingleFolder = folder => {
         if (shouldGetFolder) {
           const firstFolder = getFolder(file);
 
-          path.push(firstFolder.path);
+          path.push(...firstFolder.path);
           tree.push(...firstFolder.tree);
         }
 
@@ -321,7 +322,7 @@ export const getLowestSingleFolder = folder => {
   const { path, tree } = getFolder(folder, [folder.name]);
 
   return {
-    path: path.join('/'),
+    path: truncatePathMiddleToLength(path.join('/'), 40),
     treeAcc: tree.length ? tree[tree.length - 1].tree : null,
   };
 };
