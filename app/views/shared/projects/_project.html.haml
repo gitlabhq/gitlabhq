@@ -45,7 +45,7 @@
       .prepend-top-0
         - if project.archived
           %span.prepend-left-10.badge.badge-warning archived
-        - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
+        - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
           %span.prepend-left-10
             = render_project_pipeline_status(project.pipeline_status)
         - if forks
