@@ -4,9 +4,10 @@
   %ul.unstyled-list.related-merge-requests
     - has_any_head_pipeline = @merge_requests.any?(&:head_pipeline_id)
     - @merge_requests.each do |merge_request|
+      - merge_request = merge_request.present(current_user: current_user)
       %li
         %span.merge-request-ci-status
-          - if merge_request.head_pipeline
+          - if merge_request.can_read_pipeline?
             = render_pipeline_status(merge_request.head_pipeline)
           - elsif has_any_head_pipeline
             = icon('blank fw')
