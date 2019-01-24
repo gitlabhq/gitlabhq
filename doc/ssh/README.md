@@ -318,7 +318,7 @@ not implicitly give any access just by setting them up.
 
 ### Eclipse
 
-How to add your SSH key to Eclipse: https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
+How to add your SSH key to Eclipse: <https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration>
 
 ## SSH on the GitLab server
 

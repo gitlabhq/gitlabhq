@@ -21,12 +21,12 @@ configuration file. For example:
     - Client Secret: `KbveM3nqfjwCbrhaUy_gDu2dss8TIlHIdzlyf33pB7dEK5u_NyQdp65O_o02hXs2`
 
 1. Fill in the Allowed Callback URLs:
-    - http://`YOUR_GITLAB_URL`/users/auth/auth0/callback (or)
-    - https://`YOUR_GITLAB_URL`/users/auth/auth0/callback
+    - `http://YOUR_GITLAB_URL/users/auth/auth0/callback` (or)
+    - `https://YOUR_GITLAB_URL/users/auth/auth0/callback`
 
 1. Fill in the Allowed Origins (CORS):
-    - http://`YOUR_GITLAB_URL` (or)
-    - https://`YOUR_GITLAB_URL`
+    - `http://YOUR_GITLAB_URL` (or)
+    - `https://YOUR_GITLAB_URL`
 
 1. On your GitLab server, open the configuration file.
 

@@ -287,7 +287,7 @@ so you will not be able to sign in using local credentials. Make sure that at le
 of the SAML users has admin permissions.
 
 You may also bypass the auto signin feature by browsing to
-https://gitlab.example.com/users/sign_in?auto_sign_in=false.
+`https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ### `attribute_statements`
 

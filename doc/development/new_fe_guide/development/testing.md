@@ -350,7 +350,7 @@ You can find the credentials on 1Password, under `frontendteam@gitlab.com`.
 
 #### macOS
 
-You can download any older version of Firefox from the releases FTP server, https://ftp.mozilla.org/pub/firefox/releases/
+You can download any older version of Firefox from the releases FTP server, <https://ftp.mozilla.org/pub/firefox/releases/>
 
 1. From the website, select a version, in this case `50.0.1`.
 1. Go to the mac folder.

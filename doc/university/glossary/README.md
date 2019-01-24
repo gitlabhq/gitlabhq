@@ -423,7 +423,7 @@ A set of symbols that are used to organize objects of various kinds so that thes
 
 ### Nginx
 
-A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). [It can act]((https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md) as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
+A web [server](https://www.nginx.com/resources/wiki/) (pronounced "engine x"). [It can act](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/nginx.md) as a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and an HTTP cache.
 
 ### OAuth
 

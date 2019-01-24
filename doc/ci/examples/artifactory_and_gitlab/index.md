@@ -16,8 +16,8 @@ to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory
 
 You'll create two different projects:
 
-- `simple-maven-dep`: the app built and deployed to Artifactory (available at https://gitlab.com/gitlab-examples/maven/simple-maven-dep )
-- `simple-maven-app`: the app using the previous one as a dependency (available at https://gitlab.com/gitlab-examples/maven/simple-maven-app )
+- `simple-maven-dep`: the app built and deployed to Artifactory (available at <https://gitlab.com/gitlab-examples/maven/simple-maven-dep>)
+- `simple-maven-app`: the app using the previous one as a dependency (available at <https://gitlab.com/gitlab-examples/maven/simple-maven-app>)
 
 We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/).
 We also assume that an Artifactory instance is available and reachable from the internet, and that you have valid credentials to deploy on it.

@@ -60,7 +60,7 @@ Here's a list of the AWS services we will use, with links to pricing information
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
 role with limited access:
 
-1. Navigate to the IAM dashboard https://console.aws.amazon.com/iam/home and
+1. Navigate to the IAM dashboard <https://console.aws.amazon.com/iam/home> and
    click **Create role**.
 1. Create a new role by selecting **AWS service > EC2**, then click
    **Next: Permissions**.
@@ -78,7 +78,7 @@ Internet Gateway.
 
 We'll now create a VPC, a virtual networking environment that you'll control:
 
-1. Navigate to https://console.aws.amazon.com/vpc/home.
+1. Navigate to <https://console.aws.amazon.com/vpc/home>.
 1. Select **Your VPCs** from the left menu and then click **Create VPC**.
    At the "Name tag" enter `gitlab-vpc` and at the "IPv4 CIDR block" enter
    `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
