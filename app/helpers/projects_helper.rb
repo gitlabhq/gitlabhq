@@ -288,7 +288,8 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+    # Pipelines feature is tied to presence of builds
+    if can?(current_user, :read_build, project)
       nav_tabs << :pipelines
     end
 

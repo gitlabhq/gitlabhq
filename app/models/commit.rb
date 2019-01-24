@@ -11,6 +11,7 @@ class Commit
   include Mentionable
   include Referable
   include StaticModel
+  include Presentable
   include ::Gitlab::Utils::StrongMemoize
 
   attr_mentionable :safe_message, pipeline: :single_line
@@ -304,7 +305,9 @@ class Commit
   end
 
   def last_pipeline
-    @last_pipeline ||= pipelines.last
+    strong_memoize(:last_pipeline) do
+      pipelines.last
+    end
   end
 
   def status(ref = nil)
