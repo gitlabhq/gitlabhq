@@ -6,6 +6,7 @@ module Gitlab
       def initialize(project)
         @project = project
         @errors = []
+        @logger = Gitlab::Import::Logger.build
       end
 
       def active_export_count
@@ -21,19 +22,14 @@ module Gitlab
       end
 
       def error(error)
-        error_out(error.message, caller[0].dup)
-        add_error_message(error.message)
+        log_error(message: error.message, caller: caller[0].dup)
+        log_debug(backtrace: error.backtrace&.join("\n"))
 
-        # Debug:
-        if error.backtrace
-          Rails.logger.error("Import/Export backtrace: #{error.backtrace.join("\n")}")
-        else
-          Rails.logger.error("No backtrace found")
-        end
+        add_error_message(error.message)
       end
 
-      def add_error_message(error_message)
-        @errors << error_message
+      def add_error_message(message)
+        @errors << filtered_error_message(message)
       end
 
       def after_export_in_progress?
@@ -50,8 +46,25 @@ module Gitlab
         @project.disk_path
       end
 
-      def error_out(message, caller)
-        Rails.logger.error("Import/Export error raised on #{caller}: #{message}")
+      def log_error(details)
+        @logger.error(log_base_data.merge(details))
+      end
+
+      def log_debug(details)
+        @logger.debug(log_base_data.merge(details))
+      end
+
+      def log_base_data
+        {
+          importer: 'Import/Export',
+          import_jid: @project&.import_state&.import_jid,
+          project_id: @project&.id,
+          project_path: @project&.full_path
+        }
+      end
+
+      def filtered_error_message(message)
+        Projects::ImportErrorFilter.filter_message(message)
       end
 
       def after_export_lock_file
