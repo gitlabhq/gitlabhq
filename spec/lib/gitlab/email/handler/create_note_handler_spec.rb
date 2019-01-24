@@ -118,6 +118,43 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
     end
   end
 
+  shared_examples "checks permissions on noteable" do
+    context "when user has access" do
+      before do
+        project.add_reporter(user)
+      end
+
+      it "creates a comment" do
+        expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+      end
+    end
+
+    context "when user does not have access" do
+      it "raises UserNotAuthorizedError" do
+        expect { receiver.execute }.to raise_error(Gitlab::Email::UserNotAuthorizedError)
+      end
+    end
+  end
+
+  context "when discussion is locked" do
+    before do
+      noteable.update_attribute(:discussion_locked, true)
+    end
+
+    it_behaves_like "checks permissions on noteable"
+  end
+
+  context "when issue is confidential" do
+    let(:issue) { create(:issue, project: project) }
+    let(:note) { create(:note, noteable: issue, project: project) }
+
+    before do
+      issue.update_attribute(:confidential, true)
+    end
+
+    it_behaves_like "checks permissions on noteable"
+  end
+
   context "when everything is fine" do
     before do
       setup_attachment
