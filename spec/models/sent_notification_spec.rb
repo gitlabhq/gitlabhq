@@ -48,7 +48,7 @@ describe SentNotification do
     let(:note) { create(:diff_note_on_merge_request) }
 
     it 'creates a new SentNotification' do
-      expect { described_class.record_note(note, user.id) }.to change { described_class.count }.by(1)
+      expect { described_class.record_note(note, note.author.id) }.to change { described_class.count }.by(1)
     end
   end
 

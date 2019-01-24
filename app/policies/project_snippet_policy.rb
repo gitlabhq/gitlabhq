@@ -44,4 +44,6 @@ class ProjectSnippetPolicy < BasePolicy
     enable :update_project_snippet
     enable :admin_project_snippet
   end
+
+  rule { ~can?(:read_project_snippet) }.prevent :create_note
 end

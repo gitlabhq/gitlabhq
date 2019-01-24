@@ -43,7 +43,7 @@ module Gitlab
             raise ProjectNotFound unless author.can?(:read_project, project)
           end
 
-          raise UserNotAuthorizedError unless author.can?(permission, project || noteable)
+          raise UserNotAuthorizedError unless author.can?(permission, try(:noteable) || project)
         end
 
         def verify_record!(record:, invalid_exception:, record_name:)
