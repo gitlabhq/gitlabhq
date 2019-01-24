@@ -37,7 +37,7 @@ describe Gitlab::DataBuilder::Pipeline do
     context 'pipeline without variables' do
       it 'has empty variables hash' do
         expect(attributes[:variables]).to be_a(Array)
-        expect(attributes[:variables]).to be_empty()
+        expect(attributes[:variables]).to be_empty
       end
     end
 

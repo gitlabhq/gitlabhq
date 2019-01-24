@@ -68,7 +68,7 @@ describe Projects::IssuesController do
     end
 
     context 'with page param' do
-      let(:last_page) { project.issues.page().total_pages }
+      let(:last_page) { project.issues.page.total_pages }
       let!(:issue_list) { create_list(:issue, 2, project: project) }
 
       before do

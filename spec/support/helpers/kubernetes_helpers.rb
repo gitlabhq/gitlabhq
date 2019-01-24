@@ -369,6 +369,6 @@ module KubernetesHelpers
   end
 
   def empty_deployment_rollout_status
-    ::Gitlab::Kubernetes::RolloutStatus.from_deployments()
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments
   end
 end
