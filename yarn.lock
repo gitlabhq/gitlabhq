@@ -1874,6 +1874,11 @@ commander@2, commander@^2.18.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.18.0.tgz#2bf063ddee7c7891176981a2cc798e5754bc6970"
   integrity sha512-6CYPa+JP2ftfRU2qkDK+UTVeQYosOg/2GbcjIcKPHfinyOLPVGXu/ovN86RP49Re5ndJK1N0kuiidFFuepc4ZQ==
 
+commander@^2.16.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.19.0.tgz#f6198aa84e5b83c46054b94ddedbfed5ee9ff12a"
+  integrity sha512-6tvAOO+D6OENvRAh524Dh9jcfKTYDQAqvqezbCW82xj5X0pSrcpxtvRKHLG0yBY6SD7PSDrJaj+0AiOcKVd1Xg==
+
 commander@~2.13.0:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.13.0.tgz#6964bca67685df7c1f1430c584f07d7597885b9c"
@@ -4987,12 +4992,12 @@ karma@^3.0.0:
     tmp "0.0.33"
     useragent "2.2.1"
 
-katex@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.9.0.tgz#26a7d082c21d53725422d2d71da9b2d8455fbd4a"
-  integrity sha512-lp3x90LT1tDZBW2tjLheJ98wmRMRjUHwk4QpaswT9bhqoQZ+XA4cPcjcQBxgOQNwaOSt6ZeL/a6GKQ1of3LFxQ==
+katex@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.10.0.tgz#da562e5d0d5cc3aa602e27af8a9b8710bfbce765"
+  integrity sha512-/WRvx+L1eVBrLwX7QzKU1dQuaGnE7E8hDvx3VWfZh9HbMiCfsKWJNnYZ0S8ZMDAfAyDSofdyXIrH/hujF1fYXg==
   dependencies:
-    match-at "^0.1.1"
+    commander "^2.16.0"
 
 keyv@3.0.0:
   version "3.0.0"
@@ -5277,11 +5282,6 @@ marked@^0.3.12:
   version "0.3.12"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.12.tgz#7cf25ff2252632f3fe2406bde258e94eee927519"
   integrity sha512-k4NaW+vS7ytQn6MgJn3fYpQt20/mOgYM5Ft9BYMfQJDz2QT6yEeS9XJ8k2Nw8JTeWK/znPPW2n3UJGzyYEiMoA==
-
-match-at@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/match-at/-/match-at-0.1.1.tgz#25d040d291777704d5e6556bbb79230ec2de0540"
-  integrity sha512-h4Yd392z9mST+dzc+yjuybOGFNOZjmXIPKWjxBd1Bb23r4SmDOsk2NYCU2BMUBGbSpZqwVsZYNq26QS3xfaT3Q==
 
 md5.js@^1.3.4:
   version "1.3.4"
