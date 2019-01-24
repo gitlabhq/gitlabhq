@@ -74,5 +74,13 @@ describe Ci::PipelinePolicy, :models do
         expect(policy).to be_allowed :update_pipeline
       end
     end
+
+    context 'when user does not have access to internal CI' do
+      let(:project) { create(:project, :builds_disabled, :public) }
+
+      it 'disallows the user from reading the pipeline' do
+        expect(policy).to be_disallowed :read_pipeline
+      end
+    end
   end
 end

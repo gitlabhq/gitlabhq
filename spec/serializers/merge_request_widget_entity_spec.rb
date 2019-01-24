@@ -31,23 +31,40 @@ describe MergeRequestWidgetEntity do
   describe 'pipeline' do
     let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
-    context 'when is up to date' do
-      let(:req) { double('request', current_user: user, project: project) }
+    before do
+      allow_any_instance_of(MergeRequestPresenter).to receive(:can?).and_call_original
+      allow_any_instance_of(MergeRequestPresenter).to receive(:can?).with(user, :read_pipeline, anything).and_return(result)
+    end
 
-      it 'returns pipeline' do
-        pipeline_payload = PipelineDetailsEntity
-          .represent(pipeline, request: req)
-          .as_json
+    context 'when user has access to pipelines' do
+      let(:result) { true }
 
-        expect(subject[:pipeline]).to eq(pipeline_payload)
+      context 'when is up to date' do
+        let(:req) { double('request', current_user: user, project: project) }
+
+        it 'returns pipeline' do
+          pipeline_payload = PipelineDetailsEntity
+            .represent(pipeline, request: req)
+            .as_json
+
+          expect(subject[:pipeline]).to eq(pipeline_payload)
+        end
+      end
+
+      context 'when is not up to date' do
+        it 'returns nil' do
+          pipeline.update(sha: "not up to date")
+
+          expect(subject[:pipeline]).to eq(nil)
+        end
       end
     end
 
-    context 'when is not up to date' do
-      it 'returns nil' do
-        pipeline.update(sha: "not up to date")
+    context 'when user does not have access to pipelines' do
+      let(:result) { false }
 
-        expect(subject[:pipeline]).to be_nil
+      it 'does not have pipeline' do
+        expect(subject[:pipeline]).to eq(nil)
       end
     end
   end

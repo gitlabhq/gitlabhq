@@ -12,7 +12,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       ]
 
       RSpec::Mocks.with_temporary_scope do
-        @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
         @shared = @project.import_export_shared
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
@@ -40,7 +40,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         project = Project.find_by_path('project')
 
         expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
-        expect(project.project_feature.builds_access_level).to eq(ProjectFeature::DISABLED)
+        expect(project.project_feature.builds_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.snippets_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)

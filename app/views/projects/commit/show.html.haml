@@ -9,11 +9,8 @@
 
 .container-fluid{ class: [limited_container_width, container_class] }
   = render "commit_box"
-  - if @commit.status
-    = render "ci_menu"
-  - else
-    .block-connector
-  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment
+  = render "ci_menu"
+  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, is_commit: true
 
   .limited-width-notes
     = render "shared/notes/notes_with_form", :autocomplete => true

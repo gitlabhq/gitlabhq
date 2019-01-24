@@ -103,6 +103,10 @@ class ProjectPolicy < BasePolicy
     @subject.feature_available?(:merge_requests, @user)
   end
 
+  condition(:internal_builds_disabled) do
+    !@subject.builds_enabled?
+  end
+
   features = %w[
     merge_requests
     issues
@@ -190,7 +194,6 @@ class ProjectPolicy < BasePolicy
     enable :read_build
     enable :read_container_image
     enable :read_pipeline
-    enable :read_pipeline_schedule
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
@@ -226,6 +229,7 @@ class ProjectPolicy < BasePolicy
     enable :update_build
     enable :create_pipeline
     enable :update_pipeline
+    enable :read_pipeline_schedule
     enable :create_pipeline_schedule
     enable :create_merge_request_from
     enable :create_wiki
@@ -305,7 +309,6 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    prevent(*create_update_admin_destroy(:pipeline))
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
@@ -313,11 +316,22 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 
+  # There's two separate cases when builds_disabled is true:
+  # 1. When internal CI is disabled - builds_disabled && internal_builds_disabled
+  #   - We do not prevent the user from accessing Pipelines to allow him to access external CI
+  # 2. When the user is not allowed to access CI - builds_disabled && ~internal_builds_disabled
+  #   - We prevent the user from accessing Pipelines
+  rule { (builds_disabled & ~internal_builds_disabled) | repository_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:pipeline))
+    prevent(*create_read_update_admin_destroy(:commit_status))
+  end
+
   rule { repository_disabled }.policy do
     prevent :push_code
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
+    prevent :read_pipeline
   end
 
   rule { container_registry_disabled }.policy do
@@ -343,7 +357,6 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_note
     enable :read_pipeline
-    enable :read_pipeline_schedule
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
@@ -361,7 +374,6 @@ class ProjectPolicy < BasePolicy
 
   rule { public_builds & can?(:guest_access) }.policy do
     enable :read_pipeline
-    enable :read_pipeline_schedule
   end
 
   # These rules are included to allow maintainers of projects to push to certain
