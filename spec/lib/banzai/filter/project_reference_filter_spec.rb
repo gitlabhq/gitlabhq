@@ -26,6 +26,12 @@ describe Banzai::Filter::ProjectReferenceFilter do
     expect(reference_filter(act).to_html).to eq(CGI.escapeHTML(exp))
   end
 
+  it 'fails fast for long invalid string' do
+    expect do
+      Timeout.timeout(5.seconds) { reference_filter("A" * 50000).to_html }
+    end.not_to raise_error
+  end
+
   it 'allows references with text after the > character' do
     doc = reference_filter("Hey #{reference}foo")
     expect(doc.css('a').first.attr('href')).to eq urls.project_url(subject)
