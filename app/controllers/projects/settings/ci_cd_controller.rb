@@ -99,7 +99,9 @@ module Projects
 
       def define_triggers_variables
         @triggers = @project.triggers
+          .present(current_user: current_user)
         @trigger = ::Ci::Trigger.new
+          .present(current_user: current_user)
       end
 
       def define_badges_variables

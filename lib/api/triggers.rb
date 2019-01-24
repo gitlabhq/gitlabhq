@@ -51,7 +51,7 @@ module API
 
         triggers = user_project.triggers.includes(:trigger_requests)
 
-        present paginate(triggers), with: Entities::Trigger
+        present paginate(triggers), with: Entities::Trigger, current_user: current_user
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -68,7 +68,7 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         break not_found!('Trigger') unless trigger
 
-        present trigger, with: Entities::Trigger
+        present trigger, with: Entities::Trigger, current_user: current_user
       end
 
       desc 'Create a trigger' do
@@ -85,7 +85,7 @@ module API
           declared_params(include_missing: false).merge(owner: current_user))
 
         if trigger.valid?
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
@@ -106,7 +106,7 @@ module API
         break not_found!('Trigger') unless trigger
 
         if trigger.update(declared_params(include_missing: false))
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
@@ -127,7 +127,7 @@ module API
 
         if trigger.update(owner: current_user)
           status :ok
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
