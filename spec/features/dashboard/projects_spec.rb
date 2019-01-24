@@ -144,6 +144,27 @@ describe 'Dashboard Projects' do
         expect(page).to have_link('Commit: passed')
       end
     end
+
+    context 'guest user of project and project has private pipelines' do
+      let(:guest_user) { create(:user) }
+
+      before do
+        project.update(public_builds: false)
+        project.add_guest(guest_user)
+        sign_in(guest_user)
+      end
+
+      it 'shows that the last pipeline passed' do
+        visit dashboard_projects_path
+
+        page.within('.controls') do
+          expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
+          expect(page).not_to have_css('.ci-status-link')
+          expect(page).not_to have_css('.ci-status-icon-success')
+          expect(page).not_to have_link('Commit: passed')
+        end
+      end
+    end
   end
 
   context 'last push widget', :use_clean_rails_memory_store_caching do
