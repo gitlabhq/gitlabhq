@@ -12,9 +12,15 @@ describe Import::GithubController do
 
     it "redirects to GitHub for an access token if logged in with GitHub" do
       allow(controller).to receive(:logged_in_with_provider?).and_return(true)
-      expect(controller).to receive(:go_to_provider_for_permissions)
+      expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
+      allow_any_instance_of(Gitlab::LegacyGithubImport::Client)
+        .to receive(:authorize_url)
+        .with(users_import_github_callback_url)
+        .and_call_original
 
       get :new
+
+      expect(response).to have_http_status(302)
     end
   end
 
