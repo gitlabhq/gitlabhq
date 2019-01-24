@@ -314,17 +314,22 @@ module ProjectsHelper
       nav_tabs << :operations
     end
 
-    if project.external_issue_tracker
-      nav_tabs << :external_issue_tracker
-    end
-
     tab_ability_map.each do |tab, ability|
       if can?(current_user, ability, project)
         nav_tabs << tab
       end
     end
 
+    nav_tabs << external_nav_tabs(project)
+
     nav_tabs.flatten
+  end
+
+  def external_nav_tabs(project)
+    [].tap do |tabs|
+      tabs << :external_issue_tracker if project.external_issue_tracker
+      tabs << :external_wiki if project.has_external_wiki?
+    end
   end
 
   def tab_ability_map
