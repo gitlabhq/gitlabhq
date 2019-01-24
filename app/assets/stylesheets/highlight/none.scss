@@ -38,7 +38,7 @@
 
   $none-over-bg: #ded7fc;
   $none-expanded-border: #e0e0e0;
-  $none-expanded-bg: #f7f7f7;
+  $none-expanded-bg: #e0e0e0;
 
   .line_holder {
 
@@ -50,18 +50,12 @@
 
     .diff-line-num {
       &.old {
-        background-color: $line-number-old;
-        border-color: $line-removed-dark;
-
         a {
           color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
       &.new {
-        background-color: $line-number-new;
-        border-color: $line-added-dark;
-
         a {
           color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
@@ -78,8 +72,8 @@
       }
 
       &.hll:not(.empty-cell) {
-        background-color: $line-number-select;
-        border-color: $line-select-yellow-dark;
+        background-color: $white-light;
+        border-color: $white-normal;
       }
     }
 
@@ -101,26 +95,28 @@
 
     .line_content {
       &.old {
-        background-color: $line-removed;
+        background-color: $white-normal;
 
         &::before {
-          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
+          color: $gl-text-color;
         }
 
         span.idiff {
-          background-color: $line-removed-dark;
+          background-color: $white-normal;
+          text-decoration: underline;
         }
       }
 
       &.new {
-        background-color: $line-added;
+        background-color: $white-normal;
 
         &::before {
-          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
+          color: $gl-text-color;
         }
 
         span.idiff {
-          background-color: $line-added-dark;
+          background-color: $white-normal;
+          text-decoration: underline;
         }
       }
 
@@ -129,7 +125,7 @@
       }
 
       &.hll:not(.empty-cell) {
-        background-color: $line-select-yellow;
+        background-color: $white-normal;
       }
     }
   }
