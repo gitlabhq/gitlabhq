@@ -206,6 +206,38 @@ describe UsersController do
     end
   end
 
+  describe 'GET #contributed' do
+    let(:project) { create(:project, :public) }
+    let(:current_user) { create(:user) }
+
+    before do
+      sign_in(current_user)
+
+      project.add_developer(public_user)
+      project.add_developer(private_user)
+    end
+
+    context 'with public profile' do
+      it 'renders contributed projects' do
+        create(:push_event, project: project, author: public_user)
+
+        get :contributed, username: public_user.username
+
+        expect(assigns[:contributed_projects]).not_to be_empty
+      end
+    end
+
+    context 'with private profile' do
+      it 'does not render contributed projects' do
+        create(:push_event, project: project, author: private_user)
+
+        get :contributed, username: private_user.username
+
+        expect(assigns[:contributed_projects]).to be_empty
+      end
+    end
+  end
+
   describe 'GET #snippets' do
     before do
       sign_in(user)
