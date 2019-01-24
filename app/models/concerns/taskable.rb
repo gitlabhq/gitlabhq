@@ -39,44 +39,6 @@ module Taskable
     end
   end
 
-  def self.toggle_task(content, content_html, index:, currently_checked:, line_source:, line_number:)
-    source_lines  = content.split("\n")
-    markdown_task = source_lines[line_number - 1]
-    output        = {}
-
-    if markdown_task == line_source
-      html          = Nokogiri::HTML.fragment(content_html)
-      html_checkbox = html.css('.task-list-item-checkbox')[index - 1]
-      # html_checkbox = html.css(".task-list-item[data-sourcepos^='#{changed_line_number}:'] > input.task-list-item-checkbox").first
-      updated_task  = toggle_task_source(line_source, currently_checked: currently_checked)
-
-      if html_checkbox && updated_task
-        source_lines[line_number - 1] = updated_task
-
-        if currently_checked
-          html_checkbox.remove_attribute('checked')
-        else
-          html_checkbox[:checked] = 'checked'
-        end
-
-        output[:content]      = source_lines.join("\n")
-        output[:content_html] = html.to_html
-      end
-    end
-
-    output
-  end
-
-  def self.toggle_task_source(markdown_line, currently_checked:)
-    if source_checkbox = ITEM_PATTERN.match(markdown_line)
-      if TaskList::Item.new(source_checkbox[1]).complete?
-        markdown_line.sub(COMPLETE_PATTERN, '[ ]') if currently_checked
-      else
-        markdown_line.sub(INCOMPLETE_PATTERN, '[x]') unless currently_checked
-      end
-    end
-  end
-
   # Called by `TaskList::Summary`
   def task_list_items
     return [] if description.blank?

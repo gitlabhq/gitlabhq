@@ -129,17 +129,17 @@ module Issues
       update_task_params = params.delete(:update_task)
       return unless update_task_params
 
-      updated_content = Taskable.toggle_task(issue.description, issue.description_html,
-                                             index: update_task_params[:index],
-                                             currently_checked: !update_task_params[:checked],
-                                             line_source: update_task_params[:line_source],
-                                             line_number: update_task_params[:line_number])
+      toggler = TaskListToggleService.new(issue.description, issue.description_html,
+                                          index: update_task_params[:index],
+                                          currently_checked: !update_task_params[:checked],
+                                          line_source: update_task_params[:line_source],
+                                          line_number: update_task_params[:line_number])
 
-      unless updated_content.empty?
+      if toggler.execute
         # by updating the description_html field at the same time,
         # the markdown cache won't be considered invalid
-        params[:description]      = updated_content[:content]
-        params[:description_html] = updated_content[:content_html]
+        params[:description]      = toggler.updated_markdown
+        params[:description_html] = toggler.updated_markdown_html
 
         # since we're updating a very specific line, we don't care whether
         # the `lock_version` sent from the FE is the same or not.  Just
