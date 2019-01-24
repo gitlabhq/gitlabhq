@@ -3032,10 +3032,10 @@ decamelize@^2.0.0:
   dependencies:
     xregexp "4.0.0"
 
-deckar01-task_list@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.1.0.tgz#42198981614d3d2fd73e8f990b3389e00a4db1c0"
-  integrity sha512-aSwZunalq4ZnisaoW+T2CRsU9a8/UMyMLEWlmfMSK233c2HYSRc7iMF7ZgIacGw+ZbvVI38EhcAo22Fk0Tr7Pw==
+deckar01-task_list@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.2.0.tgz#5cc3ea06f01d3d786b1a667064a462eb5d069bd3"
+  integrity sha512-NUfu5ARoD9SC2k+fBT5cBer59iKfEdawPrmfqp5+zAahTECb8z9dsuS1Xnx7jzFAmCCLnEs3z/aYucYXzNrKkQ==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
