@@ -32,6 +32,12 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
       it 'returns true' do
         expect(service.execute).to be_truthy
       end
+
+      it 'sets skipped to false' do
+        service.execute
+
+        expect(service.skipped?).to be_falsey
+      end
     end
 
     context 'when original folder does not exist anymore' do
@@ -49,9 +55,13 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
       end
 
       it 'returns true' do
-        expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
-
         expect(service.execute).to be_truthy
+      end
+
+      it 'sets skipped to true' do
+        service.execute
+
+        expect(service.skipped?).to be_truthy
       end
     end
 

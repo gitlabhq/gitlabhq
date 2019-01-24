@@ -12,6 +12,7 @@ module Projects
         @logger = logger || Rails.logger
         @old_disk_path = old_disk_path
         @new_disk_path = project.disk_path
+        @skipped = false
       end
 
       def execute
@@ -32,11 +33,16 @@ module Projects
         result
       end
 
+      def skipped?
+        @skipped
+      end
+
       private
 
       def move_folder!(old_path, new_path)
         unless File.directory?(old_path)
           logger.info("Skipped attachments migration from '#{old_path}' to '#{new_path}', source path doesn't exist or is not a directory (PROJECT_ID=#{project.id})")
+          @skipped = true
           return true
         end
 
