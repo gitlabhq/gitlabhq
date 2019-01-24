@@ -1,0 +1,5 @@
+---
+title: "Support bamboo api polymorphism"
+merge_request: 24680
+author: Alex Lossent
+type: fixed
