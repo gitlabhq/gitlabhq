@@ -50,7 +50,7 @@ describe Projects::PipelinesController do
       end
     end
 
-    context 'when using legacy stages', :request_store  do
+    context 'when using legacy stages', :request_store do
       before do
         stub_feature_flags(ci_pipeline_persisted_stages: false)
       end

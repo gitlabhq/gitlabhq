@@ -28,7 +28,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     let(:cluster_project) { create(:cluster_project) }
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, namespace: 'my-namespace') }
 
-    subject  { kubernetes_namespace }
+    subject { kubernetes_namespace }
 
     context 'when cluster is using the namespace' do
       before do

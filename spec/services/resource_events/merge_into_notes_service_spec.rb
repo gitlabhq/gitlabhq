@@ -16,8 +16,8 @@ describe ResourceEvents::MergeIntoNotesService do
     create(:note_on_issue, opts.merge(params))
   end
 
-  set(:project)  { create(:project) }
-  set(:user)   { create(:user) }
+  set(:project) { create(:project) }
+  set(:user) { create(:user) }
   set(:resource) { create(:issue, project: project) }
   set(:label) { create(:label, project: project) }
   set(:label2) { create(:label, project: project) }

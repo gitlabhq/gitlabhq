@@ -20,7 +20,7 @@ module Boards
 
       # rubocop: disable CodeReuse/ActiveRecord
       def decrement_higher_lists(list)
-        board.lists.movable.where('position > ?',  list.position)
+        board.lists.movable.where('position > ?', list.position)
                    .update_all('position = position - 1')
       end
       # rubocop: enable CodeReuse/ActiveRecord

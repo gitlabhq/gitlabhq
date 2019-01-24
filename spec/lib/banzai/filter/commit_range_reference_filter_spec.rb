@@ -205,7 +205,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter do
   context 'cross-project URL reference' do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
-    let(:range)  { CommitRange.new("#{commit1.id}...master", project) }
+    let(:range) { CommitRange.new("#{commit1.id}...master", project) }
     let(:reference) { urls.project_compare_url(project2, from: commit1.id, to: 'master') }
 
     before do

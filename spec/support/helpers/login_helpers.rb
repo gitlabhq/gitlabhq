@@ -157,7 +157,7 @@ module LoginHelpers
     env['omniauth.error.strategy'] = strategy
   end
 
-  def stub_omniauth_saml_config(messages,  context: Rails.application)
+  def stub_omniauth_saml_config(messages, context: Rails.application)
     set_devise_mapping(context: context)
     routes = Rails.application.routes
     routes.disable_clear_and_finalize = true

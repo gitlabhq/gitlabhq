@@ -78,7 +78,7 @@ FactoryBot.define do
     trait :scheduled do
       schedulable
       status 'scheduled'
-      scheduled_at  { 1.minute.since }
+      scheduled_at { 1.minute.since }
     end
 
     trait :expired_scheduled do

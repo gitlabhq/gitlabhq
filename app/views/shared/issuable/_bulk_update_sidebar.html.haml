@@ -2,7 +2,7 @@
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? } }
   .issuable-sidebar.hidden
-    = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update"  do
+    = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: "bulk-update" do
       .block.issuable-sidebar-header
         .filter-item.inline.update-issues-btn.float-left
           = button_tag "Update all", class: "btn update-selected-issues btn-info", disabled: true
@@ -50,4 +50,3 @@
 
       = hidden_field_tag "update[issuable_ids]", []
       = hidden_field_tag :state_event, params[:state_event]
-

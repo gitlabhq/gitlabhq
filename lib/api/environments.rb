@@ -74,7 +74,7 @@ module API
         success Entities::Environment
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The environment ID'
       end
       delete ':id/environments/:environment_id' do
         authorize! :update_environment, user_project
@@ -88,7 +88,7 @@ module API
         success Entities::Environment
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The environment ID'
       end
       post ':id/environments/:environment_id/stop' do
         authorize! :read_environment, user_project

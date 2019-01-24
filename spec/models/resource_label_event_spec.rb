@@ -88,7 +88,7 @@ RSpec.describe ResourceLabelEvent, type: :model do
     end
 
     it 'returns false if label and reference are set' do
-      subject.attributes = { reference: 'whatever', cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION  }
+      subject.attributes = { reference: 'whatever', cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION }
 
       expect(subject.outdated_markdown?).to be false
     end

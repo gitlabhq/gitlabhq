@@ -146,7 +146,7 @@ module API
         end
 
         def add_default_pagination_headers
-          header 'X-Per-Page',    per_page.to_s
+          header 'X-Per-Page', per_page.to_s
         end
 
         def add_navigation_links(next_page_params)

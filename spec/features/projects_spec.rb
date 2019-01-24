@@ -5,7 +5,7 @@ describe 'Project' do
   include MobileHelpers
 
   describe 'creating from template' do
-    let(:user)    { create(:user) }
+    let(:user) { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
@@ -170,7 +170,7 @@ describe 'Project' do
 
   describe 'showing information about source of a project fork' do
     let(:user) { create(:user) }
-    let(:base_project)  { create(:project, :public, :repository) }
+    let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
 
     before do

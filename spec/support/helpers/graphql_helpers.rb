@@ -149,7 +149,7 @@ module GraphqlHelpers
     # - List
     # - String!
     # - String
-    field_type = field_type.of_type  while field_type.respond_to?(:of_type)
+    field_type = field_type.of_type while field_type.respond_to?(:of_type)
 
     field_type
   end

@@ -111,7 +111,7 @@ module Gitlab
 
       def project_for_paths(paths, request)
         project = Project.where_full_path_in(paths).first
-        return unless  Ability.allowed?(current_user(request, project), :read_project, project)
+        return unless Ability.allowed?(current_user(request, project), :read_project, project)
 
         project
       end

@@ -68,7 +68,7 @@ describe 'Issue Boards', :js do
     let(:bug)         { create(:label, project: project, name: 'Bug') }
     let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
     let!(:closed)       { create(:label, project: project, name: 'Closed') }
-    let!(:accepting)  { create(:label, project: project, name: 'Accepting Merge Requests') }
+    let!(:accepting) { create(:label, project: project, name: 'Accepting Merge Requests') }
     let!(:a_plus) { create(:label, project: project, name: 'A+') }
 
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }

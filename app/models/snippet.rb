@@ -50,11 +50,11 @@ class Snippet < ActiveRecord::Base
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
   # Scopes
-  scope :are_internal,  -> { where(visibility_level: Snippet::INTERNAL) }
+  scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }
   scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
   scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
-  scope :fresh,   -> { order("created_at DESC") }
+  scope :fresh, -> { order("created_at DESC") }
   scope :inc_relations_for_view, -> { includes(author: :status) }
 
   participant :author

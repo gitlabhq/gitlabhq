@@ -52,7 +52,7 @@ module API
         success Entities::Job
       end
       params do
-        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         use :optional_scope
         use :pagination
       end
