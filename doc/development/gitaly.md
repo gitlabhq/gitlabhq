@@ -128,7 +128,7 @@ to manually run `make` again.
 Note that CI tests will not use your locally modified version of
 Gitaly. To use a custom Gitaly version in CI you need to update
 GITALY_SERVER_VERSION. You can use the format `=revision` to use a
-non-tagged commit from https://gitlab.com/gitlab-org/gitaly in CI.
+non-tagged commit from <https://gitlab.com/gitlab-org/gitaly> in CI.
 
 To use a different Gitaly repository, e.g., if your changes are present
 on a fork, you can specify a `GITALY_REPO_URL` environment variable when

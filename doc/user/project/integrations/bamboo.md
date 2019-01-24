@@ -40,7 +40,7 @@ service in GitLab.
 1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
 1. Click 'Atlassian Bamboo CI'
 1. Select the 'Active' checkbox.
-1. Enter the base URL of your Bamboo server. 'https://bamboo.example.com'
+1. Enter the base URL of your Bamboo server. `https://bamboo.example.com`
 1. Enter the build key from your Bamboo build plan. Build keys are typically made
    up from the Project Key and Plan Key that are set on project/plan creation and
    separated with a dash (`-`), for example  **PROJ-PLAN**. This is a short, all

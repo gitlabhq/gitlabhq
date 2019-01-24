@@ -73,7 +73,7 @@ which also covers the case where you have projects hosted with
 
 ## Private profile
 
-The following information will be hidden from the user profile page (https://gitlab.example.com/username) if this feature is enabled:
+The following information will be hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
 
 - Atom feed
 - Date when account is created

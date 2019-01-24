@@ -138,5 +138,5 @@ buildpack: client-certificate-mapper=1.2.0_RELEASE container-security-provider=1
 ```
 
 You can then visit your deployed application (for this example,
-https://gitlab-hello-world-undissembling-hotchpot.cfapps.io/) and you should
+`https://gitlab-hello-world-undissembling-hotchpot.cfapps.io/`) and you should
 see the "Spring is here!" message.
