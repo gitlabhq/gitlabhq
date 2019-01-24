@@ -373,7 +373,8 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = notifiable_users(project.team.members, :mention, project: project)
+    recipients = project.private? ? project.team.members_in_project_and_ancestors : project.team.members
+    recipients = notifiable_users(recipients, :mention, project: project)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(
