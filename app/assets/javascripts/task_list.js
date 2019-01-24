@@ -30,11 +30,7 @@ export default class TaskList {
     // Prevent duplicate event bindings
     this.disable();
     $(this.taskListContainerSelector).taskList('enable');
-    $(document).on(
-      'tasklist:changed',
-      this.taskListContainerSelector,
-      this.update.bind(this),
-    );
+    $(document).on('tasklist:changed', this.taskListContainerSelector, this.update.bind(this));
   }
 
   getTaskListTarget(e = {}) {
