@@ -19,10 +19,15 @@ GitHub will generate an application ID and secret key for you to use.
     - Application name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
     - Application description: Fill this in if you wish.
-    - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'. Please make sure the port is included if your GitLab instance is not configured on default port.
-1.  Select "Register application".
+    - Authorization callback URL: `http(s)://${YOUR_DOMAIN}/users/auth`. Please make sure the port is included if your GitLab instance is not configured on default port.
 
-1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
+    NOTE: Be sure to append `/users/auth` to the end of the callback URL
+    to prevent a [OAuth2 convert
+    redirect](http://tetraph.com/covert_redirect/) vulnerability.
+
+1.  Select **Register application**.
+
+1.  You should now see a pair of **Client ID** and **Client Secret** near the top right of the page (see screenshot).
     Keep this page open as you continue configuration.
     ![GitHub app](img/github_app.png)
 
