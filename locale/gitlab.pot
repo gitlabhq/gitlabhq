@@ -3085,6 +3085,9 @@ msgstr ""
 msgid "External URL"
 msgstr ""
 
+msgid "External Wiki"
+msgstr ""
+
 msgid "Facebook"
 msgstr ""
 

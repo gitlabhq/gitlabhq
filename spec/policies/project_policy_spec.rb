@@ -102,15 +102,27 @@ describe ProjectPolicy do
     expect(Ability).not_to be_allowed(user, :read_issue, project)
   end
 
-  context 'when the feature is disabled' do
+  context 'wiki feature' do
+    let(:permissions) { %i(read_wiki create_wiki update_wiki admin_wiki download_wiki_code) }
+
     subject { described_class.new(owner, project) }
 
-    before do
-      project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
-    end
+    context 'when the feature is disabled' do
+      before do
+        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+      end
 
-    it 'does not include the wiki permissions' do
-      expect_disallowed :read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code
+      it 'does not include the wiki permissions' do
+        expect_disallowed(*permissions)
+      end
+
+      context 'when there is an external wiki' do
+        it 'does not include the wiki permissions' do
+          allow(project).to receive(:has_external_wiki?).and_return(true)
+
+          expect_disallowed(*permissions)
+        end
+      end
     end
   end
 
