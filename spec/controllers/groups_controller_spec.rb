@@ -32,21 +32,46 @@ describe GroupsController do
     end
   end
 
+  shared_examples 'details view' do
+    it { is_expected.to render_template('groups/show') }
+
+    context 'as atom' do
+      let!(:event) { create(:event, project: project) }
+      let(:format) { :atom }
+
+      it { is_expected.to render_template('groups/show') }
+
+      it 'assigns events for all the projects in the group' do
+        subject
+        expect(assigns(:events)).to contain_exactly(event)
+      end
+    end
+  end
+
   describe 'GET #show' do
     before do
       sign_in(user)
       project
     end
 
-    context 'as atom' do
-      it 'assigns events for all the projects in the group' do
-        create(:event, project: project)
+    let(:format) { :html }
 
-        get :show, params: { id: group.to_param }, format: :atom
+    subject { get :show, params: { id: group.to_param }, format: format }
 
-        expect(assigns(:events)).not_to be_empty
-      end
+    it_behaves_like 'details view'
+  end
+
+  describe 'GET #details' do
+    before do
+      sign_in(user)
+      project
     end
+
+    let(:format) { :html }
+
+    subject { get :details, params: { id: group.to_param }, format: format }
+
+    it_behaves_like 'details view'
   end
 
   describe 'GET edit' do

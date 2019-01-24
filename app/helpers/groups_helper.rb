@@ -4,6 +4,7 @@ module GroupsHelper
   def group_overview_nav_link_paths
     %w[
       groups#show
+      groups#details
       groups#activity
       groups#subgroups
       analytics#show
