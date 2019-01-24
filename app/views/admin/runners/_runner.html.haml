@@ -30,7 +30,7 @@
 
   .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('IP Address')
-    .table-mobile-content
+    .table-mobile-content.str-truncated.has-tooltip{ title: runner.ip_address }
       = runner.ip_address
 
   .table-section.section-5
