@@ -90,17 +90,10 @@ export default {
       // language to the next. See:
       // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24427#note_133713771
       const { id, url } = this.commit;
-      const linkStart = `<a class="commit-sha monospace" href="${escape(url)}">`;
-      const linkEnd = '</a>';
-      return sprintf(
-        s__('MergeRequests|commented on commit %{linkStart}%{commitId}%{linkEnd}'),
-        {
-          commitId: truncateSha(id),
-          linkStart,
-          linkEnd,
-        },
-        false,
-      );
+      const commitLink = `<a class="commit-sha monospace" href="${escape(url)}">${truncateSha(
+        id,
+      )}</a>`;
+      return sprintf(s__('MergeRequests|commented on commit %{commitLink}'), { commitLink }, false);
     },
   },
 
