@@ -37,8 +37,8 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
   describe '#execute' do
     it 'retrieves each download link of every non existent lfs object' do
-      subject.execute(new_oids).each do |oid, link|
-        expect(link).to eq "#{import_url}/gitlab-lfs/objects/#{oid}"
+      subject.execute(new_oids).each do |lfs_download_object|
+        expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
       end
     end
 
@@ -50,8 +50,8 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
           it 'adds credentials to the download_link' do
             result = subject.execute(new_oids)
 
-            result.each do |oid, link|
-              expect(link.starts_with?('http://user:password@')).to be_truthy
+            result.each do |lfs_download_object|
+              expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_truthy
             end
           end
         end
@@ -60,8 +60,8 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
           it 'does not add any credentials' do
             result = subject.execute(new_oids)
 
-            result.each do |oid, link|
-              expect(link.starts_with?('http://user:password@')).to be_falsey
+            result.each do |lfs_download_object|
+              expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_falsey
             end
           end
         end
@@ -74,8 +74,8 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
         it 'downloads without any credentials' do
           result = subject.execute(new_oids)
 
-          result.each do |oid, link|
-            expect(link.starts_with?('http://user:password@')).to be_falsey
+          result.each do |lfs_download_object|
+            expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_falsey
           end
         end
       end
@@ -92,7 +92,7 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
   describe '#parse_response_links' do
     it 'does not add oid entry if href not found' do
-      expect(Rails.logger).to receive(:error).with("Link for Lfs Object with oid whatever not found or invalid.")
+      expect(subject).to receive(:log_error).with("Link for Lfs Object with oid whatever not found or invalid.")
 
       result = subject.send(:parse_response_links, invalid_object_response)
 

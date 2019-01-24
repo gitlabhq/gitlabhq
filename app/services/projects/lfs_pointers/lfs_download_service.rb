@@ -4,68 +4,93 @@
 module Projects
   module LfsPointers
     class LfsDownloadService < BaseService
-      VALID_PROTOCOLS = %w[http https].freeze
+      SizeError = Class.new(StandardError)
+      OidError = Class.new(StandardError)
+
+      attr_reader :lfs_download_object
+      delegate :oid, :size, :credentials, :sanitized_url, to: :lfs_download_object, prefix: :lfs
+
+      def initialize(project, lfs_download_object)
+        super(project)
+
+        @lfs_download_object = lfs_download_object
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def execute(oid, url)
-        return unless project&.lfs_enabled? && oid.present? && url.present?
+      def execute
+        return unless project&.lfs_enabled? && lfs_download_object
+        return error("LFS file with oid #{lfs_oid} has invalid attributes") unless lfs_download_object.valid?
+        return if LfsObject.exists?(oid: lfs_oid)
 
-        return if LfsObject.exists?(oid: oid)
-
-        sanitized_uri = sanitize_url!(url)
-
-        with_tmp_file(oid) do |file|
-          download_and_save_file(file, sanitized_uri)
-          lfs_object = LfsObject.new(oid: oid, size: file.size, file: file)
-
-          project.all_lfs_objects << lfs_object
+        wrap_download_errors do
+          download_lfs_file!
         end
-      rescue Gitlab::UrlBlocker::BlockedUrlError => e
-        Rails.logger.error("LFS file with oid #{oid} couldn't be downloaded: #{e.message}")
-      rescue StandardError => e
-        Rails.logger.error("LFS file with oid #{oid} couldn't be downloaded from #{sanitized_uri.sanitized_url}: #{e.message}")
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
 
-      def sanitize_url!(url)
-        Gitlab::UrlSanitizer.new(url).tap do |sanitized_uri|
-          # Just validate that HTTP/HTTPS protocols are used. The
-          # subsequent Gitlab::HTTP.get call will do network checks
-          # based on the settings.
-          Gitlab::UrlBlocker.validate!(sanitized_uri.sanitized_url,
-                                       protocols: VALID_PROTOCOLS)
+      def wrap_download_errors(&block)
+        yield
+      rescue SizeError, OidError, StandardError => e
+        error("LFS file with oid #{lfs_oid} could't be downloaded from #{lfs_sanitized_url}: #{e.message}")
+      end
+
+      def download_lfs_file!
+        with_tmp_file do |tmp_file|
+          download_and_save_file!(tmp_file)
+          project.all_lfs_objects << LfsObject.new(oid: lfs_oid,
+                                                   size: lfs_size,
+                                                   file: tmp_file)
+
+          success
         end
       end
 
-      def download_and_save_file(file, sanitized_uri)
-        response = Gitlab::HTTP.get(sanitized_uri.sanitized_url, headers(sanitized_uri)) do |fragment|
+      def download_and_save_file!(file)
+        digester = Digest::SHA256.new
+        response = Gitlab::HTTP.get(lfs_sanitized_url, download_headers) do |fragment|
+          digester << fragment
           file.write(fragment)
+
+          raise_size_error! if file.size > lfs_size
         end
 
         raise StandardError, "Received error code #{response.code}" unless response.success?
+
+        raise_size_error! if file.size != lfs_size
+        raise_oid_error! if digester.hexdigest != lfs_oid
       end
 
-      def headers(sanitized_uri)
-        query_options.tap do |headers|
-          credentials = sanitized_uri.credentials
-
-          if credentials[:user].present? || credentials[:password].present?
+      def download_headers
+        { stream_body: true }.tap do |headers|
+          if lfs_credentials[:user].present? || lfs_credentials[:password].present?
             # Using authentication headers in the request
-            headers[:http_basic_authentication] = [credentials[:user], credentials[:password]]
+            headers[:basic_auth] = { username: lfs_credentials[:user], password: lfs_credentials[:password] }
           end
         end
       end
 
-      def query_options
-        { stream_body: true }
-      end
-
-      def with_tmp_file(oid)
+      def with_tmp_file
         create_tmp_storage_dir
 
-        File.open(File.join(tmp_storage_dir, oid), 'wb') { |file| yield file }
+        File.open(tmp_filename, 'wb') do |file|
+          begin
+            yield file
+          rescue StandardError => e
+            # If the lfs file is successfully downloaded it will be removed
+            # when it is added to the project's lfs files.
+            # Nevertheless if any excetion raises the file would remain
+            # in the file system. Here we ensure to remove it
+            File.unlink(file) if File.exist?(file)
+
+            raise e
+          end
+        end
+      end
+
+      def tmp_filename
+        File.join(tmp_storage_dir, lfs_oid)
       end
 
       def create_tmp_storage_dir
@@ -78,6 +103,20 @@ module Projects
 
       def storage_dir
         @storage_dir ||= Gitlab.config.lfs.storage_path
+      end
+
+      def raise_size_error!
+        raise SizeError, 'Size mistmatch'
+      end
+
+      def raise_oid_error!
+        raise OidError, 'Oid mismatch'
+      end
+
+      def error(message, http_status = nil)
+        log_error(message)
+
+        super
       end
     end
   end
