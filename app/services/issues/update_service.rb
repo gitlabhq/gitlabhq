@@ -8,7 +8,7 @@ module Issues
       handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
-      move_issue_to_new_project(issue) || task_change_event(issue) || update(issue)
+      move_issue_to_new_project(issue) || update_task_event(issue) || update(issue)
     end
 
     def update(issue)
@@ -122,31 +122,6 @@ module Issues
         notification_service.async.removed_milestone_issue(issue, current_user)
       else
         notification_service.async.changed_milestone_issue(issue, issue.milestone, current_user)
-      end
-    end
-
-    def task_change_event(issue)
-      update_task_params = params.delete(:update_task)
-      return unless update_task_params
-
-      toggler = TaskListToggleService.new(issue.description, issue.description_html,
-                                          index: update_task_params[:index],
-                                          currently_checked: !update_task_params[:checked],
-                                          line_source: update_task_params[:line_source],
-                                          line_number: update_task_params[:line_number])
-
-      if toggler.execute
-        # by updating the description_html field at the same time,
-        # the markdown cache won't be considered invalid
-        params[:description]      = toggler.updated_markdown
-        params[:description_html] = toggler.updated_markdown_html
-
-        # since we're updating a very specific line, we don't care whether
-        # the `lock_version` sent from the FE is the same or not.  Just
-        # make sure the data hasn't changed since we queried it
-        params[:lock_version]     = issue.lock_version
-
-        update_task(issue)
       end
     end
 
