@@ -7,6 +7,10 @@ module QA
         'root'
       end
 
+      def default_email
+        'admin@example.com'
+      end
+
       def default_password
         '5iveL!fe'
       end

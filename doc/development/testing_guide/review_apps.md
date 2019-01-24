@@ -4,41 +4,79 @@ Review Apps are automatically deployed by each pipeline, both in
 [CE](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22010) and
 [EE](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6665).
 
+CAUTION: **Warning:**
+There's currently [an issue when using `/` in branch names][charts-1068] where
+Review Apps fail to be deployed.
+
 ## How does it work?
 
+### CD/CD architecture diagram
+
+![Review Apps CI/CD architecture](img/review_apps_cicd_architecture.png)
+
+<details>
+<summary>Show mermaid source</summary>
+<pre>
+graph TD
+    B1 -.->|2. once gitlab:assets:compile is done,<br />triggers a CNG-mirror pipeline and wait for it to be done| A2
+    C1 -.->|2. once review-build-cng is done,<br />Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline| A3
+
+subgraph gitlab-ce/ee `test` stage
+    A1[gitlab:assets:compile]
+    B1[review-build-cng] -->|1. wait for| A1
+    C1[review-deploy] -->|1. wait for| B1
+    D1[review-qa-smoke] -->|1. wait for| C1
+    D1[review-qa-smoke] -.->|2. once review-deploy is done| E1>gitlab-qa runs the smoke<br/>suite against the Review App]
+    end
+
+subgraph CNG-mirror pipeline
+    A2>Cloud Native images are built];
+    end
+
+subgraph GCP `gitlab-review-apps` project
+    A3>"Cloud Native images are deployed to the<br />`review-apps-ce` or `review-apps-ee` Kubernetes (GKE) cluster"];
+    end
+</pre>
+</details>
+
+### Detailed explanation
+
 1. On every [pipeline][gitlab-pipeline] during the `test` stage, the
-  [`review-deploy`][review-deploy-job] job is automatically started.
-1. The `review-deploy` job:
-    1. Waits for the `gitlab:assets:compile` job to finish since the
-      [`CNG-mirror`][cng-mirror] pipeline triggerred in the following step
-      depends on it.
-    1. [Triggers a pipeline][cng-pipeline] in the [`CNG-mirror`][cng-mirror]
-      project.
-        - We use the `CNG-mirror` project so that the `CNG`, (**C**loud
-          **N**ative **G**itLab), project's registry is not overloaded with a
-          lot of transient Docker images.
-        - The `CNG-mirror` pipeline creates the Docker images of each component
-          (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.) based on the
-          commit from the [GitLab pipeline][gitlab-pipeline] and store them in
-          its [registry][cng-mirror-registry].
-    1. Once all images are built by [`CNG-mirror`][cng-mirror], the Review App
-      is deployed using [the official GitLab Helm chart][helm-chart] to the
-      [`review-apps-ce`][review-apps-ce] / [`review-apps-ee`][review-apps-ee]
-      Kubernetes cluster on GCP.
-        - The actual scripts used to deploy the Review App can be found at
-          [`scripts/review_apps/review-apps.sh`][review-apps.sh].
-        - These scripts are basically
-          [our official Auto DevOps scripts][Auto-DevOps.gitlab-ci.yml] where the
-          default CNG images are overridden with the images built and stored in the
-          [`CNG-mirror` project's registry][cng-mirror-registry].
-        - Since we're using [the official GitLab Helm chart][helm-chart], this means
-          you get a dedicated environment for your branch that's very close to what
-          it would look in production.
-1. Once the `review-deploy` job succeeds, you should be able to use your Review
-  App thanks to the direct link to it from the MR widget. The default username
-  is `root` and its password can be found in the 1Password secure note named
-  **gitlab-{ce,ee} Review App's root password** (note that there's currently
-  [a bug where the default password seems to be overridden][password-bug]).
+  [`review-build-cng`][review-build-cng] and
+  [`review-deploy`][review-deploy] jobs are automatically started.
+    - The [`review-deploy`][review-deploy] job waits for the
+      [`review-build-cng`][review-build-cng] job to finish.
+    - The [`review-build-cng`][review-build-cng] job waits for the
+      [`gitlab:assets:compile`][gitlab:assets:compile] job to finish since the
+      [`CNG-mirror`][cng-mirror] pipeline triggered in the following step depends on it.
+1. Once the [`gitlab:assets:compile`][gitlab:assets:compile] job is done,
+  [`review-build-cng`][review-build-cng] [triggers a pipeline][cng-pipeline]
+  in the [`CNG-mirror`][cng-mirror] project.
+    - The [`CNG-mirror`][cng-pipeline] pipeline creates the Docker images of
+      each component (e.g. `gitlab-rails-ee`, `gitlab-shell`, `gitaly` etc.)
+      based on the commit from the [GitLab pipeline][gitlab-pipeline] and store
+      them in its [registry][cng-mirror-registry].
+    - We use the [`CNG-mirror`][cng-mirror] project so that the `CNG`, (**C**loud
+      **N**ative **G**itLab), project's registry is not overloaded with a
+      lot of transient Docker images.
+1. Once the [`review-build-cng`][review-build-cng] job is done, the
+  [`review-deploy`][review-deploy] job deploys the Review App using
+  [the official GitLab Helm chart][helm-chart] to the
+  [`review-apps-ce`][review-apps-ce] / [`review-apps-ee`][review-apps-ee]
+  Kubernetes cluster on GCP.
+    - The actual scripts used to deploy the Review App can be found at
+      [`scripts/review_apps/review-apps.sh`][review-apps.sh].
+    - These scripts are basically
+      [our official Auto DevOps scripts][Auto-DevOps.gitlab-ci.yml] where the
+      default CNG images are overridden with the images built and stored in the
+      [`CNG-mirror` project's registry][cng-mirror-registry].
+    - Since we're using [the official GitLab Helm chart][helm-chart], this means
+      you get a dedicated environment for your branch that's very close to what
+      it would look in production.
+1. Once the [`review-deploy`][review-deploy] job succeeds, you should be able to
+  use your Review App thanks to the direct link to it from the MR widget. The
+  default username is `root` and its password can be found in the 1Password
+  secure note named **gitlab-{ce,ee} Review App's root password**.
 
 **Additional notes:**
 
@@ -120,10 +158,13 @@ find a way to limit it to only us.**
 
   > This isn't enabled for forks.
 
-[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipelines/35850709
-[review-deploy-job]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/118076368
+[charts-1068]: https://gitlab.com/charts/gitlab/issues/1068
+[gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipelines/44362587
+[gitlab:assets:compile]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/149511610
+[review-build-cng]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/149511623
+[review-deploy]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/149511624
 [cng-mirror]: https://gitlab.com/gitlab-org/build/CNG-mirror
-[cng-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/35883435
+[cng-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657
 [cng-mirror-registry]: https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry
 [helm-chart]: https://gitlab.com/charts/gitlab/
 [review-apps-ce]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps

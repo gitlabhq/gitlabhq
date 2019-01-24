@@ -121,7 +121,7 @@ failure. In CI you can download these files as job artifacts.
 
 Also, you can manually take screenshots at any point in a test by adding the
 methods below. Be sure to remove them when they are no longer needed! See
-https://github.com/mattheworiordan/capybara-screenshot#manual-screenshots for
+<https://github.com/mattheworiordan/capybara-screenshot#manual-screenshots> for
 more.
 
 Add `screenshot_and_save_page` in a `:js` spec to screenshot what Capybara
@@ -302,7 +302,7 @@ path, they will use the same repository on disk and lead to test environment
 pollution.
 
 Other files must be managed manually by the spec. If you run code that creates a
-`tmp/test-file.csv` file, for instance, the spec must ensure that the file is 
+`tmp/test-file.csv` file, for instance, the spec must ensure that the file is
 removed as part of cleanup.
 
 #### Persistent in-memory application state

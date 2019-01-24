@@ -72,7 +72,7 @@ export default {
       footer-primary-button-variant="danger"
       @submit="discardFileChanges(path)"
     >
-      {{ __("You will loose all changes you've made to this file. This action cannot be undone.") }}
+      {{ __("You will lose all changes you've made to this file. This action cannot be undone.") }}
     </gl-modal>
   </div>
 </template>

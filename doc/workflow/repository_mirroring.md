@@ -80,10 +80,13 @@ mirror.
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
 1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the `public_repo` box checked.
-1. Fill in the **Git repository URL** field, with the personal access token instead of a password.
-   For example: `https://<GitHubUsername>:<GitHubPersonalAccessToken>@github.com/group/project.git`.
+1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
+1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
-1. Wait, or click the update button.
+
+The mirrored repository will be listed. For example, `https://*****:*****@github.com/<your_github_group>/<your_github_project>.git`. 
+
+The repository will push soon. To force a push, click the appropriate button.
 
 ## Pulling from a remote repository **[STARTER]**
 
@@ -137,8 +140,8 @@ increased each time it fails, up to a maximum amount of time.
 
 ### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Push mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Pull mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 

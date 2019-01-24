@@ -1,0 +1,5 @@
+---
+title: Use delete instead of remove when referring to `git branch -D`
+merge_request: !23966
+author:
+type: changed

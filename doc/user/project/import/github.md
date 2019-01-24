@@ -92,7 +92,7 @@ integration enabled, that should be the preferred method to import your reposito
 
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 
-1. Go to https://github.com/settings/tokens/new
+1. Go to <https://github.com/settings/tokens/new>
 1. Enter a token description.
 1. Select the repo scope.
 1. Click **Generate token**.

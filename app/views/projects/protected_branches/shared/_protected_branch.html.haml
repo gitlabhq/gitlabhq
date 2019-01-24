@@ -15,7 +15,7 @@
         = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit-sha')
         = time_ago_with_tooltip(commit.committed_date)
       - else
-        (branch was removed from repository)
+        (branch was deleted from repository)
 
   = yield
 

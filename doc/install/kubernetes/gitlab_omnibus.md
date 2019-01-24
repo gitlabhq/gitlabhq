@@ -7,7 +7,7 @@ instead. A comparison of the two charts is available in [this video](https://you
 For more information on available GitLab Helm Charts, see the [charts overview](index.md#chart-overview).
 
 - This GitLab-Omnibus chart has been tested on Google Kubernetes Engine and Azure Container Service.
-- This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
+- This work is based partially on: <https://github.com/lwolf/kubernetes-gitlab/>. GitLab would like to thank Sergey Nuzhdin for his work.
 
 ## Introduction
 

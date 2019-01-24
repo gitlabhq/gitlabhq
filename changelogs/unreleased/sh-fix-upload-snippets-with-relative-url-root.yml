@@ -1,0 +1,5 @@
+---
+title: Fix 404s for snippet uploads when relative URL root used
+merge_request: 24588
+author:
+type: fixed

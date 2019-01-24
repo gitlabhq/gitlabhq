@@ -194,7 +194,7 @@ not without its own challenges:
       - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
     ```
 
-An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
+An example project using this approach can be found here: <https://gitlab.com/gitlab-examples/docker>.
 
 ### Use Docker socket binding
 

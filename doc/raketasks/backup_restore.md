@@ -378,7 +378,7 @@ with the name of your bucket:
 If you want to use Google Cloud Storage to save backups, you'll have to create
 an access key from the Google console first:
 
-1. Go to the storage settings page https://console.cloud.google.com/storage/settings
+1. Go to the storage settings page <https://console.cloud.google.com/storage/settings>
 1. Select "Interoperability" and create an access key
 1. Make note of the "Access Key" and "Secret" and replace them in the
    configurations below
