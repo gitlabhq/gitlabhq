@@ -93,7 +93,7 @@ module Gitlab
           user_id: user.id,
           user_name: user.name,
           user_username: user.username,
-          user_email: user.email,
+          user_email: user.public_email,
           user_avatar: user.avatar_url(only_path: false),
           project_id: project.id,
           project: project.hook_attrs,
