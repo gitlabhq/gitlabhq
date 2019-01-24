@@ -16,18 +16,22 @@ describe MailScheduler::NotificationServiceWorker do
       worker.perform(method, *serialize(key))
     end
 
-    # actionmailer wasn't actually upgraded from 4.2.10 to 4.2.11 in
-    # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23520.
-    #
-    # Attempting to run this spec in Rails 4 will fail until
-    # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23396
-    # is merged. Let's disable it since we are only using Rails 5 on
-    # this branch.
-    context 'when the arguments cannot be deserialized', :rails5 do
-      it 'does nothing' do
-        expect(worker.notification_service).not_to receive(method)
+    context 'when the arguments cannot be deserialized' do
+      context 'when the arguments are not deserializeable' do
+        it 'raises exception' do
+          expect(worker.notification_service).not_to receive(method)
+          expect { worker.perform(method, key.to_global_id.to_s.succ) }.to raise_exception(ArgumentError)
+        end
+      end
 
-        worker.perform(method, key.to_global_id.to_s.succ)
+      context 'when the arguments are deserializeable' do
+        it 'does nothing' do
+          serialized_arguments = *serialize(key)
+          key.destroy!
+
+          expect(worker.notification_service).not_to receive(method)
+          expect { worker.perform(method, serialized_arguments) }.not_to raise_exception
+        end
       end
     end
 

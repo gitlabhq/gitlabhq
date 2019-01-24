@@ -4,9 +4,9 @@ def rails5?
 end
 
 gem_versions = {}
-gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'    : '0.2'
-gem_versions['rails']                           = rails5? ? '5.0.7'  : '4.2.11'
-gem_versions['rails-i18n']                      = rails5? ? '~> 5.1' : '~> 4.0.9'
+gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'     : '0.2'
+gem_versions['rails']                           = rails5? ? '5.0.7.1' : '4.2.11'
+gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'  : '~> 4.0.9'
 
 # The 2.0.6 version of rack requires monkeypatch to be present in
 # `config.ru`. This can be removed once a new update for Rack
