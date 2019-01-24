@@ -56,6 +56,7 @@
         - if merge_request.assignee
           %li
             = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: _('Assigned to :name'))
+        = render_if_exists 'projects/merge_requests/approvals_count', merge_request: merge_request
 
         = render 'shared/issuable_meta_data', issuable: merge_request
 
