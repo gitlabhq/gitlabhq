@@ -33,6 +33,11 @@ export default {
       type: Number,
       required: true,
     },
+    deploymentData: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     alertData: {
       type: Object,
       required: false,
@@ -79,6 +84,43 @@ export default {
         legend: {
           formatter: this.xAxisLabel,
         },
+        series: this.scatterSeries,
+      };
+    },
+    earliestDatapoint() {
+      return Object.values(this.chartData).reduce((acc, data) => {
+        const [[timestamp]] = data.sort(([a], [b]) => {
+          if (a < b) {
+            return -1;
+          }
+          return a > b ? 1 : 0;
+        });
+
+        return timestamp < acc || acc === null ? timestamp : acc;
+      }, null);
+    },
+    recentDeployments() {
+      return this.deploymentData.reduce((acc, deployment) => {
+        if (deployment.created_at >= this.earliestDatapoint) {
+          acc.push({
+            id: deployment.id,
+            createdAt: deployment.created_at,
+            sha: deployment.sha,
+            commitUrl: `${this.projectPath}/commit/${deployment.sha}`,
+            tag: deployment.tag,
+            tagUrl: deployment.tag ? `${this.tagsPath}/${deployment.ref.name}` : null,
+            ref: deployment.ref.name,
+            showDeploymentFlag: false,
+          });
+        }
+
+        return acc;
+      }, []);
+    },
+    scatterSeries() {
+      return {
+        type: 'scatter',
+        data: this.recentDeployments.map(deployment => [deployment.createdAt, 0]),
       };
     },
     xAxisLabel() {

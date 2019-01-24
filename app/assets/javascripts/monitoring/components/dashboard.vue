@@ -190,6 +190,7 @@ export default {
         v-for="(graphData, graphIndex) in groupData.metrics"
         :key="graphIndex"
         :graph-data="graphData"
+        :deployment-data="store.deploymentData"
         :alert-data="getGraphAlerts(graphData.id)"
         :container-width="elWidth"
         group-id="monitor-area-chart"
