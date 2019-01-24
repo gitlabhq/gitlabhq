@@ -128,6 +128,17 @@ describe PersonalSnippetPolicy do
       end
     end
 
+    context 'admin user' do
+      subject { permissions(admin_user) }
+
+      it do
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(:award_emoji)
+        is_expected.to be_disallowed(*author_permissions)
+      end
+    end
+
     context 'external user' do
       subject { permissions(external_user) }
 
