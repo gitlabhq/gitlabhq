@@ -2,6 +2,7 @@
 export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 
 function echoerr() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
+function echoinfo() { printf "\033[0;33m%s\n\033[0m" "$*" >&2; }
 
 function check_kube_domain() {
   if [ -z ${REVIEW_APPS_DOMAIN+x} ]; then
@@ -238,17 +239,17 @@ function get_pod() {
   local app_name="${1}"
   local status="${2-Running}"
   get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
-  echoerr "Running '${get_pod_cmd}'"
+  echoinfo "Running '${get_pod_cmd}'"
 
   while true; do
     local pod_name="$(eval $get_pod_cmd)"
     [[ "${pod_name}" == "" ]] || break
 
-    echoerr "Waiting till '${app_name}' pod is ready";
+    echoinfo "Waiting till '${app_name}' pod is ready";
     sleep 5;
   done
 
-  echoerr "The pod name is '${pod_name}'."
+  echoinfo "The pod name is '${pod_name}'."
   echo "${pod_name}"
 }
 
@@ -290,7 +291,7 @@ function get_job_id() {
 
   while true; do
     local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?per_page=100&page=${page}${query_string}"
-    echoerr "GET ${url}"
+    echoinfo "GET ${url}"
 
     local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
     [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
@@ -301,7 +302,7 @@ function get_job_id() {
   if [[ "${job_id}" == "" ]]; then
     echoerr "The '${job_name}' job ID couldn't be retrieved!"
   else
-    echoerr "The '${job_name}' job ID is ${job_id}"
+    echoinfo "The '${job_name}' job ID is ${job_id}"
     echo "${job_id}"
   fi
 }
@@ -312,10 +313,10 @@ function play_job() {
   if [ -z "${job_id}" ]; then return; fi
 
   local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}/play"
-  echoerr "POST ${url}"
+  echoinfo "POST ${url}"
 
   local job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".web_url")
-  echo "Manual job '${job_name}' started at: ${job_url}"
+  echoinfo "Manual job '${job_name}' started at: ${job_url}"
 }
 
 function wait_for_job_to_be_done() {
@@ -324,10 +325,10 @@ function wait_for_job_to_be_done() {
   local job_id=$(get_job_id "${job_name}" "${query_string}");
   if [ -z "${job_id}" ]; then return; fi
 
-  echoerr "Waiting for the '${job_name}' job to finish..."
+  echoinfo "Waiting for the '${job_name}' job to finish..."
 
   local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}"
-  echo "GET ${url}"
+  echoinfo "GET ${url}"
 
   # In case the job hasn't finished yet. Keep trying until the job times out.
   local interval=30
@@ -342,13 +343,13 @@ function wait_for_job_to_be_done() {
   done
 
   local elapsed_minutes=$((elapsed_seconds / 60))
-  echoerr "Waited '${job_name}' for ${elapsed_minutes} minutes."
+  echoinfo "Waited '${job_name}' for ${elapsed_minutes} minutes."
 
   if [[ "${job_status}" == "failed" ]]; then
-    echo "The '${job_name}' failed."
+    echoerr "The '${job_name}' failed."
   elif [[ "${job_status}" == "manual" ]]; then
-    echo "The '${job_name}' is manual."
+    echoinfo "The '${job_name}' is manual."
   else
-    echo "The '${job_name}' passed."
+    echoinfo "The '${job_name}' passed."
   fi
 }
