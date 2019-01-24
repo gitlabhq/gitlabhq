@@ -238,7 +238,7 @@ For other punctuation rules, please refer to the
 
 ### Unlinking emails
 
-By default, all email addressed will render in an email tag on docs.gitlab.com.
+By default, all email addresses will render in an email tag on docs.gitlab.com.
 To escape the code block and unlink email addresses, use two backticks:
 
 ```md
