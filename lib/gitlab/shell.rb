@@ -77,19 +77,19 @@ module Gitlab
     #
     # storage - the shard key
     # disk_path - project disk path
-    # gl_project_name - project name
+    # gl_project_path - project name
     #
     # Ex.
     #   create_repository("default", "path/to/gitlab-ci", "gitlab/gitlab-ci")
     #
-    def create_repository(storage, disk_path, gl_project_name)
+    def create_repository(storage, disk_path, gl_project_path)
       relative_path = disk_path.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
       # During creation of a repository, gl_repository may not be known
       # because that depends on a yet-to-be assigned project ID in the
       # database (e.g. project-1234), so for now it is blank.
-      repository = Gitlab::Git::Repository.new(storage, relative_path, '', gl_project_name)
+      repository = Gitlab::Git::Repository.new(storage, relative_path, '', gl_project_path)
       wrapped_gitaly_errors { repository.gitaly_repository_client.create_repository }
 
       true
@@ -115,13 +115,13 @@ module Gitlab
     # Ex.
     #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
-    def import_repository(storage, name, url, gl_project_name)
+    def import_repository(storage, name, url, gl_project_path)
       if url.start_with?('.', '/')
         raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
       end
 
       relative_path = "#{name}.git"
-      cmd = GitalyGitlabProjects.new(storage, relative_path, gl_project_name)
+      cmd = GitalyGitlabProjects.new(storage, relative_path, gl_project_path)
 
       success = cmd.import_project(url, git_timeout)
       raise Error, cmd.output unless success
@@ -413,17 +413,17 @@ module Gitlab
     end
 
     class GitalyGitlabProjects
-      attr_reader :shard_name, :repository_relative_path, :output, :gl_project_name
+      attr_reader :shard_name, :repository_relative_path, :output, :gl_project_path
 
-      def initialize(shard_name, repository_relative_path, gl_project_name)
+      def initialize(shard_name, repository_relative_path, gl_project_path)
         @shard_name = shard_name
         @repository_relative_path = repository_relative_path
         @output = ''
-        @gl_project_name = gl_project_name
+        @gl_project_path = gl_project_path
       end
 
       def import_project(source, _timeout)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_name)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_path)
 
         Gitlab::GitalyClient::RepositoryService.new(raw_repository).import_repository(source)
         true
@@ -434,7 +434,7 @@ module Gitlab
 
       def fork_repository(new_shard_name, new_repository_relative_path, new_project_name)
         target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil, new_project_name)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_name)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil, gl_project_path)
 
         Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
       rescue GRPC::BadStatus => e

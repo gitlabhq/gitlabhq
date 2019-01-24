@@ -7,7 +7,7 @@ describe Gitlab::GitalyClient::Util do
     let(:gl_repository) { 'project-1' }
     let(:git_object_directory) { '.git/objects' }
     let(:git_alternate_object_directory) { ['/dir/one', '/dir/two'] }
-    let(:gl_project_name) { 'namespace/myproject' }
+    let(:gl_project_path) { 'namespace/myproject' }
     let(:git_env) do
       {
         'GIT_OBJECT_DIRECTORY_RELATIVE' => git_object_directory,
@@ -16,7 +16,7 @@ describe Gitlab::GitalyClient::Util do
     end
 
     subject do
-      described_class.repository(repository_storage, relative_path, gl_repository, gl_project_name)
+      described_class.repository(repository_storage, relative_path, gl_repository, gl_project_path)
     end
 
     it 'creates a Gitaly::Repository with the given data' do
@@ -28,7 +28,7 @@ describe Gitlab::GitalyClient::Util do
       expect(subject.gl_repository).to eq(gl_repository)
       expect(subject.git_object_directory).to eq(git_object_directory)
       expect(subject.git_alternate_object_directories).to eq(git_alternate_object_directory)
-      expect(subject.gl_project_name).to eq(gl_project_name)
+      expect(subject.gl_project_path).to eq(gl_project_path)
     end
   end
 end

@@ -2291,7 +2291,7 @@ describe Repository do
       expect(subject).to be_a(Gitlab::Git::Repository)
       expect(subject.relative_path).to eq(project.disk_path + '.git')
       expect(subject.gl_repository).to eq("project-#{project.id}")
-      expect(subject.gl_project_name).to eq(project.full_path)
+      expect(subject.gl_project_path).to eq(project.full_path)
     end
 
     context 'with a wiki repository' do
@@ -2301,7 +2301,7 @@ describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
-        expect(subject.gl_project_name).to eq(project.full_path)
+        expect(subject.gl_project_path).to eq(project.full_path)
       end
     end
   end
