@@ -1,0 +1,5 @@
+---
+title: Fix contributed projects info still visible when user enable private profile
+merge_request:
+author:
+type: security
