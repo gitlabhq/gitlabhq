@@ -1,0 +1,5 @@
+---
+title: Verify that LFS upload requests are genuine
+merge_request:
+author:
+type: security
