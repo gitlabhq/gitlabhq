@@ -405,7 +405,7 @@ class ProjectPolicy < BasePolicy
   end.enable :read_issue_iid
 
   rule do
-    (can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
+    (~guest & can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
   end.enable :read_merge_request_iid
 
   rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
