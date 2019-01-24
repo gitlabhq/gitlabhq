@@ -8,7 +8,7 @@
 listed below, if applicable, along with its [label](https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A),
 or define a specific company role, e.g. "Release Manager".
 
-Existing personas are:
+Existing personas are: (copy relevant personas out of this comment, and delete any other persona that doesn't apply)
 
 - Parker, Product Manager, https://design.gitlab.com/research/personas#persona-parker
 /label ~"Persona: Product Manager"
