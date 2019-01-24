@@ -5,7 +5,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   include WorkhorseRequest
   include SendFileUpload
 
-  skip_before_action :verify_workhorse_api!, only: [:download, :upload_finalize]
+  skip_before_action :verify_workhorse_api!, only: :download
 
   def download
     lfs_object = LfsObject.find_by_oid(oid)
