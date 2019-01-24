@@ -31,7 +31,7 @@
   %section#cluster-integration
     %h4= @cluster.name
     = render 'banner'
-    = render 'integration_form'
+    = render 'form'
 
   .cluster-applications-table#js-cluster-applications
 
@@ -42,10 +42,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
-      - if @cluster.managed?
-        = render 'clusters/clusters/gcp/show'
-      - else
-        = render 'clusters/clusters/user/show'
+      = render 'clusters/platforms/kubernetes/form', cluster: @cluster, platform: @cluster.platform_kubernetes, update_cluster_url_path: clusterable.cluster_path(@cluster)
 
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header
