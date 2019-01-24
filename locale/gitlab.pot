@@ -2780,6 +2780,9 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "External Wiki"
+msgstr ""
+
 msgid "Facebook"
 msgstr ""
 

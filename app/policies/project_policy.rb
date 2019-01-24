@@ -303,7 +303,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:project_snippet))
   end
 
-  rule { wiki_disabled & ~has_external_wiki }.policy do
+  rule { wiki_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:wiki))
     prevent(:download_wiki_code)
   end
