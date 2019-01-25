@@ -15,7 +15,7 @@ module Projects
 
       def initialize(project, old_disk_path, logger: nil)
         @project = project
-        @logger = logger || Rails.logger
+        @logger = logger || Gitlab::AppLogger
         @old_disk_path = old_disk_path
         @old_wiki_disk_path = "#{old_disk_path}.wiki"
         @move_wiki = has_wiki?
