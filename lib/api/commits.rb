@@ -318,6 +318,8 @@ module API
         use :pagination
       end
       get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        authorize! :read_merge_request, user_project
+
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
