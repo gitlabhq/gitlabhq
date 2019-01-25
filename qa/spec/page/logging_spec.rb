@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'capybara/dsl'
+require 'logger'
 
 describe QA::Support::Page::Logging do
   include Support::StubENV
@@ -8,7 +9,7 @@ describe QA::Support::Page::Logging do
   let(:page) { double().as_null_object }
 
   before do
-    logger = Logger.new $stdout
+    logger = ::Logger.new $stdout
     logger.level = ::Logger::DEBUG
     QA::Runtime::Logger.logger = logger
 
@@ -93,6 +94,13 @@ describe QA::Support::Page::Logging do
 
     expect { subject.has_no_text? 'foo' }
       .to output(/has_no_text\?\('foo'\) returned true/).to_stdout_from_any_process
+  end
+
+  it 'logs finished_loading?' do
+    expect { subject.finished_loading? }
+      .to output(/waiting for loading to complete\.\.\./).to_stdout_from_any_process
+    expect { subject.finished_loading? }
+      .to output(/loading complete after .* seconds$/).to_stdout_from_any_process
   end
 
   it 'logs within_element' do
