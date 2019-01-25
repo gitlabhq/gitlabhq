@@ -6,8 +6,8 @@
     %strong
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
-    = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
-    %span.d-none.d-sm-inline authored
+    = clipboard_button(text: @commit.id, title: _('Copy commit SHA to clipboard'))
+    %span.d-none.d-sm-inline= _('authored')
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
     = author_avatar(@commit, size: 24, has_tooltip: false)
@@ -43,13 +43,13 @@
             = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
         - if can?(current_user, :push_code, @project)
           %li.clearfix
-            = link_to s_("CreateTag|Tag"), new_project_tag_path(@project, ref: @commit)
+            = link_to s_('CreateTag|Tag'), new_project_tag_path(@project, ref: @commit)
         %li.divider
         %li.dropdown-header
           #{ _('Download') }
         - unless @commit.parents.length > 1
-          %li= link_to s_("DownloadCommit|Email Patches"), project_commit_path(@project, @commit, format: :patch), class: "qa-email-patches"
-        %li= link_to s_("DownloadCommit|Plain Diff"), project_commit_path(@project, @commit, format: :diff), class: "qa-plain-diff"
+          %li= link_to s_('DownloadCommit|Email Patches'), project_commit_path(@project, @commit, format: :patch), class: "qa-email-patches"
+        %li= link_to s_('DownloadCommit|Plain Diff'), project_commit_path(@project, @commit, format: :diff), class: "qa-plain-diff"
 
 .commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
@@ -95,8 +95,5 @@
     .well-segment
       = icon('info-circle fw')
 
-      This commit is part of merge request
-      = succeed '.' do
-        = link_to @merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id)
-
-      Comments created here will be created in the context of that merge request.
+      - link_to_merge_request = link_to(@merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id))
+      = _('This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request.').html_safe % { link_to_merge_request: link_to_merge_request }
