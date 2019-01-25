@@ -240,6 +240,29 @@ describe Milestone do
     end
   end
 
+  describe '#search_title' do
+    let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
+
+    it 'returns milestones with a matching title' do
+      expect(described_class.search_title(milestone.title)) .to eq([milestone])
+    end
+
+    it 'returns milestones with a partially matching title' do
+      expect(described_class.search_title(milestone.title[0..2])).to eq([milestone])
+    end
+
+    it 'returns milestones with a matching title regardless of the casing' do
+      expect(described_class.search_title(milestone.title.upcase))
+        .to eq([milestone])
+    end
+
+    it 'searches only on the title and ignores milestones with a matching description' do
+      create(:milestone, title: 'bar', description: 'foo')
+
+      expect(described_class.search_title(milestone.title)) .to eq([milestone])
+    end
+  end
+
   describe '#for_projects_and_groups' do
     let(:project) { create(:project) }
     let(:project_other) { create(:project) }

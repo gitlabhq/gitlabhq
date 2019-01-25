@@ -27,6 +27,7 @@ class GlobalMilestone
     items = Milestone.of_projects(projects)
                 .reorder_by_due_date_asc
                 .order_by_name_asc
+    items = items.search_title(params[:search_title]) if params[:search_title].present?
 
     Milestone.filter_by_state(items, params[:state]).map { |m| new(m) }
   end
