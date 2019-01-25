@@ -650,4 +650,28 @@ describe('DiffsStoreMutations', () => {
       expect(state.tree).toEqual(['tree']);
     });
   });
+
+  describe('SET_RENDER_TREE_LIST', () => {
+    it('sets renderTreeList', () => {
+      const state = {
+        renderTreeList: true,
+      };
+
+      mutations[types.SET_RENDER_TREE_LIST](state, false);
+
+      expect(state.renderTreeList).toBe(false);
+    });
+  });
+
+  describe('SET_SHOW_WHITESPACE', () => {
+    it('sets showWhitespace', () => {
+      const state = {
+        showWhitespace: true,
+      };
+
+      mutations[types.SET_SHOW_WHITESPACE](state, false);
+
+      expect(state.showWhitespace).toBe(false);
+    });
+  });
 });

@@ -1,12 +1,9 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileRowStats from './file_row_stats.vue';
-
-const treeListStorageKey = 'mr_diff_tree_list';
 
 export default {
   directives: {
@@ -17,17 +14,12 @@ export default {
     FileRow,
   },
   data() {
-    const treeListStored = localStorage.getItem(treeListStorageKey);
-    const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
-
     return {
       search: '',
-      renderTreeList,
-      focusSearch: false,
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'addedLines', 'removedLines']),
+    ...mapState('diffs', ['tree', 'addedLines', 'removedLines', 'renderTreeList']),
     ...mapGetters('diffs', ['allBlobs', 'diffFilesLength']),
     filteredTreeList() {
       const search = this.search.toLowerCase().trim();
@@ -52,19 +44,6 @@ export default {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile']),
     clearSearch() {
       this.search = '';
-      this.toggleFocusSearch(false);
-    },
-    toggleRenderTreeList(toggle) {
-      this.renderTreeList = toggle;
-      localStorage.setItem(treeListStorageKey, this.renderTreeList);
-    },
-    toggleFocusSearch(toggle) {
-      this.focusSearch = toggle;
-    },
-    blurSearch() {
-      if (this.search.trim() === '') {
-        this.toggleFocusSearch(false);
-      }
     },
   },
   FileRowStats,
@@ -81,8 +60,6 @@ export default {
           :placeholder="s__('MergeRequest|Filter files')"
           type="search"
           class="form-control"
-          @focus="toggleFocusSearch(true)"
-          @blur="blurSearch"
         />
         <button
           v-show="search"
@@ -92,34 +69,6 @@ export default {
           @click="clearSearch"
         >
           <icon name="close" />
-        </button>
-      </div>
-      <div v-show="!focusSearch" class="btn-group prepend-left-8 tree-list-view-toggle">
-        <button
-          v-gl-tooltip.hover
-          :aria-label="__('List view')"
-          :title="__('List view')"
-          :class="{
-            active: !renderTreeList,
-          }"
-          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
-          type="button"
-          @click="toggleRenderTreeList(false)"
-        >
-          <icon name="hamburger" />
-        </button>
-        <button
-          v-gl-tooltip.hover
-          :aria-label="__('Tree view')"
-          :title="__('Tree view')"
-          :class="{
-            active: renderTreeList,
-          }"
-          class="btn btn-default pt-0 pb-0 d-flex align-items-center"
-          type="button"
-          @click="toggleRenderTreeList(true)"
-        >
-          <icon name="file-tree" />
         </button>
       </div>
     </div>

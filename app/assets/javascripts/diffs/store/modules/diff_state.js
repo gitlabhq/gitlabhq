@@ -27,4 +27,6 @@ export default () => ({
   projectPath: '',
   commentForms: [],
   highlightedRow: null,
+  renderTreeList: true,
+  showWhitespace: true,
 });

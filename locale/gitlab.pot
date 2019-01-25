@@ -2018,6 +2018,9 @@ msgstr ""
 msgid "Compare Revisions"
 msgstr ""
 
+msgid "Compare changes"
+msgstr ""
+
 msgid "Compare changes with the last commit"
 msgstr ""
 
@@ -3142,6 +3145,9 @@ msgstr ""
 msgid "File added"
 msgstr ""
 
+msgid "File browser"
+msgstr ""
+
 msgid "File deleted"
 msgstr ""
 
@@ -3592,9 +3598,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Hide values"
-msgstr ""
-
-msgid "Hide whitespace changes"
 msgstr ""
 
 msgid "History"
