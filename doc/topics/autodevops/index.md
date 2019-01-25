@@ -634,6 +634,11 @@ repo or by specifying a project variable:
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
+### Custom Helm chart per environment **[PREMIUM]**
+
+You can specify the use of a custom Helm chart per environment by scoping the environment variable 
+to the desired environment. See [Limiting environment scopes of variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-variables-premium).
+
 ### Customizing `.gitlab-ci.yml`
 
 If you want to modify the CI/CD pipeline used by Auto DevOps, you can copy the
