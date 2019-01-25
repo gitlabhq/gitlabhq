@@ -1,7 +1,7 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- add_to_breadcrumbs "Kubernetes Clusters", clusterable.index_path
+- add_to_breadcrumbs _('Kubernetes Clusters'), clusterable.index_path
 - breadcrumb_title @cluster.name
-- page_title _("Kubernetes Cluster")
+- page_title _('Kubernetes Cluster')
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 
 - expanded = Rails.env.test?
@@ -39,7 +39,7 @@
     .settings-header
       %h4= s_('ClusterIntegration|Kubernetes cluster details')
       %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
+        = expanded ? _('Collapse') : _('Expand')
       %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
       - if @cluster.managed?
@@ -51,7 +51,7 @@
     .settings-header
       %h4= _('Advanced settings')
       %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
+        = expanded ? _('Collapse') : _('Expand')
       %p= s_("ClusterIntegration|Advanced options on this Kubernetes cluster's integration")
     .settings-content
       = render 'advanced_settings'

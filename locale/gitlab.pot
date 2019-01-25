@@ -1545,6 +1545,9 @@ msgstr ""
 msgid "ClusterIntegration|Applications"
 msgstr ""
 
+msgid "ClusterIntegration|Apply for credit"
+msgstr ""
+
 msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
 msgstr ""
 
@@ -4006,6 +4009,9 @@ msgid "Kubernetes"
 msgstr ""
 
 msgid "Kubernetes Cluster"
+msgstr ""
+
+msgid "Kubernetes Clusters"
 msgstr ""
 
 msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
