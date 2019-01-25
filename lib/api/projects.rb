@@ -358,6 +358,18 @@ module API
         end
       end
 
+      desc 'List users who starred this project' do
+        success Entities::UserBasic
+      end
+      params do
+        use :collection_params
+      end
+      get ':id/starrers' do
+        users = DeclarativePolicy.subject_scope { user_project.starrers }
+
+        present users, with: Entities::UserBasic
+      end
+
       desc 'Get languages in project repository'
       get ':id/languages' do
         ::Projects::RepositoryLanguagesService
