@@ -156,11 +156,12 @@ module TestEnv
   def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+    install_gitaly_args = [gitaly_dir, repos_path, gitaly_url].compact.join(',')
 
     component_timed_setup('Gitaly',
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:install[#{gitaly_dir},#{repos_path}]") do
+      task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
 
       start_gitaly(gitaly_dir)
     end
@@ -208,6 +209,10 @@ module TestEnv
     Process.kill('KILL', @gitaly_pid)
   rescue Errno::ESRCH
     # The process can already be gone if the test run was INTerrupted.
+  end
+
+  def gitaly_url
+    ENV.fetch('GITALY_REPO_URL', nil)
   end
 
   def setup_factory_repo
