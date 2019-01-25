@@ -323,7 +323,13 @@ module API
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        present paginate(commit.merge_requests), with: Entities::MergeRequestBasic
+        commit_merge_requests = MergeRequestsFinder.new(
+          current_user,
+          project_id: user_project.id,
+          commit_sha: commit.sha
+        ).execute
+
+        present paginate(commit_merge_requests), with: Entities::MergeRequestBasic
       end
     end
   end
