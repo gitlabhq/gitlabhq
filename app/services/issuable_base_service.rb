@@ -267,10 +267,11 @@ class IssuableBaseService < BaseService
     return unless update_task_params
 
     toggler = TaskListToggleService.new(issue.description, issue.description_html,
-                                        index: update_task_params[:index],
-                                        currently_checked: !update_task_params[:checked],
                                         line_source: update_task_params[:line_source],
-                                        line_number: update_task_params[:line_number])
+                                        line_number: update_task_params[:line_number],
+                                        currently_checked: !update_task_params[:checked],
+                                        index: update_task_params[:index],
+                                        sourcepos: false)
 
     if toggler.execute
       # by updating the description_html field at the same time,

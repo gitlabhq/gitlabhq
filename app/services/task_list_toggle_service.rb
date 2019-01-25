@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
 # Finds the correct checkbox in the passed in markdown/html and toggles it's state,
-# returning the updated markdown/html
+# returning the updated markdown/html.
 # We don't care if the text has changed above or below the specific checkbox, as long
-# the checkbox still exists at exactly the same line number and the text is equal
+# the checkbox still exists at exactly the same line number and the text is equal.
 # If successful, new values are available in `updated_markdown` and `updated_markdown_html`
+#
+# Note: once we've removed RedCarpet support, we can remove the `index` and `sourcepos`
+# parameters
 class TaskListToggleService
   attr_reader :updated_markdown, :updated_markdown_html
 
-  def initialize(markdown, markdown_html, index:, currently_checked:, line_source:, line_number:)
+  def initialize(markdown, markdown_html, line_source:, line_number:, currently_checked:, index:, sourcepos: false)
     @markdown, @markdown_html  = markdown, markdown_html
-    @index, @currently_checked = index, currently_checked
     @line_source, @line_number = line_source, line_number
+    @currently_checked         = currently_checked
+    @index, @use_sourcepos     = index, sourcepos
 
     @updated_markdown, @updated_markdown_html = nil
   end
@@ -24,7 +28,8 @@ class TaskListToggleService
 
   private
 
-  attr_reader :markdown, :markdown_html, :index, :currently_checked, :line_source, :line_number
+  attr_reader :markdown, :markdown_html, :index, :currently_checked
+  attr_reader :line_source, :line_number, :use_sourcepos
 
   def toggle_markdown
     source_lines  = markdown.split("\n")
@@ -45,8 +50,7 @@ class TaskListToggleService
 
   def toggle_html
     html          = Nokogiri::HTML.fragment(markdown_html)
-    html_checkbox = html.css('.task-list-item-checkbox')[index - 1]
-    # html_checkbox = html.css(".task-list-item[data-sourcepos^='#{changed_line_number}:'] > input.task-list-item-checkbox").first
+    html_checkbox = get_html_checkbox(html)
     return unless html_checkbox
 
     if currently_checked
@@ -56,5 +60,13 @@ class TaskListToggleService
     end
 
     @updated_markdown_html = html.to_html
+  end
+
+  def get_html_checkbox(html)
+    if use_sourcepos
+      html.css(".task-list-item[data-sourcepos^='#{line_number}:'] > input.task-list-item-checkbox").first
+    else
+      html.css('.task-list-item-checkbox')[index - 1]
+    end
   end
 end
