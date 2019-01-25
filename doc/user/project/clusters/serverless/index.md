@@ -1,6 +1,6 @@
 # Serverless
 
-> Introduced in GitLab 11.5.
+> Introduced in GitLab 11.5.  
 > Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
 Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
