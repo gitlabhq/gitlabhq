@@ -4,6 +4,8 @@ class DeleteContainerRepositoryWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
 
+  queue_namespace :container_repository
+
   LEASE_TIMEOUT = 1.hour
 
   attr_reader :container_repository
