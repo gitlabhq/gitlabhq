@@ -8,6 +8,7 @@ class Member < ActiveRecord::Base
   include Gitlab::Access
   include Presentable
   include Gitlab::Utils::StrongMemoize
+  include FromUnion
 
   attr_accessor :raw_invite_token
 
@@ -84,6 +85,14 @@ class Member < ActiveRecord::Base
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
+  scope :on_project_and_ancestors, ->(project) do
+    if project.group
+      from_union([GroupMember.where(source_id: project.group.self_and_ancestors), project.project_members])
+    else
+      project.project_members
+    end
+  end
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
