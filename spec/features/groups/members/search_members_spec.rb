@@ -19,9 +19,9 @@ describe 'Search group member' do
   end
 
   it 'renders member users' do
-    page.within '.member-search-form' do
+    page.within '.user-search-form' do
       fill_in 'search', with: member.name
-      find('.member-search-btn').click
+      find('.user-search-btn').click
     end
 
     group_members_list = find(".card .content-list")

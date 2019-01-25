@@ -25,11 +25,11 @@
         Members with access to
         %strong= @group.name
       %span.badge.badge-pill= @members.total_count
-      = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
+      = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form flex-users-form' do
         .form-group
           .position-relative.append-right-8
             = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
-            %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+            %button.user-search-btn{ type: "submit", "aria-label" => "Submit search" }
               = icon("search")
           - if can_manage_members
             = render 'shared/members/filter_2fa_dropdown'

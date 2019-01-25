@@ -170,7 +170,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :recent
           end
         end
+
         resources :releases, only: [:index]
+        resources :starrers, only: [:index]
         resources :forks, only: [:index, :new, :create]
         resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 

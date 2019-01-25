@@ -9,10 +9,6 @@
   }
 }
 
-.member-sort-dropdown {
-  margin-left: $gl-padding-8;
-}
-
 .member {
   &.is-overridden {
     .btn-ldap-override {
@@ -62,36 +58,9 @@
   }
 }
 
-.member-search-form {
-  position: relative;
-
-  @include media-breakpoint-up(sm) {
-    float: right;
-  }
-
-  .dropdown {
-    width: 100%;
-    margin-top: 5px;
-
-    .dropdown-menu-toggle {
-      vertical-align: middle;
-      width: 100%;
-    }
-
-    @include media-breakpoint-up(sm) {
-      margin-top: 0;
-      width: 155px;
-    }
-  }
-
-  .form-control {
-    width: 100%;
-    padding-right: 35px;
-
-    @include media-breakpoint-up(sm) {
-      width: 250px;
-    }
-  }
+.member-access-text {
+  margin-left: auto;
+  line-height: 43px;
 }
 
 .member-search-btn {
@@ -177,7 +146,7 @@
     padding-bottom: 1px;
   }
 
-  .flex-project-members-form {
+  .flex-users-form {
     flex-wrap: nowrap;
     white-space: nowrap;
     margin-left: auto;

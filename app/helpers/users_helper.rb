@@ -108,4 +108,9 @@ module UsersHelper
 
     items
   end
+
+  def filter_user_path(options = {})
+    options = params.slice(:sort).merge(options).permit!
+    "#{request.path}?#{options.to_param}"
+  end
 end

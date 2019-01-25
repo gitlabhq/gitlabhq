@@ -8,7 +8,8 @@
         = sprite_icon('star-o', { css_class: 'icon' })
         %span= s_('ProjectOverview|Star')
     %span.star-count.count-badge-count.d-flex.align-items-center
-      = @project.star_count
+      = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'count' do
+        = @project.star_count
 
 - else
   .count-badge.d-inline-flex.align-item-stretch.append-right-8
@@ -16,4 +17,5 @@
       = sprite_icon('star-o', { css_class: 'icon' })
       %span= s_('ProjectOverview|Star')
     %span.star-count.count-badge-count.d-flex.align-items-center
-      = @project.star_count
+      = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'count' do
+        = @project.star_count
