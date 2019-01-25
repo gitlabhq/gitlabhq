@@ -3,7 +3,7 @@
 module QA
   context 'Create' do
     describe 'Merge request rebasing' do
-      it 'user rebases source branch of merge request' do
+      it 'user rebases source branch of merge request', :quarantine do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
