@@ -112,7 +112,7 @@ describe 'Dashboard Todos' do
       end
 
       it 'shows issue assigned to yourself message' do
-        page.within('.js-todos-all')  do
+        page.within('.js-todos-all') do
           expect(page).to have_content("You assigned issue #{issue.to_reference(full: true)} to yourself")
         end
       end
@@ -125,7 +125,7 @@ describe 'Dashboard Todos' do
       end
 
       it 'shows you added a todo message' do
-        page.within('.js-todos-all')  do
+        page.within('.js-todos-all') do
           expect(page).to have_content("You added a todo for issue #{issue.to_reference(full: true)}")
           expect(page).not_to have_content('to yourself')
         end
@@ -139,7 +139,7 @@ describe 'Dashboard Todos' do
       end
 
       it 'shows you mentioned yourself message' do
-        page.within('.js-todos-all')  do
+        page.within('.js-todos-all') do
           expect(page).to have_content("You mentioned yourself on issue #{issue.to_reference(full: true)}")
           expect(page).not_to have_content('to yourself')
         end
@@ -153,7 +153,7 @@ describe 'Dashboard Todos' do
       end
 
       it 'shows you directly addressed yourself message' do
-        page.within('.js-todos-all')  do
+        page.within('.js-todos-all') do
           expect(page).to have_content("You directly addressed yourself on issue #{issue.to_reference(full: true)}")
           expect(page).not_to have_content('to yourself')
         end
@@ -169,7 +169,7 @@ describe 'Dashboard Todos' do
       end
 
       it 'shows you set yourself as an approver message' do
-        page.within('.js-todos-all')  do
+        page.within('.js-todos-all') do
           expect(page).to have_content("You set yourself as an approver for merge request #{merge_request.to_reference(full: true)}")
           expect(page).not_to have_content('to yourself')
         end

@@ -30,7 +30,7 @@ describe 'Merge request > User creates MR' do
   end
 
   context 'source project', :js do
-    let(:user)        { create(:user) }
+    let(:user) { create(:user) }
     let(:target_project) { create(:project, :public, :repository) }
     let(:source_project) { target_project }
 

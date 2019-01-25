@@ -10,7 +10,7 @@ describe GitlabSchema.types['Project'] do
 
     it 'authorizes the merge request' do
       expect(described_class.fields['mergeRequest'])
-        .to  require_graphql_authorizations(:read_merge_request)
+        .to require_graphql_authorizations(:read_merge_request)
     end
   end
 

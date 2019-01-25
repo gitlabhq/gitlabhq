@@ -85,7 +85,7 @@ module NotesHelper
 
       diffs_project_merge_request_path(discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
-      anchor = discussion.line_code if discussion.diff_discussion?
+      anchor = discussion.diff_discussion? ? discussion.line_code : "note_#{discussion.first_note.id}"
 
       project_commit_path(discussion.project, discussion.noteable, anchor: anchor)
     end

@@ -69,7 +69,7 @@ module API
         success Entities::Label
       end
       params do
-        requires :name,  type: String, desc: 'The name of the label to be updated'
+        requires :name, type: String, desc: 'The name of the label to be updated'
         optional :new_name, type: String, desc: 'The new name of the label'
         optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The new description of label'

@@ -24,10 +24,10 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html  do
+      format.html do
         render
       end
-      format.diff  do
+      format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)
       end
       format.patch do

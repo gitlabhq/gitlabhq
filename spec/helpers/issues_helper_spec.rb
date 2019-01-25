@@ -148,7 +148,7 @@ describe IssuesHelper do
     end
 
     describe "when passing a discussion" do
-      let(:diff_note) {  create(:diff_note_on_merge_request) }
+      let(:diff_note) { create(:diff_note_on_merge_request) }
       let(:merge_request) { diff_note.noteable }
       let(:discussion) { diff_note.to_discussion }
 

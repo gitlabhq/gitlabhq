@@ -13,7 +13,7 @@ describe Banzai::Filter::ProjectReferenceFilter do
     project.to_reference_with_postfix
   end
 
-  let(:project)   { create(:project, :public) }
+  let(:project) { create(:project, :public) }
   subject { project }
   let(:subject_name) { "project" }
   let(:reference) { get_reference(project) }

@@ -18,5 +18,5 @@
 
 - mr_status_tooltip = "<div><span class=\"bold\">#{mr_status_title}</span> #{time_ago_in_words(mr_status_date)} ago</div><span class=\"text-tertiary\">#{l(mr_status_date.to_time, format: time_format)}</span>"
 
-%span.mr-status-wrapper.suggestion-help-hover{ class: css_class, data: { toggle: 'tooltip', placement: 'bottom', html: 'true', title:  mr_status_tooltip } }
+%span.mr-status-wrapper.suggestion-help-hover{ class: css_class, data: { toggle: 'tooltip', placement: 'bottom', html: 'true', title: mr_status_tooltip } }
   = sprite_icon(mr_status_icon, size: 16, css_class: "merge-request-status #{mr_status_class}")

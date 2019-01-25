@@ -32,7 +32,7 @@ describe API::Internal do
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it 'returns one broadcast message'  do
+      it 'returns one broadcast message' do
         get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
@@ -41,7 +41,7 @@ describe API::Internal do
     end
 
     context 'broadcast message does not exist' do
-      it 'returns nothing'  do
+      it 'returns nothing' do
         get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
@@ -867,7 +867,7 @@ describe API::Internal do
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it 'returns one broadcast message'  do
+      it 'returns one broadcast message' do
         post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
@@ -876,7 +876,7 @@ describe API::Internal do
     end
 
     context 'broadcast message does not exist' do
-      it 'returns empty string'  do
+      it 'returns empty string' do
         post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)

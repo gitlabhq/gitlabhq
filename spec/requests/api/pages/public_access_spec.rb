@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Public Project Pages Access"  do
+describe "Public Project Pages Access" do
   using RSpec::Parameterized::TableSyntax
   include AccessMatchers
 

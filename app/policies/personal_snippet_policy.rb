@@ -29,4 +29,6 @@ class PersonalSnippetPolicy < BasePolicy
   rule { anonymous }.prevent :comment_personal_snippet
 
   rule { can?(:comment_personal_snippet) }.enable :award_emoji
+
+  rule { full_private_access }.enable :read_personal_snippet
 end

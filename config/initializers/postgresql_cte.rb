@@ -108,7 +108,7 @@ module ActiveRecord
         when String
           with_value
         when Hash
-          with_value.map  do |name, expression|
+          with_value.map do |name, expression|
             case expression
             when String
               select = Arel::Nodes::SqlLiteral.new "(#{expression})"

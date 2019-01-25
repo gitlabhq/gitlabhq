@@ -423,7 +423,7 @@ describe ApplicationController do
         enforce_terms
       end
 
-      it 'redirects if the user did not accept the terms'  do
+      it 'redirects if the user did not accept the terms' do
         get :index
 
         expect(response).to have_gitlab_http_status(302)

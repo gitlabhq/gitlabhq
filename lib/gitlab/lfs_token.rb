@@ -47,7 +47,7 @@ module Gitlab
       user? ? :lfs_token : :lfs_deploy_token
     end
 
-    private  # rubocop:disable Lint/UselessAccessModifier
+    private # rubocop:disable Lint/UselessAccessModifier
 
     class HMACToken
       include LfsTokenHelper
@@ -100,7 +100,7 @@ module Gitlab
     #
     class LegacyRedisDeviseToken
       TOKEN_LENGTH = 50
-      DEFAULT_EXPIRY_TIME = 1800 * 1000  # 30 mins
+      DEFAULT_EXPIRY_TIME = 1800 * 1000 # 30 mins
 
       def initialize(actor)
         @actor = actor

@@ -7,7 +7,7 @@ describe API::AwardEmoji do
   set(:award_emoji)    { create(:award_emoji, awardable: issue, user: user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let!(:downvote)      { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
-  set(:note)          { create(:note, project: project, noteable: issue) }
+  set(:note) { create(:note, project: project, noteable: issue) }
 
   before do
     project.add_maintainer(user)
@@ -144,7 +144,7 @@ describe API::AwardEmoji do
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/award_emoji" do
-    let(:issue2)  { create(:issue, project: project, author: user) }
+    let(:issue2) { create(:issue, project: project, author: user) }
 
     context "on an issue" do
       it "creates a new award emoji" do

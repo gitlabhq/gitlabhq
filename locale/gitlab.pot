@@ -528,6 +528,9 @@ msgstr ""
 msgid "Allow users to request access if visibility is public or internal."
 msgstr ""
 
+msgid "Allowed to fail"
+msgstr ""
+
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
@@ -1179,6 +1182,9 @@ msgstr ""
 msgid "CI / CD Settings"
 msgstr ""
 
+msgid "CI Lint"
+msgstr ""
+
 msgid "CI/CD"
 msgstr ""
 
@@ -1285,6 +1291,9 @@ msgid "Chat"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
+msgstr ""
+
+msgid "Check your .gitlab-ci.yml"
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -1426,6 +1435,9 @@ msgid "CiVariable|Toggle protected"
 msgstr ""
 
 msgid "CiVariable|Validation failed"
+msgstr ""
+
+msgid "Clear"
 msgstr ""
 
 msgid "Clear search"
@@ -2018,6 +2030,9 @@ msgstr ""
 msgid "Compare Revisions"
 msgstr ""
 
+msgid "Compare changes"
+msgstr ""
+
 msgid "Compare changes with the last commit"
 msgstr ""
 
@@ -2115,6 +2130,9 @@ msgid "ContainerRegistry|With the Docker Container Registry integrated into GitL
 msgstr ""
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
+msgstr ""
+
+msgid "Contents of .gitlab-ci.yml"
 msgstr ""
 
 msgid "Continue"
@@ -2674,6 +2692,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+msgid "Download artifacts"
+msgstr ""
+
 msgid "Download asset"
 msgstr ""
 
@@ -2836,6 +2857,9 @@ msgstr ""
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
 msgstr ""
 
+msgid "Environment:"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -2989,6 +3013,9 @@ msgstr ""
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
+msgid "Error:"
+msgstr ""
+
 msgid "Errors"
 msgstr ""
 
@@ -3032,6 +3059,9 @@ msgid "Everyone"
 msgstr ""
 
 msgid "Everyone can contribute"
+msgstr ""
+
+msgid "Except policy:"
 msgstr ""
 
 msgid "Existing Git repository"
@@ -3140,6 +3170,9 @@ msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
 
 msgid "File added"
+msgstr ""
+
+msgid "File browser"
 msgstr ""
 
 msgid "File deleted"
@@ -3594,9 +3627,6 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
-msgid "Hide whitespace changes"
-msgstr ""
-
 msgid "History"
 msgstr ""
 
@@ -3883,6 +3913,12 @@ msgid "Job"
 msgstr ""
 
 msgid "Job has been erased"
+msgstr ""
+
+msgid "Job is stuck. Check runners."
+msgstr ""
+
+msgid "Job was retried"
 msgstr ""
 
 msgid "Jobs"
@@ -4301,6 +4337,9 @@ msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
+msgstr ""
+
+msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr ""
 
 msgid "MergeRequests|started a discussion"
@@ -4814,6 +4853,9 @@ msgstr ""
 msgid "Only mirror protected branches"
 msgstr ""
 
+msgid "Only policy:"
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
@@ -4899,6 +4941,9 @@ msgid "Pagination|Prev"
 msgstr ""
 
 msgid "Pagination|« First"
+msgstr ""
+
+msgid "Parameter"
 msgstr ""
 
 msgid "Part of merge request changes"
@@ -6659,6 +6704,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Status:"
+msgstr ""
+
 msgid "Stop environment"
 msgstr ""
 
@@ -6732,6 +6780,9 @@ msgid "System metrics (Kubernetes)"
 msgstr ""
 
 msgid "Tag"
+msgstr ""
+
+msgid "Tag list:"
 msgstr ""
 
 msgid "Tags"
@@ -7692,6 +7743,15 @@ msgstr ""
 msgid "Users requesting access to"
 msgstr ""
 
+msgid "Validate"
+msgstr ""
+
+msgid "Validate your GitLab CI configuration file"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
 msgid "Various container registry settings."
 msgstr ""
 
@@ -7804,6 +7864,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
+msgstr ""
+
+msgid "When:"
 msgstr ""
 
 msgid "Who can see this group?"
@@ -8172,6 +8235,9 @@ msgstr ""
 msgid "ago"
 msgstr ""
 
+msgid "allowed to fail"
+msgstr ""
+
 msgid "among other things"
 msgstr ""
 
@@ -8288,6 +8354,9 @@ msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"
+msgstr ""
+
+msgid "manual"
 msgstr ""
 
 msgid "merge request"
@@ -8496,6 +8565,9 @@ msgstr ""
 msgid "new merge request"
 msgstr ""
 
+msgid "none"
+msgstr ""
+
 msgid "notification emails"
 msgstr ""
 
@@ -8568,7 +8640,16 @@ msgstr ""
 msgid "stuck"
 msgstr ""
 
+msgid "syntax is correct"
+msgstr ""
+
+msgid "syntax is incorrect"
+msgstr ""
+
 msgid "this document"
+msgstr ""
+
+msgid "triggered"
 msgstr ""
 
 msgid "updated"

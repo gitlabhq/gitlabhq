@@ -31,7 +31,7 @@ Doorkeeper::OpenidConnect.configure do
 
       o.claim(:name)           { |user| user.name }
       o.claim(:nickname)       { |user| user.username }
-      o.claim(:email)          { |user| user.public_email  }
+      o.claim(:email)          { |user| user.public_email }
       o.claim(:email_verified) { |user| true if user.public_email? }
       o.claim(:website)        { |user| user.full_website_url if user.website_url? }
       o.claim(:profile)        { |user| Gitlab::Routing.url_helpers.user_url user }

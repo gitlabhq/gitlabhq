@@ -11,7 +11,7 @@ module API
         projects_relation
       end
 
-      def preload_relation(projects_relation, options =  {})
+      def preload_relation(projects_relation, options = {})
         projects_relation
       end
 

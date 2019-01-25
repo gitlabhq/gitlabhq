@@ -5,9 +5,9 @@ describe Labels::PromoteService do
     let!(:user) { create(:user) }
 
     context 'project without group' do
-      let!(:project_1)  { create(:project) }
+      let!(:project_1) { create(:project) }
 
-      let!(:project_label_1_1)  { create(:label, project: project_1) }
+      let!(:project_label_1_1) { create(:label, project: project_1) }
 
       subject(:service) { described_class.new(project_1, user) }
 

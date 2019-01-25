@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Git LFS File Locking API' do
   include WorkhorseHelpers
 
-  let(:project)   { create(:project) }
+  let(:project) { create(:project) }
   let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }
   let(:guest)     { create(:user) }
@@ -160,7 +160,7 @@ describe 'Git LFS File Locking API' do
     post(url, params: body.try(:to_json), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
-  def do_get(url, params = nil,  headers = nil)
+  def do_get(url, params = nil, headers = nil)
     get(url, params: (params || {}), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 

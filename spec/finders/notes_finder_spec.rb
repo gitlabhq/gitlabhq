@@ -121,7 +121,7 @@ describe NotesFinder do
       let(:note1) { create :note_on_commit, project: project }
       let(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
-      let(:params)  { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
+      let(:params) { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
 
       before do
         note1
