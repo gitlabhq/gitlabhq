@@ -12,6 +12,8 @@ class GroupMember < Member
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
+  scope :in_groups, ->(groups) { where(source_id: groups.select(:id)) }
+
   after_create :update_two_factor_requirement, unless: :invite?
   after_destroy :update_two_factor_requirement, unless: :invite?
 
