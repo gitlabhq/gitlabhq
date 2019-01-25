@@ -62,7 +62,7 @@ module Projects
     def rename_or_migrate_repository!
       success =
         if migrate_to_hashed_storage?
-          ::Projects::HashedStorageMigrationService
+          ::Projects::HashedStorage::MigrationService
             .new(project, full_path_before)
             .execute
         else
