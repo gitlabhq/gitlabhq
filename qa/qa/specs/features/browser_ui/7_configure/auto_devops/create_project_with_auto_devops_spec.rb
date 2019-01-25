@@ -3,10 +3,7 @@
 require 'pathname'
 
 module QA
-  # Issues for transient failure:
-  # https://gitlab.com/gitlab-org/quality/nightly/issues/40
-  # https://gitlab.com/gitlab-org/quality/nightly/issues/61
-  context 'Configure', :orchestrated, :kubernetes, :quarantine do
+  context 'Configure', :orchestrated, :kubernetes do
     describe 'Auto DevOps support' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
