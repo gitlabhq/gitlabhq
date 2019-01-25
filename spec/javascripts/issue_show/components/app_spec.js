@@ -140,6 +140,7 @@ describe('Issuable output', () => {
 
   describe('updateIssuable', () => {
     it('fetches new data after update', done => {
+      spyOn(vm, 'updateStoreState').and.callThrough();
       spyOn(vm.service, 'getData').and.callThrough();
       spyOn(vm.service, 'updateIssuable').and.callFake(
         () =>
@@ -155,6 +156,7 @@ describe('Issuable output', () => {
 
       vm.updateIssuable()
         .then(() => {
+          expect(vm.updateStoreState).toHaveBeenCalled();
           expect(vm.service.getData).toHaveBeenCalled();
         })
         .then(done)
@@ -450,6 +452,22 @@ describe('Issuable output', () => {
       vm.showInlineEditButton = true;
 
       expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+  });
+
+  describe('updateStoreState', () => {
+    it('should make a request and update the state of the store', done => {
+      const data = { foo: 1 };
+      spyOn(vm.store, 'updateState');
+      spyOn(vm.service, 'getData').and.returnValue(Promise.resolve({ data }));
+
+      vm.updateStoreState()
+        .then(() => {
+          expect(vm.service.getData).toHaveBeenCalled();
+          expect(vm.store.updateState).toHaveBeenCalledWith(data);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

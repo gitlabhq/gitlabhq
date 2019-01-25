@@ -212,9 +212,8 @@ export default {
       }
       return undefined;
     },
-
     updateStoreState() {
-      this.service
+      return this.service
         .getData()
         .then(res => res.data)
         .then(data => {
@@ -252,12 +251,9 @@ export default {
           if (window.location.pathname !== data.web_url) {
             visitUrl(data.web_url);
           }
-
-          return this.service.getData();
         })
-        .then(res => res.data)
-        .then(data => {
-          this.store.updateState(data);
+        .then(this.updateStoreState)
+        .then(() => {
           eventHub.$emit('close.form');
         })
         .catch(error => {
