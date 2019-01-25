@@ -403,6 +403,68 @@ describe 'Copy as GFM', :js do
       end
 
       verify(
+        'SuggestionFilter: suggestion as converted from GFM to HTML',
+
+        <<~GFM
+          ```suggestion
+          New
+            And newer
+          ```
+        GFM
+      )
+
+      aggregate_failures('SuggestionFilter: suggestion as transformed from HTML to Vue component') do
+        gfm = <<~GFM
+          ```suggestion
+          New
+            And newer
+          ```
+        GFM
+
+        html = <<~HTML
+          <div class="md-suggestion">
+            <div class="md-suggestion-header border-bottom-0 mt-2 qa-suggestion-diff-header">
+              <div class="qa-suggestion-diff-header font-weight-bold">
+                Suggested change
+                <a href="/gitlab/help/user/discussions/index.md#suggest-changes" aria-label="Help" class="js-help-btn">
+                  <svg aria-hidden="true" class="s16 ic-question-o link-highlight">
+                    <use xlink:href="/gitlab/assets/icons.svg#question-o"></use>
+                  </svg>
+                </a>
+              </div>
+              <!---->
+              <button type="button" class="btn qa-apply-btn">Apply suggestion</button>
+            </div>
+            <table class="mb-3 md-suggestion-diff js-syntax-highlight code white">
+              <tbody>
+                <tr class="line_holder old">
+                  <td class="diff-line-num old_line qa-old-diff-line-number old">9</td>
+                  <td class="diff-line-num new_line old"></td>
+                  <td class="line_content old"><span>Old
+          </span></td>
+                </tr>
+                <tr class="line_holder new">
+                  <td class="diff-line-num old_line new"></td>
+                  <td class="diff-line-num new_line qa-new-diff-line-number new">9</td>
+                  <td class="line_content new"><span>New
+          </span></td>
+                </tr>
+                <tr class="line_holder new">
+                  <td class="diff-line-num old_line new"></td>
+                  <td class="diff-line-num new_line qa-new-diff-line-number new">10</td>
+                  <td class="line_content new"><span>  And newer
+          </span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
+      verify(
         'SanitizationFilter',
 
         <<~GFM
