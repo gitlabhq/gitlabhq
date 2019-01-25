@@ -248,7 +248,11 @@ With all the pieces in place, the next time a CI pipeline runs, the Knative appl
 
 ### Obtain the URL for the Knative deployment
 
-Use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
+Visit **Operations >> Serverless** to find the URL for your deployment (listed under the "Domain" column). 
+
+![app domain](img/app-domain.png)
+
+Alternatively, use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
