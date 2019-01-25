@@ -237,7 +237,6 @@ class IssuableBaseService < BaseService
 
   def update_task(issuable)
     filter_params(issuable)
-    # old_associations = associations_before_update(issuable)
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
@@ -252,12 +251,9 @@ class IssuableBaseService < BaseService
         end
 
         handle_task_changes(issuable)
-
         invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
-
         after_update(issuable)
-
-        # execute_hooks(issuable, 'update', old_associations: old_associations)
+        execute_hooks(issuable, 'update', old_associations: nil)
       end
     end
 
