@@ -346,12 +346,6 @@ module Ci
       end
     end
 
-    def presence_of_commits_in_merge_request
-      if merge_request&.has_no_commits?
-        errors.add(:merge_request, "must have commits")
-      end
-    end
-
     def git_author_name
       strong_memoize(:git_author_name) do
         commit.try(:author_name)
@@ -756,6 +750,12 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
+    end
+
+    def presence_of_commits_in_merge_request
+      if merge_request&.has_no_commits?
+        errors.add(:merge_request, "must have commits")
+      end
     end
   end
 end
