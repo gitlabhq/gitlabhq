@@ -667,6 +667,47 @@ describe('DiffsStoreUtils', () => {
         },
         {
           type: 'tree',
+          name: 'ee',
+          tree: [
+            {
+              type: 'tree',
+              name: 'lib',
+              tree: [
+                {
+                  type: 'tree',
+                  name: 'ee',
+                  tree: [
+                    {
+                      type: 'tree',
+                      name: 'gitlab',
+                      tree: [
+                        {
+                          type: 'tree',
+                          name: 'checks',
+                          tree: [
+                            {
+                              type: 'tree',
+                              name: 'longtreenametomakepath',
+                              tree: [
+                                {
+                                  type: 'blob',
+                                  name: 'diff_check.rb',
+                                  tree: [],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'tree',
           name: 'spec',
           tree: [
             {
@@ -693,6 +734,17 @@ describe('DiffsStoreUtils', () => {
               type: 'blob',
               name: 'index.js',
               tree: [],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'ee/lib/…/…/…/longtreenametomakepath',
+          tree: [
+            {
+              name: 'diff_check.rb',
+              tree: [],
+              type: 'blob',
             },
           ],
         },
