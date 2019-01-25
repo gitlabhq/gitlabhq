@@ -456,7 +456,7 @@ describe ProjectsController do
     end
 
     context "when the project is forked" do
-      let(:project)      { create(:project, :repository) }
+      let(:project) { create(:project, :repository) }
       let(:forked_project) { fork_project(project, nil, repository: true) }
       let(:merge_request) do
         create(:merge_request,

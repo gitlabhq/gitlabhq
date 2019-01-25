@@ -107,7 +107,7 @@ describe SnippetsFinder do
   context 'filter by project' do
     let(:user) { create :user }
     let(:group) { create :group, :public }
-    let(:project1) { create(:project, :public,  group: group) }
+    let(:project1) { create(:project, :public, group: group) }
 
     before do
       @snippet1 = create(:project_snippet, :private,  project: project1)

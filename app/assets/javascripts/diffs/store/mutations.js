@@ -238,4 +238,10 @@ export default {
     state.treeEntries = treeEntries;
     state.tree = tree;
   },
+  [types.SET_RENDER_TREE_LIST](state, renderTreeList) {
+    state.renderTreeList = renderTreeList;
+  },
+  [types.SET_SHOW_WHITESPACE](state, showWhitespace) {
+    state.showWhitespace = showWhitespace;
+  },
 };

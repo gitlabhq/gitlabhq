@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe Gitlab::Kubernetes::Helm::Pod do
   describe '#generate' do
-    let(:app) {  create(:clusters_applications_prometheus) }
-    let(:command) {  app.install_command }
+    let(:app) { create(:clusters_applications_prometheus) }
+    let(:command) { app.install_command }
     let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
     let(:service_account_name) { nil }
 

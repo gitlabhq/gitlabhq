@@ -3,7 +3,7 @@
 module QA
   context 'Create' do
     describe 'Merge request creation' do
-      it 'user creates a new merge request'  do
+      it 'user creates a new merge request' do
         gitlab_account_username = "@#{Runtime::User.username}"
 
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -49,7 +49,7 @@ module QA
   end
 
   describe 'creates a merge request', :smoke do
-    it 'user creates a new merge request'  do
+    it 'user creates a new merge request' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 

@@ -97,7 +97,7 @@ module API
         success Entities::Release
       end
       params do
-        requires :tag_name,    type: String, desc: 'The name of the tag', as: :tag
+        requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
       delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
         authorize_destroy_release!

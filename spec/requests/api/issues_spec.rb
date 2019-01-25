@@ -993,7 +993,7 @@ describe API::Issues do
     end
 
     context 'user does not have permissions to create issue' do
-      let(:not_member)  { create(:user) }
+      let(:not_member) { create(:user) }
 
       before do
         project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)

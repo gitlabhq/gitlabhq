@@ -196,8 +196,12 @@ module QA
       end
 
       module SubMenus
+        autoload :CiCd, 'qa/page/project/sub_menus/ci_cd'
         autoload :Common, 'qa/page/project/sub_menus/common'
+        autoload :Issues, 'qa/page/project/sub_menus/issues'
+        autoload :Operations, 'qa/page/project/sub_menus/operations'
         autoload :Repository, 'qa/page/project/sub_menus/repository'
+        autoload :Settings, 'qa/page/project/sub_menus/settings'
       end
 
       module Issue

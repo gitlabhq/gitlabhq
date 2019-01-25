@@ -253,8 +253,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'there is no source project' do
-      let(:project)       { create(:project, :repository) }
-      let(:forked_project)  { fork_project_with_submodules(project) }
+      let(:project) { create(:project, :repository) }
+      let(:forked_project) { fork_project_with_submodules(project) }
       let!(:merge_request) { create(:merge_request, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
       before do
@@ -884,7 +884,7 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'POST #rebase' do
-    let(:viewer)        { user }
+    let(:viewer) { user }
 
     def post_rebase
       post :rebase, params: { namespace_id: project.namespace, project_id: project, id: merge_request }

@@ -27,6 +27,8 @@ import actions, {
   scrollToFile,
   toggleShowTreeList,
   renderFileForDiscussionId,
+  setRenderTreeList,
+  setShowWhitespace,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -794,6 +796,57 @@ describe('DiffsStoreActions', () => {
       expect(commit).not.toHaveBeenCalled();
       expect($emit).toHaveBeenCalledTimes(1);
       expect(scrollToElement).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setRenderTreeList', () => {
+    it('commits SET_RENDER_TREE_LIST', done => {
+      testAction(
+        setRenderTreeList,
+        true,
+        {},
+        [{ type: types.SET_RENDER_TREE_LIST, payload: true }],
+        [],
+        done,
+      );
+    });
+
+    it('sets localStorage', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+
+      setRenderTreeList({ commit() {} }, true);
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_diff_tree_list', true);
+    });
+  });
+
+  describe('setShowWhitespace', () => {
+    it('commits SET_SHOW_WHITESPACE', done => {
+      testAction(
+        setShowWhitespace,
+        { showWhitespace: true },
+        {},
+        [{ type: types.SET_SHOW_WHITESPACE, payload: true }],
+        [],
+        done,
+      );
+    });
+
+    it('sets localStorage', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true });
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('mr_show_whitespace', true);
+    });
+
+    it('calls history pushState', () => {
+      spyOn(localStorage, 'setItem').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
+
+      setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
+
+      expect(window.history.pushState).toHaveBeenCalled();
     });
   });
 });

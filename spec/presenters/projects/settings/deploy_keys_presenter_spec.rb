@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::Settings::DeployKeysPresenter do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:deploy_key)  { create(:deploy_key, public: true) }
+  let(:deploy_key) { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
     create(:deploy_keys_project, project: project, deploy_key: deploy_key)

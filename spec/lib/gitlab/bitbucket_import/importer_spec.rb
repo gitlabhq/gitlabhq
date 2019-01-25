@@ -15,7 +15,7 @@ describe Gitlab::BitbucketImport::Importer do
       "invalid",
       "duplicate",
       "wontfix",
-      "closed"  # undocumented status
+      "closed" # undocumented status
     ]
   end
 

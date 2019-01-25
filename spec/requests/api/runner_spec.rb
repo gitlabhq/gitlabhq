@@ -210,8 +210,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
       it "sets the runner's ip_address" do
         post api('/runners'),
-          params: { token: registration_token },
-          headers: { 'REMOTE_ADDR' => '123.111.123.111' }
+             params: { token: registration_token },
+             headers: { 'X-Forwarded-For' => '123.111.123.111' }
 
         expect(response).to have_gitlab_http_status 201
         expect(Ci::Runner.first.ip_address).to eq('123.111.123.111')
@@ -520,7 +520,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it "sets the runner's ip_address" do
             post api('/jobs/request'),
               params: { token: runner.token },
-              headers: { 'User-Agent' => user_agent, 'REMOTE_ADDR' => '123.222.123.222' }
+              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222' }
 
             expect(response).to have_gitlab_http_status 201
             expect(runner.reload.ip_address).to eq('123.222.123.222')

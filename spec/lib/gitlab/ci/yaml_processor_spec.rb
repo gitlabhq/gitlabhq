@@ -888,7 +888,7 @@ module Gitlab
           end
 
           context 'without matching job' do
-            let(:close_review) { nil  }
+            let(:close_review) { nil }
 
             it 'raises error' do
               expect { builds }.to raise_error('review job: on_stop job close_review is not defined')

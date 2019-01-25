@@ -88,4 +88,103 @@ describe('Filtered search dropdown', () => {
       });
     });
   });
+
+  describe('with create mode enabled', () => {
+    describe('when there are no matches', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          items: [
+            { title: 'One' },
+            { title: 'Two/three' },
+            { title: 'Three four' },
+            { title: 'Five' },
+          ],
+          filterKey: 'title',
+          showCreateMode: true,
+        });
+
+        vm.$el.querySelector('.js-filtered-dropdown-input').value = 'eleven';
+        vm.$el.querySelector('.js-filtered-dropdown-input').dispatchEvent(new Event('input'));
+      });
+
+      it('renders a create button', done => {
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.js-dropdown-create-button')).not.toBeNull();
+          done();
+        });
+      });
+
+      it('renders computed button text', done => {
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.js-dropdown-create-button').textContent.trim()).toEqual(
+            'Create eleven',
+          );
+          done();
+        });
+      });
+
+      describe('on click create button', () => {
+        it('emits createItem event with the filter', done => {
+          spyOn(vm, '$emit');
+          vm.$nextTick(() => {
+            vm.$el.querySelector('.js-dropdown-create-button').click();
+
+            expect(vm.$emit).toHaveBeenCalledWith('createItem', 'eleven');
+            done();
+          });
+        });
+      });
+    });
+
+    describe('when there are matches', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          items: [
+            { title: 'One' },
+            { title: 'Two/three' },
+            { title: 'Three four' },
+            { title: 'Five' },
+          ],
+          filterKey: 'title',
+          showCreateMode: true,
+        });
+
+        vm.$el.querySelector('.js-filtered-dropdown-input').value = 'one';
+        vm.$el.querySelector('.js-filtered-dropdown-input').dispatchEvent(new Event('input'));
+      });
+
+      it('does not render a create button', done => {
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.js-dropdown-create-button')).toBeNull();
+          done();
+        });
+      });
+    });
+  });
+
+  describe('with create mode disabled', () => {
+    describe('when there are no matches', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          items: [
+            { title: 'One' },
+            { title: 'Two/three' },
+            { title: 'Three four' },
+            { title: 'Five' },
+          ],
+          filterKey: 'title',
+        });
+
+        vm.$el.querySelector('.js-filtered-dropdown-input').value = 'eleven';
+        vm.$el.querySelector('.js-filtered-dropdown-input').dispatchEvent(new Event('input'));
+      });
+
+      it('does not render a create button', done => {
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.js-dropdown-create-button')).toBeNull();
+          done();
+        });
+      });
+    });
+  });
 });

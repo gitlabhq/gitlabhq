@@ -11,6 +11,7 @@ describe ExpireBuildArtifactsWorker do
 
   describe '#perform' do
     before do
+      stub_feature_flags(ci_new_expire_job_artifacts_service: false)
       build
     end
 
@@ -45,6 +46,19 @@ describe ExpireBuildArtifactsWorker do
 
     def jobs_enqueued
       Sidekiq::Queues.jobs_by_worker['ExpireBuildInstanceArtifactsWorker']
+    end
+  end
+
+  describe '#perform with ci_new_expire_job_artifacts_service feature flag' do
+    before do
+      stub_feature_flags(ci_new_expire_job_artifacts_service: true)
+    end
+
+    it 'executes a service' do
+      expect_any_instance_of(Ci::DestroyExpiredJobArtifactsService).to receive(:execute)
+      expect(ExpireBuildInstanceArtifactsWorker).not_to receive(:bulk_perform_async)
+
+      worker.perform
     end
   end
 end

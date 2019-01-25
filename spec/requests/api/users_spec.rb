@@ -1785,7 +1785,7 @@ describe API::Users do
   end
 
   describe 'POST /users/:id/unblock' do
-    let(:blocked_user)  { create(:user, state: 'blocked') }
+    let(:blocked_user) { create(:user, state: 'blocked') }
 
     before do
       admin

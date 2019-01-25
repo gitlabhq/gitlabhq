@@ -59,7 +59,7 @@ class PipelineEntity < Grape::Entity
     pipeline.present.failure_reason
   end
 
-  expose :retry_path, if: -> (*) { can_retry? }  do |pipeline|
+  expose :retry_path, if: -> (*) { can_retry? } do |pipeline|
     retry_project_pipeline_path(pipeline.project, pipeline)
   end
 

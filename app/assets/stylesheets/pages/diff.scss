@@ -1029,7 +1029,7 @@
   position: sticky;
   $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
   top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
-  max-height: calc(100vh - $top-pos);
+  max-height: calc(100vh - #{$top-pos});
   padding-right: $gl-padding;
 
   .file-row {
@@ -1040,7 +1040,7 @@
   .with-performance-bar & {
     $performance-bar-top-pos: $performance-bar-height + $top-pos;
     top: $performance-bar-top-pos;
-    max-height: calc(100vh - $performance-bar-top-pos);
+    max-height: calc(100vh - #{$performance-bar-top-pos});
   }
 }
 
@@ -1092,12 +1092,6 @@
       max-height: calc(50px + 50vh);
       padding-right: 0;
     }
-  }
-}
-
-.tree-list-view-toggle {
-  svg {
-    top: 0;
   }
 }
 

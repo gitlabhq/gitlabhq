@@ -4,10 +4,6 @@ Review Apps are automatically deployed by each pipeline, both in
 [CE](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22010) and
 [EE](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6665).
 
-CAUTION: **Warning:**
-There's currently [an issue when using `/` in branch names][charts-1068] where
-Review Apps fail to be deployed.
-
 ## How does it work?
 
 ### CD/CD architecture diagram

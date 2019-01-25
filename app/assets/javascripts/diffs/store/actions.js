@@ -14,6 +14,8 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
   MR_TREE_SHOW_KEY,
+  TREE_LIST_STORAGE_KEY,
+  WHITESPACE_STORAGE_KEY,
 } from '../constants';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -33,7 +35,7 @@ export const fetchDiffFiles = ({ state, commit }) => {
   });
 
   return axios
-    .get(state.endpoint)
+    .get(state.endpoint, { params: { w: state.showWhitespace ? null : '1' } })
     .then(res => {
       commit(types.SET_LOADING, false);
       commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
@@ -276,6 +278,22 @@ export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
 
 export const closeDiffFileCommentForm = ({ commit }, fileHash) => {
   commit(types.CLOSE_DIFF_FILE_COMMENT_FORM, fileHash);
+};
+
+export const setRenderTreeList = ({ commit }, renderTreeList) => {
+  commit(types.SET_RENDER_TREE_LIST, renderTreeList);
+
+  localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
+};
+
+export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = false }) => {
+  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
+
+  localStorage.setItem(WHITESPACE_STORAGE_KEY, showWhitespace);
+
+  if (pushState) {
+    historyPushState(showWhitespace ? '?w=0' : '?w=1');
+  }
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

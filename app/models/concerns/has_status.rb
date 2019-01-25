@@ -85,11 +85,11 @@ module HasStatus
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
-    scope :failed, -> { where(status: 'failed')  }
-    scope :canceled, -> { where(status: 'canceled')  }
-    scope :skipped, -> { where(status: 'skipped')  }
-    scope :manual, -> { where(status: 'manual')  }
-    scope :scheduled, -> { where(status: 'scheduled')  }
+    scope :failed, -> { where(status: 'failed') }
+    scope :canceled, -> { where(status: 'canceled') }
+    scope :skipped, -> { where(status: 'skipped') }
+    scope :manual, -> { where(status: 'manual') }
+    scope :scheduled, -> { where(status: 'scheduled') }
     scope :alive, -> { where(status: [:created, :pending, :running]) }
     scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }

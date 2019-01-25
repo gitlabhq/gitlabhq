@@ -33,9 +33,9 @@
     %p
       Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.
     - if project.export_status == :finished
-      = link_to 'Download export',  download_export_project_path(project),
+      = link_to 'Download export', download_export_project_path(project),
               rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
-      = link_to 'Generate new export',  generate_new_export_project_path(project),
+      = link_to 'Generate new export', generate_new_export_project_path(project),
               method: :post, class: "btn btn-default"
     - else
       = link_to 'Export project', export_project_path(project),

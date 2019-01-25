@@ -15,7 +15,7 @@ class Email < ActiveRecord::Base
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
   devise :confirmable
-  self.reconfirmable = false  # currently email can't be changed, no need to reconfirm
+  self.reconfirmable = false # currently email can't be changed, no need to reconfirm
 
   delegate :username, to: :user
 

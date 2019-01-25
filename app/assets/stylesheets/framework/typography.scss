@@ -148,6 +148,7 @@
     @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
+    border: 0;
 
     th {
       background: $label-gray-bg;
