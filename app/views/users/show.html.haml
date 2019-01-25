@@ -74,11 +74,11 @@
               = link_to @user.short_website_url, @user.full_website_url, class: 'text-link', target: '_blank', rel: 'me noopener noreferrer nofollow'
           - unless @user.location.blank?
             .profile-link-holder.middle-dot-divider
-              = icon('map-marker')
+              = sprite_icon('location', size: 16, css_class: 'vertical-align-sub')
               = @user.location
           - unless @user.organization.blank?
             .profile-link-holder.middle-dot-divider
-              = icon('briefcase')
+              = sprite_icon('work', size: 16, css_class: 'vertical-align-sub')
               = @user.organization
 
         - if @user.bio.present?
