@@ -10,7 +10,7 @@ module Ci
       update_retried
 
       new_builds =
-        stage_indexes_of_created_builds.map do |index|
+        stage_indexes_of_created_processables.map do |index|
           process_stage(index)
         end
 
@@ -27,7 +27,7 @@ module Ci
       return if HasStatus::BLOCKED_STATUS.include?(current_status)
 
       if HasStatus::COMPLETED_STATUSES.include?(current_status)
-        created_builds_in_stage(index).select do |build|
+        created_processables_in_stage(index).select do |build|
           Gitlab::OptimisticLocking.retry_lock(build) do |subject|
             Ci::ProcessBuildService.new(project, @user)
               .execute(build, current_status)
@@ -43,19 +43,19 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def stage_indexes_of_created_builds
-      created_builds.order(:stage_idx).pluck('distinct stage_idx')
+    def stage_indexes_of_created_processables
+      created_processables.order(:stage_idx).pluck('distinct stage_idx')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def created_builds_in_stage(index)
-      created_builds.where(stage_idx: index)
+    def created_processables_in_stage(index)
+      created_processables.where(stage_idx: index)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def created_builds
-      pipeline.builds.created
+    def created_processables
+      pipeline.processables.created
     end
 
     # This method is for compatibility and data consistency and should be removed with 9.3 version of GitLab

@@ -163,14 +163,14 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         ->(pipeline) { pipeline.variables.create!(key: 'VAR', value: '123') }
       end
 
-      it 'raises exception' do
-        expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
-      end
-
       it 'wastes pipeline iid' do
-        expect { step.perform! }.to raise_error
+        expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
 
-        expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
+        last_iid = InternalId.ci_pipelines
+          .where(project_id: project.id)
+          .last.last_value
+
+        expect(last_iid).to be > 0
       end
     end
   end
