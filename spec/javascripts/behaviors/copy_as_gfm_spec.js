@@ -87,7 +87,7 @@ describe('CopyAsGFM', () => {
         spyOn(window, 'getSelection').and.returnValue(selection);
         simulateCopy();
 
-        const expectedGFM = '- List Item1\n- List Item2';
+        const expectedGFM = '* List Item1\n\n* List Item2';
 
         expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
       });
@@ -97,7 +97,7 @@ describe('CopyAsGFM', () => {
         spyOn(window, 'getSelection').and.returnValue(selection);
         simulateCopy();
 
-        const expectedGFM = '1. List Item1\n1. List Item2';
+        const expectedGFM = '1. List Item1\n\n1. List Item2';
 
         expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
       });

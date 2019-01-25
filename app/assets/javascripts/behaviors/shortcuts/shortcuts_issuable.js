@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
-import _ from 'underscore';
 import Sidebar from '../../right_sidebar';
 import Shortcuts from './shortcuts';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
@@ -63,18 +62,18 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
 
     const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-    const selected = CopyAsGFM.nodeToGFM(el);
+    const blockquoteEl = document.createElement('blockquote');
+    blockquoteEl.appendChild(el);
+    const text = CopyAsGFM.nodeToGFM(blockquoteEl);
 
-    if (selected.trim() === '') {
+    if (text.trim() === '') {
       return false;
     }
-
-    const quote = _.map(selected.split('\n'), val => `${`> ${val}`.trim()}\n`);
 
     // If replyField already has some content, add a newline before our quote
     const separator = ($replyField.val().trim() !== '' && '\n\n') || '';
     $replyField
-      .val((a, current) => `${current}${separator}${quote.join('')}\n`)
+      .val((a, current) => `${current}${separator}${text}\n\n`)
       .trigger('input')
       .trigger('change');
 
