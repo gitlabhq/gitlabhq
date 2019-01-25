@@ -119,7 +119,7 @@ describe('User Popover Component', () => {
   describe('status data', () => {
     it('should show only message', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { message: 'Hello World' };
+      testProps.user.status = { message_html: 'Hello World' };
 
       vm = mountComponent(UserPopover, {
         ...DEFAULT_PROPS,
@@ -131,12 +131,12 @@ describe('User Popover Component', () => {
 
     it('should show message and emoji', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { emoji: 'basketball_player', message: 'Hello World' };
+      testProps.user.status = { emoji: 'basketball_player', message_html: 'Hello World' };
 
       vm = mountComponent(UserPopover, {
         ...DEFAULT_PROPS,
         target: document.querySelector('.js-user-link'),
-        status: { emoji: 'basketball_player', message: 'Hello World' },
+        status: { emoji: 'basketball_player', message_html: 'Hello World' },
       });
 
       expect(vm.$el.textContent).toContain('Hello World');

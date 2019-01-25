@@ -46,10 +46,10 @@ export default {
       return null;
     },
     statusHtml() {
-      if (this.user.status.emoji && this.user.status.message) {
-        return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message}`;
-      } else if (this.user.status.message) {
-        return this.user.status.message;
+      if (this.user.status.emoji && this.user.status.message_html) {
+        return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message_html}`;
+      } else if (this.user.status.message_html) {
+        return this.user.status.message_html;
       }
       return '';
     },
