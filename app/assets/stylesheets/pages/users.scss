@@ -94,3 +94,8 @@
     flex: 1;
   }
 }
+
+.card-body .user {
+  color: $gl-text-color;
+  font-weight: $gl-font-weight-bold;
+}
