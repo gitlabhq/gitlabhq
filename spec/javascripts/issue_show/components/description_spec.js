@@ -187,4 +187,18 @@ describe('Description component', () => {
   it('sets data-update-url', () => {
     expect(vm.$el.querySelector('textarea').dataset.updateUrl).toEqual(gl.TEST_HOST);
   });
+
+  describe('taskListUpdateError', () => {
+    it('should create flash notification and emit an event to parent', () => {
+      const msg =
+        'Someone edited this issue at the same time you did and we updated the issue description.';
+      spyOn(window, 'Flash');
+      spyOn(vm, '$emit');
+
+      vm.taskListUpdateError();
+
+      expect(window.Flash).toHaveBeenCalledWith(msg);
+      expect(vm.$emit).toHaveBeenCalledWith('taskListUpdateFailed');
+    });
+  });
 });

@@ -6527,6 +6527,9 @@ msgstr ""
 msgid "Snippets"
 msgstr ""
 
+msgid "Someone edited this issue at the same time you did and we updated the issue description."
+msgstr ""
+
 msgid "Something went wrong on our end"
 msgstr ""
 

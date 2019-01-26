@@ -9,8 +9,9 @@ export default class TaskList {
     this.dataType = options.dataType;
     this.fieldName = options.fieldName;
     this.lockVersion = options.lockVersion;
-    this.onSuccess = options.onSuccess || (() => {});
     this.taskListContainerSelector = `${this.selector} .js-task-list-container`;
+    this.updateHandler = this.update.bind(this);
+    this.onSuccess = options.onSuccess || (() => {});
     this.onError =
       options.onError ||
       function showFlash(e) {
@@ -27,10 +28,10 @@ export default class TaskList {
   }
 
   init() {
-    // Prevent duplicate event bindings
-    this.disable();
+    this.disable(); // Prevent duplicate event bindings
+
     $(this.taskListContainerSelector).taskList('enable');
-    $(document).on('tasklist:changed', this.taskListContainerSelector, this.update.bind(this));
+    $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
   }
 
   getTaskListTarget(e = {}) {

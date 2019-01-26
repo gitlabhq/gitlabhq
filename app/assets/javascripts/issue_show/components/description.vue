@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import createFlash from '~/flash';
+import { __ } from '~/locale';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -91,8 +91,10 @@ export default {
     },
 
     taskListUpdateError() {
-      createFlash(
-        'Someone edited this issue at the same time you did and we updated the issue description.',
+      window.Flash(
+        __(
+          'Someone edited this issue at the same time you did and we updated the issue description.',
+        ),
       );
 
       this.$emit('taskListUpdateFailed');

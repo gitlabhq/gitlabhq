@@ -469,5 +469,18 @@ describe('Issuable output', () => {
         .then(done)
         .catch(done.fail);
     });
+
+    it('should show error message if store update fails', done => {
+      spyOn(vm.service, 'getData').and.returnValue(Promise.reject());
+      spyOn(window, 'Flash');
+      vm.issuableType = 'merge request';
+
+      vm.updateStoreState()
+        .then(() => {
+          expect(window.Flash).toHaveBeenCalledWith(`Error updating ${vm.issuableType}`);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 });
