@@ -112,7 +112,7 @@ GET /projects/:id/repository/archive[.format]
 ```
 
 `format` is an optional suffix for the archive format. Default is
-`tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, 'tbz2`, `tb2`,
+`tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, `tbz2`, `tb2`,
 `bz2`, `tar`, and `zip`. For example, specifying `archive.zip`
 would send an archive in ZIP format.
 
