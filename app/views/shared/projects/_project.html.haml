@@ -63,7 +63,9 @@
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
           - if stars
-            %span.d-flex.align-items-center.icon-wrapper.stars.has-tooltip{ data: { container: 'body', placement: 'top' }, title: _('Stars') }
+            = link_to project_starrers_path(project),
+                class: "d-flex align-items-center icon-wrapper stars has-tooltip",
+                title: _('Stars'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('star', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.star_count)
           - if forks
