@@ -114,6 +114,7 @@ ci_pipelines:
 - stages
 - statuses
 - builds
+- processables
 - trigger_requests
 - variables
 - auto_canceled_by
@@ -137,6 +138,7 @@ stages:
 - pipeline
 - statuses
 - builds
+- bridges
 statuses:
 - project
 - pipeline

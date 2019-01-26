@@ -45,6 +45,8 @@
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
+- hashed_storage:hashed_storage_migrator
+
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
@@ -90,13 +92,15 @@
 - object_pool:object_pool_join
 - object_pool:object_pool_destroy
 
+- container_repository:delete_container_repository
+- container_repository:cleanup_container_repository
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
 - authorized_projects
 - background_migration
 - create_gpg_signature
-- delete_container_repository
 - delete_merged_branches
 - delete_user
 - email_receiver
@@ -129,7 +133,6 @@
 - repository_fork
 - repository_import
 - repository_remove_remote
-- storage_migrator
 - system_hook_push
 - update_merge_requests
 - upload_checksum

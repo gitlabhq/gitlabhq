@@ -77,7 +77,7 @@ class Milestone < ActiveRecord::Base
   alias_attribute :name, :title
 
   class << self
-    # Searches for milestones matching the given query.
+    # Searches for milestones with a matching title or description.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
@@ -86,6 +86,17 @@ class Milestone < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search(query)
       fuzzy_search(query, [:title, :description])
+    end
+
+    # Searches for milestones with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
+    def search_title(query)
+      fuzzy_search(query, [:title])
     end
 
     def filter_by_state(milestones, state)

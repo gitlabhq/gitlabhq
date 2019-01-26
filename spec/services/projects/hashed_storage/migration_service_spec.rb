@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::HashedStorageMigrationService do
+describe Projects::HashedStorage::MigrationService do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
   let(:logger) { double }
 

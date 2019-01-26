@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/image.js
 module Banzai
   module Filter
     # HTML filter that moves the value of image `src` attributes to `data-src`

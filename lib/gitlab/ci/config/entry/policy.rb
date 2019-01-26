@@ -11,6 +11,8 @@ module Gitlab
           strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
           strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
 
+          DEFAULT_ONLY = { refs: %w[branches tags] }.freeze
+
           class RefsPolicy < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
 

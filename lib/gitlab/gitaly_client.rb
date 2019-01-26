@@ -133,7 +133,11 @@ module Gitlab
     end
 
     def self.address_metadata(storage)
-      Base64.strict_encode64(JSON.dump({ storage => { 'address' => address(storage), 'token' => token(storage) } }))
+      Base64.strict_encode64(JSON.dump(storage => connection_data(storage)))
+    end
+
+    def self.connection_data(storage)
+      { 'address' => address(storage), 'token' => token(storage) }
     end
 
     # All Gitaly RPC call sites should use GitalyClient.call. This method

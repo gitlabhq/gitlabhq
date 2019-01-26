@@ -147,6 +147,6 @@ class Projects::MilestonesController < Projects::ApplicationController
       groups = project_group.self_and_ancestors.select(:id)
     end
 
-    params.permit(:state).merge(project_ids: @project.id, group_ids: groups)
+    params.permit(:state, :search_title).merge(project_ids: @project.id, group_ids: groups)
   end
 end

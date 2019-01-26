@@ -134,12 +134,11 @@ describe Suggestions::ApplyService do
         end
       end
 
-      context 'when diff ref from position is different from repo diff refs' do
+      context 'when HEAD from position is different from source branch HEAD on repo' do
         it 'returns error message' do
-          outdated_refs = Gitlab::Diff::DiffRefs.new(base_sha: 'foo', start_sha: 'bar', head_sha: 'outdated')
-
           allow(suggestion).to receive(:appliable?) { true }
-          allow(suggestion.position).to receive(:diff_refs) { outdated_refs }
+          allow(suggestion.position).to receive(:head_sha) { 'old-sha' }
+          allow(suggestion.noteable).to receive(:source_branch_sha) { 'new-sha' }
 
           result = subject.execute(suggestion)
 

@@ -5,9 +5,10 @@ class GroupMilestone < GlobalMilestone
 
   def self.build_collection(group, projects, params)
     params =
-      { state: params[:state] }
+      { state: params[:state], search_title: params[:search_title] }
 
     project_milestones = Milestone.of_projects(projects)
+    project_milestones = project_milestones.search_title(params[:search_title]) if params[:search_title].present?
     child_milestones = Milestone.filter_by_state(project_milestones, params[:state])
     grouped_milestones = child_milestones.group_by(&:title)
 

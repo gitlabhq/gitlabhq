@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="md-suggestion">
     <suggestion-diff-header
       class="qa-suggestion-diff-header"
       :can-apply="suggestion.appliable && suggestion.current_user.can_apply && !disabled"

@@ -19,10 +19,12 @@ module QA
             within_element(:all_branches) do
               within(".js-branch-#{branch_name}") do
                 accept_alert do
-                  find_element(:remove_btn).click
+                  click_element(:remove_btn)
                 end
               end
             end
+
+            finished_loading?
           end
 
           def has_branch_title?(branch_title)

@@ -115,6 +115,6 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def search_params
-    params.permit(:state).merge(group_ids: group.id)
+    params.permit(:state, :search_title).merge(group_ids: group.id)
   end
 end

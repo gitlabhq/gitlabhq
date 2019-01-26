@@ -101,10 +101,10 @@ describe Projects::AfterRenameService do
       end
 
       context 'with hashed storage upgrade when renaming enabled' do
-        it 'calls HashedStorageMigrationService with correct options' do
+        it 'calls HashedStorage::MigrationService with correct options' do
           stub_application_setting(hashed_storage_enabled: true)
 
-          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
+          expect_next_instance_of(::Projects::HashedStorage::MigrationService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
 
