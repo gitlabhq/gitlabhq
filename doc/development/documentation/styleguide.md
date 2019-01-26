@@ -95,6 +95,20 @@ yield a useful result, and ensuring content is helpful and easy to consume.
     - List item 2
     ```
 
+### Tables overlapping the ToC
+
+By default, all tables have a width of 100% on docs.gitlab.com.
+In a few cases, the table will overlap the table of contents (ToC).
+For these cases, add an entry to the document's frontmatter to
+render them displaying block. This will make sure the table
+is displayed behind the ToC, scrolling horizontally:
+
+```md
+---
+table_display_block: true
+---
+```
+
 ## Emphasis
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
@@ -222,6 +236,15 @@ For other punctuation rules, please refer to the
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
 
+### Unlinking emails
+
+By default, all email addresses will render in an email tag on docs.gitlab.com.
+To escape the code block and unlink email addresses, use two backticks:
+
+```md
+`` example@email.com ``
+```
+
 ## Navigation
 
 To indicate the steps of navigation through the UI:
@@ -261,6 +284,16 @@ Inside the document:
   line for better clarity.
 - If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading.
+
+### Remove image shadow
+
+All images displayed on docs.gitlab.com have a box shadow by default.
+To remove the box shadow, use the image class `.image-noshadow` applied
+directly to an HTML `img` tag:
+
+```html
+<img src="path/to/image.jpg" alt="Alt text (required)" class="image-noshadow">
+```
 
 ## Code blocks
 

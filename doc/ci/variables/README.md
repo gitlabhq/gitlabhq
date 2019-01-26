@@ -1,3 +1,7 @@
+---
+table_display_block: true
+---
+
 # GitLab CI/CD Variables
 
 When receiving a job from GitLab CI, the [Runner] prepares the build environment.

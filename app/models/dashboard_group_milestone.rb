@@ -11,11 +11,12 @@ class DashboardGroupMilestone < GlobalMilestone
     @group_name = milestone.group.full_name
   end
 
-  def self.build_collection(groups)
-    Milestone.of_groups(groups.select(:id))
+  def self.build_collection(groups, params)
+    milestones = Milestone.of_groups(groups.select(:id))
              .reorder_by_due_date_asc
              .order_by_name_asc
              .active
-             .map { |m| new(m) }
+    milestones = milestones.search_title(params[:search_title]) if params[:search_title].present?
+    milestones.map { |m| new(m) }
   end
 end

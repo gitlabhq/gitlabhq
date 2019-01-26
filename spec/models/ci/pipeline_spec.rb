@@ -39,6 +39,29 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.processables' do
+    before do
+      create(:ci_build, name: 'build', pipeline: pipeline)
+      create(:ci_bridge, name: 'bridge', pipeline: pipeline)
+      create(:commit_status, name: 'commit status', pipeline: pipeline)
+      create(:generic_commit_status, name: 'generic status', pipeline: pipeline)
+    end
+
+    it 'has an association with processable CI/CD entities' do
+      pipeline.processables.pluck('name').yield_self do |processables|
+        expect(processables).to match_array %w[build bridge]
+      end
+    end
+
+    it 'makes it possible to append a new processable' do
+      pipeline.processables << build(:ci_bridge)
+
+      pipeline.save!
+
+      expect(pipeline.processables.reload.count).to eq 3
+    end
+  end
+
   describe '.sort_by_merge_request_pipelines' do
     subject { described_class.sort_by_merge_request_pipelines }
 

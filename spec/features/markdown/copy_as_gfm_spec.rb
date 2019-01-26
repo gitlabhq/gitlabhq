@@ -19,9 +19,9 @@ describe 'Copy as GFM', :js do
       visit project_issue_path(@project, @feat.issue)
     end
 
-    # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
-    # The handlers defined in app/assets/javascripts/behaviors/markdown/copy_as_gfm.js consequently convert that same HTML to GFM.
-    # To make sure these filters and handlers are properly aligned, this spec tests the GFM-to-HTML-to-GFM cycle
+    # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb transform GitLab Flavored Markdown (GFM) to HTML.
+    # The nodes and marks referenced in app/assets/javascripts/behaviors/markdown/editor_extensions.js consequently transform that same HTML to GFM.
+    # To make sure these filters and nodes/marks are properly aligned, this spec tests the GFM-to-HTML-to-GFM cycle
     # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 
     # These are all in a single `it` for performance reasons.
@@ -35,12 +35,15 @@ describe 'Copy as GFM', :js do
       verify(
         'a real world example from the gitlab-ce README',
 
-        <<-GFM.strip_heredoc
+        <<~GFM
           # GitLab
 
           [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
+
           [![CE coverage report](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby)
+
           [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+
           [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
           ## Canonical source
@@ -51,27 +54,31 @@ describe 'Copy as GFM', :js do
 
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
-          - Manage Git repositories with fine grained access controls that keep your code secure
+          * Manage Git repositories with fine grained access controls that keep your code secure
 
-          - Perform code reviews and enhance collaboration with merge requests
+          * Perform code reviews and enhance collaboration with merge requests
 
-          - Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
+          * Complete continuous integration (CI) and CD pipelines to builds, test, and deploy your applications
 
-          - Each project can also have an issue tracker, issue board, and a wiki
+          * Each project can also have an issue tracker, issue board, and a wiki
 
-          - Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
+          * Used by more than 100,000 organizations, GitLab is the most popular solution to manage Git repositories on-premises
 
-          - Completely free and open source (MIT Expat license)
+          * Completely free and open source (MIT Expat license)
         GFM
       )
 
       aggregate_failures('an accidentally selected empty element') do
         gfm = '# Heading1'
 
-        html = <<-HTML.strip_heredoc
+        html = <<~HTML
           <h1>Heading1</h1>
 
           <h2></h2>
+
+          <blockquote></blockquote>
+
+          <pre class="code highlight"></pre>
         HTML
 
         output_gfm = html_to_gfm(html)
@@ -81,7 +88,7 @@ describe 'Copy as GFM', :js do
       aggregate_failures('an accidentally selected other element') do
         gfm = 'Test comment with **Markdown!**'
 
-        html = <<-HTML.strip_heredoc
+        html = <<~HTML
           <li class="note">
             <div class="md">
               <p>
@@ -107,10 +114,17 @@ describe 'Copy as GFM', :js do
       verify(
         'TaskListFilter',
 
-        '- [ ] Unchecked task',
-        '- [x] Checked task',
-        '1. [ ] Unchecked numbered task',
-        '1. [x] Checked numbered task'
+        <<~GFM,
+          * [ ] Unchecked task
+
+          * [x] Checked task
+        GFM
+
+        <<~GFM
+          1. [ ] Unchecked ordered task
+
+          1. [x] Checked ordered task
+        GFM
       )
 
       verify(
@@ -139,7 +153,16 @@ describe 'Copy as GFM', :js do
       verify(
         'TableOfContentsFilter',
 
-        '[[_TOC_]]'
+        <<~GFM,
+          [[_TOC_]]
+
+          # Heading 1
+
+          ## Heading 2
+        GFM
+
+        pipeline: :wiki,
+        project_wiki: @project.wiki
       )
 
       verify(
@@ -166,7 +189,7 @@ describe 'Copy as GFM', :js do
         '$`c = \pm\sqrt{a^2 + b^2}`$',
 
         # math block
-        <<-GFM.strip_heredoc
+        <<~GFM
           ```math
           c = \pm\sqrt{a^2 + b^2}
           ```
@@ -176,7 +199,7 @@ describe 'Copy as GFM', :js do
       aggregate_failures('MathFilter: math as transformed from HTML to KaTeX') do
         gfm = '$`c = \pm\sqrt{a^2 + b^2}`$'
 
-        html = <<-HTML.strip_heredoc
+        html = <<~HTML
           <span class="katex">
             <span class="katex-mathml">
               <math>
@@ -287,7 +310,7 @@ describe 'Copy as GFM', :js do
       verify(
         'MermaidFilter: mermaid as converted from GFM to HTML',
 
-        <<-GFM.strip_heredoc
+        <<~GFM
           ```mermaid
           graph TD;
             A-->B;
@@ -296,14 +319,14 @@ describe 'Copy as GFM', :js do
       )
 
       aggregate_failures('MermaidFilter: mermaid as transformed from HTML to SVG') do
-        gfm = <<-GFM.strip_heredoc
+        gfm = <<~GFM
           ```mermaid
           graph TD;
             A-->B;
           ```
         GFM
 
-        html = <<-HTML.strip_heredoc
+        html = <<~HTML
           <svg id="mermaidChart1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 87.234375 174" style="max-width:87.234375px;" class="mermaid">
             <style>
               .mermaid {
@@ -371,9 +394,70 @@ describe 'Copy as GFM', :js do
               </g>
             </g>
             <text class="source" display="none">graph TD;
-            A--&gt;B;
-            </text>
+            A--&gt;B;</text>
           </svg>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
+      verify(
+        'SuggestionFilter: suggestion as converted from GFM to HTML',
+
+        <<~GFM
+          ```suggestion
+          New
+            And newer
+          ```
+        GFM
+      )
+
+      aggregate_failures('SuggestionFilter: suggestion as transformed from HTML to Vue component') do
+        gfm = <<~GFM
+          ```suggestion
+          New
+            And newer
+          ```
+        GFM
+
+        html = <<~HTML
+          <div class="md-suggestion">
+            <div class="md-suggestion-header border-bottom-0 mt-2 qa-suggestion-diff-header">
+              <div class="qa-suggestion-diff-header font-weight-bold">
+                Suggested change
+                <a href="/gitlab/help/user/discussions/index.md#suggest-changes" aria-label="Help" class="js-help-btn">
+                  <svg aria-hidden="true" class="s16 ic-question-o link-highlight">
+                    <use xlink:href="/gitlab/assets/icons.svg#question-o"></use>
+                  </svg>
+                </a>
+              </div>
+              <!---->
+              <button type="button" class="btn qa-apply-btn">Apply suggestion</button>
+            </div>
+            <table class="mb-3 md-suggestion-diff js-syntax-highlight code white">
+              <tbody>
+                <tr class="line_holder old">
+                  <td class="diff-line-num old_line qa-old-diff-line-number old">9</td>
+                  <td class="diff-line-num new_line old"></td>
+                  <td class="line_content old"><span>Old
+          </span></td>
+                </tr>
+                <tr class="line_holder new">
+                  <td class="diff-line-num old_line new"></td>
+                  <td class="diff-line-num new_line qa-new-diff-line-number new">9</td>
+                  <td class="line_content new"><span>New
+          </span></td>
+                </tr>
+                <tr class="line_holder new">
+                  <td class="diff-line-num old_line new"></td>
+                  <td class="diff-line-num new_line qa-new-diff-line-number new">10</td>
+                  <td class="line_content new"><span>  And newer
+          </span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         HTML
 
         output_gfm = html_to_gfm(html)
@@ -383,11 +467,18 @@ describe 'Copy as GFM', :js do
       verify(
         'SanitizationFilter',
 
-        <<-GFM.strip_heredoc
+        <<~GFM
         <sub>sub</sub>
 
         <dl>
           <dt>dt</dt>
+          <dt>dt</dt>
+          <dd>dd</dd>
+          <dd>dd</dd>
+
+          <dt>dt</dt>
+          <dt>dt</dt>
+          <dd>dd</dd>
           <dd>dd</dd>
         </dl>
 
@@ -399,30 +490,26 @@ describe 'Copy as GFM', :js do
 
         <var>var</var>
 
-        <ruby>ruby</ruby>
+        <abbr title="HyperText &quot;Markup&quot; Language">HTML</abbr>
 
-        <rt>rt</rt>
+        <details>
+        <summary>summary></summary>
 
-        <rp>rp</rp>
-
-        <abbr>abbr</abbr>
-
-        <summary>summary</summary>
-
-        <details>details</details>
+        details
+        </details>
         GFM
       )
 
       verify(
         'SanitizationFilter',
 
-        <<-GFM.strip_heredoc,
+        <<~GFM,
           ```
           Plain text
           ```
         GFM
 
-        <<-GFM.strip_heredoc,
+        <<~GFM,
           ```ruby
           def foo
             bar
@@ -430,10 +517,8 @@ describe 'Copy as GFM', :js do
           ```
         GFM
 
-        <<-GFM.strip_heredoc
+        <<~GFM
           Foo
-
-              This is an example of GFM
 
               ```js
               Code goes here
@@ -452,9 +537,8 @@ describe 'Copy as GFM', :js do
         '> Quote',
 
         # multiline quote
-        <<-GFM.strip_heredoc,
-          > Multiline
-          > Quote
+        <<~GFM,
+          > Multiline Quote
           >
           > With multiple paragraphs
         GFM
@@ -465,48 +549,58 @@ describe 'Copy as GFM', :js do
 
         '[Link](https://example.com)',
 
-        '- List item',
+        <<~GFM,
+          * List item
+
+          * List item 2
+        GFM
 
         # multiline list item
-        <<-GFM.strip_heredoc,
-          - Multiline
-              List item
+        <<~GFM,
+          * Multiline
+
+            List item
         GFM
 
         # nested lists
-        <<-GFM.strip_heredoc,
-          - Nested
+        <<~GFM,
+          * Nested
 
-              - Lists
+            * Lists
         GFM
 
         # list with blockquote
-        <<-GFM.strip_heredoc,
-          - List
+        <<~GFM,
+          * List
 
-              > Blockquote
+            > Blockquote
         GFM
 
-        '1. Numbered list item',
+        <<~GFM,
+          1. Ordered list item
 
-        # multiline numbered list item
-        <<-GFM.strip_heredoc,
+          1. Ordered list item 2
+        GFM
+
+        # multiline ordered list item
+        <<~GFM,
           1. Multiline
-              Numbered list item
+
+             Ordered list item
         GFM
 
-        # nested numbered list
-        <<-GFM.strip_heredoc,
+        # nested ordered list
+        <<~GFM,
           1. Nested
 
-              1. Numbered lists
+             1. Ordered lists
         GFM
 
         # list item followed by an HR
-        <<-GFM.strip_heredoc,
-          - list item
+        <<~GFM,
+          * list item
 
-          -----
+          ---
         GFM
 
         '# Heading',
@@ -518,14 +612,14 @@ describe 'Copy as GFM', :js do
 
         '**Bold**',
 
-        '_Italics_',
+        '*Italics*',
 
         '~~Strikethrough~~',
 
-        '-----',
+        '---',
 
         # table
-        <<-GFM.strip_heredoc,
+        <<~GFM,
           | Centered | Right | Left |
           |:--------:|------:|------|
           | Foo | Bar | **Baz** |
@@ -533,9 +627,9 @@ describe 'Copy as GFM', :js do
         GFM
 
         # table with empty heading
-        <<-GFM.strip_heredoc,
+        <<~GFM,
           |  | x | y |
-          |---|---|---|
+          |--|---|---|
           | a | 1 | 0 |
           | b | 0 | 1 |
         GFM
@@ -545,9 +639,11 @@ describe 'Copy as GFM', :js do
     alias_method :gfm_to_html, :markdown
 
     def verify(label, *gfms)
+      markdown_options = gfms.extract_options!
+
       aggregate_failures(label) do
         gfms.each do |gfm|
-          html = gfm_to_html(gfm).gsub(/\A&#x000A;|&#x000A;\z/, '')
+          html = gfm_to_html(gfm, markdown_options).gsub(/\A&#x000A;|&#x000A;\z/, '')
           output_gfm = html_to_gfm(html)
           expect(output_gfm.strip).to eq(gfm.strip)
         end
@@ -594,7 +690,7 @@ describe 'Copy as GFM', :js do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
 
-              <<-GFM.strip_heredoc,
+              <<~GFM,
                 ```ruby
                       raise RuntimeError, "System commands must be given as an array of strings"
                     end
@@ -627,7 +723,7 @@ describe 'Copy as GFM', :js do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
 
-              <<-GFM.strip_heredoc,
+              <<~GFM,
                 ```ruby
                     unless cmd.is_a?(Array)
                       raise "System commands must be given as an array of strings"
@@ -645,7 +741,7 @@ describe 'Copy as GFM', :js do
             verify(
               '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
 
-              <<-GFM.strip_heredoc,
+              <<~GFM,
                 ```ruby
                     unless cmd.is_a?(Array)
                       raise RuntimeError, "System commands must be given as an array of strings"
@@ -691,7 +787,7 @@ describe 'Copy as GFM', :js do
           verify(
             '.line[id="LC9"], .line[id="LC10"]',
 
-            <<-GFM.strip_heredoc,
+            <<~GFM,
               ```ruby
                     raise RuntimeError, "System commands must be given as an array of strings"
                   end
@@ -733,7 +829,7 @@ describe 'Copy as GFM', :js do
           verify(
             '.line[id="LC27"], .line[id="LC28"]',
 
-            <<-GFM.strip_heredoc,
+            <<~GFM,
               ```json
                   "bio": null,
                   "skype": "",
@@ -752,7 +848,7 @@ describe 'Copy as GFM', :js do
   end
 
   def html_for_selector(selector)
-    js = <<-JS.strip_heredoc
+    js = <<~JS
       (function(selector) {
         var els = document.querySelectorAll(selector);
         var htmls = [].slice.call(els).map(function(el) { return el.outerHTML; });
@@ -763,7 +859,7 @@ describe 'Copy as GFM', :js do
   end
 
   def html_to_gfm(html, transformer = 'transformGFMSelection', target: nil)
-    js = <<-JS.strip_heredoc
+    js = <<~JS
       (function(html) {
         var transformer = window.CopyAsGFM[#{transformer.inspect}];
 

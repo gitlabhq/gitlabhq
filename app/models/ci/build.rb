@@ -3,6 +3,7 @@
 module Ci
   class Build < CommitStatus
     prepend ArtifactMigratable
+    include Ci::Processable
     include TokenAuthenticatable
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
@@ -636,10 +637,6 @@ module Ci
 
     def coverage_regex
       super || project.try(:build_coverage_regex)
-    end
-
-    def when
-      read_attribute(:when) || 'on_success'
     end
 
     def options

@@ -9,7 +9,7 @@ module Gitlab
     #
     # Example usage:
     #
-    #     union = Gitlab::SQL::Union.new(user.personal_projects, user.projects)
+    #     union = Gitlab::SQL::Union.new([user.personal_projects, user.projects])
     #     sql   = union.to_sql
     #
     #     Project.where("id IN (#{sql})")

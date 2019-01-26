@@ -186,7 +186,7 @@ describe('ShortcutsIssuable', function() {
       it('adds the quoted selection to the input', () => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('> _Selected text._\n\n');
+        expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
       });
 
       it('triggers `focus`', () => {

@@ -30,7 +30,7 @@ module QA
             def ingress_ip
               # We need to wait longer since it can take some time before the
               # ip address is assigned for the ingress controller
-              page.find('#ingress-ip-address', wait: 500).value
+              page.find('#ingress-ip-address', wait: 1200).value
             end
           end
         end

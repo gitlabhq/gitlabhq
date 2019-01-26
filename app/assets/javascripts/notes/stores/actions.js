@@ -415,12 +415,13 @@ export const submitSuggestion = (
       commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId });
       callback();
     })
-    .catch(() => {
-      Flash(
-        __('Something went wrong while applying the suggestion. Please try again.'),
-        'alert',
-        flashContainer,
+    .catch(err => {
+      const defaultMessage = __(
+        'Something went wrong while applying the suggestion. Please try again.',
       );
+      const flashMessage = err.response.data ? `${err.response.data.message}.` : defaultMessage;
+
+      Flash(__(flashMessage), 'alert', flashContainer);
       callback();
     });
 };

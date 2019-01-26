@@ -28,6 +28,7 @@ module QA
         Git::Repository.perform do |repository|
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
+          repository.try_add_credentials_to_netrc
 
           repository.act do
             clone

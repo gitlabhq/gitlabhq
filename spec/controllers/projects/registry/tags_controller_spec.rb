@@ -19,7 +19,7 @@ describe Projects::Registry::TagsController do
     end
 
     before do
-      stub_container_registry_tags(repository: /image/, tags: tags)
+      stub_container_registry_tags(repository: /image/, tags: tags, with_manifest: true)
     end
 
     context 'when user can control the registry' do

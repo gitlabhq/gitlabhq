@@ -286,6 +286,49 @@ describe 'Pipeline', :js do
     end
   end
 
+  context 'when a bridge job exists' do
+    include_context 'pipeline builds'
+
+    let(:project) { create(:project, :repository) }
+    let(:downstream) { create(:project, :repository) }
+
+    let(:pipeline) do
+      create(:ci_pipeline, project: project,
+                           ref: 'master',
+                           sha: project.commit.id,
+                           user: user)
+    end
+
+    let!(:bridge) do
+      create(:ci_bridge, pipeline: pipeline,
+                         name: 'cross-build',
+                         user: user,
+                         downstream: downstream)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows the pipeline with a bridge job' do
+        expect(page).to have_selector('.pipeline-visualization')
+        expect(page).to have_content('cross-build')
+      end
+    end
+
+    describe 'GET /:project/pipelines/:id/builds' do
+      before do
+        visit builds_project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows a bridge job on a list' do
+        expect(page).to have_content('cross-build')
+        expect(page).to have_content(bridge.id)
+      end
+    end
+  end
+
   describe 'GET /:project/pipelines/:id/builds' do
     include_context 'pipeline builds'
 

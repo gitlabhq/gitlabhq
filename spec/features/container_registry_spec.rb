@@ -25,7 +25,7 @@ describe "Container Registry", :js do
 
   context 'when there are image repositories' do
     before do
-      stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest])
+      stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest], with_manifest: true)
       project.container_repositories << container_repository
     end
 

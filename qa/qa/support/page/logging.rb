@@ -112,6 +112,17 @@ module QA
           found
         end
 
+        def finished_loading?
+          log('waiting for loading to complete...')
+          now = Time.now
+
+          loaded = super
+
+          log("loading complete after #{Time.now - now} seconds")
+
+          loaded
+        end
+
         def within_element(name)
           log("within element :#{name}")
 

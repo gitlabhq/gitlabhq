@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'opentracing'
+
 module Gitlab
   module Tracing
     module Common
@@ -32,6 +34,14 @@ module Gitlab
         end
       end
 
+      def postnotify_span(operation_name, start_time, end_time, tags: nil, child_of: nil, exception: nil)
+        span = OpenTracing.start_span(operation_name, start_time: start_time, tags: tags, child_of: child_of)
+
+        log_exception_on_span(span, exception) if exception
+
+        span.finish(end_time: end_time)
+      end
+
       def log_exception_on_span(span, exception)
         span.set_tag('error', true)
         span.log_kv(kv_tags_for_exception(exception))
@@ -44,7 +54,7 @@ module Gitlab
             'event':      'error',
             'error.kind': exception.class.to_s,
             'message':    Gitlab::UrlSanitizer.sanitize(exception.message),
-            'stack':      exception.backtrace.join("\n")
+            'stack':      exception.backtrace&.join("\n")
           }
         else
           {

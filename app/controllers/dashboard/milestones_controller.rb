@@ -27,7 +27,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   def group_milestones
     groups = GroupsFinder.new(current_user, all_available: false).execute
 
-    DashboardGroupMilestone.build_collection(groups)
+    DashboardGroupMilestone.build_collection(groups, params)
   end
 
   # See [#39545](https://gitlab.com/gitlab-org/gitlab-ce/issues/39545) for info about the deprecation of dynamic milestones
