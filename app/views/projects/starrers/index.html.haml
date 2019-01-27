@@ -5,21 +5,25 @@
     %span.flex-project-title
       = _("Starrers of <strong>%{project_name}</strong>").html_safe % { project_name: sanitize_project_name(@project.name) }
     %span.badge.badge-pill= @starrers.size
-  .nav-controls
-    = form_tag request.original_url, method: :get, class: 'form-inline user-search-form flex-users-form' do
-      .form-group
-        .position-relative
-          = search_field_tag :search, params[:search], { placeholder: _('Find starrers by name'), class: 'form-control', spellcheck: false }
-          %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
-            = icon("search")
-          .dropdown.inline.user-sort-dropdown
-            = dropdown_toggle(users_sort_options_hash[@sort], { toggle: 'dropdown' })
-            %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
-              %li.dropdown-header
-                = _("Sort by")
-              - users_sort_options_hash.each do |value, title|
-                %li
-                  = link_to filter_user_path(sort: value), class: ("is-active" if @sort == value) do
-                    = title
-.row.prepend-top-10
-  = render partial: 'starrer', collection: @starrers, as: :user
+  - if @starrers.size > 0
+    .nav-controls
+      = form_tag request.original_url, method: :get, class: 'form-inline user-search-form flex-users-form' do
+        .form-group
+          .position-relative
+            = search_field_tag :search, params[:search], { placeholder: _('Find starrers by name'), class: 'form-control', spellcheck: false }
+            %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
+              = icon("search")
+            .dropdown.inline.user-sort-dropdown
+              = dropdown_toggle(users_sort_options_hash[@sort], { toggle: 'dropdown' })
+              %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
+                %li.dropdown-header
+                  = _("Sort by")
+                - users_sort_options_hash.each do |value, title|
+                  %li
+                    = link_to filter_user_path(sort: value), class: ("is-active" if @sort == value) do
+                      = title
+- if @starrers.size > 0
+  .row.prepend-top-10
+    = render partial: 'starrer', collection: @starrers, as: :user
+-else
+  .nothing-here-block Nobody has starred this repository yet
