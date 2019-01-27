@@ -13,7 +13,9 @@ class Projects::StarrersController < Projects::ApplicationController
     params[:has_starred] = @project
 
     @starrers = UsersFinder.new(current_user, params).execute
-    @starrers = @starrers.joins(:users_star_projects).select('"users".*, "users_star_projects"."created_at" as "starred_since"')
+    @starrers = @starrers.joins(:users_star_projects)
+      .select('"users".*, "users_star_projects"."created_at" as "starred_since"')
+      .where(users_star_projects: { project_id: @project.project_id })
     @starrers = @starrers.sort_by_attribute(@sort)
   end
   # rubocop: enable CodeReuse/ActiveRecord
