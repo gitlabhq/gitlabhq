@@ -25,5 +25,5 @@
 - if @starrers.size > 0
   .row.prepend-top-10
     = render partial: 'starrer', collection: @starrers, as: :user
--else
+- else
   .nothing-here-block Nobody has starred this repository yet
