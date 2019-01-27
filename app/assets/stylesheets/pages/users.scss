@@ -95,7 +95,11 @@
   }
 }
 
-.card-body .user {
-  color: $gl-text-color;
-  font-weight: $gl-font-weight-bold;
+.card-body .user-info {
+  float: left;
+
+  .user {
+    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+  }
 }

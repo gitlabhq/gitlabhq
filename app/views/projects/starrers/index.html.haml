@@ -22,4 +22,4 @@
                   = link_to filter_user_path(sort: value), class: ("is-active" if @sort == value) do
                     = title
 .row.prepend-top-10
-  = render partial: 'shared/users/usercell', collection: @starrers, as: :user
+  = render partial: 'starrer', collection: @starrers, as: :user
