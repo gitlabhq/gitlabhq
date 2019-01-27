@@ -111,6 +111,10 @@
             %li.js-projects-tab
               = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
                 = s_('UserProfile|Personal projects')
+          - if profile_tab?(:starred)
+            %li.js-starred-tab
+              = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json) } do
+                = s_('UserProfile|Starred projects')
           - if profile_tab?(:snippets)
             %li.js-snippets-tab
               = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
@@ -140,6 +144,10 @@
 
       - if profile_tab?(:projects)
         #projects.tab-pane
+          -# This tab is always loaded via AJAX
+
+      - if profile_tab?(:starred)
+        #starred.tab-pane
           -# This tab is always loaded via AJAX
 
       - if profile_tab?(:snippets)

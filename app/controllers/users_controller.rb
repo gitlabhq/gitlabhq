@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
   before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :snippets]
+                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :starred_projects, :snippets]
 
   def show
     respond_to do |format|
@@ -82,6 +82,19 @@ class UsersController < ApplicationController
     end
   end
 
+  def starred
+    load_starred_projects
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/projects/_list", projects: @starred_projects)
+        }
+      end
+    end
+  end
+
   def snippets
     load_snippets
 
@@ -120,6 +133,10 @@ class UsersController < ApplicationController
     ContributedProjectsFinder.new(user).execute(current_user)
   end
 
+  def starred_projects
+    StarredProjectsFinder.new(user).execute(current_user)
+  end
+
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
@@ -143,6 +160,12 @@ class UsersController < ApplicationController
     @contributed_projects = contributed_projects.joined(user)
 
     prepare_projects_for_rendering(@contributed_projects)
+  end
+
+  def load_starred_projects
+    @starred_projects = starred_projects.joined(user)
+
+    prepare_projects_for_rendering(@starred_projects)
   end
 
   def load_groups
