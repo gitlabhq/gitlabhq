@@ -10,7 +10,9 @@ module Ci
 
     self.table_name = 'ci_builds_metadata'
 
-    belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :build, class_name: 'CommitStatus',
+                       polymorphic: true, # rubocop:disable Cop/PolymorphicAssociations
+                       inverse_of: :metadata
     belongs_to :project
 
     before_create :set_build_project

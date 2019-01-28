@@ -4,6 +4,7 @@ module Ci
   class Build < CommitStatus
     prepend ArtifactMigratable
     include Ci::Processable
+    include Ci::Metadatable
     include TokenAuthenticatable
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
@@ -37,12 +38,10 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
-    has_one :metadata, class_name: 'Ci::BuildMetadata', autosave: true
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session
 
-    delegate :timeout, to: :metadata, prefix: true, allow_nil: true
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
@@ -133,7 +132,6 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    before_create :ensure_metadata
     after_create unless: :importing? do |build|
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
@@ -261,10 +259,6 @@ module Ci
       end
     end
 
-    def ensure_metadata
-      metadata || build_metadata(project: project)
-    end
-
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
         .new(self, current_user)
@@ -282,18 +276,6 @@ module Ci
     def pages_generator?
       Gitlab.config.pages.enabled &&
         self.name == 'pages'
-    end
-
-    # degenerated build is one that cannot be run by Runner
-    def degenerated?
-      self.options.blank?
-    end
-
-    def degenerate!
-      Build.transaction do
-        self.update!(options: nil, yaml_variables: nil)
-        self.metadata&.destroy
-      end
     end
 
     def archived?
@@ -639,22 +621,6 @@ module Ci
       super || project.try(:build_coverage_regex)
     end
 
-    def options
-      read_metadata_attribute(:options, :config_options, {})
-    end
-
-    def yaml_variables
-      read_metadata_attribute(:yaml_variables, :config_variables, [])
-    end
-
-    def options=(value)
-      write_metadata_attribute(:options, :config_options, value)
-    end
-
-    def yaml_variables=(value)
-      write_metadata_attribute(:yaml_variables, :config_variables, value)
-    end
-
     def user_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables if user.blank?
@@ -955,21 +921,6 @@ module Ci
 
     def project_destroyed?
       project.pending_delete?
-    end
-
-    def read_metadata_attribute(legacy_key, metadata_key, default_value = nil)
-      read_attribute(legacy_key) || metadata&.read_attribute(metadata_key) || default_value
-    end
-
-    def write_metadata_attribute(legacy_key, metadata_key, value)
-      # save to metadata or this model depending on the state of feature flag
-      if Feature.enabled?(:ci_build_metadata_config)
-        ensure_metadata.write_attribute(metadata_key, value)
-        write_attribute(legacy_key, nil)
-      else
-        write_attribute(legacy_key, value)
-        metadata&.write_attribute(metadata_key, nil)
-      end
     end
   end
 end
