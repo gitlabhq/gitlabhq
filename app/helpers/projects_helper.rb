@@ -601,6 +601,11 @@ module ProjectsHelper
     end
   end
 
+  def filter_starrer_path(options = {})
+    options = params.slice(:sort).merge(options).permit!
+    "#{request.path}?#{options.to_param}"
+  end
+
   def sidebar_projects_paths
     %w[
       projects#show

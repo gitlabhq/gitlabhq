@@ -4,7 +4,7 @@
   .nav-text
     %span.flex-project-title
       = _("Starrers of <strong>%{project_name}</strong>").html_safe % { project_name: sanitize_project_name(@project.name) }
-    %span.badge.badge-pill= @starrers.size
+    %span.badge.badge-pill= @starrers.total_count
   - if @starrers.size > 0
     .nav-controls
       = form_tag request.original_url, method: :get, class: 'form-inline user-search-form flex-users-form' do
@@ -20,10 +20,11 @@
                   = _("Sort by")
                 - starrers_sort_options_hash.each do |value, title|
                   %li
-                    = link_to filter_user_path(sort: value), class: ("is-active" if @sort == value) do
+                    = link_to filter_starrer_path(sort: value), class: ("is-active" if @sort == value) do
                       = title
 - if @starrers.size > 0
   .row.prepend-top-10
     = render partial: 'starrer', collection: @starrers, as: :starrer
+  = paginate @starrers, theme: 'gitlab'
 - else
   .nothing-here-block Nobody has starred this repository yet

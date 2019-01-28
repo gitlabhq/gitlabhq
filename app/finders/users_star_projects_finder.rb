@@ -12,7 +12,6 @@ class UsersStarProjectsFinder
   def execute
     stars = UsersStarProject.all.order_id_desc
     stars = by_search(stars)
-    stars = by_project(stars)
 
     stars
   end
@@ -20,12 +19,6 @@ class UsersStarProjectsFinder
   private
 
   def by_search(items)
-    return items unless params[:search].present?
-
-    items.search(params[:search])
-  end
-
-  def by_project(items)
-    params[:project].present? ? items.by_project(params[:project]) : items
+    params[:search].present? ? items.search(params[:search]) : items
   end
 end
