@@ -1,5 +1,0 @@
----
-title: Use common error for unauthenticated users when creating issues
-merge_request:
-author:
-type: security
