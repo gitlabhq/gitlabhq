@@ -10268,6 +10268,9 @@ msgstr ""
 msgid "SortOptions|Oldest sign in"
 msgstr ""
 
+msgid "SortOptions|Oldest starred"
+msgstr ""
+
 msgid "SortOptions|Oldest updated"
 msgstr ""
 

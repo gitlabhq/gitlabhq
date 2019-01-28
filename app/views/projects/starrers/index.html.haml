@@ -14,16 +14,16 @@
             %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
               = icon("search")
             .dropdown.inline.user-sort-dropdown
-              = dropdown_toggle(users_sort_options_hash[@sort], { toggle: 'dropdown' })
+              = dropdown_toggle(starrers_sort_options_hash[@sort], { toggle: 'dropdown' })
               %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
                 %li.dropdown-header
                   = _("Sort by")
-                - users_sort_options_hash.each do |value, title|
+                - starrers_sort_options_hash.each do |value, title|
                   %li
                     = link_to filter_user_path(sort: value), class: ("is-active" if @sort == value) do
                       = title
 - if @starrers.size > 0
   .row.prepend-top-10
-    = render partial: 'starrer', collection: @starrers, as: :user
+    = render partial: 'starrer', collection: @starrers, as: :starrer
 - else
   .nothing-here-block Nobody has starred this repository yet

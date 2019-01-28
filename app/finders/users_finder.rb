@@ -37,7 +37,6 @@ class UsersFinder
     users = by_2fa(users)
     users = by_created_at(users)
     users = by_custom_attributes(users)
-    users = by_has_starred(users)
 
     users
   end
@@ -94,9 +93,5 @@ class UsersFinder
     else
       users
     end
-  end
-
-  def by_has_starred(items)
-    params[:has_starred].present? ? items.has_starred(params[:has_starred]) : items
   end
 end

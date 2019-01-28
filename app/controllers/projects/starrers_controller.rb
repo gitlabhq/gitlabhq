@@ -10,12 +10,9 @@ class Projects::StarrersController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    params[:has_starred] = @project
+    params[:project] = @project
 
-    @starrers = UsersFinder.new(current_user, params).execute
-    @starrers = @starrers.joins(:users_star_projects)
-      .select('"users".*, "users_star_projects"."created_at" as "starred_since"')
-      .where(users_star_projects: { project_id: @project.project_id })
+    @starrers = UsersStarProjectsFinder.new(params).execute
     @starrers = @starrers.sort_by_attribute(@sort)
   end
   # rubocop: enable CodeReuse/ActiveRecord

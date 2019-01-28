@@ -282,7 +282,6 @@ class User < ApplicationRecord
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
-  scope :has_starred, ->(project) { joins(:users_star_projects).where('users_star_projects.project_id': project.id) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
