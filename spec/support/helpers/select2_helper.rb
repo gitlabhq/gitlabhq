@@ -1,3 +1,5 @@
+require_relative 'wait_for_requests'
+
 # Select2 ajax programmatic helper
 # It allows you to select value from select2
 #
