@@ -1,0 +1,5 @@
+---
+title: Ensure Cert Manager works with Auto DevOps URLs greater than 64 bytes
+merge_request: 24683
+author:
+type: fixed
