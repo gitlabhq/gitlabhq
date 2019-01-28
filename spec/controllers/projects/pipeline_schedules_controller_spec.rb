@@ -3,8 +3,13 @@ require 'spec_helper'
 describe Projects::PipelineSchedulesController do
   include AccessMatchersForController
 
+  set(:user) { create(:user) }
   set(:project) { create(:project, :public, :repository) }
   set(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+  before do
+    project.add_developer(user)
+  end
 
   describe 'GET #index' do
     render_views
@@ -14,6 +19,10 @@ describe Projects::PipelineSchedulesController do
       create(:ci_pipeline_schedule, :inactive, project: project)
     end
 
+    before do
+      sign_in(user)
+    end
+
     it 'renders the index view' do
       visit_pipelines_schedules
 
@@ -21,7 +30,7 @@ describe Projects::PipelineSchedulesController do
       expect(response).to render_template(:index)
     end
 
-    it 'avoids N + 1 queries' do
+    it 'avoids N + 1 queries', :request_store do
       control_count = ActiveRecord::QueryRecorder.new { visit_pipelines_schedules }.count
 
       create_list(:ci_pipeline_schedule, 2, project: project)

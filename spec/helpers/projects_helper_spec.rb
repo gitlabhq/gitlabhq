@@ -354,8 +354,20 @@ describe ProjectsHelper do
         allow(project).to receive(:builds_enabled?).and_return(false)
       end
 
-      it "do not include pipelines tab" do
-        is_expected.not_to include(:pipelines)
+      context 'when user has access to builds' do
+        it "does include pipelines tab" do
+          is_expected.to include(:pipelines)
+        end
+      end
+
+      context 'when user does not have access to builds' do
+        before do
+          allow(helper).to receive(:can?) { false }
+        end
+
+        it "does not include pipelines tab" do
+          is_expected.not_to include(:pipelines)
+        end
       end
     end
 
