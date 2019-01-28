@@ -1,5 +1,0 @@
----
-title: Fixed XSS content in KaTex links
-merge_request:
-author:
-type: security
