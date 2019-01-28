@@ -226,6 +226,24 @@ describe MergeRequests::CreateService do
           end
         end
 
+        context 'when there are no commits between source branch and target branch' do
+          let(:opts) do
+            {
+              title: 'Awesome merge_request',
+              description: 'please fix',
+              source_branch: 'not-merged-branch',
+              target_branch: 'master'
+            }
+          end
+
+          it 'does not create a merge request pipeline' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.merge_request_pipelines.count).to eq(0)
+          end
+        end
+
         context "when .gitlab-ci.yml does not have merge_requests keywords" do
           let(:config) do
             {

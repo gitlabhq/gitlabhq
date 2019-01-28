@@ -54,7 +54,6 @@ module Ci
     validates :ref, presence: { unless: :importing? }
     validates :merge_request, presence: { if: :merge_request? }
     validates :merge_request, absence: { unless: :merge_request? }
-    validate :presence_of_commits_in_merge_request, if: :merge_request?
     validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
@@ -750,12 +749,6 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
-    end
-
-    def presence_of_commits_in_merge_request
-      if merge_request&.has_no_commits?
-        errors.add(:merge_request, "must have commits")
-      end
     end
   end
 end

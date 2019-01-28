@@ -1378,7 +1378,7 @@ describe MergeRequest do
                  source_project: project,
                  source_branch: source_ref,
                  target_project: project,
-                 target_branch: 'merge-test')
+                 target_branch: 'stable')
         end
 
         before do

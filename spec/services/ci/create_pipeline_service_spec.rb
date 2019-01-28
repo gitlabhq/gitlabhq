@@ -736,15 +736,6 @@ describe Ci::CreatePipelineService do
               end
             end
 
-            context 'when there are no commits between source branch and target branch' do
-              let(:ref_name) { 'refs/heads/not-merged-branch' }
-
-              it 'does not create a merge request pipeline' do
-                expect(pipeline).not_to be_persisted
-                expect(pipeline.errors[:merge_request]).to eq(["must have commits"])
-              end
-            end
-
             context 'when merge request is created from a forked project' do
               let(:merge_request) do
                 create(:merge_request,
