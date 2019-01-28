@@ -25,6 +25,11 @@ namespace :gitlab do
       puts ""
     end
 
+    # In production, we might want to prevent ourselves from shooting
+    # ourselves in the foot, so let's only do this in a test or
+    # development environment.
+    Gitlab::Database.terminate_all_connections unless Rails.env.production?
+
     Rake::Task["db:reset"].invoke
     Rake::Task["add_limits_mysql"].invoke
     Rake::Task["setup_postgresql"].invoke
