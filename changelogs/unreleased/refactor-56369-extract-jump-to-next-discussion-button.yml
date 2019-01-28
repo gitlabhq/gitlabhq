@@ -1,0 +1,5 @@
+---
+title: Extracted JumpToNextDiscussionButton to its own component
+author: Martin Hobert
+merge_request: 24506
+type: other

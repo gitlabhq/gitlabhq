@@ -23,6 +23,7 @@ import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
+import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
 
 export default {
   name: 'NoteableDiscussion',
@@ -34,6 +35,7 @@ export default {
     noteSignedOutWidget,
     noteEditedText,
     noteForm,
+    jumpToNextDiscussionButton,
     toggleRepliesWidget,
     placeholderNote,
     placeholderSystemNote,
@@ -476,16 +478,10 @@ Please check your network connection and try again.`;
                           <icon name="issue-new" />
                         </a>
                       </div>
-                      <div v-if="shouldShowJumpToNextDiscussion" class="btn-group" role="group">
-                        <button
-                          v-gl-tooltip
-                          class="btn btn-default discussion-next-btn"
-                          title="Jump to next unresolved discussion"
-                          @click="jumpToNextDiscussion"
-                        >
-                          <icon name="comment-next" />
-                        </button>
-                      </div>
+                      <jump-to-next-discussion-button
+                        v-if="shouldShowJumpToNextDiscussion"
+                        @onClick="jumpToNextDiscussion"
+                      />
                     </div>
                   </div>
                 </template>
