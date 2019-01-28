@@ -52,6 +52,10 @@ GitLab provides solutions for [all the stages of the DevOps lifecycle](https://a
 
 ![DevOps Stages](img/devops-stages.png)
 
+You can think of GitLab like a fully prepared kitchen to a chef: we provide all
+the ingredients, appliances, and tools to choose from; you bring your idea,
+expertise, and the choice of where to serve the final product.
+
 The following sections provide links to documentation for each DevOps stage:
 
 | DevOps Stage            | Documentation for                                           |
