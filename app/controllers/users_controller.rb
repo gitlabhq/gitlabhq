@@ -57,34 +57,22 @@ class UsersController < ApplicationController
   def projects
     load_projects
 
-    skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
-    skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
-    compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
-
-    respond_to do |format|
-      format.html { render 'show' }
-      format.json do
-        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
-      end
-    end
+    present_projects(@projects)
   end
 
   def contributed
     load_contributed_projects
 
-    respond_to do |format|
-      format.html { render 'show' }
-      format.json do
-        render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
-        }
-      end
-    end
+    present_projects(@contributed_projects)
   end
 
   def starred
     load_starred_projects
 
+    present_projects(@starred_projects)
+  end
+
+  def present_projects(projects)
     skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
     skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
     compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
@@ -92,7 +80,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        pager_json("shared/projects/_list", @starred_projects.count, projects: @starred_projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
+        pager_json("shared/projects/_list", projects.count, projects: projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
       end
     end
   end
