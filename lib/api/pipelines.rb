@@ -76,7 +76,7 @@ module API
         requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
       end
       get ':id/pipelines/:pipeline_id' do
-        authorize! :read_pipeline, user_project
+        authorize! :read_pipeline, pipeline
 
         present pipeline, with: Entities::Pipeline
       end
@@ -104,7 +104,7 @@ module API
         requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
       end
       post ':id/pipelines/:pipeline_id/retry' do
-        authorize! :update_pipeline, user_project
+        authorize! :update_pipeline, pipeline
 
         pipeline.retry_failed(current_user)
 
@@ -119,7 +119,7 @@ module API
         requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
       end
       post ':id/pipelines/:pipeline_id/cancel' do
-        authorize! :update_pipeline, user_project
+        authorize! :update_pipeline, pipeline
 
         pipeline.cancel_running
 
