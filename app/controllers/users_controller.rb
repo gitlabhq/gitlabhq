@@ -134,7 +134,7 @@ class UsersController < ApplicationController
   end
 
   def starred_projects
-    StarredProjectsFinder.new(user).execute(current_user)
+    StarredProjectsFinder.new(user, current_user: current_user).execute
   end
 
   def contributions_calendar
