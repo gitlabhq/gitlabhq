@@ -128,7 +128,7 @@ module API
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
-        starred_projects = StarredProjectsFinder.new(user).execute(current_user)
+        starred_projects = StarredProjectsFinder.new(user, current_user: current_user).execute
         present_projects starred_projects
       end
     end
