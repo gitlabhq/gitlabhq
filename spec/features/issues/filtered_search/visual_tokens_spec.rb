@@ -122,7 +122,7 @@ describe 'Visual tokens', :js do
       end
 
       it 'changes value in visual token' do
-        expect(first('.tokens-container .filtered-search-token .value').text).to eq('none')
+        expect(first('.tokens-container .filtered-search-token .value').text).to eq('None')
       end
 
       it 'moves input to the right' do
@@ -147,7 +147,7 @@ describe 'Visual tokens', :js do
     it 'selects static option from dropdown' do
       find("#js-dropdown-milestone").find('.filter-dropdown-item', text: 'Upcoming').click
 
-      expect(first('.tokens-container .filtered-search-token .value').text).to eq('upcoming')
+      expect(first('.tokens-container .filtered-search-token .value').text).to eq('Upcoming')
       expect(is_input_focused).to eq(true)
     end
 
@@ -348,7 +348,7 @@ describe 'Visual tokens', :js do
     it 'tokenizes the search term to complete visual token' do
       expect_tokens([
         author_token(user.name),
-        assignee_token('none')
+        assignee_token('None')
       ])
     end
   end
