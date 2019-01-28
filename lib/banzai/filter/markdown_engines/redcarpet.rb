@@ -20,7 +20,7 @@ module Banzai
           tables:              true
         }.freeze
 
-        def initialize
+        def initialize(context = nil)
           html_renderer = Banzai::Renderer::Redcarpet::HTML.new
           @renderer = ::Redcarpet::Markdown.new(html_renderer, OPTIONS)
         end

@@ -301,6 +301,13 @@ describe Banzai::Filter::SanitizationFilter do
       expect(act.to_html).to eq exp
     end
 
+    it 'allows the `data-sourcepos` attribute globally' do
+      exp = %q{<p data-sourcepos="1:1-1:10">foo/bar.md</p>}
+      act = filter(exp)
+
+      expect(act.to_html).to eq exp
+    end
+
     describe 'footnotes' do
       it 'allows correct footnote id property on links' do
         exp = %q{<a href="#fn1" id="fnref1">foo/bar.md</a>}

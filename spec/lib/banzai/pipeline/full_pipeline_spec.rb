@@ -54,6 +54,8 @@ describe Banzai::Pipeline::FullPipeline do
     end
 
     it 'properly adds the necessary ids and classes' do
+      stub_commonmark_sourcepos_disabled
+
       expect(html.lines.map(&:strip).join("\n")).to eq filtered_footnote
     end
   end
