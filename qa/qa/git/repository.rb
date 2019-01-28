@@ -117,8 +117,6 @@ module QA
         File.binwrite(private_key_file, key.private_key)
         File.chmod(0700, private_key_file)
 
-        try_add_credentials_to_netrc
-
         @known_hosts_file = Tempfile.new("known_hosts_#{SecureRandom.hex(8)}")
         keyscan_params = ['-H']
         keyscan_params << "-p #{uri.port}" if uri.port
@@ -180,7 +178,6 @@ module QA
       def add_credentials?
         return false if !username || !password
         return true unless ssh_key_set?
-        return true if ssh_key_set? && use_lfs?
 
         false
       end
