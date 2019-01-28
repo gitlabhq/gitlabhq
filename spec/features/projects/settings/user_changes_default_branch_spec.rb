@@ -15,9 +15,6 @@ describe 'Projects > Settings > User changes default branch' do
     let(:project) { create(:project, :repository, namespace: user.namespace) }
 
     it 'allows to change the default branch', :js do
-      # Otherwise, running JS may overwrite our change to project_default_branch
-      wait_for_requests
-
       select2('fix', from: '#project_default_branch')
 
       page.within '#default-branch-settings' do
