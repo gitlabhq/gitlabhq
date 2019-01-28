@@ -160,7 +160,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'None').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([assignee_token('none')])
+      expect_tokens([assignee_token('None')])
       expect_filtered_search_input_empty
     end
 
@@ -168,7 +168,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'Any').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([assignee_token('any')])
+      expect_tokens([assignee_token('Any')])
       expect_filtered_search_input_empty
     end
   end
