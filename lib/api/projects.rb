@@ -116,7 +116,7 @@ module API
         present_projects load_projects
       end
 
-      desc 'Get a user\'s starred projects' do
+      desc 'Get projects starred by a user' do
         success Entities::BasicProjectDetails
       end
       params do
@@ -374,16 +374,18 @@ module API
         end
       end
 
-      desc 'List users who starred this project' do
+      desc 'Get the users who starred a project' do
         success Entities::UserBasic
       end
       params do
-        use :collection_params
+        optional :search, type: String, desc: 'Return list of users matching the search criteria'
+        use :pagination
       end
       get ':id/starrers' do
         users = DeclarativePolicy.subject_scope { user_project.starrers }
+        users = users.search(params[:search]) if params[:search].present?
 
-        present users, with: Entities::UserBasic
+        present paginate(users), with: Entities::UserBasic
       end
 
       desc 'Get languages in project repository'
