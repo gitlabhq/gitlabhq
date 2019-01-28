@@ -59,11 +59,17 @@ Add another cluster similar to the first one and make sure to
 [set an environment scope](#environment-scopes) that will
 differentiate the new cluster from the rest.
 
+## Base domain
+
 NOTE: **Note:**
-Auto DevOps is not supported for a group with multiple clusters, as it
-is not possible to set `AUTO_DEVOPS_DOMAIN` per environment on the group
-level. This will be resolved in the future with the [following issue](
-https://gitlab.com/gitlab-org/gitlab-ce/issues/52363).
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+
+Domains at the cluster level permit support for multiple domains
+per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
+this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
+the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+
+The domain should have a wildcard DNS configured to the Ingress IP address.
 
 ## Environment scopes **[PREMIUM]**
 
