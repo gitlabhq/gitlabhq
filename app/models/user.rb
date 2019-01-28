@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
