@@ -1,5 +1,0 @@
----
-title: Fix showing ci status for guest users when public pipline are not set
-merge_request:
-author:
-type: security
