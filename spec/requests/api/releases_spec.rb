@@ -127,6 +127,31 @@ describe API::Releases do
           .to match_array(release.sources.map(&:url))
       end
 
+      context "when release description contains confidential issue's link" do
+        let(:confidential_issue) do
+          create(:issue,
+                 :confidential,
+                 project: project,
+                 title: 'A vulnerability')
+        end
+
+        let!(:release) do
+          create(:release,
+                 project: project,
+                 tag: 'v0.1',
+                 sha: commit.id,
+                 author: maintainer,
+                 description: "This is confidential #{confidential_issue.to_reference}")
+        end
+
+        it "does not expose confidential issue's title" do
+          get api("/projects/#{project.id}/releases/v0.1", maintainer)
+
+          expect(json_response['description_html']).to include(confidential_issue.to_reference)
+          expect(json_response['description_html']).not_to include('A vulnerability')
+        end
+      end
+
       context 'when release has link asset' do
         let!(:link) do
           create(:release_link,
