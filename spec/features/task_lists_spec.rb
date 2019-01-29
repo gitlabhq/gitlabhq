@@ -188,8 +188,10 @@ describe 'Task Lists' do
 
     describe 'nested tasks', :js do
       let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION }
-      let!(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project,
-                            cached_markdown_version: cache_version) }
+      let!(:issue) do
+        create(:issue, description: nested_tasks_markdown, author: user, project: project,
+                       cached_markdown_version: cache_version)
+      end
 
       before do
         visit_issue(project, issue)
