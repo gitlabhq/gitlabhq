@@ -1,6 +1,7 @@
 <script>
 import Visibility from 'visibilityjs';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
 import { visitUrl } from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
@@ -11,7 +12,6 @@ import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
-import { __ } from '~/locale';
 
 export default {
   components: {
@@ -168,7 +168,7 @@ export default {
       return descriptionChanged || titleChanged;
     },
     defaultErrorMessage() {
-      return sprintf(s__('Error updating  %{issuableType}.'), { issuableType: this.issuableType });
+      return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
   },
   created() {
@@ -224,7 +224,7 @@ export default {
           this.store.updateState(data);
         })
         .catch(() => {
-          window.Flash(this.defaultErrorMessage);
+          createFlash(this.defaultErrorMessage);
         });
     },
 
@@ -258,18 +258,20 @@ export default {
         .then(() => {
           eventHub.$emit('close.form');
         })
-        .catch(error => {
-          if (error && error.name === 'SpamError') {
+        .catch((error = {}) => {
+          const { name, response = {} } = error;
+
+          if (name === 'SpamError') {
             this.openRecaptcha();
           } else {
             let errMsg = this.defaultErrorMessage;
 
-            if (error && error.response && error.response.data && error.response.data.errors) {
-              errMsg += error.response.data.errors.join(' ');
+            if (response.data && response.data.errors) {
+              errMsg += `. ${response.data.errors.join(' ')}`;
             }
 
             eventHub.$emit('close.form');
-            window.Flash(errMsg);
+            createFlash(errMsg);
           }
         });
     },
@@ -294,7 +296,9 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          window.Flash(`Error deleting ${this.issuableType}`);
+          createFlash(
+            sprintf(s__('Error deleting  %{issuableType}'), { issuableType: this.issuableType }),
+          );
         });
     },
   },

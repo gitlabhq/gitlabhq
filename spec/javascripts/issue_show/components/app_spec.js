@@ -18,9 +18,13 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let vm;
 
-  document.body.innerHTML = '<span id="task_status"></span>';
-
   beforeEach(done => {
+    setFixtures(`
+      <div>
+        <div class="flash-container"></div>
+        <span id="task_status"></span>
+      </div>
+    `);
     spyOn(eventHub, '$emit');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
@@ -258,18 +262,15 @@ describe('Issuable output', () => {
     });
 
     describe('error when updating', () => {
-      beforeEach(() => {
-        spyOn(window, 'Flash').and.callThrough();
-      });
-
       it('closes form on error', done => {
         spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.resolve());
         vm.updateIssuable();
 
         setTimeout(() => {
           expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-          expect(window.Flash).toHaveBeenCalledWith('Error updating issue');
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `Error updating issue`,
+          );
 
           done();
         });
@@ -284,8 +285,9 @@ describe('Issuable output', () => {
 
           setTimeout(() => {
             expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-            expect(window.Flash).toHaveBeenCalledWith('Error updating merge request');
+            expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+              `Error updating merge request`,
+            );
 
             done();
           });
@@ -295,12 +297,14 @@ describe('Issuable output', () => {
       it('shows error mesage from backend if exists', done => {
         const msg = 'Custom error message from backend';
         spyOn(vm.service, 'updateIssuable').and.callFake(
-          () => Promise.reject({ response: { data: { errors: msg } } }), // eslint-disable-line prefer-promise-reject-errors
+          () => Promise.reject({ response: { data: { errors: [msg] } } }), // eslint-disable-line prefer-promise-reject-errors
         );
 
         vm.updateIssuable();
         setTimeout(() => {
-          expect(window.Flash).toHaveBeenCalledWith(msg);
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `${vm.defaultErrorMessage}. ${msg}`,
+          );
 
           done();
         });
@@ -399,7 +403,6 @@ describe('Issuable output', () => {
     });
 
     it('closes form on error', done => {
-      spyOn(window, 'Flash').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(
         () =>
           new Promise((resolve, reject) => {
@@ -411,8 +414,9 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-        expect(window.Flash).toHaveBeenCalledWith('Error deleting issue');
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          'Error deleting issue',
+        );
 
         done();
       });
@@ -472,12 +476,13 @@ describe('Issuable output', () => {
 
     it('should show error message if store update fails', done => {
       spyOn(vm.service, 'getData').and.returnValue(Promise.reject());
-      spyOn(window, 'Flash');
       vm.issuableType = 'merge request';
 
       vm.updateStoreState()
         .then(() => {
-          expect(window.Flash).toHaveBeenCalledWith(`Error updating ${vm.issuableType}`);
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `Error updating ${vm.issuableType}`,
+          );
         })
         .then(done)
         .catch(done.fail);

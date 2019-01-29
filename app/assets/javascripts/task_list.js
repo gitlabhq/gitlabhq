@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import 'deckar01-task_list';
+import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import Flash from './flash';
 
@@ -21,7 +22,7 @@ export default class TaskList {
           errorMessages = e.response.data.errors.join(' ');
         }
 
-        return new Flash(errorMessages || 'Update failed', 'alert');
+        return new Flash(errorMessages || __('Update failed'), 'alert');
       };
 
     this.init();
@@ -34,10 +35,8 @@ export default class TaskList {
     $(document).on('tasklist:changed', this.taskListContainerSelector, this.updateHandler);
   }
 
-  getTaskListTarget(e = {}) {
-    const $currentTarget = $(e.currentTarget);
-
-    return $currentTarget.taskList ? $currentTarget : $(this.taskListContainerSelector);
+  getTaskListTarget(e) {
+    return e && e.currentTarget ? $(e.currentTarget) : $(this.taskListContainerSelector);
   }
 
   disableTaskListItems(e) {

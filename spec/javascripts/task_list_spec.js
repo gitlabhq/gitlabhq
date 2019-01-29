@@ -50,11 +50,11 @@ describe('TaskList', () => {
       expect($target).toEqual(currentTarget);
     });
 
-    // it('should return element of the taskListContainerSelector', () => {
-    //   const $target = taskList.getTaskListTarget();
+    it('should return element of the taskListContainerSelector', () => {
+      const $target = taskList.getTaskListTarget();
 
-    //   expect($target).toEqual($(taskList.taskListContainerSelector));
-    // });
+      expect($target).toEqual($(taskList.taskListContainerSelector));
+    });
   });
 
   describe('disableTaskListItems', () => {
