@@ -79,11 +79,14 @@ running on your instance).
 
 ![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
 
-NOTE: **Note:**
-Note that if you use your root domain for your GitLab Pages website **only**, and if
-your domain registrar supports this feature, you can add a DNS apex `CNAME`
-record instead of an `A` record. The main advantage of doing so is that when GitLab Pages
-IP on GitLab.com changes for whatever reason, you don't need to update your `A` record.
+CAUTION: **Caution:**
+Note that if you use your root domain for your GitLab Pages website
+**only**, and if your domain registrar supports this feature, you can
+add a DNS apex `CNAME` record instead of an `A` record. The main
+advantage of doing so is that when GitLab Pages IP on GitLab.com
+changes for whatever reason, you don't need to update your `A` record.
+There may be a few exceptions, but **this method is not recommended**
+as it most likely won't work if you set an `MX` record for your root domain.
 
 #### DNS CNAME record
 
@@ -114,14 +117,16 @@ co-exist, so you need to place the TXT record in a special subdomain of its own.
 
 #### TL;DR
 
-If the domain has multiple uses (e.g., you host email on it as well):
+For root domains (`domain.com`), set a DNS `A` record and verify your
+domain's ownership with a TXT record:
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
 | domain.com | A | 35.185.44.232 |
 | domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
 
-If the domain is dedicated to GitLab Pages use and no other services run on it:
+For subdomains (`subdomain.domain.com`), set a DNS `CNAME` record and
+verify your domain's ownership with a TXT record:
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
