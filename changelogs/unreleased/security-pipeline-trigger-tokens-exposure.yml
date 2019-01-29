@@ -1,5 +1,0 @@
----
-title: Expose CI/CD trigger token only to the trigger owner
-merge_request:
-author:
-type: security

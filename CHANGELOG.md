@@ -2,6 +2,37 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.9 (2019-01-29)
+
+### Security (21 changes)
+
+- Make potentially malicious links more visible in the UI and scrub RTLO chars from links. !2770
+- Don't process MR refs for guests in the notes. !2771
+- Add more LFS validations to prevent forgery.
+- Verify that LFS upload requests are genuine.
+- Fixed XSS content in KaTex links.
+- Prevent awarding emojis to notes whose parent is not visible to user.
+- Prevent unauthorized replies when discussion is locked or confidential.
+- Disable git v2 protocol temporarily.
+- Fix showing ci status for guest users when public pipline are not set.
+- Fix contributed projects info still visible when user enable private profile.
+- Extract GitLab Pages using RubyZip.
+- Disallows unauthorized users from accessing the pipelines section.
+- Use common error for unauthenticated users when creating issues.
+- Fix slow regex in project reference pattern.
+- Fix private user email being visible in push (and tag push) webhooks.
+- Fix wiki access rights when external wiki is enabled.
+- Fix path disclosure on project import error.
+- Restrict project import visibility based on its group.
+- Expose CI/CD trigger token only to the trigger owner.
+- Notify only users who can access the project on project move.
+- Alias GitHub and BitBucket OAuth2 callback URLs.
+
+### Fixed (1 change)
+
+- Fix uninitialized constant with GitLab Pages.
+
+
 ## 11.5.8 (2019-01-28)
 
 - Unreleased due to quality assurance failure.

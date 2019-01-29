@@ -1,5 +1,0 @@
----
-title: Fix uninitialized constant with GitLab Pages
-merge_request:
-author:
-type: fixed
