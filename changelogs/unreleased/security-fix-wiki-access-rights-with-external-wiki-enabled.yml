@@ -1,0 +1,5 @@
+---
+title: Fix wiki access rights when external wiki is enabled
+merge_request:
+author:
+type: security

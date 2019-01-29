@@ -1,0 +1,5 @@
+---
+title: Don't process MR refs for guests in the notes
+merge_request: 2771
+author:
+type: security

@@ -1,0 +1,5 @@
+---
+title: Disallows unauthorized users from accessing the pipelines section.
+merge_request:
+author:
+type: security
