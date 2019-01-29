@@ -11,7 +11,7 @@
 class TaskListToggleService
   attr_reader :updated_markdown, :updated_markdown_html
 
-  def initialize(markdown, markdown_html, line_source:, line_number:, currently_checked:, index:, sourcepos: false)
+  def initialize(markdown, markdown_html, line_source:, line_number:, currently_checked:, index:, sourcepos: true)
     @markdown, @markdown_html  = markdown, markdown_html
     @line_source, @line_number = line_source, line_number
     @currently_checked         = currently_checked
@@ -62,6 +62,13 @@ class TaskListToggleService
     @updated_markdown_html = html.to_html
   end
 
+  # When using CommonMark, we should be able to use the embedded `sourcepos` attribute to
+  # target the exact line in the DOM.  For RedCarpet, we need to use the index of the checkbox
+  # that was checked and match it with what we think is the same checkbox.
+  # The reason `sourcepos` is slightly more reliable is the case where a line of text is
+  # changed from a regular line into a checkbox (or vice versa).  Then the checked index
+  # in the UI will be off from the list of checkboxes we've calculated locally.
+  # It's a rare circumstance, but since we can account for it, we do.
   def get_html_checkbox(html)
     if use_sourcepos
       html.css(".task-list-item[data-sourcepos^='#{line_number}:'] > input.task-list-item-checkbox").first

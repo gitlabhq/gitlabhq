@@ -262,16 +262,16 @@ class IssuableBaseService < BaseService
 
   # Handle the `update_task` event sent from UI.  Attempts to update a specific
   # line in the markdown and cached html, bypassing any unnecessary updates or checks.
-  def update_task_event(issue)
+  def update_task_event(issuable)
     update_task_params = params.delete(:update_task)
     return unless update_task_params
 
-    toggler = TaskListToggleService.new(issue.description, issue.description_html,
+    toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
                                         line_source: update_task_params[:line_source],
                                         line_number: update_task_params[:line_number],
                                         currently_checked: !update_task_params[:checked],
                                         index: update_task_params[:index],
-                                        sourcepos: false)
+                                        sourcepos: !issuable.legacy_markdown?)
 
     if toggler.execute
       # by updating the description_html field at the same time,
@@ -282,9 +282,9 @@ class IssuableBaseService < BaseService
       # since we're updating a very specific line, we don't care whether
       # the `lock_version` sent from the FE is the same or not.  Just
       # make sure the data hasn't changed since we queried it
-      params[:lock_version]     = issue.lock_version
+      params[:lock_version]     = issuable.lock_version
 
-      update_task(issue)
+      update_task(issuable)
     else
       # if we make it here, the data is much newer than we thought it was - fail fast
       raise ActiveRecord::StaleObjectError

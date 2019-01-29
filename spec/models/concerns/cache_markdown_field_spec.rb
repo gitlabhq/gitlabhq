@@ -251,6 +251,30 @@ describe CacheMarkdownField do
     end
   end
 
+  describe '#legacy_markdown?' do
+    subject { thing.legacy_markdown? }
+
+    it 'returns true for redcarpet versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START - 1
+      is_expected.to be_truthy
+    end
+
+    it 'returns false for commonmark versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if nil' do
+      thing.cached_markdown_version = nil
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if 0' do
+      thing.cached_markdown_version = 0
+      is_expected.to be_falsey
+    end
+  end
+
   describe '#refresh_markdown_cache' do
     before do
       thing.foo = updated_markdown
