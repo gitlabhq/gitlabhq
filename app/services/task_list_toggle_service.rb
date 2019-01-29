@@ -11,10 +11,10 @@
 class TaskListToggleService
   attr_reader :updated_markdown, :updated_markdown_html
 
-  def initialize(markdown, markdown_html, line_source:, line_number:, currently_checked:, index:, sourcepos: true)
+  def initialize(markdown, markdown_html, line_source:, line_number:, toggle_as_checked:, index:, sourcepos: true)
     @markdown, @markdown_html  = markdown, markdown_html
     @line_source, @line_number = line_source, line_number
-    @currently_checked         = currently_checked
+    @toggle_as_checked         = toggle_as_checked
     @index, @use_sourcepos     = index, sourcepos
 
     @updated_markdown, @updated_markdown_html = nil
@@ -23,40 +23,45 @@ class TaskListToggleService
   def execute
     return false unless markdown && markdown_html
 
-    !!(toggle_markdown && toggle_html)
+    !!(toggle_markdown && toggle_markdown_html)
   end
 
   private
 
-  attr_reader :markdown, :markdown_html, :index, :currently_checked
+  attr_reader :markdown, :markdown_html, :index, :toggle_as_checked
   attr_reader :line_source, :line_number, :use_sourcepos
 
   def toggle_markdown
-    source_lines  = markdown.split("\n")
-    markdown_task = source_lines[line_number - 1]
+    source_lines      = markdown.split("\n")
+    source_line_index = line_number - 1
+    markdown_task     = source_lines[source_line_index]
 
     return unless markdown_task == line_source
     return unless source_checkbox = Taskable::ITEM_PATTERN.match(markdown_task)
 
-    if TaskList::Item.new(source_checkbox[1]).complete?
-      markdown_task.sub!(Taskable::COMPLETE_PATTERN, '[ ]') if currently_checked
+    currently_checked = TaskList::Item.new(source_checkbox[1]).complete?
+
+    # Check `toggle_as_checked` to make sure we don't accidentally replace
+    # any `[ ]` or `[x]` in the middle of the text
+    if currently_checked
+      markdown_task.sub!(Taskable::COMPLETE_PATTERN, '[ ]') unless toggle_as_checked
     else
-      markdown_task.sub!(Taskable::INCOMPLETE_PATTERN, '[x]') unless currently_checked
+      markdown_task.sub!(Taskable::INCOMPLETE_PATTERN, '[x]') if toggle_as_checked
     end
 
-    source_lines[line_number - 1] = markdown_task
+    source_lines[source_line_index] = markdown_task
     @updated_markdown = source_lines.join("\n")
   end
 
-  def toggle_html
+  def toggle_markdown_html
     html          = Nokogiri::HTML.fragment(markdown_html)
     html_checkbox = get_html_checkbox(html)
     return unless html_checkbox
 
-    if currently_checked
-      html_checkbox.remove_attribute('checked')
-    else
+    if toggle_as_checked
       html_checkbox[:checked] = 'checked'
+    else
+      html_checkbox.remove_attribute('checked')
     end
 
     @updated_markdown_html = html.to_html

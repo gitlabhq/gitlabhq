@@ -266,18 +266,18 @@ class IssuableBaseService < BaseService
     update_task_params = params.delete(:update_task)
     return unless update_task_params
 
-    toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
-                                        line_source: update_task_params[:line_source],
-                                        line_number: update_task_params[:line_number],
-                                        currently_checked: !update_task_params[:checked],
-                                        index: update_task_params[:index],
-                                        sourcepos: !issuable.legacy_markdown?)
+    tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
+                                                 line_source: update_task_params[:line_source],
+                                                 line_number: update_task_params[:line_number],
+                                                 toggle_as_checked: update_task_params[:checked],
+                                                 index: update_task_params[:index],
+                                                 sourcepos: !issuable.legacy_markdown?)
 
-    if toggler.execute
+    if tasklist_toggler.execute
       # by updating the description_html field at the same time,
       # the markdown cache won't be considered invalid
-      params[:description]      = toggler.updated_markdown
-      params[:description_html] = toggler.updated_markdown_html
+      params[:description]      = tasklist_toggler.updated_markdown
+      params[:description_html] = tasklist_toggler.updated_markdown_html
 
       # since we're updating a very specific line, we don't care whether
       # the `lock_version` sent from the FE is the same or not.  Just
