@@ -1,0 +1,5 @@
+---
+title: Fix path disclosure on project import error
+merge_request:
+author:
+type: security
