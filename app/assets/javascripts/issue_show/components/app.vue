@@ -1,5 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
+import { s__, sprintf } from '~/locale';
 import { visitUrl } from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
@@ -166,6 +167,9 @@ export default {
       const titleChanged = this.initialTitleText !== this.store.formState.title;
       return descriptionChanged || titleChanged;
     },
+    defaultErrorMessage() {
+      return sprintf(s__('Error updating  %{issuableType}.'), { issuableType: this.issuableType });
+    },
   },
   created() {
     this.service = new Service(this.endpoint);
@@ -220,9 +224,7 @@ export default {
           this.store.updateState(data);
         })
         .catch(() => {
-          const errMsg = `Error updating ${this.issuableType}`;
-
-          window.Flash(errMsg);
+          window.Flash(this.defaultErrorMessage);
         });
     },
 
@@ -260,10 +262,10 @@ export default {
           if (error && error.name === 'SpamError') {
             this.openRecaptcha();
           } else {
-            let errMsg = `Error updating ${this.issuableType}`;
+            let errMsg = this.defaultErrorMessage;
 
             if (error && error.response && error.response.data && error.response.data.errors) {
-              errMsg = error.response.data.errors;
+              errMsg += error.response.data.errors.join(' ');
             }
 
             eventHub.$emit('close.form');

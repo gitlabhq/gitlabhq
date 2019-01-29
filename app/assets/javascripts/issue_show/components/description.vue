@@ -93,7 +93,7 @@ export default {
     taskListUpdateError() {
       window.Flash(
         __(
-          'Someone edited this issue at the same time you did and we updated the issue description.',
+          'Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again.',
         ),
       );
 
