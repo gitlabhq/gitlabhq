@@ -125,6 +125,26 @@ const bindEvents = () => {
         text: 'Spring',
         icon: '.template-option svg.icon-java-spring',
       },
+      hugo: {
+        text: 'Pages/Hugo',
+        icon: '.template-option svg.icon-pages-hugo',
+      },
+      jekyll: {
+        text: 'Pages/Jekyll',
+        icon: '.template-option svg.icon-pages-jekyll',
+      },
+      plainhtml: {
+        text: 'Pages/Plain HTML',
+        icon: '.template-option svg.icon-pages-plainhtml',
+      },
+      gitbook: {
+        text: 'Pages/GitBook',
+        icon: '.template-option svg.icon-pages-gitbook',
+      },
+      hexo: {
+        text: 'Pages/Hexo',
+        icon: '.template-option svg.icon-pages-hexo',
+      },
     };
 
     const selectedTemplate = templates[value];

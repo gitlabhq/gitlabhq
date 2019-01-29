@@ -16,6 +16,9 @@
         = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
+      %p
+        - pages_getting_started_guide = link_to _('Pages getting started guide'), help_page_path("user/project/pages/getting_started_part_two", anchor: "fork-a-project-to-get-started-from"), target: '_blank'
+        = _('Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}.').html_safe % { pages_getting_started_guide: pages_getting_started_guide }
       .md
         = brand_new_project_guidelines
       %p
