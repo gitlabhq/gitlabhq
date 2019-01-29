@@ -84,18 +84,15 @@ Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are 
 
 You can find all the files referenced in this doc in the [functions example project](https://gitlab.com/knative-examples/functions).
 
-Follow these steps to deploy a function using the node.js runtime to your Knative instance:
+Follow these steps to deploy a function using the Node.js runtime to your Knative instance:
 
 1. Create a directory that will house the function. In this example we will create a directory called `echo` at the root of the project.
 
-1. Create the file that will contain the function code. In this example our file is called `echo.js` and is located inside the `echo` directory.
+1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is public, skip to step 4.
 
-    If your project is public, skip to step no. 4.
+1. If your project is private you will need to [Create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token).
+This will enable the `tm` cli to be able to be used in a deployment step and gives it access to the container registry.
 
-1. If your project is private you will need to [Create a GitLab deploy token](https://docs.gitlab.com/ee/user/project/deploy_tokens/#creating-a-deploy-token). 
-This will enable the `tm` cli to be used as a deployment step and access the container registry.
-
-    1. Go to the project you want to create the function for.
     1. Go to **Settings** > **Repository**.
     1. Click on "Expand" on **Deploy Tokens** section.
     1. Enter `gitlab-deploy-token` as the name.
@@ -116,9 +113,9 @@ This will enable the `tm` cli to be used as a deployment step and access the con
      environment: test
      image: gcr.io/triggermesh/tm:v0.0.9
      script:
-        - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
-        - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
-        - tm -n "$KUBE_NAMESPACE" deploy --wait
+      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
+      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
+      - tm -n "$KUBE_NAMESPACE" deploy --wait
 
    ```
 
@@ -149,7 +146,7 @@ This will enable the `tm` cli to be used as a deployment step and access the con
    ```
 
 
-The `serverless.yml` file is referencing both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`) 
+The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`), 
 which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it 
 contains three sections with distinct parameters:
 
@@ -248,7 +245,7 @@ With all the pieces in place, the next time a CI pipeline runs, the Knative appl
 
 ### Obtain the URL for the Knative deployment
 
-Visit **Operations >> Serverless** to find the URL for your deployment (listed under the "Domain" column). 
+Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column. 
 
 ![app domain](img/app-domain.png)
 
