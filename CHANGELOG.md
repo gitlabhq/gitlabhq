@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.5.8 (2019-01-28)
+
+- Unreleased due to quality assurance failure.
+
 ## 11.5.7 (2019-01-15)
 
 ### Security (1 change)
