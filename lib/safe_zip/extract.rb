@@ -29,7 +29,7 @@ module SafeZip
     private
 
     def extract_with_ruby_zip(params)
-      Zip::File.open(archive_path) do |zip_archive|
+      ::Zip::File.open(archive_path) do |zip_archive|
         # Extract all files in the following order:
         # 1. Directories first,
         # 2. Files next,
