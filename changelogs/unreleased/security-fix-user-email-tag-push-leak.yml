@@ -1,0 +1,5 @@
+---
+title: Fix private user email being visible in push (and tag push) webhooks
+merge_request:
+author:
+type: security
