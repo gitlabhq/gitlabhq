@@ -116,7 +116,7 @@ code_quality:
 
 license_management:
   stage: test
-  image: 
+  image:
     name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
     entrypoint: [""]
   allow_failure: true
@@ -612,7 +612,7 @@ rollout 100%:
     export APPLICATION_SECRET_NAME=$(application_secret_name "$track")
 
     env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p" > k8s_prefixed_variables
-    
+
     kubectl create secret \
       -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
       --from-env-file k8s_prefixed_variables -o yaml --dry-run |
@@ -689,6 +689,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -724,6 +725,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
