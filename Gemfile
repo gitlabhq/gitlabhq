@@ -77,7 +77,7 @@ gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.6'
-gem 'rubyzip', '~> 1.2.2', require: false
+gem 'rubyzip', '~> 1.2.2'
 
 # Browser detection
 gem 'browser', '~> 2.5'
