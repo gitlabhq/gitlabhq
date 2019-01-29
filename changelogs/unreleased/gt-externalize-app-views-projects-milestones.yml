@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/projects/milestones`
+merge_request: 24726
+author: George Tsiolis
+type: other
