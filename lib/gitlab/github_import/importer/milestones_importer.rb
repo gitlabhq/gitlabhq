@@ -19,18 +19,8 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def execute
-          # We insert records in bulk, by-passing any standard model callbacks.
-          # The pre_hook here makes sure we track internal ids consistently.
-          # Note this has to be called before performing an insert of a batch
-          # because we're outside a transaction scope here.
-          bulk_insert(Milestone, build_milestones, pre_hook: method(:track_greatest_iid))
+          bulk_insert(Milestone, build_milestones)
           build_milestones_cache
-        end
-
-        def track_greatest_iid(slice)
-          greatest_iid = slice.max { |e| e[:iid] }[:iid]
-
-          InternalId.track_greatest(nil, { project: project }, :milestones, greatest_iid, ->(_) { project.milestones.maximum(:iid) })
         end
 
         def build_milestones

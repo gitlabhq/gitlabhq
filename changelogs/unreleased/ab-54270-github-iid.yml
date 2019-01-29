@@ -1,0 +1,5 @@
+---
+title: Improve efficiency of GitHub importer by reducing amount of locks needed.
+merge_request: 24102
+author:
+type: performance
