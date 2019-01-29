@@ -1,8 +1,8 @@
 <!--
 # README first!
-This MR is being created on `dev.gitlab.org`.
+This MR should be created on `dev.gitlab.org`.
 
-See the general developer security release guidelines https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md
+See [the general developer security release guidelines](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md).
 
 -->
 ## Related issues
@@ -16,7 +16,7 @@ See the general developer security release guidelines https://gitlab.com/gitlab-
 - [ ] Milestone is set for the version this MR applies to
 - [ ] Title of this MR is the same as for all backports
 - [ ] A [CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html) is added without a `merge_request` value, with `type` set to `security`
-- [ ] Add a link this MR in the `links` section of related issue
+- [ ] Add a link to this MR in the `links` section of related issue
 - [ ] Add a link to an EE MR if required
 - [ ] Assign to a reviewer
 
