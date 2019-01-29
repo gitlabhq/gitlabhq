@@ -85,6 +85,8 @@ future GitLab releases.**
 | **CI_NODE_INDEX**                         | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
 | **CI_NODE_TOTAL**                         | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
 | **CI_API_V4_URL**                         | 11.7   | all    | The GitLab API v4 root URL |
+| **CI_PAGES_DOMAIN**                       | 11.8   | all    | The configured domain that hosts GitLab Pages. |
+| **CI_PAGES_URL**                          | 11.8   | all    | URL to GitLab Pages-built pages. Always belongs to a subdomain of `CI_PAGES_DOMAIN`. |
 | **CI_PIPELINE_ID**                        | 8.10   | all    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_IID**                       | 11.0   | all    | The unique id of the current pipeline scoped to project |
 | **CI_PIPELINE_SOURCE**                    | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
@@ -395,6 +397,10 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_SERVER_VERSION=8.14.3-ee
 ++ export CI_SERVER_REVISION=82823
 ++ CI_SERVER_REVISION=82823
+++ export CI_PAGES_DOMAIN=gitlab.io
+++ CI_PAGES_DOMAIN=gitlab.io
+++ export CI_PAGES_URL=https://gitlab-examples.gitlab.io/ci-debug-trace
+++ CI_PAGES_URL=https://gitlab-examples.gitlab.io/ci-debug-trace
 ++ export CI_PROJECT_ID=17893
 ++ CI_PROJECT_ID=17893
 ++ export CI_PROJECT_NAME=ci-debug-trace
@@ -498,6 +504,8 @@ export CI_JOB_TRIGGERED="true"
 export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
 export CI_PIPELINE_ID="1000"
 export CI_PIPELINE_IID="10"
+export CI_PAGES_DOMAIN="gitlab.io"
+export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-ce"
 export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"
