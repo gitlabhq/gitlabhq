@@ -1,6 +1,0 @@
----
-title: Sanitize user full name to clean up any URL to prevent mail clients from auto-linking
-  URLs
-merge_request: 2829
-author:
-type: security
