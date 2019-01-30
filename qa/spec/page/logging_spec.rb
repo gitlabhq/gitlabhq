@@ -6,7 +6,7 @@ require 'logger'
 describe QA::Support::Page::Logging do
   include Support::StubENV
 
-  let(:page) { double().as_null_object }
+  let(:page) { double.as_null_object }
 
   before do
     logger = ::Logger.new $stdout

@@ -37,7 +37,7 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'closes when the search bar is unfocused' do
-      find('body').click()
+      find('body').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
     end

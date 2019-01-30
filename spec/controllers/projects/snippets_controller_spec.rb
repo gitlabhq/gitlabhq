@@ -12,7 +12,7 @@ describe Projects::SnippetsController do
 
   describe 'GET #index' do
     context 'when page param' do
-      let(:last_page) { project.snippets.page().total_pages }
+      let(:last_page) { project.snippets.page.total_pages }
       let!(:project_snippet) { create(:project_snippet, :public, project: project, author: user) }
 
       it 'redirects to last_page if page number is larger than number of pages' do
