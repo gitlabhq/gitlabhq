@@ -146,16 +146,10 @@ describe('Issuable output', () => {
     it('fetches new data after update', done => {
       spyOn(vm, 'updateStoreState').and.callThrough();
       spyOn(vm.service, 'getData').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                confidential: false,
-                web_url: window.location.pathname,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: { web_url: window.location.pathname },
+        }),
       );
 
       vm.updateIssuable()
@@ -168,11 +162,10 @@ describe('Issuable output', () => {
     });
 
     it('correctly updates issuable data', done => {
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve();
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: { web_url: window.location.pathname },
+        }),
       );
 
       vm.updateIssuable()
@@ -186,16 +179,13 @@ describe('Issuable output', () => {
 
     it('does not redirect if issue has not moved', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: window.location.pathname,
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: window.location.pathname,
+            confidential: vm.isConfidential,
+          },
+        }),
       );
 
       vm.updateIssuable();
@@ -208,16 +198,13 @@ describe('Issuable output', () => {
 
     it('redirects if returned web_url has changed', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/testing-issue-move',
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/testing-issue-move',
+            confidential: vm.isConfidential,
+          },
+        }),
       );
 
       vm.updateIssuable();
@@ -236,6 +223,7 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).not.toBeNull();
+
           done();
         });
       });
@@ -247,6 +235,7 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).not.toBeNull();
+
           done();
         });
       });
@@ -256,6 +245,7 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).toBeNull();
+
           done();
         });
       });
@@ -297,7 +287,8 @@ describe('Issuable output', () => {
       it('shows error mesage from backend if exists', done => {
         const msg = 'Custom error message from backend';
         spyOn(vm.service, 'updateIssuable').and.callFake(
-          () => Promise.reject({ response: { data: { errors: [msg] } } }), // eslint-disable-line prefer-promise-reject-errors
+          // eslint-disable-next-line prefer-promise-reject-errors
+          () => Promise.reject({ response: { data: { errors: [msg] } } }),
         );
 
         vm.updateIssuable();
@@ -361,21 +352,19 @@ describe('Issuable output', () => {
   describe('deleteIssuable', () => {
     it('changes URL when deleted', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/test',
-              },
-            });
-          }),
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/test',
+          },
+        }),
       );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
         expect(visitUrl).toHaveBeenCalledWith('/test');
+
         done();
       });
     });
@@ -383,37 +372,30 @@ describe('Issuable output', () => {
     it('stops polling when deleting', done => {
       spyOnDependency(issuableApp, 'visitUrl');
       spyOn(vm.poll, 'stop').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/test',
-              },
-            });
-          }),
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/test',
+          },
+        }),
       );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
         expect(vm.poll.stop).toHaveBeenCalledWith();
+
         done();
       });
     });
 
     it('closes form on error', done => {
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise((resolve, reject) => {
-            reject();
-          }),
-      );
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(Promise.reject());
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
         expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
           'Error deleting issue',
         );
