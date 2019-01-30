@@ -10,6 +10,10 @@ describe('CompareVersions', () => {
   const targetBranch = { branchName: 'tmp-wine-dev', versionIndex: -1 };
 
   beforeEach(() => {
+    store.state.diffs.addedLines = 10;
+    store.state.diffs.removedLines = 20;
+    store.state.diffs.diffFiles.push('test');
+
     vm = createComponentWithStore(Vue.extend(CompareVersionsComponent), store, {
       mergeRequestDiffs: diffsMockData,
       mergeRequestDiff: diffsMockData[0],

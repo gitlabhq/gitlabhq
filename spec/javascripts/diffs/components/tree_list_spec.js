@@ -35,12 +35,6 @@ describe('Diffs tree list component', () => {
     vm.$destroy();
   });
 
-  it('renders diff stats', () => {
-    expect(vm.$el.textContent).toContain('1 changed file');
-    expect(vm.$el.textContent).toContain('10 additions');
-    expect(vm.$el.textContent).toContain('20 deletions');
-  });
-
   it('renders empty text', () => {
     expect(vm.$el.textContent).toContain('No files found');
   });
