@@ -263,11 +263,11 @@ describe('Issuable output', () => {
 
     describe('error when updating', () => {
       it('closes form on error', done => {
-        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.resolve());
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
         vm.updateIssuable();
 
         setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
           expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
             `Error updating issue`,
           );
@@ -284,7 +284,7 @@ describe('Issuable output', () => {
           vm.updateIssuable();
 
           setTimeout(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
+            expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
             expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
               `Error updating merge request`,
             );

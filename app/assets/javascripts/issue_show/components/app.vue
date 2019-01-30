@@ -270,7 +270,6 @@ export default {
               errMsg += `. ${response.data.errors.join(' ')}`;
             }
 
-            eventHub.$emit('close.form');
             createFlash(errMsg);
           }
         });
@@ -295,7 +294,6 @@ export default {
           visitUrl(data.web_url);
         })
         .catch(() => {
-          eventHub.$emit('close.form');
           createFlash(
             sprintf(s__('Error deleting  %{issuableType}'), { issuableType: this.issuableType }),
           );
