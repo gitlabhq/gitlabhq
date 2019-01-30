@@ -47,7 +47,7 @@ This project has three jobs:
 
 ## Store API keys
 
-You'll need to create two variables in **Settings > CI/CD > Variables** in your GitLab project:
+You'll need to create two variables in **Settings > CI/CD > Environment variables** in your GitLab project:
 
 - `HEROKU_STAGING_API_KEY` - Heroku API key used to deploy staging app.
 - `HEROKU_PRODUCTION_API_KEY` - Heroku API key used to deploy production app.

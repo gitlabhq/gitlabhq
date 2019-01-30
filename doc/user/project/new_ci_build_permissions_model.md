@@ -238,6 +238,6 @@ test:
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables
+[jobenv]: ../../ci/variables/README.md#predefined-environment-variables
 [2fa]: ../profile/account/two_factor_authentication.md
 [pat]: ../profile/personal_access_tokens.md

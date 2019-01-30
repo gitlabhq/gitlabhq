@@ -1520,7 +1520,7 @@ parallel. This value has to be greater than or equal to two (2) and less than or
 This creates N instances of the same job that run in parallel. They're named
 sequentially from `job_name 1/N` to `job_name N/N`.
 
-For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.html#predefined-variables-environment-variables) are set.
+For every job, `CI_NODE_INDEX` and `CI_NODE_TOTAL` [environment variables](../variables/README.html#predefined-environment-variables) are set.
 
 A simple example:
 
@@ -1977,7 +1977,7 @@ The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
 
 Except for the user defined variables, there are also the ones [set up by the
-Runner itself](../variables/README.md#predefined-variables-environment-variables).
+Runner itself](../variables/README.md#predefined-environment-variables).
 One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
 you can set in `.gitlab-ci.yml`, there are also the so called
@@ -2027,8 +2027,8 @@ variables:
 ```
 
 NOTE: **Note:** `GIT_STRATEGY` is not supported for
-[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html), 
-but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/issues/3847) 
+[Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
+but may be in the future. See the [support Git strategy with Kubernetes executor feature proposal](https://gitlab.com/gitlab-org/gitlab-runner/issues/3847)
 for updates.
 
 ### Git submodule strategy
