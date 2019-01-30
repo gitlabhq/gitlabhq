@@ -6,6 +6,8 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 
 const TEST_IMAGE_SIZE = 7;
 const TEST_BREAKPOINT = 5;
+const TEST_EMPTY_MESSAGE = 'Lorem ipsum empty';
+const DEFAULT_EMPTY_MESSAGE = 'None';
 
 const createUser = id => ({
   id,
@@ -21,14 +23,19 @@ const createList = n =>
 const localVue = createLocalVue();
 
 describe('UserAvatarList', () => {
-  let propsData;
+  let props;
   let wrapper;
 
-  const factory = options => {
+  const factory = (options = {}) => {
+    const propsData = {
+      ...props,
+      ...options.propsData,
+    };
+
     wrapper = shallowMount(localVue.extend(UserAvatarList), {
+      ...options,
       localVue,
       propsData,
-      ...options,
     });
   };
 
@@ -38,28 +45,47 @@ describe('UserAvatarList', () => {
   };
 
   beforeEach(() => {
-    propsData = { imgSize: TEST_IMAGE_SIZE };
+    props = { imgSize: TEST_IMAGE_SIZE };
   });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
+  describe('empty text', () => {
+    it('shows when items are empty', () => {
+      factory({ propsData: { items: [] } });
+
+      expect(wrapper.text()).toContain(DEFAULT_EMPTY_MESSAGE);
+    });
+
+    it('does not show when items are not empty', () => {
+      factory({ propsData: { items: createList(1) } });
+
+      expect(wrapper.text()).not.toContain(DEFAULT_EMPTY_MESSAGE);
+    });
+
+    it('can be set in props', () => {
+      factory({ propsData: { items: [], emptyText: TEST_EMPTY_MESSAGE } });
+
+      expect(wrapper.text()).toContain(TEST_EMPTY_MESSAGE);
+    });
+  });
+
   describe('with no breakpoint', () => {
     beforeEach(() => {
-      propsData.breakpoint = 0;
+      props.breakpoint = 0;
     });
 
     it('renders avatars', () => {
       const items = createList(20);
-      propsData.items = items;
-      factory();
+      factory({ propsData: { items } });
 
       const links = wrapper.findAll(UserAvatarLink);
       const linkProps = links.wrappers.map(x => x.props());
 
       expect(linkProps).toEqual(
-        propsData.items.map(x =>
+        items.map(x =>
           jasmine.objectContaining({
             linkHref: x.web_url,
             imgSrc: x.avatar_url,
@@ -74,8 +100,8 @@ describe('UserAvatarList', () => {
 
   describe('with breakpoint and length equal to breakpoint', () => {
     beforeEach(() => {
-      propsData.breakpoint = TEST_BREAKPOINT;
-      propsData.items = createList(TEST_BREAKPOINT);
+      props.breakpoint = TEST_BREAKPOINT;
+      props.items = createList(TEST_BREAKPOINT);
     });
 
     it('renders all avatars if length is <= breakpoint', () => {
@@ -83,7 +109,7 @@ describe('UserAvatarList', () => {
 
       const links = wrapper.findAll(UserAvatarLink);
 
-      expect(links.length).toEqual(propsData.items.length);
+      expect(links.length).toEqual(props.items.length);
     });
 
     it('does not show button', () => {
@@ -95,8 +121,8 @@ describe('UserAvatarList', () => {
 
   describe('with breakpoint and length greater than breakpoint', () => {
     beforeEach(() => {
-      propsData.breakpoint = TEST_BREAKPOINT;
-      propsData.items = createList(TEST_BREAKPOINT + 1);
+      props.breakpoint = TEST_BREAKPOINT;
+      props.items = createList(TEST_BREAKPOINT + 1);
     });
 
     it('renders avatars up to breakpoint', () => {
@@ -116,7 +142,7 @@ describe('UserAvatarList', () => {
       it('renders all avatars', () => {
         const links = wrapper.findAll(UserAvatarLink);
 
-        expect(links.length).toEqual(propsData.items.length);
+        expect(links.length).toEqual(props.items.length);
       });
 
       it('with collapse clicked, it renders avatars up to breakpoint', () => {

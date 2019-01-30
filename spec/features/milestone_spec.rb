@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Milestone' do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
-  let(:user)   { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     create(:group_member, group: group, user: user)

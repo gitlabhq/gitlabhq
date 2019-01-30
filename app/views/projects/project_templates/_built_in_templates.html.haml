@@ -12,6 +12,6 @@
       %a.btn.btn-default.append-right-10{ href: template.preview, rel: 'noopener noreferrer', target: '_blank', data: { track_label: "create_from_template", track_property: "template_preview", track_event: "click_button", track_value: template.name } }
         = _("Preview")
       %label.btn.btn-success.template-button.choose-template.append-bottom-0{ for: template.name }
-        %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "create_from_template", track_property: "template_use", track_event: "click_button" } }
+        %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "create_from_template", track_property: "template_use", track_event: "click_button" } }
         %span
           = _("Use template")

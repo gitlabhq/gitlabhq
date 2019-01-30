@@ -67,7 +67,7 @@ module Gitlab
 
           entry :only, Entry::Policy,
             description: 'Refs policy this job will be executed for.',
-            default: { refs: %w[branches tags] }
+            default: Entry::Policy::DEFAULT_ONLY
 
           entry :except, Entry::Policy,
             description: 'Refs policy this job will be executed for.'

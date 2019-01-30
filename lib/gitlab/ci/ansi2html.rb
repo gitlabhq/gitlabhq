@@ -31,7 +31,7 @@ module Gitlab
       end
 
       class Converter
-        def on_0(_) reset()                            end
+        def on_0(_) reset                              end
 
         def on_1(_) enable(STYLE_SWITCHES[:bold])      end
 
@@ -177,7 +177,7 @@ module Gitlab
             end
           end
 
-          close_open_tags()
+          close_open_tags
 
           OpenStruct.new(
             html: @out.force_encoding(Encoding.default_external),
@@ -194,7 +194,7 @@ module Gitlab
           action = scanner[1]
           timestamp = scanner[2]
           section = scanner[3]
-          line = scanner.matched()[0...-5] # strips \r\033[0K
+          line = scanner.matched[0...-5] # strips \r\033[0K
 
           @out << %{<div class="hidden" data-action="#{action}" data-timestamp="#{timestamp}" data-section="#{section}">#{line}</div>}
         end
@@ -209,10 +209,10 @@ module Gitlab
           # sequence gets stripped (including stuff like "delete last line")
           return unless indicator == '[' && terminator == 'm'
 
-          close_open_tags()
+          close_open_tags
 
-          if commands.empty?()
-            reset()
+          if commands.empty?
+            reset
             return
           end
 
@@ -222,7 +222,7 @@ module Gitlab
         end
 
         def evaluate_command_stack(stack)
-          return unless command = stack.shift()
+          return unless command = stack.shift
 
           if self.respond_to?("on_#{command}", true)
             self.__send__("on_#{command}", stack) # rubocop:disable GitlabSecurity/PublicSend
@@ -333,8 +333,8 @@ module Gitlab
           return unless command_stack.length >= 2
           return unless command_stack[0] == "5"
 
-          command_stack.shift() # ignore the "5" command
-          color_index = command_stack.shift().to_i
+          command_stack.shift # ignore the "5" command
+          color_index = command_stack.shift.to_i
 
           return unless color_index >= 0
           return unless color_index <= 255

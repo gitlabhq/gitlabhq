@@ -1,5 +1,0 @@
----
-title: Allow user to add Kubernetes cluster for clusterable when there are ancestor clusters
-merge_request: 23569
-author:
-type: other

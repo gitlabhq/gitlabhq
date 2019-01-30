@@ -1,0 +1,5 @@
+---
+title: Fix 404s with snippet uploads in object storage
+merge_request: 24550
+author:
+type: fixed

@@ -103,7 +103,7 @@ module Gitlab
       end
 
       def write_token(new_token)
-        Tempfile.open(File.basename(token_path), File.dirname(token_path),  encoding: 'ascii-8bit') do |f|
+        Tempfile.open(File.basename(token_path), File.dirname(token_path), encoding: 'ascii-8bit') do |f|
           f.write(new_token)
           f.close
           File.link(f.path, token_path)

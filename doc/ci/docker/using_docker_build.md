@@ -194,7 +194,7 @@ not without its own challenges:
       - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
     ```
 
-An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
+An example project using this approach can be found here: <https://gitlab.com/gitlab-examples/docker>.
 
 ### Use Docker socket binding
 
@@ -521,11 +521,11 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project/my-image:latest
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build:
   stage: build

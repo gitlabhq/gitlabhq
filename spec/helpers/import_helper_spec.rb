@@ -2,6 +2,10 @@ require 'rails_helper'
 
 describe ImportHelper do
   describe '#sanitize_project_name' do
+    it 'removes leading tildes' do
+      expect(helper.sanitize_project_name('~~root')).to eq('root')
+    end
+
     it 'removes whitespace' do
       expect(helper.sanitize_project_name('my test repo')).to eq('my-test-repo')
     end

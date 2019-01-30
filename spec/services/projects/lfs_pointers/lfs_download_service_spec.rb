@@ -107,7 +107,7 @@ describe Projects::LfsPointers::LfsDownloadService do
       end
     end
 
-    context 'when an lfs object with the same oid already exists'  do
+    context 'when an lfs object with the same oid already exists' do
       before do
         create(:lfs_object, oid: 'oid')
       end

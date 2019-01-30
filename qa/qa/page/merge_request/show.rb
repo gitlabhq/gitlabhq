@@ -50,17 +50,17 @@ module QA
         end
 
         def fast_forward_possible?
-          !has_text?('Fast-forward merge is not possible')
+          has_no_text?('Fast-forward merge is not possible')
         end
 
         def has_merge_button?
           refresh
 
-          has_css?(element_selector_css(:merge_button))
+          has_element?(:merge_button)
         end
 
         def has_merge_options?
-          has_css?(element_selector_css(:merge_moment_dropdown))
+          has_element?(:merge_moment_dropdown)
         end
 
         def merge_immediately
@@ -75,19 +75,21 @@ module QA
         def rebase!
           # The rebase button is disabled on load
           wait do
-            has_css?(element_selector_css(:mr_rebase_button))
+            has_element?(:mr_rebase_button)
           end
 
           # The rebase button is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:mr_rebase_button)).disabled?
+            !find_element(:mr_rebase_button).disabled?
           end
 
           click_element :mr_rebase_button
 
-          wait(reload: false) do
+          success = wait do
             has_text?('Fast-forward merge without a merge commit')
           end
+
+          raise "Rebase did not appear to be successful" unless success
         end
 
         def has_assignee?(username)
@@ -106,30 +108,32 @@ module QA
         def merge!
           # The merge button is disabled on load
           wait do
-            has_css?(element_selector_css(:merge_button))
+            has_element?(:merge_button)
           end
 
           # The merge button is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:merge_button)).disabled?
+            !find_element(:merge_button).disabled?
           end
 
           merge_immediately
 
-          wait(reload: false) do
+          success = wait do
             has_text?('The changes were merged into')
           end
+
+          raise "Merge did not appear to be successful" unless success
         end
 
         def mark_to_squash
           # The squash checkbox is disabled on load
           wait do
-            has_css?(element_selector_css(:squash_checkbox))
+            has_element?(:squash_checkbox)
           end
 
           # The squash checkbox is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:squash_checkbox)).disabled?
+            !find_element(:squash_checkbox).disabled?
           end
 
           click_element :squash_checkbox
@@ -145,7 +149,7 @@ module QA
 
         def add_comment_to_diff(text)
           wait(time: 5) do
-            page.has_text?("No newline at end of file")
+            has_text?("No newline at end of file")
           end
           all_elements(:new_diff_line).first.hover
           click_element :diff_comment

@@ -32,7 +32,7 @@ module MembersHelper
   end
 
   def filter_group_project_member_path(options = {})
-    options = params.slice(:search, :sort).merge(options)
+    options = params.slice(:search, :sort).merge(options).permit!
     "#{request.path}?#{options.to_param}"
   end
 end

@@ -113,7 +113,7 @@ describe Clusters::Cluster do
     end
   end
 
-  describe 'validation' do
+  describe 'validations' do
     subject { cluster.valid? }
 
     context 'when validates name' do
@@ -250,6 +250,31 @@ describe Clusters::Cluster do
           expect(instance_cluster).not_to be_valid
           expect(instance_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
         end
+      end
+    end
+
+    describe 'domain validation' do
+      let(:cluster) { build(:cluster) }
+
+      subject { cluster }
+
+      context 'when cluster has domain' do
+        let(:cluster) { build(:cluster, :with_domain) }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when cluster has an invalid domain' do
+        let(:cluster) { build(:cluster, domain: 'not-valid-domain') }
+
+        it 'should add an error on domain' do
+          expect(subject).not_to be_valid
+          expect(subject.errors[:domain].first).to eq('is not a fully qualified domain name')
+        end
+      end
+
+      context 'when cluster does not have a domain' do
+        it { is_expected.to be_valid }
       end
     end
   end

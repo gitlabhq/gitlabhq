@@ -8,7 +8,9 @@ module ImportHelper
   end
 
   def sanitize_project_name(name)
-    name.gsub(/[^\w\-]/, '-')
+    # For personal projects in Bitbucket in the form ~username, we can
+    # just drop that leading tilde.
+    name.gsub(/\A~+/, '').gsub(/[^\w\-]/, '-')
   end
 
   def import_project_target(owner, name)

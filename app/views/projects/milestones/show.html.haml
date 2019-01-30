@@ -1,30 +1,30 @@
 - @no_container = true
-- add_to_breadcrumbs "Milestones", project_milestones_path(@project)
+- add_to_breadcrumbs _('Milestones'), project_milestones_path(@project)
 - breadcrumb_title @milestone.title
-- page_title       @milestone.title, "Milestones"
+- page_title       @milestone.title, _('Milestones')
 - page_description @milestone.description
 
 %div{ class: container_class }
   .detail-page-header.milestone-page-header
     .status-box{ class: status_box_class(@milestone) }
       - if @milestone.closed?
-        Closed
+        = _('Closed')
       - elsif @milestone.expired?
-        Past due
+        = _('Past due')
       - elsif @milestone.upcoming?
-        Upcoming
+        = _('Upcoming')
       - else
-        Open
+        = _('Open')
     .header-text-content
       %span.identifier
         %strong
-          Milestone
+          = _('Milestone')
       - if @milestone.due_date || @milestone.start_date
         = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
-        = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped btn-nr" do
-          Edit
+        = link_to edit_project_milestone_path(@project, @milestone), class: 'btn btn-grouped btn-nr' do
+          = _('Edit')
 
         - if @project.group
           %button.js-promote-project-milestone-button.btn.btn-grouped{ data: { toggle: 'modal',
@@ -39,13 +39,13 @@
           #promote-milestone-modal
 
         - if @milestone.active?
-          = link_to 'Close milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
+          = link_to _('Close milestone'), project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: 'btn btn-close btn-nr btn-grouped'
         - else
-          = link_to 'Reopen milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
+          = link_to _('Reopen milestone'), project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: 'btn btn-reopen btn-nr btn-grouped'
 
         = render 'shared/milestones/delete_button'
 
-      %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
+      %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: '#' }
         = icon('angle-double-left')
 
   .detail-page-description.milestone-detail
@@ -62,10 +62,10 @@
 
   - if can?(current_user, :read_issue, @project) && @milestone.total_items_count(current_user).zero?
     .alert.alert-success.prepend-top-default
-      %span Assign some issues to this milestone.
+      %span= _('Assign some issues to this milestone.')
   - elsif @milestone.complete?(current_user) && @milestone.active?
     .alert.alert-success.prepend-top-default
-      %span All issues for this milestone are closed. You may close this milestone now.
+      %span= _('All issues for this milestone are closed. You may close this milestone now.')
 
   = render 'deprecation_message'
   = render 'shared/milestones/tabs', milestone: @milestone

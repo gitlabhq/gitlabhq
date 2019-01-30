@@ -381,6 +381,7 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
@@ -408,3 +409,14 @@ img.emoji {
 .gl-pr-3 { padding-right: #{2 * $grid-size}; }
 .gl-pr-4 { padding-right: #{3 * $grid-size}; }
 .gl-pr-5 { padding-right: #{4 * $grid-size}; }
+
+/**
+ * Removes browser specific clear icon from input fields in
+ * Internet Explorer 10, Internet Explorer 11, and Microsoft Edge.
+ * This is intended for elements which add a customized clear icon.
+ *
+ * see also https://developer.mozilla.org/en-US/docs/Web/CSS/::-ms-clear
+ */
+.ms-no-clear ::-ms-clear {
+  display: none;
+}

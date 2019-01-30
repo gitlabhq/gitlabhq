@@ -44,7 +44,11 @@ class Appearance < ActiveRecord::Base
   private
 
   def logo_system_path(logo, mount_type)
-    return unless logo&.upload
+    # Legacy attachments may not have have an associated Upload record,
+    # so fallback to the AttachmentUploader#url if this is the
+    # case. AttachmentUploader#path doesn't work because for a local
+    # file, this is an absolute path to the file.
+    return logo&.url unless logo&.upload
 
     # If we're using a CDN, we need to use the full URL
     asset_host = ActionController::Base.asset_host

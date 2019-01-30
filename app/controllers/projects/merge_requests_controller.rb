@@ -55,7 +55,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
-      format.patch  do
+      format.patch do
         break render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
@@ -229,6 +229,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
+
+  def issuable_sorting_field
+    MergeRequest::SORTING_PREFERENCE_FIELD
+  end
 
   def merge_params
     params.permit(merge_params_attributes)

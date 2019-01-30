@@ -106,6 +106,8 @@ Example response:
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
       "labels" : [],
+      "upvotes": 4,
+      "downvotes": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
@@ -214,6 +216,8 @@ Example response:
          "name" : "Dr. Luella Kovacek"
       },
       "labels" : [],
+      "upvotes": 4,
+      "downvotes": 0,
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -327,6 +331,8 @@ Example response:
          "name" : "Dr. Luella Kovacek"
       },
       "labels" : [],
+      "upvotes": 4,
+      "downvotes": 0,
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -421,6 +427,8 @@ Example response:
       "name" : "Dr. Luella Kovacek"
    },
    "labels" : [],
+   "upvotes": 4,
+   "downvotes": 0,
    "id" : 41,
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -494,6 +502,8 @@ Example response:
    "labels" : [
       "bug"
    ],
+   "upvotes": 4,
+   "downvotes": 0,
    "author" : {
       "name" : "Alexandra Bashirian",
       "avatar_url" : null,
@@ -592,6 +602,8 @@ Example response:
    "labels" : [
       "bug"
    ],
+   "upvotes": 4,
+   "downvotes": 0,
    "id" : 85,
    "assignees" : [],
    "assignee" : null,
@@ -676,6 +688,8 @@ Example response:
   "closed_at": null,
   "closed_by": null,
   "labels": [],
+  "upvotes": 4,
+  "downvotes": 0,
   "milestone": null,
   "assignees": [{
     "name": "Miss Monserrate Beier",
@@ -758,6 +772,8 @@ Example response:
   "closed_at": null,
   "closed_by": null,
   "labels": [],
+  "upvotes": 4,
+  "downvotes": 0,
   "milestone": null,
   "assignees": [{
     "name": "Miss Monserrate Beier",
@@ -839,6 +855,8 @@ Example response:
   "created_at": "2016-04-05T21:41:45.217Z",
   "updated_at": "2016-04-07T13:02:37.905Z",
   "labels": [],
+  "upvotes": 4,
+  "downvotes": 0,
   "milestone": null,
   "assignee": {
     "name": "Edwardo Grady",

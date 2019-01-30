@@ -1,0 +1,5 @@
+---
+title: Expose version for each application in cluster_status JSON endpoint
+merge_request: 24791
+author:
+type: other

@@ -1,5 +1,0 @@
----
-title: Allow to include files from another projects in gitlab-ci.yml
-merge_request: 24101
-author:
-type: added

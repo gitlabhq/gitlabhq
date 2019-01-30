@@ -628,4 +628,50 @@ describe('DiffsStoreMutations', () => {
       expect(file.parallel_diff_lines[1].right.hasForm).toBe(false);
     });
   });
+
+  describe('SET_TREE_DATA', () => {
+    it('sets treeEntries and tree in state', () => {
+      const state = {
+        treeEntries: {},
+        tree: [],
+      };
+
+      mutations[types.SET_TREE_DATA](state, {
+        treeEntries: { file: { name: 'index.js' } },
+        tree: ['tree'],
+      });
+
+      expect(state.treeEntries).toEqual({
+        file: {
+          name: 'index.js',
+        },
+      });
+
+      expect(state.tree).toEqual(['tree']);
+    });
+  });
+
+  describe('SET_RENDER_TREE_LIST', () => {
+    it('sets renderTreeList', () => {
+      const state = {
+        renderTreeList: true,
+      };
+
+      mutations[types.SET_RENDER_TREE_LIST](state, false);
+
+      expect(state.renderTreeList).toBe(false);
+    });
+  });
+
+  describe('SET_SHOW_WHITESPACE', () => {
+    it('sets showWhitespace', () => {
+      const state = {
+        showWhitespace: true,
+      };
+
+      mutations[types.SET_SHOW_WHITESPACE](state, false);
+
+      expect(state.showWhitespace).toBe(false);
+    });
+  });
 });

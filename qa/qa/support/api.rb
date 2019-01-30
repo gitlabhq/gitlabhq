@@ -20,6 +20,24 @@ module QA
         e.response
       end
 
+      def delete(url)
+        RestClient::Request.execute(
+          method: :delete,
+          url: url,
+          verify_ssl: false)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
+      def head(url)
+        RestClient::Request.execute(
+          method: :head,
+          url: url,
+          verify_ssl: false)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
       def parse_body(response)
         JSON.parse(response.body, symbolize_names: true)
       end

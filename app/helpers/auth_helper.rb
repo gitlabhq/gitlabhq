@@ -31,7 +31,7 @@ module AuthHelper
   def form_based_provider_with_highest_priority
     @form_based_provider_with_highest_priority ||= begin
       form_based_provider_priority.each do |provider_regexp|
-        highest_priority = form_based_providers.find {  |provider| provider.match?(provider_regexp) }
+        highest_priority = form_based_providers.find { |provider| provider.match?(provider_regexp) }
         break highest_priority unless highest_priority.nil?
       end
     end

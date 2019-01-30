@@ -1,6 +1,0 @@
----
-title: 'Fix deprecation: alias_method_chain is deprecated. Please, use Module#prepend
-  instead'
-merge_request: 23887
-author: Jasper Maes
-type: other

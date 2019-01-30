@@ -65,7 +65,7 @@ describe API::Avatar do
           expect(GravatarService).to receive(:new).and_return(gravatar_service)
           expect(gravatar_service).to(
             receive(:execute)
-              .with('private@example.com', nil,  2, { username: nil })
+              .with('private@example.com', nil, 2, { username: nil })
               .and_return('https://gravatar'))
         end
 

@@ -104,7 +104,7 @@
             - link_to_help = link_to(_("here"), help_page_path("user/permissions"))
             = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
 
-          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
+          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             .prepend-top-10

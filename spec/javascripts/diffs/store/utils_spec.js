@@ -251,45 +251,40 @@ describe('DiffsStoreUtils', () => {
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: ' diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a +', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '+diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a -', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '-diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not trims the line when it starts with a letter', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: 'diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not modify the provided object', () => {
       const lineObj = {
-        discussions: [],
         rich_text: ' diff',
       };
 
       utils.trimFirstCharOfLineContent(lineObj);
 
-      expect(lineObj).toEqual({ discussions: [], rich_text: ' diff' });
+      expect(lineObj).toEqual({ rich_text: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
-      expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
+      expect(utils.trimFirstCharOfLineContent()).toEqual({});
     });
   });
 
@@ -599,6 +594,177 @@ describe('DiffsStoreUtils', () => {
 
     it('defaults to replaced', () => {
       expect(utils.getDiffMode({})).toBe('replaced');
+    });
+  });
+
+  describe('getLowestSingleFolder', () => {
+    it('returns path and tree of lowest single folder tree', () => {
+      const folder = {
+        name: 'app',
+        type: 'tree',
+        tree: [
+          {
+            name: 'javascripts',
+            type: 'tree',
+            tree: [
+              {
+                type: 'blob',
+                name: 'index.js',
+              },
+            ],
+          },
+        ],
+      };
+      const { path, treeAcc } = utils.getLowestSingleFolder(folder);
+
+      expect(path).toEqual('app/javascripts');
+      expect(treeAcc).toEqual([
+        {
+          type: 'blob',
+          name: 'index.js',
+        },
+      ]);
+    });
+
+    it('returns passed in folders path & tree when more than tree exists', () => {
+      const folder = {
+        name: 'app',
+        type: 'tree',
+        tree: [
+          {
+            name: 'spec',
+            type: 'blob',
+            tree: [],
+          },
+        ],
+      };
+      const { path, treeAcc } = utils.getLowestSingleFolder(folder);
+
+      expect(path).toEqual('app');
+      expect(treeAcc).toBeNull();
+    });
+  });
+
+  describe('flattenTree', () => {
+    it('returns flattened directory structure', () => {
+      const tree = [
+        {
+          type: 'tree',
+          name: 'app',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [
+                {
+                  type: 'blob',
+                  name: 'index.js',
+                  tree: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'ee',
+          tree: [
+            {
+              type: 'tree',
+              name: 'lib',
+              tree: [
+                {
+                  type: 'tree',
+                  name: 'ee',
+                  tree: [
+                    {
+                      type: 'tree',
+                      name: 'gitlab',
+                      tree: [
+                        {
+                          type: 'tree',
+                          name: 'checks',
+                          tree: [
+                            {
+                              type: 'tree',
+                              name: 'longtreenametomakepath',
+                              tree: [
+                                {
+                                  type: 'blob',
+                                  name: 'diff_check.rb',
+                                  tree: [],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'spec',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [],
+            },
+            {
+              type: 'blob',
+              name: 'index_spec.js',
+              tree: [],
+            },
+          ],
+        },
+      ];
+      const flattened = utils.flattenTree(tree);
+
+      expect(flattened).toEqual([
+        {
+          type: 'tree',
+          name: 'app/javascripts',
+          tree: [
+            {
+              type: 'blob',
+              name: 'index.js',
+              tree: [],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'ee/lib/…/…/…/longtreenametomakepath',
+          tree: [
+            {
+              name: 'diff_check.rb',
+              tree: [],
+              type: 'blob',
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'spec',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [],
+            },
+            {
+              type: 'blob',
+              name: 'index_spec.js',
+              tree: [],
+            },
+          ],
+        },
+      ]);
     });
   });
 });

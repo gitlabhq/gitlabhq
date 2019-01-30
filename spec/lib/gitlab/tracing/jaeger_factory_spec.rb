@@ -6,36 +6,62 @@ describe Gitlab::Tracing::JaegerFactory do
   describe '.create_tracer' do
     let(:service_name) { 'rspec' }
 
-    it 'processes default connections' do
-      expect(described_class.create_tracer(service_name, {})).to respond_to(:active_span)
+    shared_examples_for 'a jaeger tracer' do
+      it 'responds to active_span methods' do
+        expect(tracer).to respond_to(:active_span)
+      end
+
+      it 'yields control' do
+        expect { |b| tracer.start_active_span('operation_name', &b) }.to yield_control
+      end
     end
 
-    it 'handles debug options' do
-      expect(described_class.create_tracer(service_name, { debug: "1" })).to respond_to(:active_span)
+    context 'processes default connections' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, {}) }
+      end
     end
 
-    it 'handles const sampler' do
-      expect(described_class.create_tracer(service_name, { sampler: "const", sampler_param: "1" })).to respond_to(:active_span)
+    context 'handles debug options' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { debug: "1" }) }
+      end
     end
 
-    it 'handles probabilistic sampler' do
-      expect(described_class.create_tracer(service_name, { sampler: "probabilistic", sampler_param: "0.5" })).to respond_to(:active_span)
+    context 'handles const sampler' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { sampler: "const", sampler_param: "1" }) }
+      end
     end
 
-    it 'handles http_endpoint configurations' do
-      expect(described_class.create_tracer(service_name, { http_endpoint: "http://localhost:1234" })).to respond_to(:active_span)
+    context 'handles probabilistic sampler' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { sampler: "probabilistic", sampler_param: "0.5" }) }
+      end
     end
 
-    it 'handles udp_endpoint configurations' do
-      expect(described_class.create_tracer(service_name, { udp_endpoint: "localhost:4321" })).to respond_to(:active_span)
+    context 'handles http_endpoint configurations' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { http_endpoint: "http://localhost:1234" }) }
+      end
     end
 
-    it 'ignores invalid parameters' do
-      expect(described_class.create_tracer(service_name, { invalid: "true" })).to respond_to(:active_span)
+    context 'handles udp_endpoint configurations' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { udp_endpoint: "localhost:4321" }) }
+      end
     end
 
-    it 'accepts the debug parameter when strict_parser is set' do
-      expect(described_class.create_tracer(service_name, { debug: "1", strict_parsing: "1" })).to respond_to(:active_span)
+    context 'ignores invalid parameters' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { invalid: "true" }) }
+      end
+    end
+
+    context 'accepts the debug parameter when strict_parser is set' do
+      it_behaves_like 'a jaeger tracer' do
+        let(:tracer) { described_class.create_tracer(service_name, { debug: "1", strict_parsing: "1" }) }
+      end
     end
 
     it 'rejects invalid parameters when strict_parser is set' do

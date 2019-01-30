@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Namespace < ActiveRecord::Base
+class Namespace < ApplicationRecord
   include CacheMarkdownField
   include Sortable
   include Gitlab::VisibilityLevel

@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: redirect_to :back is deprecated'
-merge_request: 23943
-author: Jasper Maes
-type: other

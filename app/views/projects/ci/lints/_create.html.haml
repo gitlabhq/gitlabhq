@@ -1,15 +1,15 @@
 - if @status
   %p
-    %b Status:
-    syntax is correct
+    %b= _("Status:")
+    = _("syntax is correct")
     %i.fa.fa-ok.correct-syntax
 
   .table-holder
     %table.table.table-bordered
       %thead
         %tr
-          %th Parameter
-          %th Value
+          %th= _("Parameter")
+          %th= _("Value")
       %tbody
         - @stages.each do |stage|
           - @builds.select { |build| build[:stage] == stage }.each do |build|
@@ -22,27 +22,27 @@
                 %pre= job[:after_script].to_a.join('\n')
 
                 %br
-                %b Tag list:
+                %b= _("Tag list:")
                 = build[:tag_list].to_a.join(", ")
                 %br
-                %b Only policy:
+                %b= _("Only policy:")
                 = job[:only].to_a.join(", ")
                 %br
-                %b Except policy:
+                %b= _("Except policy:")
                 = job[:except].to_a.join(", ")
                 %br
-                %b Environment:
+                %b= _("Environment:")
                 = build[:environment]
                 %br
-                %b When:
+                %b= _("When:")
                 = build[:when]
                 - if build[:allow_failure]
-                  %b Allowed to fail
+                  %b= _("Allowed to fail")
 
 - else
   %p
-    %b Status:
-    syntax is incorrect
+    %b= _("Status:")
+    = _("syntax is incorrect")
     %i.fa.fa-remove.incorrect-syntax
-  %b Error:
+  %b= _("Error:")
   = @error

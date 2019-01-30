@@ -12,6 +12,10 @@ module QA
         Group.fabricate!
       end
 
+      attribute :path_with_namespace do
+        "#{group.sandbox.path}/#{group.path}/#{name}" if group
+      end
+
       attribute :repository_ssh_location do
         Page::Project::Show.perform do |page|
           page.repository_clone_ssh_location
@@ -46,8 +50,14 @@ module QA
         end
       end
 
+      def fabricate_via_api!
+        resource_web_url(api_get)
+      rescue ResourceNotFoundError
+        super
+      end
+
       def api_get_path
-        "/projects/#{name}"
+        "/projects/#{CGI.escape(path_with_namespace)}"
       end
 
       def api_post_path

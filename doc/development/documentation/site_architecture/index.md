@@ -11,7 +11,7 @@ and deploy it to <https://docs.gitlab.com>.
 
 While the source of the documentation content is stored in GitLab's respective product
 repositories, the source that is used to build the documentation site _from that content_
-is located at https://gitlab.com/gitlab-com/gitlab-docs. See the README there for
+is located at <https://gitlab.com/gitlab-com/gitlab-docs>. See the README there for
 detailed information.
 
 ## Assets

@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.9-git-2.18-chrome-69.0-node-10.x-yarn-1.12-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.11-git-2.18-chrome-71.0-node-10.x-yarn-1.12-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -427,15 +427,7 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 # GitLab Review apps
-.review-base: &review-base
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
-  cache: {}
-  dependencies: []
-  environment: &review-environment
-    name: review/${CI_COMMIT_REF_NAME}
-    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+.review-only: &review-only
   only:
     refs:
       - branches@gitlab-org/gitlab-ce
@@ -445,6 +437,17 @@ setup-test-env:
     refs:
       - master
       - /(^docs[\/-].*|.*-docs$)/
+
+.review-base: &review-base
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *review-only
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  cache: {}
+  dependencies: []
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
   before_script: []
 
 .review-docker: &review-docker
@@ -543,7 +546,7 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     - scripts/lint-changelog-yaml
-    - mv doc/ /tmp/gitlab-docs/content/
+    - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
@@ -624,7 +627,7 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-71.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
   dependencies: []
   services:
     - docker:stable-dind
@@ -947,6 +950,22 @@ no_ee_check:
     - //@gitlab-org/gitlab-ce
 
 # GitLab Review apps
+review-build-cng:
+  <<: *single-script-job
+  <<: *review-only
+  variables:
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  script:
+    - gem install gitlab --no-document
+    - apk add --update openssl curl jq
+    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/review_apps/review-apps.sh
+    - chmod 755 review-apps.sh
+    - source ./review-apps.sh
+    - wait_for_job_to_be_done "gitlab:assets:compile"
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./$SCRIPT_NAME cng
+
 review-deploy:
   <<: *review-base
   retry: 2
@@ -961,15 +980,14 @@ review-deploy:
     <<: *review-environment
     on_stop: review-stop
   before_script:
-    - apk update && apk add jq
-    - gem install gitlab --no-document
-  script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - apk update && apk add jq
+    - gem install gitlab --no-document
     - source ./scripts/review_apps/review-apps.sh
-    - wait_for_job_to_be_done "gitlab:assets:compile"
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+  script:
+    - wait_for_job_to_be_done "review-build-cng"
     - check_kube_domain
     - download_gitlab_chart
     - ensure_namespace
@@ -980,7 +998,6 @@ review-deploy:
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
-  retry: 2
   allow_failure: true
   variables:
     <<: *review-docker-variables

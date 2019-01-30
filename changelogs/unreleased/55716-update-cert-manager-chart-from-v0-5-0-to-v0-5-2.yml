@@ -1,5 +1,0 @@
----
-title: Update cert-manager chart from v0.5.0 to v0.5.2
-merge_request: 24025
-author: Takuya Noguchi
-type: other

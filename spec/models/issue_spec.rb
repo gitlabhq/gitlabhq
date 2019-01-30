@@ -721,39 +721,28 @@ describe Issue do
     end
   end
 
-  describe '#check_for_spam' do
-    let(:project) { create :project, visibility_level: visibility_level }
-    let(:issue) { create :issue, project: project }
+  describe '#check_for_spam?' do
+    using RSpec::Parameterized::TableSyntax
 
-    subject do
-      issue.assign_attributes(description: description)
-      issue.check_for_spam?
+    where(:visibility_level, :confidential, :new_attributes, :check_for_spam?) do
+      Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'woo' } | true
+      Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'woo' } | true
+      Gitlab::VisibilityLevel::PUBLIC   | true  | { confidential: false } | true
+      Gitlab::VisibilityLevel::PUBLIC   | true  | { description: 'woo' } | false
+      Gitlab::VisibilityLevel::PUBLIC   | false | { title: 'woo', confidential: true } | false
+      Gitlab::VisibilityLevel::PUBLIC   | false | { description: 'original description' } | false
+      Gitlab::VisibilityLevel::INTERNAL | false | { description: 'woo' } | false
+      Gitlab::VisibilityLevel::PRIVATE  | false | { description: 'woo' } | false
     end
 
-    context 'when project is public and spammable attributes changed' do
-      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
-      let(:description) { 'woo' }
+    with_them do
+      it 'checks for spam on issues that can be seen anonymously' do
+        project = create(:project, visibility_level: visibility_level)
+        issue = create(:issue, project: project, confidential: confidential, description: 'original description')
 
-      it 'returns true' do
-        is_expected.to be_truthy
-      end
-    end
+        issue.assign_attributes(new_attributes)
 
-    context 'when project is private' do
-      let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
-      let(:description) { issue.description }
-
-      it 'returns false' do
-        is_expected.to be_falsey
-      end
-    end
-
-    context 'when spammable attributes have not changed' do
-      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
-      let(:description) { issue.description }
-
-      it 'returns false' do
-        is_expected.to be_falsey
+        expect(issue.check_for_spam?).to eq(check_for_spam?)
       end
     end
   end

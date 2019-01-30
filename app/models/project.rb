@@ -1585,6 +1585,13 @@ class Project < ActiveRecord::Base
   def after_import
     repository.after_import
     wiki.repository.after_import
+
+    # The import assigns iid values on its own, e.g. by re-using GitHub ids.
+    # Flush existing InternalId records for this project for consistency reasons.
+    # Those records are going to be recreated with the next normal creation
+    # of a model instance (e.g. an Issue).
+    InternalId.flush_records!(project: self)
+
     import_state.finish
     import_state.remove_jid
     update_project_counter_caches
@@ -1689,9 +1696,17 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .concat(pages_variables)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
       .concat(api_variables)
+  end
+
+  def pages_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+    end
   end
 
   def api_variables

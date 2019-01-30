@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/projects/ci`
+merge_request: 24617
+author: George Tsiolis
+type: other

@@ -154,7 +154,7 @@ module Clusters
 
       def build_kube_client!
         raise "Incomplete settings" unless api_url
-        raise "No namespace" if cluster.project_type? && actual_namespace.empty?  # can probably remove this line once we remove #actual_namespace
+        raise "No namespace" if cluster.project_type? && actual_namespace.empty? # can probably remove this line once we remove #actual_namespace
 
         unless (username && password) || token
           raise "Either username/password or token is required to access API"

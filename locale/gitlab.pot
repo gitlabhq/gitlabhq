@@ -291,7 +291,7 @@ msgstr ""
 msgid "<strong>%{group_name}</strong> group members"
 msgstr ""
 
-msgid "<strong>Removes</strong> source branch"
+msgid "<strong>Deletes</strong> source branch"
 msgstr ""
 
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
@@ -504,6 +504,9 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
+msgid "All issues for this milestone are closed. You may close this milestone now."
+msgstr ""
+
 msgid "All users"
 msgstr ""
 
@@ -526,6 +529,9 @@ msgid "Allow users to request access"
 msgstr ""
 
 msgid "Allow users to request access if visibility is public or internal."
+msgstr ""
+
+msgid "Allowed to fail"
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
@@ -714,6 +720,9 @@ msgstr ""
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
+msgid "Are you sure you want to lose your issue information?"
+msgstr ""
+
 msgid "Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again."
 msgstr ""
 
@@ -735,6 +744,9 @@ msgstr ""
 msgid "Are you sure you want to stop this environment?"
 msgstr ""
 
+msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr ""
 
@@ -754,6 +766,9 @@ msgid "Assign labels"
 msgstr ""
 
 msgid "Assign milestone"
+msgstr ""
+
+msgid "Assign some issues to this milestone."
 msgstr ""
 
 msgid "Assign to"
@@ -1176,6 +1191,9 @@ msgstr ""
 msgid "CI / CD Settings"
 msgstr ""
 
+msgid "CI Lint"
+msgstr ""
+
 msgid "CI/CD"
 msgstr ""
 
@@ -1245,6 +1263,12 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Certificate"
+msgstr ""
+
+msgid "Certificate (PEM)"
+msgstr ""
+
 msgid "Change permissions"
 msgstr ""
 
@@ -1282,6 +1306,9 @@ msgid "Chat"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
+msgstr ""
+
+msgid "Check your .gitlab-ci.yml"
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -1425,6 +1452,9 @@ msgstr ""
 msgid "CiVariable|Validation failed"
 msgstr ""
 
+msgid "Clear"
+msgstr ""
+
 msgid "Clear search"
 msgstr ""
 
@@ -1470,7 +1500,13 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close milestone"
+msgstr ""
+
 msgid "Closed"
+msgstr ""
+
+msgid "Closed (moved)"
 msgstr ""
 
 msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
@@ -1516,6 +1552,9 @@ msgid "ClusterIntegration|An error occurred while trying to fetch zone machine t
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
+msgstr ""
+
+msgid "ClusterIntegration|Apply for credit"
 msgstr ""
 
 msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
@@ -2015,6 +2054,9 @@ msgstr ""
 msgid "Compare Revisions"
 msgstr ""
 
+msgid "Compare changes"
+msgstr ""
+
 msgid "Compare changes with the last commit"
 msgstr ""
 
@@ -2112,6 +2154,9 @@ msgid "ContainerRegistry|With the Docker Container Registry integrated into GitL
 msgstr ""
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
+msgstr ""
+
+msgid "Contents of .gitlab-ci.yml"
 msgstr ""
 
 msgid "Continue"
@@ -2213,6 +2258,9 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
+msgid "Create New Domain"
+msgstr ""
+
 msgid "Create a new branch"
 msgstr ""
 
@@ -2256,6 +2304,9 @@ msgid "Create merge request"
 msgstr ""
 
 msgid "Create merge request and branch"
+msgstr ""
+
+msgid "Create milestone"
 msgstr ""
 
 msgid "Create new branch"
@@ -2361,6 +2412,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "DNS"
 msgstr ""
 
 msgid "Dashboard"
@@ -2671,6 +2725,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+msgid "Download artifacts"
+msgstr ""
+
 msgid "Download asset"
 msgstr ""
 
@@ -2711,6 +2768,9 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Label"
+msgstr ""
+
+msgid "Edit Milestone"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
@@ -2831,6 +2891,9 @@ msgid "Environment variables are applied to environments via the runner. They ca
 msgstr ""
 
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
+msgstr ""
+
+msgid "Environment:"
 msgstr ""
 
 msgid "Environments"
@@ -2986,6 +3049,9 @@ msgstr ""
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
+msgid "Error:"
+msgstr ""
+
 msgid "Errors"
 msgstr ""
 
@@ -3029,6 +3095,9 @@ msgid "Everyone"
 msgstr ""
 
 msgid "Everyone can contribute"
+msgstr ""
+
+msgid "Except policy:"
 msgstr ""
 
 msgid "Existing Git repository"
@@ -3139,6 +3208,9 @@ msgstr ""
 msgid "File added"
 msgstr ""
 
+msgid "File browser"
+msgstr ""
+
 msgid "File deleted"
 msgstr ""
 
@@ -3161,6 +3233,9 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter by commit message"
+msgstr ""
+
+msgid "Filter by milestone name"
 msgstr ""
 
 msgid "Filter by two-factor authentication"
@@ -3574,6 +3649,9 @@ msgstr ""
 msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
 msgstr ""
 
+msgid "Hide file browser"
+msgstr ""
+
 msgid "Hide host keys manual input"
 msgstr ""
 
@@ -3586,9 +3664,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Hide values"
-msgstr ""
-
-msgid "Hide whitespace changes"
 msgstr ""
 
 msgid "History"
@@ -3879,6 +3954,12 @@ msgstr ""
 msgid "Job has been erased"
 msgstr ""
 
+msgid "Job is stuck. Check runners."
+msgstr ""
+
+msgid "Job was retried"
+msgstr ""
+
 msgid "Jobs"
 msgstr ""
 
@@ -3936,10 +4017,16 @@ msgstr ""
 msgid "June"
 msgstr ""
 
+msgid "Key (PEM)"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
 msgid "Kubernetes Cluster"
+msgstr ""
+
+msgid "Kubernetes Clusters"
 msgstr ""
 
 msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
@@ -4282,6 +4369,9 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
+msgid "MergeRequests|Jump to next unresolved discussion"
+msgstr ""
+
 msgid "MergeRequests|Resolve this discussion in a new issue"
 msgstr ""
 
@@ -4295,6 +4385,9 @@ msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
+msgstr ""
+
+msgid "MergeRequests|commented on commit %{commitLink}"
 msgstr ""
 
 msgid "MergeRequests|started a discussion"
@@ -4509,6 +4602,12 @@ msgstr[1] ""
 msgid "New Label"
 msgstr ""
 
+msgid "New Milestone"
+msgstr ""
+
+msgid "New Pages Domain"
+msgstr ""
+
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -4546,6 +4645,9 @@ msgid "New label"
 msgstr ""
 
 msgid "New merge request"
+msgstr ""
+
+msgid "New milestone"
 msgstr ""
 
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
@@ -4627,6 +4729,9 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No milestones to show"
 msgstr ""
 
 msgid "No other labels with such name or description"
@@ -4808,6 +4913,9 @@ msgstr ""
 msgid "Only mirror protected branches"
 msgstr ""
 
+msgid "Only policy:"
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
@@ -4883,6 +4991,12 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+msgid "Pages Domain"
+msgstr ""
+
+msgid "Pages Domains"
+msgstr ""
+
 msgid "Pagination|Last »"
 msgstr ""
 
@@ -4895,10 +5009,16 @@ msgstr ""
 msgid "Pagination|« First"
 msgstr ""
 
+msgid "Parameter"
+msgstr ""
+
 msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Past due"
 msgstr ""
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
@@ -5809,6 +5929,9 @@ msgstr ""
 msgid "Rename folder"
 msgstr ""
 
+msgid "Reopen milestone"
+msgstr ""
+
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
@@ -6019,6 +6142,9 @@ msgid "SSL Verification"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save Changes"
 msgstr ""
 
 msgid "Save application"
@@ -6345,6 +6471,9 @@ msgstr ""
 msgid "Show complete raw log"
 msgstr ""
 
+msgid "Show file browser"
+msgstr ""
+
 msgid "Show latest version"
 msgstr ""
 
@@ -6650,6 +6779,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Status:"
+msgstr ""
+
 msgid "Stop environment"
 msgstr ""
 
@@ -6707,6 +6839,9 @@ msgstr ""
 msgid "Suggested change"
 msgstr ""
 
+msgid "Support for custom certificates is disabled. Ask your system's administrator to enable it."
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -6723,6 +6858,9 @@ msgid "System metrics (Kubernetes)"
 msgstr ""
 
 msgid "Tag"
+msgstr ""
+
+msgid "Tag list:"
 msgstr ""
 
 msgid "Tags"
@@ -7014,6 +7152,9 @@ msgid "This diff was suppressed by a .gitattributes entry."
 msgstr ""
 
 msgid "This directory"
+msgstr ""
+
+msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
 msgid "This group"
@@ -7344,7 +7485,13 @@ msgstr ""
 msgid "Titles and Filenames"
 msgstr ""
 
+msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."
+msgstr ""
+
 msgid "To GitLab"
+msgstr ""
+
+msgid "To access this domain create a new DNS record"
 msgstr ""
 
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
@@ -7429,9 +7576,6 @@ msgid "Toggle commit list"
 msgstr ""
 
 msgid "Toggle discussion"
-msgstr ""
-
-msgid "Toggle file browser"
 msgstr ""
 
 msgid "Toggle navigation"
@@ -7554,6 +7698,9 @@ msgstr ""
 msgid "Unsubscribe at project level"
 msgstr ""
 
+msgid "Unsubscribe from %{type}"
+msgstr ""
+
 msgid "Unverified"
 msgstr ""
 
@@ -7582,6 +7729,12 @@ msgid "Upload CSV file"
 msgstr ""
 
 msgid "Upload New File"
+msgstr ""
+
+msgid "Upload a certificate for your domain with all intermediates"
+msgstr ""
+
+msgid "Upload a private key for your certificate"
 msgstr ""
 
 msgid "Upload file"
@@ -7683,6 +7836,15 @@ msgstr ""
 msgid "Users requesting access to"
 msgstr ""
 
+msgid "Validate"
+msgstr ""
+
+msgid "Validate your GitLab CI configuration file"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
 msgid "Various container registry settings."
 msgstr ""
 
@@ -7690,6 +7852,9 @@ msgid "Various email settings."
 msgstr ""
 
 msgid "Various settings that affect GitLab performance."
+msgstr ""
+
+msgid "Verification status"
 msgstr ""
 
 msgid "Verified"
@@ -7788,13 +7953,13 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
-msgid "What's new?"
-msgstr ""
-
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
+msgstr ""
+
+msgid "When:"
 msgstr ""
 
 msgid "Who can see this group?"
@@ -7947,6 +8112,9 @@ msgstr ""
 msgid "Write a comment or drag your files here…"
 msgstr ""
 
+msgid "Write milestone description..."
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -8052,10 +8220,10 @@ msgstr ""
 msgid "You need to register a two-factor authentication app before you can set up a U2F device."
 msgstr ""
 
-msgid "You will loose all changes you've made to this file. This action cannot be undone."
+msgid "You will lose all changes you've made to this file. This action cannot be undone."
 msgstr ""
 
-msgid "You will loose all the unstaged changes you've made in this project. This action cannot be undone."
+msgid "You will lose all the unstaged changes you've made in this project. This action cannot be undone."
 msgstr ""
 
 msgid "You will not get any notifications via email"
@@ -8161,6 +8329,9 @@ msgid "a deleted user"
 msgstr ""
 
 msgid "ago"
+msgstr ""
+
+msgid "allowed to fail"
 msgstr ""
 
 msgid "among other things"
@@ -8281,10 +8452,16 @@ msgstr ""
 msgid "latest version"
 msgstr ""
 
+msgid "manual"
+msgstr ""
+
 msgid "merge request"
 msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "missing"
+msgstr ""
 
 msgid "mrWidget| Please restore it or use a different %{missingBranchName} branch"
 msgstr ""
@@ -8329,6 +8506,9 @@ msgid "mrWidget|Closes"
 msgstr ""
 
 msgid "mrWidget|Create an issue to resolve them later"
+msgstr ""
+
+msgid "mrWidget|Delete source branch"
 msgstr ""
 
 msgid "mrWidget|Deployment statistics are not available currently"
@@ -8391,12 +8571,6 @@ msgstr ""
 msgid "mrWidget|Refreshing now"
 msgstr ""
 
-msgid "mrWidget|Remove Source Branch"
-msgstr ""
-
-msgid "mrWidget|Remove source branch"
-msgstr ""
-
 msgid "mrWidget|Request to merge"
 msgstr ""
 
@@ -8430,19 +8604,19 @@ msgstr ""
 msgid "mrWidget|The source branch HEAD has recently changed. Please reload the page and review the changes before merging"
 msgstr ""
 
-msgid "mrWidget|The source branch has been removed"
+msgid "mrWidget|The source branch has been deleted"
 msgstr ""
 
 msgid "mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch"
 msgstr ""
 
-msgid "mrWidget|The source branch is being removed"
+msgid "mrWidget|The source branch is being deleted"
 msgstr ""
 
-msgid "mrWidget|The source branch will be removed"
+msgid "mrWidget|The source branch will be deleted"
 msgstr ""
 
-msgid "mrWidget|The source branch will not be removed"
+msgid "mrWidget|The source branch will not be deleted"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
@@ -8466,10 +8640,10 @@ msgstr ""
 msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
 msgstr ""
 
-msgid "mrWidget|You can merge this merge request manually using the"
+msgid "mrWidget|You can delete the source branch now"
 msgstr ""
 
-msgid "mrWidget|You can remove source branch now"
+msgid "mrWidget|You can merge this merge request manually using the"
 msgstr ""
 
 msgid "mrWidget|branch does not exist."
@@ -8488,6 +8662,9 @@ msgid "n/a"
 msgstr ""
 
 msgid "new merge request"
+msgstr ""
+
+msgid "none"
 msgstr ""
 
 msgid "notification emails"
@@ -8562,7 +8739,16 @@ msgstr ""
 msgid "stuck"
 msgstr ""
 
+msgid "syntax is correct"
+msgstr ""
+
+msgid "syntax is incorrect"
+msgstr ""
+
 msgid "this document"
+msgstr ""
+
+msgid "triggered"
 msgstr ""
 
 msgid "updated"
@@ -8572,6 +8758,9 @@ msgid "username"
 msgstr ""
 
 msgid "uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "verify ownership"
 msgstr ""
 
 msgid "view it on GitLab"

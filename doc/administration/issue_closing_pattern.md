@@ -17,7 +17,7 @@ The default pattern can be located in [gitlab.yml.example] under the
 "Automatic issue closing" section.
 
 > **Tip:**
-You are advised to use http://rubular.com to test the issue closing pattern.
+You are advised to use <http://rubular.com> to test the issue closing pattern.
 Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 `#\d+` when testing your patterns, which matches only local issue references like `#123`.
 

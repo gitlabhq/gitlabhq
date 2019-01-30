@@ -316,7 +316,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'user cannot remove source branch' do
       expect(page).not_to have_field('remove-source-branch-input')
-      expect(page).to have_content('Removes source branch')
+      expect(page).to have_content('Deletes source branch')
     end
   end
 

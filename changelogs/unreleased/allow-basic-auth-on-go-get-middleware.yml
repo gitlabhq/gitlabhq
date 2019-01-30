@@ -1,5 +1,0 @@
----
-title: Allow basic authentication on go get middleware
-merge_request: 23497
-author: Morty Choi @mortyccp
-type: changed

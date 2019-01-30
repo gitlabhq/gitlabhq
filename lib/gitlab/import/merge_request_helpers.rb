@@ -24,10 +24,6 @@ module Gitlab
 
           merge_request = project.merge_requests.reload.find(merge_request_id)
 
-          # We use .insert_and_return_id which effectively disables all callbacks.
-          # Trigger iid logic here to make sure we track internal id values consistently.
-          merge_request.ensure_target_project_iid!
-
           [merge_request, false]
         end
       rescue ActiveRecord::InvalidForeignKey

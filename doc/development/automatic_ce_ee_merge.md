@@ -148,7 +148,7 @@ merge commit SHA is `138f5e2f20289bb376caffa0303adb0cac859ce1`:
 - To cherry-pick multiple commits, such as B and D in a range [A > B > C > D], use:
 
     ```shell
-    git cherry-pick commmit-B-SHA commit-D-SHA
+    git cherry-pick commit-B-SHA commit-D-SHA
     ```
 
     For example, suppose commit B SHA = `4f5e4018c09ed797fdf446b3752f82e46f5af502`,
@@ -213,7 +213,7 @@ being able to deploy.
 No, not if there is an EE merge request for every CE merge request that causes
 conflicts _and_ that EE merge request is merged first. In the past we may have
 been a bit more relaxed when it comes to enforcing EE merge requests, but to
-enable automatic merging have to start requiring such merge requests even for
+enable automatic merging we have to start requiring such merge requests even for
 the smallest conflicts.
 
 ### Some files I work with often conflict, how can I best deal with this?

@@ -46,7 +46,7 @@ module Gitlab
           stream.seek(offset, IO::SEEK_SET)
           stream.write(data)
           stream.truncate(offset + data.bytesize)
-          stream.flush()
+          stream.flush
         end
 
         def set(data)

@@ -76,10 +76,10 @@ You can [search and filter the results](../../search/index.md#issues-and-merge-r
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
-## Removing the source branch
+## Deleting the source branch
 
-When creating a merge request, select the "Remove source branch when merge
-request accepted" option and the source branch will be removed when the merge
+When creating a merge request, select the "Delete source branch when merge
+request accepted" option and the source branch will be deleted when the merge
 request is merged.
 
 This option is also visible in an existing merge request next to the merge
@@ -87,10 +87,10 @@ request button and can be selected/deselected before merging. It's only visible
 to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
-remove the source branch and the source branch is set for removal, the merge
-request widget will show the "Removes source branch" text.
+delete the source branch and the source branch is set for deletion, the merge
+request widget will show the "Deletes source branch" text.
 
-![Remove source branch status](img/remove_source_branch_status.png)
+![Delete source branch status](img/remove_source_branch_status.png)
 
 ## Allow collaboration on merge requests across forks
 
@@ -284,7 +284,11 @@ you can preview the changes submitted to a feature-branch through a merge reques
 in a per-branch basis. No need to checkout the branch, install and preview locally;
 all your changes will be available to preview by anyone with the Review Apps link.
 
-[Read more about Review Apps.](../../../ci/review_apps/index.md)
+With GitLab's [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
+merge request widget takes you directly to the pages changed, making it easier and
+faster to preview proposed modifications.
+
+[Read more about Review Apps](../../../ci/review_apps/index.md).
 
 ## Pipelines for merge requests
 

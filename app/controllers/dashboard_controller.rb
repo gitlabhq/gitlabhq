@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class DashboardController < Dashboard::ApplicationController
-  include IssuesAction
-  include MergeRequestsAction
+  include IssuableCollectionsAction
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }

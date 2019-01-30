@@ -31,7 +31,7 @@ module Storage
       gitlab_shell.add_namespace(repository_storage, base_dir)
     end
 
-    def rename_repo
+    def rename_repo(old_full_path: nil, new_full_path: nil)
       true
     end
 

@@ -52,10 +52,17 @@ module Gitlab
           klass = stub_class(name)
           addr = stub_address(storage)
           creds = stub_creds(storage)
-          klass.new(addr, creds)
+          klass.new(addr, creds, interceptors: interceptors)
         end
       end
     end
+
+    def self.interceptors
+      return [] unless Gitlab::Tracing.enabled?
+
+      [Gitlab::Tracing::GRPCInterceptor.instance]
+    end
+    private_class_method :interceptors
 
     def self.stub_cert_paths
       cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
@@ -126,7 +133,11 @@ module Gitlab
     end
 
     def self.address_metadata(storage)
-      Base64.strict_encode64(JSON.dump({ storage => { 'address' => address(storage), 'token' => token(storage) } }))
+      Base64.strict_encode64(JSON.dump(storage => connection_data(storage)))
+    end
+
+    def self.connection_data(storage)
+      { 'address' => address(storage), 'token' => token(storage) }
     end
 
     # All Gitaly RPC call sites should use GitalyClient.call. This method

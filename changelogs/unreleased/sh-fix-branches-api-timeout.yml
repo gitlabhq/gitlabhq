@@ -1,5 +1,0 @@
----
-title: Fix timeout issues retrieving branches via API
-merge_request: 24034
-author:
-type: performance

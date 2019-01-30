@@ -887,7 +887,7 @@ describe Notify do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
-      shared_examples 'an email for a note on a diff discussion' do  |model|
+      shared_examples 'an email for a note on a diff discussion' do |model|
         let(:note) { create(model, author: note_author) }
 
         context 'when note is not on text' do

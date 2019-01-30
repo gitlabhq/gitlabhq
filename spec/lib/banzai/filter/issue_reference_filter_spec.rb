@@ -445,7 +445,7 @@ describe Banzai::Filter::IssueReferenceFilter do
   end
 
   describe '.references_in' do
-    let(:merge_request)  { create(:merge_request) }
+    let(:merge_request) { create(:merge_request) }
 
     it 'yields valid references' do
       expect do |b|

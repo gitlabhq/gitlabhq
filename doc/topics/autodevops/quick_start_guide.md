@@ -83,7 +83,7 @@ under which this application will be deployed.
     ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
 
 1. Once ready, click **Create Kubernetes cluster**.
- 
+
 NOTE: **Note:**
 Do not select `f1-micro` from the **Machine type** dropdown. `f1-micro` machines cannot support a full GitLab installation.
 
@@ -216,7 +216,7 @@ deployment and clicking a square will take you to the pod's logs page.
 TIP: **Tip:**
 There is only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](index.md#environment-variables)
-under **Settings > CI/CD > Variables**.
+under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
 

@@ -1,4 +1,4 @@
-= form_for [@group, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' }  do |f|
+= form_for [@group, @milestone], html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   .row
     = form_errors(@milestone)
 
@@ -24,4 +24,3 @@
     - else
       = f.submit 'Update milestone', class: "btn-success btn"
       = link_to "Cancel", group_milestone_path(@group, @milestone), class: "btn btn-cancel"
-

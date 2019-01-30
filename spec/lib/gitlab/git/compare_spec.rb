@@ -67,7 +67,7 @@ describe Gitlab::Git::Compare, :seed_helper do
     end
   end
 
-  describe '#same'  do
+  describe '#same' do
     subject do
       compare.same
     end

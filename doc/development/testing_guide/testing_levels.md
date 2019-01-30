@@ -6,7 +6,7 @@ _This diagram demonstrates the relative priority of each test type we use. `e2e`
 
 ## Unit tests
 
-Formal definition: https://en.wikipedia.org/wiki/Unit_testing
+Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
 
 These kind of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
@@ -32,7 +32,7 @@ records should use stubs/doubles as much as possible.
 
 ## Integration tests
 
-Formal definition: https://en.wikipedia.org/wiki/Integration_testing
+Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
 These kind of tests ensure that individual parts of the application work well
 together, without the overhead of the actual app environment (i.e. the browser).
@@ -75,8 +75,8 @@ of multiple components).
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/White-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/White-box_testing>
 
 These kind of tests ensure the GitLab *Rails* application (i.e.
 `gitlab-ce`/`gitlab-ee`) works as expected from a *browser* point of view.
@@ -135,8 +135,8 @@ The reasons why we should follow these best practices are as follows:
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/Black-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/Black-box_testing>
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces

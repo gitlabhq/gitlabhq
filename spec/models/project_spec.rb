@@ -3224,7 +3224,7 @@ describe Project do
   end
 
   context 'legacy storage' do
-    let(:project) { create(:project, :repository, :legacy_storage) }
+    set(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -3279,13 +3279,14 @@ describe Project do
     end
 
     describe '#migrate_to_hashed_storage!' do
+      let(:project) { create(:project, :empty_repo, :legacy_storage) }
+
       it 'returns true' do
         expect(project.migrate_to_hashed_storage!).to be_truthy
       end
 
-      it 'does not validate project visibility' do
-        expect(project).not_to receive(:visibility_level_allowed_as_fork)
-        expect(project).not_to receive(:visibility_level_allowed_by_group)
+      it 'does not run validation' do
+        expect(project).not_to receive(:valid?)
 
         project.migrate_to_hashed_storage!
       end
@@ -3315,7 +3316,7 @@ describe Project do
   end
 
   context 'hashed storage' do
-    let(:project) { create(:project, :repository, skip_disk_validation: true) }
+    set(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -3372,6 +3373,8 @@ describe Project do
     end
 
     describe '#migrate_to_hashed_storage!' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
       it 'returns nil' do
         expect(project.migrate_to_hashed_storage!).to be_nil
       end
@@ -3381,10 +3384,12 @@ describe Project do
       end
 
       context 'when partially migrated' do
-        it 'returns true' do
+        it 'enqueues a job' do
           project = create(:project, storage_version: 1, skip_disk_validation: true)
 
-          expect(project.migrate_to_hashed_storage!).to be_truthy
+          Sidekiq::Testing.fake! do
+            expect { project.migrate_to_hashed_storage! }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
+          end
         end
       end
     end
@@ -3762,6 +3767,7 @@ describe Project do
       expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
+      expect(InternalId).to receive(:flush_records!).with(project: project)
 
       project.after_import
     end
@@ -3926,7 +3932,7 @@ describe Project do
 
   describe '#badges' do
     let(:project_group) { create(:group) }
-    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+    let(:project) { create(:project, path: 'avatar', namespace: project_group) }
 
     before do
       create_list(:project_badge, 2, project: project)

@@ -1,10 +1,5 @@
 import Clusters from '~/clusters/clusters_bundle';
-import {
-  REQUEST_LOADING,
-  REQUEST_SUCCESS,
-  REQUEST_FAILURE,
-  APPLICATION_STATUS,
-} from '~/clusters/constants';
+import { REQUEST_SUBMITTED, REQUEST_FAILURE, APPLICATION_STATUS } from '~/clusters/constants';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('Clusters', () => {
@@ -196,67 +191,43 @@ describe('Clusters', () => {
   });
 
   describe('installApplication', () => {
-    it('tries to install helm', done => {
+    it('tries to install helm', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('helm', undefined);
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUCCESS);
-          expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
     });
 
-    it('tries to install ingress', done => {
+    it('tries to install ingress', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
 
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'ingress' });
 
-      expect(cluster.store.state.applications.ingress.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.ingress.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress', undefined);
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(cluster.store.state.applications.ingress.requestStatus).toEqual(REQUEST_SUCCESS);
-          expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
     });
 
-    it('tries to install runner', done => {
+    it('tries to install runner', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
 
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
 
       cluster.installApplication({ id: 'runner' });
 
-      expect(cluster.store.state.applications.runner.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.runner.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('runner', undefined);
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(cluster.store.state.applications.runner.requestStatus).toEqual(REQUEST_SUCCESS);
-          expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
     });
 
-    it('tries to install jupyter', done => {
+    it('tries to install jupyter', () => {
       spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
 
       expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
@@ -265,19 +236,11 @@ describe('Clusters', () => {
         params: { hostname: cluster.store.state.applications.jupyter.hostname },
       });
 
-      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', {
         hostname: cluster.store.state.applications.jupyter.hostname,
       });
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUCCESS);
-          expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
-        })
-        .then(done)
-        .catch(done.fail);
     });
 
     it('sets error request status when the request fails', done => {
@@ -289,7 +252,7 @@ describe('Clusters', () => {
 
       cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_LOADING);
+      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalled();
 

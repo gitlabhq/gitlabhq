@@ -125,7 +125,7 @@ describe 'Prioritize labels' do
         wait_for_requests
       end
 
-      page.within('.breadcrumbs-container') do
+      page.within('.top-area') do
         expect(page).to have_link('New label')
       end
     end

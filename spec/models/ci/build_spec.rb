@@ -2133,6 +2133,8 @@ describe Ci::Build do
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
           { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
           { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
+          { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true },
+          { key: 'CI_PAGES_URL', value: project.pages_url, public: true },
           { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true },
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
           { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
@@ -2480,7 +2482,7 @@ describe Ci::Build do
     context 'when container registry is enabled' do
       let(:container_registry_enabled) { true }
       let(:ci_registry) do
-        { key: 'CI_REGISTRY', value: 'registry.example.com',  public: true }
+        { key: 'CI_REGISTRY', value: 'registry.example.com', public: true }
       end
       let(:ci_registry_image) do
         { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true }
@@ -3026,6 +3028,24 @@ describe Ci::Build do
         expect(service).to receive(:commit_status_merge_requests)
 
         subject.drop!
+      end
+    end
+
+    context 'when associated deployment failed to update its status' do
+      let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+      let!(:deployment) { create(:deployment, deployable: build) }
+
+      before do
+        allow_any_instance_of(Deployment)
+          .to receive(:drop!).and_raise('Unexpected error')
+      end
+
+      it 'can drop the build' do
+        expect(Gitlab::Sentry).to receive(:track_exception)
+
+        expect { build.drop! }.not_to raise_error
+
+        expect(build).to be_failed
       end
     end
   end

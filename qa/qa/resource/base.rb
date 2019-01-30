@@ -116,23 +116,13 @@ module QA
       end
       private_class_method :evaluator
 
-      def self.dynamic_attributes
-        const_get(:DynamicAttributes)
-      rescue NameError
-        mod = const_set(:DynamicAttributes, Module.new)
-
-        include mod
-
-        mod
-      end
-
       class DSL
         def initialize(base)
           @base = base
         end
 
         def attribute(name, &block)
-          @base.dynamic_attributes.module_eval do
+          @base.module_eval do
             attr_writer(name)
 
             define_method(name) do

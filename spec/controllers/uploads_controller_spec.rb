@@ -12,6 +12,12 @@ shared_examples 'content not cached without revalidation and no-store' do
   end
 end
 
+shared_examples 'content publicly cached' do
+  it 'ensures content is publicly cached' do
+    expect(subject['Cache-Control']).to eq('max-age=300, public')
+  end
+end
+
 describe UploadsController do
   let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
@@ -184,7 +190,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation and no-store' do
+          it_behaves_like 'content publicly cached' do
             subject do
               get :show, params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png' }
 
@@ -201,7 +207,7 @@ describe UploadsController do
           expect(response).to have_gitlab_http_status(200)
         end
 
-        it_behaves_like 'content not cached without revalidation' do
+        it_behaves_like 'content publicly cached' do
           subject do
             get :show, params: { model: 'user', mounted_as: 'avatar', id: user.id, filename: 'dk.png' }
 
@@ -321,7 +327,7 @@ describe UploadsController do
     end
 
     context "when viewing a group avatar" do
-      let!(:group)   { create(:group, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+      let!(:group) { create(:group, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
       context "when the group is public" do
         context "when not signed in" do
@@ -537,7 +543,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation' do
+          it_behaves_like 'content publicly cached' do
             subject do
               get :show, params: { model: 'appearance', mounted_as: 'header_logo', id: appearance.id, filename: 'dk.png' }
 
@@ -557,7 +563,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation' do
+          it_behaves_like 'content publicly cached' do
             subject do
               get :show, params: { model: 'appearance', mounted_as: 'logo', id: appearance.id, filename: 'dk.png' }
 

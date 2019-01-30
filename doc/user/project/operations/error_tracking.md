@@ -1,6 +1,6 @@
 # Error Tracking
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/169) in GitLab 11.7.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/169) in GitLab 11.8.
 
 Error tracking allows developers to easily discover and view the errors that their application may be generating. By surfacing error information where the code is being developed, efficiency and awareness can be increased.
 
@@ -10,7 +10,7 @@ Error tracking allows developers to easily discover and view the errors that the
 
 ### Deploying Sentry
 
-You may sign up to the cloud hosted https://sentry.io or deploy your own [on-premise instance](https://docs.sentry.io/server/installation/).
+You may sign up to the cloud hosted <https://sentry.io> or deploy your own [on-premise instance](https://docs.sentry.io/server/installation/).
 
 ### Enabling Sentry
 

@@ -61,7 +61,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
@@ -76,7 +76,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are partial present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do

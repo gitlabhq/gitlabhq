@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import { s__ } from '~/locale';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import { mergeUrlParams, getLocationHash } from '~/lib/utils/url_utility';
+import TreeWorker from '../workers/tree_worker';
 import eventHub from '../../notes/event_hub';
 import { getDiffPositionByLineCode, getNoteFormData } from './utils';
 import * as types from './mutation_types';
@@ -13,6 +14,8 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
   MR_TREE_SHOW_KEY,
+  TREE_LIST_STORAGE_KEY,
+  WHITESPACE_STORAGE_KEY,
 } from '../constants';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -21,17 +24,29 @@ export const setBaseConfig = ({ commit }, options) => {
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
+  const worker = new TreeWorker();
+
   commit(types.SET_LOADING, true);
 
+  worker.addEventListener('message', ({ data }) => {
+    commit(types.SET_TREE_DATA, data);
+
+    worker.terminate();
+  });
+
   return axios
-    .get(state.endpoint)
+    .get(state.endpoint, { params: { w: state.showWhitespace ? null : '1' } })
     .then(res => {
       commit(types.SET_LOADING, false);
       commit(types.SET_MERGE_REQUEST_DIFFS, res.data.merge_request_diffs || []);
       commit(types.SET_DIFF_DATA, res.data);
+
+      worker.postMessage(state.diffFiles);
+
       return Vue.nextTick();
     })
-    .then(handleLocationHash);
+    .then(handleLocationHash)
+    .catch(() => worker.terminate());
 };
 
 export const setHighlightedRow = ({ commit }, lineCode) => {
@@ -263,6 +278,22 @@ export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
 
 export const closeDiffFileCommentForm = ({ commit }, fileHash) => {
   commit(types.CLOSE_DIFF_FILE_COMMENT_FORM, fileHash);
+};
+
+export const setRenderTreeList = ({ commit }, renderTreeList) => {
+  commit(types.SET_RENDER_TREE_LIST, renderTreeList);
+
+  localStorage.setItem(TREE_LIST_STORAGE_KEY, renderTreeList);
+};
+
+export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = false }) => {
+  commit(types.SET_SHOW_WHITESPACE, showWhitespace);
+
+  localStorage.setItem(WHITESPACE_STORAGE_KEY, showWhitespace);
+
+  if (pushState) {
+    historyPushState(showWhitespace ? '?w=0' : '?w=1');
+  }
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

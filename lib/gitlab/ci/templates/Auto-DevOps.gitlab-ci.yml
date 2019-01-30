@@ -50,7 +50,7 @@ variables:
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
   KUBERNETES_VERSION: 1.11.6
-  HELM_VERSION: 2.11.0
+  HELM_VERSION: 2.12.2
 
   DOCKER_DRIVER: overlay2
 
@@ -116,7 +116,7 @@ code_quality:
 
 license_management:
   stage: test
-  image: 
+  image:
     name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
     entrypoint: [""]
   allow_failure: true
@@ -611,16 +611,16 @@ rollout 100%:
     track="${1-stable}"
     export APPLICATION_SECRET_NAME=$(application_secret_name "$track")
 
-    bash -c '
-      function k8s_prefixed_variables() {
-        env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p"
-      }
+    env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p" > k8s_prefixed_variables
 
-      kubectl create secret \
-        -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
-        --from-env-file <(k8s_prefixed_variables) -o yaml --dry-run |
-        kubectl replace -n "$KUBE_NAMESPACE" --force -f -
-    '
+    kubectl create secret \
+      -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
+      --from-env-file k8s_prefixed_variables -o yaml --dry-run |
+      kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+
+    export APPLICATION_SECRET_CHECKSUM=$(cat k8s_prefixed_variables | sha256sum | cut -d ' ' -f 1)
+
+    rm k8s_prefixed_variables
   }
 
   function deploy_name() {
@@ -688,6 +688,8 @@ rollout 100%:
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -722,6 +724,8 @@ rollout 100%:
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \

@@ -465,7 +465,7 @@ describe 'Pipelines', :js do
       context 'with pagination' do
         before do
           allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
-          create(:ci_empty_pipeline,  project: project)
+          create(:ci_empty_pipeline, project: project)
         end
 
         it 'should render pagination' do

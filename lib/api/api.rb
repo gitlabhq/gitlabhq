@@ -100,6 +100,7 @@ module API
     mount ::API::CircuitBreakers
     mount ::API::Commits
     mount ::API::CommitStatuses
+    mount ::API::ContainerRegistry
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments

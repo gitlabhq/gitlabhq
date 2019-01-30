@@ -21,6 +21,16 @@ Vue.config.productionTip = false;
 
 let hasVueWarnings = false;
 Vue.config.warnHandler = (msg, vm, trace) => {
+  // The following workaround is necessary, so we are able to use setProps from Vue test utils
+  // see https://github.com/vuejs/vue-test-utils/issues/631#issuecomment-421108344
+  const currentStack = new Error().stack;
+  const isInVueTestUtils = currentStack
+    .split('\n')
+    .some(line => line.startsWith('    at VueWrapper.setProps ('));
+  if (isInVueTestUtils) {
+    return;
+  }
+
   hasVueWarnings = true;
   fail(`${msg}${trace}`);
 };
@@ -187,6 +197,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     './terminal/terminal_bundle.js',
     './users/users_bundle.js',
     './issue_show/index.js',
+    './pages/admin/application_settings/show/index.js',
   ];
 
   describe('Uncovered files', function() {

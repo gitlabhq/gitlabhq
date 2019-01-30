@@ -57,7 +57,7 @@ server.
 ## Installing Slony
 
 Slony will be used to upgrade the database without requiring long downtimes.
-Slony can be downloaded from http://www.slony.info/. If you have installed
+Slony can be downloaded from <http://www.slony.info/>. If you have installed
 PostgreSQL using your operating system's package manager you may also be able to
 install Slony using said package manager.
 

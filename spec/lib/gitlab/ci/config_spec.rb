@@ -192,7 +192,7 @@ describe Gitlab::Ci::Config do
       end
     end
 
-    context "when gitlab_ci.yml has invalid 'include' defined"  do
+    context "when gitlab_ci.yml has invalid 'include' defined" do
       let(:gitlab_ci_yml) do
         <<~HEREDOC
           include: invalid
@@ -207,7 +207,7 @@ describe Gitlab::Ci::Config do
       end
     end
 
-    context "when gitlab_ci.yml has ambigious 'include' defined"  do
+    context "when gitlab_ci.yml has ambigious 'include' defined" do
       let(:gitlab_ci_yml) do
         <<~HEREDOC
           include:

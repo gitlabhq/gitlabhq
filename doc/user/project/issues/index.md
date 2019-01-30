@@ -144,12 +144,12 @@ create various boards per project with [Multiple Issue Boards](https://docs.gitl
 
 ### Import Issues from CSV
 
-From the project-level issues list, you can find the import button near the "Edit issues" button in the upper-right
-side.
+You can import a CSV file containing issue titles and descriptions to create
+a batch of issues simultaneously.
 
-![Import CSV button](img/import_csv_button.png)
+When you navigate to the Issues list page, an import button is displayed.
 
-Learn more about [importing issues from CSV](csv_import.md)
+For further details, see [Importing issues from CSV](csv_import.md)
 
 ### External Issue Tracker
 
@@ -157,14 +157,14 @@ Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
 tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
 or Bugzilla.
 
-### Issue's API
+### Issue API
 
-Read through the [API documentation](../../../api/issues.md).
+See the [API documentation](../../../api/issues.md).
 
 ### Bulk editing issues
 
-Find out about [bulk editing issues](../../project/bulk_editing.md).
+See the [bulk editing issues](../../project/bulk_editing.md) page.
 
 ### Similar issues
 
-Find out about [similar issues](similar_issues.md).
+See the [similar issues](similar_issues.md) page.

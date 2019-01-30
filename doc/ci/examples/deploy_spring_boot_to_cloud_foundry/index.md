@@ -104,7 +104,7 @@ to ensure our deployments only happen when we push to the master branch.
 
 Now, since the steps defined in `.gitlab-ci.yml` require credentials to login
 to CF, you'll need to add your CF credentials as [environment
-variables](../../variables/README.md#predefined-variables-environment-variables)
+variables](../../variables/README.md#predefined-environment-variables)
 on GitLab CI/CD. To set the environment variables, navigate to your project's
 **Settings > CI/CD** and expand **Variables**. Name the variables
 `CF_USERNAME` and `CF_PASSWORD` and set them to the correct values.
@@ -138,5 +138,5 @@ buildpack: client-certificate-mapper=1.2.0_RELEASE container-security-provider=1
 ```
 
 You can then visit your deployed application (for this example,
-https://gitlab-hello-world-undissembling-hotchpot.cfapps.io/) and you should
+`https://gitlab-hello-world-undissembling-hotchpot.cfapps.io/`) and you should
 see the "Spring is here!" message.

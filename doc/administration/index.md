@@ -41,13 +41,14 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
-[source installations](../install/installation.md#installation-from-source).
+  [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
+- [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
 
 #### Customizing GitLab's appearance
 
@@ -80,7 +81,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate with [Mattermost](https://about.mattermost.com/), an open source, private cloud workplace for web messaging.
 - [PlantUML](integration/plantuml.md): Create simple diagrams in AsciiDoc and Markdown documents
-created in snippets, wikis, and repos.
+  created in snippets, wikis, and repos.
 - [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab's CI/CD [environments](../ci/environments.md#web-terminals).
 
 ## User settings and permissions
@@ -88,7 +89,7 @@ created in snippets, wikis, and repos.
 - [Libravatar](../customization/libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
-- [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
+- [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS and additional providers. See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email], create [issues by email] and
   [merge requests by email], and to enable [Service Desk].

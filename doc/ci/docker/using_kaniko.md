@@ -40,7 +40,7 @@ In the following example, kaniko is used to build a Docker image and then push
 it to [GitLab Container Registry](../../user/project/container_registry.md).
 The job will run only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab Container Registry credentials taken from the
-[environment variables](../variables/README.md#predefined-variables-environment-variables)
+[environment variables](../variables/README.md#predefined-environment-variables)
 GitLab CI/CD provides. In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
 project's Container Registry while tagging it with the Git tag:

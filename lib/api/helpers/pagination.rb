@@ -146,7 +146,7 @@ module API
         end
 
         def add_default_pagination_headers
-          header 'X-Per-Page',    per_page.to_s
+          header 'X-Per-Page', per_page.to_s
         end
 
         def add_navigation_links(next_page_params)
@@ -178,14 +178,25 @@ module API
         end
 
         def paginate(relation)
-          relation = add_default_order(relation)
-
-          relation.page(params[:page]).per(params[:per_page]).tap do |data|
+          paginate_with_limit_optimization(add_default_order(relation)).tap do |data|
             add_pagination_headers(data)
           end
         end
 
         private
+
+        def paginate_with_limit_optimization(relation)
+          pagination_data = relation.page(params[:page]).per(params[:per_page])
+          return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
+          return pagination_data unless Feature.enabled?(:api_kaminari_count_with_limit)
+
+          limited_total_count = pagination_data.total_count_with_limit
+          if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
+            pagination_data.without_count
+          else
+            pagination_data
+          end
+        end
 
         # rubocop: disable CodeReuse/ActiveRecord
         def add_default_order(relation)

@@ -1,5 +1,0 @@
----
-title: Fix Bitbucket Server import only including first 25 pull requests
-merge_request: 24178
-author:
-type: fixed

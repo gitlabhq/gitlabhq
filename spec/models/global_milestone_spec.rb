@@ -91,6 +91,12 @@ describe GlobalMilestone do
       it 'sorts collection by due date' do
         expect(global_milestones.map(&:due_date)).to eq [milestone1_due_date, milestone1_due_date, milestone1_due_date, nil, nil, nil]
       end
+
+      it 'filters milestones by search_title when params[:search_title] is present' do
+        global_milestones = described_class.build_collection(projects, { search_title: 'v1.2' })
+
+        expect(global_milestones.map(&:title)).to match_array(['Milestone v1.2', 'Milestone v1.2', 'Milestone v1.2'])
+      end
     end
 
     context 'when adding new milestones' do

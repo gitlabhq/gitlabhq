@@ -21,6 +21,8 @@ class MergeRequest < ActiveRecord::Base
   self.reactive_cache_refresh_interval = 10.minutes
   self.reactive_cache_lifetime = 10.minutes
 
+  SORTING_PREFERENCE_FIELD = :merge_requests_sort
+
   ignore_column :locked_at,
                 :ref_fetched,
                 :deleted_at

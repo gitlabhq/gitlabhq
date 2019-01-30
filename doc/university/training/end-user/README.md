@@ -50,7 +50,7 @@ project.
 - Use the tools at your disposal when you get stuck.
   - Use `git help <command>` command
   - Use Google (i.e. StackOverflow, Google groups)
-  - Read documentation at https://git-scm.com
+  - Read documentation at <https://git-scm.com>
 
 ---
 
@@ -62,7 +62,7 @@ Workshop Time!
 ### Setup
 
 - Windows: Install 'Git for Windows'
-  - https://git-for-windows.github.io
+  - <https://git-for-windows.github.io>
 - Mac: Type `git` in the Terminal application.
   - If it's not installed, it will prompt you to install it.
 - Linux
@@ -142,7 +142,7 @@ cd ~/workspace
 
 - Sign in into your gitlab.com account
 - Create a project
-- Choose to import from 'Any Repo by URL' and use https://gitlab.com/gitlab-org/training-examples.git
+- Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>
 - On your machine clone the `training-examples` project
 
 ---

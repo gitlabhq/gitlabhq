@@ -190,7 +190,7 @@ module API
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def self.preload_relation(projects_relation, options =  {})
+      def self.preload_relation(projects_relation, options = {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
@@ -274,7 +274,7 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def self.preload_relation(projects_relation, options =  {})
+      def self.preload_relation(projects_relation, options = {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
@@ -344,19 +344,23 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_owned: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
 
       expose :shared_projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_shared: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
     end
 
@@ -964,7 +968,7 @@ module API
             if options[:group_members]
               options[:group_members].find { |member| member.source_id == project.namespace_id }
             else
-              project.group.group_member(options[:current_user])
+              project.group.highest_group_member(options[:current_user])
             end
           end
         end

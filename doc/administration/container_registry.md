@@ -11,7 +11,7 @@ With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.
 
 You can read more about the Container Registry at
-https://docs.docker.com/registry/introduction/.
+<https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry
 
@@ -378,7 +378,7 @@ Read more about the individual driver's config options in the
 > **Warning** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
-> 
+>
 > **Important** Enabling storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
 So you must use an address that resolves and is accessible outside GitLab server.
@@ -606,15 +606,15 @@ information in [issue 18239][ce-18239].
 
 ## Troubleshooting
 
-When using AWS S3 with the GitLab registry, an error may occur when pushing 
+When using AWS S3 with the GitLab registry, an error may occur when pushing
 large images. Look in the Registry log for the following error:
 
 ```
-level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error" 
+level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error"
 ```
 
-To resolve the error specify a `chunksize` value in the Registry configuration. 
-Start with a value between `25000000` (25MB) and `50000000` (50MB). 
+To resolve the error specify a `chunksize` value in the Registry configuration.
+Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 **For Omnibus installations**
 

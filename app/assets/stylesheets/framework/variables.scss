@@ -278,8 +278,8 @@ $performance-bar-height: 35px;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
-$project-title-row-height: 64px;
-$project-avatar-mobile-size: 24px;
+$home-panel-title-row-height: 64px;
+$home-panel-avatar-mobile-size: 24px;
 $gl-line-height: 16px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
@@ -664,3 +664,8 @@ $priority-label-empty-state-width: 114px;
 Issues Analytics
 */
 $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
+/*
+Merge Requests
+*/
+$mr-tabs-height: 51px;
+$mr-version-controls-height: 56px;

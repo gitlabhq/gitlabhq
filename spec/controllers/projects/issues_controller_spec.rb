@@ -42,7 +42,9 @@ describe Projects::IssuesController do
 
       it_behaves_like "issuables list meta-data", :issue
 
-      it_behaves_like 'set sort order from user preference'
+      it_behaves_like 'set sort order from user preference' do
+        let(:sorting_param) { 'updated_asc' }
+      end
 
       it "returns index" do
         get :index, params: { namespace_id: project.namespace, project_id: project }
@@ -66,7 +68,7 @@ describe Projects::IssuesController do
     end
 
     context 'with page param' do
-      let(:last_page) { project.issues.page().total_pages }
+      let(:last_page) { project.issues.page.total_pages }
       let!(:issue_list) { create_list(:issue, 2, project: project) }
 
       before do
@@ -1118,6 +1120,7 @@ describe Projects::IssuesController do
 
       context 'when user is setting notes filters' do
         let(:issuable) { issue }
+        let(:issuable_parent) { project }
         let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
         it_behaves_like 'issuable notes filter'

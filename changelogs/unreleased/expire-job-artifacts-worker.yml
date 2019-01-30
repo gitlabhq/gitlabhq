@@ -1,0 +1,5 @@
+---
+title: Efficiently remove expired artifacts in `ExpireBuildArtifactsWorker`
+merge_request: 24450
+author:
+type: performance

@@ -1,12 +1,8 @@
-- show_blog_link = current_user_menu?(:help) && blog_post_url.present?
 %ul
   - if current_user_menu?(:help)
     %li
       = link_to _("Help"), help_path
     %li.divider
-  - if show_blog_link
-    %li
-      = link_to _("What's new?"), blog_post_url
   %li
     = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)

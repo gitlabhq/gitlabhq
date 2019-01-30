@@ -26,6 +26,8 @@ class Issue < ActiveRecord::Base
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
+  SORTING_PREFERENCE_FIELD = :issues_sort
+
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
@@ -230,7 +232,8 @@ class Issue < ActiveRecord::Base
   end
 
   def check_for_spam?
-    project.public? && (title_changed? || description_changed?)
+    publicly_visible? &&
+      (title_changed? || description_changed? || confidential_changed?)
   end
 
   def as_json(options = {})

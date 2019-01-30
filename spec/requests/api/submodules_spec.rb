@@ -64,7 +64,7 @@ describe API::Submodules do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      it 'returns the commmit' do
+      it 'returns the commit' do
         head_commit = project.repository.commit.id
 
         put api(route(submodule), user), params: params
@@ -81,7 +81,7 @@ describe API::Submodules do
         let(:branch) { 'submodule_inside_folder' }
         let(:encoded_submodule) { CGI.escape(submodule) }
 
-        it 'returns the commmit' do
+        it 'returns the commit' do
           expect(Submodules::UpdateService)
             .to receive(:new)
                   .with(any_args, hash_including(submodule: submodule))
