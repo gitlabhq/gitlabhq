@@ -17,15 +17,11 @@ Use the persona labels as well https://gitlab.com/groups/gitlab-org/-/labels?utf
 
 ### Documentation
 
-<!-- What doc pages need to be created or updated across user, admin, and API docs?
+<!-- See the Documentation Workflows https://docs.gitlab.com/ee/development/documentation/workflow.html and specify the following:
+What doc pages need to be created or updated across user, admin, and API docs?
 What concepts, procedures, or information is needed in each area? Is there an 'old way' that should be deprecated in the docs?
-
-Product managers:
-* By the kickoff, finalize the answers to the bullets above, and also:
-  * When applicable, specify a new or updated feature name, description, benefits,
-    and use cases, which may all be used in the documentation or features.yml.
-  * Specify which use cases or scenarios would benefit from a set of instructions or a guide,
-    whether unique to a single use case or flexible enough to cover multiple use cases. -->
+If applicable, specify a new or updated feature name, description, benefits, and use cases, which may all be used in the documentation or features.yml.
+Which use cases or scenarios would benefit from a set of instructions or a guide, whether unique to each use case or flexible enough to cover multiple use cases. -->
 
 ### What does success look like, and how can we measure that?
 
