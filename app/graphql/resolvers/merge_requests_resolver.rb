@@ -1,19 +1,30 @@
 # frozen_string_literal: true
 
 module Resolvers
-  class MergeRequestResolver < BaseResolver
+  class MergeRequestsResolver < BaseResolver
     argument :iid, GraphQL::ID_TYPE,
-             required: true,
+             required: false,
              description: 'The IID of the merge request, e.g., "1"'
+
+    argument :iids, [GraphQL::ID_TYPE],
+              required: false,
+              description: 'The list of IIDs of issues, e.g., [1, 2]'
 
     type Types::MergeRequestType, null: true
 
     alias_method :project, :object
 
-    # rubocop: disable CodeReuse/ActiveRecord
-    def resolve(iid:)
+    def resolve(**args)
       return unless project.present?
 
+      args[:iids] ||= [args[:iid]]
+
+      args[:iids].map(&method(:batch_load))
+        .select(&:itself) # .compact doesn't work on BatchLoader
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def batch_load(iid)
       BatchLoader.for(iid.to_s).batch(key: project) do |iids, loader, args|
         args[:key].merge_requests.where(iid: iids).each do |mr|
           loader.call(mr.iid.to_s, mr)

@@ -66,10 +66,17 @@ module Types
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true
     field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true
 
+    field :merge_requests,
+          Types::MergeRequestType.connection_type,
+          null: true,
+          resolver: Resolvers::MergeRequestsResolver do
+      # authorize :read_merge_request
+    end
+
     field :merge_request,
           Types::MergeRequestType,
           null: true,
-          resolver: Resolvers::MergeRequestResolver do
+          resolver: Resolvers::MergeRequestsResolver.single do
       authorize :read_merge_request
     end
 
