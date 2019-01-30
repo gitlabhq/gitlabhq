@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/instance_statistics`
+merge_request: 24809
+author: George Tsiolis
+type: other
