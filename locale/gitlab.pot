@@ -2992,6 +2992,9 @@ msgstr ""
 msgid "Error Tracking"
 msgstr ""
 
+msgid "Error deleting  %{issuableType}"
+msgstr ""
+
 msgid "Error fetching contributors data."
 msgstr ""
 
@@ -3040,7 +3043,7 @@ msgstr ""
 msgid "Error saving label update."
 msgstr ""
 
-msgid "Error updating  %{issuableType}"
+msgid "Error updating %{issuableType}"
 msgstr ""
 
 msgid "Error updating status for all todos."
@@ -7717,6 +7720,9 @@ msgid "Upcoming"
 msgstr ""
 
 msgid "Update"
+msgstr ""
+
+msgid "Update failed"
 msgstr ""
 
 msgid "Update now"
