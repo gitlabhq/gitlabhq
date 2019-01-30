@@ -1,64 +1,105 @@
-import $ from 'jquery';
 import _ from 'underscore';
-import Vue from 'vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import issueNote from '~/notes/components/noteable_note.vue';
+import NoteHeader from '~/notes/components/note_header.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import NoteActions from '~/notes/components/note_actions.vue';
+import NoteBody from '~/notes/components/note_body.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note', () => {
   let store;
-  let vm;
+  let wrapper;
 
   beforeEach(() => {
-    const Component = Vue.extend(issueNote);
-
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    vm = new Component({
+    const localVue = createLocalVue();
+    wrapper = shallowMount(issueNote, {
       store,
       propsData: {
         note,
       },
-    }).$mount();
+      sync: false,
+      localVue,
+    });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render user information', () => {
-    expect(vm.$el.querySelector('.user-avatar-link img').getAttribute('src')).toEqual(
-      note.author.avatar_url,
-    );
+    const { author } = note;
+    const avatar = wrapper.find(UserAvatarLink);
+    const avatarProps = avatar.props();
+
+    expect(avatarProps.linkHref).toBe(author.path);
+    expect(avatarProps.imgSrc).toBe(author.avatar_url);
+    expect(avatarProps.imgAlt).toBe(author.name);
+    expect(avatarProps.imgSize).toBe(40);
   });
 
   it('should render note header content', () => {
-    const el = vm.$el.querySelector('.note-header .note-header-author-name');
+    const noteHeader = wrapper.find(NoteHeader);
+    const noteHeaderProps = noteHeader.props();
 
-    expect(el.textContent.trim()).toEqual(note.author.name);
+    expect(noteHeaderProps.author).toEqual(note.author);
+    expect(noteHeaderProps.createdAt).toEqual(note.created_at);
+    expect(noteHeaderProps.noteId).toEqual(note.id);
   });
 
   it('should render note actions', () => {
-    expect(vm.$el.querySelector('.note-actions')).toBeDefined();
+    const { author } = note;
+    const noteActions = wrapper.find(NoteActions);
+    const noteActionsProps = noteActions.props();
+
+    expect(noteActionsProps.authorId).toBe(author.id);
+    expect(noteActionsProps.noteId).toBe(note.id);
+    expect(noteActionsProps.noteUrl).toBe(note.noteable_note_url);
+    expect(noteActionsProps.accessLevel).toBe(note.human_access);
+    expect(noteActionsProps.canEdit).toBe(note.current_user.can_edit);
+    expect(noteActionsProps.canAwardEmoji).toBe(note.current_user.can_award_emoji);
+    expect(noteActionsProps.canDelete).toBe(note.current_user.can_edit);
+    expect(noteActionsProps.canReportAsAbuse).toBe(true);
+    expect(noteActionsProps.canResolve).toBe(false);
+    expect(noteActionsProps.reportAbusePath).toBe(note.report_abuse_path);
+    expect(noteActionsProps.resolvable).toBe(false);
+    expect(noteActionsProps.isResolved).toBe(false);
+    expect(noteActionsProps.isResolving).toBe(false);
+    expect(noteActionsProps.resolvedBy).toEqual({});
   });
 
   it('should render issue body', () => {
-    expect(vm.$el.querySelector('.note-text').innerHTML).toEqual(note.note_html);
+    const noteBody = wrapper.find(NoteBody);
+    const noteBodyProps = noteBody.props();
+
+    expect(noteBodyProps.note).toEqual(note);
+    expect(noteBodyProps.line).toBe(null);
+    expect(noteBodyProps.canEdit).toBe(note.current_user.can_edit);
+    expect(noteBodyProps.isEditing).toBe(false);
+    expect(noteBodyProps.helpPagePath).toBe('');
   });
 
   it('prevents note preview xss', done => {
     const imgSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     const noteBody = `<img src="${imgSrc}" onload="alert(1)" />`;
     const alertSpy = spyOn(window, 'alert');
-    vm.updateNote = () => new Promise($.noop);
+    store.hotUpdate({
+      actions: {
+        updateNote() {},
+      },
+    });
+    const noteBodyComponent = wrapper.find(NoteBody);
 
-    vm.formUpdateHandler(noteBody, null, $.noop);
+    noteBodyComponent.vm.$emit('handleFormUpdate', noteBody, null, () => {});
 
     setTimeout(() => {
       expect(alertSpy).not.toHaveBeenCalled();
-      expect(vm.note.note_html).toEqual(_.escape(noteBody));
+      expect(wrapper.vm.note.note_html).toEqual(_.escape(noteBody));
       done();
     }, 0);
   });
@@ -66,17 +107,23 @@ describe('issue_note', () => {
   describe('cancel edit', () => {
     it('restores content of updated note', done => {
       const noteBody = 'updated note text';
-      vm.updateNote = () => Promise.resolve();
+      store.hotUpdate({
+        actions: {
+          updateNote() {},
+        },
+      });
+      const noteBodyComponent = wrapper.find(NoteBody);
+      noteBodyComponent.vm.resetAutoSave = () => {};
 
-      vm.formUpdateHandler(noteBody, null, $.noop);
+      noteBodyComponent.vm.$emit('handleFormUpdate', noteBody, null, () => {});
 
       setTimeout(() => {
-        expect(vm.note.note_html).toEqual(noteBody);
+        expect(wrapper.vm.note.note_html).toEqual(noteBody);
 
-        vm.formCancelHandler();
+        noteBodyComponent.vm.$emit('cancelForm');
 
         setTimeout(() => {
-          expect(vm.note.note_html).toEqual(noteBody);
+          expect(wrapper.vm.note.note_html).toEqual(noteBody);
 
           done();
         });
