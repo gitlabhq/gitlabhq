@@ -951,6 +951,29 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(404)
     end
+
+    describe "the squash_commit_message param" do
+      let(:squash_commit) do
+        project.repository.commits_between(json_response['diff_refs']['start_sha'], json_response['merge_commit_sha']).first
+      end
+
+      it "results in a specific squash commit message when set" do
+        squash_commit_message = 'My custom squash commit message'
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: {
+          squash: true,
+          squash_commit_message: squash_commit_message
+        }
+
+        expect(squash_commit.message.chomp).to eq(squash_commit_message)
+      end
+
+      it "results in a default squash commit message when not set" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
+
+        expect(squash_commit.message).to eq(merge_request.default_squash_commit_message)
+      end
+    end
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
