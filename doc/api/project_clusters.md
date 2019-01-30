@@ -245,6 +245,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of the project owned by the authenticated user |
+| `cluster_id` | integer | yes | The ID of the cluster |
 | `name` | String | no | The name of the cluster |
 | `platform_kubernetes_attributes[api_url]` | String | no | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | String | no | The token to authenticate against Kubernetes |
