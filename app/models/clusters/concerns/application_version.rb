@@ -10,6 +10,10 @@ module Clusters
           after_transition any => [:installing] do |application|
             application.update(version: application.class.const_get(:VERSION))
           end
+
+          before_transition any => :updated do |application|
+            application.version = application.class.const_get(:VERSION)
+          end
         end
       end
     end

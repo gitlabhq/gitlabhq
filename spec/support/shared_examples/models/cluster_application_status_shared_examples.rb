@@ -78,6 +78,16 @@ shared_examples 'cluster application status specs' do |application_name|
 
         expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
       end
+
+      it 'updates the version for the application' do
+        subject.update!(version: '0.0.0')
+
+        subject.make_updated!
+
+        subject.reload
+
+        expect(subject.version).to eq(subject.class.const_get(:VERSION))
+      end
     end
 
     describe '#make_errored' do
