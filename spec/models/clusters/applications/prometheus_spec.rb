@@ -19,20 +19,6 @@ describe Clusters::Applications::Prometheus do
     it { is_expected.to contain_exactly(cluster) }
   end
 
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_prometheus, :scheduled, version: '6.7.2') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('6.7.3')
-      end
-    end
-  end
-
   describe 'transition to installed' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }

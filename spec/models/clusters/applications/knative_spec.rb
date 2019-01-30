@@ -34,20 +34,6 @@ describe Clusters::Applications::Knative do
     it { is_expected.to contain_exactly(cluster) }
   end
 
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.2.2') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('0.2.2')
-      end
-    end
-  end
-
   describe '#make_installed' do
     subject { described_class.installed }
 

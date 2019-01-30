@@ -21,6 +21,10 @@ shared_examples 'cluster application status specs' do |application_name|
     context 'when application is scheduled' do
       before do
         create(:clusters_applications_helm, :installed, cluster: cluster)
+
+        if described_class == Clusters::Applications::Jupyter
+          create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1', cluster: cluster)
+        end
       end
 
       it 'sets a default status' do
@@ -57,6 +61,16 @@ shared_examples 'cluster application status specs' do |application_name|
         subject.cluster.application_helm.reload
 
         expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+      end
+
+      it 'sets the correct version of the application' do
+        subject.update!(version: '0.0.0')
+
+        subject.make_installed!
+
+        subject.reload
+
+        expect(subject.version).to eq(subject.class.const_get(:VERSION))
       end
     end
 

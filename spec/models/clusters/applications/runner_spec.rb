@@ -9,20 +9,6 @@ describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_runner, :scheduled, version: '0.1.30') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('0.1.45')
-      end
-    end
-  end
-
   describe '.installed' do
     subject { described_class.installed }
 

@@ -7,11 +7,7 @@ module Clusters
 
       included do
         state_machine :status do
-          after_transition any => [:installing] do |application|
-            application.update(version: application.class.const_get(:VERSION))
-          end
-
-          before_transition any => :updated do |application|
+          before_transition any => [:installed, :updated] do |application|
             application.version = application.class.const_get(:VERSION)
           end
         end

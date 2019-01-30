@@ -4,20 +4,7 @@ describe Clusters::Applications::CertManager do
   let(:cert_manager) { create(:clusters_applications_cert_managers) }
 
   include_examples 'cluster application core specs', :clusters_applications_cert_managers
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_cert_managers, :scheduled, version: 'v0.4.0') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('v0.5.2')
-      end
-    end
-  end
+  include_examples 'cluster application status specs', :clusters_applications_cert_managers
 
   describe '#install_command' do
     let(:cluster_issuer_file) { { "cluster_issuer.yaml": "---\napiVersion: certmanager.k8s.io/v1alpha1\nkind: ClusterIssuer\nmetadata:\n  name: letsencrypt-prod\nspec:\n  acme:\n    server: https://acme-v02.api.letsencrypt.org/directory\n    email: admin@example.com\n    privateKeySecretRef:\n      name: letsencrypt-prod\n    http01: {}\n" } }
