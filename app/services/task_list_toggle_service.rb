@@ -32,7 +32,8 @@ class TaskListToggleService
     source_line_index = line_number - 1
     markdown_task     = source_lines[source_line_index]
 
-    return unless markdown_task == line_source
+    # The source in the DB could be using either \n or \r\n line endings
+    return unless markdown_task == line_source || markdown_task == line_source + "\r"
     return unless source_checkbox = Taskable::ITEM_PATTERN.match(markdown_task)
 
     currently_checked = TaskList::Item.new(source_checkbox[1]).complete?
