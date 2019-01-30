@@ -159,6 +159,13 @@ Confidential issues can be accessed by reporters and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
+### Releases permissions
+
+[Project Releases](project/releases/index.md) can be read by all project
+members (Reporters, Developers, Maintainers, Owners) **except Guests**.
+Releases can be created, updated, or deleted via [Releases APIs](../api/releases/index.md)
+by project Developers, Maintainers, and Owners.
+
 ## Group members permissions
 
 NOTE: **Note:**
