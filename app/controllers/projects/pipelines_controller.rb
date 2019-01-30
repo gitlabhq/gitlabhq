@@ -69,7 +69,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
         render json: PipelineSerializer
           .new(project: @project, current_user: @current_user)
-          .represent(@pipeline, grouped: true)
+          .represent(@pipeline, show_represent_params)
       end
     end
   end
@@ -155,6 +155,10 @@ class Projects::PipelinesController < Projects::ApplicationController
         render 'show'
       end
     end
+  end
+
+  def show_represent_params
+    { grouped: true }
   end
 
   def create_params
