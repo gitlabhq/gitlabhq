@@ -6,7 +6,8 @@ Since an installation from source is a lot of work and error prone we strongly r
 
 One reason the Omnibus package is more reliable is its use of Runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
-Omnibus packages solve this by [letting the Sidekiq terminate gracefully](http://docs.gitlab.com/ce/operations/sidekiq_memory_killer.html) if it uses too much memory.
+
+Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination Runit will detect Sidekiq is not running and will start it.
 Since installations from source don't have Runit, Sidekiq can't be terminated and its memory usage will grow over time.
 
@@ -15,19 +16,19 @@ Since installations from source don't have Runit, Sidekiq can't be terminated an
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
-If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
+If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
 ## Important Notes
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [requirements.md](requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Read [requirements.md](requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS, we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
 
-This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
+This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options, see [the installation section of the README](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
-The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
+The following steps have been known to work. **Use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example, many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide please **submit a merge request**
+If you find a bug/error in this guide, **submit a merge request**
 following the
 [contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
@@ -35,17 +36,17 @@ following the
 
 The GitLab installation consists of setting up the following components:
 
-1. Packages / Dependencies
-1. Ruby
-1. Go
-1. Node
-1. System Users
-1. Database
-1. Redis
-1. GitLab
-1. Nginx
+1. [Packages and dependencies](#1-packages-and-dependencies).
+1. [Ruby](#2-ruby).
+1. [Go](#3-go).
+1. [Node](#4-node).
+1. [System users](#5-system-users).
+1. [Database](#6-database).
+1. [Redis](#7-redis).
+1. [GitLab](#8-gitlab).
+1. [Nginx](#9-nginx).
 
-## 1. Packages / Dependencies
+## 1. Packages and dependencies
 
 `sudo` is not installed on Debian by default. Make sure your system is
 up-to-date and install it.
@@ -57,7 +58,8 @@ apt-get upgrade -y
 apt-get install sudo -y
 ```
 
-**Note:** During this installation some files will need to be edited manually. If you are familiar with vim set it as default editor with the commands below. If you are not familiar with vim please skip this and keep using the default editor.
+NOTE: **Note:**
+During this installation, some files will need to be edited manually. If you are familiar with vim, set it as default editor with the commands below. If you are not familiar with vim, skip this and keep using the default editor.
 
 ```sh
 # Install vim and set as default editor
@@ -76,15 +78,16 @@ sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdb
 Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
 you can [install re2 manually](https://github.com/google/re2/wiki/Install).
 
-If you want to use Kerberos for user authentication, then install libkrb5-dev:
+If you want to use Kerberos for user authentication, install `libkrb5-dev`:
 
 ```sh
 sudo apt-get install libkrb5-dev
 ```
 
-**Note:** If you don't know what Kerberos is, you can assume you don't need it.
+NOTE: **Note:**
+If you don't know what Kerberos is, you can assume you don't need it.
 
-Make sure you have the right version of Git installed
+Make sure you have the right version of Git installed:
 
 ```sh
 # Install Git
@@ -117,7 +120,7 @@ sudo make prefix=/usr/local install
 # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 ```
 
-For the [Custom Favicon](../customization/favicon.md) to work, graphicsmagick
+For the [Custom Favicon](../customization/favicon.md) to work, GraphicsMagick
 needs to be installed.
 
 ```sh
@@ -167,7 +170,7 @@ make
 sudo make install
 ```
 
-Then install the Bundler Gem:
+Then install the Bundler gem (a version below 2.x):
 
 ```sh
 sudo gem install bundler --no-document --version '< 2'
@@ -193,9 +196,14 @@ rm go1.10.3.linux-amd64.tar.gz
 
 ## 4. Node
 
-Since GitLab 8.17, GitLab requires the use of Node to compile javascript
-assets, and Yarn to manage javascript dependencies. The current minimum
-requirements for these are node >= v8.10.0 and yarn >= v1.10.0. In many distros
+Since GitLab 8.17, GitLab requires the use of Node to compile JavaScript
+assets, and Yarn to manage JavaScript dependencies. The current minimum
+requirements for these are:
+
+- `node` >= v8.10.0.
+- `yarn` >= v1.10.0.
+
+In many distros,
 the versions provided by the official package repositories are out of date, so
 we'll need to install through the following commands:
 
@@ -212,7 +220,7 @@ sudo apt-get install yarn
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
-## 5. System Users
+## 5. System users
 
 Create a `git` user for GitLab:
 
@@ -222,11 +230,10 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 ## 6. Database
 
-We recommend using a PostgreSQL database. For MySQL check the
-[MySQL setup guide](database_mysql.md).
+We recommend using a PostgreSQL database. For MySQL, see the [MySQL setup guide](database_mysql.md).
 
-> **Note**: because we need to make use of extensions and concurrent index removal,
-you need at least PostgreSQL 9.2.
+NOTE: **Note:**
+Because we need to make use of extensions and concurrent index removal, you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 
@@ -286,7 +293,7 @@ you need at least PostgreSQL 9.2.
 
 GitLab requires at least Redis 2.8.
 
-If you are using Debian 8 or Ubuntu 14.04 and up, then you can simply install
+If you are using Debian 8 or Ubuntu 14.04 and up, you can simply install
 Redis 2.8 with:
 
 ```sh
@@ -341,7 +348,8 @@ cd /home/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-7-stable gitlab
 ```
 
-**Note:** You can change `11-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+CAUTION: **Caution:**
+You can change `11-7-stable` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
 
 ### Configure It
 
@@ -419,9 +427,11 @@ sudo -u git -H cp config/resque.yml.example config/resque.yml
 sudo -u git -H editor config/resque.yml
 ```
 
-**Important Note:** Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
+CAUTION: **Caution:**
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
-**Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
+NOTE: **Note:**
+If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
 ### Configure GitLab DB Settings
 
@@ -447,7 +457,13 @@ sudo -u git -H chmod o-rwx config/database.yml
 
 ### Install Gems
 
-**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](https://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+NOTE: **Note:**
+As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://robots.thoughtbot.com/parallel-gem-installing-using-bundler).
+
+Make sure you have `bundle` (run `bundle -v`):
+
+- `>= 1.5.2`, because some [issues](https://devcenter.heroku.com/changelog-items/411) were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+- `< 2.x`.
 
 ```sh
 # For PostgreSQL (note, the option says "without ... mysql")
@@ -457,7 +473,8 @@ sudo -u git -H bundle install --deployment --without development test mysql aws 
 sudo -u git -H bundle install --deployment --without development test postgres aws kerberos
 ```
 
-**Note:** If you want to use Kerberos for user authentication, then omit `kerberos` in the `--without` option above.
+NOTE: **Note:**
+If you want to use Kerberos for user authentication, omit `kerberos` in the `--without` option above.
 
 ### Install GitLab Shell
 
@@ -472,11 +489,14 @@ sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/red
 sudo -u git -H editor /home/git/gitlab-shell/config.yml
 ```
 
-**Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
+NOTE: **Note:**
+If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
-**Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
+NOTE: **Note:**
+Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1  hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
-**Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
+NOTE: **Note:**
+GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several ways:
 
 - Export `RUBYOPT=--disable-gems` environment variable for the processes.
 - Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommended for system-wide Ruby.
@@ -498,9 +518,9 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install gitlab-pages
+### Install GitLab Pages
 
-GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab-Pages in `/home/git/gitlab-pages`. For additional setup steps, please consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be ran several different ways.
+GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
 
 ```sh
 cd /home/git
@@ -550,7 +570,8 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 # When done you see 'Administrator account created:'
 ```
 
-**Note:** You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
+NOTE: **Note:**
+You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you'll be forced to change the default password.
 
 ```sh
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail
@@ -576,7 +597,7 @@ And if you are installing with a non-default folder or user copy and edit the de
 sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 ```
 
-If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
+If you installed GitLab in another directory or as a user other than the default, you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -621,7 +642,8 @@ sudo /etc/init.d/gitlab restart
 
 ## 9. Nginx
 
-**Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
+NOTE: **Note:**
+Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, see [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ### Installation
 
@@ -638,7 +660,7 @@ sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 ```
 
-Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the 'git' user:
+Make sure to edit the config file to match your setup. Also, ensure that you match your paths to GitLab, especially if installing for a user other than the `git` user:
 
 ```sh
 # Change YOUR_SERVER_FQDN to the fully-qualified
@@ -685,7 +707,7 @@ To make sure you didn't miss anything run a more thorough check with:
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
-If all items are green, then congratulations on successfully installing GitLab!
+If all items are green, congratulations on successfully installing GitLab!
 
 NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
 
@@ -727,11 +749,11 @@ To use GitLab with HTTPS:
     1. Update `ssl_certificate` and `ssl_certificate_key`.
     1. Review the configuration file and consider applying other security and performance enhancing features.
 
-Using a self-signed certificate is discouraged but if you must use it follow the normal directions then:
+Using a self-signed certificate is discouraged but if you must use it, follow the normal directions. Then:
 
 1. Generate a self-signed SSL certificate:
 
-    ```
+    ```sh
     mkdir -p /etc/nginx/ssl/
     cd /etc/nginx/ssl/
     sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
@@ -745,16 +767,16 @@ See the ["Reply by email" documentation](../administration/reply_by_email.md) fo
 
 ### LDAP Authentication
 
-You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+You can configure LDAP authentication in `config/gitlab.yml`. Restart GitLab after editing this file.
 
 ### Using Custom Omniauth Providers
 
-See the [omniauth integration document](../integration/omniauth.md)
+See the [omniauth integration document](../integration/omniauth.md).
 
 ### Build your projects
 
-GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+GitLab can build your projects. To enable that feature, you need GitLab Runners to do that for you.
+See the [GitLab Runner section](https://about.gitlab.com/product/continuous-integration/#gitlab-runner) to install it.
 
 ### Adding your Trusted Proxies
 
@@ -776,7 +798,7 @@ production:
   url: redis://redis.example.tld:6379
 ```
 
-If you want to connect the Redis server via socket, then use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
+If you want to connect the Redis server via socket, use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
 ```
 # example
@@ -808,7 +830,7 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 
 ### Additional Markup Styles
 
-Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+Apart from the always supported markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [github-markup gem README](https://github.com/gitlabhq/markup#markups) for more information.
 
 ## Troubleshooting
 
