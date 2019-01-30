@@ -132,7 +132,7 @@ If the "No data found" screen continues to appear, it could be due to:
 [prometheus-docker-image]: https://hub.docker.com/r/prom/prometheus/
 [prometheus-yml]:samples/prometheus.yml
 [gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
-[ci-environment-slug]: ../../../ci/variables/#predefined-variables-environment-variables
+[ci-environment-slug]: ../../../ci/variables/#predefined-environment-variables
 [ce-8935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8935
 [ce-10408]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10408
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md

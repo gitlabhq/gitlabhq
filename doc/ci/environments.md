@@ -249,7 +249,7 @@ the basis of [Review apps](review_apps/index.md).
 
 NOTE: **Note:**
 The `name` and `url` parameters can use most of the CI/CD variables,
-including [predefined](variables/README.md#predefined-variables-environment-variables),
+including [predefined](variables/README.md#predefined-environment-variables),
 [project/group ones](variables/README.md#variables) and
 [`.gitlab-ci.yml` variables](yaml/README.md#variables). You however cannot use variables
 defined under `script` or on the Runner's side. There are also other variables that

@@ -4,27 +4,33 @@ table_display_block: true
 
 # GitLab CI/CD Variables
 
-When receiving a job from GitLab CI, the [Runner] prepares the build environment.
-It starts by setting a list of **predefined variables** (environment variables)
-and a list of **user-defined variables**.
+When receiving a job from GitLab CI, the [Runner](https://docs.gitlab.com/runner/) prepares the build environment.
+It starts by setting a list of:
+
+- [Predefined environment variables](#predefined-environment-variables).
+- Other variables.
 
 ## Priority of variables
 
-The variables can be overwritten and they take precedence over each other in
-this order:
+Variables of different types can take precedence over other variables, depending on where they are defined.
 
-1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
-1. Project-level [variables](#variables) or [protected variables](#protected-variables)
-1. Group-level [variables](#variables) or [protected variables](#protected-variables)
-1. YAML-defined [job-level variables](../yaml/README.md#variables)
-1. YAML-defined [global variables](../yaml/README.md#variables)
-1. [Deployment variables](#deployment-variables)
-1. [Predefined variables](#predefined-variables-environment-variables) (are the
-   lowest in the chain)
+The order of precedence for variables is (from highest to lowest):
 
-For example, if you define `API_TOKEN=secure` as a project variable and
-`API_TOKEN=yaml` in your `.gitlab-ci.yml`, the `API_TOKEN` will take the value
-`secure` as the project variables are higher in the chain.
+1. [Trigger variables](../triggers/README.md#pass-job-variables-to-a-trigger) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
+1. Project-level [variables](#variables) or [protected variables](#protected-variables).
+1. Group-level [variables](#variables) or [protected variables](#protected-variables).
+1. YAML-defined [job-level variables](../yaml/README.md#variables).
+1. YAML-defined [global variables](../yaml/README.md#variables).
+1. [Deployment variables](#deployment-variables).
+1. [Predefined environment variables](#predefined-environment-variables).
+
+For example, you define:
+
+- `API_TOKEN=secure` as a project variable.
+- `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
+
+`API_TOKEN` will take the value `secure` as the project variables take precedence over those defined
+in `.gitlab-ci.yml`.
 
 ## Unsupported variables
 
@@ -32,10 +38,10 @@ There are cases where some variables cannot be used in the context of a
 `.gitlab-ci.yml` definition (for example under `script`). Read more
 about which variables are [not supported](where_variables_can_be_used.md).
 
-## Predefined variables (Environment variables)
+## Predefined environment variables
 
 Some of the predefined environment variables are available only if a minimum
-version of [GitLab Runner][runner] is used. Consult the table below to find the
+version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the table below to find the
 version of Runner required.
 
 NOTE: **Note:**
@@ -160,7 +166,7 @@ This feature requires GitLab Runner 0.5.0 or higher and GitLab 7.14 or higher.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
 build environment. The variables are hence saved in the repository, and they
-are meant to store non-sensitive project configuration, e.g., `RAILS_ENV` or
+are meant to store non-sensitive project configuration. For example, `RAILS_ENV` or
 `DATABASE_URL`.
 
 For example, if you set the variable below globally (not inside a job), it will
@@ -208,16 +214,18 @@ GitLab CI allows you to define per-project or per-group variables
 that are set in the pipeline environment. The variables are stored out of
 the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
 making them available during a pipeline run. It's the recommended method to
-use for storing things like passwords, SSH keys and credentials.
+use for storing things like passwords, SSH keys, and credentials.
 
-Project-level variables can be added by going to your project's
-**Settings > CI/CD**, then finding the section called **Variables**.
+Project-level variables can be added by:
 
-Likewise, group-level variables can be added by going to your group's
-**Settings > CI/CD**, then finding the section called **Variables**.
-Any variables of [subgroups] will be inherited recursively.
+1. Navigating to your project's **Settings > CI/CD** page.
+1. Inputing variable keys and values in the **Environment variables** section.
 
-![Variables](img/variables.png)
+Group-level variables can be added by:
+
+1. Navigating to your group's **Settings > CI/CD** page.
+1. Inputing variable keys and values in the **Environment variables** section. Any variables of
+   [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
 
 Once you set them, they will be available for all subsequent pipelines. You can also
 [protect your variables](#protected-variables).
@@ -621,11 +629,8 @@ Below you can find supported syntax reference:
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
-[runner]: https://docs.gitlab.com/runner/
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
-[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
-[subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
