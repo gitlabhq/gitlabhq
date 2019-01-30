@@ -6,7 +6,7 @@ import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from './constants';
+import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
@@ -231,18 +231,22 @@ export default class Clusters {
 
   installApplication(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUBMITTED);
+    this.store.updateAppProperty(appId, 'requestStatus', REQUEST_LOADING);
     this.store.updateAppProperty(appId, 'requestReason', null);
-    this.store.updateAppProperty(appId, 'statusReason', null);
 
-    this.service.installApplication(appId, data.params).catch(() => {
-      this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
-      this.store.updateAppProperty(
-        appId,
-        'requestReason',
-        s__('ClusterIntegration|Request to begin installing failed'),
-      );
-    });
+    this.service
+      .installApplication(appId, data.params)
+      .then(() => {
+        this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUCCESS);
+      })
+      .catch(() => {
+        this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
+        this.store.updateAppProperty(
+          appId,
+          'requestReason',
+          s__('ClusterIntegration|Request to begin installing failed'),
+        );
+      });
   }
 
   destroy() {

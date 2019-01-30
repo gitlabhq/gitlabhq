@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import eventHub from '~/clusters/event_hub';
-import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from '~/clusters/constants';
+import {
+  APPLICATION_STATUS,
+  REQUEST_LOADING,
+  REQUEST_SUCCESS,
+  REQUEST_FAILURE,
+} from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
@@ -52,12 +57,6 @@ describe('Application Row', () => {
       expect(vm.installButtonLabel).toBeUndefined();
     });
 
-    it('has install button', () => {
-      const installationBtn = vm.$el.querySelector('.js-cluster-application-install-button');
-
-      expect(installationBtn).not.toBe(null);
-    });
-
     it('has disabled "Install" when APPLICATION_STATUS.NOT_INSTALLABLE', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
@@ -102,18 +101,6 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has loading "Installing" when REQUEST_SUBMITTED', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLABLE,
-        requestStatus: REQUEST_SUBMITTED,
-      });
-
-      expect(vm.installButtonLabel).toEqual('Installing');
-      expect(vm.installButtonLoading).toEqual(true);
-      expect(vm.installButtonDisabled).toEqual(true);
-    });
-
     it('has disabled "Installed" when APPLICATION_STATUS.INSTALLED', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
@@ -145,6 +132,30 @@ describe('Application Row', () => {
       expect(vm.installButtonLabel).toEqual('Install');
       expect(vm.installButtonLoading).toEqual(false);
       expect(vm.installButtonDisabled).toEqual(false);
+    });
+
+    it('has loading "Install" when REQUEST_LOADING', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        status: APPLICATION_STATUS.INSTALLABLE,
+        requestStatus: REQUEST_LOADING,
+      });
+
+      expect(vm.installButtonLabel).toEqual('Install');
+      expect(vm.installButtonLoading).toEqual(true);
+      expect(vm.installButtonDisabled).toEqual(true);
+    });
+
+    it('has disabled "Install" when REQUEST_SUCCESS', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        status: APPLICATION_STATUS.INSTALLABLE,
+        requestStatus: REQUEST_SUCCESS,
+      });
+
+      expect(vm.installButtonLabel).toEqual('Install');
+      expect(vm.installButtonLoading).toEqual(false);
+      expect(vm.installButtonDisabled).toEqual(true);
     });
 
     it('has enabled "Install" when REQUEST_FAILURE (so you can try installing again)', () => {
