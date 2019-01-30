@@ -1,5 +1,5 @@
 <!-- This issue requests a technical writer review as required for documentation
-     content that was merged without a technical writer review. -->
+     content that was merged without one. -->
 
 <!-- NOTE: Please add a DevOps stage label (format `devops:<stage_name>`)
      and assign the technical writer who is
@@ -14,7 +14,7 @@ Related issue(s):
 
 ## Details
 
-Notes or questions for technical writer:
+Context, questions, or other notes for technical writer:
 
 1. 
 
