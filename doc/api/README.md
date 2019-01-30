@@ -53,6 +53,7 @@ The following API resources are available:
   - [Project clusters](project_clusters.md)
   - [Project-level variables](project_level_variables.md)
   - [Project import/export](project_import_export.md)
+  - [Project import from GitHub](import.md)
   - [Project members](members.md)
   - [Project milestones](milestones.md)
   - [Project snippets](project_snippets.md)
