@@ -252,6 +252,10 @@ entry.
 - Update url placeholder for the sentry configuration page. !24338
 
 
+## 11.6.8 (2019-01-30)
+
+- No changes.
+
 ## 11.6.5 (2019-01-17)
 
 ### Fixed (5 changes)
