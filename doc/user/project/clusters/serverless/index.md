@@ -90,16 +90,7 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
 
 1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is public, skip to step 4.
 
-1. If your project is private you will need to [Create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token).
-This will enable the `tm` cli to be able to be used in a deployment step and gives it access to the container registry.
-
-    1. Go to **Settings** > **Repository**.
-    1. Click on "Expand" on **Deploy Tokens** section.
-    1. Enter `gitlab-deploy-token` as the name.
-    1. Check the `read_registry` scope
-    1. Click on **Create deploy token**.
-    1. Save the deploy token somewhere safe. Once you leave or refresh
-    the page, **you won't be able to access it again**.
+1. If your project is private you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
 
 1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
