@@ -28,9 +28,11 @@ describe Import::BitbucketServerController do
   end
 
   describe 'POST create' do
+    let(:project_name) { "my-project_123" }
+
     before do
       allow(controller).to receive(:bitbucket_client).and_return(client)
-      repo = double(name: 'my-project')
+      repo = double(name: project_name)
       allow(client).to receive(:repo).with(project_key, repo_slug).and_return(repo)
       assign_session_tokens
     end
@@ -39,12 +41,26 @@ describe Import::BitbucketServerController do
 
     it 'returns the new project' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, 'my-project', user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
         .and_return(double(execute: project))
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    context 'with project key with tildes' do
+      let(:project_key) { '~someuser_123' }
+
+      it 'successfully creates a project' do
+        allow(Gitlab::BitbucketServerImport::ProjectCreator)
+          .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
+          .and_return(double(execute: project))
+
+        post :create, params: { project: project_key, repository: repo_slug, format: :json }
+
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
 
     it 'returns an error when an invalid project key is used' do
@@ -69,7 +85,7 @@ describe Import::BitbucketServerController do
 
     it 'returns an error when the project cannot be saved' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
-        .to receive(:new).with(project_key, repo_slug, anything, 'my-project', user.namespace, user, anything)
+        .to receive(:new).with(project_key, repo_slug, anything, project_name, user.namespace, user, anything)
         .and_return(double(execute: build(:project)))
 
       post :create, params: { project: project_key, repository: repo_slug }, format: :json
