@@ -57,8 +57,8 @@ module Secpick
         merge_request: {
           source_branch: source_branch,
           target_branch: security_branch,
-          title: "WIP: [#{@options[:version].tr('-', '.')}] ",
-          description: '/label ~security'
+          title: "[#{@options[:version].tr('-', '.')}] ",
+          description: '/label ~security ~"Merge into Security"'
         }
       }
     end
