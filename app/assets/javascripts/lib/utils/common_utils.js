@@ -614,10 +614,18 @@ export const spriteIcon = (icon, className = '') => {
 
 /**
  * This method takes in object with snake_case property names
- * and returns new object with camelCase property names
+ * and returns a new object with camelCase property names
  *
  * Reasoning for this method is to ensure consistent property
  * naming conventions across JS code.
+ *
+ * This method also supports additional params in `options` object
+ *
+ * @param {Object} obj - Object to be converted.
+ * @param {Object} options - Object containing additional options.
+ * @param {boolean} options.deep - FLag to allow deep object converting
+ * @param {Array[]} dropKeys - List of properties to discard while building new object
+ * @param {Array[]} ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   if (obj === null) {
@@ -625,12 +633,26 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) => {
   }
 
   const initial = Array.isArray(obj) ? [] : {};
+  const { deep = false, dropKeys = [], ignoreKeyNames = [] } = options;
 
   return Object.keys(obj).reduce((acc, prop) => {
     const result = acc;
     const val = obj[prop];
 
-    if (options.deep && (isObject(val) || Array.isArray(val))) {
+    // Drop properties from new object if
+    // there are any mentioned in options
+    if (dropKeys.indexOf(prop) > -1) {
+      return acc;
+    }
+
+    // Skip converting properties in new object
+    // if there are any mentioned in options
+    if (ignoreKeyNames.indexOf(prop) > -1) {
+      result[prop] = obj[prop];
+      return acc;
+    }
+
+    if (deep && (isObject(val) || Array.isArray(val))) {
       result[convertToCamelCase(prop)] = convertObjectPropsToCamelCase(val, options);
     } else {
       result[convertToCamelCase(prop)] = obj[prop];
