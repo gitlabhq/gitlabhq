@@ -67,6 +67,8 @@ module Clusters
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
     delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
 
+    alias_attribute :base_domain, :domain
+
     enum cluster_type: {
       instance_type: 1,
       group_type: 2,

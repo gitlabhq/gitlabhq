@@ -9,11 +9,11 @@ module QA
         :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner, :domain
 
       attribute :ingress_ip do
-        ingress_ip_value
+        Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
       end
 
       attribute :domain do
-        "#{ingress_ip_value}.nip.io"
+        "#{ingress_ip}.nip.io"
       end
 
       def fabricate!
@@ -55,12 +55,6 @@ module QA
             page.await_installed(:runner) if @install_runner
           end
         end
-      end
-
-      private
-
-      def ingress_ip_value
-        @ingress_ip_value ||= Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
       end
     end
   end

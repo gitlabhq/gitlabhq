@@ -22,7 +22,7 @@
                     = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
               .card-footer.js-extra-settings{ class: @project.auto_devops_enabled? || 'hidden' }
                 %p.settings-message.text-center
-                  - kubernetes_cluster_link = 'https://docs.gitlab.com/ee/user/project/clusters/'
+                  - kubernetes_cluster_link = help_page_path('user/project/clusters/')
                   - kubernetes_cluster_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: kubernetes_cluster_link }
                   = s_('CICD|You must add a %{kubernetes_cluster_start}Kubernetes cluster integration%{kubernetes_cluster_end} to this project with a domain in order for your deployment strategy to work correctly.').html_safe % { kubernetes_cluster_start: kubernetes_cluster_start, kubernetes_cluster_end: '</a>'.html_safe }
                 %label.prepend-top-10

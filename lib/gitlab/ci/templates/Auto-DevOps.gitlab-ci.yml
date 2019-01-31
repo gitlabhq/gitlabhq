@@ -689,7 +689,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
-        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
+        --set service.commonName="le.$KUBE_INGRESS_BASE_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -725,7 +725,7 @@ rollout 100%:
         --set application.database_url="$DATABASE_URL" \
         --set application.secretName="$APPLICATION_SECRET_NAME" \
         --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
-        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
+        --set service.commonName="le.$KUBE_INGRESS_BASE_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
         --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
@@ -827,7 +827,7 @@ rollout 100%:
   # Function to ensure backwards compatibility with AUTO_DEVOPS_DOMAIN
   function ensure_kube_ingress_base_domain() {
     if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ]; then
-    export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
+      export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
     fi
   }
 

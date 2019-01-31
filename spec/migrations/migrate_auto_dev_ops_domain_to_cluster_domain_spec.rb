@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190129165720_migrate_auto_dev_ops_domain_to_cluster_domain.rb')
+require Rails.root.join('db', 'post_migrate', '20190204115450_migrate_auto_dev_ops_domain_to_cluster_domain.rb')
 
 describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
   include MigrationHelpers::ClusterHelpers

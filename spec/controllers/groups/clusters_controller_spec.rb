@@ -436,7 +436,7 @@ describe Groups::ClustersController do
         cluster: {
           enabled: false,
           name: 'my-new-cluster-name',
-          domain: domain
+          base_domain: domain
         }
       }
     end
