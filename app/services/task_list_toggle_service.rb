@@ -23,7 +23,7 @@ class TaskListToggleService
   def execute
     return false unless markdown && markdown_html
 
-    !!(toggle_markdown && toggle_markdown_html)
+    toggle_markdown && toggle_markdown_html
   end
 
   private

@@ -239,8 +239,9 @@ class IssuableBaseService < BaseService
     filter_params(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params.merge(updated_by: current_user))
-      issuable.assign_attributes(last_edited_at: Time.now, last_edited_by: current_user)
+      issuable.assign_attributes(params.merge(updated_by: current_user,
+                                              last_edited_at: Time.now,
+                                              last_edited_by: current_user))
 
       before_update(issuable)
 
@@ -268,27 +269,27 @@ class IssuableBaseService < BaseService
 
     tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
                                                  line_source: update_task_params[:line_source],
-                                                 line_number: update_task_params[:line_number],
+                                                 line_number: update_task_params[:line_number].to_i,
                                                  toggle_as_checked: update_task_params[:checked],
-                                                 index: update_task_params[:index],
+                                                 index: update_task_params[:index].to_i,
                                                  sourcepos: !issuable.legacy_markdown?)
 
-    if tasklist_toggler.execute
-      # by updating the description_html field at the same time,
-      # the markdown cache won't be considered invalid
-      params[:description]      = tasklist_toggler.updated_markdown
-      params[:description_html] = tasklist_toggler.updated_markdown_html
-
-      # since we're updating a very specific line, we don't care whether
-      # the `lock_version` sent from the FE is the same or not.  Just
-      # make sure the data hasn't changed since we queried it
-      params[:lock_version]     = issuable.lock_version
-
-      update_task(issuable)
-    else
+    unless tasklist_toggler.execute
       # if we make it here, the data is much newer than we thought it was - fail fast
       raise ActiveRecord::StaleObjectError
     end
+
+    # by updating the description_html field at the same time,
+    # the markdown cache won't be considered invalid
+    params[:description]      = tasklist_toggler.updated_markdown
+    params[:description_html] = tasklist_toggler.updated_markdown_html
+
+    # since we're updating a very specific line, we don't care whether
+    # the `lock_version` sent from the FE is the same or not.  Just
+    # make sure the data hasn't changed since we queried it
+    params[:lock_version]     = issuable.lock_version
+
+    update_task(issuable)
   end
 
   def labels_changing?(old_label_ids, new_label_ids)

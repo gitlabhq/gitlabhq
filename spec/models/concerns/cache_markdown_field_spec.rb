@@ -133,7 +133,7 @@ describe CacheMarkdownField do
     end
   end
 
-  context 'when a markdown field and html field are both set' do
+  context 'when a markdown field and html field are both changed' do
     it do
       expect(thing).not_to receive(:refresh_markdown_cache)
       thing.foo = '_look over there!_'
