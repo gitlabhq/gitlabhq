@@ -1,6 +1,7 @@
 # Serverless
 
-> Introduced in GitLab 11.5. 
+> Introduced in GitLab 11.5.
+
 CAUTION: **Caution:**
 Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
@@ -138,8 +139,8 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
    ```
 
 
-The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`), 
-which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it 
+The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`),
+which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it
 contains three sections with distinct parameters:
 
 ### `service`
@@ -170,7 +171,7 @@ In the `serverless.yml` example above, the function name is `echo` and the subse
 | `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
 | `environment` | Sets an environment variable for the specific function only. |
 
-After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been 
+After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been
 created, pushing a commit to your project will result in a
 CI pipeline being executed which will deploy each function as a Knative service.
 Once the deploy stage has finished, additional details for the function will
@@ -237,7 +238,7 @@ With all the pieces in place, the next time a CI pipeline runs, the Knative appl
 
 ### Obtain the URL for the Knative deployment
 
-Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column. 
+Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column.
 
 ![app domain](img/app-domain.png)
 
