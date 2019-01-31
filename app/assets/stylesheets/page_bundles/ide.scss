@@ -395,6 +395,11 @@ $ide-commit-header-height: 48px;
   svg {
     vertical-align: sub;
   }
+
+  .ide-status-avatar {
+    float: none;
+    margin: 0 0 1px;
+  }
 }
 
 .ide-status-file {
