@@ -108,7 +108,17 @@ Merge requests that make changes hidden behind a feature flag, or remove an
 existing feature flag because a feature is deemed stable, may be merged (and
 picked into the stable branches) up to the 19th of the month. Such merge
 requests should have the ~"feature flag" label assigned, and don't require a
-corresponding exception request to be created.
+corresponding exception request to be created. 
+
+A level of common sense should be applied when deciding whether to have a feature 
+behind a feature flag off or on by default.
+
+The following guideliness can be applied to help making this decision:
+
+* If the feature is not fully ready or functioning, feature flag should be disabled by default
+* If the feature is ready but there are concerns with performance or impact, feature flag should be enabled by default but feature flag
+disabled via chatops before deploy on GitLab.com environments. If the performance concern is confirmed, the final release should have the feature disabled
+* In most other cases, feature flag can be enabled by default
 
 In order to build the final package and present the feature for self-hosted
 customers, the feature flag should be removed. This should happen before the
