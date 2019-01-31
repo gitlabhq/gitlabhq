@@ -68,7 +68,7 @@ future GitLab releases.**
 | **CI_DEPLOY_PASSWORD**                    | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DEPLOY_USER**                        | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DISPOSABLE_ENVIRONMENT**             | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
-| **CI_ENVIRONMENT_NAME**                   | 8.15   | all    | The name of the environment for this job. Only present if [`environment:name`](../yaml/README.md#environmenturl) is set. |
+| **CI_ENVIRONMENT_NAME**                   | 8.15   | all    | The name of the environment for this job. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | **CI_ENVIRONMENT_SLUG**                   | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | **CI_ENVIRONMENT_URL**                    | 9.3    | all    | The URL of the environment for this job. Only present if [`environment:url`](../yaml/README.md#environmenturl) is set. |
 | **CI_JOB_ID**                             | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
