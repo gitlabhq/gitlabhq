@@ -128,7 +128,7 @@ module API
       end
     end
 
-    resource :users, requirements: { user_id: API::NO_SLASH_URL_PART_REGEX } do
+    resource :users, requirements: API::USER_REQUIREMENTS do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end
