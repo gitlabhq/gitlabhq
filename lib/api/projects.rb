@@ -180,7 +180,8 @@ module API
 
         if project.saved?
           present project, with: Entities::Project,
-                           user_can_admin_project: can?(current_user, :admin_project, project)
+                           user_can_admin_project: can?(current_user, :admin_project, project),
+                           current_user: current_user
         else
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
@@ -213,7 +214,8 @@ module API
 
         if project.saved?
           present project, with: Entities::Project,
-                           user_can_admin_project: can?(current_user, :admin_project, project)
+                           user_can_admin_project: can?(current_user, :admin_project, project),
+                           current_user: current_user
         else
           render_validation_error!(project)
         end
@@ -275,7 +277,8 @@ module API
           conflict!(forked_project.errors.messages)
         else
           present forked_project, with: Entities::Project,
-                                  user_can_admin_project: can?(current_user, :admin_project, forked_project)
+                                  user_can_admin_project: can?(current_user, :admin_project, forked_project),
+                                  current_user: current_user
         end
       end
 
@@ -324,7 +327,8 @@ module API
 
         if result[:status] == :success
           present user_project, with: Entities::Project,
-                                user_can_admin_project: can?(current_user, :admin_project, user_project)
+                                user_can_admin_project: can?(current_user, :admin_project, user_project),
+                                current_user: current_user
         else
           render_validation_error!(user_project)
         end
@@ -338,7 +342,7 @@ module API
 
         ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
-        present user_project, with: Entities::Project
+        present user_project, with: Entities::Project, current_user: current_user
       end
 
       desc 'Unarchive a project' do
@@ -349,7 +353,7 @@ module API
 
         ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
-        present user_project, with: Entities::Project
+        present user_project, with: Entities::Project, current_user: current_user
       end
 
       desc 'Star a project' do
@@ -362,7 +366,7 @@ module API
           current_user.toggle_star(user_project)
           user_project.reload
 
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         end
       end
 
@@ -374,7 +378,7 @@ module API
           current_user.toggle_star(user_project)
           user_project.reload
 
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         else
           not_modified!
         end
@@ -410,7 +414,7 @@ module API
         result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
 
         if result
-          present user_project.reload, with: Entities::Project
+          present user_project.reload, with: Entities::Project, current_user: current_user
         else
           render_api_error!("Project already forked", 409) if user_project.forked?
         end
@@ -516,7 +520,7 @@ module API
         result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)
 
         if result
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         else
           render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
         end
