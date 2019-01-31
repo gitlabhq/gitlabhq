@@ -88,6 +88,15 @@ The mirrored repository will be listed. For example, `https://*****:*****@github
 
 The repository will push soon. To force a push, click the appropriate button.
 
+## Setting up a push mirror to another GitLab instance with 2FA activated
+
+1. Create a personal access token with scope "api". This could be done
+in your profile settings
+[personal_access_tokens](https://gitlab.com/profile/personal_access_tokens)
+1. Fill in the **Git repository URL** field using this format: `https://oauth2@gitlab.com/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
+1. Fill in **Password** field with your GitLab personal access token.
+1. Click the **Mirror repository** button.
+
 ## Pulling from a remote repository **[STARTER]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
