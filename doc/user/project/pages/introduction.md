@@ -178,7 +178,7 @@ Supposed your repository contained the following files:
 ```
 ├── index.html
 ├── css
-│   └── main.css
+│   └── main.css
 └── js
     └── main.js
 ```
@@ -333,7 +333,7 @@ public/
 │ └ index.html.gz
 │
 ├── css/
-│   └─┬ main.css
+│   └─┬ main.css
 │     └ main.css.gz
 │
 └── js/
