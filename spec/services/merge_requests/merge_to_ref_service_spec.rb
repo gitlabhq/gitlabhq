@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeToRefService do
+<<<<<<< HEAD
   shared_examples_for 'MergeService for target ref' do
     it 'target_ref has the same state of target branch' do
       repo = merge_request.target_project.repository
@@ -19,6 +20,8 @@ describe MergeRequests::MergeToRefService do
     end
   end
 
+=======
+>>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
   set(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }
@@ -74,6 +77,7 @@ describe MergeRequests::MergeToRefService do
       process_merge_to_ref
     end
 
+<<<<<<< HEAD
     it 'returns error when feature is disabled' do
       stub_feature_flags(merge_to_tmp_merge_ref_path: false)
 
@@ -83,6 +87,8 @@ describe MergeRequests::MergeToRefService do
       expect(result[:message]).to eq('Feature is not enabled')
     end
 
+=======
+>>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
     it 'returns an error when the failing to process the merge' do
       allow(project.repository).to receive(:merge_to_ref).and_return(nil)
 
@@ -101,6 +107,25 @@ describe MergeRequests::MergeToRefService do
         MergeRequests::MergeService.new(project, user, {})
       end
 
+<<<<<<< HEAD
+=======
+      shared_examples_for 'MergeService for target ref' do
+        it 'target_ref has the same state of target branch' do
+          repo = merge_request.target_project.repository
+
+          process_merge_to_ref
+          merge_service.execute(merge_request)
+
+          ref_commits = repo.commits(merge_request.merge_ref_path, limit: 3)
+          target_branch_commits = repo.commits(merge_request.target_branch, limit: 3)
+
+          ref_commits.zip(target_branch_commits).each do |ref_commit, target_branch_commit|
+            expect(ref_commit.parents).to eq(target_branch_commit.parents)
+          end
+        end
+      end
+
+>>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
       context 'when merge commit' do
         it_behaves_like 'MergeService for target ref'
       end
@@ -185,6 +210,7 @@ describe MergeRequests::MergeToRefService do
 
       it { expect(todo).not_to be_done }
     end
+<<<<<<< HEAD
 
     it 'returns error when user has no authorization to admin the merge request' do
       unauthorized_user = create(:user)
@@ -197,5 +223,7 @@ describe MergeRequests::MergeToRefService do
       expect(result[:status]).to eq(:error)
       expect(result[:message]).to eq('You are not allowed to merge to this ref')
     end
+=======
+>>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
   end
 end
