@@ -290,6 +290,7 @@ module QA
     #
     module Component
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :LazyLoader, 'qa/page/component/lazy_loader'
       autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
