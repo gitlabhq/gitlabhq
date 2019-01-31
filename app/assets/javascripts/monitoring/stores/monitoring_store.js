@@ -66,9 +66,7 @@ export default class MonitoringStore {
   }
 
   storeEnvironmentsData(environmentsData = []) {
-    this.environmentsData = environmentsData.filter(
-      environment => !!environment.latest.last_deployment,
-    );
+    this.environmentsData = environmentsData.filter(environment => !!environment.last_deployment);
   }
 
   getMetricsCount() {

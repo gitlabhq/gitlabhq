@@ -20,7 +20,8 @@ export default class EnvironmentsStore {
    *
    * Stores the received environments.
    *
-   * In the main environments endpoint, each environment has the following schema
+   * In the main environments endpoint (with { nested: true } in params), each folder
+   * has the following schema:
    * { name: String, size: Number, latest: Object }
    * In the endpoint to retrieve environments from each folder, the environment does
    * not have the `latest` key and the data is all in the root level.

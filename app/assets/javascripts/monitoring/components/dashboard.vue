@@ -196,13 +196,13 @@ export default {
           class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up"
         >
           <ul>
-            <li v-for="environment in store.environmentsData" :key="environment.latest.id">
+            <li v-for="environment in store.environmentsData" :key="environment.id">
               <a
-                :href="environment.latest.metrics_path"
-                :class="{ 'is-active': environment.latest.name == currentEnvironmentName }"
+                :href="environment.metrics_path"
+                :class="{ 'is-active': environment.name == currentEnvironmentName }"
                 class="dropdown-item"
               >
-                {{ environment.latest.name }}
+                {{ environment.name }}
               </a>
             </li>
           </ul>
