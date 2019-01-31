@@ -1,7 +1,8 @@
 # Serverless
 
-> Introduced in GitLab 11.5.  
-> Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
+> Introduced in GitLab 11.5. 
+CAUTION: **Caution:**
+Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
 Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
 
@@ -88,9 +89,9 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
 
 1. Create a directory that will house the function. In this example we will create a directory called `echo` at the root of the project.
 
-1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is public, skip to step 4.
-
-1. If your project is private you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
+1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is:
+    - Public, continue to the next step.
+    - Private, you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
 
 1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
