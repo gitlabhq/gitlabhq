@@ -231,7 +231,8 @@ module ApplicationSettingsHelper
       :web_ide_clientside_preview_enabled,
       :diff_max_patch_bytes,
       :commit_email_hostname,
-      :protected_ci_variables
+      :protected_ci_variables,
+      :local_markdown_version
     ]
   end
 
