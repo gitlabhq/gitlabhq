@@ -419,7 +419,8 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.10.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.12.0', require: 'gitaly'
+
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

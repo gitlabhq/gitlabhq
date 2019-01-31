@@ -1373,6 +1373,29 @@ describe Repository do
     end
   end
 
+  describe '#merge_to_ref' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature',
+                             target_branch: 'master',
+                             source_project: project)
+    end
+
+    it 'writes merge of source and target to MR merge_ref_path' do
+      merge_commit_id = repository.merge_to_ref(user,
+                                                merge_request.diff_head_sha,
+                                                merge_request,
+                                                merge_request.merge_ref_path,
+                                                'Custom message')
+
+      merge_commit = repository.commit(merge_commit_id)
+
+      expect(merge_commit.message).to eq('Custom message')
+      expect(merge_commit.author_name).to eq(user.name)
+      expect(merge_commit.author_email).to eq(user.commit_email)
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    end
+  end
+
   describe '#ff_merge' do
     before do
       repository.add_branch(user, 'ff-target', 'feature~5')

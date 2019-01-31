@@ -556,6 +556,12 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
+      def merge_to_ref(user, source_sha, branch, target_ref, message)
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message)
+        end
+      end
+
       def merge(user, source_sha, target_branch, message, &block)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_merge_branch(user, source_sha, target_branch, message, &block)

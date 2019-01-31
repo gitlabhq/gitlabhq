@@ -7,13 +7,7 @@ module MergeRequests
   # mark merge request as merged and execute all hooks and notifications
   # Executed when you do merge via GitLab UI
   #
-  class MergeService < MergeRequests::BaseService
-    include Gitlab::Utils::StrongMemoize
-
-    MergeError = Class.new(StandardError)
-
-    attr_reader :merge_request, :source
-
+  class MergeService < MergeRequests::MergeBaseService
     delegate :merge_jid, :state, to: :@merge_request
 
     def execute(merge_request)
@@ -36,19 +30,6 @@ module MergeRequests
       log_info("Merge process finished on JID #{merge_jid} with state #{state}")
     rescue MergeError => e
       handle_merge_error(log_message: e.message, save_message_on_model: true)
-    end
-
-    def source
-      if merge_request.squash
-        squash_sha!
-      else
-        merge_request.diff_head_sha
-      end
-    end
-
-    # Overridden in EE.
-    def hooks_validation_pass?(_merge_request)
-      true
     end
 
     private
@@ -79,24 +60,8 @@ module MergeRequests
       merge_request.update!(merge_commit_sha: commit_id)
     end
 
-    def squash_sha!
-      strong_memoize(:squash_sha) do
-        params[:merge_request] = merge_request
-        squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute
-
-        case squash_result[:status]
-        when :success
-          squash_result[:squash_sha]
-        when :error
-          raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
-        end
-      end
-    end
-
     def try_merge
-      message = params[:commit_message] || merge_request.default_merge_commit_message
-
-      repository.merge(current_user, source, merge_request, message)
+      repository.merge(current_user, source, merge_request, commit_message)
     rescue Gitlab::Git::PreReceiveError => e
       handle_merge_error(log_message: e.message)
       raise MergeError, 'Something went wrong during merge pre-receive hook'
