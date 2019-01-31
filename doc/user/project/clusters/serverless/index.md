@@ -1,7 +1,9 @@
 # Serverless
 
 > Introduced in GitLab 11.5.
-> Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
+
+CAUTION: **Caution:**
+Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
 Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
 
@@ -82,7 +84,15 @@ Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are 
 - node.js
 - kaniko
 
-In order to deploy functions to your Knative instance, the following files must be present:
+You can find all the files referenced in this doc in the [functions example project](https://gitlab.com/knative-examples/functions).
+
+Follow these steps to deploy a function using the Node.js runtime to your Knative instance:
+
+1. Create a directory that will house the function. In this example we will create a directory called `echo` at the root of the project.
+
+1. Create the file that will contain the function code. In this example, our file is called `echo.js` and is located inside the `echo` directory. If your project is:
+    - Public, continue to the next step.
+    - Private, you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
 
 1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
    image to be used for your functions. It must be included at the root of your repository:
@@ -94,10 +104,12 @@ In order to deploy functions to your Knative instance, the following files must 
    functions:
      stage: deploy
      environment: test
-     image: gcr.io/triggermesh/tm:v0.0.7
+     image: gcr.io/triggermesh/tm:v0.0.9
      script:
-       - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN"
-       - tm -n "$KUBE_NAMESPACE" --registry-host "$CI_REGISTRY_IMAGE" deploy --wait
+      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
+      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
+      - tm -n "$KUBE_NAMESPACE" deploy --wait
+
    ```
 
     The `gitlab-ci.yml` template creates a `Deploy` stage with a `functions` job that invokes the `tm` CLI with the required parameters.
@@ -127,7 +139,9 @@ In order to deploy functions to your Knative instance, the following files must 
    ```
 
 
-The `serverless.yml` file is referencing both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`) which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it contains three sections with distinct parameters:
+The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`),
+which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it
+contains three sections with distinct parameters:
 
 ### `service`
 
@@ -149,7 +163,6 @@ The `serverless.yml` file is referencing both an `echo` directory (under `builda
 
 In the `serverless.yml` example above, the function name is `echo` and the subsequent lines contain the function attributes.
 
-
 | Parameter | Description |
 |-----------|-------------|
 | `handler` | The function's file name. In the example above, both the function name and the handler are the same. |
@@ -158,9 +171,8 @@ In the `serverless.yml` example above, the function name is `echo` and the subse
 | `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
 | `environment` | Sets an environment variable for the specific function only. |
 
-After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been 
-created, each function must be defined as a single file in your repository. Committing a 
-function to your project will result in a
+After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been
+created, pushing a commit to your project will result in a
 CI pipeline being executed which will deploy each function as a Knative service.
 Once the deploy stage has finished, additional details for the function will
 appear under **Operations > Serverless**.
@@ -181,14 +193,6 @@ kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 The sample function can now be triggered from any HTTP client using a simple `POST` call.
 
 ![function exection](img/function-execution.png)
-
-Currently, the Serverless page presents all functions available in all clusters registered for the project with Knative installed.
-
-Clicking on the function name will provide additional details such as the
-function's URL as well as runtime statistics such as the number of active pods
-available to service the request based on load.
-
-![serverless function details](img/serverless-details.png)
 
 ## Deploying Serverless applications
 
@@ -227,14 +231,18 @@ deploy:
     - tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
 ```
 
-## Deploy the application with Knative
+### Deploy the application with Knative
 
 With all the pieces in place, the next time a CI pipeline runs, the Knative application will be deployed. Navigate to
 **CI/CD > Pipelines** and click the most recent pipeline.
 
-## Obtain the URL for the Knative deployment
+### Obtain the URL for the Knative deployment
 
-Use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
+Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column.
+
+![app domain](img/app-domain.png)
+
+Alternatively, use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
