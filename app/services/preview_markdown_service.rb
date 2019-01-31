@@ -10,8 +10,7 @@ class PreviewMarkdownService < BaseService
       text: text,
       users: users,
       suggestions: suggestions,
-      commands: commands.join(' '),
-      markdown_engine: markdown_engine
+      commands: commands.join(' ')
     )
   end
 
@@ -48,13 +47,5 @@ class PreviewMarkdownService < BaseService
 
   def commands_target_id
     params[:quick_actions_target_id]
-  end
-
-  def markdown_engine
-    if params[:legacy_render]
-      :redcarpet
-    else
-      CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
-    end
   end
 end

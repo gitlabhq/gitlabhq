@@ -81,17 +81,6 @@ describe 'Editing file blob', :js do
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
       end
-
-      it 'renders content with RedCarpet when legacy_render is set' do
-        visit project_edit_blob_path(project, tree_join(branch, readme_file_path), legacy_render: 1)
-        fill_editor(content: "1. one\\n  - sublist\\n")
-        click_link 'Preview'
-        wait_for_requests
-
-        # the above generates a sublist list in RedCarpet
-        expect(page).to have_content("sublist")
-        expect(page).to have_xpath("//ol//li//ul")
-      end
     end
   end
 

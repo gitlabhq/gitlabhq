@@ -31,8 +31,10 @@ dependency to do so. Please see the [`github-markup` gem readme](https://github.
 > As of 11.1, GitLab uses the [CommonMark Ruby Library][commonmarker] for Markdown
 processing of all new issues, merge requests, comments, and other Markdown content
 in the GitLab system. As of 11.3, wiki pages and Markdown files (`.md`) in the
-repositories are also processed with CommonMark. Older content in issues/comments
-are still processed using the [Redcarpet Ruby library][redcarpet].
+repositories are also processed with CommonMark. As of 11.8, the [Redcarpet
+Ruby library][redcarpet] has been removed and all issues/comments, including
+those from pre-11.1, are now processed using [CommonMark Ruby
+Library][commonmarker].
 >
 > The documentation website had its [markdown engine migrated from Redcarpet to Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
 in October 2018.
@@ -41,11 +43,11 @@ in October 2018.
 
 ### Transitioning to CommonMark
 
-You may have Markdown documents in your repository that were written using some
-of the nuances of RedCarpet's version of Markdown. Since CommonMark uses a
-slightly stricter syntax, these documents may now display a little strangely
-since we've transitioned to CommonMark. Numbered lists with nested lists in
-particular can be displayed incorrectly.
+You may have older issues/merge requests or Markdown documents in your
+repository that were written using some of the nuances of RedCarpet's version
+of Markdown. Since CommonMark uses a slightly stricter syntax, these documents
+may now display a little strangely since we've transitioned to CommonMark.
+Numbered lists with nested lists in particular can be displayed incorrectly.
 
 It is usually quite easy to fix.  In the case of a nested list such as this:
 
@@ -64,11 +66,6 @@ simply add a space to each nested item:
 ```
 
 In the documentation below, we try to highlight some of the differences.
-
-If you have a need to view a document using RedCarpet, you can add the token
-`legacy_render=1` to the end of the url, like this:
-
-https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md?legacy_render=1
 
 If you have a large volume of Markdown files, it can be tedious to determine
 if they will be displayed correctly or not. You can use the
@@ -677,7 +674,7 @@ Becomes:
 + Or pluses
 
 If a list item contains multiple paragraphs,
-each subsequent paragraph should be indented to the same level as the start of the list item text (_Redcarpet: paragraph should be indented with four spaces._)
+each subsequent paragraph should be indented to the same level as the start of the list item text
 
 Example:
 
@@ -841,7 +838,7 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 </details>
 </p>
 
-**Note:** Markdown inside these tags is supported, as long as you have a blank line after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
+**Note:** Markdown inside these tags is supported, as long as you have a blank line after the `</summary>` tag and before the `</details>` tag, as shown in the example.
 
 ```html
 <details>

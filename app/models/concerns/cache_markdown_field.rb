@@ -13,7 +13,6 @@ module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_REDCARPET_VERSION         = 3
   CACHE_COMMONMARK_VERSION_START  = 10
   CACHE_COMMONMARK_VERSION        = 14
 
@@ -42,18 +41,6 @@ module CacheMarkdownField
     end
   end
 
-  class MarkdownEngine
-    def self.from_version(version = nil)
-      return :common_mark if version.nil? || version == 0
-
-      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-        :redcarpet
-      else
-        :common_mark
-      end
-    end
-  end
-
   def skip_project_check?
     false
   end
@@ -71,7 +58,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
+    context[:markdown_engine] = :common_mark
 
     context
   end
@@ -128,17 +115,7 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
-
-    if legacy_markdown?
-      CacheMarkdownField::CACHE_REDCARPET_VERSION
-    else
-      CacheMarkdownField::CACHE_COMMONMARK_VERSION
-    end
-  end
-
-  def legacy_markdown?
-    cached_markdown_version && cached_markdown_version.between?(1, CacheMarkdownField::CACHE_COMMONMARK_VERSION_START - 1)
+    CacheMarkdownField::CACHE_COMMONMARK_VERSION
   end
 
   included do
