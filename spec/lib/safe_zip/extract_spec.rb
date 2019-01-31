@@ -36,7 +36,7 @@ describe SafeZip::Extract do
       end
     end
 
-    %w(valid-simple.zip valid-symlinks-first.zip valid-non-writeable.zip).each  do |name|
+    %w(valid-simple.zip valid-symlinks-first.zip valid-non-writeable.zip).each do |name|
       context "when using #{name} archive" do
         let(:archive_name) { name }
 
