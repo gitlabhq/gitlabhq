@@ -738,11 +738,13 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
-
-    import_url = Gitlab::UrlSanitizer.new(value)
-    super(import_url.sanitized_url)
-    create_or_update_import_data(credentials: import_url.credentials)
+    if Gitlab::UrlSanitizer.valid?(value)
+      import_url = Gitlab::UrlSanitizer.new(value)
+      super(import_url.sanitized_url)
+      create_or_update_import_data(credentials: import_url.credentials)
+    else
+      super(value)
+    end
   end
 
   def import_url

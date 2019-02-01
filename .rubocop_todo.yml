@@ -80,11 +80,6 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 1
-Lint/ReturnInVoidContext:
-  Exclude:
-    - 'app/models/project.rb'
-
 # Offense count: 9
 Lint/UriEscapeUnescape:
   Exclude:
