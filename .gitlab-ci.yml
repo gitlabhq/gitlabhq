@@ -120,9 +120,8 @@ stages:
   variables: &single-script-job-variables
     GIT_STRATEGY: none
   before_script:
-    # We need to download the script rather than clone the repo since the
-    # package-and-qa job will not be able to run when the branch gets
-    # deleted (when merging the MR).
+    # We don't clone the repo by using GIT_STRATEGY: none and only download the
+    # single script we need here so it's much faster than cloning.
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
@@ -228,20 +227,21 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-and-qa:
-  <<: *single-script-job
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
   variables:
-    <<: *single-script-job-variables
+    GIT_DEPTH: "1"
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
-    SCRIPT_NAME: trigger-build
   retry: 0
   script:
-    - gem install gitlab --no-document
     - apk add --update openssl curl jq
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/review_apps/review-apps.sh
-    - chmod 755 review-apps.sh
-    - source ./review-apps.sh
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
     - wait_for_job_to_be_done "gitlab:assets:compile"
-    - ./$SCRIPT_NAME omnibus
+    - ./scripts/trigger-build omnibus
   when: manual
   only:
     - //@gitlab-org/gitlab-ce
@@ -951,20 +951,21 @@ no_ee_check:
 
 # GitLab Review apps
 review-build-cng:
-  <<: *single-script-job
   <<: *review-only
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
   variables:
-    <<: *single-script-job-variables
-    SCRIPT_NAME: trigger-build
+    GIT_DEPTH: "1"
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
   script:
-    - gem install gitlab --no-document
     - apk add --update openssl curl jq
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/review_apps/review-apps.sh
-    - chmod 755 review-apps.sh
-    - source ./review-apps.sh
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
     - wait_for_job_to_be_done "gitlab:assets:compile"
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./$SCRIPT_NAME cng
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
 
 review-deploy:
   <<: *review-base
