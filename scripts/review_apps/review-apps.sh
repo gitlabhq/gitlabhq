@@ -149,6 +149,7 @@ HELM_CMD=$(cat << EOF
     --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10"
     --set nginx-ingress.defaultBackend.resources.requests.memory=7Mi \
     --set nginx-ingress.controller.resources.requests.memory=440M \
+    --set nginx-ingress.controller.replicaCount=2 \
     --set gitlab.unicorn.resources.requests.cpu=200m \
     --set gitlab.sidekiq.resources.requests.cpu=100m \
     --set gitlab.sidekiq.resources.requests.memory=800M \
