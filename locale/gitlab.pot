@@ -4447,9 +4447,6 @@ msgstr ""
 msgid "Metrics|Learn about environments"
 msgstr ""
 
-msgid "Metrics|No data to display"
-msgstr ""
-
 msgid "Metrics|No deployed environments"
 msgstr ""
 
@@ -5709,9 +5706,6 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
-msgstr ""
-
-msgid "PrometheusDashboard|Time"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"
