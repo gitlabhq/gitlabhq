@@ -7677,6 +7677,9 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
+msgid "Unfortunately, your email message to GitLab could not be processed."
+msgstr ""
+
 msgid "Unlock"
 msgstr ""
 
