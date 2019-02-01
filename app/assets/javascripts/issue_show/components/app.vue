@@ -133,7 +133,8 @@ export default {
     },
     lockVersion: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0,
     },
   },
   data() {
