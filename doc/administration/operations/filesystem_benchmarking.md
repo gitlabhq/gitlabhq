@@ -9,11 +9,11 @@ Normally when talking about filesystem performance the biggest concern is
 with Network Filesystems (NFS). However, even some local disks can have slow
 IO. The information on this page can be used for either scenario.
 
-## Write Performance
+## Executing benchmarks
 
-The following one-line command is a quick benchmark for filesystem write
+The following one-line commands provide a quick benchmark for filesystem write and read
 performance. This will write 1,000 small files to the directory in which it is
-executed.
+executed, and then read the same 1,000 files.
 
 1. Change into the root of the appropriate
    [repository storage path](../repository_storage_paths.md).
@@ -27,13 +27,18 @@ executed.
     ```sh
     time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
     ```
+1. To benchmark read performance, run the command:
+
+    ```sh
+    time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
+    ```
 1. Remove the test files:
 
    ```sh
    cd ../; rm -rf test
    ```
 
-The output of the `time for ...` command will look similar to the following. The
+The output of the `time for ...` commands will look similar to the following. The
 important metric is the `real` time.
 
 ```sh
@@ -42,6 +47,12 @@ $ time for i in {0..1000}; do echo 'test' > "test${i}.txt"; done
 real	0m0.116s
 user	0m0.025s
 sys	0m0.091s
+
+$ time for i in {0..1000}; do cat "test${i}.txt" > /dev/null; done
+
+real    0m3.118s
+user    0m1.267s
+sys 0m1.663s
 ```
 
 From experience with multiple customers, this task should take under 10
