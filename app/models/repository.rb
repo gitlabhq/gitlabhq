@@ -525,6 +525,8 @@ class Repository
 
   # items is an Array like: [[oid, path], [oid1, path1]]
   def blobs_at(items)
+    return [] unless exists?
+
     raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
   end
 
