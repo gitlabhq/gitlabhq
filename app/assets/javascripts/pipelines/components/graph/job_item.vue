@@ -108,7 +108,7 @@ export default {
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
-      class="js-pipeline-graph-job-link"
+      class="js-pipeline-graph-job-link qa-job-link"
     >
       <job-name-component :name="job.name" :status="job.status" />
     </gl-link>
